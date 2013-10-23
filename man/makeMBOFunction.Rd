@@ -1,0 +1,18 @@
+\name{makeMBOFunction}
+\alias{makeMBOFunction}
+\title{Create fitness function for MBO.}
+\usage{
+  makeMBOFunction(fun)
+}
+\arguments{
+  \item{fun}{[\code{function}]\cr Fitness function.}
+}
+\value{
+  Function which accepts decision values as a list.
+}
+\description{
+  Transforms a target/fitness function, which takes a
+  vector as its first argument, into a function which takes
+  a list of values (as required by \code{\link{mbo}}.
+}
+

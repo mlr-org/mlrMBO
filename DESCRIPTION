@@ -1,12 +1,51 @@
 Package: mlrMBO
-Title:  mlr: Model-based optimization  
-Description:  mlr: Model-based optimization  
+Title: mlr: Model-based optimization
+Description: mlr: Model-based optimization
 Author: Bernd Bischl <bernd_bischl@gmx.net>
 Maintainer: Bernd Bischl <bernd_bischl@gmx.net>
 License: BSD
-Depends: ParamHelpers, mlr
-Imports: BBmisc (>= 1.4), gridExtra, grid, ggplot2
-Suggests: cmaes, DiceOptim, emoa, soobench, testthat
+Depends:
+    ParamHelpers,
+    mlr
+Imports:
+    BBmisc (>= 1.4),
+    gridExtra,
+    grid,
+    ggplot2
+Suggests:
+    cmaes,
+    DiceOptim,
+    emoa,
+    soobench,
+    testthat
 LazyData: yes
 ByteCompile: yes
-Version: 1.0
+Version: 1.0-3
+Collate:
+    'calculateGap.R'
+    'checkStuff.R'
+    'chooseFinalPoint.R'
+    'evalTargetFunction.R'
+    'exampleRun_autoplot_1d.R'
+    'exampleRun_autoplot_2d.R'
+    'exampleRun_autoplot.R'
+    'exampleRun_plot_1d_discrete.R'
+    'exampleRun_plot_1d_numeric.R'
+    'exampleRun_plot_2d_numeric.R'
+    'exampleRun_plot.R'
+    'exampleRun.R'
+    'infillcrits.R'
+    'infill_get.R'
+    'infill_optimize.R'
+    'loadPackages.R'
+    'makeMBOFunction.R'
+    'makeMBOTask.R'
+    'makeTrafoFunction.R'
+    'MBOControl.R'
+    'mbo.R'
+    'multipoint_infill_optimize.R'
+    'multipoint_multicrit.R'
+    'proposePoints.R'
+    'refactorNAs.R'
+    'repairPoint.R'
+    'zzz.R'

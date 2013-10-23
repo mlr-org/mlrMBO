@@ -4,10 +4,10 @@ library(devtools)
 library(mlr)
 
 if (interactive()) {
-  load_all("skel", reset=TRUE)
+  load_all(".", reset=TRUE)
 } else {
   library(mlrMBO)  
 }
 
 configureMlr(show.learner.output=FALSE)
-test_dir("skel/inst/tests/")
+test_dir("inst/tests/")
