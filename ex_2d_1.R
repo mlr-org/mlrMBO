@@ -6,12 +6,15 @@ library(devtools)
 library(BBmisc)
 library(mlr)
 library(soobench)
+library(ggplot2)
+library(grid)
+library(gridExtra)
 
-load_all("skel", reset=TRUE)
+load_all(".", reset=TRUE)
 
 configureMlr(show.learner.output=FALSE)
 
-objfun = branin_function()
+objfun = generate_branin_function()
 
 ctrl = makeMBOControl(init.design.points=10, iters=10, propose.points=1, 
   infill.crit="ei", infill.opt="random", infill.opt.random.points=2000)
@@ -22,4 +25,5 @@ run = exampleRun(objfun, learner=lrn, control=ctrl, points.per.dim=50)
 
 print(run)
 
-plot(run, pause=TRUE)
+autoplot(run, pause=TRUE)
+

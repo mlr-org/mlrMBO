@@ -6,8 +6,11 @@ library(devtools)
 library(BBmisc)
 library(mlr)
 library(soobench)
+library(ggplot2)
+library(grid)
+library(gridExtra)
 
-load_all("skel", reset=TRUE)
+load_all(".", reset=TRUE)
 
 configureMlr(show.learner.output=FALSE)
 
@@ -18,12 +21,11 @@ objfun = function(x) {
 ps = makeNumericParamSet(lower=3, upper=13, len=1)
 
 ctrl = makeMBOControl(init.design.points=4, iters=10, propose.points=2, 
-  multipoint.method="multicrit")
-
-# FIXME: Yeah this is crap, interface not done...
-ctrl$multipoint.objective = "ei"
-ctrl$multipoint.distfun = "nearest.neighbor"
-ctrl$multipoint.multicrit.maxit = 200
+  multipoint.method="multicrit",
+  multipoint.multicrit.objective="ei.dist",
+  multipoint.multicrit.dist="nearest.neighbor",
+  multipoint.multicrit.maxit=200
+)
 
 lrn = makeLearner("regr.km", predict.type="se", covtype="matern3_2")
 
@@ -32,4 +34,4 @@ run = exampleRun(objfun, ps, global.opt=-1, learner=lrn,
 
 print(run)
 
-plot(run, pause=TRUE, densregion=FALSE)
+autoplot(run, pause=TRUE, densregion=TRUE)

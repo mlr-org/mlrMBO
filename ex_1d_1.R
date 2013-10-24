@@ -6,8 +6,11 @@ library(devtools)
 library(BBmisc)
 library(mlr)
 library(soobench)
+library(ggplot2)
+library(grid)
+library(gridExtra)
 
-load_all("skel", reset=TRUE)
+load_all(".", reset=TRUE)
 
 configureMlr(show.learner.output=FALSE)
 
@@ -27,4 +30,4 @@ run = exampleRun(objfun, ps, global.opt=-1, learner=lrn,
 
 print(run)
 
-plot(run, pause=TRUE, densregion=FALSE)
+autoplot(run, pause=TRUE, densregion=TRUE)
