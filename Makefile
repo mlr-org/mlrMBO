@@ -1,17 +1,17 @@
 R	:= R --no-save --no-restore
 RSCRIPT	:= Rscript
 DELETE	:= rm -fR
-VERSION := $(shell ./tools/set-version)
+VERSION := $(shell Rscript ./tools/get-version)
 TARGZ   := mlrMBO_$(VERSION).tar.gz
 
 .SILENT:
-.PHONEY: clean roxygenize package windows install test check
+.PHONEY: clean roxygenize package install test check
 
 usage:
 	echo "Available targets:"
 	echo ""
 	echo " clean         - Clean everything up"
-	echo " roxygenize    - roxygenize skel/ into pkg/"
+	echo " roxygenize    - roxygenize in-place"
 	echo " package       - build source package"
 	echo " install       - install the package"
 	echo " test          - run unit tests"
@@ -24,7 +24,6 @@ clean:
 	${DELETE} src/*.o src/*.so *.tar.gz
 	${DELETE} html
 	${DELETE} .RData .Rhistory
-	echo "Getting version and writing to DESCRIPTION: $(VERSION)"
 
 roxygenize: clean
 	echo "\nRoxygenizing package ..."

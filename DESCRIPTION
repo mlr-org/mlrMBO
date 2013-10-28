@@ -20,7 +20,7 @@ Suggests:
     testthat
 LazyData: yes
 ByteCompile: yes
-Version: 1.0-3
+Version: 1.0
 Collate:
     'calculateGap.R'
     'checkStuff.R'
