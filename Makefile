@@ -8,21 +8,21 @@ TARGZ   := mlrMBO_$(VERSION).tar.gz
 .PHONEY: clean roxygenize package install test check
 
 usage:
-	printf "Available targets:"
-	printf ""
-	printf " clean         - Clean everything up"
-	printf " roxygenize    - roxygenize in-place"
-	printf " package       - build source package"
-	printf " install       - install the package"
-	printf " test          - run unit tests"
-	printf " check         - run R CMD check on the package"
-	printf " html          - build static html documentation"
+	echo "Available targets:"
+	echo " clean         - Clean everything up"
+	echo " roxygenize    - roxygenize in-place"
+	echo " package       - build source package"
+	echo " install       - install the package"
+	echo " test          - run unit tests"
+	echo " check         - run R CMD check on the package"
+	echo " html          - build static html documentation"
 
 
 clean:
 	printf "\nCleaning up ...\n"
 	${DELETE} src/*.o src/*.so *.tar.gz
 	${DELETE} html
+	${DELETE} *.Rcheck
 	${DELETE} .RData .Rhistory
 
 roxygenize: clean
