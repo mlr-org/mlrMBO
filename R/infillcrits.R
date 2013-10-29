@@ -49,7 +49,8 @@ infillCritEI = function(points, model, control, par.set, design) {
   xcr.prob = pnorm(xcr)
   xcr.dens = dnorm(xcr)
   ei = d * xcr.prob + p.se * xcr.dens
-  return(-ei)
+  # if se too low set 0 (numerical problems), negate due to minimization
+  ifelse(p.se < 1e-6, 0, -ei)
 }
 
 
