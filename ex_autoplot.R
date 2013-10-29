@@ -9,7 +9,7 @@ library(soobench)
 library(ggplot2)
 library(gridExtra)
 
-load_all("skel", reset=TRUE)
+load_all(".", reset=TRUE)
 
 configureMlr(show.learner.output=FALSE)
 
@@ -30,7 +30,7 @@ configureMlr(show.learner.output=FALSE)
 
 # print(run)
 
-# autoplot(run, iters = c(2,3,8))
+# pl = autoplot(run, iters = c(2,3,8), trafo=list("y" = logTrafo()))
 # stop()
 
 # NOISY DISCRETE FUNCTION
@@ -59,15 +59,15 @@ configureMlr(show.learner.output=FALSE)
 
 # 2d NUMERIC FUNCTION
 
-# objfun = generate_branin_function()
+objfun = generate_branin_function()
 
-# ctrl = makeMBOControl(init.design.points=10, iters=10, propose.points=1, 
-#   infill.crit="ei", infill.opt="random", infill.opt.random.points=2000)
+ctrl = makeMBOControl(init.design.points=10, iters=10, propose.points=1, 
+  infill.crit="ei", infill.opt="random", infill.opt.random.points=2000)
 
-# lrn = makeLearner("regr.km", predict.type="se", covtype="matern3_2")
+lrn = makeLearner("regr.km", predict.type="se", covtype="matern3_2")
 
-# run = exampleRun(objfun, learner=lrn, control=ctrl, points.per.dim=50)
+run = exampleRun(objfun, learner=lrn, control=ctrl, points.per.dim=50)
 
-#print(run)
+print(run)
 
 pl = autoplot(run, iters=c(1,2), point.size=3.5, pause=TRUE)

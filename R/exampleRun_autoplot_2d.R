@@ -42,20 +42,21 @@ autoplotExampleRun2d = function(x, iters, pause=TRUE, densregion=TRUE,
     
         idx.seq = which(opt.path$dob > 0 & opt.path$dob < i)
         idx.proposed = which(opt.path$dob == i)
-        idx.untilnow = c(idx.init, idx.seq, idx.proposed)
+        idx.past = which(opt.path$dob < i)
+        idx.pastpresent = which(opt.path$dob <= i)   
 
         model.ok = !inherits(model, "FailureModel")
 
         if (model.ok) {
-            evals[["yhat"]] = mlrMBO:::infillCritMeanResponse(evals[, names.x, drop=FALSE], 
-            model, control, par.set, opt.path[idx.untilnow, ])
+            evals$yhat = mlrMBO:::infillCritMeanResponse(evals[, names.x, drop=FALSE], 
+            model, control, par.set, opt.path[idx.past, ])
             if (se) {
-                evals[["se"]] = -mlrMBO:::infillCritStandardError(evals[, names.x, drop=FALSE], 
-                model, control, par.set, opt.path[idx.untilnow, ])
+                evals$se = -mlrMBO:::infillCritStandardError(evals[, names.x, drop=FALSE], 
+                model, control, par.set, opt.path[idx.past, ])
             }
             if (proppoints == 1L) {
                 evals[[name.crit]] = opt.direction * critfun(evals[, names.x, drop=FALSE], 
-                model, control, par.set, opt.path[idx.untilnow, ])
+                model, control, par.set, opt.path[idx.past, ])
             }
         }
 
@@ -69,7 +70,10 @@ autoplotExampleRun2d = function(x, iters, pause=TRUE, densregion=TRUE,
             pl = ggplot(data=data, aes_string(x="x1", y="x2", z=name.z))
             pl = pl + geom_tile(aes_string(fill=name.z))
             pl = pl + scale_fill_gradientn(colours = topo.colors(7))
-            pl = pl + stat_contour(aes_string(fill=name.z), binwidth=5)
+            # FIXME: stat_contour cannot compute contour lines for EI for small values
+            if (name.z != "ei") {
+                pl = pl + stat_contour(aes_string(fill=name.z), binwidth=5)
+            }
             pl = pl + geom_point(data=points, aes(x=x1, y=x2, z=y, colour=type, shape=type))
 
             title = name.z
@@ -110,23 +114,8 @@ autoplotExampleRun2d = function(x, iters, pause=TRUE, densregion=TRUE,
         if (se) {
             pl.se = plotSingleFun(gg.fun, gg.points, "se", trafo=trafo[["se"]])
         }
-
-        # make "long" dataframe for ggplot 
-        # gg.fun = melt(evals, id.vars=c("x1","x2"))
-
-        # # plot all plots using fancy facets
-        # pl.all = ggplot(data=gg.fun, aes(x=x1, y=x2, z=value))
-        # pl.all = pl.all + geom_tile(aes(fill=value))
-        # pl.all = pl.all + scale_fill_continuous(low="#124874", high="#741212")
-        # pl.all = pl.all + geom_point(data=gg.points, aes(x=x1, y=x2, z=y, colour=type))
-        # pl.all = pl.all + facet_grid(.~variable, scales="free")
-        # pl.all = pl.all + ggtitle(sprintf("Iteration: %i", i))
-        # pl.all = pl.all + theme(
-        #     plot.title=element_text(size=11, face="bold"),
-        #     legend.box = "horizontal", legend.position = "top")
-        #pl.all = direct.label(pl.all)
         
-        title = sprintf("Iter %i\n x-axis: %s, y-axis: %s", i, name.x1, name.x2)
+        title = sprintf("Iter %i, x-axis: %s, y-axis: %s", i, name.x1, name.x2)
 
         if (se) {
             pl.all = grid.arrange(pl.fun, pl.mod, pl.crit, pl.se, 

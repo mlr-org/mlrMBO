@@ -49,13 +49,21 @@
 #'   Default for the first plot is a heuristic to have the true function
 #'   and \code{yhat(x) +- se.factor2 * se(x)} both in the plot. Note that this heuristic might
 #'   change the \code{ylim} setting between plot iterations.
+#' @param trafo [\code{list}]\cr
+#'   List of transformation functions of type \code{\link[mlrMBO]{MBOTrafoFunction}} for 
+#'   the different plots.
+#'   For 1D: The list elements should be named with "y" (applied to objective function and model) or "crit"
+#'   (applied to the criterion). Only applied to plots with numeric parameters.
+#'   For 2D: The list should contain at least one element "y", "yhat", "crit" or "se". This way one can 
+#'   specify different transformations for different plots. If a single function is provided, this function 
+#'    is used for all plots. 
 #' @param ... [\code{list}]\cr
 #'   Further parameters.
 #' @return Nothing.
 #' @S3method autoplot MBOExampleRun
 #' @export
 autoplot.MBOExampleRun = function(x, iters, pause=TRUE, densregion=TRUE,
-  se.factor1=1, se.factor2=2, xlim, ylim, point.size=3, line.size=3, trafo=NULL, ...) {
+  se.factor1=1, se.factor2=2, xlim, ylim, point.size=3, line.size=1, trafo=NULL, ...) {
 
   iters.max = x$control$iters
   if (missing(iters)) {
@@ -68,19 +76,6 @@ autoplot.MBOExampleRun = function(x, iters, pause=TRUE, densregion=TRUE,
   checkArg(densregion, "logical", len=1L, na.ok=FALSE)
   checkArg(se.factor1, "numeric", len=1L, na.ok=FALSE)
   checkArg(se.factor2, "numeric", len=1L, na.ok=FALSE)
-  if (!is.null(trafo)) {
-    # if single function provided, apply it to all plots
-    if (c("MBOTrafoFunction") %in% class(trafo)) {
-      trafo = list("y" = trafo, "yhat" = trafo, "crit" = trafo, "se" = trafo)
-    } else {
-      # otherwise check if all elements are of an appropriate type
-      lapply(trafo, function(t) if(!is.null(t)) checkArg(t, "MBOTrafoFunction"))
-
-      trafo.defaults = list("y" = NULL, "yhat" = NULL, "crit" = NULL, "se" = NULL)
-      trafo.defaults[names(trafo)] = trafo
-      trafo = trafo.defaults
-    }
-  }
   #FIXME implement and document meaning for xlim, ylim for 2D plots
   if (!missing(xlim))
     checkArg(xlim, "numeric", len=2L, na.ok=FALSE)
@@ -89,13 +84,52 @@ autoplot.MBOExampleRun = function(x, iters, pause=TRUE, densregion=TRUE,
 
   n.params = x$n.params
   par.types = x$par.types
+  trafo = buildTrafoList(n.params, trafo)
+
   if (n.params == 1) {
     autoplotExampleRun1d(x, iters=iters, xlim=xlim, ylim=ylim, pause=pause,
-      point.size=point.size, line.size=line.size, densregion=densregion, ...)
+      point.size=point.size, line.size=line.size, trafo=trafo, densregion=densregion, ...)
   } else if (n.params == 2) {
     autoplotExampleRun2d(x, iters=iters, xlim=xlim, ylim=ylim, pause=pause,
       point.size=point.size, line.size=line.size, trafo=trafo, ...)
   } else {
     stopf("Functions with greater than 3 parameters are not supported.")
   }
+}
+
+# Sets up the correct format for trafo functions used
+# by MBOExampleRun plot functions.
+#
+# @param n.params [\code{integer(1)}]\cr
+#   Number of parameters.
+# @param input.trafo [\code{list}]\cr
+#   List of trafo functions provided by the user.
+# @return [\code{list}]\cr
+#   List of trafo functions with format that is expected by exampleRun plot functions.
+buildTrafoList = function(n.params, input.trafo) {
+  # FIXME: check
+  if (n.params == 1) {
+    trafo.defaults = list("y" = NULL, "crit" = NULL)
+  } else {
+    trafo.defaults = list("y" = NULL, "yhat" = NULL, "crit" = NULL, "se" = NULL)
+  }
+
+  if (is.null(input.trafo))
+    return(trafo.defaults)
+
+  # if single function provided, apply it to all plots
+  if (c("MBOTrafoFunction") %in% class(input.trafo)) {
+    if (n.params == 1) {
+      trafo = list("y" = input.trafo, "crit" = input.trafo)
+    } else {
+      trafo = list("y" = input.trafo, "yhat" = input.trafo, "crit" = input.trafo, "se" = input.trafo)
+    }
+  } else {
+    # otherwise check if all elements are of an appropriate type
+    lapply(input.trafo, function(t) if(!is.null(t)) checkArg(t, "MBOTrafoFunction"))
+    trafo = trafo.defaults
+
+    trafo[names(input.trafo)] = input.trafo
+  }
+  return(trafo)
 }
