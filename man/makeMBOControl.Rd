@@ -11,6 +11,8 @@
     infill.opt.restarts = 1L,
     infill.opt.random.points = 10000L,
     infill.opt.cmaes.control = list(),
+    infill.opt.es.maxit = 500L, infill.opt.es.mu = 10L,
+    infill.opt.es.eta = 15, infill.opt.es.p = 0.5,
     multipoint.method = "lcb",
     multipoint.multicrit.objective = "ei.dist",
     multipoint.multicrit.dist = "nearest.better",
@@ -48,7 +50,7 @@
   empty list.}
 
   \item{iters}{[\code{integer(1)}]\cr Number of sequential
-  optimization steps.  Default is 10}
+  optimization steps.  Default is 10.}
 
   \item{propose.points}{[\code{integer(1)}]\cr Number of
   proposed points after optimizing the surrogate model with
@@ -86,6 +88,24 @@
   \item{infill.opt.cmaes.control}{[\code{list}]\cr For
   \code{infill.opt = "cmaes"}: Control argument for cmaes
   optimizer.  Default is empty list.}
+
+  \item{infill.opt.es.maxit}{[\code{integer(1)}]\cr For
+  \code{infill.opt = "es"}: Number of iterations /
+  generations of ES.  Default is 500.}
+
+  \item{infill.opt.es.mu}{[\code{integer(1)}]\cr For
+  \code{infill.opt = "es"}: Population size of ES.  Default
+  is 10.}
+
+  \item{infill.opt.es.eta}{[\code{numeric(1)}]\cr For
+  \code{infill.opt = "es"}: Distance parameter mutation
+  distribution, see \code{\link[emoa]{sbx_operator}}.
+  Default is ???.}
+
+  \item{infill.opt.es.p}{[\code{numeric(1)}]\cr For
+  \code{infill.opt = "es"}: Probability of 1-point
+  crossover, see \code{\link[emoa]{sbx_operator}}.  Default
+  is ???.}
 
   \item{multipoint.method}{[\code{character(1)}]\cr Method
   used for proposal of multiple infill points, for parallel
@@ -125,9 +145,9 @@
   \dQuote{crowdingdist}: Non-dominated sorting + crowding
   distance based ranking.  \dQuote{first}: Non-dominated
   sorting + first objective of
-  \code{multipoint.multicrit.objective} as criterion .
+  \code{multipoint.multicrit.objective} as criterion.
   \dQuote{last}: Non-dominated sorting + last objective of
-  \code{multipoint.multicrit.objective} as criterion .
+  \code{multipoint.multicrit.objective} as criterion.
   Default is \code{hypervolume}}
 
   \item{multipoint.multicrit.maxit}{[\code{character(1)}]\cr
