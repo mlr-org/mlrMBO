@@ -19,7 +19,6 @@ test_that("dependent params", {
   or = mbo(f, ps, learner=learner, control=ctrl, show.info=TRUE)
   expect_true(!is.na(or$y))
   x = or$x
-  print(x)
   expect_true(x$foo == "a" && x$x0 < 3.2 && x$x1 < -1.8)
   
 })

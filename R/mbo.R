@@ -68,7 +68,8 @@ mbo = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, ...)
     ys = design[, y.name]
     design.x = design[, colnames(design) != y.name, drop=FALSE]
   } else {
-    #catf("Computing y column for design 'design'. None provided.\n")
+    if (show.info)
+      messagef("Computing y column for design. Was not provided")
     xs = lapply(seq_len(nrow(design.x)), function(i) dfRowToList(design.x, par.set, i))
     ys = evalTargetFun(fun, par.set, xs, opt.path, control, show.info, oldopts, ...)
     design = cbind(design.x, setColNames(data.frame(ys), y.name))

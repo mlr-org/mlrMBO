@@ -55,6 +55,14 @@ infillOptRandom = function(infill.crit, model, control, par.set, opt.path, desig
       }
     }
   }
+  # convert back to correct type
+  types = unlist(lapply(par.set$pars, function(p) rep(p$type, p$len)))
+  for (i in seq_col(best)) {
+    if (types[i] %in% c("integer", "integervector"))
+      best[,i] = as.integer(best[,i])
+    else if (types[i] %in% c("logical", "logicalvector"))
+      best[,i] = as.logical(as.character(best[,i]))
+  }
   best
 }
 
