@@ -46,14 +46,14 @@ mbo = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, ...)
 
   # configure mlr in an appropriate way
   configureMlr(on.learner.error=control$on.learner.error,
-		show.learner.output=control$show.learner.output)
+    show.learner.output=control$show.learner.output)
 
   # get parameter ids repeated length-times and appended number
   rep.pids = getParamIds(par.set, repeated=TRUE, with.nr=TRUE)
   y.name = control$y.name
   opt.path = makeOptPathDF(par.set, y.name, control$minimize)
 
-	# generate initial design if none provided
+  # generate initial design if none provided
   if (is.null(design)) {
     design.x = generateDesign(control$init.design.points, par.set,
       control$init.design.fun, control$init.design.args, trafo=FALSE)
@@ -61,34 +61,34 @@ mbo = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, ...)
     design.x = design
     if (attr(design, "trafo"))
       stop("Design must not be transformed before call to 'mbo'. Set 'trafo' to FALSE in generateDesign.")
-	}
+  }
 
-	# compute y-values if missing or initial design generated above
+  # compute y-values if missing or initial design generated above
   if (y.name %in% colnames(design.x)) {
     ys = design[, y.name]
     design.x = design[, colnames(design) != y.name, drop=FALSE]
-	} else {
+  } else {
     #catf("Computing y column for design 'design'. None provided.\n")
     xs = lapply(seq_len(nrow(design.x)), function(i) dfRowToList(design.x, par.set, i))
     ys = evalTargetFun(fun, par.set, xs, opt.path, control, show.info, oldopts, ...)
     design = cbind(design.x, setColNames(data.frame(ys), y.name))
   }
 
-	# sanity check: are paramter values and colnames of design consistent?
+  # sanity check: are paramter values and colnames of design consistent?
   # FIXME this check is only required for user provided designs
   cns = colnames(design.x)
   if(!setequal(cns, rep.pids))
-  	stop("Column names of design 'design' must match names of parameters in 'par.set'!")
+    stop("Column names of design 'design' must match names of parameters in 'par.set'!")
 
   # reorder
   design.x = design.x[, rep.pids, drop=FALSE]
   # FIXME this is the second time we do this ... maybe reorder code?
-  xs = lapply(seq_len(nrow(design.x)), function(i) dfRowToList(design.x, par.set, i))
+  xs = dfRowsToList(design.x, par.set)
 
-	# add initial values to optimization path
+  # add initial values to optimization path
   Map(function(x,y) addOptPathEl(opt.path, x=x, y=y, dob=0), xs, ys)
 
-	# set up initial mbo task
+  # set up initial mbo task
   rt = makeMBOTask(design, par.set, y.name, control=control)
   model = train(learner, rt)
 
@@ -97,34 +97,34 @@ mbo = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, ...)
 
   if (0L %in% control$save.model.at) {
     models[["0"]] = model
-	}
+  }
 
-	if (0L %in% control$resample.model.at) {
+  if (0L %in% control$resample.model.at) {
     r = resample(learner, rt, control$resample.desc, measures=control$resample.measures)
     res.vals[["0"]] = r$aggr
-	}
-  
+  }
+
   # store sampled lambdas for this special method in return val
-  multipoint.lcb.lambdas = if (control$multipoint.method == "lcb") 
+  multipoint.lcb.lambdas = if (control$multipoint.method == "lcb")
     matrix(nrow=0, ncol=control$propose.points)
   else
     NULL
-  
-	# do the mbo magic
+
+  # do the mbo magic
   for (loop in seq_len(control$iters)) {
 
-		# propose new points and evaluate target function
+    # propose new points and evaluate target function
     prop.design = proposePoints(model, par.set, control, opt.path)
     # handle lambdas for this method
     if (control$multipoint.method == "lcb") {
       multipoint.lcb.lambdas = rbind(multipoint.lcb.lambdas, attr(prop.design, "multipoint.lcb.lambdas"))
       attr(prop.design, "multipoint.lcb.lambda") =  NULL
     }
-    xs = lapply(seq_len(nrow(prop.design)), function(i) dfRowToList(prop.design, par.set, i))
+    xs = dfRowsToList(prop.design, par.set)
     xs = lapply(xs, repairPoint, par.set=par.set)
     ys = evalTargetFun(fun, par.set, xs, opt.path, control, show.info, oldopts, ...)
 
-		# update optim trace and model
+    # update optim trace and model
     Map(function(x,y) addOptPathEl(opt.path, x=x, y=y, dob=loop), xs, ys)
     rt = makeMBOTask(as.data.frame(opt.path, discretes.as.factor=TRUE), par.set, y.name, control=control)
     model = train(learner, rt)
@@ -141,9 +141,9 @@ mbo = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, ...)
   best = getOptPathEl(opt.path, final.index)
   x = best$x
   y = best$y
-  
+
   if (control$final.evals > 0L) {
-		# do some final evaluations and compute mean of target fun values
+    # do some final evaluations and compute mean of target fun values
     xs = replicate(control$final.evals, best$x)
     ys = evalTargetFun(fun, par.set, xs, opt.path, control, show.info, oldopts, ...)
     best$y = mean(ys)
