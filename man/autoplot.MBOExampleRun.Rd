@@ -4,7 +4,8 @@
 \usage{
   autoplot.MBOExampleRun(x, iters, pause = TRUE,
     densregion = TRUE, se.factor1 = 1, se.factor2 = 2,
-    xlim, ylim, point.size = 3, trafo = NULL, ...)
+    xlim, ylim, point.size = 3, line.size = 1,
+    trafo = NULL, ...)
 }
 \arguments{
   \item{x}{[\code{function}]\cr Objective function.}
@@ -51,6 +52,17 @@
   \code{yhat(x) +- se.factor2 * se(x)} both in the plot.
   Note that this heuristic might change the \code{ylim}
   setting between plot iterations.}
+
+  \item{trafo}{[\code{list}]\cr List of transformation
+  functions of type \code{\link[mlrMBO]{MBOTrafoFunction}}
+  for the different plots.  For 1D: The list elements
+  should be named with "y" (applied to objective function
+  and model) or "crit" (applied to the criterion). Only
+  applied to plots with numeric parameters.  For 2D: The
+  list should contain at least one element "y", "yhat",
+  "crit" or "se". This way one can specify different
+  transformations for different plots. If a single function
+  is provided, this function is used for all plots.}
 
   \item{...}{[\code{list}]\cr Further parameters.}
 }

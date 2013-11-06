@@ -2,6 +2,7 @@ library(methods)
 library(testthat)
 library(devtools)
 library(mlr)
+library(soobench)
 
 if (interactive()) {
   load_all(".", reset=TRUE)

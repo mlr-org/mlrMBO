@@ -21,7 +21,6 @@ test_that("multipoint multicrit", {
         res = mbo(makeMBOFunction(f), par.set=ps, learner=lrn, control=ctrl)
         
         gap = res$y - global_minimum(f)$value
-        print(gap)
         #expect_true(gap < 0.1)
       }
     }
