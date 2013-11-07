@@ -1,6 +1,6 @@
 \name{makeMBOControl}
-\alias{makeMBOControl}
 \alias{MBOControl}
+\alias{makeMBOControl}
 \title{Creates a control object for MBO optimization.}
 \usage{
   makeMBOControl(minimize = TRUE, noisy = FALSE,
