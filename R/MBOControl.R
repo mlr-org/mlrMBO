@@ -1,3 +1,4 @@
+
 #FIXME: add lcb lambda param? where to store all this?
 
 #' Creates a control object for MBO optimization.
@@ -73,6 +74,10 @@
 #'   For \code{infill.opt = "es"}:
 #'   Probability of 1-point crossover, see \code{\link[emoa]{sbx_operator}}.
 #'   Default is ???.
+#' @param refactor.method [\code{character(1)}]\cr
+#'   Method used for refactoring NAs. Possible values are:
+#'   \dQuote{up}: Refactor numeric vars with 2 * upper bound
+#'   \dQuote{NAVars}: Iimputes NAs with median and add logical is.na variable
 #' @param multipoint.method [\code{character(1)}]\cr
 #'   Method used for proposal of multiple infill points, for parallel batch evaluation.
 #'   Possible values are:
@@ -162,6 +167,7 @@ makeMBOControl = function(minimize=TRUE, noisy=FALSE, init.design.points=20L,
   infill.opt="random", infill.opt.restarts=1L,
   infill.opt.random.points=10000L, infill.opt.cmaes.control=list(),
   infill.opt.es.maxit=500L, infill.opt.es.mu=10L, infill.opt.es.eta=15, infill.opt.es.p=0.5,
+  refactor.method = "up",
   multipoint.method="lcb",
   multipoint.multicrit.objective="ei.dist",
   multipoint.multicrit.dist="nearest.better",
@@ -202,6 +208,9 @@ makeMBOControl = function(minimize=TRUE, noisy=FALSE, init.design.points=20L,
   checkArg(infill.opt.es.mu, "integer", len=1L, na.ok=FALSE, lower=1L)
   checkArg(infill.opt.es.eta, "numeric", len=1L, na.ok=FALSE, lower=0)
   checkArg(infill.opt.es.p, "numeric", len=1L, na.ok=FALSE, lower=0, upper=1)
+  
+  
+  checkArg(refactor.method, choices=c("up", "NAVars"))
 
   checkArg(multipoint.method, choices=c("lcb", "multicrit"))
   checkArg(multipoint.multicrit.objective, choices=c("ei.dist", "mean.se", "mean.se.dist"))
@@ -241,7 +250,7 @@ makeMBOControl = function(minimize=TRUE, noisy=FALSE, init.design.points=20L,
 
   checkArg(on.learner.error, choices=c("warn", "quiet", "stop"))
   checkArg(show.learner.output, "logical", len=1L, na.ok=FALSE)
-
+  
   structure(list(
     minimize = minimize,
     noisy = noisy,
@@ -260,6 +269,7 @@ makeMBOControl = function(minimize=TRUE, noisy=FALSE, init.design.points=20L,
     infill.opt.es.mu = infill.opt.es.mu,
     infill.opt.es.eta = infill.opt.es.eta,
     infill.opt.es.p = infill.opt.es.p,
+    refactor.method = refactor.method,
     #rank.trafo = rank.trafo,
     multipoint.method = multipoint.method,
     multipoint.multicrit.objective = multipoint.multicrit.objective,

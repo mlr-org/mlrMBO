@@ -31,7 +31,7 @@ infillOptRandom = function(infill.crit, model, control, par.set, opt.path, desig
     newdesign1 = generateDesign(control$infill.opt.random.points, par.set,
       randomLHS, ints.as.num=TRUE, logicals.as.factor=TRUE)
     # predict on design where NAs were imputed, but return propsed points with NAs
-    newdesign2 = refactorNAs(newdesign1, par.set)
+    newdesign2 = refactorNAs(newdesign1, par.set, method=control$refactor.method)
     y = infill.crit(newdesign2, model, control, par.set, design)
     best = newdesign1[rank(y, ties.method="random") == 1L, , drop=FALSE]
 
