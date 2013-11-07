@@ -48,6 +48,10 @@
 #'   The first initial / start point for the optimizer is always the currently best point in the design
 #'   of already visited points. Subsequent restarts are started at random points.
 #'   Default is 1.
+#' @param infill.opt.random.maxit [\code{integer(1)}]\cr
+#'   For \code{infill.opt = "random"}:
+#'   Number of iteration to shrink local focus.
+#'   Default is 5.
 #' @param infill.opt.random.points [\code{integer(1)}]\cr
 #'   For \code{infill.opt = "random"}:
 #'   Number of points in random search optimizer.
@@ -160,7 +164,8 @@ makeMBOControl = function(minimize=TRUE, noisy=FALSE, init.design.points=20L,
   init.design.fun=maximinLHS, init.design.args=list(), iters=10L, propose.points=1L,
   infill.crit="mean", infill.crit.lcb.lambda=1,
   infill.opt="random", infill.opt.restarts=1L,
-  infill.opt.random.points=10000L, infill.opt.cmaes.control=list(),
+  infill.opt.random.maxit=5L, infill.opt.random.points=10000L, 
+  infill.opt.cmaes.control=list(),
   infill.opt.es.maxit=500L, infill.opt.es.mu=10L, infill.opt.es.eta=15, infill.opt.es.p=0.5,
   multipoint.method="lcb",
   multipoint.multicrit.objective="ei.dist",
@@ -193,9 +198,13 @@ makeMBOControl = function(minimize=TRUE, noisy=FALSE, init.design.points=20L,
   checkArg(infill.opt, choices=c("random", "cmaes", "es"))
   infill.opt.restarts = convertInteger(infill.opt.restarts)
   checkArg(infill.opt.restarts, "integer", len=1L, na.ok=FALSE)
+
+  infill.opt.random.maxit = convertInteger(infill.opt.random.maxit)
+  checkArg(infill.opt.random.maxit, "integer", len=1L, na.ok=FALSE, lower=1L)
   infill.opt.random.points = convertInteger(infill.opt.random.points)
   checkArg(infill.opt.random.points, "integer", len=1L, na.ok=FALSE, lower=1L)
   checkArg(infill.opt.cmaes.control, "list")
+
   infill.opt.es.maxit = convertInteger(infill.opt.es.maxit)
   checkArg(infill.opt.es.maxit, "integer", len=1L, na.ok=FALSE, lower=1L)
   infill.opt.es.mu = convertInteger(infill.opt.es.mu)
@@ -254,6 +263,7 @@ makeMBOControl = function(minimize=TRUE, noisy=FALSE, init.design.points=20L,
     infill.crit.lcb.lambda = infill.crit.lcb.lambda,
     infill.opt = infill.opt,
     infill.opt.restarts = infill.opt.restarts,
+    infill.opt.random.maxit = infill.opt.random.maxit,
     infill.opt.random.points = infill.opt.random.points,
     infill.opt.cmaes.control = infill.opt.cmaes.control,
     infill.opt.es.maxit = infill.opt.es.maxit,
