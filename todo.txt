@@ -1,9 +1,11 @@
 use makeS3Obj when new BBmisc on cran
 
 jakob: 
-- s(x) von RF
-- parallel die fitness evaluieren
-- [Nadja] Immer das letzte funktionsfähige Modell speichern und falls aktuelles nicht läuft, auf das letzte zugreifen. Auch bei MBO-Ausgabe soll immer ein funktionsfähige Modell ausgegeben werden
+- überprüfen, ob Parameternamen mit den Standardparameternamen übereinstimmen
+- exampleRun_autoplot_1d in zwei Funktionen aufspalten (diskret/numerisch)
+- add se.factor param to parameter list
+- stat_contour kommt nicht klar mit zu kleinen EI Werten. Konturlinien für EI plot ausblenden?
+- add comments to autoplotExampleRun2d 
 
 bernd:
 - dependent params

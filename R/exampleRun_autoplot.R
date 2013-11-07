@@ -59,7 +59,8 @@
 #'    is used for all plots. 
 #' @param ... [\code{list}]\cr
 #'   Further parameters.
-#' @return Nothing.
+#' @return [\code{list}]\cr
+#'   List containing seperate ggplot plots for each iteration.
 #' @S3method autoplot MBOExampleRun
 #' @export
 autoplot.MBOExampleRun = function(x, iters, pause=TRUE, densregion=TRUE,
@@ -76,7 +77,6 @@ autoplot.MBOExampleRun = function(x, iters, pause=TRUE, densregion=TRUE,
   checkArg(densregion, "logical", len=1L, na.ok=FALSE)
   checkArg(se.factor1, "numeric", len=1L, na.ok=FALSE)
   checkArg(se.factor2, "numeric", len=1L, na.ok=FALSE)
-  #FIXME implement and document meaning for xlim, ylim for 2D plots
   if (!missing(xlim))
     checkArg(xlim, "numeric", len=2L, na.ok=FALSE)
   if (!missing(ylim))
@@ -107,7 +107,6 @@ autoplot.MBOExampleRun = function(x, iters, pause=TRUE, densregion=TRUE,
 # @return [\code{list}]\cr
 #   List of trafo functions with format that is expected by exampleRun plot functions.
 buildTrafoList = function(n.params, input.trafo) {
-  # FIXME: check
   if (n.params == 1) {
     trafo.defaults = list("y" = NULL, "crit" = NULL)
   } else {
@@ -126,9 +125,10 @@ buildTrafoList = function(n.params, input.trafo) {
     }
   } else {
     # otherwise check if all elements are of an appropriate type
-    lapply(input.trafo, function(t) if(!is.null(t)) checkArg(t, "MBOTrafoFunction"))
+    lapply(input.trafo, function(t) 
+      if(!is.null(t)) checkArg(t, "MBOTrafoFunction")
+    )
     trafo = trafo.defaults
-
     trafo[names(input.trafo)] = input.trafo
   }
   return(trafo)

@@ -1,5 +1,43 @@
 # Function for plotting 1d numeric respectively discrete functions. 
-# 
+#
+# @param x [\code{function}]\cr
+#   Objective function.
+# @param iters [\code{integer}]\cr
+#   Selected iterations of \code{x} to display.
+#   Default is all iterations.
+# @param pause [\code{logical(1)}]\cr
+#   Pause after each iteration?
+#   Default is \code{TRUE}.
+# @param xlim [\code{numeric(2)}]\cr
+#   For 1D: \code{xlim} parameter for first and second plot.
+#   Default is range of x-values evaluated in run object \code{x}.
+# @param ylim [\code{numeric(2)}]\cr
+#   For 1D: \code{ylim} parameter for first plot, for the second plot \code{ylim} is always set
+#   automatically, depending on the range of the evaluated infill criterion.
+#   Default for the first plot is a heuristic to have the true function
+#   and \code{yhat(x) +- se.factor2 * se(x)} both in the plot. Note that this heuristic might
+#   change the \code{ylim} setting between plot iterations.
+# @param pause [\code{boolean}]\cr
+#   Set to \code{TRUE} if the function shall pause after each iteration.
+# @param point.size [\code{numeric(1)}]\cr
+#   Size of the points in the plots.
+# @param line.size [\code{numeric(1)}]\cr
+#   Line width of the functions graphs plotted.
+# @param trafo [\code{list}]\cr
+#   List of transformation functions of type \code{\link[mlrMBO]{MBOTrafoFunction}} for 
+#   the different plots.
+#   For 1D: The list elements should be named with "y" (applied to objective function and model) or "crit"
+#   (applied to the criterion). Only applied to plots with numeric parameters.
+#   For 2D: The list should contain at least one element "y", "yhat", "crit" or "se". This way one can 
+#   specify different transformations for different plots. If a single function is provided, this function 
+#    is used for all plots.
+# @param densregion [\code{logical(1)}]\cr
+#   Should the background be shaded by the density of the posterior distribution? Default ist \code{TRUE}.
+#   Only used if learner supports computation of standard error.
+# @param ... [\code{list}]\cr
+#   Further parameters.
+# @return Nothing.
+
 # FIMXE: check if param names agree with regular plot function
 autoplotExampleRun1d = function(x, iters, xlim, ylim, pause, point.size, line.size, trafo, densregion=TRUE...) {
   # extract relevant data from MBOExampleRun
@@ -118,7 +156,6 @@ autoplotExampleRun1d = function(x, iters, xlim, ylim, pause, point.size, line.si
 
       # actual ploting stuff
       pl.fun = ggplot(data=gg.fun)
-      # FIXME: add trafo functions to 1D numeric functions
       pl.fun = pl.fun + geom_line(aes(x=x, y=y, linetype=type), size=line.size)
       if (se & densregion) {
         gg.se = subset(gg.fun, type=="yhat")

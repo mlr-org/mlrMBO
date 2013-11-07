@@ -35,7 +35,6 @@ autoplotExampleRun2d = function(x, iters, pause=TRUE, densregion=TRUE,
 
     # FIXME: what to plot if not infillcrit that uses se?
     # FIXME: how do we display noise? do we at all?
-  
     for (i in iters) {
         catf("Iter %i", i)
         model = mbo.res$models[[i]]
@@ -108,8 +107,6 @@ autoplotExampleRun2d = function(x, iters, pause=TRUE, densregion=TRUE,
         # build single plots
         pl.fun = plotSingleFun(gg.fun, gg.points, "y", trafo=trafo[["y"]])
         pl.mod = plotSingleFun(gg.fun, gg.points, "yhat", trafo=trafo[["yhat"]])
-        # FIXME: check why it is "Not possible to generate contour data" for ackley 2d function
-        # for the crit and se plots
         pl.crit = plotSingleFun(gg.fun, gg.points, name.crit, trafo=trafo[["crit"]])
         if (se) {
             pl.se = plotSingleFun(gg.fun, gg.points, "se", trafo=trafo[["se"]])
