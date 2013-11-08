@@ -17,7 +17,7 @@ infillOptFocus = function(infill.crit, model, control, par.set, opt.path, design
       # predict on design where NAs were imputed, but return propsed points with NAs
       newdesign = generateDesign(control$infill.opt.random.points, par.set,
         randomLHS, ints.as.num=TRUE, logicals.as.factor=TRUE)
-      y = infill.crit(refactorNAs(newdesign, par.set), model, control, par.set, design)
+      y = infill.crit(imputeFeatures(newdesign, par.set, control), model, control, par.set, design)
       # get current best value
       local.index = getMinIndex(y, ties.method="random")
       local.y = y[local.index]

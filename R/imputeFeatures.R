@@ -5,7 +5,7 @@
 #   NAs are coded as a new level
 
 #FIXME miss should probably be defined in control
-refactorNAs = function(data, par.set, control, na.string="miss") {
+imputeFeatures = function(data, par.set, control, na.string="miss") {
   cnd = colnames(data)
   upp = 2 * getUpper(par.set, with.nr=TRUE)
   pids = getParamIds(par.set, repeated=TRUE, with.nr=TRUE)
@@ -14,10 +14,10 @@ refactorNAs = function(data, par.set, control, na.string="miss") {
     # do not handle numeric y column, only inputs
     if (is.numeric(x) && pid %in% pids) {
       inds = is.na(x)
-      if(method == "up")
+      if(control$feature.impute == "up")
         return(replace(x, inds, upp[[pid]]))
-      if(method == "NAVars"){
-        return(data.frame(vals=replace(x, inds, median(x, na.rm=TRUE)), NAs=as.factor(inds)))
+      else if(control$feature.impute == "median"){
+        return(data.frame(vals=replace(x, inds, median(x, na.rm=TRUE)), nas=as.factor(inds)))
       }
     } else if (is.factor(x)) {
       inds = is.na(x)

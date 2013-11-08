@@ -34,14 +34,12 @@ test_that("focus search", {
   learner = makeLearner("regr.randomForest")
   #FIXME: increase restarts as soon as restarts work as intended
   ctrl = makeMBOControl(init.design.points=50, iters=10, 
-                        infill.opt.random.points=100, infill.opt.restarts=1, refactor.method="up")
+                        infill.opt.random.points=100, infill.opt.restarts=1, feature.impute="up")
   or = mbo(f, ps, learner=learner, control=ctrl, show.info=FALSE)
-  expect_true(!is.na(or$y))
+  expect_true(!is.na(or$y)) 
   
   ctrl = makeMBOControl(init.design.points=50, iters=10, 
-                        infill.opt.random.points=100, infill.opt.restarts=1, refactor.method="NAVars")
+                        infill.opt.random.points=100, infill.opt.restarts=1, feature.impute="median")
   or = mbo(f, ps, learner=learner, control=ctrl, show.info=FALSE)
   expect_true(!is.na(or$y))
-  
-  
 })

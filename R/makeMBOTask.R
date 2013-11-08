@@ -12,7 +12,7 @@ makeMBOTask = function(design, par.set, y.name, control) {
     design = as.data.frame(lapply(design, function(x) if(is.integer(x)) as.numeric(x) else x))
   if (any(sapply(design, is.logical)))
     design = as.data.frame(lapply(design, function(x) if(is.logical(x)) as.factor(x) else x))
-  design = refactorNAs(design, par.set, method=control$refactor.method)
+  design = imputeFeatures(design, par.set, control)
   #if (control$rank.trafo)
   #  design[,y.name] = rank(design[,y.name])
   makeRegrTask(target=y.name, data=design)

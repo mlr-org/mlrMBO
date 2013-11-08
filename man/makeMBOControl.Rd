@@ -1,6 +1,6 @@
 \name{makeMBOControl}
-\alias{MBOControl}
 \alias{makeMBOControl}
+\alias{MBOControl}
 \title{Creates a control object for MBO optimization.}
 \usage{
   makeMBOControl(minimize = TRUE, noisy = FALSE,
@@ -8,12 +8,12 @@
     init.design.args = list(), iters = 10L,
     propose.points = 1L, infill.crit = "mean",
     infill.crit.lcb.lambda = 1, infill.opt = "random",
-    infill.opt.restarts = 1L,
+    infill.opt.restarts = 1L, infill.opt.random.maxit = 5L,
     infill.opt.random.points = 10000L,
     infill.opt.cmaes.control = list(),
     infill.opt.es.maxit = 500L, infill.opt.es.mu = 10L,
     infill.opt.es.eta = 15, infill.opt.es.p = 0.5,
-    multipoint.method = "lcb",
+    feature.impute = "up", multipoint.method = "lcb",
     multipoint.multicrit.objective = "ei.dist",
     multipoint.multicrit.dist = "nearest.better",
     multipoint.multicrit.selection = "hypervolume",
@@ -81,6 +81,10 @@
   design of already visited points. Subsequent restarts are
   started at random points.  Default is 1.}
 
+  \item{infill.opt.random.maxit}{[\code{integer(1)}]\cr For
+  \code{infill.opt = "random"}: Number of iteration to
+  shrink local focus.  Default is 5.}
+
   \item{infill.opt.random.points}{[\code{integer(1)}]\cr
   For \code{infill.opt = "random"}: Number of points in
   random search optimizer.  Default is 10000.}
@@ -106,6 +110,13 @@
   \code{infill.opt = "es"}: Probability of 1-point
   crossover, see \code{\link[emoa]{sbx_operator}}.  Default
   is ???.}
+
+  \item{feature.impute}{[\code{character(1)}]\cr Method
+  used for imputing features, which can will be necessary
+  for dependent parameters.  Possible values are:
+  \dQuote{up}: Numeric vars are imputed with with 2 * upper
+  bound.  \dQuote{median}: Imputes NAs with median and add
+  logical is.na variable.}
 
   \item{multipoint.method}{[\code{character(1)}]\cr Method
   used for proposal of multiple infill points, for parallel

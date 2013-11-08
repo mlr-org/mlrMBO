@@ -67,7 +67,8 @@
   \item{...}{[\code{list}]\cr Further parameters.}
 }
 \value{
-  Nothing.
+  [\code{list}]\cr List containing seperate ggplot plots
+  for each iteration.
 }
 \description{
   The plot will show the following elements per iteration:

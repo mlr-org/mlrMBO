@@ -46,6 +46,7 @@ Collate:
     'multipoint_infill_optimize.R'
     'multipoint_multicrit.R'
     'proposePoints.R'
-    'refactorNAs.R'
     'repairPoint.R'
     'zzz.R'
+    'infill_opt_focus.R'
+    'imputeFeatures.R'
