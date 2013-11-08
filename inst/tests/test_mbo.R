@@ -103,24 +103,29 @@ test_that("mbo works with rf", {
   expect_equal(getOptPathLength(or$opt.path), 10 + 3)
 })
 
+# FIXME: we do we get so bad results with so many models for this case?
+# analyse visually.
 test_that("mbo works with logicals", {
   f = function(x) {
     if (x$a)
       sum(x$b^2)
     else
-      sum(x$b^2 + 10)
+      sum(x$b^2) + 10
   }
           
   ps = makeParamSet(
     makeLogicalParam("a"), 
     makeNumericVectorParam("b", len=2, lower=-3, upper=3) 
   )
-  learner = makeLearner("regr.randomForest", ntree=50)
-  ctrl = makeMBOControl(init.design.points=10, iters=10, infill.opt.random.points=10000)
-  or = mbo(f, ps, learner=learner, control=ctrl, show.info=FALSE)
+  learner = makeBaggingWrapper(makeLearner("regr.gbm"), bag.iters=10)
+  learner = setPredictType(learner, "se")
+  ctrl = makeMBOControl(init.design.points=50, iters=10, 
+    infill.crit="ei", infill.opt="random", 
+    infill.opt.restarts=3, infill.opt.random.maxit=3, infill.opt.random.points=5000)
+  or = mbo(f, ps, learner=learner, control=ctrl, show.info=TRUE)
   expect_true(!is.na(or$y))
-  expect_equal(getOptPathLength(or$opt.path), 20)
+  expect_equal(getOptPathLength(or$opt.path), 60)
   expect_equal(or$x$a, TRUE)
-  expect_true(sum(or$x$b) < 0.1)
+  expect_true(sum(or$x$b^2) < 1)
 })  
 
