@@ -1,3 +1,5 @@
+#FIXME produced an error when called with fspehre, 2d, noisy, crit=aei
+
 #FIXME we lose space here. x1 and x2 labs can be be put into one legend below plots
 # FIXME we probably need a simple gui later to do some trafos like log on the the plots
 # while the iters run

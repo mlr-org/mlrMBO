@@ -38,3 +38,7 @@ damit geht die unsicherheit nie gegen null, selbst wenn man unendlcih oft an ein
 und was will man eigentlich für die infills?
 
 
+beim aei, noisy sphere konnte man ein Problem sehen, dass das crit fast komplett 0
+wurde. der optimierer stand dann immer auf einem Plateu
+Für das normale EI habe ich vermutlich eine Fortsetzungs-Formel
+
