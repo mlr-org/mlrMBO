@@ -40,18 +40,19 @@ evalTargetFun = function(fun, par.set, xs, opt.path, control, show.info, oldopts
       dob = opt.path$env$dob
       dob = if (length(dob) == 0L) 0 else max(dob) + 1
       messagef("[mbo] %i: %s : %s=% .3f", dob,
-               paramValueToString(par.set, x), control$y.name, y)
+        paramValueToString(par.set, x), control$y.name, y)
     }
     return(y)
   }
   # restore mlr configuration
   configureMlr(on.learner.error=oldopts[["ole"]], show.learner.output=oldopts[["slo"]])
   ys = sapply(xs, fun2)
-  configureMlr(on.learner.error=control$on.learner.error, show.learner.output=control$show.learner.output)
+  configureMlr(on.learner.error=control$on.learner.error,
+    show.learner.output=control$show.learner.output)
   j = which(is.na(ys) | is.nan(ys) | is.infinite(ys))
   if (length(j) > 0L) {
     ys[j] = mapply(control$impute, xs[j], ys[j],
-                   MoreArgs=list(opt.path=opt.path), USE.NAMES=FALSE)
+      MoreArgs=list(opt.path=opt.path), USE.NAMES=FALSE)
   }
   return(ys)
 }

@@ -1,5 +1,6 @@
 context("imputeFeatures")
 
+if (interactive()) {
 
 test_that("imputeFeatures", {
   ps = makeParamSet(
@@ -58,3 +59,4 @@ test_that("imputeFeatures", {
   }
 })
 
+}

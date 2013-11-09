@@ -150,8 +150,10 @@ mbo = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, ...)
   y = best$y
 
   if (control$final.evals > 0L) {
+    if (show.info)
+      messagef("Performing %i final evals", control$final.evals)
     # do some final evaluations and compute mean of target fun values
-    xs = replicate(control$final.evals, best$x)
+    xs = replicate(control$final.evals, best$x, simplify=FALSE)
     ys = evalTargetFun(fun, par.set, xs, opt.path, control, show.info, oldopts, ...)
     best$y = mean(ys)
   }
