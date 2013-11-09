@@ -48,6 +48,12 @@ mbo = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, ...)
   configureMlr(on.learner.error=control$on.learner.error,
     show.learner.output=control$show.learner.output)
 
+  # FIXME: I am unsure wether we should do this, but otherwise RF sucks
+  # if it is a good idea it is not not general enuff
+  if (inherits(learner, "regr.randomForest")) {
+    learner = setHyperPars(learner, fix.factors=TRUE)
+  }
+
   # get parameter ids repeated length-times and appended number
   rep.pids = getParamIds(par.set, repeated=TRUE, with.nr=TRUE)
   y.name = control$y.name
