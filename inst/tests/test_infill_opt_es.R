@@ -8,7 +8,7 @@ test_that("infillopt es", {
 
   ctrl = makeMBOControl(init.design.points=20, iters=5, propose.points=1, 
     infill.crit="ei", infill.opt="es", infill.opt.restarts=2L,
-    infill.opt.es.maxit=200, infill.opt.es.mu=20L, infill.opt.es.p=0.5, infill.opt.es.eta=10)
+    infill.opt.es.maxit=100, infill.opt.es.mu=20L, infill.opt.es.p=0.5, infill.opt.es.eta=10)
 
   lrn = makeLearner("regr.km", predict.type="se", covtype="matern3_2")
 

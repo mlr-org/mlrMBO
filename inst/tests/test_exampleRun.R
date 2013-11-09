@@ -1,7 +1,6 @@
 context("exampleRun")
 
 #FIXME renable
-# FIXME: add a text with discrete and factor vecs
 
 # test_that("exampleRun", {
 # 

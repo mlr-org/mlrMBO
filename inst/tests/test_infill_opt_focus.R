@@ -1,6 +1,50 @@
 context("focus search")
 
-test_that("focus search", {
+
+#FIXME it would better if we had a better model and would test that we have reached
+# the region of the optimum.
+
+test_that("simple random search, no dependencies, no focussing", {
+  f = function(x) {
+    x$x0 + (x$x2 == "v1") + sum(x$x4^2)
+  }
+
+  ps = makeParamSet(
+    makeIntegerParam("x0", lower=3L, upper=4L),
+    makeNumericParam("x1", lower=-2, upper=2),
+    makeDiscreteParam("x2", values=c("v1", "v2")),
+    makeLogicalParam("x3"),
+    makeNumericVectorParam("x4", len=2L, lower=1, upper=2)
+  )
+
+  learner = makeLearner("regr.randomForest")
+  ctrl = makeMBOControl(init.design.points=50, iters=2, infill.opt="random",
+    infill.opt.restarts=1, infill.opt.random.maxit=1, infill.opt.random.points=50)
+  or = mbo(f, ps, learner=learner, control=ctrl, show.info=FALSE)
+  expect_true(!is.na(or$y))
+})
+
+test_that("dependent params, but no focussing", {
+  f = function(x) {
+    x = removeMissingValues(x)
+    x$x0 + ifelse(x$foo == "a", x$x1, as.numeric(x$x2 == "v2"))
+  }
+
+  ps = makeParamSet(
+    makeDiscreteParam("foo", values = c("a", "b")),
+    makeNumericParam("x0", lower=3, upper=4),
+    makeNumericParam("x1", lower=-2, upper=2, requires=quote(foo == "a")),
+    makeDiscreteParam("x2", values=c("v1", "v2"), requires=quote(foo == "b"))
+  )
+
+  learner = makeLearner("regr.randomForest")
+  ctrl = makeMBOControl(init.design.points=50, iters=2, infill.opt="random",
+    infill.opt.restarts=1, infill.opt.random.maxit=1, infill.opt.random.points=1000)
+  or = mbo(f, ps, learner=learner, control=ctrl, show.info=FALSE)
+  expect_true(!is.na(or$y))
+})
+
+test_that("complex param space, dependencies, focussing, restarts", {
   f = function(x) {
     x = removeMissingValues(x)
     tmp1 = (sqrt(x$real1)) + x$int1^2 - mean(x$realVec) + sum(x$intVec)
@@ -12,7 +56,7 @@ test_that("focus search", {
     if(x$disc2 == "c") tmp3 = 500
     tmp1 + tmp2 + tmp3
   }
-  
+
   ps = makeParamSet(
     makeNumericParam("real1", lower=0, upper=1000),
     makeIntegerParam("int1", lower=-100, upper=100),
@@ -27,19 +71,15 @@ test_that("focus search", {
     makeDiscreteParam("discA", values=c("m", "w"), requires=quote(disc2 == "a")),
     makeNumericParam("realB", lower=-100, upper=100, requires=quote(disc2 == "b")),
     makeDiscreteParam("discB", values=c("R", "NR"), requires=quote(disc2 == "b")),
-    makeNumericParam("realBR", lower=0, upper=2*pi, requires=quote(identical(discB, "R") && identical(disc2, "b"))),
-    makeNumericParam("realBNR", lower=0, upper=2*pi, requires=quote(identical(discB, "NR") && identical(disc2, "b")))
+    makeNumericParam("realBR", lower=0, upper=2*pi, 
+      requires=quote(identical(discB, "R") && identical(disc2, "b"))),
+    makeNumericParam("realBNR", lower=0, upper=2*pi,
+      requires=quote(identical(discB, "NR") && identical(disc2, "b")))
   )
-  
-  learner = makeLearner("regr.randomForest")
-  #FIXME: increase restarts as soon as restarts work as intended
-  ctrl = makeMBOControl(init.design.points=50, iters=10, 
-                        infill.opt.random.points=100, infill.opt.restarts=1, feature.impute="up")
-  or = mbo(f, ps, learner=learner, control=ctrl, show.info=FALSE)
-  expect_true(!is.na(or$y)) 
-  
-  ctrl = makeMBOControl(init.design.points=50, iters=10, 
-                        infill.opt.random.points=100, infill.opt.restarts=1, feature.impute="median")
+
+  learner = makeLearner("regr.randomForest", predict.type="se")
+  ctrl = makeMBOControl(init.design.points=50, iters=2, infill.crit="ei", infill.opt="random", 
+    infill.opt.restarts=2L, infill.opt.random.maxit=2L, infill.opt.random.points=100)
   or = mbo(f, ps, learner=learner, control=ctrl, show.info=FALSE)
   expect_true(!is.na(or$y))
 })
