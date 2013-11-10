@@ -117,6 +117,12 @@
 #' @param multipoint.multicrit.maxit [\code{character(1)}]\cr
 #'   Number of generations for multicrit EA.
 #'   Default is 100.
+#' @param multipoint.multicrit.eta [\code{numeric(1)}]\cr
+#'   Distance parameter mutation distribution, see \code{\link[emoa]{sbx_operator}}.
+#'   Default is ???.
+#' @param multipoint.multicrit.p [\code{numeric(1)}]\cr
+#'   Probability of 1-point crossover, see \code{\link[emoa]{sbx_operator}}.
+#'   Default is ???.
 #' @param final.method [\code{character(1)}]\cr
 #'   How should the final point be proposed. Possible are:
 #'   \dQuote{best.true.y}: Return best point ever visited according to true value of target function. Can be bad if target function is noisy.
@@ -170,7 +176,7 @@ makeMBOControl = function(minimize=TRUE, noisy=FALSE, init.design.points=20L,
   init.design.fun=maximinLHS, init.design.args=list(), iters=10L, propose.points=1L,
   infill.crit="mean", infill.crit.lcb.lambda=1,
   infill.opt="random", infill.opt.restarts=1L,
-  infill.opt.random.maxit=5L, infill.opt.random.points=10000L, 
+  infill.opt.random.maxit=5L, infill.opt.random.points=10000L,
   infill.opt.cmaes.control=list(),
   infill.opt.ea.maxit=500L, infill.opt.ea.mu=10L, infill.opt.ea.eta=15, infill.opt.ea.p=0.5,
   feature.impute = "up",
@@ -179,6 +185,7 @@ makeMBOControl = function(minimize=TRUE, noisy=FALSE, init.design.points=20L,
   multipoint.multicrit.dist="nearest.better",
   multipoint.multicrit.selection="hypervolume",
   multipoint.multicrit.maxit=100L,
+  multipoint.multicrit.eta=15, multipoint.multicrit.p=1,
   final.method="best.true.y", final.evals=0L,
   y.name="y", impute, impute.errors=FALSE, suppress.eval.errors=TRUE, save.model.at=iters,
   resample.at = integer(0), resample.desc = makeResampleDesc("CV", iter=10), resample.measures=list(mse),
@@ -218,8 +225,8 @@ makeMBOControl = function(minimize=TRUE, noisy=FALSE, init.design.points=20L,
   checkArg(infill.opt.ea.mu, "integer", len=1L, na.ok=FALSE, lower=1L)
   checkArg(infill.opt.ea.eta, "numeric", len=1L, na.ok=FALSE, lower=0)
   checkArg(infill.opt.ea.p, "numeric", len=1L, na.ok=FALSE, lower=0, upper=1)
-  
-  
+
+
   checkArg(feature.impute, choices=c("up", "median"))
 
   checkArg(multipoint.method, choices=c("lcb", "multicrit"))
@@ -228,6 +235,8 @@ makeMBOControl = function(minimize=TRUE, noisy=FALSE, init.design.points=20L,
   checkArg(multipoint.multicrit.dist, choices=c("nearest.neighbor", "nearest.better"))
   multipoint.multicrit.maxit = convertInteger(multipoint.multicrit.maxit)
   checkArg(multipoint.multicrit.maxit, "integer", len=1L, na.ok=FALSE, lower=0L)
+  checkArg(multipoint.multicrit.eta, "numeric", len=1L, na.ok=FALSE, lower=0)
+  checkArg(multipoint.multicrit.p, "numeric", len=1L, na.ok=FALSE, lower=0, upper=1)
 
   if (missing(impute))
     impute = function(x, y, opt.path)
@@ -260,7 +269,7 @@ makeMBOControl = function(minimize=TRUE, noisy=FALSE, init.design.points=20L,
 
   checkArg(on.learner.error, choices=c("warn", "quiet", "stop"))
   checkArg(show.learner.output, "logical", len=1L, na.ok=FALSE)
-  
+
   structure(list(
     minimize = minimize,
     noisy = noisy,
@@ -287,6 +296,8 @@ makeMBOControl = function(minimize=TRUE, noisy=FALSE, init.design.points=20L,
     multipoint.multicrit.dist = multipoint.multicrit.dist,
     multipoint.multicrit.selection = multipoint.multicrit.selection,
     multipoint.multicrit.maxit = multipoint.multicrit.maxit,
+    multipoint.multicrit.eta = multipoint.multicrit.eta,
+    multipoint.multicrit.p = multipoint.multicrit.p,
     final.method = final.method,
     final.evals = final.evals,
     y.name = y.name,

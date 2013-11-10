@@ -18,6 +18,8 @@
     multipoint.multicrit.dist = "nearest.better",
     multipoint.multicrit.selection = "hypervolume",
     multipoint.multicrit.maxit = 100L,
+    multipoint.multicrit.eta = 15,
+    multipoint.multicrit.p = 1,
     final.method = "best.true.y", final.evals = 0L,
     y.name = "y", impute, impute.errors = FALSE,
     suppress.eval.errors = TRUE, save.model.at = iters,
@@ -163,6 +165,14 @@
 
   \item{multipoint.multicrit.maxit}{[\code{character(1)}]\cr
   Number of generations for multicrit EA.  Default is 100.}
+
+  \item{multipoint.multicrit.eta}{[\code{numeric(1)}]\cr
+  Distance parameter mutation distribution, see
+  \code{\link[emoa]{sbx_operator}}.  Default is ???.}
+
+  \item{multipoint.multicrit.p}{[\code{numeric(1)}]\cr
+  Probability of 1-point crossover, see
+  \code{\link[emoa]{sbx_operator}}.  Default is ???.}
 
   \item{final.method}{[\code{character(1)}]\cr How should
   the final point be proposed. Possible are:

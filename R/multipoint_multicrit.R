@@ -77,10 +77,10 @@ multipointInfillOptMulticrit = function(model, control, par.set, opt.path, desig
   repids = getParamIds(par.set, repeated=TRUE, with.nr = TRUE)
   d = sum(getParamLengths(par.set))
   mu = n
-  # FIXME: use own params for eta and p, what are good defaults?
-  mutate = pm_operator(control$infill.opt.ea.eta, control$infill.opt.ea.p,
+  # FIXME: what are good defaults?
+  mutate = pm_operator(control$multipoint.multicrit.eta, control$multipoint.multicrit.p,
     getLower(par.set), getUpper(par.set))
-  crossover = sbx_operator(control$infill.opt.ea.eta, control$infill.opt.ea.p,
+  crossover = sbx_operator(control$multipoint.multicrit.eta, control$multipoint.multicrit.p,
     getLower(par.set), getUpper(par.set))
   mydist = switch(control$multipoint.multicrit.dist,
     nearest.neighbor = distToNN,
