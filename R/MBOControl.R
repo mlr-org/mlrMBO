@@ -202,7 +202,7 @@ makeMBOControl = function(minimize=TRUE, noisy=FALSE, init.design.points=20L,
 
   checkArg(infill.crit, choices=c("mean", "ei", "aei", "lcb"))
   checkArg(infill.crit.lcb.lambda, "numeric", len=1L, na.ok=FALSE, lower=0)
-  checkArg(infill.opt, choices=c("random", "cmaes", "es"))
+  checkArg(infill.opt, choices=c("random", "cmaes", "ea"))
   infill.opt.restarts = convertInteger(infill.opt.restarts)
   checkArg(infill.opt.restarts, "integer", len=1L, na.ok=FALSE)
 
