@@ -1,7 +1,7 @@
 # Calculate distance to nearest neighbor for each point in a set
 # @param X [\code{matrix(n, d)}]\cr
 #   Matrix of n points of dimension d.
-# @return [\code{numeric(n)}]. Distances to nearest neighbor. 
+# @return [\code{numeric(n)}]. Distances to nearest neighbor.
 distToNN = function(X, ...) {
   d = as.matrix(dist(X))
   diag(d) = Inf
@@ -13,9 +13,9 @@ distToNN = function(X, ...) {
 # @param X [\code{matrix(n, d)}]\cr
 #   Matrix of n points of dimension d.
 # @param y [\code{matrix(n, d)}]\cr
-#   Vector of numerical values for all points. 
+#   Vector of numerical values for all points.
 #   Smaller is better.
-# @return [\code{numeric(n)}]. Distances to nearest better neighbor. 
+# @return [\code{numeric(n)}]. Distances to nearest better neighbor.
 distToNB = function(X, y) {
   d = as.matrix(dist(X))
   sapply(seq_col(d), function(i) {
@@ -28,7 +28,7 @@ distToNB = function(X, y) {
   })
 }
 
-nds_1d_selection = function(values, n=1, index=1, ...) {  
+nds_1d_selection = function(values, n=1, index=1, ...) {
   # order according to non-dominated front, then break ties by objective value at index
   ranks = nds_rank(values)
   o = order(ranks, values[index, ])
@@ -41,15 +41,15 @@ nds_1d_selection = function(values, n=1, index=1, ...) {
 # into local opts
 
 # Implements our new infill criterion which optimizes EI and diversity in X space
-# 
-# Currently only numerical paramaters are handled, for them pm_operator and 
+#
+# Currently only numerical paramaters are handled, for them pm_operator and
 # sbx_operator from emoa are used in the EA.
-# 
+#
 multipointInfillOptMulticrit = function(model, control, par.set, opt.path, design) {
   requirePackages("emoa", why="multipointInfillOptMulticrit")
   n = control$propose.points
   objective = control$multipoint.multicrit.objective
-  
+
   # add points to archive
   # FIXME dont always do this for speed
   # note: as distance is always recalculated we always add mu+1 point
@@ -59,10 +59,10 @@ multipointInfillOptMulticrit = function(model, control, par.set, opt.path, desig
 #       addOptPathEl(opt.path, list(x = as.numeric(X[i,])), as.numeric(Y[i,]), dob = gen)
 #     })
 #   }
-  
+
   #messagef("Trying to find %i good points.", n)
   # vars: dim, mu, objectives, operators
-  
+
   if (objective == "ei.dist") {
     y.dim = 2
     y.names = c("ei", "dist")
@@ -71,19 +71,20 @@ multipointInfillOptMulticrit = function(model, control, par.set, opt.path, desig
     y.names = c("mean", "se")
   } else if (objective == "mean.se.dist") {
     y.dim = 3
-    y.names = c("mean", "se", "dist")  
+    y.names = c("mean", "se", "dist")
   }
 
   repids = getParamIds(par.set, repeated=TRUE, with.nr = TRUE)
   d = sum(getParamLengths(par.set))
   mu = n
-  # FIXME: reasobale standard defaults?
-  eta = 15; p = 1
-  mutate = pm_operator(eta, p, getLower(par.set), getUpper(par.set))
-  crossover = sbx_operator(eta, p, getLower(par.set), getUpper(par.set))
+  # FIXME: use own params for eta and p, what are good defaults?
+  mutate = pm_operator(control$infill.opt.ea.eta, control$infill.opt.ea.p,
+    getLower(par.set), getUpper(par.set))
+  crossover = sbx_operator(control$infill.opt.ea.eta, control$infill.opt.ea.p,
+    getLower(par.set), getUpper(par.set))
   mydist = switch(control$multipoint.multicrit.dist,
-    nearest.neighbor = distToNN,                 
-    nearest.better = distToNB                 
+    nearest.neighbor = distToNN,
+    nearest.better = distToNB
   )
   #opt.path = makeOptPathDF(par.set = par.set, y.names = y.names, minimize = minimize)
 
@@ -97,12 +98,12 @@ multipointInfillOptMulticrit = function(model, control, par.set, opt.path, desig
     Y[, 1] = infillCritMeanResponse(X, model, control, par.set, design)
     Y[, 2] = infillCritStandardError(X, model, control, par.set, design)
   }
-  
+
   # use first Y criterion to for nearest better
-  if (objective %in% c("ei.dist", "mean.se.dist")) 
+  if (objective %in% c("ei.dist", "mean.se.dist"))
     Y[, y.dim] = -mydist(as.matrix(X), Y[,1])
   #addGenerationToPath(X, Y, gen = 0L)
-      
+
   for (i in 1:control$multipoint.multicrit.maxit) {
     # Create new individual (mu + 1)
     parents = sample(1:mu, 2)
@@ -125,10 +126,10 @@ multipointInfillOptMulticrit = function(model, control, par.set, opt.path, desig
       Y[nrow(Y), 2] = infillCritStandardError(child2, model, control, par.set, design)
     }
     # use first Y criterion to for nearest better
-    if (objective %in% c("ei.dist", "mean.se.dist")) 
+    if (objective %in% c("ei.dist", "mean.se.dist"))
       Y[, y.dim] = -mydist(as.matrix(X), Y[,1])
     #addGenerationToPath(X, Y, gen = i)
-        
+
     # get elements we want to remove from current pop as index vector
     to.kill = if (control$multipoint.multicrit.selection == "hypervolume") {
       #col.mins = apply(Y, 2, min)
@@ -148,9 +149,9 @@ multipointInfillOptMulticrit = function(model, control, par.set, opt.path, desig
     }
     X = X[-to.kill, ,drop=FALSE]
     Y = Y[-to.kill, ,drop=FALSE]
-    
+
     #FIXME really display all this crap? only on show.info
-    #messagef("Generation %i; best crit1 = %.2f, max dist = %s", 
+    #messagef("Generation %i; best crit1 = %.2f, max dist = %s",
     #  i, max(-Y[, 1]), max(-Y[, y.dim]))
   }
   rownames(X) = NULL
