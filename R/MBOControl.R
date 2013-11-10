@@ -62,20 +62,20 @@
 #'   Control argument for cmaes optimizer.
 #'   Default is empty list.
 #FIXME defaults for simple ES params
-#' @param infill.opt.es.maxit [\code{integer(1)}]\cr
-#'   For \code{infill.opt = "es"}:
-#'   Number of iterations / generations of ES.
+#' @param infill.opt.ea.maxit [\code{integer(1)}]\cr
+#'   For \code{infill.opt = "ea"}:
+#'   Number of iterations / generations of EA.
 #'   Default is 500.
-#' @param infill.opt.es.mu [\code{integer(1)}]\cr
-#'   For \code{infill.opt = "es"}:
-#'   Population size of ES.
+#' @param infill.opt.ea.mu [\code{integer(1)}]\cr
+#'   For \code{infill.opt = "ea"}:
+#'   Population size of EA.
 #'   Default is 10.
-#' @param infill.opt.es.eta [\code{numeric(1)}]\cr
-#'   For \code{infill.opt = "es"}:
+#' @param infill.opt.ea.eta [\code{numeric(1)}]\cr
+#'   For \code{infill.opt = "ea"}:
 #'   Distance parameter mutation distribution, see \code{\link[emoa]{sbx_operator}}.
 #'   Default is ???.
-#' @param infill.opt.es.p [\code{numeric(1)}]\cr
-#'   For \code{infill.opt = "es"}:
+#' @param infill.opt.ea.p [\code{numeric(1)}]\cr
+#'   For \code{infill.opt = "ea"}:
 #'   Probability of 1-point crossover, see \code{\link[emoa]{sbx_operator}}.
 #'   Default is ???.
 #' @param feature.impute [\code{character(1)}]\cr
@@ -172,7 +172,7 @@ makeMBOControl = function(minimize=TRUE, noisy=FALSE, init.design.points=20L,
   infill.opt="random", infill.opt.restarts=1L,
   infill.opt.random.maxit=5L, infill.opt.random.points=10000L, 
   infill.opt.cmaes.control=list(),
-  infill.opt.es.maxit=500L, infill.opt.es.mu=10L, infill.opt.es.eta=15, infill.opt.es.p=0.5,
+  infill.opt.ea.maxit=500L, infill.opt.ea.mu=10L, infill.opt.ea.eta=15, infill.opt.ea.p=0.5,
   feature.impute = "up",
   multipoint.method="lcb",
   multipoint.multicrit.objective="ei.dist",
@@ -212,12 +212,12 @@ makeMBOControl = function(minimize=TRUE, noisy=FALSE, init.design.points=20L,
   checkArg(infill.opt.random.points, "integer", len=1L, na.ok=FALSE, lower=1L)
   checkArg(infill.opt.cmaes.control, "list")
 
-  infill.opt.es.maxit = convertInteger(infill.opt.es.maxit)
-  checkArg(infill.opt.es.maxit, "integer", len=1L, na.ok=FALSE, lower=1L)
-  infill.opt.es.mu = convertInteger(infill.opt.es.mu)
-  checkArg(infill.opt.es.mu, "integer", len=1L, na.ok=FALSE, lower=1L)
-  checkArg(infill.opt.es.eta, "numeric", len=1L, na.ok=FALSE, lower=0)
-  checkArg(infill.opt.es.p, "numeric", len=1L, na.ok=FALSE, lower=0, upper=1)
+  infill.opt.ea.maxit = convertInteger(infill.opt.ea.maxit)
+  checkArg(infill.opt.ea.maxit, "integer", len=1L, na.ok=FALSE, lower=1L)
+  infill.opt.ea.mu = convertInteger(infill.opt.ea.mu)
+  checkArg(infill.opt.ea.mu, "integer", len=1L, na.ok=FALSE, lower=1L)
+  checkArg(infill.opt.ea.eta, "numeric", len=1L, na.ok=FALSE, lower=0)
+  checkArg(infill.opt.ea.p, "numeric", len=1L, na.ok=FALSE, lower=0, upper=1)
   
   
   checkArg(feature.impute, choices=c("up", "median"))
@@ -276,10 +276,10 @@ makeMBOControl = function(minimize=TRUE, noisy=FALSE, init.design.points=20L,
     infill.opt.random.maxit = infill.opt.random.maxit,
     infill.opt.random.points = infill.opt.random.points,
     infill.opt.cmaes.control = infill.opt.cmaes.control,
-    infill.opt.es.maxit = infill.opt.es.maxit,
-    infill.opt.es.mu = infill.opt.es.mu,
-    infill.opt.es.eta = infill.opt.es.eta,
-    infill.opt.es.p = infill.opt.es.p,
+    infill.opt.ea.maxit = infill.opt.ea.maxit,
+    infill.opt.ea.mu = infill.opt.ea.mu,
+    infill.opt.ea.eta = infill.opt.ea.eta,
+    infill.opt.ea.p = infill.opt.ea.p,
     feature.impute = feature.impute,
     #rank.trafo = rank.trafo,
     multipoint.method = multipoint.method,

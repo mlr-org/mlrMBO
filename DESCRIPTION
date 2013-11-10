@@ -50,3 +50,4 @@ Collate:
     'zzz.R'
     'infill_opt_focus.R'
     'imputeFeatures.R'
+    'infill_opt_ea.R'

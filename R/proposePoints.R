@@ -25,7 +25,7 @@ proposePoints = function(model, par.set, control, opt.path) {
     infill.opt.fun = switch(control$infill.opt,
       random = infillOptFocus,
       cmaes = infillOptCMAES,
-      es = infillOptSimpleES
+      ea = infillOptEA
       #EI       = infillOptEI
     )
     return(infill.opt.fun(infill.crit.fun, model, control, par.set, opt.path, design))

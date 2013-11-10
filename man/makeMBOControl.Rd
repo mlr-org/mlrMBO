@@ -11,8 +11,8 @@
     infill.opt.restarts = 1L, infill.opt.random.maxit = 5L,
     infill.opt.random.points = 10000L,
     infill.opt.cmaes.control = list(),
-    infill.opt.es.maxit = 500L, infill.opt.es.mu = 10L,
-    infill.opt.es.eta = 15, infill.opt.es.p = 0.5,
+    infill.opt.ea.maxit = 500L, infill.opt.ea.mu = 10L,
+    infill.opt.ea.eta = 15, infill.opt.ea.p = 0.5,
     feature.impute = "up", multipoint.method = "lcb",
     multipoint.multicrit.objective = "ei.dist",
     multipoint.multicrit.dist = "nearest.better",
@@ -93,21 +93,21 @@
   \code{infill.opt = "cmaes"}: Control argument for cmaes
   optimizer.  Default is empty list.}
 
-  \item{infill.opt.es.maxit}{[\code{integer(1)}]\cr For
-  \code{infill.opt = "es"}: Number of iterations /
-  generations of ES.  Default is 500.}
+  \item{infill.opt.ea.maxit}{[\code{integer(1)}]\cr For
+  \code{infill.opt = "ea"}: Number of iterations /
+  generations of EA.  Default is 500.}
 
-  \item{infill.opt.es.mu}{[\code{integer(1)}]\cr For
-  \code{infill.opt = "es"}: Population size of ES.  Default
+  \item{infill.opt.ea.mu}{[\code{integer(1)}]\cr For
+  \code{infill.opt = "ea"}: Population size of EA.  Default
   is 10.}
 
-  \item{infill.opt.es.eta}{[\code{numeric(1)}]\cr For
-  \code{infill.opt = "es"}: Distance parameter mutation
+  \item{infill.opt.ea.eta}{[\code{numeric(1)}]\cr For
+  \code{infill.opt = "ea"}: Distance parameter mutation
   distribution, see \code{\link[emoa]{sbx_operator}}.
   Default is ???.}
 
-  \item{infill.opt.es.p}{[\code{numeric(1)}]\cr For
-  \code{infill.opt = "es"}: Probability of 1-point
+  \item{infill.opt.ea.p}{[\code{numeric(1)}]\cr For
+  \code{infill.opt = "ea"}: Probability of 1-point
   crossover, see \code{\link[emoa]{sbx_operator}}.  Default
   is ???.}
 
