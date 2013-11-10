@@ -10,10 +10,10 @@ infillOptEA = function(infill.crit, model, control, par.set, opt.path, design) {
   # get constants and init shit
   repids = getParamIds(par.set, repeated=TRUE, with.nr = TRUE)
   d = sum(getParamLengths(par.set))
-  mu = control$infill.opt.es.mu
-  mutate = pm_operator(control$infill.opt.es.eta, control$infill.opt.es.p,
+  mu = control$infill.opt.ea.mu
+  mutate = pm_operator(control$infill.opt.ea.eta, control$infill.opt.ea.p,
     getLower(par.set), getUpper(par.set))
-  crossover = sbx_operator(control$infill.opt.es.eta, control$infill.opt.es.p,
+  crossover = sbx_operator(control$infill.opt.ea.eta, control$infill.opt.ea.p,
     getLower(par.set), getUpper(par.set))
 
   best.x = NULL
@@ -25,7 +25,7 @@ infillOptEA = function(infill.crit, model, control, par.set, opt.path, design) {
     X = generateDesign(mu, par.set, fun=randomLHS)
     y = infill.crit(X, model, control, par.set, design)
 
-    for (i in 1:control$infill.opt.es.maxit) {
+    for (i in 1:control$infill.opt.ea.maxit) {
       # Create new individual (mu + 1)
       parents = sample(1:mu, 2)
       # get two kids from CX, sel. 1 randomly, mutate

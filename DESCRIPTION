@@ -43,7 +43,6 @@ Collate:
     'makeTrafoFunction.R'
     'MBOControl.R'
     'mbo.R'
-    'multipoint_infill_optimize.R'
     'multipoint_multicrit.R'
     'proposePoints.R'
     'repairPoint.R'
@@ -51,3 +50,4 @@ Collate:
     'infill_opt_focus.R'
     'imputeFeatures.R'
     'infill_opt_ea.R'
+    'multipoint_lcb.R'
