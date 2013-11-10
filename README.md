@@ -45,3 +45,23 @@ But only a VERY SMALL percentage of users should be interested in this.
 - In a console run "make install" to install. Done.
 
 - "make" will list all other build targets
+
+
+Mailinglist and Email-Service-Hook
+==================================
+
+Developers use this mailing list:
+
+https://groups.google.com/forum/?hl=de#!forum/mlrmbo-devel
+
+mlrmbo-devel@googlegroups.com
+
+The github-service-hook will also send commit messages to this list. 
+
+
+
+
+
+
+
+
