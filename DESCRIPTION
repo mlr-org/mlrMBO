@@ -51,3 +51,4 @@ Collate:
     'imputeFeatures.R'
     'infill_opt_ea.R'
     'multipoint_lcb.R'
+    'multipoint_cl.R'
