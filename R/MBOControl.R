@@ -229,7 +229,7 @@ makeMBOControl = function(minimize=TRUE, noisy=FALSE, init.design.points=20L,
 
   checkArg(feature.impute, choices=c("up", "median"))
 
-  checkArg(multipoint.method, choices=c("lcb", "multicrit"))
+  checkArg(multipoint.method, choices=c("cl", "lcb", "multicrit"))
   checkArg(multipoint.multicrit.objective, choices=c("ei.dist", "mean.se", "mean.se.dist"))
   checkArg(multipoint.multicrit.selection, choices=c("hypervolume", "crowdingdist", "first", "last"))
   checkArg(multipoint.multicrit.dist, choices=c("nearest.neighbor", "nearest.better"))

@@ -31,6 +31,7 @@ proposePoints = function(model, par.set, control, opt.path) {
     return(infill.opt.fun(infill.crit.fun, model, control, par.set, opt.path, design))
   } else {
     multipoint.infill.opt.fun = switch(control$multipoint.method,
+      cl = multipointInfillOptCL,
       lcb = multipointInfillOptLCB,
       multicrit = multipointInfillOptMulticrit
     )
