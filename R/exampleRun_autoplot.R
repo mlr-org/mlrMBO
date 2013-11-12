@@ -30,16 +30,11 @@
 #'   Looks nice, but is currently pretty slow. You might wnat to
 #'   disable this if you want to do stuff more interactively.
 #'   Default is \code{TRUE}.
-#' @param se.factor1 [\code{numeric(1)}]\cr
+#' @param se.factor [\code{numeric(1)}]\cr
 #'   If the model provides local standard error estimation,
-#'   in addition to the mean respone \code{yhat(x) +- se.factor1 * se(x)}
+#'   in addition to the mean respone \code{yhat(x) +- se.factor * se(x)}
 #'   is plotted above and below.
 #'   Default is 1.
-#' @param se.factor2 [\code{numeric(1)}]\cr
-#'   If the model provides local standard error estimation and
-#'   \code{densregion=TRUE}, the background is shaded
-#'   in the area \code{yhat(x) +- se.factor2 * se(x)}.
-#'   Default is 2.
 #' @param xlim [\code{numeric(2)}]\cr
 #'   For 1D: \code{xlim} parameter for first and second plot.
 #'   Default is range of x-values evaluated in run object \code{x}.
@@ -64,7 +59,7 @@
 #' @S3method autoplot MBOExampleRun
 #' @export
 autoplot.MBOExampleRun = function(x, iters, pause=TRUE, densregion=TRUE,
-  se.factor1=1, se.factor2=2, xlim, ylim, point.size=3, line.size=1, trafo=NULL, ...) {
+  se.factor=1, xlim, ylim, point.size=3, line.size=1, trafo=NULL, ...) {
 
   iters.max = x$control$iters
   if (missing(iters)) {
@@ -75,8 +70,7 @@ autoplot.MBOExampleRun = function(x, iters, pause=TRUE, densregion=TRUE,
   }
   checkArg(pause, "logical", len=1L, na.ok=FALSE)
   checkArg(densregion, "logical", len=1L, na.ok=FALSE)
-  checkArg(se.factor1, "numeric", len=1L, na.ok=FALSE)
-  checkArg(se.factor2, "numeric", len=1L, na.ok=FALSE)
+  checkArg(se.factor, "numeric", len=1L, na.ok=FALSE)
   if (!missing(xlim))
     checkArg(xlim, "numeric", len=2L, na.ok=FALSE)
   if (!missing(ylim))
@@ -87,10 +81,10 @@ autoplot.MBOExampleRun = function(x, iters, pause=TRUE, densregion=TRUE,
   trafo = buildTrafoList(n.params, trafo)
 
   if (n.params == 1) {
-    autoplotExampleRun1d(x, iters=iters, xlim=xlim, ylim=ylim, pause=pause,
+    autoplotExampleRun1d(x, iters=iters, xlim=xlim, ylim=ylim, se.factor=se.factor, pause=pause,
       point.size=point.size, line.size=line.size, trafo=trafo, densregion=densregion, ...)
   } else if (n.params == 2) {
-    autoplotExampleRun2d(x, iters=iters, xlim=xlim, ylim=ylim, pause=pause,
+    autoplotExampleRun2d(x, iters=iters, xlim=xlim, ylim=ylim, se.factor=se.factor, pause=pause,
       point.size=point.size, line.size=line.size, trafo=trafo, ...)
   } else {
     stopf("Functions with greater than 3 parameters are not supported.")

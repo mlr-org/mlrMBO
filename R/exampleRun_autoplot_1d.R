@@ -37,8 +37,7 @@
 # @param ... [\code{list}]\cr
 #   Further parameters.
 # @return Nothing.
-
-autoplotExampleRun1d = function(x, iters, xlim, ylim, pause, point.size, line.size, trafo, densregion=TRUE...) {
+autoplotExampleRun1d = function(x, iters, xlim, ylim, pause, se.factor, point.size, line.size, trafo, densregion=TRUE...) {
   # extract relevant data from MBOExampleRun
   par.set = x$par.set
   par.types = x$par.types
@@ -79,14 +78,25 @@ autoplotExampleRun1d = function(x, iters, xlim, ylim, pause, point.size, line.si
 
   idx.init = which(opt.path$dob == 0)
 
+  # helper function for building up data frame of different points 
+  # i.e., initial design points, infilled points, proposed points for ggplot
+  buildPointsData = function(opt.path, names.x, name.y, idx, idx.init, idx.seq, idx.proposed) {
+    data.frame(
+      x=opt.path[idx, names.x],
+      y=opt.path[idx, name.y],
+      type=as.factor(c(
+        rep("init", length(idx.init)),
+        rep("seq", length(idx.seq)),
+        rep("prop", length(idx.proposed)))
+      )
+    )        
+  }
+
   plot.sequence = list()
 
-  #stopf("Plotting 1d numeric function.")
   for (i in iters) {
     catf("Iter %i", i)
 
-    # FIXME: the following lines work for discrete parameter as well.
-    # FIXME: only the constuction of the "gg" dataframe is special
     model = models[[i]]
     idx.seq = which(opt.path$dob > 0 & opt.path$dob < i)
     idx.proposed = which(opt.path$dob == i)
@@ -111,32 +121,27 @@ autoplotExampleRun1d = function(x, iters, xlim, ylim, pause, point.size, line.si
 
       # prepare drawing of standard error (confidence interval)
       if (se) {
-        evals$se = -mlrMBO:::infillCritStandardError(evals.x, model,
-                                                     control, par.set, opt.path[idx.past,])
-        # FIXME: make a parameter out of the constant factor
-        evals$se.min = evals$yhat - 0.3 * evals$se
-        evals$se.max = evals$yhat + 0.3 * evals$se
+        evals$se = -mlrMBO:::infillCritStandardError(evals.x, model, control, par.set, opt.path[idx.past,])
+        evals$se.min = evals$yhat - se.factor * evals$se
+        evals$se.max = evals$yhat + se.factor * evals$se
       }
     }
 
-    # FIXME: better source the actual ploting out in seperate numeric/discrete files
     if (par.types %in% c("numeric", "numericvector")) {
       # ggplot stuff
       n = nrow(evals)
 
       # data frame with real fun and model fun evaluations
-      gg.fun = data.frame(x=rep(evals[,names.x],2),
-        y=c(evals[,name.y],evals[,"yhat"]),
-        se.min=if (se) rep(evals[,"se.min"], 2) else NA,
-        se.max=if (se) rep(evals[,"se.max"], 2) else NA,
-        type=as.factor(rep(c("y", "yhat"), each=n)))
+      gg.fun = data.frame(
+        x = rep(evals[,names.x],2),
+        y = c(evals[,name.y],evals[,"yhat"]),
+        se.min = if (se) rep(evals[,"se.min"], 2) else NA,
+        se.max = if (se) rep(evals[,"se.max"], 2) else NA,
+        type = as.factor(rep(c("y", "yhat"), each=n))
+      )
 
-      # FIXME: the constuction of type is ugly. Maybe identify a pattern and make a useful function
-      gg.points = data.frame(x=opt.path[idx, names.x],
-                             y=opt.path[idx, name.y],
-                             type=as.factor(c(rep("init", length(idx.init)),
-                                              rep("seq", length(idx.seq)),
-                                              rep("prop", length(idx.proposed)))))
+      # data frame with points of different type (initial design points, infill points, proposed points)
+      gg.points = buildPointsData(opt.path, names.x, name.y, idx, idx.init, idx.seq, idx.proposed)
 
       # transform y and yhat values according to trafo function
       if (!is.null(trafo$y)) {
@@ -148,14 +153,21 @@ autoplotExampleRun1d = function(x, iters, xlim, ylim, pause, point.size, line.si
       }
 
       # data frame with optimization criterion stuff
-      gg.crit = data.frame(x=evals[,names.x], y=evals[,name.crit])
+      gg.crit = data.frame(
+        x = evals[,names.x], 
+        y = evals[,name.crit]
+      )
+
+      # transform cirterion if corresponding trafo function provided
       if (!is.null(trafo$crit)) {
         gg.crit$y = trafo$crit(gg.crit$y)
       }
 
-      # actual ploting stuff
+      # finally build the ggplot object(s)
       pl.fun = ggplot(data=gg.fun)
+      pl.fun = pl.fun
       pl.fun = pl.fun + geom_line(aes(x=x, y=y, linetype=type), size=line.size)
+
       if (se & densregion) {
         gg.se = subset(gg.fun, type=="yhat")
         pl.fun = pl.fun + geom_ribbon(data=gg.se, aes(x=x, ymin=se.min, ymax=se.max), alpha=0.2)
@@ -164,31 +176,36 @@ autoplotExampleRun1d = function(x, iters, xlim, ylim, pause, point.size, line.si
       pl.fun = pl.fun + geom_point(data=gg.points, aes(x=x, y=y, colour=type, shape=type), size=point.size)
       pl.fun = pl.fun + xlab(NULL)
 
+      # if trafo for y is provided, indicate transformation on the y-axis
       ylab = name.y
       if (!is.null(trafo$y)) {
         ylab = paste(name.y, " (", attr(trafo$y, "name"), "-transformed)", sep="")
       }
-
       pl.fun = pl.fun + scale_y_continuous(name=ylab)
-      pl.fun = pl.fun + ggtitle(sprintf("Iter = %i, Gap = %.4e", i,
-                                        calculateGap(opt.path[idx.pastpresent,], global.opt, control)))
-      pl.fun = pl.fun + theme(legend.position="top",
-                              legend.box = "horizontal",
-                              axis.text.x=element_blank(),
-                              panel.margin=unit(0, "lines"),
-                              plot.title=element_text(size=11, face="bold"))
+
+      pl.fun = pl.fun + ggtitle(
+        sprintf("Iter = %i, Gap = %.4e", i,
+        calculateGap(opt.path[idx.pastpresent,], global.opt, control))
+      )
+
+      pl.fun = pl.fun + theme(
+        legend.position="top",
+        legend.box = "horizontal",
+        axis.text.x=element_blank(),
+        panel.margin=unit(0, "lines"),
+        plot.title=element_text(size=11, face="bold")
+      )
 
       pl.crit = ggplot(data=gg.crit, aes(x=x, y=y))
       pl.crit = pl.crit + geom_line(linetype="dotted", colour="black", size=line.size)
       pl.crit = pl.crit + geom_vline(xintercept=opt.path[idx.proposed, names.x], linetype="dashed", colour="darkgray", size=line.size)
 
+      # if trafo for criterion is provided, indicate transformation on the y-axis
       ylab = name.crit
       if (!is.null(trafo$crit)) {
         ylab = paste(name.crit, " (", attr(trafo$crit, "name"), "-transformed)", sep="")
       }
-
       pl.crit = pl.crit + scale_y_continuous(name=ylab)
-
 
       # arrange stuff in grid
       pl.all = grid.arrange(pl.fun, pl.crit, nrow=2)
@@ -203,12 +220,7 @@ autoplotExampleRun1d = function(x, iters, xlim, ylim, pause, point.size, line.si
         stopf("Deterministic 1d function with a single factor parameter are not supported.")
       }
 
-      # FIXME: this is copy and paste (see numeric part)
-      gg.points = data.frame(x=opt.path[idx, names.x],
-                             y=opt.path[idx, name.y],
-                             type=as.factor(c(rep("init", length(idx.init)),
-                                              rep("seq", length(idx.seq)),
-                                              rep("prop", length(idx.proposed)))))
+      gg.points = buildPointsData(opt.path, names.x, name.y, idx, idx.init, idx.seq, idx.proposed)
 
       pl.fun = ggplot(data=gg.points, aes(x=x, y=y, colour=type, shape=type))
       pl.fun = pl.fun + geom_point(size=point.size)
@@ -220,12 +232,19 @@ autoplotExampleRun1d = function(x, iters, xlim, ylim, pause, point.size, line.si
       pl.fun = pl.fun + xlab(names.x)
       pl.fun = pl.fun + ylab(name.y)
       pl.fun = pl.fun + scale_colour_discrete(name="type")
-      pl.fun = pl.fun + ggtitle(sprintf("Iter = %i, Gap = %.4e", i,
-                                              calculateGap(opt.path[idx.pastpresent,], global.opt, control)))
-      pl.fun = pl.fun + theme(legend.position="top",
-                              legend.box = "horizontal",
-                              plot.title=element_text(size=11, face="bold"))
+      pl.fun = pl.fun + ggtitle(
+        sprintf("Iter = %i, Gap = %.4e", i,
+        calculateGap(opt.path[idx.pastpresent,], global.opt, control))
+      )
+      pl.fun = pl.fun + theme(
+        legend.position="top",
+        legend.box="horizontal",
+        plot.title=element_text(size=11, face="bold")
+      )
+      
       print(pl.fun)
+
+      # save plot
       plot.sequence[[i]] = list(
         "pl.fun" = pl.fun
       )
