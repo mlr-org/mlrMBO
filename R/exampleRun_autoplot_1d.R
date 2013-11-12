@@ -38,7 +38,6 @@
 #   Further parameters.
 # @return Nothing.
 
-# FIMXE: check if param names agree with regular plot function
 autoplotExampleRun1d = function(x, iters, xlim, ylim, pause, point.size, line.size, trafo, densregion=TRUE...) {
   # extract relevant data from MBOExampleRun
   par.set = x$par.set
