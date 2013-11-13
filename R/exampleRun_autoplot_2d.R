@@ -55,6 +55,8 @@ autoplotExampleRun2d = function(x, iters, pause=TRUE, densregion=TRUE,
                 evals$se = -mlrMBO:::infillCritStandardError(evals[, names.x, drop=FALSE], 
                 model, control, par.set, opt.path[idx.past, ])
             }
+            #FIXME this does not work for multipoint proposal
+            # write unit tests for this AND MANY OTHER CASES to check this 
             if (proppoints == 1L) {
                 evals[[name.crit]] = opt.direction * critfun(evals[, names.x, drop=FALSE], 
                 model, control, par.set, opt.path[idx.past, ])
@@ -123,7 +125,6 @@ autoplotExampleRun2d = function(x, iters, pause=TRUE, densregion=TRUE,
         } else {
             pl.all = grid.arrange(pl.fun, pl.mod, pl.crit, nrow=1)
         }
-
         plot.sequence[[i]] = list(
             "pl.fun" = pl.fun,
             "pl.mod" = pl.mod,

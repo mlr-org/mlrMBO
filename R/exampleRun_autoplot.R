@@ -84,7 +84,7 @@ autoplot.MBOExampleRun = function(x, iters, pause=TRUE, densregion=TRUE,
     autoplotExampleRun1d(x, iters=iters, xlim=xlim, ylim=ylim, se.factor=se.factor, pause=pause,
       point.size=point.size, line.size=line.size, trafo=trafo, densregion=densregion, ...)
   } else if (n.params == 2) {
-    autoplotExampleRun2d(x, iters=iters, xlim=xlim, ylim=ylim, se.factor=se.factor, pause=pause,
+    autoplotExampleRun2d(x, iters=iters, xlim=xlim, ylim=ylim, pause=pause,
       point.size=point.size, line.size=line.size, trafo=trafo, ...)
   } else {
     stopf("Functions with greater than 3 parameters are not supported.")
