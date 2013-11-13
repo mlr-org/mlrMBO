@@ -51,7 +51,8 @@
 #'   (applied to the criterion). Only applied to plots with numeric parameters.
 #'   For 2D: The list should contain at least one element "y", "yhat", "crit" or "se". This way one can 
 #'   specify different transformations for different plots. If a single function is provided, this function 
-#'    is used for all plots. 
+#'    is used for all plots.
+#FIXME if only these names are allowed, check them!
 #' @param ... [\code{list}]\cr
 #'   Further parameters.
 #' @return [\code{list}]\cr
