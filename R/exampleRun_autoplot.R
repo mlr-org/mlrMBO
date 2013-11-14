@@ -10,14 +10,8 @@
 #' - Initial design points
 #' - Points from previous sequentail iteraions
 #' - Proposed point in current iteration.
-#'
 #' @param x [\code{function}]\cr
 #'   Objective function.
-#' @param ... [\code{\link[mlr]{Learner}}]\cr
-#'   Surrogate model used for the optimization of \code{fun}.
-#'   Default is mlr learner \dQuote{regr.km}, which is kriging from package
-#'   DiceKriging. \code{nugget.estim} is set to \code{TRUE} depending on whether we have
-#'   noisy observations or not.
 #' @param iters [\code{integer}]\cr
 #'   Selected iterations of \code{x} to display.
 #'   Default is all iterations.
@@ -44,6 +38,10 @@
 #'   Default for the first plot is a heuristic to have the true function
 #'   and \code{yhat(x) +- se.factor2 * se(x)} both in the plot. Note that this heuristic might
 #'   change the \code{ylim} setting between plot iterations.
+#' @param point.size [\code{numeric(1)}]\cr
+#'   Point size for ploted points. Default ist 3.
+#' @param line.size [\code{numeric(1)}]\cr
+#'   Line width of the graphs of ploted functions.
 #' @param trafo [\code{list}]\cr
 #'   List of transformation functions of type \code{\link[mlrMBO]{MBOTrafoFunction}} for 
 #'   the different plots.

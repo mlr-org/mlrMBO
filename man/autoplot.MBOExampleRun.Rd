@@ -3,19 +3,11 @@
 \title{Plot example run, either in 1D or 2D.}
 \usage{
   autoplot.MBOExampleRun(x, iters, pause = TRUE,
-    densregion = TRUE, se.factor1 = 1, se.factor2 = 2,
-    xlim, ylim, point.size = 3, line.size = 1,
-    trafo = NULL, ...)
+    densregion = TRUE, se.factor = 1, xlim, ylim,
+    point.size = 3, line.size = 1, trafo = NULL, ...)
 }
 \arguments{
   \item{x}{[\code{function}]\cr Objective function.}
-
-  \item{...}{[\code{\link[mlr]{Learner}}]\cr Surrogate
-  model used for the optimization of \code{fun}.  Default
-  is mlr learner \dQuote{regr.km}, which is kriging from
-  package DiceKriging. \code{nugget.estim} is set to
-  \code{TRUE} depending on whether we have noisy
-  observations or not.}
 
   \item{iters}{[\code{integer}]\cr Selected iterations of
   \code{x} to display.  Default is all iterations.}
@@ -29,16 +21,10 @@
   You might wnat to disable this if you want to do stuff
   more interactively.  Default is \code{TRUE}.}
 
-  \item{se.factor1}{[\code{numeric(1)}]\cr If the model
+  \item{se.factor}{[\code{numeric(1)}]\cr If the model
   provides local standard error estimation, in addition to
-  the mean respone \code{yhat(x) +- se.factor1 * se(x)} is
+  the mean respone \code{yhat(x) +- se.factor * se(x)} is
   plotted above and below.  Default is 1.}
-
-  \item{se.factor2}{[\code{numeric(1)}]\cr If the model
-  provides local standard error estimation and
-  \code{densregion=TRUE}, the background is shaded in the
-  area \code{yhat(x) +- se.factor2 * se(x)}.  Default is
-  2.}
 
   \item{xlim}{[\code{numeric(2)}]\cr For 1D: \code{xlim}
   parameter for first and second plot.  Default is range of
@@ -52,6 +38,12 @@
   \code{yhat(x) +- se.factor2 * se(x)} both in the plot.
   Note that this heuristic might change the \code{ylim}
   setting between plot iterations.}
+
+  \item{point.size}{[\code{numeric(1)}]\cr Point size for
+  ploted points. Default ist 3.}
+
+  \item{line.size}{[\code{numeric(1)}]\cr Line width of the
+  graphs of ploted functions.}
 
   \item{trafo}{[\code{list}]\cr List of transformation
   functions of type \code{\link[mlrMBO]{MBOTrafoFunction}}

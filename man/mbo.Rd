@@ -1,6 +1,6 @@
 \name{mbo}
-\alias{MBOResult}
 \alias{mbo}
+\alias{MBOResult}
 \title{Optimizes a function with sequential model based optimization.}
 \usage{
   mbo(fun, par.set, design = NULL, learner, control,
