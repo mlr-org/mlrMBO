@@ -10,7 +10,7 @@
 #' - Initial design points
 #' - Points from previous sequentail iteraions
 #' - Proposed point in current iteration.
-#' @param x [\code{function}]\cr
+#' @param object [\code{function}]\cr
 #'   Objective function.
 #' @param iters [\code{integer}]\cr
 #'   Selected iterations of \code{x} to display.
@@ -43,7 +43,7 @@
 #' @param line.size [\code{numeric(1)}]\cr
 #'   Line width of the graphs of ploted functions.
 #' @param trafo [\code{list}]\cr
-#'   List of transformation functions of type \code{\link[mlrMBO]{MBOTrafoFunction}} for 
+#'   List of transformation functions of type \code{MBOTrafoFunction} for 
 #'   the different plots.
 #'   For 1D: The list elements should be named with "y" (applied to objective function and model) or "crit"
 #'   (applied to the criterion). Only applied to plots with numeric parameters.
@@ -57,10 +57,10 @@
 #'   List containing seperate ggplot plots for each iteration.
 #' @S3method autoplot MBOExampleRun
 #' @export
-autoplot.MBOExampleRun = function(x, iters, pause=TRUE, densregion=TRUE,
+autoplot.MBOExampleRun = function(object, iters, pause=TRUE, densregion=TRUE,
   se.factor=1, xlim, ylim, point.size=3, line.size=1, trafo=NULL, ...) {
 
-  iters.max = x$control$iters
+  iters.max = object$control$iters
   if (missing(iters)) {
     iters = seq_len(iters.max)
   } else {
@@ -75,15 +75,15 @@ autoplot.MBOExampleRun = function(x, iters, pause=TRUE, densregion=TRUE,
   if (!missing(ylim))
     checkArg(ylim, "numeric", len=2L, na.ok=FALSE)
 
-  n.params = x$n.params
-  par.types = x$par.types
+  n.params = object$n.params
+  par.types = object$par.types
   trafo = buildTrafoList(n.params, trafo)
 
   if (n.params == 1) {
-    autoplotExampleRun1d(x, iters=iters, xlim=xlim, ylim=ylim, se.factor=se.factor, pause=pause,
+    autoplotExampleRun1d(object, iters=iters, xlim=xlim, ylim=ylim, se.factor=se.factor, pause=pause,
       point.size=point.size, line.size=line.size, trafo=trafo, densregion=densregion, ...)
   } else if (n.params == 2) {
-    autoplotExampleRun2d(x, iters=iters, xlim=xlim, ylim=ylim, pause=pause,
+    autoplotExampleRun2d(object, iters=iters, xlim=xlim, ylim=ylim, pause=pause,
       point.size=point.size, line.size=line.size, trafo=trafo, ...)
   } else {
     stopf("Functions with greater than 3 parameters are not supported.")
@@ -101,8 +101,10 @@ autoplot.MBOExampleRun = function(x, iters, pause=TRUE, densregion=TRUE,
 #   List of trafo functions with format that is expected by exampleRun plot functions.
 buildTrafoList = function(n.params, input.trafo) {
   if (n.params == 1) {
+    checkArg(names(input.trafo), subset=c("y", "crit"))
     trafo.defaults = list("y" = NULL, "crit" = NULL)
   } else {
+    checkArg(names(input.trafo), subset=c("y", "yhat", "crit", "se"))
     trafo.defaults = list("y" = NULL, "yhat" = NULL, "crit" = NULL, "se" = NULL)
   }
 

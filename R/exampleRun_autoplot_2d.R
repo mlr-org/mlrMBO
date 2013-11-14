@@ -1,10 +1,7 @@
-#FIXME produced an error when called with fspehre, 2d, noisy, crit=aei
-
-#FIXME we lose space here. x1 and x2 labs can be be put into one legend below plots
-# FIXME we probably need a simple gui later to do some trafos like log on the the plots
-# while the iters run
+if(getRversion() >= "2.15.1")
+  utils::globalVariables(c("y", "type"))
+  
 autoplotExampleRun2d = function(x, iters, pause=TRUE, densregion=TRUE, 
-    se.factor1=1, se.factor2=2, 
     trafo=NULL, ...)  {
       
     # extract information from example run object

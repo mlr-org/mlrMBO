@@ -1,3 +1,7 @@
+# work around "no visible binding for global variable" notes of R CMD check
+if(getRversion() >= "2.15.1")
+  utils::globalVariables(c("se.min", "se.max"))
+
 # Function for plotting 1d numeric respectively discrete functions. 
 #
 # @param x [\code{function}]\cr
@@ -37,7 +41,7 @@
 # @param ... [\code{list}]\cr
 #   Further parameters.
 # @return Nothing.
-autoplotExampleRun1d = function(x, iters, xlim, ylim, pause, se.factor, point.size, line.size, trafo, densregion=TRUE...) {
+autoplotExampleRun1d = function(x, iters, xlim, ylim, pause, se.factor, point.size, line.size, trafo, densregion=TRUE, ...) {
   # extract relevant data from MBOExampleRun
   par.set = x$par.set
   par.types = x$par.types

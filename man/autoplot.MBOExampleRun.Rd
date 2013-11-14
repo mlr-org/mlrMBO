@@ -2,12 +2,12 @@
 \alias{autoplot.MBOExampleRun}
 \title{Plot example run, either in 1D or 2D.}
 \usage{
-  autoplot.MBOExampleRun(x, iters, pause = TRUE,
+  autoplot.MBOExampleRun(object, iters, pause = TRUE,
     densregion = TRUE, se.factor = 1, xlim, ylim,
     point.size = 3, line.size = 1, trafo = NULL, ...)
 }
 \arguments{
-  \item{x}{[\code{function}]\cr Objective function.}
+  \item{object}{[\code{function}]\cr Objective function.}
 
   \item{iters}{[\code{integer}]\cr Selected iterations of
   \code{x} to display.  Default is all iterations.}
@@ -46,15 +46,15 @@
   graphs of ploted functions.}
 
   \item{trafo}{[\code{list}]\cr List of transformation
-  functions of type \code{\link[mlrMBO]{MBOTrafoFunction}}
-  for the different plots.  For 1D: The list elements
-  should be named with "y" (applied to objective function
-  and model) or "crit" (applied to the criterion). Only
-  applied to plots with numeric parameters.  For 2D: The
-  list should contain at least one element "y", "yhat",
-  "crit" or "se". This way one can specify different
-  transformations for different plots. If a single function
-  is provided, this function is used for all plots.}
+  functions of type \code{MBOTrafoFunction} for the
+  different plots.  For 1D: The list elements should be
+  named with "y" (applied to objective function and model)
+  or "crit" (applied to the criterion). Only applied to
+  plots with numeric parameters.  For 2D: The list should
+  contain at least one element "y", "yhat", "crit" or "se".
+  This way one can specify different transformations for
+  different plots. If a single function is provided, this
+  function is used for all plots.}
 
   \item{...}{[\code{list}]\cr Further parameters.}
 }
