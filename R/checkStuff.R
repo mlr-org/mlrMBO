@@ -1,7 +1,8 @@
-#FIXME check whether model (and settings), ctriteria, optimizer, noisy
+# FIXME: add a correct check for dependent params / model
+# FIXME:  check whether model (and settings), ctriteria, optimizer, noisy
 # work together
 # check whether the user selected valid options / combinations
-#FIXME check whether stuff can be used for factor variables
+#FIXME: check whether stuff can be used for factor variables
 checkStuff = function(fun, par.set, design, learner, control) {
   checkArg(fun, "function")
   if(any(sapply(par.set$pars, function(x) inherits(x, "LearnerParam"))))
