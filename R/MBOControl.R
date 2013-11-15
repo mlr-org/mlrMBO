@@ -18,7 +18,7 @@
 #'   Possible are: \code{maximinLHS}, \code{randomLHS}, \code{geneticLHS},
 #'   \code{improvedLHS}, \code{optAugmentLHS}, \code{optimumLHS}.
 #'   Only used if no design is given in \code{mbo} function.
-#'   Default is \code{randomLHS}.
+#'   Default is \code{maximinLHS}.
 #' @param init.design.args [\code{list}]\cr
 #'   List of further arguments passed to \code{init.design.fun}.
 #'   Only used if no design is given in \code{mbo} function.
