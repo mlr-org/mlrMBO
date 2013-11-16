@@ -63,7 +63,10 @@ multipointInfillOptMulticrit = function(model, control, par.set, opt.path, desig
   #messagef("Trying to find %i good points.", n)
   # vars: dim, mu, objectives, operators
 
-  if (objective == "ei.dist") {
+  if (objective == "mean.dist") {
+    y.dim = 2
+    y.names = c("mean", "dist")
+  } else if (objective == "ei.dist") {
     y.dim = 2
     y.names = c("ei", "dist")
   } else if (objective == "mean.se") {
@@ -92,7 +95,9 @@ multipointInfillOptMulticrit = function(model, control, par.set, opt.path, desig
   X = generateDesign(mu, par.set, fun=randomLHS)
   Y = matrix(NA, mu, y.dim)
   # mbo infill crits are always minimized
-  if (objective == "ei.dist") {
+  if (objective == "mean.dist") {
+    Y[, 1] = infillCritMeanResponse(X, model, control, par.set, design)
+  } else if (objective == "ei.dist") {
     Y[, 1] = infillCritEI(X, model, control, par.set, design)
   } else if (objective %in% c("mean.se", "mean.se.dist")) {
     Y[, 1] = infillCritMeanResponse(X, model, control, par.set, design)
@@ -100,7 +105,7 @@ multipointInfillOptMulticrit = function(model, control, par.set, opt.path, desig
   }
 
   # use first Y criterion to for nearest better
-  if (objective %in% c("ei.dist", "mean.se.dist"))
+  if (objective %in% c("mean.dist", "ei.dist", "mean.se.dist"))
     Y[, y.dim] = -mydist(as.matrix(X), Y[,1])
   #addGenerationToPath(X, Y, gen = 0L)
 
@@ -119,14 +124,16 @@ multipointInfillOptMulticrit = function(model, control, par.set, opt.path, desig
     # best try arhoive with design and empthy both...
     Y = rbind(Y, rep(NA, y.dim))
     # mbo infill crits are always minimized
-    if (objective == "ei.dist") {
+    if (objective == "mean.dist") {
+      Y[nrow(Y), 1] = infillCritMeanResponse(child2, model, control, par.set, design)
+    } else if (objective == "ei.dist") {
       Y[nrow(Y), 1] = infillCritEI(child2, model, control, par.set, design)
     } else if (objective %in% c("mean.se", "mean.se.dist")) {
       Y[nrow(Y), 1] = infillCritMeanResponse(child2, model, control, par.set, design)
       Y[nrow(Y), 2] = infillCritStandardError(child2, model, control, par.set, design)
     }
     # use first Y criterion to for nearest better
-    if (objective %in% c("ei.dist", "mean.se.dist"))
+    if (objective %in% c("mean.dist", "ei.dist", "mean.se.dist"))
       Y[, y.dim] = -mydist(as.matrix(X), Y[,1])
     #addGenerationToPath(X, Y, gen = i)
 

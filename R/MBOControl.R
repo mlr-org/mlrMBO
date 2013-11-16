@@ -99,7 +99,7 @@
 #'   Default is \code{lcb}
 #' @param multipoint.multicrit.objective [\code{character(1)}]\cr
 #'   Variants / objectives which are optimized in multicrit approach.
-#'   Possible are: \dQuote{ei.dist}, \dQuote{mean.se}, \dQuote{mean.se.dist}.
+#'   Possible are: \dQuote{mean.dist}, \dQuote{ei.dist}, \dQuote{mean.se}, \dQuote{mean.se.dist}.
 #'   Default is \dQuote{ei.dist}.
 #' @param multipoint.multicrit.dist [\code{character(1)}]\cr
 #'   Distance function used in multicrit EA.
@@ -230,7 +230,7 @@ makeMBOControl = function(minimize=TRUE, noisy=FALSE, init.design.points=20L,
   checkArg(feature.impute, choices=c("up", "median"))
 
   checkArg(multipoint.method, choices=c("cl", "lcb", "multicrit"))
-  checkArg(multipoint.multicrit.objective, choices=c("ei.dist", "mean.se", "mean.se.dist"))
+  checkArg(multipoint.multicrit.objective, choices=c("mean.dist", "ei.dist", "mean.se", "mean.se.dist"))
   checkArg(multipoint.multicrit.selection, choices=c("hypervolume", "crowdingdist", "first", "last"))
   checkArg(multipoint.multicrit.dist, choices=c("nearest.neighbor", "nearest.better"))
   multipoint.multicrit.maxit = convertInteger(multipoint.multicrit.maxit)
