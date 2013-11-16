@@ -59,6 +59,7 @@ mbo = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, ...)
   y.name = control$y.name
   opt.path = makeOptPathDF(par.set, y.name, control$minimize)
 
+  # FIXME: trafo attribute is bad, consider user generated designs
   # generate initial design if none provided
   if (is.null(design)) {
     design.x = generateDesign(control$init.design.points, par.set,
@@ -82,7 +83,7 @@ mbo = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, ...)
   }
 
   # sanity check: are paramter values and colnames of design consistent?
-  # FIXME this check is only required for user provided designs
+  # FIXME: this check is only required for user provided designs
   cns = colnames(design.x)
   if(!setequal(cns, rep.pids))
     stop("Column names of design 'design' must match names of parameters in 'par.set'!")

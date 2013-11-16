@@ -1,6 +1,6 @@
 #' Create transformation function for MBOExampleRun.
 #'    
-#' @param fun [\code{character(1)}]\cr 
+#' @param name [\code{character(1)}]\cr 
 #'   Name of the transformation.
 #' @param fun [\code{function}]\cr
 #'   R function which expects a numeric vector.
@@ -13,7 +13,7 @@ makeTrafoFunction = function(name, fun) {
         class=c("MBOTrafoFunction", class(fun)))
 }
 
-#' @export
+# @export
 logTrafo = function() {
     makeTrafoFunction(
         name = "log",
@@ -27,7 +27,7 @@ logTrafo = function() {
         })
 }
 
-#' @export
+# @export
 log10Trafo = function() {
     makeTrafoFunction(
         name = "log10",
@@ -41,7 +41,7 @@ log10Trafo = function() {
         })
 }
 
-#' @export
+# @export
 sqrtTrafo = function() {
     makeTrafoFunction(
         name = "sqrt",

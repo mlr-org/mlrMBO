@@ -1,6 +1,6 @@
 \name{makeMBOControl}
-\alias{MBOControl}
 \alias{makeMBOControl}
+\alias{MBOControl}
 \title{Creates a control object for MBO optimization.}
 \usage{
   makeMBOControl(minimize = TRUE, noisy = FALSE,
@@ -44,7 +44,7 @@
   \code{maximinLHS}, \code{randomLHS}, \code{geneticLHS},
   \code{improvedLHS}, \code{optAugmentLHS},
   \code{optimumLHS}.  Only used if no design is given in
-  \code{mbo} function.  Default is \code{randomLHS}.}
+  \code{mbo} function.  Default is \code{maximinLHS}.}
 
   \item{init.design.args}{[\code{list}]\cr List of further
   arguments passed to \code{init.design.fun}.  Only used if
@@ -141,9 +141,9 @@
 
   \item{multipoint.multicrit.objective}{[\code{character(1)}]\cr
   Variants / objectives which are optimized in multicrit
-  approach.  Possible are: \dQuote{ei.dist},
-  \dQuote{mean.se}, \dQuote{mean.se.dist}.  Default is
-  \dQuote{ei.dist}.}
+  approach.  Possible are: \dQuote{mean.dist},
+  \dQuote{ei.dist}, \dQuote{mean.se},
+  \dQuote{mean.se.dist}.  Default is \dQuote{ei.dist}.}
 
   \item{multipoint.multicrit.dist}{[\code{character(1)}]\cr
   Distance function used in multicrit EA.  Possible are:

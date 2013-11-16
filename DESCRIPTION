@@ -6,12 +6,12 @@ Maintainer: Bernd Bischl <bernd_bischl@gmx.net>
 License: BSD
 Depends:
     ParamHelpers,
-    mlr
-Imports:
-    BBmisc (>= 1.4),
+    mlr,
     gridExtra,
     grid,
     ggplot2
+Imports:
+    BBmisc (>= 1.4),
 Suggests:
     cmaes,
     DiceOptim,
