@@ -9,7 +9,10 @@ http://cran.r-project.org/web/packages/mlrMBO/index.html
 R Documentation in HTML:
 http://www.statistik.tu-dortmund.de/~bischl/rdocs/mlrMBO/
 
+Travis CI: [![Build Status](https://travis-ci.org/berndbischl/mlrMBO.png)](https://travis-ci.org/berndbischl/mlrMBO)
+
 Both, the CRAN release site and the R Documentation, will be released soon.
+
 
 Installation
 ============
