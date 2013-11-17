@@ -1,0 +1,12 @@
+^.*tar.gz$
+^ex_*.R$
+.gitignore
+.Rproj.user
+.travis.yml
+fragen.txt
+Makefile
+README.md
+test_all.R
+test_src.R
+todo.txt
+
