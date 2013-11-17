@@ -1,7 +1,6 @@
 shiny
 todo-files
 ^.*tar.gz$
-^ex_*.R$
 .gitignore
 .Rproj.user
 .travis.yml
