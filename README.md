@@ -13,7 +13,7 @@ The package will be released soon, so some links below are not working.
 
 * Run this in R to install the current GitHub version:
   ```r
-  devtools::install_github("BBmisc", username="berndbischl")
+  devtools::install_github("mlrMBO", username="berndbischl")
   ```
 
 * [Further installation instructions](https://github.com/tudo-r/PackagesInfo/wiki/Installation-Information)
