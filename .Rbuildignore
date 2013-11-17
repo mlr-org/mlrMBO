@@ -1,3 +1,5 @@
+shiny
+todo-files
 ^.*tar.gz$
 ^ex_*.R$
 .gitignore
