@@ -22,7 +22,7 @@ distToNB = function(X, y) {
     better = y < y[i]
     #FIXME the emoa wont work with Infs
     if (sum(better) == 0)
-      1e10
+      1e50
     else
       min(d[better, i])
   })
@@ -30,8 +30,9 @@ distToNB = function(X, y) {
 
 nds_1d_selection = function(values, n=1, index=1, ...) {
   # order according to non-dominated front, then break ties by objective value at index
+  # if still tied, break randomly
   ranks = nds_rank(values)
-  o = order(ranks, values[index, ])
+  o = order(ranks, values[index, ], runif(length(ranks)))
   return(tail(o, n))
 }
 
@@ -81,9 +82,9 @@ multipointInfillOptMulticrit = function(model, control, par.set, opt.path, desig
   d = sum(getParamLengths(par.set))
   mu = n
   # FIXME: what are good defaults?
-  mutate = pm_operator(control$multipoint.multicrit.eta, control$multipoint.multicrit.p,
+  mutate = pm_operator(control$multipoint.multicrit.pm.eta, control$multipoint.multicrit.pm.p,
     getLower(par.set), getUpper(par.set))
-  crossover = sbx_operator(control$multipoint.multicrit.eta, control$multipoint.multicrit.p,
+  crossover = sbx_operator(control$multipoint.multicrit.sbx.eta, control$multipoint.multicrit.sbx.p,
     getLower(par.set), getUpper(par.set))
   mydist = switch(control$multipoint.multicrit.dist,
     nearest.neighbor = distToNN,

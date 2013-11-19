@@ -117,11 +117,17 @@
 #' @param multipoint.multicrit.maxit [\code{character(1)}]\cr
 #'   Number of generations for multicrit EA.
 #'   Default is 100.
-#' @param multipoint.multicrit.eta [\code{numeric(1)}]\cr
+#' @param multipoint.multicrit.sbx.eta [\code{numeric(1)}]\cr
 #'   Distance parameter mutation distribution, see \code{\link[emoa]{sbx_operator}}.
 #'   Default is ???.
-#' @param multipoint.multicrit.p [\code{numeric(1)}]\cr
+#' @param multipoint.multicrit.sbx.p [\code{numeric(1)}]\cr
 #'   Probability of 1-point crossover, see \code{\link[emoa]{sbx_operator}}.
+#'   Default is ???.
+#' @param multipoint.multicrit.pm.eta [\code{numeric(1)}]\cr
+#'   Distance parameter mutation distribution, see \code{\link[emoa]{pm_operator}}.
+#'   Default is ???.
+#' @param multipoint.multicrit.pm.p [\code{numeric(1)}]\cr
+#'   Probability of 1-point crossover, see \code{\link[emoa]{pm_operator}}.
 #'   Default is ???.
 #' @param final.method [\code{character(1)}]\cr
 #'   How should the final point be proposed. Possible are:
@@ -185,7 +191,8 @@ makeMBOControl = function(minimize=TRUE, noisy=FALSE, init.design.points=20L,
   multipoint.multicrit.dist="nearest.better",
   multipoint.multicrit.selection="hypervolume",
   multipoint.multicrit.maxit=100L,
-  multipoint.multicrit.eta=15, multipoint.multicrit.p=1,
+  multipoint.multicrit.sbx.eta=15, multipoint.multicrit.sbx.p=1,
+  multipoint.multicrit.pm.eta=15, multipoint.multicrit.pm.p=1,
   final.method="best.true.y", final.evals=0L,
   y.name="y", impute, impute.errors=FALSE, suppress.eval.errors=TRUE, save.model.at=iters,
   resample.at = integer(0), resample.desc = makeResampleDesc("CV", iter=10), resample.measures=list(mse),
@@ -235,8 +242,10 @@ makeMBOControl = function(minimize=TRUE, noisy=FALSE, init.design.points=20L,
   checkArg(multipoint.multicrit.dist, choices=c("nearest.neighbor", "nearest.better"))
   multipoint.multicrit.maxit = convertInteger(multipoint.multicrit.maxit)
   checkArg(multipoint.multicrit.maxit, "integer", len=1L, na.ok=FALSE, lower=0L)
-  checkArg(multipoint.multicrit.eta, "numeric", len=1L, na.ok=FALSE, lower=0)
-  checkArg(multipoint.multicrit.p, "numeric", len=1L, na.ok=FALSE, lower=0, upper=1)
+  checkArg(multipoint.multicrit.sbx.eta, "numeric", len=1L, na.ok=FALSE, lower=0)
+  checkArg(multipoint.multicrit.sbx.p, "numeric", len=1L, na.ok=FALSE, lower=0, upper=1)
+  checkArg(multipoint.multicrit.pm.eta, "numeric", len=1L, na.ok=FALSE, lower=0)
+  checkArg(multipoint.multicrit.pm.p, "numeric", len=1L, na.ok=FALSE, lower=0, upper=1)
 
   if (missing(impute))
     impute = function(x, y, opt.path)
@@ -296,8 +305,10 @@ makeMBOControl = function(minimize=TRUE, noisy=FALSE, init.design.points=20L,
     multipoint.multicrit.dist = multipoint.multicrit.dist,
     multipoint.multicrit.selection = multipoint.multicrit.selection,
     multipoint.multicrit.maxit = multipoint.multicrit.maxit,
-    multipoint.multicrit.eta = multipoint.multicrit.eta,
-    multipoint.multicrit.p = multipoint.multicrit.p,
+    multipoint.multicrit.sbx.eta = multipoint.multicrit.sbx.eta,
+    multipoint.multicrit.sbx.p = multipoint.multicrit.sbx.p,
+    multipoint.multicrit.pm.eta = multipoint.multicrit.pm.eta,
+    multipoint.multicrit.pm.p = multipoint.multicrit.pm.p,
     final.method = final.method,
     final.evals = final.evals,
     y.name = y.name,
