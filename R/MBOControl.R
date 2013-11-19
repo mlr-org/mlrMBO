@@ -184,7 +184,9 @@ makeMBOControl = function(minimize=TRUE, noisy=FALSE, init.design.points=20L,
   infill.opt="random", infill.opt.restarts=1L,
   infill.opt.random.maxit=5L, infill.opt.random.points=10000L,
   infill.opt.cmaes.control=list(),
-  infill.opt.ea.maxit=500L, infill.opt.ea.mu=10L, infill.opt.ea.eta=15, infill.opt.ea.p=0.5,
+  infill.opt.ea.maxit=500L, infill.opt.ea.mu=10L, 
+  infill.opt.ea.sbx.eta=15, infill.opt.ea.sbx.p=0.5,
+  infill.opt.ea.pm.eta=15, infill.opt.ea.pm.p=0.5,
   feature.impute = "up",
   multipoint.method="lcb",
   multipoint.multicrit.objective="ei.dist",
@@ -230,8 +232,10 @@ makeMBOControl = function(minimize=TRUE, noisy=FALSE, init.design.points=20L,
   checkArg(infill.opt.ea.maxit, "integer", len=1L, na.ok=FALSE, lower=1L)
   infill.opt.ea.mu = convertInteger(infill.opt.ea.mu)
   checkArg(infill.opt.ea.mu, "integer", len=1L, na.ok=FALSE, lower=1L)
-  checkArg(infill.opt.ea.eta, "numeric", len=1L, na.ok=FALSE, lower=0)
-  checkArg(infill.opt.ea.p, "numeric", len=1L, na.ok=FALSE, lower=0, upper=1)
+  checkArg(infill.opt.ea.sbx.eta, "numeric", len=1L, na.ok=FALSE, lower=0)
+  checkArg(infill.opt.ea.sbx.p, "numeric", len=1L, na.ok=FALSE, lower=0, upper=1)
+  checkArg(infill.opt.ea.pm.eta, "numeric", len=1L, na.ok=FALSE, lower=0)
+  checkArg(infill.opt.ea.pm.p, "numeric", len=1L, na.ok=FALSE, lower=0, upper=1)
 
 
   checkArg(feature.impute, choices=c("up", "median"))
@@ -296,8 +300,10 @@ makeMBOControl = function(minimize=TRUE, noisy=FALSE, init.design.points=20L,
     infill.opt.cmaes.control = infill.opt.cmaes.control,
     infill.opt.ea.maxit = infill.opt.ea.maxit,
     infill.opt.ea.mu = infill.opt.ea.mu,
-    infill.opt.ea.eta = infill.opt.ea.eta,
-    infill.opt.ea.p = infill.opt.ea.p,
+    infill.opt.ea.sbx.eta = infill.opt.ea.sbx.eta,
+    infill.opt.ea.sbx.p = infill.opt.ea.sbx.p,
+    infill.opt.ea.pm.eta = infill.opt.ea.pm.eta,
+    infill.opt.ea.pm.p = infill.opt.ea.pm.p,
     feature.impute = feature.impute,
     #rank.trafo = rank.trafo,
     multipoint.method = multipoint.method,

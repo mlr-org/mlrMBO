@@ -11,9 +11,9 @@ infillOptEA = function(infill.crit, model, control, par.set, opt.path, design) {
   repids = getParamIds(par.set, repeated=TRUE, with.nr = TRUE)
   d = sum(getParamLengths(par.set))
   mu = control$infill.opt.ea.mu
-  mutate = pm_operator(control$infill.opt.ea.eta, control$infill.opt.ea.p,
+  mutate = pm_operator(control$infill.opt.ea.pm.eta, control$infill.opt.ea.pm.p,
     getLower(par.set), getUpper(par.set))
-  crossover = sbx_operator(control$infill.opt.ea.eta, control$infill.opt.ea.p,
+  crossover = sbx_operator(control$infill.opt.ea.sbx.eta, control$infill.opt.ea.sbx.p,
     getLower(par.set), getUpper(par.set))
 
   best.x = NULL
