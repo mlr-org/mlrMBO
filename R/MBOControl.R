@@ -33,16 +33,18 @@
 #'   How should infill points be rated. Possible parameter values are:
 #'   \dQuote{mean}: Mean response.
 #'   \dQuote{ei}: Expected improvement.
+#'   \dQuote{aei}: Augmented expected improvement.
+#'   \dQuote{lcb}: Lower confidence bound.
 #' @param infill.crit.lcb.lambda [\code{numeric(1)}]\cr
 #'   Lambda parameter for lower confidence bound infill criterion.
 #'   Only used if \code{infillcrit="lcb"}, ignored otherwise.
 #'   Deafult is 1.
-#' @param infill.opt [\code{character(1)}]\cr
+#' @param infill.opt.fun [\code{character(1)}]\cr
 #'   How should SINGLE points be proposed by using the surrogate model. Possible are:
-#'   \dQuote{random}: Use a large random latin hypercube design of points and
-#'   evaluate the surrogate model at each.
+#'  \dQuote{focus.search}: a focus search: in several iteration steps the parameter space is 
+#'   focused on an especial promising region.
 #'   \dQuote{cmaes}: Use CMAES to optimize mean prediction value.
-#'   \dQuote{ei}: Use expected improvement.
+#'   \dQuote{ea}: Use an (mu+1) EA to optimize mean prediction value.
 #'   Default is \dQuote{random}.
 #' @param infill.opt.restarts [\code{integer(1)}]\cr
 #'   Number of independent restarts for optimizer of infill criterion.
@@ -181,7 +183,7 @@
 makeMBOControl = function(minimize=TRUE, noisy=FALSE, init.design.points=20L,
   init.design.fun=maximinLHS, init.design.args=list(), iters=10L, propose.points=1L,
   infill.crit="mean", infill.crit.lcb.lambda=1,
-  infill.opt="random", infill.opt.restarts=1L,
+  infill.opt.fun="focus.serach", infill.opt.restarts=1L,
   infill.opt.random.maxit=5L, infill.opt.random.points=10000L,
   infill.opt.cmaes.control=list(),
   infill.opt.ea.maxit=500L, infill.opt.ea.mu=10L, 
@@ -218,7 +220,7 @@ makeMBOControl = function(minimize=TRUE, noisy=FALSE, init.design.points=20L,
 
   checkArg(infill.crit, choices=c("mean", "ei", "aei", "lcb"))
   checkArg(infill.crit.lcb.lambda, "numeric", len=1L, na.ok=FALSE, lower=0)
-  checkArg(infill.opt, choices=c("random", "cmaes", "ea"))
+  checkArg(infill.opt.fun, choices=c("focus.search", "cmaes", "ea"))
   infill.opt.restarts = convertInteger(infill.opt.restarts)
   checkArg(infill.opt.restarts, "integer", len=1L, na.ok=FALSE)
 
@@ -293,7 +295,7 @@ makeMBOControl = function(minimize=TRUE, noisy=FALSE, init.design.points=20L,
     propose.points = propose.points,
     infill.crit = infill.crit,
     infill.crit.lcb.lambda = infill.crit.lcb.lambda,
-    infill.opt = infill.opt,
+    infill.opt.fun = infill.opt.fun,
     infill.opt.restarts = infill.opt.restarts,
     infill.opt.random.maxit = infill.opt.random.maxit,
     infill.opt.random.points = infill.opt.random.points,

@@ -1,32 +1,28 @@
 \name{makeMBOControl}
-\alias{makeMBOControl}
 \alias{MBOControl}
+\alias{makeMBOControl}
 \title{Creates a control object for MBO optimization.}
 \usage{
-  makeMBOControl(minimize = TRUE, noisy = FALSE,
-    init.design.points = 20L, init.design.fun = maximinLHS,
-    init.design.args = list(), iters = 10L,
-    propose.points = 1L, infill.crit = "mean",
-    infill.crit.lcb.lambda = 1, infill.opt = "random",
-    infill.opt.restarts = 1L, infill.opt.random.maxit = 5L,
-    infill.opt.random.points = 10000L,
-    infill.opt.cmaes.control = list(),
-    infill.opt.ea.maxit = 500L, infill.opt.ea.mu = 10L,
-    infill.opt.ea.eta = 15, infill.opt.ea.p = 0.5,
-    feature.impute = "up", multipoint.method = "lcb",
-    multipoint.multicrit.objective = "ei.dist",
-    multipoint.multicrit.dist = "nearest.better",
-    multipoint.multicrit.selection = "hypervolume",
-    multipoint.multicrit.maxit = 100L,
-    multipoint.multicrit.eta = 15,
-    multipoint.multicrit.p = 1,
-    final.method = "best.true.y", final.evals = 0L,
-    y.name = "y", impute, impute.errors = FALSE,
-    suppress.eval.errors = TRUE, save.model.at = iters,
-    resample.at = integer(0),
-    resample.desc = makeResampleDesc("CV", iter = 10),
-    resample.measures = list(mse),
-    on.learner.error = "warn", show.learner.output = FALSE)
+makeMBOControl(minimize = TRUE, noisy = FALSE, init.design.points = 20L,
+  init.design.fun = maximinLHS, init.design.args = list(), iters = 10L,
+  propose.points = 1L, infill.crit = "mean", infill.crit.lcb.lambda = 1,
+  infill.opt.fun = "focus.serach", infill.opt.restarts = 1L,
+  infill.opt.random.maxit = 5L, infill.opt.random.points = 10000L,
+  infill.opt.cmaes.control = list(), infill.opt.ea.maxit = 500L,
+  infill.opt.ea.mu = 10L, infill.opt.ea.sbx.eta = 15,
+  infill.opt.ea.sbx.p = 0.5, infill.opt.ea.pm.eta = 15,
+  infill.opt.ea.pm.p = 0.5, feature.impute = "up",
+  multipoint.method = "lcb", multipoint.multicrit.objective = "ei.dist",
+  multipoint.multicrit.dist = "nearest.better",
+  multipoint.multicrit.selection = "hypervolume",
+  multipoint.multicrit.maxit = 100L, multipoint.multicrit.sbx.eta = 15,
+  multipoint.multicrit.sbx.p = 1, multipoint.multicrit.pm.eta = 15,
+  multipoint.multicrit.pm.p = 1, final.method = "best.true.y",
+  final.evals = 0L, y.name = "y", impute, impute.errors = FALSE,
+  suppress.eval.errors = TRUE, save.model.at = iters,
+  resample.at = integer(0), resample.desc = makeResampleDesc("CV", iter =
+  10), resample.measures = list(mse), on.learner.error = "warn",
+  show.learner.output = FALSE)
 }
 \arguments{
   \item{minimize}{[\code{logical(1)}]\cr Should target
@@ -61,20 +57,22 @@
   \item{infill.crit}{[\code{character(1)}]\cr How should
   infill points be rated. Possible parameter values are:
   \dQuote{mean}: Mean response.  \dQuote{ei}: Expected
-  improvement.}
+  improvement.  \dQuote{aei}: Augmented expected
+  improvement.  \dQuote{lcb}: Lower confidence bound.}
 
   \item{infill.crit.lcb.lambda}{[\code{numeric(1)}]\cr
   Lambda parameter for lower confidence bound infill
   criterion.  Only used if \code{infillcrit="lcb"}, ignored
   otherwise.  Deafult is 1.}
 
-  \item{infill.opt}{[\code{character(1)}]\cr How should
+  \item{infill.opt.fun}{[\code{character(1)}]\cr How should
   SINGLE points be proposed by using the surrogate model.
-  Possible are: \dQuote{random}: Use a large random latin
-  hypercube design of points and evaluate the surrogate
-  model at each.  \dQuote{cmaes}: Use CMAES to optimize
-  mean prediction value.  \dQuote{ei}: Use expected
-  improvement.  Default is \dQuote{random}.}
+  Possible are: \dQuote{focus.search}: a focus search: in
+  several iteration steps the parameter space is focused on
+  an especial promising region.  \dQuote{cmaes}: Use CMAES
+  to optimize mean prediction value.  \dQuote{ea}: Use an
+  (mu+1) EA to optimize mean prediction value.  Default is
+  \dQuote{random}.}
 
   \item{infill.opt.restarts}{[\code{integer(1)}]\cr Number
   of independent restarts for optimizer of infill
@@ -166,13 +164,21 @@
   \item{multipoint.multicrit.maxit}{[\code{character(1)}]\cr
   Number of generations for multicrit EA.  Default is 100.}
 
-  \item{multipoint.multicrit.eta}{[\code{numeric(1)}]\cr
+  \item{multipoint.multicrit.sbx.eta}{[\code{numeric(1)}]\cr
   Distance parameter mutation distribution, see
   \code{\link[emoa]{sbx_operator}}.  Default is ???.}
 
-  \item{multipoint.multicrit.p}{[\code{numeric(1)}]\cr
+  \item{multipoint.multicrit.sbx.p}{[\code{numeric(1)}]\cr
   Probability of 1-point crossover, see
   \code{\link[emoa]{sbx_operator}}.  Default is ???.}
+
+  \item{multipoint.multicrit.pm.eta}{[\code{numeric(1)}]\cr
+  Distance parameter mutation distribution, see
+  \code{\link[emoa]{pm_operator}}.  Default is ???.}
+
+  \item{multipoint.multicrit.pm.p}{[\code{numeric(1)}]\cr
+  Probability of 1-point crossover, see
+  \code{\link[emoa]{pm_operator}}.  Default is ???.}
 
   \item{final.method}{[\code{character(1)}]\cr How should
   the final point be proposed. Possible are:
@@ -240,9 +246,9 @@
   \code{FALSE}.}
 }
 \value{
-  [\code{\link{MBOControl}}].
+[\code{\link{MBOControl}}].
 }
 \description{
-  Creates a control object for MBO optimization.
+Creates a control object for MBO optimization.
 }
 

@@ -16,15 +16,14 @@ proposePoints = function(model, par.set, control, opt.path) {
     return(generateDesign(control$propose.points, par.set, randomLHS, ints.as.num=TRUE))
 
   design = as.data.frame(opt.path)
-
   if (control$propose.points == 1L) {
     # determine infill criterion
     infill.crit.fun = getInfillCritFunction(control$infill.crit)
 
     # determine infill optimization strategy
-    infill.opt.fun = switch(control$infill.opt,
-      random = infillOptFocus,
+    infill.opt.fun = switch(control$infill.opt.fun,  
       cmaes = infillOptCMAES,
+      focus.search = infillOptFocus,
       ea = infillOptEA
       #EI       = infillOptEI
     )
