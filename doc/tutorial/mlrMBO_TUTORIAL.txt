@@ -117,8 +117,9 @@ Surrogate Model
 ==============
 Attribute ``learner`` of the ``mbo()`` function allows us to choose an appropriate surrogate model for the parameter optimization.
 It can be easily done using the ``makeLearner`` function from **mlr** package. 
-List of implemented learners can be seen using ?learners command. [Here an appropriate link]. The choice of the surrogate model depends on the parameters 
-of the objective function. While kriging models are advisable for the numeric parameters, random forest models can be used if at least one parameter is discrete.
+List of implemented learners can be seen using ?learners command. [Here an appropriate link]. 
+The choice of the surrogate model depends on the parameter set of the objective function. 
+While kriging models are advisable for the numeric parameters, random forest models can be used if at least one parameter is factorial.
 In our example we consider these two surrogate models:
 ``kriging`` for optimizing of ``objfun1``  and ``random forest`` for ``objfun2``.
 
@@ -127,6 +128,10 @@ library(mlr)
 learner_km=makeLearner("regr.km", predict.type="se", covtype="matern3_2")
 learner_rf=makeLearner("regr.randomForest")
 ```
+
+However, in some cases it is necessary to modify the learners (e.g., in order to get the standard error prediction for design points). 
+This will be discussed und illustrated in section [Experiments and Output](http://berndbischl.github.io/mlrMBO/..)
+
 
 MBOControl
 ==========
@@ -141,7 +146,7 @@ the sequential loops have to be chosen. Firstly, we have to choose the infill cr
 At the moment four possibilities are implemented: 
 * ``mean``: mean response of the surrogate model, 
 * ``ei``: expected improvement of the surrogate model,
-* ``aei``: augmented expected improvement, as designed by [Zitat_Huang](link), is specially useful for the noisy functions,
+* ``aei``: augmented expected improvement, as designed by [Zitat_Huang](link), is especially useful for the noisy functions,
 * ``lcb``: lower confidence bound which is the additive combination of mean response and mean standard error estimation 
 of the surrogate model (response - lambda * standard.error) [Paper_Zitat](link). The default value of lambda is 1, but it can be easily changed by
 the ``infill.crit.lcb`` attribute. This setting is especially useful for the noisy functions.
@@ -150,25 +155,33 @@ the ``infill.crit.lcb`` attribute. This setting is especially useful for the noi
 Attribute ``infill.opt.fun``
 --------------------------
 
-[Dieser Abschnitt soll stark verbessert werden] 
-Expected Improvement (EI) was originally proposed for kriging models and combines in a certain way mean model prediction and model uncertainty. 
-We expanded the idea of EI to any other model by computing the model uncertainty through the bootstrap - uncertainty estimator (???).
-FIXME: ?Do we use DiceOptim?
+The attribute ``infill.opt.fun`` sets how the next point to evaluate should be proposed given an infill criterion. The possibilities are:
+``focus.search``, ``cmaes`` and ``ea``. 
 
-The attribute ``infill.opt.fun`` sets how the next point to evaluate should be proposed given an infill criterion: ``focus``, ``cmaes`` or ``ea``. 
-
-[Hier ersetzen durch focus.search]
-In the first case a large sequential design is sampled in the
-parameter space (by ``randomLHS`` function) and the surrogate model is used to predict the infill criterion in each point of this design. 
-The next point to evaluate is then a point with the best infill criterion value. User can set the size of the sequential design 
-by ``infill.opt.random.points`` attribute (default is 10000). 
+In the first case a focus search is employed. The common procedure is as follows: in the first step an lhs design is sampled in the
+parameter space (by ``randomLHS`` function) and the design point with the best  prediction of the infill criterion is determined. User can set the 
+size of this design by ``control$infill.opt.focus.points`` attribute of ``MBOControl`` object (default value is 10000). In the second step the parameter
+space is shrunk around the best design point in a certain way which should not be discussed in detail here. First and second steps are repeated  
+iteratively ``control$infill.opt.focus.maxit`` times (default is 5).
 
 
 If ``infill.opt.fun`` is ``cmaes``, the point, which optimizes the
-infill criterion, is chosen via ``cma_es`` function of  **cmaes** package. Control argument for cmaes optimizer can be provided in 
+infill criterion, is chosen via ``cma_es`` function of  **cmaes** package. Control argument for ``cmaes`` optimizer can be provided in 
 ``infill.opt.cmaes.control`` attribute (default is empty list).
 
-If ``infill.opt.fun`` is ``ea`` .... [vervollständigen]
+
+If ``infill.opt.fun`` is ``ea`` a simple (mu+1)-evolutionary optimization algorithm is used to optimize the infill criterion. 
+The population size, mu, can be set by ``iteration control$infill.opt.ea.mu`` attribute (default value is 10). 
+(mu+1) means that in each population only one child is generated using crossover und mutation operators (from **emao** package).  
+Parameters ``eta`` and ``p`` of these both operators can be adjust via ``control$infill.opt.ea.sbx.eta``, ``control$infill.opt.ea.sbx.p``,
+``control$infill.opt.ea.pm.eta`` and ``control$infill.opt.ea.pm.p`` attributes respectevely. 
+The default number of EA iterations is 500 and can be changed by ``infill.opt.ea.maxit`` attribute.
+
+As all three search optimization strategies do not guarantee  to find the global optimum, users can set the number of restarts by 
+``control$infill.opt.restarts`` attribute (default value is 1). 
+After conducting the desired number of restarts the design point with the best infill criterion value is passed back to the MBO loop. 
+
+Please note that just ``focus.search`` optimizer operates if there are some factor parameters in the parameter set!
 
 
 Further attributes 
@@ -177,6 +190,8 @@ Further attributes
 The number of sequential steps (iterations) can be set in attribute ``iters`` (default setting 10). 
 Furthermore, user can specify whether the function have to be minimized or maximized in attribute ``minimize`` (default setting TRUE , e.g.,  minimization). 
 
+There are also many other attributes which user can set in a desired way like how often should the surrogate model be stored or resampled during the optimization.
+The list of all attributes is provided in the software documentation.
 
 
 Constructing  of ``mboControl`` object
@@ -206,33 +221,87 @@ Experiments and Output
 
 Now we will apply the mbo() function to optimize the both objective functions
 
-As the first argument of the objectiv function has to be a list of values and for the
-objfun1 it is two-dementional numeric vector, we wrapp objfun1 with makeMBOFunction() function
+As the first argument of the objective function has to be a list of values and for the
+objfun1 it is two-dimensional numeric vector, we wrap objfun1 with ``makeMBOFunction()`` function
 which was created extra for this purpose.
 
-
+# FIXME: do set.seed?
 ```
 library(mlrMBO)
 library(BBmisc)
 
 mbo1=mbo(makeMBOFunction(objfun1), par.set1, design=design1, learner=learner_km, control=control1, show.info=TRUE)
+mbo1
+```{r}
+
+The output of mbo function is a structure of several variables. The most important are:
+
+*x: the best point of the parameter space
+*y: the associated best value of the objective function
+*opt.path: optimization path. See **ParamHelpers** for further information.
+*models: If no other setting was provided in the ``MBOControl`` object, the last estimated surrogate is given here.
+*...
+
+
+#FIXME: see all optimization path.
+
+We can also change some attributes of the ``MBOControl`` object and run mbo() function again
+
+```
+control1$infill.crit="mean"
+control1$infill.opt.fun="focus.search"
+mbo1=mbo(makeMBOFunction(objfun1), par.set1, design=design1, learner=learner_km, control=control1, show.info=TRUE)
+mbo1
+```{r}
+
+Let us apply **mlrMBO** package to optimize object2 function, which contains one factor variable.
+We have already mentioned before, that in this case just ``focus.search`` infill optimization function is suitable. 
+If we use ``mean`` infill criterion any kind of model which can handle with factor variables can be used here (like random tree,
+random forest, linear model and many others).
+
+
+```
+mbo2=mbo(objfun2, par.set2, design=NULL, learner=learner_rf, control=control2, show.info=TRUE)
+mbo2
+```{r}
+
+In contrast, if one will apply ``ei`` or ``lcb`` infill criteria, 
+the ``predict.type`` attribute of the learner have be set to ``se`` if possible. A list of regression learners which support it can be viewed by:
+
+```
+listLearners(type="regr",se=TRUE)
+```{r}
+
+We hence modify the random forest learner and optimize objfun2 by ``ei`` infill criterion.
+
+```
+learner_rf=makeLearner("regr.randomForest",predict.type="se")
+control1$infill.crit="ei"
+mbo2=mbo(objfun2, par.set2, design=NULL, learner=learner_rf, control=control2, show.info=TRUE)
+```{r}
+
+
+Finally, if a learner which not support the ``se`` prediction type should by applied for the optimization with ``ei`` infill criterion,
+there is a possibility to create a bagging model with the desired characteristics. Attribute ``bag.iters`` provide the number of models in the 
+ensemble, see documentation for ``makeBaggingWrapper`` of **mlr** package.
+
+
+```
+learner_rt=makeLearner("regr.rpart")
+bag_rt=makeBaggingWrapper(learner_rt,bag.iters=5,predict.type="se")
+mbo2=mbo(objfun2, par.set2, design=NULL, learner=learner_rf, control=control2, show.info=TRUE)
 ```{r}
 
 
 
 
 
+### TODO 
+1) Probleme mit init.design.args 
 
+2) #FIXME: if multipoint.method="cl", check that surrogate model is kriging
 
-Does not work at the moment!
+3) noisy optimization example
 
-
-
-
-
-
-
-
-
-
+4) mulicrit
 

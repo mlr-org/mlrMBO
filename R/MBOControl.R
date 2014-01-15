@@ -37,33 +37,33 @@
 #'   \dQuote{lcb}: Lower confidence bound.
 #' @param infill.crit.lcb.lambda [\code{numeric(1)}]\cr
 #'   Lambda parameter for lower confidence bound infill criterion.
-#'   Only used if \code{infillcrit="lcb"}, ignored otherwise.
+#'   Only used if \code{infill.crit="lcb"}, ignored otherwise.
 #'   Deafult is 1.
 #' @param infill.opt.fun [\code{character(1)}]\cr
-#'   How should SINGLE points be proposed by using the surrogate model. Possible are:
-#'  \dQuote{focus.search}: a focus search: in several iteration steps the parameter space is 
-#'   focused on an especial promising region.
-#'   \dQuote{cmaes}: Use CMAES to optimize mean prediction value.
-#'   \dQuote{ea}: Use an (mu+1) EA to optimize mean prediction value.
-#'   Default is \dQuote{random}.
+#'   How should SINGLE points be proposed by using the surrogate model. Possible values are:
+#'  \dQuote{focus.search}: In several iteration steps the parameter space is 
+#'   focused on an especial promising region according to infill criterion.
+#'   \dQuote{cmaes}: Use CMAES to optimize infill criterion.
+#'   \dQuote{ea}: Use an (mu+1) EA to optimize infill criterion.
+#'   Default is \dQuote{focus.search}.
 #' @param infill.opt.restarts [\code{integer(1)}]\cr
 #'   Number of independent restarts for optimizer of infill criterion.
-#'   The first initial / start point for the optimizer is always the currently best point in the design
+#'   If \code{infill.opt.fun="cmaes"} the first start point for the optimizer is always the currently best point in the design
 #'   of already visited points. Subsequent restarts are started at random points.
 #'   Default is 1.
-#' @param infill.opt.random.maxit [\code{integer(1)}]\cr
-#'   For \code{infill.opt = "random"}:
+#' @param infill.opt.focus.maxit [\code{integer(1)}]\cr
+#'   For \code{infill.opt = "focus.search"}:
 #'   Number of iteration to shrink local focus.
 #'   Default is 5.
-#' @param infill.opt.random.points [\code{integer(1)}]\cr
-#'   For \code{infill.opt = "random"}:
-#'   Number of points in random search optimizer.
+#' @param infill.opt.focus.points [\code{integer(1)}]\cr
+#'   For \code{infill.opt = "focus.search"}:
+#'   Number of points in each iteration of the focus search optimizer.
 #'   Default is 10000.
 #' @param infill.opt.cmaes.control [\code{list}]\cr
 #'   For \code{infill.opt = "cmaes"}:
 #'   Control argument for cmaes optimizer.
 #'   Default is empty list.
-#FIXME defaults for simple ES params
+#FIXME defaults for simple EA params
 #' @param infill.opt.ea.maxit [\code{integer(1)}]\cr
 #'   For \code{infill.opt = "ea"}:
 #'   Number of iterations / generations of EA.
@@ -72,18 +72,26 @@
 #'   For \code{infill.opt = "ea"}:
 #'   Population size of EA.
 #'   Default is 10.
-#' @param infill.opt.ea.eta [\code{numeric(1)}]\cr
+#' @param infill.opt.ea.pm.eta [\code{numeric(1)}]\cr
 #'   For \code{infill.opt = "ea"}:
-#'   Distance parameter mutation distribution, see \code{\link[emoa]{sbx_operator}}.
-#'   Default is ???.
-#' @param infill.opt.ea.p [\code{numeric(1)}]\cr
+#'   Distance parameter of mutation distribution, see \code{\link[emoa]{pm_operator}}.
+#'   Default is 15.
+#' @param infill.opt.ea.pm.p [\code{numeric(1)}]\cr
+#'   For \code{infill.opt = "ea"}:
+#'   Probability of 1-point mutation, see \code{\link[emoa]{pm_operator}}.
+#'   Default is 0.5.
+#' @param infill.opt.ea.sbx.eta [\code{numeric(1)}]\cr
+#'   For \code{infill.opt = "ea"}:
+#'   Distance parameter of crossover distribution , see \code{\link[emoa]{sbx_operator}}.
+#'   Default is 15.
+#' @param infill.opt.ea.sbx.p [\code{numeric(1)}]\cr
 #'   For \code{infill.opt = "ea"}:
 #'   Probability of 1-point crossover, see \code{\link[emoa]{sbx_operator}}.
-#'   Default is ???.
+#'   Default is 0.5.
 #' @param feature.impute [\code{character(1)}]\cr
-#'   Method used for imputing features, which can will be necessary for dependent parameters.
+#'   Method used for imputing features, which can / will be necessary for dependent parameters.
 #'   Possible values are:
-#'   \dQuote{up}: Numeric vars are imputed with with 2 * upper bound.
+#'   \dQuote{up}: Numeric vars are imputed with 2 * upper bound.
 #'   \dQuote{median}: Imputes NAs with median and add logical is.na variable.
 #' @param multipoint.method [\code{character(1)}]\cr
 #'   Method used for proposal of multiple infill points, for parallel batch evaluation.
@@ -93,23 +101,29 @@
 #'   exp(1)-distribution, so do not define \code{infill.opt.lcb.lambda}.
 #'   The optimizer for each proposal is configured in the same way as for the single point case,
 #'   i.e., by specifying \code{infill.opt} and related stuff.
-#'   Default is \code{lcb}
 #'   \dQuote{multicrit}: Proposes points by evolutionary multicriteria optimization.
 #'   The EA is a (mu+1) type of algorithm and runs for \code{multipoint.multicrit.maxit} generations.
 #'   The population size is set to \code{propose.points}.
 #'   The selection criterion is \code{multipoint.multicrit.selection}.
+#'	 \dQuote{cl}: Proposes points by constant liar strategie.
+#'	 Only meaningfull if \code{infill.crit="lcb"}
+#'   In the first step the kriging model is fitted based on the real data and the best point is calculated according to the regular EI-criterion.
+#'   Then, the function value of the best point is simply guessed by the worst seen function evaluation.
+#'   This lie is used to update the model in order to propose the subsequent point.
+#'   The procedure is applied until the number of best points achieves \code{propose.points}.
 #'   Default is \code{lcb}
 #' @param multipoint.multicrit.objective [\code{character(1)}]\cr
-#'   Variants / objectives which are optimized in multicrit approach.
-#'   Possible are: \dQuote{mean.dist}, \dQuote{ei.dist}, \dQuote{mean.se}, \dQuote{mean.se.dist}.
+#'   Objectives which are optimized in multicrit approach.
+#'   Possible values are: \dQuote{mean.dist}, \dQuote{ei.dist}, \dQuote{mean.se}, \dQuote{mean.se.dist}.
 #'   Default is \dQuote{ei.dist}.
 #' @param multipoint.multicrit.dist [\code{character(1)}]\cr
 #'   Distance function used in multicrit EA.
-#'   Possible are: \dQuote{nearest.neigbor}, \dQuote{nearest.better}.
+#'   Possible values are: \dQuote{nearest.neigbor}, \dQuote{nearest.better}.
 #'   Default is \dQuote{nearest.better}.
+#FIXME: a link to the definition of nearest.better and nearest.neigbor?
 #' @param multipoint.multicrit.selection [\code{character(1)}]\cr
 #'   Method used for selecting 1 element for removal from the population
-#'   in each iteration of the multicrit EA.
+#'   in each iteration of the multicriteria EA.
 #'   Possible values are:
 #'   \dQuote{hypervolume}: Non-dominated sorting + hypervolume contribution.
 #'   \dQuote{crowdingdist}: Non-dominated sorting + crowding distance based ranking.
@@ -117,22 +131,22 @@
 #'   \dQuote{last}: Non-dominated sorting + last objective of \code{multipoint.multicrit.objective} as criterion.
 #'   Default is \code{hypervolume}
 #' @param multipoint.multicrit.maxit [\code{character(1)}]\cr
-#'   Number of generations for multicrit EA.
+#'   Number of generations for multicriteria EA.
 #'   Default is 100.
 #' @param multipoint.multicrit.sbx.eta [\code{numeric(1)}]\cr
-#'   Distance parameter mutation distribution, see \code{\link[emoa]{sbx_operator}}.
-#'   Default is ???.
+#'   Distance parameter of crossover distribution, see \code{\link[emoa]{sbx_operator}}.
+#'   Default is 15.
 #' @param multipoint.multicrit.sbx.p [\code{numeric(1)}]\cr
 #'   Probability of 1-point crossover, see \code{\link[emoa]{sbx_operator}}.
-#'   Default is ???.
+#'   Default is 1.
 #' @param multipoint.multicrit.pm.eta [\code{numeric(1)}]\cr
-#'   Distance parameter mutation distribution, see \code{\link[emoa]{pm_operator}}.
-#'   Default is ???.
+#'   Distance parameter of mutation distribution, see \code{\link[emoa]{pm_operator}}.
+#'   Default is 15.
 #' @param multipoint.multicrit.pm.p [\code{numeric(1)}]\cr
-#'   Probability of 1-point crossover, see \code{\link[emoa]{pm_operator}}.
-#'   Default is ???.
+#'   Probability of 1-point mutation, see \code{\link[emoa]{pm_operator}}.
+#'   Default is 1
 #' @param final.method [\code{character(1)}]\cr
-#'   How should the final point be proposed. Possible are:
+#'   How should the final point be proposed. Possible values are:
 #'   \dQuote{best.true.y}: Return best point ever visited according to true value of target function. Can be bad if target function is noisy.
 #'   \dQuote{last.proposed}: Return the last point proposed by the model.
 #'   \dQuote{best.predicted}: Use the final model to predict all points ever visited and use the best one. This might average-out noisy function values.
@@ -166,7 +180,7 @@
 #'   Iteration 0 does some resampling on the initial design.
 #'   Default is none.
 #' @param resample.desc [\code{\link[mlr]{ResampleDesc}}]\cr
-#'   How should be model be resampled?
+#'   How should the model be resampled?
 #'   Default is 10-fold CV.
 #' @param resample.measures [list of \code{\link[mlr]{Measure}}]\cr
 #'   Performance measures to assess model with during resampling.
@@ -184,7 +198,7 @@ makeMBOControl = function(minimize=TRUE, noisy=FALSE, init.design.points=20L,
   init.design.fun=maximinLHS, init.design.args=list(), iters=10L, propose.points=1L,
   infill.crit="mean", infill.crit.lcb.lambda=1,
   infill.opt.fun="focus.serach", infill.opt.restarts=1L,
-  infill.opt.random.maxit=5L, infill.opt.random.points=10000L,
+  infill.opt.focus.maxit=5L, infill.opt.focus.points=10000L,
   infill.opt.cmaes.control=list(),
   infill.opt.ea.maxit=500L, infill.opt.ea.mu=10L, 
   infill.opt.ea.sbx.eta=15, infill.opt.ea.sbx.p=0.5,
@@ -224,10 +238,10 @@ makeMBOControl = function(minimize=TRUE, noisy=FALSE, init.design.points=20L,
   infill.opt.restarts = convertInteger(infill.opt.restarts)
   checkArg(infill.opt.restarts, "integer", len=1L, na.ok=FALSE)
 
-  infill.opt.random.maxit = convertInteger(infill.opt.random.maxit)
-  checkArg(infill.opt.random.maxit, "integer", len=1L, na.ok=FALSE, lower=1L)
-  infill.opt.random.points = convertInteger(infill.opt.random.points)
-  checkArg(infill.opt.random.points, "integer", len=1L, na.ok=FALSE, lower=1L)
+  infill.opt.focus.maxit = convertInteger(infill.opt.focus.maxit)
+  checkArg(infill.opt.focus.maxit, "integer", len=1L, na.ok=FALSE, lower=1L)
+  infill.opt.focus.points = convertInteger(infill.opt.focus.points)
+  checkArg(infill.opt.focus.points, "integer", len=1L, na.ok=FALSE, lower=1L)
   checkArg(infill.opt.cmaes.control, "list")
 
   infill.opt.ea.maxit = convertInteger(infill.opt.ea.maxit)
@@ -242,7 +256,7 @@ makeMBOControl = function(minimize=TRUE, noisy=FALSE, init.design.points=20L,
 
   checkArg(feature.impute, choices=c("up", "median"))
 
-  checkArg(multipoint.method, choices=c("cl", "lcb", "multicrit"))
+  checkArg(multipoint.method, choices=c("cl", "lcb", "multicrit")) #FIXME: if multipoint.method="cl", check that surrogate model is kriging
   checkArg(multipoint.multicrit.objective, choices=c("mean.dist", "ei.dist", "mean.se", "mean.se.dist"))
   checkArg(multipoint.multicrit.selection, choices=c("hypervolume", "crowdingdist", "first", "last"))
   checkArg(multipoint.multicrit.dist, choices=c("nearest.neighbor", "nearest.better"))
@@ -297,8 +311,8 @@ makeMBOControl = function(minimize=TRUE, noisy=FALSE, init.design.points=20L,
     infill.crit.lcb.lambda = infill.crit.lcb.lambda,
     infill.opt.fun = infill.opt.fun,
     infill.opt.restarts = infill.opt.restarts,
-    infill.opt.random.maxit = infill.opt.random.maxit,
-    infill.opt.random.points = infill.opt.random.points,
+    infill.opt.focus.maxit = infill.opt.focus.maxit,
+    infill.opt.focus.points = infill.opt.focus.points,
     infill.opt.cmaes.control = infill.opt.cmaes.control,
     infill.opt.ea.maxit = infill.opt.ea.maxit,
     infill.opt.ea.mu = infill.opt.ea.mu,

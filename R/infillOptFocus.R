@@ -12,9 +12,9 @@ infillOptFocus = function(infill.crit, model, control, par.set, opt.path, design
   # restart the whole crap some times
   for (restart.iter in 1:control$infill.opt.restarts) {
     # do iterations where we focus the region-of-interest around the current best point
-    for (local.iter in 1:control$infill.opt.random.maxit) {
+    for (local.iter in 1:control$infill.opt.focus.maxit) {
       # predict on design where NAs were imputed, but return propsed points with NAs
-      newdesign = generateDesign(control$infill.opt.random.points, par.set,
+      newdesign = generateDesign(control$infill.opt.focus.points, par.set,
         randomLHS, ints.as.num=TRUE, logicals.as.factor=TRUE)
       y = infill.crit(imputeFeatures(newdesign, par.set, control), model, control, par.set, design)
       
