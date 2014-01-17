@@ -41,15 +41,16 @@
 #'   Deafult is 1.
 #' @param infill.opt.fun [\code{character(1)}]\cr
 #'   How should SINGLE points be proposed by using the surrogate model. Possible values are:
-#'  \dQuote{focus.search}: In several iteration steps the parameter space is 
+#'  \dQuote{focus.search}: In several iteration steps the parameter space is
 #'   focused on an especial promising region according to infill criterion.
 #'   \dQuote{cmaes}: Use CMAES to optimize infill criterion.
 #'   \dQuote{ea}: Use an (mu+1) EA to optimize infill criterion.
 #'   Default is \dQuote{focus.search}.
 #' @param infill.opt.restarts [\code{integer(1)}]\cr
 #'   Number of independent restarts for optimizer of infill criterion.
-#'   If \code{infill.opt.fun="cmaes"} the first start point for the optimizer is always the currently best point in the design
-#'   of already visited points. Subsequent restarts are started at random points.
+#'   If \code{infill.opt.fun="cmaes"} the first start point for the optimizer is always the 
+#'   currently best point in the design of already visited points. 
+#'   Subsequent restarts are started at random points.
 #'   Default is 1.
 #' @param infill.opt.focus.maxit [\code{integer(1)}]\cr
 #'   For \code{infill.opt = "focus.search"}:
@@ -147,9 +148,11 @@
 #'   Default is 1
 #' @param final.method [\code{character(1)}]\cr
 #'   How should the final point be proposed. Possible values are:
-#'   \dQuote{best.true.y}: Return best point ever visited according to true value of target function. Can be bad if target function is noisy.
+#'   \dQuote{best.true.y}: Return best point ever visited according to true value of target function.
+#'   Can be bad if target function is noisy.
 #'   \dQuote{last.proposed}: Return the last point proposed by the model.
-#'   \dQuote{best.predicted}: Use the final model to predict all points ever visited and use the best one. This might average-out noisy function values.
+#'   \dQuote{best.predicted}: Use the final model to predict all points ever visited and use the best one.
+#'   This might average-out noisy function values.
 #'   Default is: \dQuote{best.true.y}.
 #' @param final.evals [\code{integer(1)}]\cr
 #'   How many target function evals should be done at final point to reduce noise?
@@ -197,10 +200,10 @@
 makeMBOControl = function(minimize=TRUE, noisy=FALSE, init.design.points=20L,
   init.design.fun=maximinLHS, init.design.args=list(), iters=10L, propose.points=1L,
   infill.crit="mean", infill.crit.lcb.lambda=1,
-  infill.opt.fun="focus.serach", infill.opt.restarts=1L,
+  infill.opt.fun="focus.search", infill.opt.restarts=1L,
   infill.opt.focus.maxit=5L, infill.opt.focus.points=10000L,
   infill.opt.cmaes.control=list(),
-  infill.opt.ea.maxit=500L, infill.opt.ea.mu=10L, 
+  infill.opt.ea.maxit=500L, infill.opt.ea.mu=10L,
   infill.opt.ea.sbx.eta=15, infill.opt.ea.sbx.p=0.5,
   infill.opt.ea.pm.eta=15, infill.opt.ea.pm.p=0.5,
   feature.impute = "up",
