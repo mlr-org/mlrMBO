@@ -55,12 +55,10 @@
 #'   \item{learner [\code{\link[mlr]{Learner}}]}{See argument.}
 #'   \item{control [\code{\link{MBOControl}}]}{See argument.}
 
-
-#FIXME add ...
 #FIXME doc soobench and add suggsts
 #FIXME can we allow functions with simpler signature?
 exampleRun = function(fun, par.set, global.opt=NA_real_, learner, control,
-  points.per.dim=50, noisy.evals=10, show.info=TRUE) {
+  points.per.dim=50, noisy.evals=10, show.info=TRUE, ...) {
 
   checkArg(fun, "function")
   if (missing(par.set) && inherits(fun, "soo_function"))
@@ -81,9 +79,9 @@ exampleRun = function(fun, par.set, global.opt=NA_real_, learner, control,
     # set random forest as default learner if discrete params occur
     if (any(par.types %in% c("discrete"))) {
       # FIXME: set further params
-      learner = makeLearner("regr.randomForest")
+      learner = makeLearner("regr.randomForest", ...)
     } else {
-      learner = makeLearner("regr.km", covtype="matern5_2", predict.type="se", nugget.estim=noisy)
+      learner = makeLearner("regr.km", covtype="matern5_2", predict.type="se", nugget.estim=noisy, ...)
     }
   } else {
     checkArg(learner, "Learner")
@@ -94,18 +92,14 @@ exampleRun = function(fun, par.set, global.opt=NA_real_, learner, control,
   checkArg(noisy.evals, "integer", len = 1L, na.ok = FALSE, lower=1L)
   checkArg(show.info, "logical", len = 1L, na.ok = FALSE)
   n.params = sum(getParamLengths(par.set))
-  #FIXME: what do we allow?
-  #if (n.params != 1L)
-  #  stopf("exampleRun can currently only be used for 1D functions, but you have: %iD.", n.params)
-  #ps2 = filterParams(par.set, "numeric")
-  #if (length(ps2$pars) != length(par.set$pars))
-  #  stopf("exampleRun can currently only be used numeric parameters.")
+
+  if (n.params >= 3L) {
+    stopf("exampleRun can only be your for functions with at most 2 dimensions, but you have %iD", n.params)
+  }
 
   control$save.model.at=0:control$iters
   names.x = getParamIds(par.set, repeated=TRUE, with.nr=TRUE)
   name.y = control$y.name
-
-  #FIXME maybe allow 1 discrete or int param as well!
 
   if (show.info) {
     messagef("Evaluating true objective function at %s points.",
@@ -151,8 +145,6 @@ exampleRun = function(fun, par.set, global.opt=NA_real_, learner, control,
         mean(replicate(noisy.evals, fun(namedList(names.x, x))))
       })
       evals = data.frame(x=xs, y=ys)
-      #print(evals)
-      #stop("1d examples with discrete param are currently unter developement.")
     }
   } else if (n.params == 2L) {
     eval.x = NULL
@@ -238,7 +230,6 @@ getGlobalOpt = function(run) {
 getGlobalOptString = function(run) {
   sprintf("Global Opt (%s)",  ifelse(is.na(run$global.opt), "estimated", "known"))
 }
-
 
 # FIXME: move this to ParamHelpers?
 getNumberOfParamTypes = function(par.set) {
