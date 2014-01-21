@@ -48,8 +48,8 @@
 #'   Default is \dQuote{focus.search}.
 #' @param infill.opt.restarts [\code{integer(1)}]\cr
 #'   Number of independent restarts for optimizer of infill criterion.
-#'   If \code{infill.opt.fun="cmaes"} the first start point for the optimizer is always the 
-#'   currently best point in the design of already visited points. 
+#'   If \code{infill.opt.fun="cmaes"} the first start point for the optimizer is always the
+#'   currently best point in the design of already visited points.
 #'   Subsequent restarts are started at random points.
 #'   Default is 1.
 #' @param infill.opt.focus.maxit [\code{integer(1)}]\cr
@@ -64,7 +64,6 @@
 #'   For \code{infill.opt = "cmaes"}:
 #'   Control argument for cmaes optimizer.
 #'   Default is empty list.
-#FIXME defaults for simple EA params
 #' @param infill.opt.ea.maxit [\code{integer(1)}]\cr
 #'   For \code{infill.opt = "ea"}:
 #'   Number of iterations / generations of EA.
@@ -259,7 +258,7 @@ makeMBOControl = function(minimize=TRUE, noisy=FALSE, init.design.points=20L,
 
   checkArg(feature.impute, choices=c("up", "median"))
 
-  checkArg(multipoint.method, choices=c("cl", "lcb", "multicrit")) #FIXME: if multipoint.method="cl", check that surrogate model is kriging
+  checkArg(multipoint.method, choices=c("cl", "lcb", "multicrit"))
   checkArg(multipoint.multicrit.objective, choices=c("mean.dist", "ei.dist", "mean.se", "mean.se.dist"))
   checkArg(multipoint.multicrit.selection, choices=c("hypervolume", "crowdingdist", "first", "last"))
   checkArg(multipoint.multicrit.dist, choices=c("nearest.neighbor", "nearest.better"))
@@ -277,9 +276,6 @@ makeMBOControl = function(minimize=TRUE, noisy=FALSE, init.design.points=20L,
     checkArg(impute, formals=c("x", "y", "opt.path"))
   checkArg(impute.errors, "logical", len=1L, na.ok=FALSE)
   checkArg(suppress.eval.errors, "logical", len=1L, na.ok=FALSE)
-
-  # FIXME: remove this for now
-  #checkArg(rank.trafo, "logical", len=1L, na.ok=FALSE)
 
   checkArg(final.method, choices=c("last.proposed", "best.true.y", "best.predicted"))
   final.evals = convertInteger(final.evals)
@@ -324,7 +320,6 @@ makeMBOControl = function(minimize=TRUE, noisy=FALSE, init.design.points=20L,
     infill.opt.ea.pm.eta = infill.opt.ea.pm.eta,
     infill.opt.ea.pm.p = infill.opt.ea.pm.p,
     feature.impute = feature.impute,
-    #rank.trafo = rank.trafo,
     multipoint.method = multipoint.method,
     multipoint.multicrit.objective = multipoint.multicrit.objective,
     multipoint.multicrit.dist = multipoint.multicrit.dist,
