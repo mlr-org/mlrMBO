@@ -65,6 +65,11 @@ mbo = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, ...)
     design.x = generateDesign(control$init.design.points, par.set,
       control$init.design.fun, control$init.design.args, trafo=FALSE)
   } else {
+    # sanity check: are paramter values and colnames of design consistent?
+    cns = colnames(design)
+    if(!setequal(cns, rep.pids))
+      stop("Column names of design 'design' must match names of parameters in 'par.set'!")
+
     design.x = design
     if (attr(design, "trafo"))
       stop("Design must not be transformed before call to 'mbo'. Set 'trafo' to FALSE in generateDesign.")
@@ -81,12 +86,6 @@ mbo = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, ...)
     ys = evalTargetFun(fun, par.set, xs, opt.path, control, show.info, oldopts, ...)
     design = cbind(design.x, setColNames(data.frame(ys), y.name))
   }
-
-  # sanity check: are paramter values and colnames of design consistent?
-  # FIXME: this check is only required for user provided designs
-  cns = colnames(design.x)
-  if(!setequal(cns, rep.pids))
-    stop("Column names of design 'design' must match names of parameters in 'par.set'!")
 
   # reorder
   design.x = design.x[, rep.pids, drop=FALSE]
