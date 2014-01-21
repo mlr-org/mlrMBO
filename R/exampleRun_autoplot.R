@@ -43,12 +43,12 @@
 #' @param line.size [\code{numeric(1)}]\cr
 #'   Line width of the graphs of ploted functions.
 #' @param trafo [\code{list}]\cr
-#'   List of transformation functions of type \code{MBOTrafoFunction} for 
+#'   List of transformation functions of type \code{MBOTrafoFunction} for
 #'   the different plots.
 #'   For 1D: The list elements should be named with "y" (applied to objective function and model) or "crit"
 #'   (applied to the criterion). Only applied to plots with numeric parameters.
-#'   For 2D: The list should contain at least one element "y", "yhat", "crit" or "se". This way one can 
-#'   specify different transformations for different plots. If a single function is provided, this function 
+#'   For 2D: The list should contain at least one element "y", "yhat", "crit" or "se". This way one can
+#'   specify different transformations for different plots. If a single function is provided, this function
 #'    is used for all plots.
 #FIXME if only these names are allowed, check them!
 #' @param ... [\code{list}]\cr
@@ -120,7 +120,7 @@ buildTrafoList = function(n.params, input.trafo) {
     }
   } else {
     # otherwise check if all elements are of an appropriate type
-    lapply(input.trafo, function(t) 
+    lapply(input.trafo, function(t)
       if(!is.null(t)) checkArg(t, "MBOTrafoFunction")
     )
     trafo = trafo.defaults
@@ -128,3 +128,6 @@ buildTrafoList = function(n.params, input.trafo) {
   }
   return(trafo)
 }
+
+
+#' Determines number of discrete parameters of

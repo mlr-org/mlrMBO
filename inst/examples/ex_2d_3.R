@@ -13,7 +13,7 @@ library(gridExtra)
 
 load_all(".", reset=TRUE)
 
-configureMlr(show.learner.output=FALSE)
+configureMlr(show.learner.output=TRUE)
 
 objfun = function(x) {
   if (x$foo == "a")
@@ -26,23 +26,22 @@ objfun = function(x) {
 
 ps = makeParamSet(
     makeDiscreteParam("foo", values = c("a", "b", "c")),
-    makeNumericVectorParam("x", len=1, lower=-2, upper=2)
+    makeNumericVectorParam("x", len=1, lower=-2, upper=3)
   )
 
-lrn = makeLearner("regr.randomForest")
+lrn = makeLearner("regr.randomForest", predict.type="se")
 
-ctrl = makeMBOControl(init.design.points=6, iters=10, propose.points=1, 
-  infill.crit="ei", infill.opt="random", infill.opt.random.points=500)
+ctrl = makeMBOControl(init.design.points=6, iters=10, propose.points=1, infill.crit="ei")
 
 run = exampleRun(objfun, ps, global.opt=-10, learner=lrn,
   control=ctrl, points.per.dim=100)
 
 print(run)
 
-autoplot(run, pause=TRUE, densregion=FALSE)
+#autoplot(run, pause=TRUE, densregion=FALSE)
 
 
 
 
 
-  
+
