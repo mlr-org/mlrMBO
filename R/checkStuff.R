@@ -1,8 +1,5 @@
 # FIXME: add a correct check for dependent params / model
-# FIXME:  check whether model (and settings), ctriteria, optimizer, noisy
-# work together
 # check whether the user selected valid options / combinations
-#FIXME: check whether stuff can be used for factor variables
 checkStuff = function(fun, par.set, design, learner, control) {
   checkArg(fun, "function")
   if(any(sapply(par.set$pars, function(x) inherits(x, "LearnerParam"))))
@@ -26,7 +23,7 @@ checkStuff = function(fun, par.set, design, learner, control) {
       && learner$predict.type != "se") {
       stopf("For multipoint method '%s'%s, predict.type of learner %s must be set to 'se'!%s",
         control$multipoint.method,
-        ifelse(control$multipoint.method == "multicrit", 
+        ifelse(control$multipoint.method == "multicrit",
           sprintf(" with objective '%s'", control$multipoint.multicrit.obj), ""),
         learner$id,
         ifelse(learner$se, "",

@@ -214,6 +214,7 @@ makeMBOControl = function(minimize=TRUE, noisy=FALSE, init.design.points=20L,
   multipoint.multicrit.sbx.eta=15, multipoint.multicrit.sbx.p=1,
   multipoint.multicrit.pm.eta=15, multipoint.multicrit.pm.p=1,
   final.method="best.true.y", final.evals=0L,
+  na.string="miss",
   y.name="y", impute, impute.errors=FALSE, suppress.eval.errors=TRUE, save.model.at=iters,
   resample.at = integer(0), resample.desc = makeResampleDesc("CV", iter=10), resample.measures=list(mse),
   on.learner.error="warn", show.learner.output=FALSE
@@ -281,6 +282,7 @@ makeMBOControl = function(minimize=TRUE, noisy=FALSE, init.design.points=20L,
   final.evals = convertInteger(final.evals)
   checkArg(final.evals, "integer", len=1L, na.ok=FALSE, lower=0L)
 
+  checkArg(na.string, "character", len=1L, na.ok=FALSE)
   checkArg(y.name, "character", len=1L, na.ok=FALSE)
 
   save.model.at = convertIntegers(save.model.at)
@@ -331,6 +333,7 @@ makeMBOControl = function(minimize=TRUE, noisy=FALSE, init.design.points=20L,
     multipoint.multicrit.pm.p = multipoint.multicrit.pm.p,
     final.method = final.method,
     final.evals = final.evals,
+    na.string = na.string,
     y.name = y.name,
     impute = impute,
     impute.errors = impute.errors,

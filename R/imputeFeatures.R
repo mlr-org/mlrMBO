@@ -3,9 +3,7 @@
 #   method = median: NAs are replaced with median and extra col is added where imputation was done
 # for factor columns:
 #   NAs are coded as a new level
-
-#FIXME miss should probably be defined in control
-imputeFeatures = function(data, par.set, control, na.string="miss") {
+imputeFeatures = function(data, par.set, control) {
   cnd = colnames(data)
   upp = 2 * getUpper(par.set, with.nr=TRUE)
   pids = getParamIds(par.set, repeated=TRUE, with.nr=TRUE)
@@ -22,8 +20,8 @@ imputeFeatures = function(data, par.set, control, na.string="miss") {
     } else if (is.factor(x)) {
       inds = is.na(x)
       if (any(inds)) {
-        levels(x) = c(levels(x), na.string)
-        return(replace(x, inds, na.string))
+        levels(x) = c(levels(x), control$na.string)
+        return(replace(x, inds, control$na.string))
       }
     }
     return(x)
