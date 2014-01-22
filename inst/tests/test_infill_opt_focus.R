@@ -18,8 +18,8 @@ test_that("simple random search, no dependencies, no focussing", {
   )
 
   learner = makeLearner("regr.randomForest")
-  ctrl = makeMBOControl(init.design.points=50, iters=2, infill.opt="random",
-    infill.opt.restarts=1, infill.opt.random.maxit=1, infill.opt.random.points=50)
+  ctrl = makeMBOControl(init.design.points=50, iters=2, infill.opt="focussearch",
+    infill.opt.restarts=1, infill.opt.focussearch.maxit=1, infill.opt.focussearch.points=50)
   or = mbo(f, ps, learner=learner, control=ctrl, show.info=FALSE)
   expect_true(!is.na(or$y))
 })
@@ -38,8 +38,8 @@ test_that("dependent params, but no focussing", {
   )
 
   learner = makeLearner("regr.randomForest")
-  ctrl = makeMBOControl(init.design.points=50, iters=2, infill.opt="random",
-    infill.opt.restarts=1, infill.opt.random.maxit=1, infill.opt.random.points=1000)
+  ctrl = makeMBOControl(init.design.points=50, iters=2, infill.opt="focussearch",
+    infill.opt.restarts=1, infill.opt.focussearch.maxit=1, infill.opt.focussearch.points=1000)
   or = mbo(f, ps, learner=learner, control=ctrl, show.info=FALSE)
   expect_true(!is.na(or$y))
 })
@@ -71,15 +71,15 @@ test_that("complex param space, dependencies, focussing, restarts", {
     makeDiscreteParam("discA", values=c("m", "w"), requires=quote(disc2 == "a")),
     makeNumericParam("realB", lower=-100, upper=100, requires=quote(disc2 == "b")),
     makeDiscreteParam("discB", values=c("R", "NR"), requires=quote(disc2 == "b")),
-    makeNumericParam("realBR", lower=0, upper=2*pi, 
+    makeNumericParam("realBR", lower=0, upper=2*pi,
       requires=quote(identical(discB, "R") && identical(disc2, "b"))),
     makeNumericParam("realBNR", lower=0, upper=2*pi,
       requires=quote(identical(discB, "NR") && identical(disc2, "b")))
   )
 
   learner = makeLearner("regr.randomForest", predict.type="se")
-  ctrl = makeMBOControl(init.design.points=50, iters=2, infill.crit="ei", infill.opt="random", 
-    infill.opt.restarts=2L, infill.opt.random.maxit=2L, infill.opt.random.points=100)
+  ctrl = makeMBOControl(init.design.points=50, iters=2, infill.crit="ei", infill.opt="focussearch",
+    infill.opt.restarts=2L, infill.opt.focussearch.maxit=2L, infill.opt.focussearch.points=100)
   or = mbo(f, ps, learner=learner, control=ctrl, show.info=FALSE)
   expect_true(!is.na(or$y))
 })

@@ -67,7 +67,7 @@ mbo = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, ...)
   } else {
     # sanity check: are paramter values and colnames of design consistent?
     cns = colnames(design)
-    if(!setequal(cns, rep.pids))
+    if(!setequal(setdiff(cns, y.name), rep.pids))
       stop("Column names of design 'design' must match names of parameters in 'par.set'!")
 
     design.x = design

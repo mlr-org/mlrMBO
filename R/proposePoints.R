@@ -21,9 +21,9 @@ proposePoints = function(model, par.set, control, opt.path) {
     infill.crit.fun = getInfillCritFunction(control$infill.crit)
 
     # determine infill optimization strategy
-    infill.opt.fun = switch(control$infill.opt.fun,  
+    infill.opt.fun = switch(control$infill.opt,
       cmaes = infillOptCMAES,
-      focus.search = infillOptFocus,
+      focussearch = infillOptFocus,
       ea = infillOptEA
       #EI       = infillOptEI
     )

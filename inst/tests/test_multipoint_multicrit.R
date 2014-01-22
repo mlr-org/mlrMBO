@@ -1,8 +1,8 @@
 context("multipoint multicrit")
 
 test_that("multipoint multicrit", {
-  f = generate_branin_function()
-  ps = makeNumericParamSet(lower=lower_bounds(f), upper=upper_bounds(f))
+  f = branin
+  ps = makeNumericParamSet(len=2L, lower=0, upper=1)
   lrn = makeLearner("regr.km", predict.type="se", covtype="matern3_2")
   
   #FIXME how can we test this better?
@@ -20,7 +20,7 @@ test_that("multipoint multicrit", {
         
         res = mbo(makeMBOFunction(f), par.set=ps, learner=lrn, control=ctrl)
         
-        gap = res$y - global_minimum(f)$value
+        gap = res$y - 0.3979
         #expect_true(gap < 0.1)
       }
     }

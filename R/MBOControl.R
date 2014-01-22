@@ -39,25 +39,25 @@
 #'   Lambda parameter for lower confidence bound infill criterion.
 #'   Only used if \code{infill.crit="lcb"}, ignored otherwise.
 #'   Deafult is 1.
-#' @param infill.opt.fun [\code{character(1)}]\cr
+#' @param infill.opt [\code{character(1)}]\cr
 #'   How should SINGLE points be proposed by using the surrogate model. Possible values are:
-#'  \dQuote{focus.search}: In several iteration steps the parameter space is
+#'  \dQuote{focussearch}: In several iteration steps the parameter space is
 #'   focused on an especial promising region according to infill criterion.
 #'   \dQuote{cmaes}: Use CMAES to optimize infill criterion.
 #'   \dQuote{ea}: Use an (mu+1) EA to optimize infill criterion.
-#'   Default is \dQuote{focus.search}.
+#'   Default is \dQuote{focussearch}.
 #' @param infill.opt.restarts [\code{integer(1)}]\cr
 #'   Number of independent restarts for optimizer of infill criterion.
-#'   If \code{infill.opt.fun="cmaes"} the first start point for the optimizer is always the
+#'   If \code{infill.opt="cmaes"} the first start point for the optimizer is always the
 #'   currently best point in the design of already visited points.
 #'   Subsequent restarts are started at random points.
 #'   Default is 1.
-#' @param infill.opt.focus.maxit [\code{integer(1)}]\cr
-#'   For \code{infill.opt = "focus.search"}:
+#' @param infill.opt.focussearch.maxit [\code{integer(1)}]\cr
+#'   For \code{infill.opt = "focussearch"}:
 #'   Number of iteration to shrink local focus.
 #'   Default is 5.
-#' @param infill.opt.focus.points [\code{integer(1)}]\cr
-#'   For \code{infill.opt = "focus.search"}:
+#' @param infill.opt.focussearch.points [\code{integer(1)}]\cr
+#'   For \code{infill.opt = "focussearch"}:
 #'   Number of points in each iteration of the focus search optimizer.
 #'   Default is 10000.
 #' @param infill.opt.cmaes.control [\code{list}]\cr
@@ -199,8 +199,8 @@
 makeMBOControl = function(minimize=TRUE, noisy=FALSE, init.design.points=20L,
   init.design.fun=maximinLHS, init.design.args=list(), iters=10L, propose.points=1L,
   infill.crit="mean", infill.crit.lcb.lambda=1,
-  infill.opt.fun="focus.search", infill.opt.restarts=1L,
-  infill.opt.focus.maxit=5L, infill.opt.focus.points=10000L,
+  infill.opt="focussearch", infill.opt.restarts=1L,
+  infill.opt.focussearch.maxit=5L, infill.opt.focussearch.points=10000L,
   infill.opt.cmaes.control=list(),
   infill.opt.ea.maxit=500L, infill.opt.ea.mu=10L,
   infill.opt.ea.sbx.eta=15, infill.opt.ea.sbx.p=0.5,
@@ -237,14 +237,14 @@ makeMBOControl = function(minimize=TRUE, noisy=FALSE, init.design.points=20L,
 
   checkArg(infill.crit, choices=c("mean", "ei", "aei", "lcb"))
   checkArg(infill.crit.lcb.lambda, "numeric", len=1L, na.ok=FALSE, lower=0)
-  checkArg(infill.opt.fun, choices=c("focus.search", "cmaes", "ea"))
+  checkArg(infill.opt, choices=c("focussearch", "cmaes", "ea"))
   infill.opt.restarts = convertInteger(infill.opt.restarts)
   checkArg(infill.opt.restarts, "integer", len=1L, na.ok=FALSE)
 
-  infill.opt.focus.maxit = convertInteger(infill.opt.focus.maxit)
-  checkArg(infill.opt.focus.maxit, "integer", len=1L, na.ok=FALSE, lower=1L)
-  infill.opt.focus.points = convertInteger(infill.opt.focus.points)
-  checkArg(infill.opt.focus.points, "integer", len=1L, na.ok=FALSE, lower=1L)
+  infill.opt.focussearch.maxit = convertInteger(infill.opt.focussearch.maxit)
+  checkArg(infill.opt.focussearch.maxit, "integer", len=1L, na.ok=FALSE, lower=1L)
+  infill.opt.focussearch.points = convertInteger(infill.opt.focussearch.points)
+  checkArg(infill.opt.focussearch.points, "integer", len=1L, na.ok=FALSE, lower=1L)
   checkArg(infill.opt.cmaes.control, "list")
 
   infill.opt.ea.maxit = convertInteger(infill.opt.ea.maxit)
@@ -310,10 +310,10 @@ makeMBOControl = function(minimize=TRUE, noisy=FALSE, init.design.points=20L,
     propose.points = propose.points,
     infill.crit = infill.crit,
     infill.crit.lcb.lambda = infill.crit.lcb.lambda,
-    infill.opt.fun = infill.opt.fun,
+    infill.opt = infill.opt,
     infill.opt.restarts = infill.opt.restarts,
-    infill.opt.focus.maxit = infill.opt.focus.maxit,
-    infill.opt.focus.points = infill.opt.focus.points,
+    infill.opt.focussearch.maxit = infill.opt.focussearch.maxit,
+    infill.opt.focussearch.points = infill.opt.focussearch.points,
     infill.opt.cmaes.control = infill.opt.cmaes.control,
     infill.opt.ea.maxit = infill.opt.ea.maxit,
     infill.opt.ea.mu = infill.opt.ea.mu,

@@ -6,7 +6,7 @@ test_that("mbo works with resampling", {
     makeNumericVectorParam("x", len=2, lower=0, upper=1)
   )
   learner = makeLearner("regr.randomForest")
-  ctrl = makeMBOControl(iters=5, infill.opt.random.points=10, resample.at=c(1,3))
+  ctrl = makeMBOControl(iters=5, infill.opt.focussearch.points=10, resample.at=c(1,3))
   or = mbo(f, ps, des=NULL, learner, ctrl)
   x = or$resample
   expect_true(is.list(x) && length(x) == 2)
