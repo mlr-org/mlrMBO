@@ -2,7 +2,7 @@
 \alias{makeTrafoFunction}
 \title{Create transformation function for MBOExampleRun.}
 \usage{
-  makeTrafoFunction(name, fun)
+makeTrafoFunction(name, fun)
 }
 \arguments{
   \item{name}{[\code{character(1)}]\cr Name of the
@@ -12,9 +12,9 @@
   a numeric vector.}
 }
 \value{
-  Object of type MBOTrafoFunction.
+Object of type MBOTrafoFunction.
 }
 \description{
-  Create transformation function for MBOExampleRun.
+Create transformation function for MBOExampleRun.
 }
 

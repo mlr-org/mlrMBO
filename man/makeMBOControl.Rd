@@ -6,7 +6,7 @@
 makeMBOControl(minimize = TRUE, noisy = FALSE, init.design.points = 20L,
   init.design.fun = maximinLHS, init.design.args = list(), iters = 10L,
   propose.points = 1L, infill.crit = "mean", infill.crit.lcb.lambda = 1,
-  infill.opt.fun = "focus.serach", infill.opt.restarts = 1L,
+  infill.opt.fun = "focus.search", infill.opt.restarts = 1L,
   infill.opt.focus.maxit = 5L, infill.opt.focus.points = 10000L,
   infill.opt.cmaes.control = list(), infill.opt.ea.maxit = 500L,
   infill.opt.ea.mu = 10L, infill.opt.ea.sbx.eta = 15,
@@ -18,10 +18,11 @@ makeMBOControl(minimize = TRUE, noisy = FALSE, init.design.points = 20L,
   multipoint.multicrit.maxit = 100L, multipoint.multicrit.sbx.eta = 15,
   multipoint.multicrit.sbx.p = 1, multipoint.multicrit.pm.eta = 15,
   multipoint.multicrit.pm.p = 1, final.method = "best.true.y",
-  final.evals = 0L, y.name = "y", impute, impute.errors = FALSE,
-  suppress.eval.errors = TRUE, save.model.at = iters,
-  resample.at = integer(0), resample.desc = makeResampleDesc("CV", iter =
-  10), resample.measures = list(mse), on.learner.error = "warn",
+  final.evals = 0L, na.string = "miss", y.name = "y", impute,
+  impute.errors = FALSE, suppress.eval.errors = TRUE,
+  save.model.at = iters, resample.at = integer(0),
+  resample.desc = makeResampleDesc("CV", iter = 10),
+  resample.measures = list(mse), on.learner.error = "warn",
   show.learner.output = FALSE)
 }
 \arguments{
@@ -205,11 +206,11 @@ makeMBOControl(minimize = TRUE, noisy = FALSE, init.design.points = 20L,
   \item{final.method}{[\code{character(1)}]\cr How should
   the final point be proposed. Possible values are:
   \dQuote{best.true.y}: Return best point ever visited
-  according to true value of target function. Can be bad if
-  target function is noisy.  \dQuote{last.proposed}: Return
-  the last point proposed by the model.
+  according to true value of target function.  Can be bad
+  if target function is noisy.  \dQuote{last.proposed}:
+  Return the last point proposed by the model.
   \dQuote{best.predicted}: Use the final model to predict
-  all points ever visited and use the best one. This might
+  all points ever visited and use the best one.  This might
   average-out noisy function values.  Default is:
   \dQuote{best.true.y}.}
 

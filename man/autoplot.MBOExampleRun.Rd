@@ -2,9 +2,9 @@
 \alias{autoplot.MBOExampleRun}
 \title{Plot example run, either in 1D or 2D.}
 \usage{
-  autoplot.MBOExampleRun(object, iters, pause = TRUE,
-    densregion = TRUE, se.factor = 1, xlim, ylim,
-    point.size = 3, line.size = 1, trafo = NULL, ...)
+\method{autoplot}{MBOExampleRun}(object, iters, pause = TRUE,
+  densregion = TRUE, se.factor = 1, xlim, ylim, point.size = 3,
+  line.size = 1, trafo = NULL, ...)
 }
 \arguments{
   \item{object}{[\code{function}]\cr Objective function.}
@@ -59,19 +59,19 @@
   \item{...}{[\code{list}]\cr Further parameters.}
 }
 \value{
-  [\code{list}]\cr List containing seperate ggplot plots
-  for each iteration.
+[\code{list}]\cr List containing seperate ggplot plots for
+each iteration.
 }
 \description{
-  The plot will show the following elements per iteration:
-  - The true objective function (solid line). - The
-  surrogate approximation, represented by its mean
-  response. - Surrogate mean +- 1 standard deviation, from
-  local uncertainty. - Infill criterion.
+The plot will show the following elements per iteration: -
+The true objective function (solid line). - The surrogate
+approximation, represented by its mean response. -
+Surrogate mean +- 1 standard deviation, from local
+uncertainty. - Infill criterion.
 }
 \details{
-  In both plots the following elements are present -
-  Initial design points - Points from previous sequentail
-  iteraions - Proposed point in current iteration.
+In both plots the following elements are present - Initial
+design points - Points from previous sequentail iteraions -
+Proposed point in current iteration.
 }
 

@@ -2,11 +2,9 @@
 \alias{plot.MBOExampleRun}
 \title{Plot example run, either in 1D or 2D.}
 \usage{
-  \method{plot}{MBOExampleRun} (x, iters, pause = TRUE,
-    design.pch = c(19, 19, 19),
-    design.cols = c("black", "darkseagreen", "tomato"),
-    densregion = TRUE, se.factor1 = 1, se.factor2 = 2,
-    xlim, ylim, ...)
+\method{plot}{MBOExampleRun}(x, iters, pause = TRUE, design.pch = c(19, 19,
+  19), design.cols = c("black", "darkseagreen", "tomato"),
+  densregion = TRUE, se.factor1 = 1, se.factor2 = 2, xlim, ylim, ...)
 }
 \arguments{
   \item{x}{[\code{function}]\cr Objective function.  See}
@@ -65,20 +63,19 @@
   setting between plot iterations.}
 }
 \value{
-  Nothing.
+Nothing.
 }
 \description{
-  The plot will show the following elements per iteration:
-  (a) Above plot - The true objective function (solid
-  line). - The surrogate approximation, represented by its
-  mean response (dotted line). - Surrogate mean +- 1
-  standard deviation, from local uncertainty (dotted line).
-  (b) Lower plot - Infill criterion.
+The plot will show the following elements per iteration:
+(a) Above plot - The true objective function (solid line).
+- The surrogate approximation, represented by its mean
+response (dotted line). - Surrogate mean +- 1 standard
+deviation, from local uncertainty (dotted line). (b) Lower
+plot - Infill criterion.
 }
 \details{
-  In both plots the following elements are present -
-  Initial design points (black) - Points from previous
-  sequentail iteraions (green) - Proposed point in current
-  iteration.
+In both plots the following elements are present - Initial
+design points (black) - Points from previous sequentail
+iteraions (green) - Proposed point in current iteration.
 }
 
