@@ -8,7 +8,7 @@
 #'
 #' In both plots the following elements are present
 #' - Initial design points
-#' - Points from previous sequentail iteraions
+#' - Points from previous sequential iterations
 #' - Proposed point in current iteration.
 #' @param object [\code{function}]\cr
 #'   Objective function.
@@ -21,12 +21,12 @@
 #' @param densregion [\code{logical(1)}]\cr
 #'   Should the background be shaded by the density of the
 #'   posterior distribution?
-#'   Looks nice, but is currently pretty slow. You might wnat to
+#'   Looks nice, but is currently pretty slow. You might want to
 #'   disable this if you want to do stuff more interactively.
 #'   Default is \code{TRUE}.
 #' @param se.factor [\code{numeric(1)}]\cr
 #'   If the model provides local standard error estimation,
-#'   in addition to the mean respone \code{yhat(x) +- se.factor * se(x)}
+#'   in addition to the mean response \code{yhat(x) +- se.factor * se(x)}
 #'   is plotted above and below.
 #'   Default is 1.
 #' @param xlim [\code{numeric(2)}]\cr
@@ -41,20 +41,21 @@
 #' @param point.size [\code{numeric(1)}]\cr
 #'   Point size for ploted points. Default ist 3.
 #' @param line.size [\code{numeric(1)}]\cr
-#'   Line width of the graphs of ploted functions.
+#'   Line width of the graphs of plotted functions.
 #' @param trafo [\code{list}]\cr
 #'   List of transformation functions of type \code{MBOTrafoFunction} for
 #'   the different plots.
-#'   For 1D: The list elements should be named with "y" (applied to objective function and model) or "crit"
-#'   (applied to the criterion). Only applied to plots with numeric parameters.
-#'   For 2D: The list should contain at least one element "y", "yhat", "crit" or "se". This way one can
-#'   specify different transformations for different plots. If a single function is provided, this function
-#'    is used for all plots.
-#FIXME if only these names are allowed, check them!
-#' @param ... [\code{list}]\cr
+#'   For 1D: The list elements should be named with \dQuote{y} (applied to objective function and model)
+#'   or \dQuote{crit} (applied to the criterion). Only applied to plots with numeric parameters.
+#'   For 2D: The list should contain at least one element \dQuote{y}, \dQuote{yhat}, \dQuote{crit}
+#'   or \dQuote{se}.
+#'   This way one can specify different transformations for different plots.
+#'   If a single function is provided, this function is used for all plots.
+#FIXME: if only these names are allowed, check them!
+#' @param ... [any]\cr
 #'   Further parameters.
-#' @return [\code{list}]\cr
-#'   List containing seperate ggplot plots for each iteration.
+#FIXME: what are they used for? Document!
+#' @return [\code{list}]. List containing separate ggplot plots for each iteration.
 #' @S3method autoplot MBOExampleRun
 #' @export
 autoplot.MBOExampleRun = function(object, iters, pause=TRUE, densregion=TRUE,

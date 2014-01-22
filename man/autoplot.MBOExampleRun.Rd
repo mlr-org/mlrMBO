@@ -18,12 +18,12 @@
   \item{densregion}{[\code{logical(1)}]\cr Should the
   background be shaded by the density of the posterior
   distribution?  Looks nice, but is currently pretty slow.
-  You might wnat to disable this if you want to do stuff
+  You might want to disable this if you want to do stuff
   more interactively.  Default is \code{TRUE}.}
 
   \item{se.factor}{[\code{numeric(1)}]\cr If the model
   provides local standard error estimation, in addition to
-  the mean respone \code{yhat(x) +- se.factor * se(x)} is
+  the mean response \code{yhat(x) +- se.factor * se(x)} is
   plotted above and below.  Default is 1.}
 
   \item{xlim}{[\code{numeric(2)}]\cr For 1D: \code{xlim}
@@ -43,23 +43,24 @@
   ploted points. Default ist 3.}
 
   \item{line.size}{[\code{numeric(1)}]\cr Line width of the
-  graphs of ploted functions.}
+  graphs of plotted functions.}
 
   \item{trafo}{[\code{list}]\cr List of transformation
   functions of type \code{MBOTrafoFunction} for the
   different plots.  For 1D: The list elements should be
-  named with "y" (applied to objective function and model)
-  or "crit" (applied to the criterion). Only applied to
-  plots with numeric parameters.  For 2D: The list should
-  contain at least one element "y", "yhat", "crit" or "se".
-  This way one can specify different transformations for
-  different plots. If a single function is provided, this
-  function is used for all plots.}
+  named with \dQuote{y} (applied to objective function and
+  model) or \dQuote{crit} (applied to the criterion). Only
+  applied to plots with numeric parameters.  For 2D: The
+  list should contain at least one element \dQuote{y},
+  \dQuote{yhat}, \dQuote{crit} or \dQuote{se}.  This way
+  one can specify different transformations for different
+  plots.  If a single function is provided, this function
+  is used for all plots.}
 
-  \item{...}{[\code{list}]\cr Further parameters.}
+  \item{...}{[any]\cr Further parameters.}
 }
 \value{
-[\code{list}]\cr List containing seperate ggplot plots for
+[\code{list}]. List containing separate ggplot plots for
 each iteration.
 }
 \description{
@@ -71,7 +72,7 @@ uncertainty. - Infill criterion.
 }
 \details{
 In both plots the following elements are present - Initial
-design points - Points from previous sequentail iteraions -
-Proposed point in current iteration.
+design points - Points from previous sequential iterations
+- Proposed point in current iteration.
 }
 
