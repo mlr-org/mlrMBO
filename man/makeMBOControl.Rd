@@ -6,8 +6,8 @@
 makeMBOControl(minimize = TRUE, noisy = FALSE, init.design.points = 20L,
   init.design.fun = maximinLHS, init.design.args = list(), iters = 10L,
   propose.points = 1L, infill.crit = "mean", infill.crit.lcb.lambda = 1,
-  infill.opt.fun = "focus.search", infill.opt.restarts = 1L,
-  infill.opt.focus.maxit = 5L, infill.opt.focus.points = 10000L,
+  infill.opt = "focussearch", infill.opt.restarts = 1L,
+  infill.opt.focussearch.maxit = 5L, infill.opt.focussearch.points = 10000L,
   infill.opt.cmaes.control = list(), infill.opt.ea.maxit = 500L,
   infill.opt.ea.mu = 10L, infill.opt.ea.sbx.eta = 15,
   infill.opt.ea.sbx.p = 0.5, infill.opt.ea.pm.eta = 15,
@@ -66,31 +66,31 @@ makeMBOControl(minimize = TRUE, noisy = FALSE, init.design.points = 20L,
   criterion.  Only used if \code{infill.crit="lcb"},
   ignored otherwise.  Deafult is 1.}
 
-  \item{infill.opt.fun}{[\code{character(1)}]\cr How should
+  \item{infill.opt}{[\code{character(1)}]\cr How should
   SINGLE points be proposed by using the surrogate model.
-  Possible values are: \dQuote{focus.search}: In several
+  Possible values are: \dQuote{focussearch}: In several
   iteration steps the parameter space is focused on an
   especial promising region according to infill criterion.
   \dQuote{cmaes}: Use CMAES to optimize infill criterion.
   \dQuote{ea}: Use an (mu+1) EA to optimize infill
-  criterion.  Default is \dQuote{focus.search}.}
+  criterion.  Default is \dQuote{focussearch}.}
 
   \item{infill.opt.restarts}{[\code{integer(1)}]\cr Number
   of independent restarts for optimizer of infill
-  criterion.  If \code{infill.opt.fun="cmaes"} the first
-  start point for the optimizer is always the currently
-  best point in the design of already visited points.
+  criterion.  If \code{infill.opt="cmaes"} the first start
+  point for the optimizer is always the currently best
+  point in the design of already visited points.
   Subsequent restarts are started at random points.
   Default is 1.}
 
-  \item{infill.opt.focus.maxit}{[\code{integer(1)}]\cr For
-  \code{infill.opt = "focus.search"}: Number of iteration
-  to shrink local focus.  Default is 5.}
+  \item{infill.opt.focussearch.maxit}{[\code{integer(1)}]\cr
+  For \code{infill.opt = "focussearch"}: Number of
+  iteration to shrink local focus.  Default is 5.}
 
-  \item{infill.opt.focus.points}{[\code{integer(1)}]\cr For
-  \code{infill.opt = "focus.search"}: Number of points in
-  each iteration of the focus search optimizer.  Default is
-  10000.}
+  \item{infill.opt.focussearch.points}{[\code{integer(1)}]\cr
+  For \code{infill.opt = "focussearch"}: Number of points
+  in each iteration of the focus search optimizer.  Default
+  is 10000.}
 
   \item{infill.opt.cmaes.control}{[\code{list}]\cr For
   \code{infill.opt = "cmaes"}: Control argument for cmaes
