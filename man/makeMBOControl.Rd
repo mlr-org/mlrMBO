@@ -18,11 +18,10 @@ makeMBOControl(minimize = TRUE, noisy = FALSE, init.design.points = 20L,
   multipoint.multicrit.maxit = 100L, multipoint.multicrit.sbx.eta = 15,
   multipoint.multicrit.sbx.p = 1, multipoint.multicrit.pm.eta = 15,
   multipoint.multicrit.pm.p = 1, final.method = "best.true.y",
-  final.evals = 0L, na.string = "miss", y.name = "y", impute,
-  impute.errors = FALSE, suppress.eval.errors = TRUE,
-  save.model.at = iters, resample.at = integer(0),
-  resample.desc = makeResampleDesc("CV", iter = 10),
-  resample.measures = list(mse), on.learner.error = "warn",
+  final.evals = 0L, y.name = "y", impute, impute.errors = FALSE,
+  suppress.eval.errors = TRUE, save.model.at = iters,
+  resample.at = integer(0), resample.desc = makeResampleDesc("CV", iter =
+  10), resample.measures = list(mse), on.learner.error = "warn",
   show.learner.output = FALSE)
 }
 \arguments{

@@ -20,8 +20,8 @@ imputeFeatures = function(data, par.set, control) {
     } else if (is.factor(x)) {
       inds = is.na(x)
       if (any(inds)) {
-        levels(x) = c(levels(x), control$na.string)
-        return(replace(x, inds, control$na.string))
+        levels(x) = c(levels(x), "__miss__")
+        return(replace(x, inds, "__miss__"))
       }
     }
     return(x)
