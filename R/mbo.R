@@ -71,8 +71,10 @@ mbo = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, ...)
       stop("Column names of design 'design' must match names of parameters in 'par.set'!")
 
     design.x = design
-    if (attr(design, "trafo"))
-      stop("Design must not be transformed before call to 'mbo'. Set 'trafo' to FALSE in generateDesign.")
+    # if no trafo attribute provided we act on the assumption that the design is not transformed
+    if ("trafo" %nin% attributes(design.x)) {
+      attr(design.x, "trafo") = FALSE
+    }
   }
 
   # compute y-values if missing or initial design generated above
