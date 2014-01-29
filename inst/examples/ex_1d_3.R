@@ -30,8 +30,8 @@ ps = makeParamSet(
 )
 
 
-ctrl = makeMBOControl(init.design.points=20, iters=5, infill.crit="ei",                    
-  infill.opt.random.points=100, noisy=TRUE)
+ctrl = makeMBOControl(init.design.points=20, iters=5, infill.crit="ei",
+  infill.opt.focussearch.points=100, noisy=TRUE)
 
 lrn = makeLearner("regr.randomForest", predict.type="se")
 

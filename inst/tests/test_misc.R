@@ -8,14 +8,14 @@
 #     #print(x)
 #     x$x1 - is.null(x$x2) * 100 + 20 * (x$x3 == "a")
 #   }
-#   
+#
 #   easy = makeParamSet(
 #     makeNumericParam("x1", lower = 0, upper = 100),
 #     makeNumericParam("x2", lower = 50, upper = 100, requires = quote(x1 <= 50)),
 #     makeDiscreteParam("x3", values = c("a", "blasdfkjaslkdjaslkdjflkjsdafj")))
-#   
+#
 #   surrogate = makeLearner("regr.randomForest")
-#   ctrl = makeMBOControl(minimize=FALSE, infill.crit="mean", iters=30, infill.opt.random.points=100)  
+#   ctrl = makeMBOControl(minimize=FALSE, infill.crit="mean", iters=30, infill.opt.focussearch.points=100)
 #   opt = mbo(fit, easy, learner = surrogate, control= ctrl)
 #   expect_true(opt$x$x1 > 45 && opt$x$x1 <= 50 && is.na(opt$x$x2) && opt$x$x3 == "a" && opt$y > 68 && opt$y <= 70)
 #})
@@ -26,7 +26,7 @@
 #       makeLogicalParam("use.clinical"),
 #       makeDiscreteParam("filter", values = c("none", "var", "uni", "kratz", "top21", "fmrmr", "pamr")),
 #       makeDiscreteParam("model", values = c("coxboost", "glmnet", "rfsrc", "penalized", "rpart")),
-# 
+#
 #       makeLogicalParam("filter.use.clinical",
 #         requires = quote(filter == "uni" && isTRUE(use.clinical))),
 #       makeNumericParam("filter.perc", lower=0, upper=1/3,
@@ -39,7 +39,7 @@
 #         requires = quote(filter == "fmrmr")),
 #       makeIntegerParam("filter.pamr.ngroup.survival", lower = 2L, upper = 3L,
 #         requires = quote(filter == "pamr")),
-# 
+#
 #       makeNumericParam("coxboost.stepsize.factor", lower=0.1, upper=2,
 #         requires = quote(model == "coxboost")),
 #       makeNumericParam("coxboost.penalty", lower = 0.1, upper = 300,
@@ -61,12 +61,12 @@
 #       makeNumericParam("rpart.cp", lower=0.001, upper=0.1,
 #         requires = quote(model == "rpart"))
 #     )
-# 
+#
 #     fit = function(x) {
 #       sum(sapply(x, nchar))
 #     }
-# 
+#
 #     surrogate = makeLearner("regr.randomForest")
-#     opt = mbo(fit, ps, learner = surrogate, control = makeMBOControl(infill.opt.random.points=10))
+#     opt = mbo(fit, ps, learner = surrogate, control = makeMBOControl(infill.opt.focussearch.points=10))
 #   }
 # })

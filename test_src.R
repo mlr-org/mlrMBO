@@ -43,9 +43,9 @@ for (i in 1:5) {
   # makeDiscreteParam("x4", values=list(v=iris, w="123"), requires=quote(x1=="b"))
 # )
 
-# ctrl = makeMBOControl(minimize=TRUE, init.design.points=6, iters=5, propose.points=1, 
-  # infill.crit="ei", infill.opt="random", infill.opt.restarts=3L,
-  # infill.opt.random.maxit=5, infill.opt.random.points=1000L)
+# ctrl = makeMBOControl(minimize=TRUE, init.design.points=6, iters=5, propose.points=1,
+  # infill.crit="ei", infill.opt="focussearch", infill.opt.restarts=3L,
+  # infill.opt.focussearch.maxit=5, infill.opt.focussearch.points=1000L)
 
 # lrn = makeLearner("regr.randomForest", predict.type="se", fix.factors=TRUE)
 
