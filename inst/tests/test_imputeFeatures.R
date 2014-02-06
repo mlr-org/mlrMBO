@@ -29,8 +29,9 @@ test_that("imputeFeatures", {
   des = generateDesign(10, ps, randomLHS)
   des2 = imputeFeatures(des, ps, list(feature.impute="up"))
 
-  imp.values = list(2000, 200, "miss", 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000,
-    10, 20, 40, 2, "miss", 200, "miss", 200, 200, "miss", 200, "miss", 4*pi, 4*pi)
+  na.string = "__miss__"
+  imp.values = list(2000, 200, na.string, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000,
+    10, 20, 40, 2, na.string, 200, na.string, 200, 200, na.string, 200, na.string, 4*pi, 4*pi)
 
   for(i in seq_along(colnames(des))) {
     nas = des2[is.na(des[[i]]),i]

@@ -20,12 +20,12 @@ configureMlr(show.learner.output=FALSE)
 
 # ps = makeNumericParamSet(lower=3, upper=13, len=1)
 
-# ctrl = makeMBOControl(init.design.points=6, iters=10, propose.points=1, 
-#   infill.crit="ei", infill.opt="random", infill.opt.random.points=500)
+# ctrl = makeMBOControl(init.design.points=6, iters=10, propose.points=1,
+#   infill.crit="ei", infill.opt="focussearch", infill.opt.focussearch.points=500)
 
 # lrn = makeLearner("regr.km", predict.type="se", covtype="matern3_2")
 
-# run = exampleRun(objfun, ps, global.opt=-1, learner=lrn, 
+# run = exampleRun(objfun, ps, global.opt=-1, learner=lrn,
 #   control=ctrl, points.per.dim=100)
 
 # print(run)
@@ -48,7 +48,7 @@ configureMlr(show.learner.output=FALSE)
 # 	makeDiscreteParam("foo", values = c("a", "b", "c"))
 # )
 
-# ctrl = makeMBOControl(init.design.points=20, iters=5, infill.opt.random.points=100, noisy=TRUE)
+# ctrl = makeMBOControl(init.design.points=20, iters=5, infill.opt.focussearch.points=100, noisy=TRUE)
 
 # run = exampleRun(objfun, par.set = ps, control=ctrl, points.per.dim=50)
 
@@ -61,8 +61,8 @@ configureMlr(show.learner.output=FALSE)
 
 objfun = generate_branin_function()
 
-ctrl = makeMBOControl(init.design.points=10, iters=10, propose.points=1, 
-  infill.crit="ei", infill.opt="random", infill.opt.random.points=2000)
+ctrl = makeMBOControl(init.design.points=10, iters=10, propose.points=1,
+  infill.crit="ei", infill.opt="focussearch", infill.opt.focussearch.points=2000)
 
 lrn = makeLearner("regr.km", predict.type="se", covtype="matern3_2")
 

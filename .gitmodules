@@ -1,0 +1,3 @@
+[submodule "makeR"]
+	path = makeR
+	url = git@github.com:tudo-r/makeR.git

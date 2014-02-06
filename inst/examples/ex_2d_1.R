@@ -16,8 +16,8 @@ configureMlr(show.learner.output=FALSE)
 
 objfun = generate_branin_function()
 
-ctrl = makeMBOControl(init.design.points=10, iters=10, propose.points=1, 
-  infill.crit="ei", infill.opt="random", infill.opt.random.points=2000)
+ctrl = makeMBOControl(init.design.points=10, iters=10, propose.points=1,
+  infill.crit="ei", infill.opt="focussearch", infill.opt.focussearch.points=2000)
 
 lrn = makeLearner("regr.km", predict.type="se", covtype="matern3_2")
 

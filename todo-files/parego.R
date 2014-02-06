@@ -10,12 +10,12 @@ load_all("skel", reset=TRUE)
 makeAugmentedTschebycheff = function(design, y.ids) {
   ydim = length(y.ids)
   rho = 0.05
-  lambda = runif(ydim, min=0, max=1) 
+  lambda = runif(ydim, min=0, max=1)
   lambda = lambda / sum(lambda)
   cns = c("y1", "y2")
   Y = design[,cns]
   new.target = apply(Y, 1, function(y) {
-    a = lambda * y 
+    a = lambda * y
     max(a) + rho * sum(a)
   })
   X = design[, setdiff(colnames(design), y.ids)]
@@ -36,15 +36,15 @@ parego = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, .
 	for (i in 1:nrow(design)) {
     addOptPathEl(opt.path, x=list(x=as.numeric(as.list(X[i,]))), y=as.numeric(Y[i,]), dob=0)
 	}
-  
+
 	# do the mbo magic
   for (loop in seq_len(control$iters)) {
     print(loop)
-    
+
     newdes = makeAugmentedTschebycheff(design, y.ids)
     rt = makeRegrTask(data=newdes, target="y")
     model = train(learner, rt)
-    
+
 		# propose new points and evaluate target function
     prop.design = proposePoints(model, par.set, control, newdes)
     xs = lapply(seq_len(nrow(prop.design)), function(i) dfRowToList(prop.design, par.set, i))
@@ -70,8 +70,8 @@ des = generateDesign(10, ps)
 y = setColNames(t(apply(des, 1, objfun1)), c("y1", "y2"))
 des = cbind(des, y)
 lrn = makeLearner("regr.km", covtype="matern3_2", predict.type="se")
-ctrl = makeMBOControl(iters=60, propose.points=1, infill.crit="ei", 
-  infill.opt="random", infill.opt.random.points=1000)
+ctrl = makeMBOControl(iters=60, propose.points=1, infill.crit="ei",
+  infill.opt="focussearch", infill.opt.focussearch.points=1000)
 
 op = parego(objfun2, ps, des, lrn, ctrl)
 n = nrow(op)
