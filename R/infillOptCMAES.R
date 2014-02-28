@@ -14,6 +14,8 @@
 #   Parameter set.
 # @param opt.path [\code{\link[ParamHelpers{OptPath}}]\cr
 #   Optimization path / archive.
+# @param ... [\code{ANY}]\cr
+#   Additional arguments passed to \code{infill.crit}.
 # @return [\code{data.frame}]. One proposed point that should be evaluated.
 
 #FIXME we need other optimizers for mixed, depenent param spaces. dont forget refactorNAS then

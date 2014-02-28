@@ -4,8 +4,6 @@
 #
 # @param infill.crit [\code{function}]\cr
 #   Infill criterion function.
-# @param design [\code{data.frame}]\cr
-#   Design of already visited points.
 # @param model [\code{\link{WrappedModel}}]\cr
 #   Model fitted on design.
 # @param control [\code{\link{MBOControl}}]\cr
@@ -14,6 +12,10 @@
 #   Parameter set.
 # @param opt.path [\code{\link[ParamHelpers{OptPath}}]\cr
 #   Optimization path / archive.
+# @param design [\code{data.frame}]\cr
+#   Design of already visited points.
+# @param ... [\code{ANY}]\cr
+#   Additional arguments passed to \code{infill.crit}.
 # @return [\code{data.frame}]. One proposed point that should be evaluated.
 
 #FIXME we need other optimizers for mixed, depenent param spaces. dont forget refactorNAS then
@@ -34,7 +36,7 @@ infillOptCMAES = function(infill.crit, model, control, par.set, opt.path, design
   f = function(x) {
     newdata = as.data.frame(t(x))
     colnames(newdata) = rep.pids
-    infill.crit(newdata, model, control, par.set, design)
+    infill.crit(newdata, model, control, par.set, design, ...)
   }
 
   results = vector("list", control$infill.opt.restarts)
