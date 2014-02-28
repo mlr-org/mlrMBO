@@ -22,7 +22,7 @@
 # the first start is always at the best point of the current opt.path.
 # works only for numerics and integers, latter are simply rounded.
 
-infillOptCMAES = function(infill.crit, model, control, par.set, opt.path, design) {
+infillOptCMAES = function(infill.crit, model, control, par.set, opt.path, design, ...) {
   # extract lower and upper bound for params
   low = getLower(par.set)
   upp = getUpper(par.set)
@@ -54,7 +54,7 @@ infillOptCMAES = function(infill.crit, model, control, par.set, opt.path, design
 }
 
 # FIXME: allow DiceOptim optimizer later...
-# infillOptEI = function(infill.crit, model, control, par.set, opt.path) {
+# infillOptEI = function(infill.crit, model, control, par.set, opt.path, ...) {
 #   # extract lower and upper bound for params
 #   low = getLower(par.set)
 #   upp = getUpper(par.set)
@@ -65,7 +65,4 @@ infillOptCMAES = function(infill.crit, model, control, par.set, opt.path, design
 #     lower=low, upper=upp, parinit=start)$par)
 #   as.data.frame(design)
 # }
-
-
-
 

@@ -46,7 +46,7 @@ nds_1d_selection = function(values, n=1, index=1, ...) {
 # Currently only numerical paramaters are handled, for them pm_operator and
 # sbx_operator from emoa are used in the EA.
 #
-multipointInfillOptMulticrit = function(model, control, par.set, opt.path, design) {
+multipointInfillOptMulticrit = function(model, control, par.set, opt.path, design, ...) {
   requirePackages("emoa", why="multipointInfillOptMulticrit")
   n = control$propose.points
   objective = control$multipoint.multicrit.objective

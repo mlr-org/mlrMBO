@@ -4,7 +4,7 @@
 
 #FIXME potentially allow more than 1 kid
 #FIXME check what this optimizer can do in checkStuff and allow rounding of integers
-infillOptEA = function(infill.crit, model, control, par.set, opt.path, design) {
+infillOptEA = function(infill.crit, model, control, par.set, opt.path, design, ...) {
   requirePackages("emoa", why="infillOptEA")
 
   # get constants and init shit
