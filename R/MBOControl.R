@@ -3,12 +3,15 @@
 
 #' Creates a control object for MBO optimization.
 #'
-#' @param minimize [\code{logical(1)}]\cr
-#'   Should target function be minimized?
-#'   Default is \code{TRUE}.
+#' @param minimize [\code{logical}]\cr
+#'   Should target functions be minimized? One value par target function
+#'   Default is \code{TRUE} for ever target function.
 #' @param noisy [\code{logical(1)}]\cr
 #'   Is the target function noisy?
 #'   Default is \code{FALSE}.
+#' @param number.of.targets [\code{integer(1)}]
+#'   How many target functions does the function have? Greater than one for
+#'   multicriteria optimization
 #' @param init.design.points [\code{integer(1)}]\cr
 #'   Number of points in inital design.
 #'   Only used if no design is given in \code{mbo} function.
@@ -147,6 +150,12 @@
 #' @param multipoint.multicrit.pm.p [\code{numeric(1)}]\cr
 #'   Probability of 1-point mutation, see \code{\link[emoa]{pm_operator}}.
 #'   Default is 1
+#' @param parEGO.s [\code{integer(1)}]\cr
+#'   Parameter of parEGO - controls the number of weighting vectors. Default is
+#'   20 (guessed value).
+#' @param parEGO.rho [\code{numeric(1)}]\cr
+#'   Parameter of parEGO - factor for Tchebycheff function. Default 0.05
+#'   suggested in parEGO paper.
 #' @param final.method [\code{character(1)}]\cr
 #'   How should the final point be proposed. Possible values are:
 #'   \dQuote{best.true.y}: Return best point ever visited according to true value of target function.
@@ -158,9 +167,9 @@
 #' @param final.evals [\code{integer(1)}]\cr
 #'   How many target function evals should be done at final point to reduce noise?
 #'   Default is 0.
-#' @param y.name [\code{character(1)}]\cr
-#'   Name of y-column for target values in optimization path.
-#'   Default is \dQuote{y}.
+#' @param y.name [\code{character}]\cr
+#'   Vector for names of y-columns for target values in optimization path.
+#'   Default is \dQuote{y_i}, i = 1, ..., number.of.targets.
 #' @param impute [\code{function(x, y, opt.path)}]\cr
 #'   Function that determines the return value in case the original fitness functions fails
 #'   (for whatever reason) and because of this failure returns a NA, NaN, Inf.
@@ -198,9 +207,10 @@
 #' @return [\code{\link{MBOControl}}].
 #' @aliases MBOControl
 #' @export
-makeMBOControl = function(minimize=TRUE, noisy=FALSE, init.design.points=20L,
-  init.design.fun=maximinLHS, init.design.args=list(), iters=10L, propose.points=1L,
-  infill.crit="mean", infill.crit.lcb.lambda=1,
+makeMBOControl = function(number.of.targets=1L,
+  minimize=rep(TRUE, number.of.targets), noisy=FALSE,
+  init.design.points=20L, init.design.fun=maximinLHS, init.design.args=list(), 
+  iters=10L, propose.points=1L, infill.crit="mean", infill.crit.lcb.lambda=1,
   infill.opt="focussearch", infill.opt.restarts=1L,
   infill.opt.focussearch.maxit=5L, infill.opt.focussearch.points=10000L,
   infill.opt.cmaes.control=list(),
@@ -215,15 +225,17 @@ makeMBOControl = function(minimize=TRUE, noisy=FALSE, init.design.points=20L,
   multipoint.multicrit.maxit=100L,
   multipoint.multicrit.sbx.eta=15, multipoint.multicrit.sbx.p=1,
   multipoint.multicrit.pm.eta=15, multipoint.multicrit.pm.p=1,
+  parEGO.s=20L, parEGO.rho=0.05,
   final.method="best.true.y", final.evals=0L,
-  y.name="y", impute, impute.errors=FALSE, suppress.eval.errors=TRUE, save.model.at=iters,
+  y.name = "y",
+  impute, impute.errors=FALSE, suppress.eval.errors=TRUE, save.model.at=iters,
   resample.at = integer(0), resample.desc = makeResampleDesc("CV", iter=10), resample.measures=list(mse),
   on.learner.error="warn", show.learner.output=FALSE
 ) {
 
   requirePackages("lhs", "makeMBOControl")
 
-  checkArg(minimize, "logical", len=1L, na.ok=FALSE)
+  checkArg(minimize, "logical", len=number.of.targets, na.ok=FALSE)
   checkArg(noisy, "logical", len=1L, na.ok=FALSE)
 
   init.design.points = convertInteger(init.design.points)
@@ -235,6 +247,7 @@ makeMBOControl = function(minimize=TRUE, noisy=FALSE, init.design.points=20L,
   checkArg(iters, "integer", len=1L, na.ok=FALSE, lower=1L)
   propose.points = convertInteger(propose.points)
   checkArg(propose.points, "integer", len=1L, na.ok=FALSE, lower=1L)
+
 
   checkArg(infill.crit, "character", len=1L, na.ok=FALSE)
   checkArg(infill.crit.lcb.lambda, "numeric", len=1L, na.ok=FALSE, lower=0)
@@ -270,6 +283,10 @@ makeMBOControl = function(minimize=TRUE, noisy=FALSE, init.design.points=20L,
   checkArg(multipoint.multicrit.sbx.p, "numeric", len=1L, na.ok=FALSE, lower=0, upper=1)
   checkArg(multipoint.multicrit.pm.eta, "numeric", len=1L, na.ok=FALSE, lower=0)
   checkArg(multipoint.multicrit.pm.p, "numeric", len=1L, na.ok=FALSE, lower=0, upper=1)
+  
+  
+  checkArg(parEGO.s, "integer", len=1L, na.ok=FALSE, lower=1, upper=Inf)
+  checkArg(parEGO.rho, "numeric", len=1L, na.ok=FALSE, lower=0, upper=1)
 
   if (missing(impute))
     impute = function(x, y, opt.path)
@@ -282,8 +299,10 @@ makeMBOControl = function(minimize=TRUE, noisy=FALSE, init.design.points=20L,
   checkArg(final.method, choices=c("last.proposed", "best.true.y", "best.predicted"))
   final.evals = convertInteger(final.evals)
   checkArg(final.evals, "integer", len=1L, na.ok=FALSE, lower=0L)
-
-  checkArg(y.name, "character", len=1L, na.ok=FALSE)
+  
+  if(number.of.targets > 1 && length(y.name) == 1 && y.name == "y")
+    y.name = paste("y", 1:number.of.targets, sep = "_")
+  checkArg(y.name, "character", len=number.of.targets, na.ok=FALSE)
 
   save.model.at = convertIntegers(save.model.at)
   checkArg(save.model.at, "integer", na.ok=FALSE, lower=0L, upper=iters)
@@ -303,6 +322,7 @@ makeMBOControl = function(minimize=TRUE, noisy=FALSE, init.design.points=20L,
   structure(list(
     minimize = minimize,
     noisy = noisy,
+    number.of.targets = number.of.targets,
     init.design.points = init.design.points,
     init.design.fun = init.design.fun,
     init.design.args = init.design.args,
@@ -331,6 +351,8 @@ makeMBOControl = function(minimize=TRUE, noisy=FALSE, init.design.points=20L,
     multipoint.multicrit.sbx.p = multipoint.multicrit.sbx.p,
     multipoint.multicrit.pm.eta = multipoint.multicrit.pm.eta,
     multipoint.multicrit.pm.p = multipoint.multicrit.pm.p,
+    parEGO.s = parEGO.s,
+    parEGO.rho = parEGO.rho,
     final.method = final.method,
     final.evals = final.evals,
     y.name = y.name,

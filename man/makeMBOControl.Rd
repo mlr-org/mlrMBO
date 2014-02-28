@@ -3,9 +3,10 @@
 \alias{makeMBOControl}
 \title{Creates a control object for MBO optimization.}
 \usage{
-makeMBOControl(minimize = TRUE, noisy = FALSE, init.design.points = 20L,
-  init.design.fun = maximinLHS, init.design.args = list(), iters = 10L,
-  propose.points = 1L, infill.crit = "mean", infill.crit.lcb.lambda = 1,
+makeMBOControl(minimize = TRUE, noisy = FALSE, number.of.targets = 1L,
+  init.design.points = 20L, init.design.fun = maximinLHS,
+  init.design.args = list(), iters = 10L, propose.points = 1L,
+  infill.crit = "mean", infill.crit.lcb.lambda = 1,
   infill.opt = "focussearch", infill.opt.restarts = 1L,
   infill.opt.focussearch.maxit = 5L, infill.opt.focussearch.points = 10000L,
   infill.opt.cmaes.control = list(), infill.opt.ea.maxit = 500L,
@@ -17,11 +18,12 @@ makeMBOControl(minimize = TRUE, noisy = FALSE, init.design.points = 20L,
   multipoint.multicrit.selection = "hypervolume",
   multipoint.multicrit.maxit = 100L, multipoint.multicrit.sbx.eta = 15,
   multipoint.multicrit.sbx.p = 1, multipoint.multicrit.pm.eta = 15,
-  multipoint.multicrit.pm.p = 1, final.method = "best.true.y",
-  final.evals = 0L, y.name = "y", impute, impute.errors = FALSE,
-  suppress.eval.errors = TRUE, save.model.at = iters,
-  resample.at = integer(0), resample.desc = makeResampleDesc("CV", iter =
-  10), resample.measures = list(mse), on.learner.error = "warn",
+  multipoint.multicrit.pm.p = 1, parEGO.s = 20L, parEGO.rho = 0.05,
+  final.method = "best.true.y", final.evals = 0L, y.name = "y", impute,
+  impute.errors = FALSE, suppress.eval.errors = TRUE,
+  save.model.at = iters, resample.at = integer(0),
+  resample.desc = makeResampleDesc("CV", iter = 10),
+  resample.measures = list(mse), on.learner.error = "warn",
   show.learner.output = FALSE)
 }
 \arguments{
@@ -30,6 +32,10 @@ makeMBOControl(minimize = TRUE, noisy = FALSE, init.design.points = 20L,
 
   \item{noisy}{[\code{logical(1)}]\cr Is the target
   function noisy?  Default is \code{FALSE}.}
+
+  \item{number.of.targets}{[\code{integer(1)}] How many
+  target functions does the function have? Greater than one
+  for multicriteria optimization}
 
   \item{init.design.points}{[\code{integer(1)}]\cr Number
   of points in inital design.  Only used if no design is
@@ -201,6 +207,14 @@ makeMBOControl(minimize = TRUE, noisy = FALSE, init.design.points = 20L,
   \item{multipoint.multicrit.pm.p}{[\code{numeric(1)}]\cr
   Probability of 1-point mutation, see
   \code{\link[emoa]{pm_operator}}.  Default is 1}
+
+  \item{parEGO.s}{[\code{integer(1)}]\cr Parameter of
+  parEGO - controls the number of weighting vectors.
+  Default is 20 (guessed value).}
+
+  \item{parEGO.rho}{[\code{numeric(1)}]\cr Parameter of
+  parEGO - factor for Tchebycheff function. Default 0.05
+  suggested in parEGO paper.}
 
   \item{final.method}{[\code{character(1)}]\cr How should
   the final point be proposed. Possible values are:
