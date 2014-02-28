@@ -6,7 +6,7 @@
 #FIXME it would be nice to have a REASONABLE way to shrink categorical stuff too.
 #FIXME should we shrink if a local value is NA (dependent param)
 
-infillOptFocus = function(infill.crit, model, control, par.set, opt.path, design) {
+infillOptFocus = function(infill.crit, model, control, par.set, opt.path, design, ...) {
   global.y = Inf
 
   # restart the whole crap some times

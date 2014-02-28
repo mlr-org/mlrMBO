@@ -15,7 +15,7 @@
 # @return [\code{data.frame}]. Proposed points that should be evaluated.
 
 # Use LCB single crit but sample multiple different lambdas
-multipointInfillOptLCB = function(model, control, par.set, opt.path, design) {
+multipointInfillOptLCB = function(model, control, par.set, opt.path, design, ...) {
   # copy control and optimize multiple times with singlecrit lcb / different lambda
   control2 = control
   control2$propose.points = 1
