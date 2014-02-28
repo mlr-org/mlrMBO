@@ -35,6 +35,7 @@
 #'   \dQuote{ei}: Expected improvement.
 #'   \dQuote{aei}: Augmented expected improvement.
 #'   \dQuote{lcb}: Lower confidence bound.
+#'   Alternatively, you may pass a function name as string.
 #' @param infill.crit.lcb.lambda [\code{numeric(1)}]\cr
 #'   Lambda parameter for lower confidence bound infill criterion.
 #'   Only used if \code{infill.crit="lcb"}, ignored otherwise.
@@ -46,6 +47,7 @@
 #'   \dQuote{cmaes}: Use CMAES to optimize infill criterion.
 #'   \dQuote{ea}: Use an (mu+1) EA to optimize infill criterion.
 #'   Default is \dQuote{focussearch}.
+#'   Alternatively, you may pass a function name as string.
 #' @param infill.opt.restarts [\code{integer(1)}]\cr
 #'   Number of independent restarts for optimizer of infill criterion.
 #'   If \code{infill.opt="cmaes"} the first start point for the optimizer is always the
@@ -234,9 +236,9 @@ makeMBOControl = function(minimize=TRUE, noisy=FALSE, init.design.points=20L,
   propose.points = convertInteger(propose.points)
   checkArg(propose.points, "integer", len=1L, na.ok=FALSE, lower=1L)
 
-  checkArg(infill.crit, choices=c("mean", "ei", "aei", "lcb"))
+  checkArg(infill.crit, "character", len=1L, na.ok=FALSE)
   checkArg(infill.crit.lcb.lambda, "numeric", len=1L, na.ok=FALSE, lower=0)
-  checkArg(infill.opt, choices=c("focussearch", "cmaes", "ea"))
+  checkArg(infill.opt, "character", len=1L, na.ok=FALSE)
   infill.opt.restarts = convertInteger(infill.opt.restarts)
   checkArg(infill.opt.restarts, "integer", len=1L, na.ok=FALSE)
 
