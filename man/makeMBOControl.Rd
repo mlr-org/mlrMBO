@@ -3,10 +3,10 @@
 \alias{makeMBOControl}
 \title{Creates a control object for MBO optimization.}
 \usage{
-makeMBOControl(minimize = TRUE, noisy = FALSE, number.of.targets = 1L,
-  init.design.points = 20L, init.design.fun = maximinLHS,
-  init.design.args = list(), iters = 10L, propose.points = 1L,
-  infill.crit = "mean", infill.crit.lcb.lambda = 1,
+makeMBOControl(number.of.targets = 1L, minimize = rep(TRUE,
+  number.of.targets), noisy = FALSE, init.design.points = 20L,
+  init.design.fun = maximinLHS, init.design.args = list(), iters = 10L,
+  propose.points = 1L, infill.crit = "mean", infill.crit.lcb.lambda = 1,
   infill.opt = "focussearch", infill.opt.restarts = 1L,
   infill.opt.focussearch.maxit = 5L, infill.opt.focussearch.points = 10000L,
   infill.opt.cmaes.control = list(), infill.opt.ea.maxit = 500L,
@@ -27,8 +27,9 @@ makeMBOControl(minimize = TRUE, noisy = FALSE, number.of.targets = 1L,
   show.learner.output = FALSE)
 }
 \arguments{
-  \item{minimize}{[\code{logical(1)}]\cr Should target
-  function be minimized?  Default is \code{TRUE}.}
+  \item{minimize}{[\code{logical}]\cr Should target
+  functions be minimized? One value par target function
+  Default is \code{TRUE} for ever target function.}
 
   \item{noisy}{[\code{logical(1)}]\cr Is the target
   function noisy?  Default is \code{FALSE}.}
@@ -64,7 +65,8 @@ makeMBOControl(minimize = TRUE, noisy = FALSE, number.of.targets = 1L,
   infill points be rated. Possible parameter values are:
   \dQuote{mean}: Mean response.  \dQuote{ei}: Expected
   improvement.  \dQuote{aei}: Augmented expected
-  improvement.  \dQuote{lcb}: Lower confidence bound.}
+  improvement.  \dQuote{lcb}: Lower confidence bound.
+  Alternatively, you may pass a function name as string.}
 
   \item{infill.crit.lcb.lambda}{[\code{numeric(1)}]\cr
   Lambda parameter for lower confidence bound infill
@@ -78,7 +80,8 @@ makeMBOControl(minimize = TRUE, noisy = FALSE, number.of.targets = 1L,
   especial promising region according to infill criterion.
   \dQuote{cmaes}: Use CMAES to optimize infill criterion.
   \dQuote{ea}: Use an (mu+1) EA to optimize infill
-  criterion.  Default is \dQuote{focussearch}.}
+  criterion.  Default is \dQuote{focussearch}.
+  Alternatively, you may pass a function name as string.}
 
   \item{infill.opt.restarts}{[\code{integer(1)}]\cr Number
   of independent restarts for optimizer of infill
@@ -231,9 +234,9 @@ makeMBOControl(minimize = TRUE, noisy = FALSE, number.of.targets = 1L,
   function evals should be done at final point to reduce
   noise?  Default is 0.}
 
-  \item{y.name}{[\code{character(1)}]\cr Name of y-column
-  for target values in optimization path.  Default is
-  \dQuote{y}.}
+  \item{y.name}{[\code{character}]\cr Vector for names of
+  y-columns for target values in optimization path.
+  Default is \dQuote{y_i}, i = 1, ..., number.of.targets.}
 
   \item{impute}{[\code{function(x, y, opt.path)}]\cr
   Function that determines the return value in case the

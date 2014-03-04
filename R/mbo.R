@@ -59,7 +59,6 @@ mbo = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, ...)
   y.name = control$y.name
   opt.path = makeOptPathDF(par.set, y.name, control$minimize)
 
-  # FIXME: trafo attribute is bad, consider user generated designs
   # generate initial design if none provided
   if (is.null(design)) {
     design.x = generateDesign(control$init.design.points, par.set,
@@ -70,9 +69,14 @@ mbo = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, ...)
     if(!setequal(setdiff(cns, y.name), rep.pids))
       stop("Column names of design 'design' must match names of parameters in 'par.set'!")
 
+    # sanity check: do not allow transformed designs
+    if (attr(design, "trafo")) {
+      stop("Design must not be transformed!")
+    }
+
     design.x = design
     # if no trafo attribute provided we act on the assumption that the design is not transformed
-    if ("trafo" %nin% attributes(design.x)) {
+    if ("trafo" %nin% names(attributes(design.x))) {
       attr(design.x, "trafo") = FALSE
     }
   }
