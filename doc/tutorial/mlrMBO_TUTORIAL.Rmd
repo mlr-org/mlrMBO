@@ -12,7 +12,7 @@ by an infill criterion and lastly, its performance is evaluated.
 The result of this sequential procedure is the optimization path containing the best
 parameter setting and the fitted surrogate model.
 
-The main function of the package **mlrMBO** is ``mbo()´´
+The main function of the package **mlrMBO** is ``mbo()``
 containing following essential parameters:
 
 * fun	     Fitness function to minimize.
@@ -24,14 +24,13 @@ containing following essential parameters:
 
 
 This web page will provide you with an in-depth introduction on how to
-set the ``mbo()´´ parameters depending on the desired kind of optimization.
+set the ``mbo()`` parameters depending on the desired kind of optimization.
 
 Our focus is on your comprehension of the basic functions and
 applications. For detailed technical information and manual pages, please refer to
 the package's [manual pages](http://berndbischl.github.io/mlrMBO/man/).
 They are regularly updated and reflect the documentation
 of the current packages on CRAN.
-
 
 
 Objective Function
@@ -99,7 +98,7 @@ Here we will use the first option for ``objfun1`` and the second option for ``ob
 5*(dimension of the object function).
  
  
- ```{r}
+```{r}
 library(lhs)
 init.design.points1=5*sum(getParamLengths(par.set1))
 init.design.fun1=randomLHS
