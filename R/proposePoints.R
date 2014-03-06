@@ -10,7 +10,7 @@
 #   Optimization path to save of type \code{\link[ParamHelpers]{OptPath}}.
 # @return [\code{data.frame}]
 #   New infill points.
-proposePoints = function(model, par.set, control, opt.path) {
+proposePoints = function(model, par.set, control, opt.path, ...) {
   # generate a few random points if model failed
   if (inherits(model, "FailureModel"))
     return(generateDesign(control$propose.points, par.set, randomLHS, ints.as.num=TRUE))
@@ -24,16 +24,19 @@ proposePoints = function(model, par.set, control, opt.path) {
     infill.opt.fun = switch(control$infill.opt,
       cmaes = infillOptCMAES,
       focussearch = infillOptFocus,
-      ea = infillOptEA
-      #EI       = infillOptEI
+      ea = infillOptEA,
+      # default: try to match the fun which is given as string
+      match.fun(control$multipoint.method)
     )
-    return(infill.opt.fun(infill.crit.fun, model, control, par.set, opt.path, design))
+    infill.opt.fun(infill.crit.fun, model, control, par.set, opt.path, design, ...)
   } else {
     multipoint.infill.opt.fun = switch(control$multipoint.method,
       cl = multipointInfillOptCL,
       lcb = multipointInfillOptLCB,
-      multicrit = multipointInfillOptMulticrit
+      multicrit = multipointInfillOptMulticrit,
+      # default: try to match the fun which is given as string
+      match.fun(control$multipoint.method)
     )
-    multipoint.infill.opt.fun(model, control, par.set, opt.path, design)
+    multipoint.infill.opt.fun(model, control, par.set, opt.path, design, ...)
   }
 }

@@ -29,7 +29,7 @@ test_that("mbo works with rf", {
   ctrl = makeMBOControl(iters=5, infill.opt.focussearch.points=100)
 
   f2=makeMBOFunction(function(x) x^2)
-  expect_error(mbo(f2, ps, des, learner, ctrl), "univariate")
+  expect_error(mbo(f2, ps, des, learner, ctrl), "wrong dimension")
 
   ctrl = makeMBOControl(iters=5, infill.opt.focussearch.points=100)
   learner = makeLearner("classif.randomForest")

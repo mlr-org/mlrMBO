@@ -1,11 +1,5 @@
-#FIXME: retrain kriging faster
-
-#FIXME: how to choose best element. with noise? without?
-#FIXME: different name for final evals in output (not last step number)
-
-#FIXME: cmaes doesn't work when optimum in constraints
-
-#'  Optimizes a function with sequential model based optimization.
+#'  Optimizes a multicrit optimization problem  with sequential model based
+#'  optimization using the parEGO algorithm
 #'
 #' @param fun [\code{function(x, ...)}]\cr
 #'   Fitness function to minimize. The first argument has to be a list of values.
@@ -34,147 +28,98 @@
 #'   \item{multipoint.lcb.lambdas [\code{matrix(iters, proposed.points)}]}{Sampled lambda values for multipoint lcb method.}
 #' @export
 #' @aliases MBOResult
-mbo = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, ...) {
+mboParEGO = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, ...) {
   checkStuff(fun, par.set, design, learner, control)
   loadPackages(control)
-
+  
   # save currently set options
   oldopts = list(
     ole = getOption("mlr.on.learner.error"),
     slo = getOption("mlr.show.learner.output")
   )
-
+  
   # configure mlr in an appropriate way
   configureMlr(on.learner.error=control$on.learner.error,
-    show.learner.output=control$show.learner.output)
-
+               show.learner.output=control$show.learner.output)
+  
   # FIXME: I am unsure wether we should do this, but otherwise RF sucks
   # if it is a good idea it is not not general enuff
   if (inherits(learner, "regr.randomForest")) {
     learner = setHyperPars(learner, fix.factors=TRUE)
   }
-
+  
   # get parameter ids repeated length-times and appended number
   rep.pids = getParamIds(par.set, repeated=TRUE, with.nr=TRUE)
   y.name = control$y.name
   opt.path = makeOptPathDF(par.set, y.name, control$minimize)
-
+  
+  # FIXME: trafo attribute is bad, consider user generated designs
   # generate initial design if none provided
   if (is.null(design)) {
     design.x = generateDesign(control$init.design.points, par.set,
-      control$init.design.fun, control$init.design.args, trafo=FALSE)
+                              control$init.design.fun, control$init.design.args, trafo=FALSE)
   } else {
     # sanity check: are paramter values and colnames of design consistent?
     cns = colnames(design)
     if(!setequal(setdiff(cns, y.name), rep.pids))
       stop("Column names of design 'design' must match names of parameters in 'par.set'!")
-
-    # sanity check: do not allow transformed designs
-    if (attr(design, "trafo")) {
-      stop("Design must not be transformed!")
-    }
-
+    
     design.x = design
     # if no trafo attribute provided we act on the assumption that the design is not transformed
-    if ("trafo" %nin% names(attributes(design.x))) {
+    if ("trafo" %nin% attributes(design.x)) {
       attr(design.x, "trafo") = FALSE
     }
   }
-
+  
   # compute y-values if missing or initial design generated above
-  if (y.name %in% colnames(design.x)) {
+  if (all(y.name %in% colnames(design.x))) {
     ys = design[, y.name]
     design.x = design[, colnames(design) != y.name, drop=FALSE]
-  } else {
+  } else if (!any(y.name %in% colnames(design.x))){
     if (show.info)
       messagef("Computing y column for design. Was not provided")
     xs = lapply(seq_len(nrow(design.x)), function(i) dfRowToList(design.x, par.set, i))
-    ys = evalTargetFun(fun, par.set, xs, opt.path, control, show.info, oldopts, ...)
-    design = cbind(design.x, setColNames(data.frame(ys), y.name))
+    design.y = evalTargetFun(fun, par.set, xs, opt.path, control, show.info, oldopts, ...)
+    ys = lapply(seq_len(nrow(design.y)), function(i) design.y[i, ])
+    design = cbind(design.x, setColNames(data.frame(design.y), y.name))
+  } else {
+    stop("Only part of y-values are provided. Don't know what to do - provide either all or none.")
   }
-
   # reorder
   design.x = design.x[, rep.pids, drop=FALSE]
   # FIXME this is the second time we do this ... maybe reorder code?
   xs = dfRowsToList(design.x, par.set)
-
+  
+      
   # add initial values to optimization path
   Map(function(x,y) addOptPathEl(opt.path, x=x, y=y, dob=0), xs, ys)
-
-  # set up initial mbo task
-  rt = makeMBOTask(design, par.set, y.name, control=control)
-  model = train(learner, rt)
-
-  models = namedList(control$save.model.at)
-  res.vals = namedList(control$resample.at)
-
-  if (0L %in% control$save.model.at) {
-    models[["0"]] = model
-  }
-
-  if (0L %in% control$resample.model.at) {
-    r = resample(learner, rt, control$resample.desc, measures=control$resample.measures)
-    res.vals[["0"]] = r$aggr
-  }
-
-  # store sampled lambdas for this special method in return val
-  multipoint.lcb.lambdas = if (control$multipoint.method == "lcb")
-    matrix(nrow=0, ncol=control$propose.points)
-  else
-    NULL
-
+  
   # do the mbo magic
   for (loop in seq_len(control$iters)) {
-
+    # set up initial mbo task
+    rt = makeScalarTask(design, par.set, y.name, control=control)
+    model = train(learner, rt)
     # propose new points and evaluate target function
     prop.design = proposePoints(model, par.set, control, opt.path)
-    # handle lambdas for this method
-    if (control$multipoint.method == "lcb") {
-      multipoint.lcb.lambdas = rbind(multipoint.lcb.lambdas, attr(prop.design, "multipoint.lcb.lambdas"))
-      attr(prop.design, "multipoint.lcb.lambda") =  NULL
-    }
     xs = dfRowsToList(prop.design, par.set)
     xs = lapply(xs, repairPoint, par.set=par.set)
     ys = evalTargetFun(fun, par.set, xs, opt.path, control, show.info, oldopts, ...)
-
     # update optim trace and model
-    Map(function(x,y) addOptPathEl(opt.path, x=x, y=y, dob=loop), xs, ys)
-    rt = makeMBOTask(as.data.frame(opt.path, discretes.as.factor=TRUE), par.set, y.name, control=control)
-    model = train(learner, rt)
-    if (loop %in% control$save.model.at)
-      models[[as.character(loop)]] = model
-    if (loop %in% control$resample.at) {
-      r = resample(learner, rt, control$resample.desc, measures=control$resample.measures)
-      res.vals[[as.character(loop)]] = r$aggr
-    }
+    Map(function(x,y) addOptPathEl(opt.path, x=x, y=y, dob=loop), xs, list(ys))
   }
-
+  
   design = getTaskData(rt, target.extra=TRUE)$data
-  final.index = chooseFinalPoint(fun, par.set, model, opt.path, y.name, control)
-  best = getOptPathEl(opt.path, final.index)
-  x = best$x
-  y = best$y
-
-  if (control$final.evals > 0L) {
-    if (show.info)
-      messagef("Performing %i final evals", control$final.evals)
-    # do some final evaluations and compute mean of target fun values
-    xs = replicate(control$final.evals, best$x, simplify=FALSE)
-    ys = evalTargetFun(fun, par.set, xs, opt.path, control, show.info, oldopts, ...)
-    best$y = mean(ys)
-  }
+  front.index = getOptPathParetoFront(opt.path, index = TRUE)
+  pareto.front = getOptPathParetoFront(opt.path, index = FALSE)
+  
   # restore mlr configuration
   configureMlr(on.learner.error=oldopts[["ole"]], show.learner.output=oldopts[["slo"]])
-
+  
   # make sure to strip name of y
   structure(list(
-    x=best$x,
+    pareto.front=pareto.front,
     # strip name
-    y=as.numeric(best$y),
-    opt.path=opt.path,
-    resample=res.vals,
-    models=models,
-    multipoint.lcb.lambdas = multipoint.lcb.lambdas
+    opt.path=opt.path
   ), class="MBOResult")
 }
 
@@ -187,12 +132,5 @@ mbo = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, ...)
 #' @method print MBOResult
 print.MBOResult = function(x, ...) {
   op = x$opt.path
-  catf("Recommended parameters:")
-  catf(paramValueToString(op$par.set, x$x))
-  catf("Objective: %s = %.3f\n", op$y.names[1], x$y)
-  catf("Optimization path")
-  n1 = sum(op$env$dob == 0)
-  n2 = length(op$env$dob) - n1
-  catf("%i + %i entries in total, displaying last 10 (or less):", n1, n2)
   print(tail(as.data.frame(x$op), 10))
 }

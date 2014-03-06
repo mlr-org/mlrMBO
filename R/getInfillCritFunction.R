@@ -4,7 +4,7 @@ getInfillCritFunction = function(infill.crit) {
     mean = infillCritMeanResponse,
     ei = infillCritEI,
     aei = infillCritAEI,
-    lcb = infillCritLCB
+    lcb = infillCritLCB,
+    match.fun(infill.crit)
   )
 }
-  

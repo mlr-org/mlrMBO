@@ -4,7 +4,7 @@
 
 #FIXME potentially allow more than 1 kid
 #FIXME check what this optimizer can do in checkStuff and allow rounding of integers
-infillOptEA = function(infill.crit, model, control, par.set, opt.path, design) {
+infillOptEA = function(infill.crit, model, control, par.set, opt.path, design, ...) {
   requirePackages("emoa", why="infillOptEA")
 
   # get constants and init shit
@@ -23,7 +23,7 @@ infillOptEA = function(infill.crit, model, control, par.set, opt.path, design) {
 
     # random inital population:
     X = generateDesign(mu, par.set, fun=randomLHS)
-    y = infill.crit(X, model, control, par.set, design)
+    y = infill.crit(X, model, control, par.set, design, ...)
 
     for (i in 1:control$infill.opt.ea.maxit) {
       # Create new individual (mu + 1)
@@ -35,7 +35,7 @@ infillOptEA = function(infill.crit, model, control, par.set, opt.path, design) {
       # Add new individual:
       X[nrow(X) + 1,] = child1
       child2 = setColNames(as.data.frame(as.list(child1)), repids)
-      y[length(y) + 1] = infill.crit(child2, model, control, par.set, design)
+      y[length(y) + 1] = infill.crit(child2, model, control, par.set, design, ...)
 
       # get element we want to remove from current pop
       to.kill = getMaxIndex(y, ties.method="random")
