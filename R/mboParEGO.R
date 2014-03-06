@@ -31,7 +31,10 @@
 mboParEGO = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, ...) {
   checkStuff(fun, par.set, design, learner, control)
   loadPackages(control)
-  
+  # FIXME: source addition stuff on the slaves ... this is bad, 'cause all additional
+  # objects have to be in a that source-file
+  if(control$parEGO.source.file != "")
+    parallelSource(control$parEGO.source.file)
   # save currently set options
   oldopts = list(
     ole = getOption("mlr.on.learner.error"),
@@ -71,6 +74,7 @@ mboParEGO = function(fun, par.set, design=NULL, learner, control, show.info=TRUE
     }
   }
   
+  #evalTargetFun = function(fun, par.set, xs, opt.path, control, show.info, oldopts, ...)
   # compute y-values if missing or initial design generated above
   if (all(y.name %in% colnames(design.x))) {
     ys = design[, y.name]
@@ -79,7 +83,11 @@ mboParEGO = function(fun, par.set, design=NULL, learner, control, show.info=TRUE
     if (show.info)
       messagef("Computing y column for design. Was not provided")
     xs = lapply(seq_len(nrow(design.x)), function(i) dfRowToList(design.x, par.set, i))
-    design.y = evalTargetFun(fun, par.set, xs, opt.path, control, show.info, oldopts, ...)
+    ## Parallel computing of y-values
+    design.y = t(parallelMap(
+      function(i)
+        evalTargetFun(fun, par.set, xs[i], opt.path, control, show.info, oldopts, ... ),
+      1:length(xs), simplify = TRUE))
     ys = lapply(seq_len(nrow(design.y)), function(i) design.y[i, ])
     design = cbind(design.x, setColNames(data.frame(design.y), y.name))
   } else {
@@ -90,25 +98,33 @@ mboParEGO = function(fun, par.set, design=NULL, learner, control, show.info=TRUE
   # FIXME this is the second time we do this ... maybe reorder code?
   xs = dfRowsToList(design.x, par.set)
   
-      
   # add initial values to optimization path
   Map(function(x,y) addOptPathEl(opt.path, x=x, y=y, dob=0), xs, ys)
   
   # do the mbo magic
   for (loop in seq_len(control$iters)) {
     # set up initial mbo task
-    rt = makeScalarTask(design, par.set, y.name, control=control)
-    model = train(learner, rt)
-    # propose new points and evaluate target function
-    prop.design = proposePoints(model, par.set, control, opt.path)
-    xs = dfRowsToList(prop.design, par.set)
-    xs = lapply(xs, repairPoint, par.set=par.set)
-    ys = evalTargetFun(fun, par.set, xs, opt.path, control, show.info, oldopts, ...)
+    scalarTasks = makeScalarTask(design, par.set, y.name, control=control)
+    models = lapply(scalarTasks, train, learner = learner)
+    #propose new points and evaluate target function
+    prop.design = lapply(models, proposePoints, par.set = par.set,
+      control = control, opt.path = opt.path)
+    #prop.design = proposePoints(models[[1]], par.set, control, opt.path)
+    #print(prop.design)
+    #xs = dfRowsToList(prop.design, par.set)
+    #xs = lapply(xs, repairPoint, par.set=par.set)
+    xs = lapply(prop.design, dfRowsToList, par.set = par.set)
+    xs = lapply(xs, function(x) lapply(x, repairPoint, par.set=par.set))
+    design.y = t(parallelMap(
+      function(i)
+        evalTargetFun(fun, par.set, xs[[i]], opt.path, control, show.info, oldopts, ... ),
+      1:length(xs), simplify = TRUE))
+    ys = apply(design.y, 1, list)
     # update optim trace and model
-    Map(function(x,y) addOptPathEl(opt.path, x=x, y=y, dob=loop), xs, list(ys))
+    lapply(1:length(xs), function(i) 
+      Map(function(x,y) addOptPathEl(opt.path, x=x, y=y, dob=loop), xs[[i]], ys[[i]]))
   }
   
-  design = getTaskData(rt, target.extra=TRUE)$data
   front.index = getOptPathParetoFront(opt.path, index = TRUE)
   pareto.front = getOptPathParetoFront(opt.path, index = FALSE)
   

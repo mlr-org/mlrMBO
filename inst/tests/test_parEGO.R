@@ -18,8 +18,13 @@ test_that("mbo parEGO works", {
   ctrl = makeMBOControl(iters=5, infill.opt.focussearch.points=10,
     number.of.targets = 3)
   expect_error(mboParEGO(f, ps, learner = learner, control = ctrl), "wrong dimension")
-
-  ## Test impute
+  
+  # Test multippoint
+  ctrl = makeMBOControl(iters=5, infill.opt.focussearch.points=10,
+    number.of.targets = 2, parEGO.multipoint.number = 2L)
+  or = mboParEGO(f, ps, learner = learner, control = ctrl)
+  
+  # Test impute
   f1 = makeMBOFunction(function(x) {
     y = x^2
     ifelse(y < 2, NA, y)
@@ -30,4 +35,5 @@ test_that("mbo parEGO works", {
   ctrl = makeMBOControl(iters=5, infill.opt.focussearch.points=10,
     number.of.targets = 2, impute=function(x, y, opt.path) 0)
   or = mboParEGO(f1, ps, learner = learner, control = ctrl)
+  
 })
