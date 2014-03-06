@@ -45,7 +45,7 @@
 #'   Deafult is 1.
 #' @param infill.opt [\code{character(1)}]\cr
 #'   How should SINGLE points be proposed by using the surrogate model. Possible values are:
-#'  \dQuote{focussearch}: In several iteration steps the parameter space is
+#'   \dQuote{focussearch}: In several iteration steps the parameter space is
 #'   focused on an especial promising region according to infill criterion.
 #'   \dQuote{cmaes}: Use CMAES to optimize infill criterion.
 #'   \dQuote{ea}: Use an (mu+1) EA to optimize infill criterion.
@@ -214,7 +214,7 @@
 #' @export
 makeMBOControl = function(number.of.targets=1L,
   minimize=rep(TRUE, number.of.targets), noisy=FALSE,
-  init.design.points=20L, init.design.fun=maximinLHS, init.design.args=list(), 
+  init.design.points=20L, init.design.fun=maximinLHS, init.design.args=list(),
   iters=10L, propose.points=1L, infill.crit="mean", infill.crit.lcb.lambda=1,
   infill.opt="focussearch", infill.opt.restarts=1L,
   infill.opt.focussearch.maxit=5L, infill.opt.focussearch.points=10000L,
@@ -289,8 +289,8 @@ makeMBOControl = function(number.of.targets=1L,
   checkArg(multipoint.multicrit.sbx.p, "numeric", len=1L, na.ok=FALSE, lower=0, upper=1)
   checkArg(multipoint.multicrit.pm.eta, "numeric", len=1L, na.ok=FALSE, lower=0)
   checkArg(multipoint.multicrit.pm.p, "numeric", len=1L, na.ok=FALSE, lower=0, upper=1)
-  
-  
+
+
   checkArg(parEGO.s, "integer", len=1L, na.ok=FALSE, lower=1, upper=Inf)
   checkArg(parEGO.rho, "numeric", len=1L, na.ok=FALSE, lower=0, upper=1)
   checkArg(parEGO.multipoint.number, "integer", len=1L, na.ok=FALSE, lower=1, upper=Inf)
@@ -307,7 +307,7 @@ makeMBOControl = function(number.of.targets=1L,
   checkArg(final.method, choices=c("last.proposed", "best.true.y", "best.predicted"))
   final.evals = convertInteger(final.evals)
   checkArg(final.evals, "integer", len=1L, na.ok=FALSE, lower=0L)
-  
+
   if(number.of.targets > 1 && length(y.name) == 1 && y.name == "y")
     y.name = paste("y", 1:number.of.targets, sep = "_")
   checkArg(y.name, "character", len=number.of.targets, na.ok=FALSE)
