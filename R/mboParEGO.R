@@ -31,10 +31,6 @@
 mboParEGO = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, ...) {
   checkStuff(fun, par.set, design, learner, control)
   loadPackages(control)
-  # FIXME: source addition stuff on the slaves ... this is bad, 'cause all additional
-  # objects have to be in a that source-file
-  if(control$parEGO.source.file != "")
-    parallelSource(control$parEGO.source.file)
   # save currently set options
   oldopts = list(
     ole = getOption("mlr.on.learner.error"),

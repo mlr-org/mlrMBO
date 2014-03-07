@@ -154,13 +154,10 @@
 #'   Parameter of parEGO - controls the number of weighting vectors. Default is
 #'   20 (guessed value).
 #' @param parEGO.rho [\code{numeric(1)}]\cr
-#'   Parameter of parEGO - factor for Tchebycheff function. Default 0.05
+#'   Parameter of parEGO - factor for Tchebycheff function. Default 0.05 as
 #'   suggested in parEGO paper.
-#' @param parEGO.multipoint.number [\code{numeric(1)}]\cr
-#'   Number of points to propose in each parEGO-iteration. Default is 1.
-#' @param parEGO.source.file [\code{character(1)}]\cr
-#'   R-File with all addition object, that are neede to evaluate the target function,
-#'   if parallel mode is activated, this file will be sourced on every slave.
+#' @param parEGO.propose.points [\code{integer(1)}]\cr
+#'   Number of points to propose in each parEGO iteration. Default is 1L.   
 #' @param final.method [\code{character(1)}]\cr
 #'   How should the final point be proposed. Possible values are:
 #'   \dQuote{best.true.y}: Return best point ever visited according to true value of target function.
@@ -230,8 +227,7 @@ makeMBOControl = function(number.of.targets=1L,
   multipoint.multicrit.maxit=100L,
   multipoint.multicrit.sbx.eta=15, multipoint.multicrit.sbx.p=1,
   multipoint.multicrit.pm.eta=15, multipoint.multicrit.pm.p=1,
-  parEGO.s=20L, parEGO.rho=0.05, parEGO.multipoint.number=1L,
-  parEGO.source.file="",
+  parEGO.s=20L, parEGO.rho=0.05, parEGO.propose.points=1L,
   final.method="best.true.y", final.evals=0L,
   y.name = "y",
   impute, impute.errors=FALSE, suppress.eval.errors=TRUE, save.model.at=iters,
@@ -291,10 +287,11 @@ makeMBOControl = function(number.of.targets=1L,
   checkArg(multipoint.multicrit.pm.p, "numeric", len=1L, na.ok=FALSE, lower=0, upper=1)
 
 
-  checkArg(parEGO.s, "integer", len=1L, na.ok=FALSE, lower=1, upper=Inf)
+  parEGO.s = convertInteger(parEGO.s)
+  checkArg(parEGO.s, "integer", len=1L, na.ok=FALSE, lower=1)
   checkArg(parEGO.rho, "numeric", len=1L, na.ok=FALSE, lower=0, upper=1)
-  checkArg(parEGO.multipoint.number, "integer", len=1L, na.ok=FALSE, lower=1, upper=Inf)
-  checkArg(parEGO.source.file, "character", len=1L, na.ok=FALSE, lower=0, upper=1)
+  parEGO.propose.points = convertInteger(parEGO.propose.points)
+  checkArg(parEGO.propose.points, "numeric", len=1L, na.ok=FALSE, lower=1)
 
   if (missing(impute))
     impute = function(x, y, opt.path)
@@ -361,8 +358,7 @@ makeMBOControl = function(number.of.targets=1L,
     multipoint.multicrit.pm.p = multipoint.multicrit.pm.p,
     parEGO.s = parEGO.s,
     parEGO.rho = parEGO.rho,
-    parEGO.multipoint.number = parEGO.multipoint.number,
-    parEGO.source.file = parEGO.source.file,
+    parEGO.propose.points = parEGO.propose.points,
     final.method = final.method,
     final.evals = final.evals,
     y.name = y.name,

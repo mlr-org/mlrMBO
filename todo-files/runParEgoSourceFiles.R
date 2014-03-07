@@ -1,5 +1,3 @@
-library(mco)
-
 ## The fabulous lz1-function to test the optimization
 lz1 = function(x){
   f = numeric(2)

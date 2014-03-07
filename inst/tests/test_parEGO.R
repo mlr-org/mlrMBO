@@ -21,7 +21,7 @@ test_that("mbo parEGO works", {
   
   # Test multippoint
   ctrl = makeMBOControl(iters=5, infill.opt.focussearch.points=10,
-    number.of.targets = 2, parEGO.multipoint.number = 2L)
+    number.of.targets = 2, parEGO.propose.points = 2L)
   or = mboParEGO(f, ps, learner = learner, control = ctrl)
   
   # Test impute

@@ -21,11 +21,11 @@ makeScalarTask = function(design, par.set, y.name, control) {
   design.y = sweep(design.y, 2, apply(design.y, 2, min))
   design.y = sweep(design.y, 2, apply(design.y, 2, max), "/")
   
-  # Now Propose multipoint.number points
+  # Now Propose parEGO.propose.points points
   # Sample weighting vectors. Here we create twice the number we need and reject
   # the half with the smallest distance to another vector
-  lambdas = matrix(nrow = 2 * control$parEGO.multipoint.number, ncol = control$number.of.targets)
-  for(loop in 1:(2*control$parEGO.multipoint.number)) {
+  lambdas = matrix(nrow = 2 * control$parEGO.propose.points, ncol = control$number.of.targets)
+  for(loop in 1:(2*control$parEGO.propose.points)) {
     # sample the lambda-vector
     repeat{
       lambda = sample(control$parEGO.s, control$number.of.targets, replace = TRUE)
@@ -35,15 +35,15 @@ makeScalarTask = function(design, par.set, y.name, control) {
     lambdas[loop, ] = lambda
   }
   # Reject some lambdas ...
-  while(nrow(lambdas) > control$parEGO.multipoint.number) {
+  while(nrow(lambdas) > control$parEGO.propose.points) {
     dists = as.matrix(dist(lambdas))
     dists[dists == 0] = Inf
     nearest = which.min(apply(dists, 1, min))
     lambdas = lambdas[-nearest, , drop= FALSE]
   }
   # Create the scalarized regression Tasks
-  tasks = vector(mode = "list", length = control$parEGO.multipoint.number)
-  for(loop in 1:control$parEGO.multipoint.number) {
+  tasks = vector(mode = "list", length = control$parEGO.propose.points)
+  for(loop in 1:control$parEGO.propose.points) {
     lambda = lambdas[loop, ]
     lambda = lambda / control$parEGO.s
     # Create the scalarized response 
