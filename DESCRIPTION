@@ -11,7 +11,8 @@ Depends:
     grid,
     ggplot2
 Imports:
-    BBmisc (>= 1.4)
+    BBmisc (>= 1.4),
+    parallelMap (>= 1.1)
 Suggests:
     cmaes,
     DiceOptim,
