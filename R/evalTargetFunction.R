@@ -19,52 +19,60 @@
 # @param ... [\code{list}]\cr
 #   Further arguments passed to fitness function.
 # @return [\code{list}]:
-#   \item{x [\code{list}]}{Named list of proposed optimal parameters.}
-#   \item{y [\code{numeric(1)}]}{Value of fitness function at \code{x}, either from evals during optimization or from requested final evaluations, if those were greater than 0.}
-#   \item{path [\code{\link[ParamHelpers]{OptPath}}]}{Optimization path.}
-#   \item{models [List of \code{\link[mlr]{WrappedModel}}]}{List of saved regression models.}
+#   \item{ys}{Vector or matrix of objective values. First dim = length(xs).}
+#   \item{times}{Vector of times is took to evaluate the objective).}
 evalTargetFun = function(fun, par.set, xs, opt.path, control, show.info, oldopts, ...) {
   xs = lapply(xs, trafoValue, par=par.set)
   fun2 = function(x) {
-    if (control$impute.errors) {
-      y = try(fun(x, ...), silent=control$suppress.eval.errors)
-      if (is.error(y))
-        y = NA_real_
-    } else {
-      y = fun(x, ...)
-    }
-    if(length(y) != control$number.of.targets) {
-      stop("function output has wrong dimension!")
-    }
+    st = system.time({
+      if (control$impute.errors) {
+        y = try(fun(x, ...), silent=control$suppress.eval.errors)
+        if (is.error(y))
+          y = NA_real_
+      } else {
+        y = fun(x, ...)
+      }
+    })
+    if (length(y) != control$number.of.targets)
+      stopf("Objective function output has wrong length: %i. Should be %i.",
+        length(y), control$number.of.targets)
+    #FIXME: show.info must be called on master
     if (show.info) {
       dob = opt.path$env$dob
       dob = if (length(dob) == 0L) 0 else max(dob) + 1
-      messagef("[mbo] %i: %s : %s", dob,
-               paramValueToString(par.set, x), paste(sprintf("%s=%.3f", control$y.name, y),
-                                                     collapse = ", "))
+      #FIXME: show time?
+      messagef("[mbo] %i: %s : %s", dob, paramValueToString(par.set, x),
+        paste(sprintf("%s=%.3f", control$y.name, y), collapse = ", "))
     }
-    return(y)
+    return(list(y = y, time = st[3]))
   }
   # restore mlr configuration
-  configureMlr(on.learner.error=oldopts[["ole"]], show.learner.output=oldopts[["slo"]])
-  ys = sapply(xs, fun2)
+  configureMlr(on.learner.error = oldopts[["ole"]], show.learner.output = oldopts[["slo"]])
+
+  # apply fun2 and extract parts
+  z = parallelMap(fun2, xs)
+  ys = do.call(rbind, extractSubList(z, "y", simplify = FALSE))
+  times = extractSubList(z, "time")
+
   configureMlr(on.learner.error=control$on.learner.error,
-               show.learner.output=control$show.learner.output)
-  if(is.matrix(ys)) {
-    for(i in 1:ncol(ys)) {
-      j = which(is.na(ys[, i]) | is.nan(ys[, i]) | is.infinite(ys[, i]))
+    show.learner.output=control$show.learner.output)
+
+  # FIXME: WTF happens here? ok we impute. better comment this
+  if (is.matrix(ys)) {
+    for (i in seq_row(ys)) {
+      j = which(is.na(ys[i, ]) | is.nan(ys[i, ]) | is.infinite(ys[i, ]))
       if (length(j) > 0L) {
-        ys[j, i] = mapply(control$impute, xs[j], ys[j, i],
+        ys[i, j] = mapply(control$impute, xs[j], ys[i, j],
           MoreArgs=list(opt.path=opt.path), USE.NAMES=FALSE)
       }
     }
-    return(t(ys))
   } else {
-  j = which(is.na(ys) | is.nan(ys) | is.infinite(ys))
-  if (length(j) > 0L) {
-    ys[j] = mapply(control$impute, xs[j], ys[j],
-                   MoreArgs=list(opt.path=opt.path), USE.NAMES=FALSE)
+    j = which(is.na(ys) | is.nan(ys) | is.infinite(ys))
+    if (length(j) > 0L) {
+      ys[j] = mapply(control$impute, xs[j], ys[j],
+        MoreArgs = list(opt.path = opt.path), USE.NAMES = FALSE)
+    }
   }
-  return(ys)
-  }
+  return(list(ys = ys, times = times))
 }
+

@@ -29,7 +29,7 @@ test_that("mbo works with rf", {
   ctrl = makeMBOControl(iters=5, infill.opt.focussearch.points=100)
 
   f2=makeMBOFunction(function(x) x^2)
-  expect_error(mbo(f2, ps, des, learner, ctrl), "wrong dimension")
+  expect_error(mbo(f2, ps, des, learner, ctrl), "wrong length")
 
   ctrl = makeMBOControl(iters=5, infill.opt.focussearch.points=100)
   learner = makeLearner("classif.randomForest")
@@ -105,6 +105,7 @@ test_that("mbo works with rf", {
 
 # FIXME: we do we get so bad results with so many models for this case?
 # analyse visually.
+# FIXME: this test is also MUCH too slow
 test_that("mbo works with logicals", {
   f = function(x) {
     if (x$a)

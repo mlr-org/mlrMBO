@@ -1,3 +1,5 @@
+#FIXME: BB: whole code should be proof-read by me. better: do review with daniel
+
 #'  Optimizes a multicrit optimization problem  with sequential model based
 #'  optimization using the parEGO algorithm
 #'
@@ -36,22 +38,22 @@ mboParEGO = function(fun, par.set, design=NULL, learner, control, show.info=TRUE
     ole = getOption("mlr.on.learner.error"),
     slo = getOption("mlr.show.learner.output")
   )
-  
+
   # configure mlr in an appropriate way
   configureMlr(on.learner.error=control$on.learner.error,
                show.learner.output=control$show.learner.output)
-  
+
   # FIXME: I am unsure wether we should do this, but otherwise RF sucks
   # if it is a good idea it is not not general enuff
   if (inherits(learner, "regr.randomForest")) {
     learner = setHyperPars(learner, fix.factors=TRUE)
   }
-  
+
   # get parameter ids repeated length-times and appended number
   rep.pids = getParamIds(par.set, repeated=TRUE, with.nr=TRUE)
   y.name = control$y.name
   opt.path = makeOptPathDF(par.set, y.name, control$minimize)
-  
+
   # FIXME: trafo attribute is bad, consider user generated designs
   # generate initial design if none provided
   if (is.null(design)) {
@@ -62,15 +64,14 @@ mboParEGO = function(fun, par.set, design=NULL, learner, control, show.info=TRUE
     cns = colnames(design)
     if(!setequal(setdiff(cns, y.name), rep.pids))
       stop("Column names of design 'design' must match names of parameters in 'par.set'!")
-    
+
     design.x = design
     # if no trafo attribute provided we act on the assumption that the design is not transformed
     if ("trafo" %nin% attributes(design.x)) {
       attr(design.x, "trafo") = FALSE
     }
   }
-  
-  #evalTargetFun = function(fun, par.set, xs, opt.path, control, show.info, oldopts, ...)
+
   # compute y-values if missing or initial design generated above
   if (all(y.name %in% colnames(design.x))) {
     ys = design[, y.name]
@@ -80,10 +81,8 @@ mboParEGO = function(fun, par.set, design=NULL, learner, control, show.info=TRUE
       messagef("Computing y column for design. Was not provided")
     xs = lapply(seq_len(nrow(design.x)), function(i) dfRowToList(design.x, par.set, i))
     ## Parallel computing of y-values
-    design.y = t(parallelMap(
-      function(i)
-        evalTargetFun(fun, par.set, xs[i], opt.path, control, show.info, oldopts, ... ),
-      1:length(xs), simplify = TRUE))
+    evals = evalTargetFun(fun, par.set, xs, opt.path, control, show.info, oldopts, ... )
+    design.y = evals$ys
     ys = lapply(seq_len(nrow(design.y)), function(i) design.y[i, ])
     design = cbind(design.x, setColNames(data.frame(design.y), y.name))
   } else {
@@ -93,10 +92,10 @@ mboParEGO = function(fun, par.set, design=NULL, learner, control, show.info=TRUE
   design.x = design.x[, rep.pids, drop=FALSE]
   # FIXME this is the second time we do this ... maybe reorder code?
   xs = dfRowsToList(design.x, par.set)
-  
+
   # add initial values to optimization path
   Map(function(x,y) addOptPathEl(opt.path, x=x, y=y, dob=0), xs, ys)
-  
+
   # do the mbo magic
   for (loop in seq_len(control$iters)) {
     # set up initial mbo task
@@ -111,22 +110,20 @@ mboParEGO = function(fun, par.set, design=NULL, learner, control, show.info=TRUE
     #xs = lapply(xs, repairPoint, par.set=par.set)
     xs = lapply(prop.design, dfRowsToList, par.set = par.set)
     xs = lapply(xs, function(x) lapply(x, repairPoint, par.set=par.set))
-    design.y = t(parallelMap(
-      function(i)
-        evalTargetFun(fun, par.set, xs[[i]], opt.path, control, show.info, oldopts, ... ),
-      1:length(xs), simplify = TRUE))
+    evals = evalTargetFun(fun, par.set, xs, opt.path, control, show.info, oldopts, ...)
+    design.y = evals$ys
     ys = apply(design.y, 1, list)
     # update optim trace and model
-    lapply(1:length(xs), function(i) 
+    lapply(1:length(xs), function(i)
       Map(function(x,y) addOptPathEl(opt.path, x=x, y=y, dob=loop), xs[[i]], ys[[i]]))
   }
-  
+
   front.index = getOptPathParetoFront(opt.path, index = TRUE)
   pareto.front = getOptPathParetoFront(opt.path, index = FALSE)
-  
+
   # restore mlr configuration
   configureMlr(on.learner.error=oldopts[["ole"]], show.learner.output=oldopts[["slo"]])
-  
+
   # make sure to strip name of y
   structure(list(
     pareto.front=pareto.front,
