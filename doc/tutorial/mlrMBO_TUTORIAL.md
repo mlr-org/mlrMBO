@@ -1,8 +1,18 @@
 Introduction
 ============
-```{r}
+
+```r
 library(mlrMBO)
 ```
+
+```
+## Loading required package: ParamHelpers
+## Loading required package: mlr
+## Loading required package: gridExtra
+## Loading required package: grid
+## Loading required package: ggplot2
+```
+
 
 <!-- 
 Kommentar
@@ -50,19 +60,20 @@ The function has to return a single numerical value. We demonstrate in this tuto
 package **soobench** (``objfun1``) and a self-constructed sine und cosine combination (``objfun2``). ``objfun1`` depends on 5 numeric parameters 
 while ``objfun2`` assumes 2 numeric and 1 discrete parameters..
 
-```{r}
+
+```r
 library(soobench)
-objfun1=generate_branin_function() # old soobench version: objfun1=branin_function() 
-objfun2=function(listOfValues)
-{
-  x=listOfValues[[1]]
-  k=listOfValues[[2]]
-  method=listOfValues[[3]]
-  perf= ifelse(listOfValues[[3]]=="a", k*sin(x)+cos(x),
-               sin(x)+k*cos(x))
-  return(perf)
+objfun1 = generate_branin_function()  # old soobench version: objfun1=branin_function() 
+objfun2 = function(listOfValues) {
+    x = listOfValues[[1]]
+    k = listOfValues[[2]]
+    method = listOfValues[[3]]
+    perf = ifelse(listOfValues[[3]] == "a", k * sin(x) + cos(x), sin(x) + k * 
+        cos(x))
+    return(perf)
 }
 ```
+
 
 
 We aim to maximize ``objfun2``. In a following Section will be shown how to set the ``MBOControl`` object in order to switch the maximization problem into a minimization one. 
@@ -75,15 +86,15 @@ of the objective function and their constraints for optimization.
 The lower and upper bounds for ``objfun1`` parameters can be easily obtained using **soobench** function ``lower_bounds``. For ``objfun2`` we 
 assume ``x`` from interval [0,1] and ``k`` from interval [1,2]. Parameter ``method`` can be either ``"a"`` or ``"b"``.
 
-```{r}
+
+```r
 library(ParamHelpers)
-par.set1 = makeNumericParamSet(len = number_of_parameters(objfun1), lower = lower_bounds(objfun1), upper = upper_bounds(objfun1))
-par.set2=makeParamSet(
-  makeNumericParam("x", lower=0,upper=1),
-  makeIntegerParam("k", lower=1, upper=2),
-  makeDiscreteParam("method", values=c("a", "b"))
-)
+par.set1 = makeNumericParamSet(len = number_of_parameters(objfun1), lower = lower_bounds(objfun1), 
+    upper = upper_bounds(objfun1))
+par.set2 = makeParamSet(makeNumericParam("x", lower = 0, upper = 1), makeIntegerParam("k", 
+    lower = 1, upper = 2), makeDiscreteParam("method", values = c("a", "b")))
 ```
+
 
 
 Initial Design
@@ -107,18 +118,21 @@ Here we will use the first option for ``objfun1`` and the second option for ``ob
 5*(dimension of the object function).
  
  
-```{r}
-library(lhs)
-init.design.points1=5*sum(getParamLengths(par.set1))
-init.design.fun1=randomLHS
-set.seed(1)
-design1=generateDesign(n=init.design.points1, par.set=par.set1, fun=init.design.fun1, trafo=FALSE)
 
-# will be used later as makeMBOControl()  arguments
-init.design.points2=5*sum(getParamLengths(par.set2))
-init.design.fun2=maximinLHS
-init.design.args2=list(k=3,dup=4)
+```r
+library(lhs)
+init.design.points1 = 5 * sum(getParamLengths(par.set1))
+init.design.fun1 = randomLHS
+set.seed(1)
+design1 = generateDesign(n = init.design.points1, par.set = par.set1, fun = init.design.fun1, 
+    trafo = FALSE)
+
+# will be used later as makeMBOControl() arguments
+init.design.points2 = 5 * sum(getParamLengths(par.set2))
+init.design.fun2 = maximinLHS
+init.design.args2 = list(k = 3, dup = 4)
 ```
+
  
  
 Surrogate Model
@@ -131,11 +145,26 @@ While kriging models are advisable for the numeric parameters, random forest mod
 In our example we consider these two surrogate models:
 ``kriging`` for optimizing of ``objfun1``  and ``random forest`` for ``objfun2``.
 
-```{r}
+
+```r
 library(mlr)
-learner_km=makeLearner("regr.km", predict.type="se", covtype="matern3_2")
-learner_rf=makeLearner("regr.randomForest")
+learner_km = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
 ```
+
+```
+## Loading required package: DiceKriging
+```
+
+```r
+learner_rf = makeLearner("regr.randomForest")
+```
+
+```
+## Loading required package: randomForest
+## randomForest 4.6-7
+## Type rfNews() to see new features/changes/bug fixes.
+```
+
 
 However, in some cases it is necessary to modify the learners (e.g., in order to get the standard error prediction for design points). 
 This will be discussed und illustrated in the section "Experiments and Output".
@@ -207,22 +236,16 @@ Constructing  of ``mboControl`` object
 
 Let us construct ``mboControl`` objects for our two object functions.
 
-```{r}
-control1 = makeMBOControl(
-  iters = 10, 
-  infill.crit="ei",
-  infill.opt="cmaes")
+
+```r
+control1 = makeMBOControl(iters = 10, infill.crit = "ei", infill.opt = "cmaes")
 
 
-control2 = makeMBOControl(
-  minimize=FALSE,
-  iters = 10, 
-  infill.crit="mean",
-  infill.opt="focussearch",
-  init.design.points=init.design.points2,
-  init.design.fun=init.design.fun2,
-  init.design.args=init.design.args2)
+control2 = makeMBOControl(minimize = FALSE, iters = 10, infill.crit = "mean", 
+    infill.opt = "focussearch", init.design.points = init.design.points2, init.design.fun = init.design.fun2, 
+    init.design.args = init.design.args2)
 ```
+
 
 Experiments and Output
 ======================
@@ -236,15 +259,87 @@ objfun1 it is two-dimensional numeric vector, we wrap objfun1 with ``makeMBOFunc
 which was created extra for this purpose.
 
 
-```{r}
+
+```r
 library(mlrMBO)
 library(BBmisc)
 
-mbo1=mbo(makeMBOFunction(objfun1), par.set1, design=design1, learner=learner_km, control=control1, show.info=TRUE)
-mbo1
-getOptPathY(mbo1$opt.path,"y") # get all y values
+mbo1 = mbo(makeMBOFunction(objfun1), par.set1, design = design1, learner = learner_km, 
+    control = control1, show.info = TRUE)
+```
 
 ```
+## Loading required package: cmaes
+## Computing y column for design. Was not provided
+## [mbo] 0: x=9.90,2.22 : y=1.939
+## [mbo] 0: x=1.32,0.90 : y=22.814
+## [mbo] 0: x=-4.02,12.74 : y=6.958
+## [mbo] 0: x=-3.31,4.78 : y=63.075
+## [mbo] 0: x=-1.60,8.74 : y=9.746
+## [mbo] 0: x=7.58,4.00 : y=19.599
+## [mbo] 0: x=5.52,10.19 : y=98.669
+## [mbo] 0: x=3.07,6.16 : y=15.114
+## [mbo] 0: x=0.80,14.59 : y=112.354
+## [mbo] 0: x=4.51,11.12 : y=101.533
+## [mbo] 1: x=8.81,2.03 : y=2.135
+## [mbo] 2: x=9.78,0.88 : y=4.658
+## [mbo] 3: x=4.94,2.03 : y=12.709
+## [mbo] 4: x=7.22,0.31 : y=16.531
+## [mbo] 5: x=9.70,1.63 : y=1.952
+## [mbo] 6: x=9.36,2.09 : y=0.529
+## [mbo] 7: x=9.37,2.79 : y=0.544
+## [mbo] 8: x=9.66,5.76 : y=10.176
+## [mbo] 9: x=9.93,3.87 : y=2.495
+## [mbo] 10: x=9.48,2.47 : y=0.417
+```
+
+```r
+mbo1
+```
+
+```
+## $x
+## $x$x
+## [1] 9.484 2.475
+## 
+## 
+## $y
+## [1] 0.4172
+## 
+## $opt.path
+## Optimization path
+##   Dimensions: x=1/2, y=1
+##   Length: 20
+##   Add x values transformed: FALSE
+## 
+## $resample
+## named list()
+## 
+## $models
+## $models$`10`
+## Learner model for id=regr.km class=regr.km
+## Trained on obs: 20
+## Used features: 2
+## Hyperparameters: covtype=matern3_2
+## 
+## 
+## $multipoint.lcb.lambdas
+##      [,1]
+## 
+## attr(,"class")
+## [1] "MBOResult"
+```
+
+```r
+getOptPathY(mbo1$opt.path, "y")  # get all y values
+```
+
+```
+##  [1]   1.9387  22.8140   6.9579  63.0751   9.7457  19.5989  98.6687
+##  [8]  15.1141 112.3540 101.5334   2.1354   4.6576  12.7087  16.5312
+## [15]   1.9519   0.5289   0.5438  10.1758   2.4949   0.4172
+```
+
 
 The output of mbo function is a structure of several variables. The most important are:
 
@@ -259,12 +354,19 @@ The output of mbo function is a structure of several variables. The most importa
 
 We can also change some attributes of the ``MBOControl`` object and run mbo() function again
 
-```{r}
-control1$infill.crit="mean"
-control1$infill.opt.fun="focussearch"
-mbo1=mbo(makeMBOFunction(objfun1), par.set1, design=design1, learner=learner_km, control=control1, show.info=FALSE)
+
+```r
+control1$infill.crit = "mean"
+control1$infill.opt.fun = "focussearch"
+mbo1 = mbo(makeMBOFunction(objfun1), par.set1, design = design1, learner = learner_km, 
+    control = control1, show.info = FALSE)
 mbo1$y
 ```
+
+```
+## [1] 0.4793
+```
+
 
 
 Optimization of ``objfun2``
@@ -276,28 +378,44 @@ If we use ``mean`` infill criterion any kind of model which can handle with fact
 random forest, linear model and many others).
 
 
-```{r}
-mbo2=mbo(objfun2, par.set2, design=NULL, learner=learner_rf, control=control2, show.info=FALSE)
+
+```r
+mbo2 = mbo(objfun2, par.set2, design = NULL, learner = learner_rf, control = control2, 
+    show.info = FALSE)
 mbo2$y
 ```
+
+```
+## [1] 2.215
+```
+
 
 In contrast, if one will apply ``ei`` or ``lcb`` infill criteria, 
 the ``predict.type`` attribute of the learner have be set to ``se``, if possible. A list of regression learners which support it can be viewed by:
 
-```{r}
-#listLearners(type="regr",se=TRUE)
+
+```r
+# listLearners(type='regr',se=TRUE)
 ```
+
 
 <!-- If no comment here, we get a lot warning message !-->
 
 We hence modify the random forest learner and optimize ``objfun2`` by ``ei`` infill criterion.
 
-```{r}
-learner_rf=makeLearner("regr.randomForest",predict.type="se")
-control1$infill.crit="ei"
-mbo2=mbo(objfun2, par.set2, design=NULL, learner=learner_rf, control=control2, show.info=FALSE)
+
+```r
+learner_rf = makeLearner("regr.randomForest", predict.type = "se")
+control1$infill.crit = "ei"
+mbo2 = mbo(objfun2, par.set2, design = NULL, learner = learner_rf, control = control2, 
+    show.info = FALSE)
 mbo2$y
 ```
+
+```
+## [1] 2.236
+```
+
 
 
 Finally, if a learner which not support the ``se`` prediction type should by applied for the optimization with ``ei`` infill criterion,
@@ -305,12 +423,26 @@ there is a possibility to create a bagging model with the desired characteristic
 ensemble, see documentation for ``makeBaggingWrapper`` of **mlr** package.
 
 
-```{r}
-learner_rt=makeLearner("regr.rpart")
-bag_rt=makeBaggingWrapper(learner_rt,bag.iters=5,predict.type="se")
-mbo2=mbo(objfun2, par.set2, design=NULL, learner=learner_rf, control=control2, show.info=FALSE)
+
+```r
+learner_rt = makeLearner("regr.rpart")
+```
+
+```
+## Loading required package: rpart
+```
+
+```r
+bag_rt = makeBaggingWrapper(learner_rt, bag.iters = 5, predict.type = "se")
+mbo2 = mbo(objfun2, par.set2, design = NULL, learner = learner_rf, control = control2, 
+    show.info = FALSE)
 mbo2$y
 ```
+
+```
+## [1] 2.236
+```
+
 
 <!-- 
  TODO 

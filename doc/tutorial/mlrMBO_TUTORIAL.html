@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<!-- saved from url=(0014)about:internet -->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>Introduction</title>
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 12px;
+   margin: 8px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 { 
+   font-size:2.2em; 
+}
+
+h2 { 
+   font-size:1.8em; 
+}
+
+h3 { 
+   font-size:1.4em; 
+}
+
+h4 { 
+   font-size:1.0em; 
+}
+
+h5 { 
+   font-size:0.9em; 
+}
+
+h6 { 
+   font-size:0.8em; 
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre {	
+   margin-top: 0;
+   max-width: 95%;
+   border: 1px solid #ccc;
+   white-space: pre-wrap;
+}
+
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code.r, code.cpp {
+   background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * { 
+      background: transparent !important; 
+      color: black !important; 
+      filter:none !important; 
+      -ms-filter: none !important; 
+   }
+
+   body { 
+      font-size:12pt; 
+      max-width:100%; 
+   }
+       
+   a, a:visited { 
+      text-decoration: underline; 
+   }
+
+   hr { 
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote { 
+      padding-right: 1em; 
+      page-break-inside: avoid; 
+   }
+
+   tr, img { 
+      page-break-inside: avoid; 
+   }
+
+   img { 
+      max-width: 100% !important; 
+   }
+
+   @page :left { 
+      margin: 15mm 20mm 15mm 10mm; 
+   }
+     
+   @page :right { 
+      margin: 15mm 10mm 15mm 20mm; 
+   }
+
+   p, h2, h3 { 
+      orphans: 3; widows: 3; 
+   }
+
+   h2, h3 { 
+      page-break-after: avoid; 
+   }
+}
+
+</style>
+
+<!-- Styles for R syntax highlighter -->
+<style type="text/css">
+   pre .operator,
+   pre .paren {
+     color: rgb(104, 118, 135)
+   }
+
+   pre .literal {
+     color: rgb(88, 72, 246)
+   }
+
+   pre .number {
+     color: rgb(0, 0, 205);
+   }
+
+   pre .comment {
+     color: rgb(76, 136, 107);
+   }
+
+   pre .keyword {
+     color: rgb(0, 0, 255);
+   }
+
+   pre .identifier {
+     color: rgb(0, 0, 0);
+   }
+
+   pre .string {
+     color: rgb(3, 106, 7);
+   }
+</style>
+
+<!-- R syntax highlighter -->
+<script type="text/javascript">
+var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/</gm,"&lt;")}function f(r,q,p){return RegExp(q,"m"+(r.cI?"i":"")+(p?"g":""))}function b(r){for(var p=0;p<r.childNodes.length;p++){var q=r.childNodes[p];if(q.nodeName=="CODE"){return q}if(!(q.nodeType==3&&q.nodeValue.match(/\s+/))){break}}}function h(t,s){var p="";for(var r=0;r<t.childNodes.length;r++){if(t.childNodes[r].nodeType==3){var q=t.childNodes[r].nodeValue;if(s){q=q.replace(/\n/g,"")}p+=q}else{if(t.childNodes[r].nodeName=="BR"){p+="\n"}else{p+=h(t.childNodes[r])}}}if(/MSIE [678]/.test(navigator.userAgent)){p=p.replace(/\r/g,"\n")}return p}function a(s){var r=s.className.split(/\s+/);r=r.concat(s.parentNode.className.split(/\s+/));for(var q=0;q<r.length;q++){var p=r[q].replace(/^language-/,"");if(e[p]){return p}}}function c(q){var p=[];(function(s,t){for(var r=0;r<s.childNodes.length;r++){if(s.childNodes[r].nodeType==3){t+=s.childNodes[r].nodeValue.length}else{if(s.childNodes[r].nodeName=="BR"){t+=1}else{if(s.childNodes[r].nodeType==1){p.push({event:"start",offset:t,node:s.childNodes[r]});t=arguments.callee(s.childNodes[r],t);p.push({event:"stop",offset:t,node:s.childNodes[r]})}}}}return t})(q,0);return p}function k(y,w,x){var q=0;var z="";var s=[];function u(){if(y.length&&w.length){if(y[0].offset!=w[0].offset){return(y[0].offset<w[0].offset)?y:w}else{return w[0].event=="start"?y:w}}else{return y.length?y:w}}function t(D){var A="<"+D.nodeName.toLowerCase();for(var B=0;B<D.attributes.length;B++){var C=D.attributes[B];A+=" "+C.nodeName.toLowerCase();if(C.value!==undefined&&C.value!==false&&C.value!==null){A+='="'+m(C.value)+'"'}}return A+">"}while(y.length||w.length){var v=u().splice(0,1)[0];z+=m(x.substr(q,v.offset-q));q=v.offset;if(v.event=="start"){z+=t(v.node);s.push(v.node)}else{if(v.event=="stop"){var p,r=s.length;do{r--;p=s[r];z+=("</"+p.nodeName.toLowerCase()+">")}while(p!=v.node);s.splice(r,1);while(r<s.length){z+=t(s[r]);r++}}}}return z+m(x.substr(q))}function j(){function q(x,y,v){if(x.compiled){return}var u;var s=[];if(x.k){x.lR=f(y,x.l||hljs.IR,true);for(var w in x.k){if(!x.k.hasOwnProperty(w)){continue}if(x.k[w] instanceof Object){u=x.k[w]}else{u=x.k;w="keyword"}for(var r in u){if(!u.hasOwnProperty(r)){continue}x.k[r]=[w,u[r]];s.push(r)}}}if(!v){if(x.bWK){x.b="\\b("+s.join("|")+")\\s"}x.bR=f(y,x.b?x.b:"\\B|\\b");if(!x.e&&!x.eW){x.e="\\B|\\b"}if(x.e){x.eR=f(y,x.e)}}if(x.i){x.iR=f(y,x.i)}if(x.r===undefined){x.r=1}if(!x.c){x.c=[]}x.compiled=true;for(var t=0;t<x.c.length;t++){if(x.c[t]=="self"){x.c[t]=x}q(x.c[t],y,false)}if(x.starts){q(x.starts,y,false)}}for(var p in e){if(!e.hasOwnProperty(p)){continue}q(e[p].dM,e[p],true)}}function d(B,C){if(!j.called){j();j.called=true}function q(r,M){for(var L=0;L<M.c.length;L++){if((M.c[L].bR.exec(r)||[null])[0]==r){return M.c[L]}}}function v(L,r){if(D[L].e&&D[L].eR.test(r)){return 1}if(D[L].eW){var M=v(L-1,r);return M?M+1:0}return 0}function w(r,L){return L.i&&L.iR.test(r)}function K(N,O){var M=[];for(var L=0;L<N.c.length;L++){M.push(N.c[L].b)}var r=D.length-1;do{if(D[r].e){M.push(D[r].e)}r--}while(D[r+1].eW);if(N.i){M.push(N.i)}return f(O,M.join("|"),true)}function p(M,L){var N=D[D.length-1];if(!N.t){N.t=K(N,E)}N.t.lastIndex=L;var r=N.t.exec(M);return r?[M.substr(L,r.index-L),r[0],false]:[M.substr(L),"",true]}function z(N,r){var L=E.cI?r[0].toLowerCase():r[0];var M=N.k[L];if(M&&M instanceof Array){return M}return false}function F(L,P){L=m(L);if(!P.k){return L}var r="";var O=0;P.lR.lastIndex=0;var M=P.lR.exec(L);while(M){r+=L.substr(O,M.index-O);var N=z(P,M);if(N){x+=N[1];r+='<span class="'+N[0]+'">'+M[0]+"</span>"}else{r+=M[0]}O=P.lR.lastIndex;M=P.lR.exec(L)}return r+L.substr(O,L.length-O)}function J(L,M){if(M.sL&&e[M.sL]){var r=d(M.sL,L);x+=r.keyword_count;return r.value}else{return F(L,M)}}function I(M,r){var L=M.cN?'<span class="'+M.cN+'">':"";if(M.rB){y+=L;M.buffer=""}else{if(M.eB){y+=m(r)+L;M.buffer=""}else{y+=L;M.buffer=r}}D.push(M);A+=M.r}function G(N,M,Q){var R=D[D.length-1];if(Q){y+=J(R.buffer+N,R);return false}var P=q(M,R);if(P){y+=J(R.buffer+N,R);I(P,M);return P.rB}var L=v(D.length-1,M);if(L){var O=R.cN?"</span>":"";if(R.rE){y+=J(R.buffer+N,R)+O}else{if(R.eE){y+=J(R.buffer+N,R)+O+m(M)}else{y+=J(R.buffer+N+M,R)+O}}while(L>1){O=D[D.length-2].cN?"</span>":"";y+=O;L--;D.length--}var r=D[D.length-1];D.length--;D[D.length-1].buffer="";if(r.starts){I(r.starts,"")}return R.rE}if(w(M,R)){throw"Illegal"}}var E=e[B];var D=[E.dM];var A=0;var x=0;var y="";try{var s,u=0;E.dM.buffer="";do{s=p(C,u);var t=G(s[0],s[1],s[2]);u+=s[0].length;if(!t){u+=s[1].length}}while(!s[2]);if(D.length>1){throw"Illegal"}return{r:A,keyword_count:x,value:y}}catch(H){if(H=="Illegal"){return{r:0,keyword_count:0,value:m(C)}}else{throw H}}}function g(t){var p={keyword_count:0,r:0,value:m(t)};var r=p;for(var q in e){if(!e.hasOwnProperty(q)){continue}var s=d(q,t);s.language=q;if(s.keyword_count+s.r>r.keyword_count+r.r){r=s}if(s.keyword_count+s.r>p.keyword_count+p.r){r=p;p=s}}if(r.language){p.second_best=r}return p}function i(r,q,p){if(q){r=r.replace(/^((<[^>]+>|\t)+)/gm,function(t,w,v,u){return w.replace(/\t/g,q)})}if(p){r=r.replace(/\n/g,"<br>")}return r}function n(t,w,r){var x=h(t,r);var v=a(t);var y,s;if(v){y=d(v,x)}else{return}var q=c(t);if(q.length){s=document.createElement("pre");s.innerHTML=y.value;y.value=k(q,c(s),x)}y.value=i(y.value,w,r);var u=t.className;if(!u.match("(\\s|^)(language-)?"+v+"(\\s|$)")){u=u?(u+" "+v):v}if(/MSIE [678]/.test(navigator.userAgent)&&t.tagName=="CODE"&&t.parentNode.tagName=="PRE"){s=t.parentNode;var p=document.createElement("div");p.innerHTML="<pre><code>"+y.value+"</code></pre>";t=p.firstChild.firstChild;p.firstChild.cN=s.cN;s.parentNode.replaceChild(p.firstChild,s)}else{t.innerHTML=y.value}t.className=u;t.result={language:v,kw:y.keyword_count,re:y.r};if(y.second_best){t.second_best={language:y.second_best.language,kw:y.second_best.keyword_count,re:y.second_best.r}}}function o(){if(o.called){return}o.called=true;var r=document.getElementsByTagName("pre");for(var p=0;p<r.length;p++){var q=b(r[p]);if(q){n(q,hljs.tabReplace)}}}function l(){if(window.addEventListener){window.addEventListener("DOMContentLoaded",o,false);window.addEventListener("load",o,false)}else{if(window.attachEvent){window.attachEvent("onload",o)}else{window.onload=o}}}var e={};this.LANGUAGES=e;this.highlight=d;this.highlightAuto=g;this.fixMarkup=i;this.highlightBlock=n;this.initHighlighting=o;this.initHighlightingOnLoad=l;this.IR="[a-zA-Z][a-zA-Z0-9_]*";this.UIR="[a-zA-Z_][a-zA-Z0-9_]*";this.NR="\\b\\d+(\\.\\d+)?";this.CNR="\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";this.BNR="\\b(0b[01]+)";this.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";this.ER="(?![\\s\\S])";this.BE={b:"\\\\.",r:0};this.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[this.BE],r:0};this.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[this.BE],r:0};this.CLCM={cN:"comment",b:"//",e:"$"};this.CBLCLM={cN:"comment",b:"/\\*",e:"\\*/"};this.HCM={cN:"comment",b:"#",e:"$"};this.NM={cN:"number",b:this.NR,r:0};this.CNM={cN:"number",b:this.CNR,r:0};this.BNM={cN:"number",b:this.BNR,r:0};this.inherit=function(r,s){var p={};for(var q in r){p[q]=r[q]}if(s){for(var q in s){p[q]=s[q]}}return p}}();hljs.LANGUAGES.cpp=function(){var a={keyword:{"false":1,"int":1,"float":1,"while":1,"private":1,"char":1,"catch":1,"export":1,virtual:1,operator:2,sizeof:2,dynamic_cast:2,typedef:2,const_cast:2,"const":1,struct:1,"for":1,static_cast:2,union:1,namespace:1,unsigned:1,"long":1,"throw":1,"volatile":2,"static":1,"protected":1,bool:1,template:1,mutable:1,"if":1,"public":1,friend:2,"do":1,"return":1,"goto":1,auto:1,"void":2,"enum":1,"else":1,"break":1,"new":1,extern:1,using:1,"true":1,"class":1,asm:1,"case":1,typeid:1,"short":1,reinterpret_cast:2,"default":1,"double":1,register:1,explicit:1,signed:1,typename:1,"try":1,"this":1,"switch":1,"continue":1,wchar_t:1,inline:1,"delete":1,alignof:1,char16_t:1,char32_t:1,constexpr:1,decltype:1,noexcept:1,nullptr:1,static_assert:1,thread_local:1,restrict:1,_Bool:1,complex:1},built_in:{std:1,string:1,cin:1,cout:1,cerr:1,clog:1,stringstream:1,istringstream:1,ostringstream:1,auto_ptr:1,deque:1,list:1,queue:1,stack:1,vector:1,map:1,set:1,bitset:1,multiset:1,multimap:1,unordered_set:1,unordered_map:1,unordered_multiset:1,unordered_multimap:1,array:1,shared_ptr:1}};return{dM:{k:a,i:"</",c:[hljs.CLCM,hljs.CBLCLM,hljs.QSM,{cN:"string",b:"'\\\\?.",e:"'",i:"."},{cN:"number",b:"\\b(\\d+(\\.\\d*)?|\\.\\d+)(u|U|l|L|ul|UL|f|F)"},hljs.CNM,{cN:"preprocessor",b:"#",e:"$"},{cN:"stl_container",b:"\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<",e:">",k:a,r:10,c:["self"]}]}}}();hljs.LANGUAGES.r={dM:{c:[hljs.HCM,{cN:"number",b:"\\b0[xX][0-9a-fA-F]+[Li]?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+(?:[eE][+\\-]?\\d*)?L\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+\\.(?!\\d)(?:i\\b)?",e:hljs.IMMEDIATE_RE,r:1},{cN:"number",b:"\\b\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"keyword",b:"(?:tryCatch|library|setGeneric|setGroupGeneric)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\.",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\d+(?![\\w.])",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\b(?:function)",e:hljs.IMMEDIATE_RE,r:2},{cN:"keyword",b:"(?:if|in|break|next|repeat|else|for|return|switch|while|try|stop|warning|require|attach|detach|source|setMethod|setClass)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"literal",b:"(?:NA|NA_integer_|NA_real_|NA_character_|NA_complex_)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"literal",b:"(?:NULL|TRUE|FALSE|T|F|Inf|NaN)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"identifier",b:"[a-zA-Z.][a-zA-Z0-9._]*\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"<\\-(?!\\s*\\d)",e:hljs.IMMEDIATE_RE,r:2},{cN:"operator",b:"\\->|<\\-",e:hljs.IMMEDIATE_RE,r:1},{cN:"operator",b:"%%|~",e:hljs.IMMEDIATE_RE},{cN:"operator",b:">=|<=|==|!=|\\|\\||&&|=|\\+|\\-|\\*|/|\\^|>|<|!|&|\\||\\$|:",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"%",e:"%",i:"\\n",r:1},{cN:"identifier",b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[hljs.BE],r:0},{cN:"string",b:"'",e:"'",c:[hljs.BE],r:0},{cN:"paren",b:"[[({\\])}]",e:hljs.IMMEDIATE_RE,r:0}]}};
+hljs.initHighlightingOnLoad();
+</script>
+
+
+
+
+</head>
+
+<body>
+<h1>Introduction</h1>
+
+<pre><code class="r">library(mlrMBO)
+</code></pre>
+
+<pre><code>## Loading required package: ParamHelpers
+## Loading required package: mlr
+## Loading required package: gridExtra
+## Loading required package: grid
+## Loading required package: ggplot2
+</code></pre>
+
+<!-- 
+Kommentar
+!-->
+
+<p><strong>mlrMBO</strong> is a framework for the (sequential) Model Based parameter Optimization.
+The goal is to optimize numeric or discrete influence parameters
+of a non-linear black box function like an industrial simulator or  a time-consuming algorithm. </p>
+
+<p>The first step of MBO requires an initial set of evaluation points which is then evaluated by the black box function.<br/>
+The basic procedure of MBO is an iterating loop of the following steps: 
+Firstly, a user defined surrogate model is fitted on the evaluated points, secondly, a new evaluation point is proposed 
+by an infill criterion and lastly, its performance is evaluated.
+The result of this sequential procedure is the optimization path containing the best
+parameter setting and the fitted surrogate model.</p>
+
+<p>The main function of the package <strong>mlrMBO</strong> is <code>mbo()</code>
+containing following essential parameters:</p>
+
+<ul>
+<li>fun:       Fitness function to minimize.</li>
+<li>par.set:   Description of the parameter set</li>
+<li>design:    Initial design.</li>
+<li>learner:   Surrogate model type.</li>
+<li>control:   MBOControl object.</li>
+<li>show.info:  A logical value. Default is TRUE: show output on console.</li>
+</ul>
+
+<p>This web page will provide you with an in-depth introduction on how to
+set the <code>mbo()</code> parameters depending on the desired kind of optimization.</p>
+
+<!-- 
+Our focus is on your comprehension of the basic functions and
+applications. For detailed technical information and manual pages, please refer to
+the package's [manual pages](http://berndbischl.github.io/mlrMBO/man/).
+They are regularly updated and reflect the documentation
+of the current packages on CRAN.
+!-->
+
+<h1>Objective Function</h1>
+
+<p>The first argument of <code>mbo()</code> is the name of the object function to minimize. The first argument of this object function has to be a list of values.
+The function has to return a single numerical value. We demonstrate in this tutorial optimization of two simple functions: 5 dimensional <code>ackley function</code> from
+package <strong>soobench</strong> (<code>objfun1</code>) and a self-constructed sine und cosine combination (<code>objfun2</code>). <code>objfun1</code> depends on 5 numeric parameters 
+while <code>objfun2</code> assumes 2 numeric and 1 discrete parameters..</p>
+
+<pre><code class="r">library(soobench)
+objfun1 = generate_branin_function()  # old soobench version: objfun1=branin_function() 
+objfun2 = function(listOfValues) {
+    x = listOfValues[[1]]
+    k = listOfValues[[2]]
+    method = listOfValues[[3]]
+    perf = ifelse(listOfValues[[3]] == &quot;a&quot;, k * sin(x) + cos(x), sin(x) + k * 
+        cos(x))
+    return(perf)
+}
+</code></pre>
+
+<p>We aim to maximize <code>objfun2</code>. In a following Section will be shown how to set the <code>MBOControl</code> object in order to switch the maximization problem into a minimization one. </p>
+
+<h1>Parameter set</h1>
+
+<p>The second argument of <code>mbo()</code> function, <code>par.set</code>,  has to be a ParamSet object from <strong>ParamHelpers</strong> package, which provides information about parameters
+of the objective function and their constraints for optimization.
+The lower and upper bounds for <code>objfun1</code> parameters can be easily obtained using <strong>soobench</strong> function <code>lower_bounds</code>. For <code>objfun2</code> we 
+assume <code>x</code> from interval [0,1] and <code>k</code> from interval [1,2]. Parameter <code>method</code> can be either <code>&quot;a&quot;</code> or <code>&quot;b&quot;</code>.</p>
+
+<pre><code class="r">library(ParamHelpers)
+par.set1 = makeNumericParamSet(len = number_of_parameters(objfun1), lower = lower_bounds(objfun1), 
+    upper = upper_bounds(objfun1))
+par.set2 = makeParamSet(makeNumericParam(&quot;x&quot;, lower = 0, upper = 1), makeIntegerParam(&quot;k&quot;, 
+    lower = 1, upper = 2), makeDiscreteParam(&quot;method&quot;, values = c(&quot;a&quot;, &quot;b&quot;)))
+</code></pre>
+
+<h1>Initial Design</h1>
+
+<p>The third argument of <code>mbo()</code> function - <code>design</code> - is the initial design  with default setting <code>NULL</code>.
+Users have two options for initializing of this design:
+either to create itself a design und assign the <code>design</code> parameter with it or
+to provide settings for design generation in  <code>MBOControl</code> object.</p>
+
+<p>In the first case it is recommendable to use <code>generateDesign</code> function from <strong>ParamHelpers</strong> package.
+However, if special designs are desired (e.g., orthogonal designs), its interface
+has to be the same as the interface of the <code>generateDesign</code> objects. Particular attention has to be paid to the setting of the <code>trafo</code> attribute.</p>
+
+<p>In the second case following parameters of <code>MBOControl</code> object 
+are relevant:</p>
+
+<ul>
+<li><code>init.design.points</code>: Initial design size, default setting is 20.</li>
+<li><code>init.design.fun</code>: Any function from <strong>lhs</strong> package, default is <code>maximinLHS</code>.</li>
+<li><code>init.design.args</code>:  List of further arguments passed to <code>init.design.fun</code>, default is empty list.</li>
+</ul>
+
+<p>Here we will use the first option for <code>objfun1</code> and the second option for <code>objfun2</code>. In the both cases we will generate an initial design of size 
+5*(dimension of the object function).</p>
+
+<pre><code class="r">library(lhs)
+init.design.points1 = 5 * sum(getParamLengths(par.set1))
+init.design.fun1 = randomLHS
+set.seed(1)
+design1 = generateDesign(n = init.design.points1, par.set = par.set1, fun = init.design.fun1, 
+    trafo = FALSE)
+
+# will be used later as makeMBOControl() arguments
+init.design.points2 = 5 * sum(getParamLengths(par.set2))
+init.design.fun2 = maximinLHS
+init.design.args2 = list(k = 3, dup = 4)
+</code></pre>
+
+<h1>Surrogate Model</h1>
+
+<p>Attribute <code>learner</code> of the <code>mbo()</code> function allows us to choose an appropriate surrogate model for the parameter optimization.
+It can be easily done using the <code>makeLearner</code> function from <strong>mlr</strong> package. 
+List of implemented learners can be seen using ?learners command. &lt;!&ndash; Here an appropriate link!&ndash;&gt; 
+The choice of the surrogate model depends on the parameter set of the objective function. 
+While kriging models are advisable for the numeric parameters, random forest models can be used if at least one parameter is factorial.
+In our example we consider these two surrogate models:
+<code>kriging</code> for optimizing of <code>objfun1</code>  and <code>random forest</code> for <code>objfun2</code>.</p>
+
+<pre><code class="r">library(mlr)
+learner_km = makeLearner(&quot;regr.km&quot;, predict.type = &quot;se&quot;, covtype = &quot;matern3_2&quot;)
+</code></pre>
+
+<pre><code>## Loading required package: DiceKriging
+</code></pre>
+
+<pre><code class="r">learner_rf = makeLearner(&quot;regr.randomForest&quot;)
+</code></pre>
+
+<pre><code>## Loading required package: randomForest
+## randomForest 4.6-7
+## Type rfNews() to see new features/changes/bug fixes.
+</code></pre>
+
+<p>However, in some cases it is necessary to modify the learners (e.g., in order to get the standard error prediction for design points). 
+This will be discussed und illustrated in the section &ldquo;Experiments and Output&rdquo;.</p>
+
+<h1>MBOControl</h1>
+
+<p>User can change the default settings of the <code>mboControl</code> object
+using <code>makeMBOControl</code> function, in order to configure <code>mbo()</code> in the desired
+way. Settings regarding the initial design were already mentioned in Section &ldquo;Initial Design&rdquo;.</p>
+
+<h2>Attribute <code>infill.crit</code></h2>
+
+<p>One of the most important issues is to define how the next design points in
+the sequential loops have to be chosen. Firstly, we have to choose the infill criterion using the  <code>infill.crit</code> attribute. 
+At the moment four possibilities are implemented: </p>
+
+<ul>
+<li><code>mean</code>: mean response of the surrogate model, </li>
+<li><code>ei</code>: expected improvement of the surrogate model,</li>
+<li><code>aei</code>: augmented expected improvement, which is especially useful for the noisy functions,</li>
+<li><code>lcb</code>: lower confidence bound which is the additive combination of mean response and mean standard error estimation 
+of the surrogate model (response - lambda * standard.error). The default value of lambda is 1, but it can be easily changed by
+the <code>infill.crit.lcb</code> attribute.</li>
+</ul>
+
+<h2>Attribute <code>infill.opt.fun</code></h2>
+
+<p>The attribute <code>infill.opt.fun</code> sets how the next point to evaluate should be proposed given an infill criterion. The possibilities are:
+<code>focussearch</code>, <code>cmaes</code> and <code>ea</code>. </p>
+
+<p>In the first case a focus search is employed. The common procedure is as follows: in the first step an lhs design is sampled in the
+parameter space (by <code>randomLHS</code> function) and the design point with the best  prediction of the infill criterion is determined. User can set the 
+size of this design by <code>infill.opt.focussearch.points</code> attribute of <code>MBOControl</code> object (default value is 10000). In the second step the parameter
+space is shrunk around the best design point in a certain way which should not be discussed in detail here. First and second steps are repeated<br/>
+iteratively <code>infill.opt.focussearch.maxit</code> times (default is 5) while the best seen value of the infil criterion is passed back.</p>
+
+<p>If <code>infill.opt.fun</code> is <code>cmaes</code>, the point, which optimizes the
+infill criterion, is chosen via <code>cma_es</code> function of  <strong>cmaes</strong> package. Control argument for <code>cmaes</code> optimizer can be provided in 
+<code>infill.opt.cmaes.control</code> attribute (default is empty list).</p>
+
+<p>If <code>infill.opt.fun</code> is <code>ea</code> a simple (mu+1)-evolutionary optimization algorithm is used to optimize the infill criterion. 
+The population size, mu, can be set by <code>infill.opt.ea.mu</code> attribute (default value is 10). 
+(mu+1) means that in each population only one child is generated using crossover und mutation operators (from <strong>emao</strong> package).<br/>
+Parameters <code>eta</code> and <code>p</code> of these both operators can be adjust via <code>infill.opt.ea.sbx.eta</code>, <code>infill.opt.ea.sbx.p</code>,
+<code>infill.opt.ea.pm.eta</code> and <code>infill.opt.ea.pm.p</code> attributes respectevely. 
+The default number of EA iterations is 500 and can be changed by <code>infill.opt.ea.maxit</code> attribute.</p>
+
+<p>As all three infill optimization strategies do not guarantee  to find the global optimum, users can set the number of restarts by 
+<code>infill.opt.restarts</code> attribute (default value is 1). 
+After conducting the desired number of restarts the design point with the best infill criterion value is passed back to the MBO loop. </p>
+
+<p>Please note that just <code>focussearch</code> optimizer is suitable for the case of factor parameters in the parameter set!</p>
+
+<h2>Further attributes </h2>
+
+<p>The number of sequential steps (iterations) can be set in attribute <code>iters</code> (default setting 10). 
+Furthermore, user can specify whether the function have to be minimized or maximized in attribute <code>minimize</code> (default setting TRUE , e.g.,  minimization). </p>
+
+<p>There are also many other attributes which user can set in a desired way like how often should the surrogate model be stored or resampled during the optimization.
+The list of all attributes is provided in the software documentation.</p>
+
+<h2>Constructing  of <code>mboControl</code> object</h2>
+
+<p>Let us construct <code>mboControl</code> objects for our two object functions.</p>
+
+<pre><code class="r">control1 = makeMBOControl(iters = 10, infill.crit = &quot;ei&quot;, infill.opt = &quot;cmaes&quot;)
+
+
+control2 = makeMBOControl(minimize = FALSE, iters = 10, infill.crit = &quot;mean&quot;, 
+    infill.opt = &quot;focussearch&quot;, init.design.points = init.design.points2, init.design.fun = init.design.fun2, 
+    init.design.args = init.design.args2)
+</code></pre>
+
+<h1>Experiments and Output</h1>
+
+<p>Now we will apply the mbo() function to optimize the both objective functions</p>
+
+<h2>Optimization of <code>objfun1</code></h2>
+
+<p>As the first argument of the objective function has to be a list of values and for the
+objfun1 it is two-dimensional numeric vector, we wrap objfun1 with <code>makeMBOFunction()</code> function
+which was created extra for this purpose.</p>
+
+<pre><code class="r">library(mlrMBO)
+library(BBmisc)
+
+mbo1 = mbo(makeMBOFunction(objfun1), par.set1, design = design1, learner = learner_km, 
+    control = control1, show.info = TRUE)
+</code></pre>
+
+<pre><code>## Loading required package: cmaes
+## Computing y column for design. Was not provided
+## [mbo] 0: x=9.90,2.22 : y=1.939
+## [mbo] 0: x=1.32,0.90 : y=22.814
+## [mbo] 0: x=-4.02,12.74 : y=6.958
+## [mbo] 0: x=-3.31,4.78 : y=63.075
+## [mbo] 0: x=-1.60,8.74 : y=9.746
+## [mbo] 0: x=7.58,4.00 : y=19.599
+## [mbo] 0: x=5.52,10.19 : y=98.669
+## [mbo] 0: x=3.07,6.16 : y=15.114
+## [mbo] 0: x=0.80,14.59 : y=112.354
+## [mbo] 0: x=4.51,11.12 : y=101.533
+## [mbo] 1: x=8.81,2.03 : y=2.135
+## [mbo] 2: x=9.78,0.88 : y=4.658
+## [mbo] 3: x=4.94,2.03 : y=12.709
+## [mbo] 4: x=7.22,0.31 : y=16.531
+## [mbo] 5: x=9.70,1.63 : y=1.952
+## [mbo] 6: x=9.36,2.09 : y=0.529
+## [mbo] 7: x=9.37,2.79 : y=0.544
+## [mbo] 8: x=9.66,5.76 : y=10.176
+## [mbo] 9: x=9.93,3.87 : y=2.495
+## [mbo] 10: x=9.48,2.47 : y=0.417
+</code></pre>
+
+<pre><code class="r">mbo1
+</code></pre>
+
+<pre><code>## $x
+## $x$x
+## [1] 9.484 2.475
+## 
+## 
+## $y
+## [1] 0.4172
+## 
+## $opt.path
+## Optimization path
+##   Dimensions: x=1/2, y=1
+##   Length: 20
+##   Add x values transformed: FALSE
+## 
+## $resample
+## named list()
+## 
+## $models
+## $models$`10`
+## Learner model for id=regr.km class=regr.km
+## Trained on obs: 20
+## Used features: 2
+## Hyperparameters: covtype=matern3_2
+## 
+## 
+## $multipoint.lcb.lambdas
+##      [,1]
+## 
+## attr(,&quot;class&quot;)
+## [1] &quot;MBOResult&quot;
+</code></pre>
+
+<pre><code class="r">getOptPathY(mbo1$opt.path, &quot;y&quot;)  # get all y values
+</code></pre>
+
+<pre><code>##  [1]   1.9387  22.8140   6.9579  63.0751   9.7457  19.5989  98.6687
+##  [8]  15.1141 112.3540 101.5334   2.1354   4.6576  12.7087  16.5312
+## [15]   1.9519   0.5289   0.5438  10.1758   2.4949   0.4172
+</code></pre>
+
+<p>The output of mbo function is a structure of several variables. The most important are:</p>
+
+<ul>
+<li>x: the best point of the parameter space</li>
+<li>y: the associated best value of the objective function</li>
+<li>opt.path: optimization path. See <strong>ParamHelpers</strong> for further information.</li>
+<li>models: If no other setting was provided in the <code>MBOControl</code> object, the last estimated surrogate is given here.</li>
+<li>&hellip;</li>
+</ul>
+
+<!-- FIXME: get optimization path as data.frame !-->
+
+<p>We can also change some attributes of the <code>MBOControl</code> object and run mbo() function again</p>
+
+<pre><code class="r">control1$infill.crit = &quot;mean&quot;
+control1$infill.opt.fun = &quot;focussearch&quot;
+mbo1 = mbo(makeMBOFunction(objfun1), par.set1, design = design1, learner = learner_km, 
+    control = control1, show.info = FALSE)
+mbo1$y
+</code></pre>
+
+<pre><code>## [1] 0.4793
+</code></pre>
+
+<h2>Optimization of <code>objfun2</code></h2>
+
+<p>Let us apply <strong>mlrMBO</strong> package to optimize object2 function, which contains one factor variable.
+We have already mentioned before, that in this case just <code>focussearch</code> infill optimization function is suitable. 
+If we use <code>mean</code> infill criterion any kind of model which can handle with factor variables can be used here (like random tree,
+random forest, linear model and many others).</p>
+
+<pre><code class="r">mbo2 = mbo(objfun2, par.set2, design = NULL, learner = learner_rf, control = control2, 
+    show.info = FALSE)
+mbo2$y
+</code></pre>
+
+<pre><code>## [1] 2.215
+</code></pre>
+
+<p>In contrast, if one will apply <code>ei</code> or <code>lcb</code> infill criteria, 
+the <code>predict.type</code> attribute of the learner have be set to <code>se</code>, if possible. A list of regression learners which support it can be viewed by:</p>
+
+<pre><code class="r"># listLearners(type=&#39;regr&#39;,se=TRUE)
+</code></pre>
+
+<!-- If no comment here, we get a lot warning message !-->
+
+<p>We hence modify the random forest learner and optimize <code>objfun2</code> by <code>ei</code> infill criterion.</p>
+
+<pre><code class="r">learner_rf = makeLearner(&quot;regr.randomForest&quot;, predict.type = &quot;se&quot;)
+control1$infill.crit = &quot;ei&quot;
+mbo2 = mbo(objfun2, par.set2, design = NULL, learner = learner_rf, control = control2, 
+    show.info = FALSE)
+mbo2$y
+</code></pre>
+
+<pre><code>## [1] 2.236
+</code></pre>
+
+<p>Finally, if a learner which not support the <code>se</code> prediction type should by applied for the optimization with <code>ei</code> infill criterion,
+there is a possibility to create a bagging model with the desired characteristics. Attribute <code>bag.iters</code> provide the number of models in the 
+ensemble, see documentation for <code>makeBaggingWrapper</code> of <strong>mlr</strong> package.</p>
+
+<pre><code class="r">learner_rt = makeLearner(&quot;regr.rpart&quot;)
+</code></pre>
+
+<pre><code>## Loading required package: rpart
+</code></pre>
+
+<pre><code class="r">bag_rt = makeBaggingWrapper(learner_rt, bag.iters = 5, predict.type = &quot;se&quot;)
+mbo2 = mbo(objfun2, par.set2, design = NULL, learner = learner_rf, control = control2, 
+    show.info = FALSE)
+mbo2$y
+</code></pre>
+
+<pre><code>## [1] 2.236
+</code></pre>
+
+<!-- 
+ TODO 
+
+1) noisy optimization example
+
+2) mulicrit 
+
+3) multipoint
+!-->
+
+</body>
+
+</html>
+
