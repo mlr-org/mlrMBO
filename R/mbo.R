@@ -1,3 +1,5 @@
+#FIXME: that times are returned must be documented
+
 #FIXME: retrain kriging faster
 
 #FIXME: how to choose best element. with noise? without?
@@ -58,6 +60,7 @@ mbo = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, ...)
   rep.pids = getParamIds(par.set, repeated=TRUE, with.nr=TRUE)
   y.name = control$y.name
   opt.path = makeOptPathDF(par.set, y.name, control$minimize)
+  times = numeric(0)
 
   # generate initial design if none provided
   if (is.null(design)) {
@@ -89,7 +92,9 @@ mbo = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, ...)
     if (show.info)
       messagef("Computing y column for design. Was not provided")
     xs = lapply(seq_len(nrow(design.x)), function(i) dfRowToList(design.x, par.set, i))
-    ys = evalTargetFun(fun, par.set, xs, opt.path, control, show.info, oldopts, ...)
+    evals = evalTargetFun(fun, par.set, xs, opt.path, control, show.info, oldopts, ...)
+    ys = evals$ys
+    times = c(times, evals$times)
     design = cbind(design.x, setColNames(data.frame(ys), y.name))
   }
 
@@ -135,10 +140,11 @@ mbo = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, ...)
     }
     xs = dfRowsToList(prop.design, par.set)
     xs = lapply(xs, repairPoint, par.set=par.set)
-    ys = evalTargetFun(fun, par.set, xs, opt.path, control, show.info, oldopts, ...)
+    evals = evalTargetFun(fun, par.set, xs, opt.path, control, show.info, oldopts, ...)
+    times = c(times, evals$times)
 
     # update optim trace and model
-    Map(function(x,y) addOptPathEl(opt.path, x=x, y=y, dob=loop), xs, ys)
+    Map(function(x,y) addOptPathEl(opt.path, x=x, y=y, dob=loop), xs, evals$ys)
     rt = makeMBOTask(as.data.frame(opt.path, discretes.as.factor=TRUE), par.set, y.name, control=control)
     model = train(learner, rt)
     if (loop %in% control$save.model.at)
@@ -160,7 +166,9 @@ mbo = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, ...)
       messagef("Performing %i final evals", control$final.evals)
     # do some final evaluations and compute mean of target fun values
     xs = replicate(control$final.evals, best$x, simplify=FALSE)
-    ys = evalTargetFun(fun, par.set, xs, opt.path, control, show.info, oldopts, ...)
+    evals = evalTargetFun(fun, par.set, xs, opt.path, control, show.info, oldopts, ...)
+    ys = evals$ys
+    times = c(times, evals$times)
     best$y = mean(ys)
   }
   # restore mlr configuration
@@ -172,6 +180,7 @@ mbo = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, ...)
     # strip name
     y=as.numeric(best$y),
     opt.path=opt.path,
+    times = times, 
     resample=res.vals,
     models=models,
     multipoint.lcb.lambdas = multipoint.lcb.lambdas

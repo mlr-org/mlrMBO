@@ -19,11 +19,11 @@ makeMBOControl(number.of.targets = 1L, minimize = rep(TRUE,
   multipoint.multicrit.maxit = 100L, multipoint.multicrit.sbx.eta = 15,
   multipoint.multicrit.sbx.p = 1, multipoint.multicrit.pm.eta = 15,
   multipoint.multicrit.pm.p = 1, parEGO.s = 20L, parEGO.rho = 0.05,
-  final.method = "best.true.y", final.evals = 0L, y.name = "y", impute,
-  impute.errors = FALSE, suppress.eval.errors = TRUE,
-  save.model.at = iters, resample.at = integer(0),
-  resample.desc = makeResampleDesc("CV", iter = 10),
-  resample.measures = list(mse), on.learner.error = "warn",
+  parEGO.propose.points = 1L, final.method = "best.true.y",
+  final.evals = 0L, y.name = "y", impute, impute.errors = FALSE,
+  suppress.eval.errors = TRUE, save.model.at = iters,
+  resample.at = integer(0), resample.desc = makeResampleDesc("CV", iter =
+  10), resample.measures = list(mse), on.learner.error = "warn",
   show.learner.output = FALSE)
 }
 \arguments{
@@ -34,7 +34,7 @@ makeMBOControl(number.of.targets = 1L, minimize = rep(TRUE,
   \item{noisy}{[\code{logical(1)}]\cr Is the target
   function noisy?  Default is \code{FALSE}.}
 
-  \item{number.of.targets}{[\code{integer(1)}] How many
+  \item{number.of.targets}{[\code{integer(1)}]\cr How many
   target functions does the function have? Greater than one
   for multicriteria optimization}
 
@@ -216,8 +216,12 @@ makeMBOControl(number.of.targets = 1L, minimize = rep(TRUE,
   Default is 20 (guessed value).}
 
   \item{parEGO.rho}{[\code{numeric(1)}]\cr Parameter of
-  parEGO - factor for Tchebycheff function. Default 0.05
+  parEGO - factor for Tchebycheff function. Default 0.05 as
   suggested in parEGO paper.}
+
+  \item{parEGO.propose.points}{[\code{integer(1)}]\cr
+  Number of points to propose in each parEGO iteration.
+  Default is 1L.}
 
   \item{final.method}{[\code{character(1)}]\cr How should
   the final point be proposed. Possible values are:
