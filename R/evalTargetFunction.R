@@ -51,13 +51,18 @@ evalTargetFun = function(fun, par.set, xs, opt.path, control, show.info, oldopts
 
   # apply fun2 and extract parts
   z = parallelMap(fun2, xs)
-  ys = do.call(rbind, extractSubList(z, "y", simplify = FALSE))
+  # ys is vector or row-matrix
+  ys = if (control$number.of.targets == 1L)
+    extractSubList(z, "y")
+  else 
+    setColNames(extractSubList(z, "y", matrix = "rows"), control$y.name)
   times = extractSubList(z, "time")
 
   configureMlr(on.learner.error=control$on.learner.error,
     show.learner.output=control$show.learner.output)
 
-  # FIXME: WTF happens here? ok we impute. better comment this
+  # FIXME: this does not look good. we need to define sematincs of impute better.
+  # in imputation we probably need to know which objective we refer to?
   if (is.matrix(ys)) {
     for (i in seq_row(ys)) {
       j = which(is.na(ys[i, ]) | is.nan(ys[i, ]) | is.infinite(ys[i, ]))
@@ -67,9 +72,10 @@ evalTargetFun = function(fun, par.set, xs, opt.path, control, show.info, oldopts
       }
     }
   } else {
-    j = which(is.na(ys) | is.nan(ys) | is.infinite(ys))
-    if (length(j) > 0L) {
-      ys[j] = mapply(control$impute, xs[j], ys[j],
+    # impute all broken y values in ys by imputation function of user
+    broken = which(is.na(ys) | is.nan(ys) | is.infinite(ys))
+    if (length(broken) > 0L) {
+      ys[broken] = mapply(control$impute, xs[broken], ys[broken],
         MoreArgs = list(opt.path = opt.path), USE.NAMES = FALSE)
     }
   }

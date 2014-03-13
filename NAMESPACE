@@ -1,5 +1,6 @@
 S3method(autoplot,MBOExampleRun)
 S3method(plot,MBOExampleRun)
+S3method(print,ParEGOResult)
 export(makeMBOControl)
 export(makeMBOFunction)
 export(makeTrafoFunction)

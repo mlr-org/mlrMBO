@@ -4,50 +4,23 @@ library(devtools)
 library(BBmisc)
 library(mlr)
 library(soobench)
+library(mco)
 
 load_all(".", reset=TRUE)
 
 set.seed(6)
 
-f = function(x) sin(x)
 
-ps = makeNumericParamSet(len=1, lower=3, upper=13)
+par.set = makeNumericParamSet(len = 2L, lower = 0, upper = 1)
+learner = makeLearner("regr.km", predict.type = "se")
+control = makeMBOControl(number.of.targets = 2L, iters = 2L, parEGO.s = 10L, init.design.points = 5,
+  parEGO.propose.points = 2L)
 
-ctrl = makeMBOControl(minimize=TRUE, init.design.points=4, iters=5,
-  infill.crit="ei")
+resMBO = mboParEGO(makeMBOFunction(zdt1), par.set, learner = learner, control = control)
 
-lrn = makeLearner("regr.km", predict.type="se")
 
-# run = exampleRun(makeMBOFunction(f), ps, control = ctrl, learner = lrn)
-
-for (i in 1:5) {
-  png(sprintf("~/Desktop/%i.png", i))
-  plot(run, iter=i, pause=FALSE)
-  dev.off()
-}
-
-# res = mbo(makeMBOFunction(f1), ps1, learner=lrn, control=ctrl)
-
-# configureMlr(show.learner.output=FALSE)
-
-# set.seed(2)
-
-# objfun = function(x) {
-  # (x$x1 == "a") + ifelse(isScalarNA(x$x3), 30, (x$x3 - 15)^2)
+# r  plot(resMBO$pareto.front, xlim = c(0, 2), ylim = c(0, 2))
+  # curve(1 - sqrt(x), add = TRUE)
 # }
-
-# ps = makeParamSet(
-  # makeDiscreteParam("x1", values=c("a", "b")),
-  # makeNumericVectorParam("x2", len=2, lower=1, upper=2),
-  # makeIntegerParam("x3", lower=10L, upper=20L, requires=quote(x1=="a")),
-  # makeDiscreteParam("x4", values=list(v=iris, w="123"), requires=quote(x1=="b"))
-# )
-
-# ctrl = makeMBOControl(minimize=TRUE, init.design.points=6, iters=5, propose.points=1,
-  # infill.crit="ei", infill.opt="focussearch", infill.opt.restarts=3L,
-  # infill.opt.focussearch.maxit=5, infill.opt.focussearch.points=1000L)
-
-# lrn = makeLearner("regr.randomForest", predict.type="se", fix.factors=TRUE)
-
-# res = mbo(objfun, ps, learner=lrn, control=ctrl)
+# parallelStop()
 

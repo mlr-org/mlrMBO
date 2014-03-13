@@ -1,4 +1,4 @@
-# Generates scalarized MBO Multicrit task.
+# Generates a list of scalarized MBO multicrit tasks.
 #
 # @param design [\code{\link[ParamHelpers]{ParamSet}}]\cr
 #   Initial design.
@@ -6,7 +6,7 @@
 #   Name of y-column for target values in optimization path.
 # @return [\code{\link[mlr]{SupervisedTask}]:
 #   List of repaired points.
-makeScalarTask = function(design, par.set, y.name, control) {
+makeScalarTasks = function(design, par.set, y.name, control) {
   design$dob = design$eol = NULL
   if (any(sapply(design, is.integer)))
     design = as.data.frame(lapply(design, function(x) if(is.integer(x)) as.numeric(x) else x))

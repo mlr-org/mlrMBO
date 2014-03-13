@@ -1,5 +1,3 @@
-#FIXME: BB: whole code should be proof-read by me. better: do review with daniel
-
 #'  Optimizes a multicrit optimization problem  with sequential model based
 #'  optimization using the parEGO algorithm
 #'
@@ -31,6 +29,7 @@
 #' @export
 #' @aliases MBOResult
 mboParEGO = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, ...) {
+  #FIXME: more param checks
   checkStuff(fun, par.set, design, learner, control)
   loadPackages(control)
   # save currently set options
@@ -40,8 +39,8 @@ mboParEGO = function(fun, par.set, design=NULL, learner, control, show.info=TRUE
   )
 
   # configure mlr in an appropriate way
-  configureMlr(on.learner.error=control$on.learner.error,
-               show.learner.output=control$show.learner.output)
+  configureMlr(on.learner.error = control$on.learner.error,
+    show.learner.output=control$show.learner.output)
 
   # FIXME: I am unsure wether we should do this, but otherwise RF sucks
   # if it is a good idea it is not not general enuff
@@ -53,69 +52,62 @@ mboParEGO = function(fun, par.set, design=NULL, learner, control, show.info=TRUE
   rep.pids = getParamIds(par.set, repeated=TRUE, with.nr=TRUE)
   y.name = control$y.name
   opt.path = makeOptPathDF(par.set, y.name, control$minimize)
+  times = numeric(0)
 
   # FIXME: trafo attribute is bad, consider user generated designs
   # generate initial design if none provided
   if (is.null(design)) {
     design.x = generateDesign(control$init.design.points, par.set,
-                              control$init.design.fun, control$init.design.args, trafo=FALSE)
+      control$init.design.fun, control$init.design.args, trafo=FALSE)
   } else {
     # sanity check: are paramter values and colnames of design consistent?
-    cns = colnames(design)
-    if(!setequal(setdiff(cns, y.name), rep.pids))
+    if(!setequal(setdiff(colnames(design), y.name), rep.pids))
       stop("Column names of design 'design' must match names of parameters in 'par.set'!")
-
-    design.x = design
+    design.x = dropNamed(design, y.name)
     # if no trafo attribute provided we act on the assumption that the design is not transformed
     if ("trafo" %nin% attributes(design.x)) {
       attr(design.x, "trafo") = FALSE
     }
   }
+  # reorder
+  design.x = design.x[, rep.pids, drop=FALSE]
+  xs = dfRowsToList(design.x, par.set)
+  # we now have design.x and its rows as lists in xs
 
   # compute y-values if missing or initial design generated above
   if (all(y.name %in% colnames(design.x))) {
-    ys = design[, y.name]
-    design.x = design[, colnames(design) != y.name, drop=FALSE]
+    design.y = design[, y.name]
   } else if (!any(y.name %in% colnames(design.x))){
     if (show.info)
       messagef("Computing y column for design. Was not provided")
-    xs = lapply(seq_len(nrow(design.x)), function(i) dfRowToList(design.x, par.set, i))
-    ## Parallel computing of y-values
     evals = evalTargetFun(fun, par.set, xs, opt.path, control, show.info, oldopts, ... )
     design.y = evals$ys
-    ys = lapply(seq_len(nrow(design.y)), function(i) design.y[i, ])
-    design = cbind(design.x, setColNames(data.frame(design.y), y.name))
+    times = c(times, evals$times)
   } else {
     stop("Only part of y-values are provided. Don't know what to do - provide either all or none.")
   }
-  # reorder
-  design.x = design.x[, rep.pids, drop=FALSE]
-  # FIXME this is the second time we do this ... maybe reorder code?
-  xs = dfRowsToList(design.x, par.set)
+  design = cbind(design.x, design.y)
+  # we now have design.y and design
 
   # add initial values to optimization path
+  ys = convertRowsToList(design.y)
   Map(function(x,y) addOptPathEl(opt.path, x=x, y=y, dob=0), xs, ys)
 
   # do the mbo magic
   for (loop in seq_len(control$iters)) {
-    # set up initial mbo task
-    scalarTasks = makeScalarTask(design, par.set, y.name, control=control)
+    # create a couple of scalar tasks to optimize and eval in parallel
+    scalarTasks = makeScalarTasks(design, par.set, y.name, control = control)
     models = lapply(scalarTasks, train, learner = learner)
-    #propose new points and evaluate target function
-    prop.design = lapply(models, proposePoints, par.set = par.set,
+    # propose new points and evaluate target function
+    prop.designs = lapply(models, proposePoints, par.set = par.set,
       control = control, opt.path = opt.path)
-    #prop.design = proposePoints(models[[1]], par.set, control, opt.path)
-    #print(prop.design)
-    #xs = dfRowsToList(prop.design, par.set)
-    #xs = lapply(xs, repairPoint, par.set=par.set)
-    xs = lapply(prop.design, dfRowsToList, par.set = par.set)
-    xs = lapply(xs, function(x) lapply(x, repairPoint, par.set=par.set))
+    prop.designs = do.call(rbind, prop.designs)
+    xs = dfRowsToList(prop.designs, par.set)
+    xs = lapply(xs, repairPoint, par.set = par.set)
     evals = evalTargetFun(fun, par.set, xs, opt.path, control, show.info, oldopts, ...)
-    design.y = evals$ys
-    ys = apply(design.y, 1, list)
-    # update optim trace and model
-    lapply(1:length(xs), function(i)
-      Map(function(x,y) addOptPathEl(opt.path, x=x, y=y, dob=loop), xs[[i]], ys[[i]]))
+    ys = convertRowsToList(evals$ys)
+    # store in opt path
+    mapply(addOptPathEl, xs, ys, MoreArgs = list(op = opt.path, dob = loop))
   }
 
   front.index = getOptPathParetoFront(opt.path, index = TRUE)
@@ -124,22 +116,20 @@ mboParEGO = function(fun, par.set, design=NULL, learner, control, show.info=TRUE
   # restore mlr configuration
   configureMlr(on.learner.error=oldopts[["ole"]], show.learner.output=oldopts[["slo"]])
 
-  # make sure to strip name of y
-  structure(list(
-    pareto.front=pareto.front,
-    # strip name
-    opt.path=opt.path
-  ), class="MBOResult")
+  makeS3Obj("ParEGOResult",
+    pareto.front = pareto.front,
+    opt.path = opt.path
+  )
 }
 
-# Print mbo result object.
+# Print ParEGO result object.
 #
-# @param x [\code{\link{MBOResult}}]\cr
+# @param x [\code{\link{ParEGOResult}}]\cr
 #   mbo result object instance.
 # @param ... [any]\cr
 #   Not used.
-#' @method print MBOResult
-print.MBOResult = function(x, ...) {
+#' @S3method print ParEGOResult
+print.ParEGOResult = function(x, ...) {
   op = x$opt.path
   print(tail(as.data.frame(x$op), 10))
 }
