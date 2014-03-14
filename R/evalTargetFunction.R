@@ -55,7 +55,7 @@ evalTargetFun = function(fun, par.set, xs, opt.path, control, show.info, oldopts
   ys = if (control$number.of.targets == 1L)
     extractSubList(z, "y")
   else
-    setColNames(extractSubList(z, "y", matrix = "rows"), control$y.name)
+    setColNames(extractSubList(z, "y", simplify = "rows"), control$y.name)
   times = extractSubList(z, "time")
 
   configureMlr(on.learner.error=control$on.learner.error,
