@@ -70,26 +70,29 @@ infillCritLCB = function(points, model, control, par.set, design) {
 # useful for noisy
 infillCritAEI = function(points, model, control, par.set, design) {
   #FIXME: generalize new.noise.var for all models
-
   maximize.mult = ifelse(control$minimize, 1, -1)
-  y = maximize.mult * design[, control$y.name]
   p = predict(model, newdata = points)$data
   p.mu = maximize.mult * p$response
   p.se = p$se
-  # FIXME: add this a constant in control
-  qk = p.mu + qnorm(0.75) * p.se
-  y.min = p.mu[rank(qk, ties.method="random") == 1]
-  d = y.min - p.mu
+  design = dropNamed(design, c("dob", "eol"))
+  ebs = getEffectiveBestPoint(design = design, model = model, control = control)
+  # calculate EI with plugin, plugin val is mean response at ebs solution
+  d = ebs$mu - p.mu
   xcr = d / p.se
   xcr.prob = pnorm(xcr)
   xcr.dens = dnorm(xcr)
 
-  new.noise.var = model$learner.model@covariance@nugget
+  #FIXME: how do we select here best?
+  pure.noise.var = if (inherits(model$learnem, "regr.km"))
+    pure.noise.var = model$learner.model@covariance@nugget
+  else
+    estimateResidualVariance(model, data = design, target = control$y.name)
 
+  tau = sqrt(pure.noise.var)
   #if (sk < sqrt(model@covariance@sd2)/1e+06) {
   #FIXME: What actually happens here. Find out in DiceOptim
   aei = ifelse(p.se < 1e-06, 0,
-    (d * xcr.prob + p.se * xcr.dens) * (1 - sqrt(new.noise.var) / sqrt(new.noise.var + p.se^2)))
+    (d * xcr.prob + p.se * xcr.dens) * (1 - tau / sqrt(tau^2 + p.se^2)))
   return(-aei)
 }
 
