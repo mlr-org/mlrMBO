@@ -1,5 +1,3 @@
-#FIXME: that times are returned must be documented
-
 #FIXME: retrain kriging faster
 
 #FIXME: how to choose best element. with noise? without?
@@ -32,6 +30,7 @@
 #'   \item{x [\code{list}]}{Named list of proposed optimal parameters.}
 #'   \item{y [\code{numeric(1)}]}{Value of fitness function at \code{x}, either from evals during optimization or from requested final evaluations, if those were greater than 0.}
 #'   \item{opt.path [\code{\link[ParamHelpers]{OptPath}}]}{Optimization path.}
+#'   \item{times [\code{numeric}]}{Vector of times it took to evaluate the objective.}
 #'   \item{models [List of \code{\link[mlr]{WrappedModel}}]}{List of saved regression models.}
 #'   \item{multipoint.lcb.lambdas [\code{matrix(iters, proposed.points)}]}{Sampled lambda values for multipoint lcb method.}
 #' @export
@@ -180,7 +179,7 @@ mbo = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, ...)
     # strip name
     y=as.numeric(best$y),
     opt.path=opt.path,
-    times = times, 
+    times = times,
     resample=res.vals,
     models=models,
     multipoint.lcb.lambdas = multipoint.lcb.lambdas

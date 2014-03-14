@@ -41,7 +41,8 @@ either from evals during optimization or from requested
 final evaluations, if those were greater than 0.}
 \item{opt.path
 [\code{\link[ParamHelpers]{OptPath}}]}{Optimization path.}
-\item{models [List of
+\item{times [\code{numeric}]}{Vector of times it took to
+evaluate the objective.} \item{models [List of
 \code{\link[mlr]{WrappedModel}}]}{List of saved regression
 models.} \item{multipoint.lcb.lambdas [\code{matrix(iters,
 proposed.points)}]}{Sampled lambda values for multipoint
