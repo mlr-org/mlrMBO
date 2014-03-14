@@ -21,22 +21,11 @@ proposePoints = function(model, par.set, control, opt.path, ...) {
     infill.crit.fun = getInfillCritFunction(control$infill.crit)
 
     # determine infill optimization strategy
-    infill.opt.fun = switch(control$infill.opt,
-      cmaes = infillOptCMAES,
-      focussearch = infillOptFocus,
-      ea = infillOptEA,
-      # default: try to match the fun which is given as string
-      match.fun(control$multipoint.method)
-    )
+    infill.opt.fun = getInfillOptFunction(control$infill.opt)
+
     infill.opt.fun(infill.crit.fun, model, control, par.set, opt.path, design, ...)
   } else {
-    multipoint.infill.opt.fun = switch(control$multipoint.method,
-      cl = multipointInfillOptCL,
-      lcb = multipointInfillOptLCB,
-      multicrit = multipointInfillOptMulticrit,
-      # default: try to match the fun which is given as string
-      match.fun(control$multipoint.method)
-    )
+    multipoint.infill.opt.fun = getMultipointInfillOptFunction(control$multipoint.method)
     multipoint.infill.opt.fun(model, control, par.set, opt.path, design, ...)
   }
 }
