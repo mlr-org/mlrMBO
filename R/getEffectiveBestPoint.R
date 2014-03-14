@@ -1,5 +1,5 @@
 # small helper to select yhat(x) + c * s(x) from a design of noisy obs. huang style
-getEffectiveBestPoint = function(design, model, control) {
+getEffectiveBestPoint = function(design, model, par.set, control) {
   maximize.mult = ifelse(control$minimize, 1, -1)
   p = predict(model, newdata = design)
 
@@ -10,8 +10,6 @@ getEffectiveBestPoint = function(design, model, control) {
   # minimize mu (if minimization of objective), large se is always penalized
   v = (maximize.mult * mu) + const * se
   j = getMinIndex(v)
+
   return(list(index = j, des = design[j,, drop = FALSE], mu = mu[[j]], se = se[[j]], val = v[[j]]))
 }
-
-
-
