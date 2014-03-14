@@ -8,3 +8,7 @@ getInfillOptFunction = function(infill.opt) {
     match.fun(infill.opt)
   )
 }
+
+getSupportedInfillOptFunctions = function() {
+  c("cmeas", "focussearch", "ea")
+}

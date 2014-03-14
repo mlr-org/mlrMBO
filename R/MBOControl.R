@@ -157,7 +157,7 @@
 #'   Parameter of parEGO - factor for Tchebycheff function. Default 0.05 as
 #'   suggested in parEGO paper.
 #' @param parEGO.propose.points [\code{integer(1)}]\cr
-#'   Number of points to propose in each parEGO iteration. Default is 1L.   
+#'   Number of points to propose in each parEGO iteration. Default is 1L.
 #' @param final.method [\code{character(1)}]\cr
 #'   How should the final point be proposed. Possible values are:
 #'   \dQuote{best.true.y}: Return best point ever visited according to true value of target function.
@@ -251,9 +251,9 @@ makeMBOControl = function(number.of.targets=1L,
   checkArg(propose.points, "integer", len=1L, na.ok=FALSE, lower=1L)
 
 
-  checkArg(infill.crit, "character", len=1L, na.ok=FALSE)
+  checkArg(infill.crit, choices = getSupportedInfillCritFunctions())
   checkArg(infill.crit.lcb.lambda, "numeric", len=1L, na.ok=FALSE, lower=0)
-  checkArg(infill.opt, "character", len=1L, na.ok=FALSE)
+  checkArg(infill.opt, choices = getSupportedInfillOptFunctions())
   infill.opt.restarts = convertInteger(infill.opt.restarts)
   checkArg(infill.opt.restarts, "integer", len=1L, na.ok=FALSE)
 
@@ -275,7 +275,7 @@ makeMBOControl = function(number.of.targets=1L,
 
   checkArg(feature.impute, choices=c("up", "median"))
 
-  checkArg(multipoint.method, choices=c("cl", "lcb", "multicrit"))
+  checkArg(multipoint.method, choices = getSupportedMultipointInfillOptFunctions())
   checkArg(multipoint.multicrit.objective, choices=c("mean.dist", "ei.dist", "mean.se", "mean.se.dist"))
   checkArg(multipoint.multicrit.selection, choices=c("hypervolume", "crowdingdist", "first", "last"))
   checkArg(multipoint.multicrit.dist, choices=c("nearest.neighbor", "nearest.better"))

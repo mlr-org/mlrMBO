@@ -8,3 +8,7 @@ getInfillCritFunction = function(infill.crit) {
     match.fun(infill.crit)
   )
 }
+
+getSupportedInfillCritFunctions = function() {
+  c("mean", "ei", "aei", "lcb")
+}
