@@ -20,7 +20,7 @@
 #   Further arguments passed to fitness function.
 # @return [\code{list}]:
 #   \item{ys}{Vector or matrix of objective values. First dim = length(xs).}
-#   \item{times}{Vector of times is took to evaluate the objective).}
+#   \item{times}{Vector of times it took to evaluate the objective).}
 evalTargetFun = function(fun, par.set, xs, opt.path, control, show.info, oldopts, ...) {
   xs = lapply(xs, trafoValue, par=par.set)
   fun2 = function(x) {
@@ -54,7 +54,7 @@ evalTargetFun = function(fun, par.set, xs, opt.path, control, show.info, oldopts
   # ys is vector or row-matrix
   ys = if (control$number.of.targets == 1L)
     extractSubList(z, "y")
-  else 
+  else
     setColNames(extractSubList(z, "y", matrix = "rows"), control$y.name)
   times = extractSubList(z, "time")
 
