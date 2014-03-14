@@ -12,8 +12,9 @@ makeMBOControl(number.of.targets = 1L, minimize = rep(TRUE,
   infill.opt.cmaes.control = list(), infill.opt.ea.maxit = 500L,
   infill.opt.ea.mu = 10L, infill.opt.ea.sbx.eta = 15,
   infill.opt.ea.sbx.p = 0.5, infill.opt.ea.pm.eta = 15,
-  infill.opt.ea.pm.p = 0.5, feature.impute = "up",
-  multipoint.method = "lcb", multipoint.multicrit.objective = "ei.dist",
+  infill.opt.ea.pm.p = 0.5, infill.opt.ea.lambda = 1L,
+  feature.impute = "up", multipoint.method = "lcb",
+  multipoint.multicrit.objective = "ei.dist",
   multipoint.multicrit.dist = "nearest.better",
   multipoint.multicrit.selection = "hypervolume",
   multipoint.multicrit.maxit = 100L, multipoint.multicrit.sbx.eta = 15,
@@ -131,6 +132,10 @@ makeMBOControl(number.of.targets = 1L, minimize = rep(TRUE,
   \code{infill.opt = "ea"}: Probability of 1-point
   crossover, see \code{\link[emoa]{sbx_operator}}.  Default
   is 0.5.}
+
+  \item{infill.opt.ea.lambda}{[\code{numeric{1}}]\cr For
+  \code{infill.opt.ea = "ea"}.  Number of children
+  generated in each generation.  Default is 1.}
 
   \item{feature.impute}{[\code{character(1)}]\cr Method
   used for imputing features, which can / will be necessary

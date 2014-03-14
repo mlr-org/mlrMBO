@@ -10,7 +10,9 @@ infillOptEA = function(infill.crit, model, control, par.set, opt.path, design, .
   # get constants and init shit
   repids = getParamIds(par.set, repeated=TRUE, with.nr = TRUE)
   d = sum(getParamLengths(par.set))
+  # (mu + lambda) strategy
   mu = control$infill.opt.ea.mu
+  lambda = control$infill.opt.ea.lambda
   mutate = pm_operator(control$infill.opt.ea.pm.eta, control$infill.opt.ea.pm.p,
     getLower(par.set), getUpper(par.set))
   crossover = sbx_operator(control$infill.opt.ea.sbx.eta, control$infill.opt.ea.sbx.p,
@@ -26,21 +28,33 @@ infillOptEA = function(infill.crit, model, control, par.set, opt.path, design, .
     y = infill.crit(X, model, control, par.set, design, ...)
 
     for (i in 1:control$infill.opt.ea.maxit) {
-      # Create new individual (mu + 1)
-      parents = sample(1:mu, 2)
-      # get two kids from CX, sel. 1 randomly, mutate
-      child = crossover(t(X[parents, , drop=FALSE]))
-      child1 = child[,sample(c(1, 2), 1)]
-      child1 = mutate(child1)
-      # Add new individual:
-      X[nrow(X) + 1,] = child1
-      child2 = setColNames(as.data.frame(as.list(child1)), repids)
-      y[length(y) + 1] = infill.crit(child2, model, control, par.set, design, ...)
+      # Create new individual (mu + lambda)
 
-      # get element we want to remove from current pop
-      to.kill = getMaxIndex(y, ties.method="random")
-      X = X[-to.kill, ,drop=FALSE]
-      y = y[-to.kill]
+      parentSet = replicate(lambda, sample(1:mu, 2))
+
+      # get two kids from crossover, select 1 randomly and mutate
+      for (i in 1:ncol(parentSet)) {
+        parents = parentSet[,i]
+        child = crossover(t(X[parents, , drop=FALSE]))
+        child1 = child[,sample(c(1, 2), 1)]
+        child1 = mutate(child1)
+        # Add new individual:
+        X[nrow(X) + 1,] = child1
+        child2 = setColNames(as.data.frame(as.list(child1)), repids)
+        y[length(y) + 1] = infill.crit(child2, model, control, par.set, design, ...)
+      }
+
+      # get elements we want to remove from current population
+      to.survive = order(y)[1:mu]
+      # print("y\n:")
+      # print(y)
+      # print(length(y))
+      # print("Choosen to survice:\n")
+      # print(y[to.survive])
+      # print(length(y[to.survive]))
+      # stop("testPlatformEquivalence")
+      X = X[to.survive, ,drop=FALSE]
+      y = y[to.survive]
     }
     select = getMinIndex(y)
     y1 = y[select]

@@ -93,6 +93,10 @@
 #'   For \code{infill.opt = "ea"}:
 #'   Probability of 1-point crossover, see \code{\link[emoa]{sbx_operator}}.
 #'   Default is 0.5.
+#' @param infill.opt.ea.lambda [\code{numeric{1}}]\cr
+#'   For \code{infill.opt.ea = "ea"}.
+#'   Number of children generated in each generation.
+#'   Default is 1.
 #' @param feature.impute [\code{character(1)}]\cr
 #'   Method used for imputing features, which can / will be necessary for dependent parameters.
 #'   Possible values are:
@@ -219,6 +223,7 @@ makeMBOControl = function(number.of.targets=1L,
   infill.opt.ea.maxit=500L, infill.opt.ea.mu=10L,
   infill.opt.ea.sbx.eta=15, infill.opt.ea.sbx.p=0.5,
   infill.opt.ea.pm.eta=15, infill.opt.ea.pm.p=0.5,
+  infill.opt.ea.lambda = 1L,
   feature.impute = "up",
   multipoint.method="lcb",
   multipoint.multicrit.objective="ei.dist",
@@ -271,7 +276,7 @@ makeMBOControl = function(number.of.targets=1L,
   checkArg(infill.opt.ea.sbx.p, "numeric", len=1L, na.ok=FALSE, lower=0, upper=1)
   checkArg(infill.opt.ea.pm.eta, "numeric", len=1L, na.ok=FALSE, lower=0)
   checkArg(infill.opt.ea.pm.p, "numeric", len=1L, na.ok=FALSE, lower=0, upper=1)
-
+  checkArg(infill.opt.ea.lambda, "integer", len=1L, na.ok=FALSE, lower=1L)
 
   checkArg(feature.impute, choices=c("up", "median"))
 
@@ -346,6 +351,7 @@ makeMBOControl = function(number.of.targets=1L,
     infill.opt.ea.sbx.p = infill.opt.ea.sbx.p,
     infill.opt.ea.pm.eta = infill.opt.ea.pm.eta,
     infill.opt.ea.pm.p = infill.opt.ea.pm.p,
+    infill.opt.ea.lambda = infill.opt.ea.lambda,
     feature.impute = feature.impute,
     multipoint.method = multipoint.method,
     multipoint.multicrit.objective = multipoint.multicrit.objective,
