@@ -1,6 +1,3 @@
-
-#FIXME: add lcb lambda param? where to store all this?
-
 #' Creates a control object for MBO optimization.
 #'
 #' @param minimize [\code{logical}]\cr
