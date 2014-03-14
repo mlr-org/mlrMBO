@@ -19,7 +19,7 @@ test_that("simple random search, no dependencies, no focussing", {
 
   learner = makeLearner("regr.randomForest")
   ctrl = makeMBOControl(init.design.points=50, iters=2, infill.opt="focussearch",
-    infill.opt.restarts=1, infill.opt.focussearch.maxit=1, infill.opt.focussearch.points=50)
+    infill.opt.restarts=1, infill.opt.focussearch.maxit=1, infill.opt.focussearch.points=30)
   or = mbo(f, ps, learner=learner, control=ctrl, show.info=FALSE)
   expect_true(!is.na(or$y))
 })
@@ -39,7 +39,7 @@ test_that("dependent params, but no focussing", {
 
   learner = makeLearner("regr.randomForest")
   ctrl = makeMBOControl(init.design.points=50, iters=2, infill.opt="focussearch",
-    infill.opt.restarts=1, infill.opt.focussearch.maxit=1, infill.opt.focussearch.points=1000)
+    infill.opt.restarts=1, infill.opt.focussearch.maxit=1, infill.opt.focussearch.points=500)
   or = mbo(f, ps, learner=learner, control=ctrl, show.info=FALSE)
   expect_true(!is.na(or$y))
 })
