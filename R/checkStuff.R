@@ -2,6 +2,13 @@
 # check whether the user selected valid options / combinations
 checkStuff = function(fun, par.set, design, learner, control) {
   checkArg(fun, "function")
+  hasFactors = function(par.set) {
+    commonTypes = intersect(c("discrete", "discretevector"), getTypes(par.set))
+    return(length(commonTypes) > 0)
+  }
+  if (hasFactors(par.set) && !learner$factors) {
+    stop("Provided learner does not support factor parameters.")
+  }
   if(any(sapply(par.set$pars, function(x) inherits(x, "LearnerParam"))))
     stop("No par.set parameter in 'mbo' can be of class 'LearnerParam'! Use basic parameters instead to describe you region of interest!")
   if (any(is.infinite(c(getLower(par.set), getUpper(par.set)))))
