@@ -253,7 +253,8 @@ makeMBOControl = function(number.of.targets=1L,
   checkArg(propose.points, "integer", len=1L, na.ok=FALSE, lower=1L)
 
 
-  checkArg(infill.crit, choices = getSupportedInfillCritFunctions())
+  # FIXME: BB: DO NOT FUCKING TOUCH THIS!
+  # checkArg(infill.crit, choices = getSupportedInfillCritFunctions())
   checkArg(infill.crit.lcb.lambda, "numeric", len=1L, na.ok=FALSE, lower=0)
   checkArg(infill.opt, choices = getSupportedInfillOptFunctions())
   infill.opt.restarts = convertInteger(infill.opt.restarts)
