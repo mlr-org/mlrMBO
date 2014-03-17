@@ -56,55 +56,15 @@ mbo = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, ...)
   }
 
   # get parameter ids repeated length-times and appended number
-  rep.pids = getParamIds(par.set, repeated=TRUE, with.nr=TRUE)
   y.name = control$y.name
-  opt.path = makeOptPathDF(par.set, y.name, control$minimize)
-  times = numeric(0)
-
-  # generate initial design if none provided
-  if (is.null(design)) {
-    design.x = generateDesign(control$init.design.points, par.set,
-      control$init.design.fun, control$init.design.args, trafo=FALSE)
-  } else {
-    # sanity check: are paramter values and colnames of design consistent?
-    cns = colnames(design)
-    if(!setequal(setdiff(cns, y.name), rep.pids))
-      stop("Column names of design 'design' must match names of parameters in 'par.set'!")
-
-    # sanity check: do not allow transformed designs
-    if (attr(design, "trafo")) {
-      stop("Design must not be transformed!")
-    }
-
-    design.x = design
-    # if no trafo attribute provided we act on the assumption that the design is not transformed
-    if ("trafo" %nin% names(attributes(design.x))) {
-      attr(design.x, "trafo") = FALSE
-    }
-  }
-
-  # compute y-values if missing or initial design generated above
-  if (y.name %in% colnames(design.x)) {
-    ys = design[, y.name]
-    design.x = design[, colnames(design) != y.name, drop=FALSE]
-  } else {
-    if (show.info)
-      messagef("Computing y column for design. Was not provided")
-    xs = lapply(seq_len(nrow(design.x)), function(i) dfRowToList(design.x, par.set, i))
-    evals = evalTargetFun(fun, par.set, xs, opt.path, control, show.info, oldopts, ...)
-    ys = evals$ys
-    times = c(times, evals$times)
-    design = cbind(design.x, setColNames(data.frame(ys), y.name))
-  }
-
-  # reorder
-  design.x = design.x[, rep.pids, drop=FALSE]
-  # FIXME this is the second time we do this ... maybe reorder code?
-  xs = dfRowsToList(design.x, par.set)
-
-  # add initial values to optimization path
-  Map(function(x,y) addOptPathEl(opt.path, x=x, y=y, dob=0), xs, ys)
-
+  
+  # generate initial design
+  mboDesign = generateMBODesign(design, fun, par.set, control, show.info, oldopts, ...)
+  design = cbind(mboDesign$design.x, setColNames(mboDesign$design.y, y.name))
+  opt.path = mboDesign$opt.path
+  times = mboDesign$times
+  # we now have design.y and design
+  
   # set up initial mbo task
   rt = makeMBOTask(design, par.set, y.name, control=control)
   model = train(learner, rt)

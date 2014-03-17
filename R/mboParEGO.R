@@ -47,51 +47,15 @@ mboParEGO = function(fun, par.set, design=NULL, learner, control, show.info=TRUE
   if (inherits(learner, "regr.randomForest")) {
     learner = setHyperPars(learner, fix.factors=TRUE)
   }
-
-  # get parameter ids repeated length-times and appended number
-  rep.pids = getParamIds(par.set, repeated=TRUE, with.nr=TRUE)
+  
+  # generate initial design
+  mboDesign = generateMBODesign(design, fun, par.set, control, show.info, oldopts, ...)
+  design = cbind(mboDesign$design.x, mboDesign$design.y)
+  opt.path = mboDesign$opt.path
+  times = mboDesign$times
   y.name = control$y.name
-  opt.path = makeOptPathDF(par.set, y.name, control$minimize)
-  times = numeric(0)
-
-  # FIXME: trafo attribute is bad, consider user generated designs
-  # generate initial design if none provided
-  if (is.null(design)) {
-    design.x = generateDesign(control$init.design.points, par.set,
-      control$init.design.fun, control$init.design.args, trafo=FALSE)
-  } else {
-    # sanity check: are paramter values and colnames of design consistent?
-    if(!setequal(setdiff(colnames(design), y.name), rep.pids))
-      stop("Column names of design 'design' must match names of parameters in 'par.set'!")
-    design.x = dropNamed(design, y.name)
-    # if no trafo attribute provided we act on the assumption that the design is not transformed
-    if ("trafo" %nin% attributes(design.x)) {
-      attr(design.x, "trafo") = FALSE
-    }
-  }
-  # reorder
-  design.x = design.x[, rep.pids, drop=FALSE]
-  xs = dfRowsToList(design.x, par.set)
-  # we now have design.x and its rows as lists in xs
-
-  # compute y-values if missing or initial design generated above
-  if (all(y.name %in% colnames(design.x))) {
-    design.y = design[, y.name]
-  } else if (!any(y.name %in% colnames(design.x))){
-    if (show.info)
-      messagef("Computing y column for design. Was not provided")
-    evals = evalTargetFun(fun, par.set, xs, opt.path, control, show.info, oldopts, ... )
-    design.y = evals$ys
-    times = c(times, evals$times)
-  } else {
-    stop("Only part of y-values are provided. Don't know what to do - provide either all or none.")
-  }
-  design = cbind(design.x, design.y)
   # we now have design.y and design
 
-  # add initial values to optimization path
-  ys = convertRowsToList(design.y)
-  Map(function(x,y) addOptPathEl(opt.path, x=x, y=y, dob=0), xs, ys)
 
   # do the mbo magic
   for (loop in seq_len(control$iters)) {
