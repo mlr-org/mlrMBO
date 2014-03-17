@@ -37,13 +37,6 @@ evalTargetFun = function(fun, par.set, xs, opt.path, control, show.info, oldopts
       stopf("Objective function output has wrong length: %i. Should be %i.",
         length(y), control$number.of.targets)
     #FIXME: show.info must be called on master
-    if (show.info) {
-      dob = opt.path$env$dob
-      dob = if (length(dob) == 0L) 0 else max(dob) + 1
-      #FIXME: show time?
-      messagef("[mbo] %i: %s : %s", dob, paramValueToString(par.set, x),
-        paste(sprintf("%s=%.3f", control$y.name, y), collapse = ", "))
-    }
     return(list(y = y, time = st[3]))
   }
   # restore mlr configuration
@@ -57,7 +50,19 @@ evalTargetFun = function(fun, par.set, xs, opt.path, control, show.info, oldopts
   else
     setColNames(extractSubList(z, "y", simplify = "rows"), control$y.name)
   times = extractSubList(z, "time")
-
+  
+  # show some info on the console
+  if (show.info) {
+    dob = opt.path$env$dob
+    dob = if (length(dob) == 0L) 0 else max(dob) + 1
+    for (ind in seq_along(xs)) {
+      #FIXME: show time?
+      messagef("[mbo] %i: %s : %s", dob, paramValueToString(par.set, xs[[ind]]),
+        paste(sprintf("%s=%.3f", control$y.name, ys[ind, ]), collapse = ", "))
+      
+    }
+  }
+  
   configureMlr(on.learner.error=control$on.learner.error,
     show.learner.output=control$show.learner.output)
   # FIXME: this does not look good. we need to define sematincs of impute better.

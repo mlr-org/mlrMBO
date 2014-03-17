@@ -1,27 +1,27 @@
-#' Generates the initial design for a mbo or parego optimization
-#'
-#' @param design [\code{data.frame} | NULL]\cr
-#'   Initial design as data frame.
-#'   If the parameters have corresponding trafo functions,
-#'   the design must not be transformed before it is passed!
-#'   If \code{NULL}, one is constructed from the settings in \code{control}.
-#' @param fun [\code{function(x, ...)}]\cr
-#'   Fitness function to minimize. The first argument has to be a list of values.
-#'   The function has to return a single numerical value.
-#' @param par.set [\code{\link[ParamHelpers]{ParamSet}}]\cr
-#'   Collection of parameters and their constraints for optimization.
-#' @param control [\code{\link{MBOControl}}]\cr
-#'   Control object for mbo.
-#' @param show.info [\code{logical(1)}]\cr
-#'   Verbose output on console?
-#' @param oldopts []\cr
-#'   Currently set mlr options
-#'
- #' @return [\code{list}]:
-#'   \item{design.x [\code{data.frame}]}{Initial design of x-values.}
-#'   \item{design.y [\code{dara.frame}]}{Initial design of y-values.}
-#'   \item{opt.path [\code{\link[ParamHelpers]{OptPath}}]}{Optimization path.}
-#'   \item{times [\code{numeric}]}{Vector of times it took to evaluate the objective.}
+# Generates the initial design for a mbo or parego optimization
+#
+# @param design [\code{data.frame} | NULL]\cr
+#   Initial design as data frame.
+#   If the parameters have corresponding trafo functions,
+#   the design must not be transformed before it is passed!
+#   If \code{NULL}, one is constructed from the settings in \code{control}.
+# @param fun [\code{function(x, ...)}]\cr
+#   Fitness function to minimize. The first argument has to be a list of values.
+#   The function has to return a single numerical value.
+# @param par.set [\code{\link[ParamHelpers]{ParamSet}}]\cr
+#   Collection of parameters and their constraints for optimization.
+# @param control [\code{\link{MBOControl}}]\cr
+#   Control object for mbo.
+# @param show.info [\code{logical(1)}]\cr
+#   Verbose output on console?
+# @param oldopts []\cr
+#   Currently set mlr options
+#
+# @return [\code{list}]:
+#  \item{design.x [\code{data.frame}]}{Initial design of x-values.}
+#  \item{design.y [\code{dara.frame}]}{Initial design of y-values.}
+#  \item{opt.path [\code{\link[ParamHelpers]{OptPath}}]}{Optimization path.}
+#  \item{times [\code{numeric}]}{Vector of times it took to evaluate the objective.}
 generateMBODesign = function(design, fun, par.set, control, show.info, oldopts, ...) {
   # get parameter ids repeated length-times and appended number
   rep.pids = getParamIds(par.set, repeated=TRUE, with.nr=TRUE)
