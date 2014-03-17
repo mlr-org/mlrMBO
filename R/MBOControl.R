@@ -173,9 +173,14 @@
 #' @param y.name [\code{character}]\cr
 #'   Vector for names of y-columns for target values in optimization path.
 #'   Default is \dQuote{y_i}, i = 1, ..., number.of.targets.
-#' @param impute [\code{function(x, y, opt.path)}]\cr
-#'   Function that determines the return value in case the original fitness functions fails
+#' @param impute [\code{list(\code{function(x, y, opt.path)}, ...}]\cr
+#'   List of functions that determine the return value in case the original fitness functions fails
 #'   (for whatever reason) and because of this failure returns a NA, NaN, Inf.
+#'   Must be a list of length number.of.targets. If named, the names must correspondend
+#'   with y.name and each function is used to impute the corresponding fitness function.
+#'   Alternatively a single function can be given, which will interly be converted
+#'   into a list of length number.of.targets, and this function will be used to
+#'   impute every fitness function.
 #'   \code{x} is the current x-value, \code{y} the current (infeasible) y-value and
 #'   \code{opt.path} the current optimization path.
 #'   Default is to stop with an error.
@@ -295,12 +300,22 @@ makeMBOControl = function(number.of.targets=1L,
   checkArg(parEGO.rho, "numeric", len=1L, na.ok=FALSE, lower=0, upper=1)
   parEGO.propose.points = convertInteger(parEGO.propose.points)
   checkArg(parEGO.propose.points, "numeric", len=1L, na.ok=FALSE, lower=1)
-
+  
   if (missing(impute))
-    impute = function(x, y, opt.path)
-      stopf("Infeasible y=%s value encountered at %s", as.character(y), convertToShortString(x))
-  else
+    impute = rep(list(function(x, y, opt.path)
+      stopf("Infeasible y=%s value encountered at %s", as.character(y), convertToShortString(x))),
+      number.of.targets)
+  else if (is.function(impute)) {
     checkArg(impute, formals=c("x", "y", "opt.path"))
+    impute = rep(list(impute), number.of.targets)
+  } else {
+    checkArg(impute, len = number.of.targets)
+    lapply(impute, function(fun) checkArg(fun, formals=c("x", "y", "opt.path")))
+  }
+  if (is.null(names(impute)))
+    names(impute) = y.name
+  else
+    checkArg(names(impute), list(y.name))
   checkArg(impute.errors, "logical", len=1L, na.ok=FALSE)
   checkArg(suppress.eval.errors, "logical", len=1L, na.ok=FALSE)
 

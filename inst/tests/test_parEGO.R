@@ -17,7 +17,8 @@ test_that("mbo parEGO works", {
   # Test wrong dimension
   ctrl = makeMBOControl(iters=5, infill.opt.focussearch.points=10,
     number.of.targets = 3)
-  expect_error(mboParEGO(f, ps, learner = learner, control = ctrl), "wrong dimension")
+  expect_error(mboParEGO(f, ps, learner = learner, control = ctrl),
+    "output has wrong length")
   
   # Test multippoint
   ctrl = makeMBOControl(iters=5, infill.opt.focussearch.points=10,

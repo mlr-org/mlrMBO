@@ -51,34 +51,41 @@ evalTargetFun = function(fun, par.set, xs, opt.path, control, show.info, oldopts
 
   # apply fun2 and extract parts
   z = parallelMap(fun2, xs)
-  # ys is vector or row-matrix
+  # ys is row-matrix with number.of.targets cols
   ys = if (control$number.of.targets == 1L)
-    extractSubList(z, "y")
+    matrix(extractSubList(z, "y"), ncol = 1L)
   else
     setColNames(extractSubList(z, "y", simplify = "rows"), control$y.name)
   times = extractSubList(z, "time")
 
   configureMlr(on.learner.error=control$on.learner.error,
     show.learner.output=control$show.learner.output)
-
   # FIXME: this does not look good. we need to define sematincs of impute better.
   # in imputation we probably need to know which objective we refer to?
-  if (is.matrix(ys)) {
-    for (i in seq_row(ys)) {
-      j = which(is.na(ys[i, ]) | is.nan(ys[i, ]) | is.infinite(ys[i, ]))
-      if (length(j) > 0L) {
-        ys[i, j] = mapply(control$impute, xs[j], ys[i, j],
-          MoreArgs=list(opt.path=opt.path), USE.NAMES=FALSE)
-      }
-    }
-  } else {
+  for (dim in seq_len(control$number.of.targets)) {
     # impute all broken y values in ys by imputation function of user
-    broken = which(is.na(ys) | is.nan(ys) | is.infinite(ys))
+    broken = which(is.na(ys[, dim]) | is.nan(ys[, dim]) | is.infinite(ys[, dim]))
     if (length(broken) > 0L) {
-      ys[broken] = mapply(control$impute, xs[broken], ys[broken],
+      ys[broken, dim] = mapply(control$impute[[dim]], xs[broken], ys[broken, dim],
         MoreArgs = list(opt.path = opt.path), USE.NAMES = FALSE)
     }
   }
+#   if (is.matrix(ys)) {
+#     for (i in seq_row(ys)) {
+#       j = which(is.na(ys[i, ]) | is.nan(ys[i, ]) | is.infinite(ys[i, ]))
+#       if (length(j) > 0L) {
+#         ys[i, j] = mapply(control$impute, xs[j], ys[i, j],
+#           MoreArgs=list(opt.path=opt.path), USE.NAMES=FALSE)
+#       }
+#     }
+#   } else {
+#     # impute all broken y values in ys by imputation function of user
+#     broken = which(is.na(ys) | is.nan(ys) | is.infinite(ys))
+#     if (length(broken) > 0L) {
+#       ys[broken] = mapply(control$impute, xs[broken], ys[broken],
+#         MoreArgs = list(opt.path = opt.path), USE.NAMES = FALSE)
+#     }
+#   }
   return(list(ys = ys, times = times))
 }
 
