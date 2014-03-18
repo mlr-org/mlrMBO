@@ -79,7 +79,8 @@ infillCritAEI = function(points, model, control, par.set, design) {
   p = predict(model, newdata = points)$data
   p.mu = maximize.mult * p$response
   p.se = p$se
-  design = dropNamed(design, c("dob", "eol"))
+  design2 = dropNamed(design2, c("dob", "eol"))
+  # FIXME: what a mess! do we want to pass design or design2?
   ebs = getEffectiveBestPoint(design = design2, model = model, par.set = par.set, control = control)
   # calculate EI with plugin, plugin val is mean response at ebs solution
   d = ebs$mu - p.mu
