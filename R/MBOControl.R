@@ -309,13 +309,13 @@ makeMBOControl = function(number.of.targets=1L,
     checkArg(impute, formals=c("x", "y", "opt.path"))
     impute = rep(list(impute), number.of.targets)
   } else {
-    checkArg(impute, len = number.of.targets)
+    checkArg(impute, cl = "list", len = number.of.targets)
     lapply(impute, function(fun) checkArg(fun, formals=c("x", "y", "opt.path")))
   }
   if (is.null(names(impute)))
     names(impute) = y.name
   else
-    checkArg(names(impute), list(y.name))
+    checkArg(names(impute), choices = list(y.name))
   checkArg(impute.errors, "logical", len=1L, na.ok=FALSE)
   checkArg(suppress.eval.errors, "logical", len=1L, na.ok=FALSE)
 
