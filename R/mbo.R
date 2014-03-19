@@ -57,14 +57,14 @@ mbo = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, ...)
 
   # get parameter ids repeated length-times and appended number
   y.name = control$y.name
-  
+
   # generate initial design
   mboDesign = generateMBODesign(design, fun, par.set, control, show.info, oldopts, ...)
   design = cbind(mboDesign$design.x, setColNames(mboDesign$design.y, y.name))
   opt.path = mboDesign$opt.path
   times = mboDesign$times
   # we now have design.y and design
-  
+
   # set up initial mbo task
   rt = makeMBOTask(design, par.set, y.name, control=control)
   model = train(learner, rt)
@@ -98,7 +98,7 @@ mbo = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, ...)
       attr(prop.design, "multipoint.lcb.lambda") =  NULL
     }
     xs = dfRowsToList(prop.design, par.set)
-    xs = lapply(xs, repairPoint, par.set=par.set)
+    xs = parallelMap(repairPoint, xs, more.args = list("par.set"=par.set))
     evals = evalTargetFun(fun, par.set, xs, opt.path, control, show.info, oldopts, ...)
     times = c(times, evals$times)
 
