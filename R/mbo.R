@@ -98,7 +98,7 @@ mbo = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, ...)
       attr(prop.design, "multipoint.lcb.lambda") =  NULL
     }
     xs = dfRowsToList(prop.design, par.set)
-    xs = parallelMap(repairPoint, xs, more.args = list("par.set"=par.set))
+    xs = lapply(xs, repairPoint, par.set = par.set)
     evals = evalTargetFun(fun, par.set, xs, opt.path, control, show.info, oldopts, ...)
     times = c(times, evals$times)
 
