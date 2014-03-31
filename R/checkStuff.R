@@ -2,6 +2,7 @@
 # check whether the user selected valid options / combinations
 checkStuff = function(fun, par.set, design, learner, control) {
   checkArg(fun, "function")
+  #FIXME: we added this function to the current version of ParamHelpers
   hasFactors = function(par.set) {
     commonTypes = intersect(c("discrete", "discretevector"), getTypes(par.set))
     return(length(commonTypes) > 0)
@@ -19,6 +20,8 @@ checkStuff = function(fun, par.set, design, learner, control) {
   if (learner$type != "regr")
     stop("mbo requires regression learner!")
   if (control$propose.points == 1L) {
+    if(control$infill.crit %in% c("ei", "aei") && !learner$se)
+      stopf("The infill criterion needs the learner to support the prediction of standard error, but the provided learner does not (you could use the mlr wrapper makeBaggingWrapper to bootstrap the standard error estimator).")
     if(control$infill.crit %in% c("ei", "aei", "lcb") && learner$predict.type != "se")
       stopf("For infill criterion '%s' predict.type of learner %s must be set to 'se'!%s",
         control$infill.crit, learner$id,
