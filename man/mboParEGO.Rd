@@ -8,10 +8,11 @@ mboParEGO(fun, par.set, design = NULL, learner, control, show.info = TRUE,
   ...)
 }
 \arguments{
-  \item{fun}{[\code{function(x, ...)}]\cr Fitness function
+  \item{fun}{[\code{function(x, ...)}]\cr Fitness functions
   to minimize. The first argument has to be a list of
-  values.  The function has to return a single numerical
-  value.}
+  values.  The function has to return a numerical vector of
+  the length defined via the parameter number.of.targets in
+  \code{control}.}
 
   \item{par.set}{[\code{\link[ParamHelpers]{ParamSet}}]\cr
   Collection of parameters and their constraints for
@@ -36,18 +37,9 @@ mboParEGO(fun, par.set, design = NULL, learner, control, show.info = TRUE,
   function.}
 }
 \value{
-[\code{list}]: \item{x [\code{list}]}{Named list of
-proposed optimal parameters.} \item{y
-[\code{numeric(1)}]}{Value of fitness function at \code{x},
-either from evals during optimization or from requested
-final evaluations, if those were greater than 0.}
-\item{opt.path
+[\code{list}]: \item{pareto.front [\code{matrix}]}{Pareto
+Front of all evaluated points.} \item{opt.path
 [\code{\link[ParamHelpers]{OptPath}}]}{Optimization path.}
-\item{models [List of
-\code{\link[mlr]{WrappedModel}}]}{List of saved regression
-models.} \item{multipoint.lcb.lambdas [\code{matrix(iters,
-proposed.points)}]}{Sampled lambda values for multipoint
-lcb method.}
 }
 \description{
 Optimizes a multicrit optimization problem with sequential

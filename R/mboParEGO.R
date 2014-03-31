@@ -2,8 +2,9 @@
 #'  optimization using the parEGO algorithm
 #'
 #' @param fun [\code{function(x, ...)}]\cr
-#'   Fitness function to minimize. The first argument has to be a list of values.
-#'   The function has to return a single numerical value.
+#'   Fitness functions to minimize. The first argument has to be a list of values.
+#'   The function has to return a numerical vector of the length defined via the
+#'   parameter number.of.targets in \code{control}.
 #' @param par.set [\code{\link[ParamHelpers]{ParamSet}}]\cr
 #'   Collection of parameters and their constraints for optimization.
 #' @param design [\code{data.frame} | NULL]\cr
@@ -21,11 +22,8 @@
 #' @param ... [any]\cr
 #'   Further arguments passed to fitness function.
 #' @return [\code{list}]:
-#'   \item{x [\code{list}]}{Named list of proposed optimal parameters.}
-#'   \item{y [\code{numeric(1)}]}{Value of fitness function at \code{x}, either from evals during optimization or from requested final evaluations, if those were greater than 0.}
+#'   \item{pareto.front [\code{matrix}]}{Pareto Front of all evaluated points.}
 #'   \item{opt.path [\code{\link[ParamHelpers]{OptPath}}]}{Optimization path.}
-#'   \item{models [List of \code{\link[mlr]{WrappedModel}}]}{List of saved regression models.}
-#'   \item{multipoint.lcb.lambdas [\code{matrix(iters, proposed.points)}]}{Sampled lambda values for multipoint lcb method.}
 #' @export
 #' @aliases MBOResult
 mboParEGO = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, ...) {
@@ -55,7 +53,6 @@ mboParEGO = function(fun, par.set, design=NULL, learner, control, show.info=TRUE
   times = mboDesign$times
   y.name = control$y.name
   # we now have design.y and design
-
 
   # do the mbo magic
   for (loop in seq_len(control$iters)) {
@@ -95,5 +92,6 @@ mboParEGO = function(fun, par.set, design=NULL, learner, control, show.info=TRUE
 #' @S3method print ParEGOResult
 print.ParEGOResult = function(x, ...) {
   op = x$opt.path
+  print(x$pareto.front)
   print(tail(as.data.frame(x$op), 10))
 }
