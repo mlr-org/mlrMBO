@@ -4,14 +4,14 @@ test_that("mbo works with rf", {
   f = makeMBOFunction(function(x) sum(x^2))
 
   ps = makeParamSet(
-    makeNumericParam("x1", lower=-2, upper=1),
-    makeNumericParam("x2", lower=-1, upper=2)
+    makeNumericParam("x1", lower = -2, upper = 1),
+    makeNumericParam("x2", lower = -1, upper = 2)
   )
   des = generateDesign(10, par.set=ps)
   y  = sapply(1:nrow(des), function(i) f(as.list(des[i,])))
   des$y = y
   learner = makeLearner("regr.randomForest")
-  ctrl = makeMBOControl(iters=5, infill.opt.focussearch.points=100, save.model.at=c(0,5))
+  ctrl = makeMBOControl(iters = 5, infill.opt.focussearch.points = 100, save.model.at = c(0,5))
   or = mbo(f, ps, des, learner, ctrl, show.info=FALSE)
   expect_true(!is.na(or$y))
   expect_equal(or$y, f(or$x))
@@ -37,11 +37,11 @@ test_that("mbo works with rf", {
   learner = makeLearner("regr.randomForest")
   # check trafo
   ps = makeParamSet(
-    makeNumericParam("x1", lower=-10, upper=10, trafo=function(x) abs(x))
+    makeNumericParam("x1", lower = -10, upper = 10, trafo = function(x) abs(x))
   )
-  des = generateDesign(10, par.set=ps)
+  des = generateDesign(10, par.set = ps)
   des$y  = sapply(1:nrow(des), function(i) f(as.list(des[i,])))
-  or = mbo(f, ps, des, learner, ctrl, show.info=FALSE)
+  or = mbo(f, ps, des, learner, ctrl, show.info = FALSE)
   expect_true(!is.na(or$y))
   expect_equal(getOptPathLength(or$opt.path), 15)
   df = as.data.frame(or$opt.path)
