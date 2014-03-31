@@ -1,13 +1,18 @@
 # trivial dispatcher
 getInfillCritFunction = function(infill.crit) {
   switch(infill.crit,
-    mean = infillCritMeanResponse,
-    ei = infillCritEI,
-    aei = infillCritAEI,
-    lcb = infillCritLCB,
-    match.fun(infill.crit)
+         mean = infillCritMeanResponse,
+         ei = infillCritEI,
+         aei = infillCritAEI,
+         lcb = infillCritLCB,
+         akg = infillCritAKG,
+         eqi = infillCritEQI,
+         mq  = infillCritMQ,
+         eipi  =  infillCritEIPI,
+         match.fun(infill.crit)
   )
 }
+
 
 getSupportedInfillCritFunctions = function() {
   c("mean", "ei", "aei", "lcb")
