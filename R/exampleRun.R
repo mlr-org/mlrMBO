@@ -123,14 +123,14 @@ exampleRun = function(fun, par.set, global.opt=NA_real_, learner, control,
   if (n.params == 1L) {
     if (par.types %in% c("numeric", "numericvector")) {
       xs = seq(lower, upper, length.out=points.per.dim)
-      ys = sapply(xs, function(x) {
+      ys = parallelMap(function(x) {
         if(noisy) {
           # do replicates if noisy
           mean(replicate(noisy.evals, fun(namedList(names.x, x))))
         } else {
           fun(namedList(names.x, x))
         }
-      })
+      }, xs, simplify = TRUE)
       evals = data.frame(x=xs, y=ys)
     } else if (par.types %in% c("discrete")) {
       if (!noisy) {
@@ -141,9 +141,9 @@ exampleRun = function(fun, par.set, global.opt=NA_real_, learner, control,
       xs = unlist(par.set$pars[[1]]$values)
       cat(xs, "\n")
 
-      ys = sapply(xs, function(x) {
+      ys = parallelMap(function(x) {
         mean(replicate(noisy.evals, fun(namedList(names.x, x))))
-      })
+      }, xs, simplify = TRUE)
       evals = data.frame(x=xs, y=ys)
     }
   } else if (n.params == 2L) {
@@ -166,14 +166,14 @@ exampleRun = function(fun, par.set, global.opt=NA_real_, learner, control,
     names(eval.x) = names.x
     #print(head(eval.x))
     xs = dfRowsToList(eval.x, par.set)
-    ys = sapply(xs, function(x) {
+    ys = parallelMap(function(x) {
       if(noisy) {
         # do replicates if noisy
         mean(replicate(noisy.evals, fun(x)))
       } else {
         fun(x)
       }
-    })
+    }, xs, simplify = TRUE)
     evals = cbind(eval.x, y=ys)
     colnames(evals) = c(names.x, name.y)
   }
