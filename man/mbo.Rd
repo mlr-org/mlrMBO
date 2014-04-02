@@ -3,7 +3,8 @@
 \alias{mbo}
 \title{Optimizes a function with sequential model based optimization.}
 \usage{
-mbo(fun, par.set, design = NULL, learner, control, show.info = TRUE, ...)
+mbo(fun, par.set, design = NULL, learner, control, show.info = TRUE,
+  more.args = list())
 }
 \arguments{
   \item{fun}{[\code{function(x, ...)}]\cr Fitness function
@@ -30,8 +31,8 @@ mbo(fun, par.set, design = NULL, learner, control, show.info = TRUE, ...)
   \item{show.info}{[\code{logical(1)}]\cr Verbose output on
   console?  Default is \code{TRUE}.}
 
-  \item{...}{[any]\cr Further arguments passed to fitness
-  function.}
+  \item{more.args}{[list]\cr Further arguments passed to
+  fitness function.}
 }
 \value{
 [\code{list}]: \item{x [\code{list}]}{Named list of

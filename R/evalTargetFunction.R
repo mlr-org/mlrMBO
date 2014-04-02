@@ -16,21 +16,21 @@
 #   Default is \code{TRUE}.
 # @param oldopts [\code{list}]\cr
 #   Old mlr configuration.
-# @param ... [\code{list}]\cr
+# @param more.args [\code{list}]\cr
 #   Further arguments passed to fitness function.
 # @return [\code{list}]:
 #   \item{ys}{Vector or matrix of objective values. First dim = length(xs).}
 #   \item{times}{Vector of times it took to evaluate the objective).}
-evalTargetFun = function(fun, par.set, xs, opt.path, control, show.info, oldopts, ...) {
+evalTargetFun = function(fun, par.set, xs, opt.path, control, show.info, oldopts, more.args = list()) {
   xs = lapply(xs, trafoValue, par=par.set)
   fun2 = function(x) {
     st = system.time({
       if (control$impute.errors) {
-        y = try(fun(x, ...), silent=control$suppress.eval.errors)
+        y = try(do.call(fun, insert(list(x=x), more.args)), silent=control$suppress.eval.errors)
         if (is.error(y))
           y = NA_real_
       } else {
-        y = fun(x, ...)
+        y = do.call(fun, insert(list(x=x), more.args))
       }
     })
     if (length(y) != control$number.of.targets)
@@ -50,7 +50,7 @@ evalTargetFun = function(fun, par.set, xs, opt.path, control, show.info, oldopts
   else
     setColNames(extractSubList(z, "y", simplify = "rows"), control$y.name)
   times = extractSubList(z, "time")
-  
+
   # show some info on the console
   if (show.info) {
     dob = opt.path$env$dob
@@ -59,10 +59,10 @@ evalTargetFun = function(fun, par.set, xs, opt.path, control, show.info, oldopts
       #FIXME: show time?
       messagef("[mbo] %i: %s : %s", dob, paramValueToString(par.set, xs[[ind]]),
         paste(sprintf("%s=%.3f", control$y.name, ys[ind, ]), collapse = ", "))
-      
+
     }
   }
-  
+
   configureMlr(on.learner.error=control$on.learner.error,
     show.learner.output=control$show.learner.output)
   # FIXME: this does not look good. we need to define sematincs of impute better.

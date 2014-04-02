@@ -24,7 +24,7 @@
 #' @param show.info [\code{logical(1)}]\cr
 #'   Verbose output on console?
 #'   Default is \code{TRUE}.
-#' @param ... [any]\cr
+#' @param more.args [list]\cr
 #'   Further arguments passed to fitness function.
 #' @return [\code{list}]:
 #'   \item{x [\code{list}]}{Named list of proposed optimal parameters.}
@@ -35,7 +35,7 @@
 #'   \item{multipoint.lcb.lambdas [\code{matrix(iters, proposed.points)}]}{Sampled lambda values for multipoint lcb method.}
 #' @export
 #' @aliases MBOResult
-mbo = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, ...) {
+mbo = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, more.args=list()) {
   checkStuff(fun, par.set, design, learner, control)
   loadPackages(control)
 
@@ -59,7 +59,7 @@ mbo = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, ...)
   y.name = control$y.name
 
   # generate initial design
-  mboDesign = generateMBODesign(design, fun, par.set, control, show.info, oldopts, ...)
+  mboDesign = generateMBODesign(design, fun, par.set, control, show.info, oldopts, more.args)
   design = cbind(mboDesign$design.x, setColNames(mboDesign$design.y, y.name))
   opt.path = mboDesign$opt.path
   times = mboDesign$times
@@ -99,7 +99,7 @@ mbo = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, ...)
     }
     xs = dfRowsToList(prop.design, par.set)
     xs = lapply(xs, repairPoint, par.set = par.set)
-    evals = evalTargetFun(fun, par.set, xs, opt.path, control, show.info, oldopts, ...)
+    evals = evalTargetFun(fun, par.set, xs, opt.path, control, show.info, oldopts, more.args)
     times = c(times, evals$times)
 
     # update optim trace and model
@@ -125,7 +125,7 @@ mbo = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, ...)
       messagef("Performing %i final evals", control$final.evals)
     # do some final evaluations and compute mean of target fun values
     xs = replicate(control$final.evals, best$x, simplify=FALSE)
-    evals = evalTargetFun(fun, par.set, xs, opt.path, control, show.info, oldopts, ...)
+    evals = evalTargetFun(fun, par.set, xs, opt.path, control, show.info, oldopts, more.args)
     ys = evals$ys
     times = c(times, evals$times)
     best$y = mean(ys)
