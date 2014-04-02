@@ -10,6 +10,11 @@ checkStuff = function(fun, par.set, design, learner, control) {
   if (hasFactors(par.set) && !learner$factors) {
     stop("Provided learner does not support factor parameters.")
   }
+  # For now allow constant liar only in combinaton with Kriging
+  # (see https://github.com/berndbischl/mlrMBO/issues/12)
+  if (control$multipoint.method == "cl" && learner$id != "regr.km") {
+    stop("Constant liar can currently only be used with Kriging surrograte.")
+  }
   if(any(sapply(par.set$pars, function(x) inherits(x, "LearnerParam"))))
     stop("No par.set parameter in 'mbo' can be of class 'LearnerParam'! Use basic parameters instead to describe you region of interest!")
   if (any(is.infinite(c(getLower(par.set), getUpper(par.set)))))
