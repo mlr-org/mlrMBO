@@ -19,14 +19,14 @@
 #' @param show.info [\code{logical(1)}]\cr
 #'   Verbose output on console?
 #'   Default is \code{TRUE}.
-#' @param ... [any]\cr
+#' @param more.args [any]\cr
 #'   Further arguments passed to fitness function.
 #' @return [\code{list}]:
 #'   \item{pareto.front [\code{matrix}]}{Pareto Front of all evaluated points.}
 #'   \item{opt.path [\code{\link[ParamHelpers]{OptPath}}]}{Optimization path.}
 #' @export
 #' @aliases MBOResult
-mboParEGO = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, ...) {
+mboParEGO = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, more.args=list()) {
   #FIXME: more param checks
   checkStuff(fun, par.set, design, learner, control)
   loadPackages(control)
@@ -45,9 +45,9 @@ mboParEGO = function(fun, par.set, design=NULL, learner, control, show.info=TRUE
   if (inherits(learner, "regr.randomForest")) {
     learner = setHyperPars(learner, fix.factors=TRUE)
   }
-  
+
   # generate initial design
-  mboDesign = generateMBODesign(design, fun, par.set, control, show.info, oldopts, ...)
+  mboDesign = generateMBODesign(design, fun, par.set, control, show.info, oldopts, more.args)
   design = cbind(mboDesign$design.x, mboDesign$design.y)
   opt.path = mboDesign$opt.path
   times = mboDesign$times
@@ -65,7 +65,7 @@ mboParEGO = function(fun, par.set, design=NULL, learner, control, show.info=TRUE
     prop.designs = do.call(rbind, prop.designs)
     xs = dfRowsToList(prop.designs, par.set)
     xs = lapply(xs, repairPoint, par.set = par.set)
-    evals = evalTargetFun(fun, par.set, xs, opt.path, control, show.info, oldopts, ...)
+    evals = evalTargetFun(fun, par.set, xs, opt.path, control, show.info, oldopts, more.args)
     ys = convertRowsToList(evals$ys)
     # store in opt path
     mapply(addOptPathEl, xs, ys, MoreArgs = list(op = opt.path, dob = loop))
