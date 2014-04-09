@@ -5,7 +5,7 @@
  optimization using the parEGO algorithm}
 \usage{
 mboParEGO(fun, par.set, design = NULL, learner, control, show.info = TRUE,
-  ...)
+  more.args = list())
 }
 \arguments{
   \item{fun}{[\code{function(x, ...)}]\cr Fitness functions
@@ -33,8 +33,8 @@ mboParEGO(fun, par.set, design = NULL, learner, control, show.info = TRUE,
   \item{show.info}{[\code{logical(1)}]\cr Verbose output on
   console?  Default is \code{TRUE}.}
 
-  \item{...}{[any]\cr Further arguments passed to fitness
-  function.}
+  \item{more.args}{[any]\cr Further arguments passed to
+  fitness function.}
 }
 \value{
 [\code{list}]: \item{pareto.front [\code{matrix}]}{Pareto
