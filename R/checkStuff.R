@@ -25,13 +25,11 @@ checkStuff = function(fun, par.set, design, learner, control) {
   if (learner$type != "regr")
     stop("mbo requires regression learner!")
   if (control$propose.points == 1L) {
-    if(control$infill.crit %in% c("ei", "aei") && !learner$se)
-      stopf("The infill criterion needs the learner to support the prediction of standard error, but the provided learner does not (you could use the mlr wrapper makeBaggingWrapper to bootstrap the standard error estimator).")
     if(control$infill.crit %in% c("ei", "aei", "lcb") && learner$predict.type != "se")
       stopf("For infill criterion '%s' predict.type of learner %s must be set to 'se'!%s",
         control$infill.crit, learner$id,
         ifelse(learner$se, "",
-          "\nBut this learner does not seem to support prediction of standard errors!"))
+          "\nBut this learner does not seem to support prediction of standard errors! You could use the mlr wrapper makeBaggingWrapper to bootstrap the standard error estimator."))
   } else { # multipoint proposal
     if ((control$multipoint.method %in% c("lcb", "cl", "lcb") ||
          control$multipoint.method == "multicrit" && control$multipoint.multicrit.objective != "mean.dist" )
