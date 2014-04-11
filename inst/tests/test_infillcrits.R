@@ -9,7 +9,7 @@ test_that("infill crits", {
   mycontrol = function(minimize, noisy, crit) {
     makeMBOControl(minimize = minimize, noisy = noisy, init.design.points = ninit, iters = niters,
     infill.crit = crit, infill.opt = "focussearch", infill.opt.restarts = 1L,
-    infill.opt.focussearch.points = 500L, final.evals = 50L)
+    infill.opt.focussearch.points = 300L, final.evals = 10L)
   }
 
   mycheck = function(or, minimize) {

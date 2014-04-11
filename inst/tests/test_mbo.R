@@ -28,8 +28,8 @@ test_that("mbo works with rf", {
   expect_error(mbo(f, ps, des, learner, ctrl), "must be set to 'se'")
   ctrl = makeMBOControl(iters=5, infill.opt.focussearch.points=100)
 
-  f2=makeMBOFunction(function(x) x^2)
-  expect_error(mbo(f2, ps, des, learner, ctrl), "wrong length")
+  # f2=makeMBOFunction(function(x) x^2)
+  # expect_error(mbo(f2, ps, des, learner, ctrl), "wrong length")
 
   ctrl = makeMBOControl(iters=5, infill.opt.focussearch.points=100)
   learner = makeLearner("classif.randomForest")
