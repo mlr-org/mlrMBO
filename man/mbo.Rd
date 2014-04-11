@@ -53,4 +53,12 @@ lcb method.}
 Optimizes a function with sequential model based
 optimization.
 }
+\note{
+It is possible to parallelize the evaluation of the target
+function to speed up the computation. Internally the
+evaluation of the target function is realized with the R
+package parallelMap. See the mlrMBO tutorial respectively
+the help pages of \code{\link[parallelMap]{parallelMap}}
+for instructions on how to set up parallization.
+}
 

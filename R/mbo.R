@@ -33,6 +33,9 @@
 #'   \item{times [\code{numeric}]}{Vector of times it took to evaluate the objective.}
 #'   \item{models [List of \code{\link[mlr]{WrappedModel}}]}{List of saved regression models.}
 #'   \item{multipoint.lcb.lambdas [\code{matrix(iters, proposed.points)}]}{Sampled lambda values for multipoint lcb method.}
+#' @note It is possible to parallelize the evaluation of the target function to speed up the computation.
+#' Internally the evaluation of the target function is realized with the R package parallelMap. See the mlrMBO tutorial
+#' respectively the help pages of \code{\link[parallelMap]{parallelMap}} for instructions on how to set up parallization.
 #' @export
 #' @aliases MBOResult
 mbo = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, more.args=list()) {
