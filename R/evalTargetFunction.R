@@ -53,13 +53,14 @@ evalTargetFun = function(fun, par.set, xs, opt.path, control, show.info, oldopts
 
   # show some info on the console
   if (show.info) {
+    num.format = control$output.num.format
+    num.format.string = paste("%s=", num.format, sep="")
     dob = opt.path$env$dob
     dob = if (length(dob) == 0L) 0 else max(dob) + 1
     for (ind in seq_along(xs)) {
       #FIXME: show time?
-      messagef("[mbo] %i: %s : %s", dob, paramValueToString(par.set, xs[[ind]]),
-        paste(sprintf("%s=%.3f", control$y.name, ys[ind, ]), collapse = ", "))
-
+      messagef("[mbo] %i: %s : %s", dob, paramValueToString(par.set, xs[[ind]], num.format = num.format),
+        paste(sprintf(num.format.string, control$y.name, ys[ind, ]), collapse = ", "))
     }
   }
 

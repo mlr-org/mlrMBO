@@ -212,6 +212,8 @@
 #' @param show.learner.output [\code{logical(1)}]\cr
 #'   See [\code{\link[mlr]{configureMlr}}].
 #'   Default is \code{FALSE}.
+#' @param output.num.format [\code{logical(1)}]\cr
+#'   Format string for the precision of the numeric output of mbo.
 #' @return [\code{\link{MBOControl}}].
 #' @aliases MBOControl
 #' @export
@@ -237,9 +239,10 @@ makeMBOControl = function(number.of.targets=1L,
   parEGO.s=20L, parEGO.rho=0.05, parEGO.propose.points=1L,
   final.method="best.true.y", final.evals=0L,
   y.name = "y",
-  impute, impute.errors=FALSE, suppress.eval.errors=TRUE, save.model.at=iters,
-  resample.at = integer(0), resample.desc = makeResampleDesc("CV", iter=10), resample.measures=list(mse),
-  on.learner.error="warn", show.learner.output=FALSE
+  impute, impute.errors = FALSE, suppress.eval.errors = TRUE, save.model.at=iters,
+  resample.at = integer(0), resample.desc = makeResampleDesc("CV", iter=10), resample.measures = list(mse),
+  on.learner.error = "warn", show.learner.output = FALSE,
+  output.num.format = "%.3g"
 ) {
 
   requirePackages("lhs", "makeMBOControl")
@@ -300,7 +303,7 @@ makeMBOControl = function(number.of.targets=1L,
   checkArg(parEGO.rho, "numeric", len=1L, na.ok=FALSE, lower=0, upper=1)
   parEGO.propose.points = convertInteger(parEGO.propose.points)
   checkArg(parEGO.propose.points, "numeric", len=1L, na.ok=FALSE, lower=1)
-  
+
   if (missing(impute))
     impute = rep(list(function(x, y, opt.path)
       stopf("Infeasible y=%s value encountered at %s", as.character(y), convertToShortString(x))),
@@ -339,8 +342,9 @@ makeMBOControl = function(number.of.targets=1L,
   checkArg(resample.desc, "ResampleDesc")
   checkArg(resample.measures, "list")
 
-  checkArg(on.learner.error, choices=c("warn", "quiet", "stop"))
-  checkArg(show.learner.output, "logical", len=1L, na.ok=FALSE)
+  checkArg(on.learner.error, choices = c("warn", "quiet", "stop"))
+  checkArg(show.learner.output, "logical", len = 1L, na.ok = FALSE)
+  checkArg(output.num.format, "character", len = 1L, na.ok = FALSE)
 
   structure(list(
     minimize = minimize,
@@ -389,7 +393,8 @@ makeMBOControl = function(number.of.targets=1L,
     resample.at = resample.at,
     resample.measures = resample.measures,
     on.learner.error = on.learner.error,
-    show.learner.output = show.learner.output
+    show.learner.output = show.learner.output,
+    output.num.format = output.num.format
   ), class= "MBOControl")
 }
 

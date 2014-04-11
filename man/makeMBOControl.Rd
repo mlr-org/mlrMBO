@@ -25,7 +25,7 @@ makeMBOControl(number.of.targets = 1L, minimize = rep(TRUE,
   suppress.eval.errors = TRUE, save.model.at = iters,
   resample.at = integer(0), resample.desc = makeResampleDesc("CV", iter =
   10), resample.measures = list(mse), on.learner.error = "warn",
-  show.learner.output = FALSE)
+  show.learner.output = FALSE, output.num.format = "\%.3g")
 }
 \arguments{
   \item{minimize}{[\code{logical}]\cr Should target
@@ -299,6 +299,9 @@ makeMBOControl(number.of.targets = 1L, minimize = rep(TRUE,
   \item{show.learner.output}{[\code{logical(1)}]\cr See
   [\code{\link[mlr]{configureMlr}}].  Default is
   \code{FALSE}.}
+
+  \item{output.num.format}{[\code{logical(1)}]\cr Format
+  string for the precision of the numeric output of mbo.}
 }
 \value{
 [\code{\link{MBOControl}}].
