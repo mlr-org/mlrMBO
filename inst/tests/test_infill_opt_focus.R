@@ -18,7 +18,7 @@ test_that("simple random search, no dependencies, no focussing", {
   )
 
   learner = makeLearner("regr.randomForest")
-  ctrl = makeMBOControl(init.design.points=50, iters=2, infill.opt="focussearch",
+  ctrl = makeMBOControl(init.design.points=20, iters=2, infill.opt="focussearch",
     infill.opt.restarts=1, infill.opt.focussearch.maxit=1, infill.opt.focussearch.points=30)
   or = mbo(f, ps, learner=learner, control=ctrl, show.info=FALSE)
   expect_true(!is.na(or$y))
@@ -38,7 +38,7 @@ test_that("dependent params, but no focussing", {
   )
 
   learner = makeLearner("regr.randomForest")
-  ctrl = makeMBOControl(init.design.points=50, iters=2, infill.opt="focussearch",
+  ctrl = makeMBOControl(init.design.points=20, iters=2, infill.opt="focussearch",
     infill.opt.restarts=1, infill.opt.focussearch.maxit=1, infill.opt.focussearch.points=500)
   or = mbo(f, ps, learner=learner, control=ctrl, show.info=FALSE)
   expect_true(!is.na(or$y))
@@ -78,7 +78,7 @@ test_that("complex param space, dependencies, focussing, restarts", {
   )
 
   learner = makeLearner("regr.randomForest", predict.type="se")
-  ctrl = makeMBOControl(init.design.points=50, iters=2, infill.crit="ei", infill.opt="focussearch",
+  ctrl = makeMBOControl(init.design.points=20, iters=2, infill.crit="ei", infill.opt="focussearch",
     infill.opt.restarts=2L, infill.opt.focussearch.maxit=2L, infill.opt.focussearch.points=100)
   or = mbo(f, ps, learner=learner, control=ctrl, show.info=FALSE)
   expect_true(!is.na(or$y))
