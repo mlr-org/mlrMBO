@@ -63,6 +63,8 @@ exampleRun = function(fun, par.set, global.opt = NA_real_, learner, control,
   points.per.dim = 50, noisy.evals = 10, show.info = TRUE, ...) {
 
   checkArg(fun, "function")
+  checkArg(control, "MBOControl")
+
   if (missing(par.set) && inherits(fun, "soo_function"))
     par.set = makeNumericParamSet(lower = lower_bounds(fun), upper = upper_bounds(fun))
   else
@@ -75,7 +77,6 @@ exampleRun = function(fun, par.set, global.opt = NA_real_, learner, control,
 
   par.types = extractSubList(par.set$pars, "type")
 
-  checkArg(control, "MBOControl")
   noisy = control$noisy
   if (missing(learner)) {
     # set random forest as default learner if discrete params occur
@@ -89,9 +90,9 @@ exampleRun = function(fun, par.set, global.opt = NA_real_, learner, control,
     checkArg(learner, "Learner")
   }
   points.per.dim = convertInteger(points.per.dim)
-  checkArg(points.per.dim, "integer", len = 1L, na.ok = FALSE, lower=1L)
+  checkArg(points.per.dim, "integer", len = 1L, na.ok = FALSE, lower = 1L)
   noisy.evals = convertInteger(noisy.evals)
-  checkArg(noisy.evals, "integer", len = 1L, na.ok = FALSE, lower=1L)
+  checkArg(noisy.evals, "integer", len = 1L, na.ok = FALSE, lower = 1L)
   checkArg(show.info, "logical", len = 1L, na.ok = FALSE)
   n.params = sum(getParamLengths(par.set))
 
@@ -106,10 +107,11 @@ exampleRun = function(fun, par.set, global.opt = NA_real_, learner, control,
   if (show.info) {
     messagef("Evaluating true objective function at %s points.",
       if(!noisy) {
-        if(n.params == 1)
-        sprintf("%i", points.per.dim)
-        else
+        if(n.params == 1) {
+          sprintf("%i", points.per.dim)
+        } else {
           sprintf("%i x %i", points.per.dim, points.per.dim)
+        }
       }
     )
   }
@@ -117,70 +119,8 @@ exampleRun = function(fun, par.set, global.opt = NA_real_, learner, control,
   if (inherits(fun, "soo_function"))
     fun = makeMBOFunction(fun)
 
-  lower = getLower(par.set)
-  upper = getUpper(par.set)
+  evals = evaluate(fun, par.set, n.params, par.types, noisy, noisy.evals, points.per.dim, names.x, name.y)
 
-  par.types.count = getNumberOfParamTypes(par.set)
-
-  if (n.params == 1L) {
-    if (par.types %in% c("numeric", "numericvector")) {
-      xs = seq(lower, upper, length.out=points.per.dim)
-      ys = parallelMap(function(x) {
-        if(noisy) {
-          # do replicates if noisy
-          mean(replicate(noisy.evals, fun(namedList(names.x, x))))
-        } else {
-          fun(namedList(names.x, x))
-        }
-      }, xs, simplify = TRUE)
-      evals = data.frame(x = xs, y = ys)
-    } else if (par.types %in% c("discrete")) {
-      if (!noisy) {
-        stopf("ExampleRun does not make sense with a single deterministic discrete parameter.")
-      }
-
-      # extract domain of discrete param
-      xs = unlist(par.set$pars[[1]]$values)
-      cat(xs, "\n")
-
-      ys = parallelMap(function(x) {
-        mean(replicate(noisy.evals, fun(namedList(names.x, x))))
-      }, xs, simplify = TRUE)
-      evals = data.frame(x = xs, y = ys)
-    }
-  } else if (n.params == 2L) {
-    eval.x = NULL
-    if (all(par.types %in% c("numeric", "numericvector"))) {
-      eval.x = expand.grid(
-        x1=seq(lower[1], upper[1], length.out = points.per.dim),
-        x2=seq(lower[2], upper[2], length.out = points.per.dim)
-      )
-    } else if (par.types.count$discrete == 1) {
-      # get numeric parameter
-      # FIXME: if discrete param is first parameter, than the naming fails!
-      x2 = seq(lower, upper, length.out = points.per.dim)
-      # get discrete parameter
-      idx = which(par.types == "discrete")
-      x1 = unlist(par.set$pars[[idx]]$values)
-
-      eval.x = expand.grid(x1, x2)
-    }
-    names(eval.x) = names.x
-    #print(head(eval.x))
-    xs = dfRowsToList(eval.x, par.set)
-    ys = parallelMap(function(x) {
-      if(noisy) {
-        # do replicates if noisy
-        mean(replicate(noisy.evals, fun(x)))
-      } else {
-        fun(x)
-      }
-    }, xs, simplify = TRUE)
-    evals = cbind(eval.x, y=ys)
-    colnames(evals) = c(names.x, name.y)
-  }
-
-  # if optimum not provided by user, estimate it
   if (is.na(global.opt))
     global.opt.estim = ifelse(control$minimize, min(evals[,name.y]), max(evals[,name.y]))
   else
@@ -232,28 +172,108 @@ print.MBOExampleRun = function(x, ...) {
   catf("Objective: %s = %.3e\n", op$y.names[1], mr$y)
 }
 
+getEvalsForNumeric = function(fun, par.set, noisy, noisy.evals, points.per.dim, names.x) {
+  lower = getLower(par.set)
+  upper = getUpper(par.set)
+  xs = seq(lower, upper, length.out = points.per.dim)
+  ys = parallelMap(function(x) {
+    if (noisy) {
+      mean(replicate(noisy.evals, fun(namedList(names.x, x))))
+    } else {
+      fun(namedList(names.x, x))
+    }
+  }, xs, simplify = TRUE)
+  evals = data.frame(x = xs, y = ys)
+  return(evals)
+}
+
+getEvalsFor2dNumeric = function(fun, par.set, noisy, noisy.evals, points.per.dim, names.x, name.y) {
+  lower = getLower(par.set)
+  upper = getUpper(par.set)
+  evals.x = NULL
+  eval.x = expand.grid(
+    x1 = seq(lower[1], upper[1], length.out = points.per.dim),
+    x2 = seq(lower[2], upper[2], length.out = points.per.dim)
+  )
+  names(eval.x) = names.x
+  #print(head(eval.x))
+  xs = dfRowsToList(eval.x, par.set)
+  ys = parallelMap(function(x) {
+    if(noisy) {
+      mean(replicate(noisy.evals, fun(x)))
+    } else {
+      fun(x)
+    }
+  }, xs, simplify = TRUE)
+  evals = cbind(eval.x, y = ys)
+  colnames(evals) = c(names.x, name.y)
+  return(evals)
+}
+
+getEvalsForDiscrete = function(fun, par.set, noisy, noisy.evals, names.x) {
+  xs = unlist(par.set$pars[[1]]$values)
+  cat(xs, "\n")
+  ys = parallelMap(function(x) {
+    mean(replicate(noisy.evals, fun(namedList(names.x, x))))
+  }, xs, simplify = TRUE)
+  evals = data.frame(x = xs, y = ys)
+  return(evals)
+}
+
+evaluate = function(fun, par.set, n.params, par.types, noisy, noisy.evals, points.per.dim, names.x, name.y) {
+  if (n.params == 1L) {
+    if (par.types %in% c("numeric", "numericvector")) {
+      return(getEvalsForNumeric(fun, par.set, noisy, noisy.evals, points.per.dim, names.x))
+    } else if (par.types %in% c("discrete")) {
+      if (!noisy) {
+        stopf("ExampleRun does not make sense with a single deterministic discrete parameter.")
+      }
+      return(getEvalsForDiscrete(fun, par.set, noisy, noisy.evals, names.x))
+    }
+  } else if (n.params == 2L) {
+    if (all(par.types %in% c("numeric", "numericvector"))) {
+      return(getEvalsFor2dNumeric(fun, par.set, noisy, noisy.evals, names.x, name.y))
+    } else {
+      x2 = seq(lower, upper, length.out = points.per.dim)
+      # get discrete parameter
+      idx = which(par.types == "discrete")
+      x1 = unlist(par.set$pars[[idx]]$values)
+
+      eval.x = expand.grid(x1, x2)
+      names(eval.x) = names.x
+      #print(head(eval.x))
+      xs = dfRowsToList(eval.x, par.set)
+      ys = parallelMap(function(x) {
+        if(noisy) {
+          # do replicates if noisy
+          mean(replicate(noisy.evals, fun(x)))
+        } else {
+          fun(x)
+        }
+      }, xs, simplify = TRUE)
+      evals = cbind(eval.x, y=ys)
+      colnames(evals) = c(names.x, name.y)
+      return(evals)
+    }
+  }
+}
+
+#' Helper function which returns the (estimated) global optimum.
+#'
+#' @param [\code{MBOExampleRun}]\cr
+#'   Object of type \code{MBOExampleRun}.
+#' @return [\code{numeric(1)}]\cr
+#'   (Estimated) global optimum.
+#' @export
+getGlobalOpt = function(run) {
+  UseMethod("getGlobalOpt")
+}
+
+#' @S3method getGlobalOpt MBOExampleRun
 getGlobalOpt = function(run) {
   ifelse(is.na(run$global.opt), run$global.opt.estim, run$global.opt)
 }
 
 getGlobalOptString = function(run) {
   sprintf("Global Opt (%s)",  ifelse(is.na(run$global.opt), "estimated", "known"))
-}
-
-# FIXME: move this to ParamHelpers?
-getNumberOfParamTypes = function(par.set) {
-  checkArg(par.set, "ParamSet")
-  supported.types = getSupportedParamTypes()
-  actual.types = extractSubList(par.set$pars, "type")
-  count = lapply(supported.types, function(t) {
-    length(actual.types[which(actual.types == t)])
-  })
-  names(count) = supported.types
-  return(count)
-}
-
-getSupportedParamTypes = function() {
-  return(c("numeric", "integer", "numericvector",
-        "integervector", "discrete", "discretevector", "logical",
-        "logicalvector", "function", "untyped"))
 }
