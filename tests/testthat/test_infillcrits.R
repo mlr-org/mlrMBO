@@ -2,7 +2,7 @@ context("infill crits")
 
 test_that("infill crits", {
   f1 = makeMBOFunction(function(x) sum(x^2))
-  f2 = makeMBOFunction(function(x) sum(x^2) + rnorm(1, 0, 0.1))
+  f2 = makeMBOFunction(function(x) sum(x^2) + rnorm(1, 0, 0.03))
   ps = makeNumericParamSet(len = 2L, lower = -10, upper = 10)
 
   ninit = 20L; niters = 3L
@@ -15,12 +15,10 @@ test_that("infill crits", {
   mycheck = function(or, minimize) {
     expect_equal(getOptPathLength(or$opt.path), ninit + niters)
     expect_true(!is.na(or$y))
-    # FIXME: reenable, but takes comp. time...
-    # if (minimize)
-      # expect_true(or$y < 1)
-    # else
-      # expect_true(or$y > 100)
-    expect_true(!is.na(or$y))
+    if (minimize)
+      expect_true(or$y < 50)
+    else
+      expect_true(or$y > 150)
   }
 
   learners = list(
