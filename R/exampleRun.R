@@ -65,15 +65,17 @@ exampleRun = function(fun, par.set, global.opt = NA_real_, learner, control,
   checkArg(fun, "function")
   checkArg(control, "MBOControl")
 
-  if (missing(par.set) && inherits(fun, "soo_function"))
+  if (missing(par.set) && is_soo_function("soo_function")) {
     par.set = makeNumericParamSet(lower = lower_bounds(fun), upper = upper_bounds(fun))
-  else
+  } else {
     checkArg(par.set, "ParamSet")
+  }
 
-  if (missing(global.opt) && inherits(fun, "soo_function"))
+  if (missing(global.opt) && is_soo_function(fun)) {
     global.opt = global_minimum(fun)$val
-  else
+  } else {
     checkArg(global.opt, "numeric", len = 1L, na.ok = TRUE)
+  }
 
   par.types = getTypes(par.set)
 
@@ -89,6 +91,7 @@ exampleRun = function(fun, par.set, global.opt = NA_real_, learner, control,
   } else {
     checkArg(learner, "Learner")
   }
+
   points.per.dim = convertInteger(points.per.dim)
   checkArg(points.per.dim, "integer", len = 1L, na.ok = FALSE, lower = 1L)
   noisy.evals = convertInteger(noisy.evals)
@@ -116,8 +119,9 @@ exampleRun = function(fun, par.set, global.opt = NA_real_, learner, control,
     )
   }
 
-  if (inherits(fun, "soo_function"))
+  if (is_soo_function("soo_function")) {
     fun = makeMBOFunction(fun)
+  }
 
   evals = evaluate(fun, par.set, n.params, par.types, noisy, noisy.evals, points.per.dim, names.x, name.y)
   colnames(evals) = c(names.x, name.y)
@@ -235,6 +239,8 @@ evaluate = function(fun, par.set, n.params, par.types, noisy, noisy.evals, point
     if (all(par.types %in% c("numeric", "numericvector"))) {
       return(getEvalsFor2dNumeric(fun, par.set, noisy, noisy.evals, points.per.dim, names.x, name.y))
     } else {
+      lower = getLower(par.set)
+      upper = getUpper(par.set)
       x2 = seq(lower, upper, length.out = points.per.dim)
       # get discrete parameter
       idx = which(par.types == "discrete")
