@@ -120,6 +120,7 @@ exampleRun = function(fun, par.set, global.opt = NA_real_, learner, control,
     fun = makeMBOFunction(fun)
 
   evals = evaluate(fun, par.set, n.params, par.types, noisy, noisy.evals, points.per.dim, names.x, name.y)
+  colnames(evals) = c(names.x, name.y)
 
   if (is.na(global.opt))
     global.opt.estim = ifelse(control$minimize, min(evals[,name.y]), max(evals[,name.y]))
@@ -232,7 +233,7 @@ evaluate = function(fun, par.set, n.params, par.types, noisy, noisy.evals, point
     }
   } else if (n.params == 2L) {
     if (all(par.types %in% c("numeric", "numericvector"))) {
-      return(getEvalsFor2dNumeric(fun, par.set, noisy, noisy.evals, names.x, name.y))
+      return(getEvalsFor2dNumeric(fun, par.set, noisy, noisy.evals, points.per.dim, names.x, name.y))
     } else {
       x2 = seq(lower, upper, length.out = points.per.dim)
       # get discrete parameter

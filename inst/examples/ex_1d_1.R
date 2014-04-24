@@ -30,4 +30,6 @@ run = exampleRun(objfun, ps, global.opt=-1, learner=lrn,
 
 print(run)
 
+
+
 autoplot(run, pause=TRUE, densregion=TRUE)

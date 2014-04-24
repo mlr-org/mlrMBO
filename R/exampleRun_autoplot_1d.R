@@ -2,7 +2,7 @@
 if(getRversion() >= "2.15.1")
   utils::globalVariables(c("se.min", "se.max"))
 
-# Function for plotting 1d numeric respectively discrete functions. 
+# Function for plotting 1d numeric respectively discrete functions.
 #
 # @param x [\code{function}]\cr
 #   Objective function.
@@ -28,12 +28,12 @@ if(getRversion() >= "2.15.1")
 # @param line.size [\code{numeric(1)}]\cr
 #   Line width of the functions graphs plotted.
 # @param trafo [\code{list}]\cr
-#   List of transformation functions of type \code{\link[mlrMBO]{MBOTrafoFunction}} for 
+#   List of transformation functions of type \code{\link[mlrMBO]{MBOTrafoFunction}} for
 #   the different plots.
 #   For 1D: The list elements should be named with "y" (applied to objective function and model) or "crit"
 #   (applied to the criterion). Only applied to plots with numeric parameters.
-#   For 2D: The list should contain at least one element "y", "yhat", "crit" or "se". This way one can 
-#   specify different transformations for different plots. If a single function is provided, this function 
+#   For 2D: The list should contain at least one element "y", "yhat", "crit" or "se". This way one can
+#   specify different transformations for different plots. If a single function is provided, this function
 #    is used for all plots.
 # @param densregion [\code{logical(1)}]\cr
 #   Should the background be shaded by the density of the posterior distribution? Default ist \code{TRUE}.
@@ -41,7 +41,7 @@ if(getRversion() >= "2.15.1")
 # @param ... [\code{list}]\cr
 #   Further parameters.
 # @return Nothing.
-autoplotExampleRun1d = function(x, iters, xlim, ylim, pause, se.factor, point.size, line.size, trafo, densregion=TRUE, ...) {
+autoplotExampleRun1d = function(x, iters, xlim, ylim, pause, se.factor, point.size, line.size, trafo, densregion = TRUE, ...) {
   # extract relevant data from MBOExampleRun
   par.set = x$par.set
   par.types = x$par.types
@@ -77,23 +77,22 @@ autoplotExampleRun1d = function(x, iters, xlim, ylim, pause, se.factor, point.si
 
   evals = x$evals
   evals.x = evals[, names.x, drop=FALSE]
-
   opt.path = as.data.frame(mbo.res$opt.path)
 
   idx.init = which(opt.path$dob == 0)
 
-  # helper function for building up data frame of different points 
+  # helper function for building up data frame of different points
   # i.e., initial design points, infilled points, proposed points for ggplot
   buildPointsData = function(opt.path, names.x, name.y, idx, idx.init, idx.seq, idx.proposed) {
     data.frame(
-      x=opt.path[idx, names.x],
-      y=opt.path[idx, name.y],
-      type=as.factor(c(
+      x = opt.path[idx, names.x],
+      y = opt.path[idx, name.y],
+      type = as.factor(c(
         rep("init", length(idx.init)),
         rep("seq", length(idx.seq)),
         rep("prop", length(idx.proposed)))
       )
-    )        
+    )
   }
 
   plot.sequence = list()
@@ -119,8 +118,8 @@ autoplotExampleRun1d = function(x, iters, xlim, ylim, pause, se.factor, point.si
         evals[[name.crit]] = opt.direction *
           critfun(evals.x, model, control, par.set, opt.path[idx.past,])
       } else {
-        print("Multipoint proposal")
-        # evals[[name.crit]] = ...
+        stop("FIXME: Compute infill citeria value on multipoint proposal.")
+        # evals[[name.crit]] =
       }
 
       # prepare drawing of standard error (confidence interval)
@@ -137,11 +136,11 @@ autoplotExampleRun1d = function(x, iters, xlim, ylim, pause, se.factor, point.si
 
       # data frame with real fun and model fun evaluations
       gg.fun = data.frame(
-        x = rep(evals[,names.x],2),
-        y = c(evals[,name.y],evals[,"yhat"]),
-        se.min = if (se) rep(evals[,"se.min"], 2) else NA,
-        se.max = if (se) rep(evals[,"se.max"], 2) else NA,
-        type = as.factor(rep(c("y", "yhat"), each=n))
+        x = rep(evals[, names.x], 2),
+        y = c(evals[, name.y], evals[, "yhat"]),
+        se.min = if (se) rep(evals[, "se.min"], 2) else NA,
+        se.max = if (se) rep(evals[, "se.max"], 2) else NA,
+        type = as.factor(rep(c("y", "yhat"), each = n))
       )
 
       # data frame with points of different type (initial design points, infill points, proposed points)
@@ -150,7 +149,7 @@ autoplotExampleRun1d = function(x, iters, xlim, ylim, pause, se.factor, point.si
       # transform y and yhat values according to trafo function
       if (!is.null(trafo$y)) {
         tr = trafo$y
-        gg.fun$y = tr(gg.fun$y) 
+        gg.fun$y = tr(gg.fun$y)
         gg.fun$se.min = tr(gg.fun$se.min)
         gg.fun$se.max = tr(gg.fun$se.max)
         gg.points$y = tr(gg.points$y)
@@ -158,8 +157,8 @@ autoplotExampleRun1d = function(x, iters, xlim, ylim, pause, se.factor, point.si
 
       # data frame with optimization criterion stuff
       gg.crit = data.frame(
-        x = evals[,names.x], 
-        y = evals[,name.crit]
+        x = evals[, names.x],
+        y = evals[, name.crit]
       )
 
       # transform cirterion if corresponding trafo function provided
@@ -168,24 +167,24 @@ autoplotExampleRun1d = function(x, iters, xlim, ylim, pause, se.factor, point.si
       }
 
       # finally build the ggplot object(s)
-      pl.fun = ggplot(data=gg.fun)
+      pl.fun = ggplot(data = gg.fun)
       pl.fun = pl.fun
-      pl.fun = pl.fun + geom_line(aes(x=x, y=y, linetype=type), size=line.size)
+      pl.fun = pl.fun + geom_line(aes(x = x, y = y, linetype = type), size = line.size)
 
       if (se & densregion) {
-        gg.se = subset(gg.fun, type=="yhat")
-        pl.fun = pl.fun + geom_ribbon(data=gg.se, aes(x=x, ymin=se.min, ymax=se.max), alpha=0.2)
+        gg.se = subset(gg.fun, type == "yhat")
+        pl.fun = pl.fun + geom_ribbon(data = gg.se, aes(x = x, ymin = se.min, ymax = se.max), alpha=0.2)
       }
 
-      pl.fun = pl.fun + geom_point(data=gg.points, aes(x=x, y=y, colour=type, shape=type), size=point.size)
+      pl.fun = pl.fun + geom_point(data = gg.points, aes(x = x, y = y, colour = type, shape = type), size = point.size)
       pl.fun = pl.fun + xlab(NULL)
 
       # if trafo for y is provided, indicate transformation on the y-axis
       ylab = name.y
       if (!is.null(trafo$y)) {
-        ylab = paste(name.y, " (", attr(trafo$y, "name"), "-transformed)", sep="")
+        ylab = paste(name.y, " (", attr(trafo$y, "name"), "-transformed)", sep = "")
       }
-      pl.fun = pl.fun + scale_y_continuous(name=ylab)
+      pl.fun = pl.fun + scale_y_continuous(name = ylab)
 
       pl.fun = pl.fun + ggtitle(
         sprintf("Iter = %i, Gap = %.4e", i,
@@ -193,26 +192,26 @@ autoplotExampleRun1d = function(x, iters, xlim, ylim, pause, se.factor, point.si
       )
 
       pl.fun = pl.fun + theme(
-        legend.position="top",
+        legend.position = "top",
         legend.box = "horizontal",
-        axis.text.x=element_blank(),
-        panel.margin=unit(0, "lines"),
-        plot.title=element_text(size=11, face="bold")
+        axis.text.x = element_blank(),
+        panel.margin = unit(0, "lines"),
+        plot.title = element_text(size=11, face="bold")
       )
 
-      pl.crit = ggplot(data=gg.crit, aes(x=x, y=y))
-      pl.crit = pl.crit + geom_line(linetype="dotted", colour="black", size=line.size)
-      pl.crit = pl.crit + geom_vline(xintercept=opt.path[idx.proposed, names.x], linetype="dashed", colour="darkgray", size=line.size)
+      pl.crit = ggplot(data = gg.crit, aes(x = x, y = y))
+      pl.crit = pl.crit + geom_line(linetype = "dotted", colour = "black", size = line.size)
+      pl.crit = pl.crit + geom_vline(xintercept = opt.path[idx.proposed, names.x], linetype = "dashed", colour="darkgray", size = line.size)
 
       # if trafo for criterion is provided, indicate transformation on the y-axis
       ylab = name.crit
       if (!is.null(trafo$crit)) {
-        ylab = paste(name.crit, " (", attr(trafo$crit, "name"), "-transformed)", sep="")
+        ylab = paste(name.crit, " (", attr(trafo$crit, "name"), "-transformed)", sep = "")
       }
-      pl.crit = pl.crit + scale_y_continuous(name=ylab)
+      pl.crit = pl.crit + scale_y_continuous(name = ylab)
 
       # arrange stuff in grid
-      pl.all = grid.arrange(pl.fun, pl.crit, nrow=2)
+      pl.all = grid.arrange(pl.fun, pl.crit, nrow = 2)
 
       plot.sequence[[i]] = list(
         "pl.fun" = pl.fun,
@@ -226,8 +225,8 @@ autoplotExampleRun1d = function(x, iters, xlim, ylim, pause, se.factor, point.si
 
       gg.points = buildPointsData(opt.path, names.x, name.y, idx, idx.init, idx.seq, idx.proposed)
 
-      pl.fun = ggplot(data=gg.points, aes(x=x, y=y, colour=type, shape=type))
-      pl.fun = pl.fun + geom_point(size=point.size)
+      pl.fun = ggplot(data=gg.points, aes(x = x, y = y, colour = type, shape = type))
+      pl.fun = pl.fun + geom_point(size = point.size)
 
       if (se & densregion) {
         print("SE is active")
@@ -241,11 +240,11 @@ autoplotExampleRun1d = function(x, iters, xlim, ylim, pause, se.factor, point.si
         calculateGap(opt.path[idx.pastpresent,], global.opt, control))
       )
       pl.fun = pl.fun + theme(
-        legend.position="top",
-        legend.box="horizontal",
-        plot.title=element_text(size=11, face="bold")
+        legend.position = "top",
+        legend.box = "horizontal",
+        plot.title = element_text(size = 11, face = "bold")
       )
-      
+
       print(pl.fun)
 
       # save plot

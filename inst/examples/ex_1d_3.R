@@ -29,15 +29,14 @@ ps = makeParamSet(
   makeDiscreteParam("foo", values = c("a", "b", "c"))
 )
 
+ctrl = makeMBOControl(init.design.points = 20, iters = 5, infill.crit = "ei",
+  infill.opt.focussearch.points = 100, noisy = TRUE)
 
-ctrl = makeMBOControl(init.design.points=20, iters=5, infill.crit="ei",
-  infill.opt.focussearch.points=100, noisy=TRUE)
+lrn = makeLearner("regr.randomForest", predict.type = "se")
 
-lrn = makeLearner("regr.randomForest", predict.type="se")
-
-run = exampleRun(objfun, par.set = ps, learner=lrn, control=ctrl, points.per.dim=50)
+run = exampleRun(objfun, par.set = ps, learner = lrn, control = ctrl, points.per.dim = 50)
 
 print(run)
 
-autoplot(run, pause=TRUE, densregion=TRUE)
+autoplot(run, pause = TRUE, densregion = TRUE)
 
