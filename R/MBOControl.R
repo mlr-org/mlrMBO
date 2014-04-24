@@ -173,7 +173,7 @@
 #' @param y.name [\code{character}]\cr
 #'   Vector for names of y-columns for target values in optimization path.
 #'   Default is \dQuote{y_i}, i = 1, ..., number.of.targets.
-#' @param impute [\code{list(\code{function(x, y, opt.path)}, ...}]\cr
+#' @param impute [\code{list(function(x, y, opt.path), ...)}]\cr
 #'   List of functions that determine the return value in case the original fitness functions fails
 #'   (for whatever reason) and because of this failure returns a NA, NaN, Inf.
 #'   Must be a list of length number.of.targets. If named, the names must correspondend

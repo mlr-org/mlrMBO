@@ -36,6 +36,9 @@ exampleRun(fun, par.set, global.opt = NA_real_, learner, control,
 
   \item{show.info}{[\code{logical(1)}]\cr Verbose output on
   console?  Default is \code{TRUE}.}
+
+  \item{...}{[any]\cr Further arguments passed to the
+  learner.}
 }
 \value{
 [\code{list}]: \item{xseq [\code{numeric}]}{Sequence of x

@@ -46,6 +46,8 @@
 #' @param show.info [\code{logical(1)}]\cr
 #'   Verbose output on console?
 #'   Default is \code{TRUE}.
+#' @param ... [any]\cr
+#'   Further arguments passed to the learner.
 #' @return [\code{list}]:
 #'   \item{xseq [\code{numeric}]}{Sequence of x values from the domain of \code{fun}.}
 #'   \item{yseq [\code{numeric}]}{Sequence of evaluated points.}
@@ -57,19 +59,19 @@
 
 #FIXME doc soobench and add suggsts
 #FIXME can we allow functions with simpler signature?
-exampleRun = function(fun, par.set, global.opt=NA_real_, learner, control,
-  points.per.dim=50, noisy.evals=10, show.info=TRUE, ...) {
+exampleRun = function(fun, par.set, global.opt = NA_real_, learner, control,
+  points.per.dim = 50, noisy.evals = 10, show.info = TRUE, ...) {
 
   checkArg(fun, "function")
   if (missing(par.set) && inherits(fun, "soo_function"))
-    par.set = makeNumericParamSet(lower=lower_bounds(fun), upper=upper_bounds(fun))
+    par.set = makeNumericParamSet(lower = lower_bounds(fun), upper = upper_bounds(fun))
   else
     checkArg(par.set, "ParamSet")
 
   if (missing(global.opt) && inherits(fun, "soo_function"))
     global.opt = global_minimum(fun)$val
   else
-    checkArg(global.opt, "numeric", len=1L, na.ok=TRUE)
+    checkArg(global.opt, "numeric", len = 1L, na.ok = TRUE)
 
   par.types = extractSubList(par.set$pars, "type")
 
@@ -81,7 +83,7 @@ exampleRun = function(fun, par.set, global.opt=NA_real_, learner, control,
       # FIXME: set further params
       learner = makeLearner("regr.randomForest", ...)
     } else {
-      learner = makeLearner("regr.km", covtype="matern5_2", predict.type="se", nugget.estim=noisy, ...)
+      learner = makeLearner("regr.km", covtype = "matern5_2", predict.type = "se", nugget.estim = noisy, ...)
     }
   } else {
     checkArg(learner, "Learner")
@@ -94,11 +96,11 @@ exampleRun = function(fun, par.set, global.opt=NA_real_, learner, control,
   n.params = sum(getParamLengths(par.set))
 
   if (n.params >= 3L) {
-    stopf("exampleRun can only be your for functions with at most 2 dimensions, but you have %iD", n.params)
+    stopf("exampleRun can only be applied for functions with at most 2 dimensions, but you have %iD", n.params)
   }
 
-  control$save.model.at=0:control$iters
-  names.x = getParamIds(par.set, repeated=TRUE, with.nr=TRUE)
+  control$save.model.at = 0:control$iters
+  names.x = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
   name.y = control$y.name
 
   if (show.info) {
@@ -131,7 +133,7 @@ exampleRun = function(fun, par.set, global.opt=NA_real_, learner, control,
           fun(namedList(names.x, x))
         }
       }, xs, simplify = TRUE)
-      evals = data.frame(x=xs, y=ys)
+      evals = data.frame(x = xs, y = ys)
     } else if (par.types %in% c("discrete")) {
       if (!noisy) {
         stopf("ExampleRun does not make sense with a single deterministic discrete parameter.")
@@ -144,14 +146,14 @@ exampleRun = function(fun, par.set, global.opt=NA_real_, learner, control,
       ys = parallelMap(function(x) {
         mean(replicate(noisy.evals, fun(namedList(names.x, x))))
       }, xs, simplify = TRUE)
-      evals = data.frame(x=xs, y=ys)
+      evals = data.frame(x = xs, y = ys)
     }
   } else if (n.params == 2L) {
     eval.x = NULL
     if (all(par.types %in% c("numeric", "numericvector"))) {
       eval.x = expand.grid(
-        x1=seq(lower[1], upper[1], length.out=points.per.dim),
-        x2=seq(lower[2], upper[2], length.out=points.per.dim)
+        x1=seq(lower[1], upper[1], length.out = points.per.dim),
+        x2=seq(lower[2], upper[2], length.out = points.per.dim)
       )
     } else if (par.types.count$discrete == 1) {
       # get numeric parameter
@@ -195,11 +197,18 @@ exampleRun = function(fun, par.set, global.opt=NA_real_, learner, control,
   res = mbo(fun, par.set, learner=learner, control=control, show.info=show.info)
 
   structure(list(
-    par.set=par.set, n.params=n.params, par.types=par.types,
-    names.x=names.x, name.y=name.y,
-    points.per.dim=points.per.dim, evals=evals,
-    global.opt=global.opt, global.opt.estim=global.opt.estim,
-    learner=learner, control=control, mbo.res=res
+    par.set = par.set,
+    n.params = n.params,
+    par.types = par.types,
+    names.x = names.x,
+    name.y = name.y,
+    points.per.dim = points.per.dim,
+    evals = evals,
+    global.opt = global.opt,
+    global.opt.estim = global.opt.estim,
+    learner = learner,
+    control = control,
+    mbo.res = res
   ), class="MBOExampleRun")
 }
 

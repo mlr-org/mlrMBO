@@ -247,11 +247,11 @@ makeMBOControl(number.of.targets = 1L, minimize = rep(TRUE,
   y-columns for target values in optimization path.
   Default is \dQuote{y_i}, i = 1, ..., number.of.targets.}
 
-  \item{impute}{[\code{list(\code{function(x, y,
-  opt.path)}, ...}]\cr List of functions that determine the
-  return value in case the original fitness functions fails
-  (for whatever reason) and because of this failure returns
-  a NA, NaN, Inf.  Must be a list of length
+  \item{impute}{[\code{list(function(x, y, opt.path),
+  ...)}]\cr List of functions that determine the return
+  value in case the original fitness functions fails (for
+  whatever reason) and because of this failure returns a
+  NA, NaN, Inf.  Must be a list of length
   number.of.targets. If named, the names must correspondend
   with y.name and each function is used to impute the
   corresponding fitness function.  Alternatively a single

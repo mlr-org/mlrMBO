@@ -25,7 +25,6 @@
 #'   \item{pareto.front [\code{matrix}]}{Pareto Front of all evaluated points.}
 #'   \item{opt.path [\code{\link[ParamHelpers]{OptPath}}]}{Optimization path.}
 #' @export
-#' @aliases MBOResult
 mboParEGO = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, more.args=list()) {
   #FIXME: more param checks
   checkStuff(fun, par.set, design, learner, control)

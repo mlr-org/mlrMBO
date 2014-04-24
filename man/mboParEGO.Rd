@@ -1,5 +1,4 @@
 \name{mboParEGO}
-\alias{MBOResult}
 \alias{mboParEGO}
 \title{Optimizes a multicrit optimization problem  with sequential model based
  optimization using the parEGO algorithm}
