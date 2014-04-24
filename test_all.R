@@ -7,8 +7,9 @@ library(soobench)
 if (interactive()) {
   load_all(".", reset=TRUE)
 } else {
-  library(mlrMBO)  
+  library(mlrMBO)
 }
 
 configureMlr(show.learner.output=FALSE)
-test_dir("inst/tests/")
+test_dir("tests/testthat")
+

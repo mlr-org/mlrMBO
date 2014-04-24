@@ -1,4 +1,4 @@
 library(testthat)
 library(mlrMBO)
 
-test_package("mlrMBO")
+test_check("mlrMBO")
