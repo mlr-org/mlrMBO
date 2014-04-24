@@ -261,16 +261,11 @@ evaluate = function(fun, par.set, n.params, par.types, noisy, noisy.evals, point
 
 #' Helper function which returns the (estimated) global optimum.
 #'
-#' @param [\code{MBOExampleRun}]\cr
+#' @param run [\code{MBOExampleRun}]\cr
 #'   Object of type \code{MBOExampleRun}.
 #' @return [\code{numeric(1)}]\cr
 #'   (Estimated) global optimum.
 #' @export
-getGlobalOpt = function(run) {
-  UseMethod("getGlobalOpt")
-}
-
-#' @S3method getGlobalOpt MBOExampleRun
 getGlobalOpt = function(run) {
   ifelse(is.na(run$global.opt), run$global.opt.estim, run$global.opt)
 }
