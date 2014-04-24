@@ -75,14 +75,14 @@ exampleRun = function(fun, par.set, global.opt = NA_real_, learner, control,
   else
     checkArg(global.opt, "numeric", len = 1L, na.ok = TRUE)
 
-  par.types = extractSubList(par.set$pars, "type")
+  par.types = getTypes(par.set)
 
   noisy = control$noisy
   if (missing(learner)) {
     # set random forest as default learner if discrete params occur
-    if (any(par.types %in% c("discrete"))) {
+    if (hasDiscrete(par.set)) {
       # FIXME: set further params
-      learner = makeLearner("regr.randomForest", ...)
+      learner = makeLearner("regr.randomForest", predict.type = "se")
     } else {
       learner = makeLearner("regr.km", covtype = "matern5_2", predict.type = "se", nugget.estim = noisy, ...)
     }
