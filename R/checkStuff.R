@@ -2,28 +2,33 @@
 # check whether the user selected valid options / combinations
 checkStuff = function(fun, par.set, design, learner, control) {
   checkArg(fun, "function")
-  #FIXME: we added this function to the current version of ParamHelpers
-  hasFactors = function(par.set) {
-    commonTypes = intersect(c("discrete", "discretevector"), getTypes(par.set))
-    return(length(commonTypes) > 0)
-  }
-  if (hasFactors(par.set) && !learner$factors) {
+
+  if (hasDiscrete(par.set) && !learner$factors) {
     stop("Provided learner does not support factor parameters.")
   }
+
   # For now allow constant liar only in combinaton with Kriging
   # (see https://github.com/berndbischl/mlrMBO/issues/12)
   if (control$multipoint.method == "cl" && learner$id != "regr.km") {
     stop("Constant liar can currently only be used with Kriging surrograte.")
   }
-  if(any(sapply(par.set$pars, function(x) inherits(x, "LearnerParam"))))
+
+  if(any(sapply(par.set$pars, function(x) inherits(x, "LearnerParam")))) {
     stop("No par.set parameter in 'mbo' can be of class 'LearnerParam'! Use basic parameters instead to describe you region of interest!")
-  if (any(is.infinite(c(getLower(par.set), getUpper(par.set)))))
+  }
+
+  if (!hasFiniteBoxConstraints(par.set)) {
     stop("mbo requires finite box constraints!")
-  if (control$infill.opt == "cmaes" &&
-      !all(sapply(par.set$pars, function(p) p$type) %in% c("numeric", "integer", "numericvector", "integervector")))
+  }
+
+  if (control$infill.opt == "cmaes" && !isNumeric(par.set)) {
     stop("Optimizer CMAES can only be applied to numeric, integer, numericvector, integervector parameters!")
-  if (learner$type != "regr")
+  }
+
+  if (learner$type != "regr") {
     stop("mbo requires regression learner!")
+  }
+
   if (control$propose.points == 1L) {
     if(control$infill.crit %in% c("ei", "aei", "lcb") && learner$predict.type != "se")
       stopf("For infill criterion '%s' predict.type of learner %s must be set to 'se'!%s",
