@@ -36,14 +36,20 @@ evalTargetFun = function(fun, par.set, xs, opt.path, control, show.info, oldopts
     if (length(y) != control$number.of.targets)
       stopf("Objective function output has wrong length: %i. Should be %i.",
         length(y), control$number.of.targets)
-    #FIXME: show.info must be called on master
     return(list(y = y, time = st[3]))
   }
   # restore mlr configuration
   configureMlr(on.learner.error = oldopts[["ole"]], show.learner.output = oldopts[["slo"]])
 
   # apply fun2 and extract parts
-  z = parallelMap(fun2, xs)
+  ## FIXME: ATM we impute every error in the target function with an NA.
+  ## This works at the moment, on the long hand we want to save the errors
+  ## in the optimization path.
+  z = parallelMap(fun2, xs, impute.error =
+      function(x)
+        list(y = rep(NA, control$number.of.targets), time = NA)
+    )
+  
   # ys is row-matrix with number.of.targets cols
   ys = if (control$number.of.targets == 1L)
     matrix(extractSubList(z, "y"), ncol = 1L)

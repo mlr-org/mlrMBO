@@ -183,7 +183,8 @@
 #'   impute every fitness function.
 #'   \code{x} is the current x-value, \code{y} the current (infeasible) y-value and
 #'   \code{opt.path} the current optimization path.
-#'   Default is to stop with an error.
+#'   Default is to stop with an error. This also happens, if the target function
+#'   generates an error.
 #' @param impute.errors [\code{logical(1)}]\cr
 #'   Should fitness function call be wrapped in a \code{try} and the same imputation
 #'   be used as in \code{impute}?

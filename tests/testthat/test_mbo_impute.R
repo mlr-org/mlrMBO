@@ -23,7 +23,8 @@ test_that("mbo works with failures", {
   ctrl = makeMBOControl(iters=20,  infill.opt.focussearch.points=500, impute=function(x, y, opt.path) 0)
   mbo(f1, ps, des=NULL, learner, ctrl, show.info=FALSE)
   ctrl = makeMBOControl(iters=50,  infill.opt.focussearch.points=500)
-  expect_error(mbo(f2, ps, des=NULL, learner, ctrl, show.info=FALSE), "foo")
+  ## FIXME: With the new imputation 
+  expect_error(mbo(f2, ps, des=NULL, learner, ctrl, show.info=FALSE), "Infeasible y")
   ctrl = makeMBOControl(iters=50,  infill.opt.focussearch.points=500, impute=function(x, y, opt.path) 0, impute.errors=TRUE)
   mbo(f2, ps, des=NULL, learner, ctrl, show.info=FALSE)
 })

@@ -17,8 +17,10 @@ test_that("mbo parEGO works", {
   # Test wrong dimension
   ctrl = makeMBOControl(iters=5, infill.opt.focussearch.points=10,
     number.of.targets = 3)
+  ## FIXME: The new imputation surpresses the error message - the error
+  ## message must be saved somewhere (opt path), and the opt.path must be tested
   expect_error(mboParEGO(f, ps, learner = learner, control = ctrl),
-    "output has wrong length")
+    "Infeasible y")
   
   # Test multippoint
   ctrl = makeMBOControl(iters=5, infill.opt.focussearch.points=10,
