@@ -1,30 +1,28 @@
-mlrMBO
-======
+# mlrMBO
 
-Model-based optimization with mlr 
+
+Model-based optimization with mlr
+
+Travis CI: [![Build Status](https://travis-ci.org/berndbischl/mlrMBO.png)](https://travis-ci.org/berndbischl/mlrMBO)
 
 The package will be released soon, so some links below are not working.
 
-* Offical CRAN release site: 
-  http://cran.r-project.org/web/packages/mlrMBO/index.html
+* [Offical CRAN release site](http://cran.r-project.org/web/packages/mlrMBO/index.html) 
+  
+* [Tutorial on github](https://github.com/berndbischl/mlrMBO/blob/master/doc/knitted/tutorial/README.md) (*work in progress*)
 
-* R Documentation in HTML:
-  http://www.statistik.tu-dortmund.de/~bischl/rdocs/mlrMBO/
+* [R Documentation](http://www.statistik.tu-dortmund.de/~bischl/rdocs/mlrMBO/) in HTML
 
-* Run this in R to install the current GitHub version:
-  ```r
-  devtools::install_github("mlrMBO", username="berndbischl")
-  ```
+# Installation
 
-* [Further installation instructions](https://github.com/tudo-r/PackagesInfo/wiki/Installation-Information)
+The package has not been released on CRAN yet. Run the following command in R to install the current GitHub version. 
+[Further installation instructions](https://github.com/tudo-r/PackagesInfo/wiki/Installation-Information) are available are available at the site of tudo-r.
 
-* Some examples calls and applications are contained in inst/examples directory.
+```splus
+devtools::install_github("mlrMBO", username="berndbischl")
+```
 
-* Travis CI: [![Build Status](https://travis-ci.org/berndbischl/mlrMBO.png)](https://travis-ci.org/berndbischl/mlrMBO)
-
-
-Mailinglist and Email-Service-Hook
-==================================
+# Mailinglist and Email-Service-Hook
 
 Developers use this mailing list:
 
