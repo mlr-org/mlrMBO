@@ -95,12 +95,17 @@ mbo = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, more
 
     # propose new points and evaluate target function
     prop.design = proposePoints(model, par.set, control, opt.path)
+    prop.points = prop.design$prop.points
+    prop.points.crit.values = prop.design$prop.points.crit.values
+    #print(prop.points)
+    #print(prop.points.crit.values)
+
     # handle lambdas for this method
     if (control$multipoint.method == "lcb") {
-      multipoint.lcb.lambdas = rbind(multipoint.lcb.lambdas, attr(prop.design, "multipoint.lcb.lambdas"))
-      attr(prop.design, "multipoint.lcb.lambda") =  NULL
+      multipoint.lcb.lambdas = rbind(multipoint.lcb.lambdas, attr(prop.points, "multipoint.lcb.lambdas"))
+      attr(prop.points, "multipoint.lcb.lambda") =  NULL
     }
-    xs = dfRowsToList(prop.design, par.set)
+    xs = dfRowsToList(prop.points, par.set)
     xs = lapply(xs, repairPoint, par.set = par.set)
     evals = evalTargetFun(fun, par.set, xs, opt.path, control, show.info, oldopts, more.args)
     times = c(times, evals$times)

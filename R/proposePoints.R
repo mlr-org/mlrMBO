@@ -13,7 +13,7 @@
 proposePoints = function(model, par.set, control, opt.path, ...) {
   # generate a few random points if model failed
   if (inherits(model, "FailureModel"))
-    return(generateDesign(control$propose.points, par.set, randomLHS, ints.as.num=TRUE))
+    return(generateDesign(control$propose.points, par.set, randomLHS, ints.as.num = TRUE))
 
   design = as.data.frame(opt.path)
   if (control$propose.points == 1L) {
@@ -23,9 +23,13 @@ proposePoints = function(model, par.set, control, opt.path, ...) {
     # determine infill optimization strategy
     infill.opt.fun = getInfillOptFunction(control$infill.opt)
 
-    infill.opt.fun(infill.crit.fun, model, control, par.set, opt.path, design, ...)
+    prop.points = infill.opt.fun(infill.crit.fun, model, control, par.set, opt.path, design, ...)
+    prop.points.crit.values = infill.crit.fun(prop.points, model, control, par.set, design)
   } else {
     multipoint.infill.opt.fun = getMultipointInfillOptFunction(control$multipoint.method)
-    multipoint.infill.opt.fun(model, control, par.set, opt.path, design, ...)
+    prop.design = multipoint.infill.opt.fun(model, control, par.set, opt.path, design, ...)
+    prop.points = prop.design$prop.points
+    prop.points.crit.values = prop.design$prop.points.crit.values
   }
+  return(list(prop.points = prop.points, prop.points.crit.values = prop.points.crit.values))
 }

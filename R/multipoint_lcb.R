@@ -22,24 +22,36 @@ multipointInfillOptLCB = function(model, control, par.set, opt.path, design, ...
   control2$infill.crit = "lcb"
   newdes = data.frame()
   lambdas = c()
+  crit.values = c()
+  catf("Starting LCB\n")
+
   #FIXME could be done in parallel
   while (nrow(newdes) < control$propose.points) {
     # draw lambda from exp dist
     control2$infill.crit.lcb.lambda = rexp(1)
+    cat("calling single\n")
     newdes1 = proposePoints(model, par.set, control2, opt.path)
+    prop.points = newdes1$prop.points
+
+    prop.points.crit.values = newdes1$prop.points.crit.values
     # as we might construct the same xs for similar lamba, we
     # require that a new point is not nearly the same as another proposed one
     if (nrow(newdes) > 0L) {
       # FIXME what do we here for factor vars, wrt dist?
-      dists = apply(newdes, 1, function(x) sum((x - newdes1[1,])^2))
+      dists = apply(newdes, 1, function(x) sum((x - prop.points[1, ])^2))
     } else {
       dists = Inf
     }
     #FIXME how do we set this min value?
     if (min(dists) > 1e-5) {
-      newdes = rbind(newdes, newdes1)
+      newdes = rbind(newdes, prop.points)
       lambdas = c(lambdas, control2$infill.crit.lcb.lambda)
+      crit.values = c(crit.values, prop.points.crit.values)
     }
   }
-  setAttribute(newdes, "multipoint.lcb.lambdas", lambdas)
+  newdes = setAttribute(newdes, "multipoint.lcb.lambdas", lambdas)
+  return(list(
+    prop.points = newdes,
+    prop.points.crit.values = crit.values
+  ))
 }
