@@ -400,13 +400,13 @@ makeMBOControl = function(number.of.targets=1L,
   ), class= "MBOControl")
 }
 
-# Print mbo control object.
-#
-# @param x [\code{\link{MBOControl}}]\cr
-#   Control object.
-# @param ... [any]\cr
-#   Not used.
-#' @method print MBOControl
+#' Print mbo control object.
+#'
+#' @param x [\code{\link{MBOControl}}]\cr
+#'   Control object.
+#' @param ... [any]\cr
+#'   Not used.
+#' @S3method print MBOControl
 print.MBOControl = function(x, ...) {
   catf("Objective                   : %s = %s!", x$y.name, ifelse(x$minimize, "min", "max"))
   catf("Function type               : %s",  ifelse(x$noisy, "noisy", "deterministic"))
