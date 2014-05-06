@@ -65,6 +65,7 @@ mbo = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, more
   mboDesign = generateMBODesign(design, fun, par.set, control, show.info, oldopts, more.args)
   design = cbind(mboDesign$design.x, setColNames(mboDesign$design.y, y.name))
   opt.path = mboDesign$opt.path
+  opt.path2 = mboDesign$opt.path2
   times = mboDesign$times
   # we now have design.y and design
 
@@ -97,21 +98,21 @@ mbo = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, more
     prop.design = proposePoints(model, par.set, control, opt.path)
     prop.points = prop.design$prop.points
     prop.points.crit.values = prop.design$prop.points.crit.values
-    #print(prop.points)
-    #print(prop.points.crit.values)
 
     # handle lambdas for this method
     if (control$multipoint.method == "lcb") {
       multipoint.lcb.lambdas = rbind(multipoint.lcb.lambdas, attr(prop.points, "multipoint.lcb.lambdas"))
       attr(prop.points, "multipoint.lcb.lambda") =  NULL
     }
+
     xs = dfRowsToList(prop.points, par.set)
     xs = lapply(xs, repairPoint, par.set = par.set)
     evals = evalTargetFun(fun, par.set, xs, opt.path, control, show.info, oldopts, more.args)
     times = c(times, evals$times)
 
     # update optim trace and model
-    Map(function(x,y) addOptPathEl(opt.path, x=x, y=y, dob=loop), xs, evals$ys)
+    Map(function(x, y) addOptPathEl(opt.path, x = x, y = y, dob = loop), xs, evals$ys)
+    Map(function(x, y, cv) addOptPathEl(opt.path2, x = x, y = c(y, cv), dob = loop), xs, evals$ys, prop.points.crit.values)
     rt = makeMBOTask(as.data.frame(opt.path, discretes.as.factor=TRUE), par.set, y.name, control=control)
     model = train(learner, rt)
     if (loop %in% control$save.model.at)
@@ -143,15 +144,15 @@ mbo = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, more
 
   # make sure to strip name of y
   structure(list(
-    x=best$x,
+    x = best$x,
     # strip name
-    y=as.numeric(best$y),
-    opt.path=opt.path,
+    y = as.numeric(best$y),
+    opt.path = opt.path2,
     times = times,
-    resample=res.vals,
-    models=models,
+    resample = res.vals,
+    models = models,
     multipoint.lcb.lambdas = multipoint.lcb.lambdas
-  ), class="MBOResult")
+  ), class = "MBOResult")
 }
 
 # Print mbo result object.

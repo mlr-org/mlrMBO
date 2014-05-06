@@ -7,7 +7,7 @@
 # @return [\code{\link[mlr]{SupervisedTask}]:
 #   List of repaired points.
 makeMBOTask = function(design, par.set, y.name, control) {
-  design$dob = design$eol = NULL
+  design$dob = design$eol = design[[control$infill.crit]] = NULL
   if (any(sapply(design, is.integer)))
     design = as.data.frame(lapply(design, function(x) if(is.integer(x)) as.numeric(x) else x))
   if (any(sapply(design, is.logical)))

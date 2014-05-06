@@ -125,12 +125,12 @@ infillCritEIPI = function(points, model, control, par.set, design) {
   p.mu = maximize.mult * p$response
   p.se = p$se
   #y.min = min(y)
-  
+
   if(is.null(control$plugin.beta)==T){beta=0}else{beta=control$plugin.quantile}
   q <- qnorm(beta)
-  
-  lower <- p.mu - q * sqrt(p.se)  
-  
+
+  lower <- p.mu - q * sqrt(p.se)
+
   T_ei=min(lower)
   d = T_ei - p.mu
   xcr = d / p.se
@@ -149,7 +149,7 @@ infillCritEIPI = function(points, model, control, par.set, design) {
 
 
 # Minimal Quantil Criteria
-# FIXME: control$mq.beta in MBOControl! 
+# FIXME: control$mq.beta in MBOControl!
 
 infillCritMQ = function(points, model, control, par.set, design) {
   maximize.mult = ifelse(control$minimize, 1, -1)
@@ -158,12 +158,12 @@ infillCritMQ = function(points, model, control, par.set, design) {
   p.mu = maximize.mult * p$response
   p.se = p$se
   #y.min = min(y)
-  
+
   if(is.null(control$mq.beta)==T){beta=0.9}else{beta=control$mq.quantile}
   q <- qnorm(beta)
-  
+
   mq=p.mu+pnorm(beta)^(-1)*p.se
-  
+
   # FIXME magic number
   # if se too low set 0 (numerical problems), negate due to minimization
   ifelse(p.se < 1e-6, 0, -mq)
@@ -171,47 +171,47 @@ infillCritMQ = function(points, model, control, par.set, design) {
 
 
 # Expected quantil improvement (EQI).
-# FIXME: control$eqi.beta in MBOControl! 
+# FIXME: control$eqi.beta in MBOControl!
 infillCritEQI = function(points, model, control, par.set, design) {
-  
+
   if(is.null(control$eqi.beta)==T){beta=0.75}else{beta=control$eqi.beta}
-  
+
   #FIXME: generalize new.noise.var for all models
   maximize.mult = ifelse(control$minimize, 1, -1)
-  
+
   # q.min
   # FIXME: generalize model$learner.model@X for all models
   p.current.model <- predict(object=model, newdata=as.data.frame(model$learner.model@X))$data
   q.min <- min(model$learner.model*p.current.model$response + qnorm(beta) * p.current.model$se)
-  
-  
+
+
   p = predict(object=model, newdata = points)$data
   p.mu = p$response #m_k(x^(n+1))
   p.se = p$se # #s_k(x^(n+1))
-  
-  
+
+
   #FIXME: how do we select here best?
   pure.noise.var = if (inherits(model$learner, "regr.km"))
     pure.noise.var = model$learner.model@covariance@nugget
   else
     estimateResidualVariance(model, data = design2, target = control$y.name)
   tau = sqrt(pure.noise.var)
-  
-  #  new.noise.var = model$learner.model@covariance@nugget 
+
+  #  new.noise.var = model$learner.model@covariance@nugget
   #  if(length(new.noise.var)==0) new.noise.var=0 # FIXME: nugget.estim=FALSE -> no noise, EQI does not work
-  
+
   mq <- p.mu + qnorm(beta) * sqrt((tau * p.se^2)/(tau + p.se^2))
   sq <- p.se^2/sqrt(new.noise.var + p.se^2)
-  
+
   d = q.min - mq
-  
+
   xcr <- d/sq
   xcr.prob <- pnorm(xcr)
   xcr.dens <- dnorm(xcr)
-  
+
   eqi = ifelse(p.se < 1e-06, 0,
                (sq * (xcr * xcr.prob + xcr.dens)))
-  
+
   return(-eqi)
 }
 
@@ -219,22 +219,22 @@ infillCritEQI = function(points, model, control, par.set, design) {
 # Approximate Knowlwdge gradient
 # FIXME: just for kriging at the moment
 infillCritAKG = function(points, model, control, par.set, design) {
-  
-  
+
+
   maximize.mult = ifelse(control$minimize, 1, -1)
-  
+
   x=points
   model=model$learner.model
   type="SK"
-  new.noise.var = model@covariance@nugget 
-  
+  new.noise.var = model@covariance@nugget
+
   if(length(new.noise.var)==0) new.noise.var=0 # nugget.estim=FALSE -> no noise
-  
+
   newdata.num <- as.numeric(x)
   newdata <- data.frame(t(newdata.num))
   colnames(newdata) = colnames(model@X)
   tau2.new <- new.noise.var
-  predx <- predict.km(model, newdata = newdata, type = type, 
+  predx <- predict.km(model, newdata = newdata, type = type,
                       checkNames = FALSE)
   mk.x <- maximize.mult*predx$mean
   sk.x <- predx$sd
@@ -244,13 +244,13 @@ infillCritAKG = function(points, model, control, par.set, design) {
   z <- model@z
   U <- model@M
   F.x <- model.matrix(model@trend.formula, data = newdata)
-  if (sk.x < sqrt(model@covariance@sd2)/1e+06 || model@covariance@sd2 < 
+  if (sk.x < sqrt(model@covariance@sd2)/1e+06 || model@covariance@sd2 <
         1e-20) {
     AKG <- 0
     tuuinv <- mk.X <- V.X <- mu.x <- cn <- sQ <- Isort <- Iremove <- A1 <- at <- bt <- ct <- NULL
   }
   else {
-    predX <- predict.km(model, newdata = model@X, type = type, 
+    predX <- predict.km(model, newdata = model@X, type = type,
                         checkNames = FALSE)
     mk.X <-maximize.mult*predX$mean
     V.X <- predX$Tinv.c
@@ -258,7 +258,7 @@ infillCritAKG = function(points, model, control, par.set, design) {
     m_min <- min(c(mk.X, mk.x))
     if (type == "UK") {
       tuuinv <- solve(t(U) %*% U)
-      mu.x <- (F.X - t(V.X) %*% U) %*% tuuinv %*% t(F.x - 
+      mu.x <- (F.X - t(V.X) %*% U) %*% tuuinv %*% t(F.x -
                                                       t(V.x) %*% U)
     }
     else {
@@ -304,7 +304,7 @@ infillCritAKG = function(points, model, control, par.set, design) {
           count <- count + 1
           u <- A1[length(A1)] + 1
           C[u + 1] <- (a[u] - a[k])/(b[k] - b[u])
-          if ((length(A1) > 1) && (C[u + 1] <= C[A1[length(A1) - 
+          if ((length(A1) > 1) && (C[u + 1] <= C[A1[length(A1) -
                                                       1] + 2])) {
             A1 <- A1[-length(A1)]
           }
@@ -320,12 +320,12 @@ infillCritAKG = function(points, model, control, par.set, design) {
     ct <- C[c(1, A1 + 2)]
     maxNew <- 0
     for (k in 1:length(at)) {
-      maxNew <- maxNew + at[k] * (pnorm(ct[k + 1]) - pnorm(ct[k])) + 
+      maxNew <- maxNew + at[k] * (pnorm(ct[k + 1]) - pnorm(ct[k])) +
         bt[k] * (dnorm(ct[k]) - dnorm(ct[k + 1]))
     }
     AKG <- maxNew - (-m_min)
   } #end of else
-  
+
   return(-AKG)
 }
 

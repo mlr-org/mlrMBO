@@ -29,6 +29,7 @@ generateMBODesign = function(design, fun, par.set, control, show.info, oldopts, 
   y.name = control$y.name
   times = numeric(0)
   opt.path = makeOptPathDF(par.set, y.name, control$minimize)
+  opt.path2 = initMBOOptPathDF(par.set, control)
 
   if (is.null(design)) {
     design.x = generateDesign(control$init.design.points, par.set,
@@ -69,5 +70,15 @@ generateMBODesign = function(design, fun, par.set, control, show.info, oldopts, 
   # add initial values to optimization path
   ys = convertRowsToList(design.y)
   Map(function(x, y) addOptPathEl(opt.path, x = x, y = y, dob = 0), xs, ys)
-  return(list(design.x = design.x, design.y = design.y, opt.path = opt.path, times = times))
+  Map(function(x, y) addOptPathEl(opt.path2, x = x, y = c(y, 0), dob = 0), xs, ys)
+
+  return(list(design.x = design.x, design.y = design.y, opt.path = opt.path, opt.path2 = opt.path2, times = times))
+}
+
+initMBOOptPathDF = function(par.set, control) {
+  makeOptPathDF(
+    par.set,
+    y.names = c(control$y.name, control$infill.crit),
+    minimize = c(control$minimize, TRUE) # by default we minimize all infill crits
+  )
 }
