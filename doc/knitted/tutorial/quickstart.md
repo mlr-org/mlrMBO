@@ -6,7 +6,7 @@ detailed introduction see [the next chapter](introduction.md).
 Here we provide a Quickstart example for you to make yourself familiar with **mlrMBO**. We aim to optimize the one dimensional Rastrigin function using model-based optimization. Instead of writing this function by hand, we make use of the soobench library, which offers a lot of common single objective optimization functions.
 
 
-```r
+```splus
 library(soobench)
 library(mlr)
 library(mlrMBO)
@@ -20,7 +20,7 @@ plot(obj.fun)
 We decide ourself to use kriging as our surrgate model. Furthermore we use Expected Improvement (EI) as the infill criterion, i. e., the criterion which determines which point(s) of the objective function should be evaluated in further iterations. Initially we generate a LHS design (latin hypercube) of 10 points.
 
 
-```r
+```splus
 par.set = makeNumericParamSet(len = 1, id = "x", lower = lower_bounds(obj.fun), 
     upper = upper_bounds(obj.fun))
 
@@ -61,7 +61,7 @@ result = mbo(makeMBOFunction(obj.fun), par.set = par.set, learner = learner,
 ## [mbo] 5: x=0.99 : y=0.999
 ```
 
-```r
+```splus
 print(result)
 ```
 
@@ -81,9 +81,9 @@ print(result)
 ##   Add x values transformed: FALSE
 ## 
 ## $times
-##  [1] 0.000 0.000 0.000 0.000 0.001 0.000 0.000 0.000 0.000 0.001 0.001
-## [12] 0.000 0.001 0.000 0.000 0.000 0.000 0.001 0.000 0.000 0.000 0.000
-## [23] 0.000 0.000 0.000
+##  [1] 0.000 0.001 0.001 0.000 0.001 0.000 0.000 0.000 0.000 0.000 0.000
+## [12] 0.000 0.001 0.000 0.001 0.000 0.001 0.000 0.000 0.000 0.000 0.000
+## [23] 0.000 0.000 0.001
 ## 
 ## $resample
 ## named list()

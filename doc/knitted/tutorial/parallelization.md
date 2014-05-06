@@ -6,7 +6,7 @@ of the ```lapply``` function and offers a lot of modes. We cannot review all of 
 informs you about the available options. Here we just provide a simple example on how to take advantage of multiple cores on a single machine.
 
 
-```r
+```splus
 library("mlrMBO")
 library("parallelMap")
 

@@ -8,7 +8,7 @@ parameter setting and the fitted surrogate model.
 Once again, take a look at the already introduced basic example of the optimization of the one dimensional Rastrigin function.
 
 
-```r
+```splus
 library(soobench)
 library(mlr)
 library(mlrMBO)
@@ -47,7 +47,7 @@ package **soobench** (``objfun1``) and a self-constructed sine und cosine combin
 while ``objfun2`` assumes 2 numeric and 1 discrete parameters..
 
 
-```r
+```splus
 library(mlrMBO)
 library(soobench)
 objfun1 = generate_branin_function()  # old soobench version: objfun1=branin_function()
@@ -74,7 +74,7 @@ The lower and upper bounds for ``objfun1`` parameters can be easily obtained usi
 assume ``x`` from interval [0,1] and ``k`` from interval [1,2]. Parameter ``method`` can be either ``"a"`` or ``"b"``.
 
 
-```r
+```splus
 library(ParamHelpers)
 par.set1 = makeNumericParamSet(len = number_of_parameters(objfun1), lower = lower_bounds(objfun1), 
     upper = upper_bounds(objfun1))
@@ -106,7 +106,7 @@ Here we will use the first option for ``objfun1`` and the second option for ``ob
 
 
 
-```r
+```splus
 library(lhs)
 init.design.points1 = 5 * sum(getParamLengths(par.set1))
 init.design.fun1 = randomLHS
@@ -133,7 +133,7 @@ In our example we consider these two surrogate models:
 ``kriging`` for optimizing of ``objfun1``  and ``random forest`` for ``objfun2``.
 
 
-```r
+```splus
 library(mlr)
 learner_km = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
 ```
@@ -142,7 +142,7 @@ learner_km = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
 ## Loading required package: DiceKriging
 ```
 
-```r
+```splus
 learner_rf = makeLearner("regr.randomForest")
 ```
 
@@ -224,7 +224,7 @@ Constructing  of ``mboControl`` object
 Let us construct ``mboControl`` objects for our two object functions.
 
 
-```r
+```splus
 control1 = makeMBOControl(iters = 10, infill.crit = "ei", infill.opt = "cmaes")
 
 
@@ -247,7 +247,7 @@ which was created extra for this purpose.
 
 
 
-```r
+```splus
 library(mlrMBO)
 library(BBmisc)
 
@@ -273,7 +273,7 @@ The output of mbo function is a structure of several variables. The most importa
 We can also change some attributes of the ``MBOControl`` object and run mbo() function again
 
 
-```r
+```splus
 control1$infill.crit = "mean"
 control1$infill.opt.fun = "focussearch"
 mbo1 = mbo(makeMBOFunction(objfun1), par.set1, design = design1, learner = learner_km, 
@@ -293,7 +293,7 @@ random forest, linear model and many others).
 
 
 
-```r
+```splus
 mbo2 = mbo(objfun2, par.set2, design = NULL, learner = learner_rf, control = control2, 
     show.info = FALSE)
 mbo2$y
@@ -304,7 +304,7 @@ In contrast, if one will apply ``ei`` or ``lcb`` infill criteria,
 the ``predict.type`` attribute of the learner have be set to ``se``, if possible. A list of regression learners which support it can be viewed by:
 
 
-```r
+```splus
 # listLearners(type = 'regr', se = TRUE)
 ```
 
@@ -314,7 +314,7 @@ the ``predict.type`` attribute of the learner have be set to ``se``, if possible
 We hence modify the random forest learner and optimize ``objfun2`` by ``ei`` infill criterion.
 
 
-```r
+```splus
 learner_rf = makeLearner("regr.randomForest", predict.type = "se")
 control1$infill.crit = "ei"
 mbo2 = mbo(objfun2, par.set2, design = NULL, learner = learner_rf, control = control2, 
@@ -330,7 +330,7 @@ ensemble, see documentation for ``makeBaggingWrapper`` of **mlr** package.
 
 
 
-```r
+```splus
 learner_rt = makeLearner("regr.rpart")
 bag_rt = makeBaggingWrapper(learner_rt, bag.iters = 5, predict.type = "se")
 mbo2 = mbo(objfun2, par.set2, design = NULL, learner = learner_rf, control = control2, 
