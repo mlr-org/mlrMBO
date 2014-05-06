@@ -1,6 +1,6 @@
-# Quickstart
+# Introductory example
 
-**Info:** this Quickstart guide assumes, that you have some basic knowledge of model-based optimization. For a much more
+**Info:** this guide gives you an overview of the typical structure of optimization with **mrMBO**. For a much more
 detailed introduction see [the next chapter](introduction.md).
 
 Here we provide a Quickstart example for you to make yourself familiar with **mlrMBO**. We aim to optimize the one dimensional Rastrigin function using model-based optimization. Instead of writing this function by hand, we make use of the soobench library, which offers a lot of common single objective optimization functions.
@@ -76,13 +76,13 @@ print(result)
 ## 
 ## $opt.path
 ## Optimization path
-##   Dimensions: x=1/1, y=1
+##   Dimensions: x=1/1, y=2
 ##   Length: 25
 ##   Add x values transformed: FALSE
 ## 
 ## $times
-##  [1] 0.000 0.000 0.000 0.000 0.001 0.000 0.001 0.000 0.001 0.000 0.000
-## [12] 0.000 0.001 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000
+##  [1] 0.000 0.000 0.000 0.000 0.001 0.000 0.000 0.000 0.000 0.001 0.001
+## [12] 0.000 0.001 0.000 0.000 0.000 0.000 0.001 0.000 0.000 0.000 0.000
 ## [23] 0.000 0.000 0.000
 ## 
 ## $resample

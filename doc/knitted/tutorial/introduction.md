@@ -5,22 +5,41 @@ by an infill criterion and lastly, its performance is evaluated.
 The result of this sequential procedure is the optimization path containing the best
 parameter setting and the fitted surrogate model.
 
-The main function of the package **mlrMBO** is ``mbo()``
-containing following essential parameters:
-
-* fun:       Fitness function to minimize.
-* par.set:   Description of the parameter set
-* design:  Initial design.
-* learner:   Surrogate model type.
-* control:   MBOControl object.
-* show.info:  A logical value. Default is TRUE: show output on console.
-
-This web page will provide you with an in-depth introduction on how to
-set the ``mbo()`` parameters depending on the desired kind of optimization.
+Once again, take a look at the already introduced basic example of the optimization of the one dimensional Rastrigin function.
 
 
-Objective Function
-=====================
+```r
+library(soobench)
+library(mlr)
+library(mlrMBO)
+obj.fun = generate_rastrigin_function(1)
+
+par.set = makeNumericParamSet(len = 1, id = "x", lower = lower_bounds(obj.fun), 
+    upper = upper_bounds(obj.fun))
+learner = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
+control = makeMBOControl(propose.points = 1, iters = 5, infill.crit = "ei")
+
+result = mbo(makeMBOFunction(obj.fun), par.set = par.set, learner = learner, 
+    control = control)
+```
+
+
+From this example we can easily recognize some **mlrMBO** essentials like parameters, learners and the control object.
+Basically the following steps are needed to start a surrogate-based optimization with our package. Each step ends with
+an R object, which is than passed to ```mbo()```, i. e, to the working horse of mlrMBO.
+
+1. define the objective function
+1. define the parameters of the objective function
+1. (optionally generate an initial design)
+1. define a learner, i. e., the surrogate model
+1. set up a MBO control object, which offers a load of options
+1. finally start the optimization
+
+This web page will provide you with an in-depth introduction on how to set the ``mbo()`` parameters depending on the
+desired kind of optimization.
+
+# Objective Function
+
 
 The first argument of ``mbo()`` is the name of the object function to minimize. The first argument of this object function has to be a list of values.
 The function has to return a single numerical value. We demonstrate in this tutorial optimization of two simple functions: 5 dimensional ``ackley function`` from
