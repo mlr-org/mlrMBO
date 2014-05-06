@@ -80,9 +80,11 @@ makeMBOControl(number.of.targets = 1L, minimize = rep(TRUE,
   iteration steps the parameter space is focused on an
   especial promising region according to infill criterion.
   \dQuote{cmaes}: Use CMAES to optimize infill criterion.
-  \dQuote{ea}: Use an (mu+1) EA to optimize infill
-  criterion.  Default is \dQuote{focussearch}.
-  Alternatively, you may pass a function name as string.}
+  If all CMAES runs fail, a random point is generated
+  instead and a warning informs about it.  \dQuote{ea}: Use
+  an (mu+1) EA to optimize infill criterion.  Default is
+  \dQuote{focussearch}.  Alternatively, you may pass a
+  function name as string.}
 
   \item{infill.opt.restarts}{[\code{integer(1)}]\cr Number
   of independent restarts for optimizer of infill
@@ -260,7 +262,9 @@ makeMBOControl(number.of.targets = 1L, minimize = rep(TRUE,
   function will be used to impute every fitness function.
   \code{x} is the current x-value, \code{y} the current
   (infeasible) y-value and \code{opt.path} the current
-  optimization path.  Default is to stop with an error.}
+  optimization path.  Default is to stop with an error.
+  This also happens, if the target function generates an
+  error.}
 
   \item{impute.errors}{[\code{logical(1)}]\cr Should
   fitness function call be wrapped in a \code{try} and the

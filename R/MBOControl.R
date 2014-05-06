@@ -44,7 +44,8 @@
 #'   How should SINGLE points be proposed by using the surrogate model. Possible values are:
 #'   \dQuote{focussearch}: In several iteration steps the parameter space is
 #'   focused on an especial promising region according to infill criterion.
-#'   \dQuote{cmaes}: Use CMAES to optimize infill criterion.
+#'   \dQuote{cmaes}: Use CMAES to optimize infill criterion. If all CMAES runs fail, a random point is generated
+#'   instead and a warning informs about it.
 #'   \dQuote{ea}: Use an (mu+1) EA to optimize infill criterion.
 #'   Default is \dQuote{focussearch}.
 #'   Alternatively, you may pass a function name as string.

@@ -51,8 +51,17 @@ infillOptCMAES = function(infill.crit, model, control, par.set, opt.path, design
     results[[i]] = cma_es(par=start, fn=f, lower=low, upper=upp, control=control$infill.opt.cmaes.control)
   }
   ys = extractSubList(results, "value")
-  j = which(rank(ys, ties.method="random") == 1L)
-  as.data.frame(t(results[[j]]$par))
+  ys = ys[!is.infinite(ys)]
+  res = NULL
+  # all CMA-ES runs failed. Therefore we sample a random point and warn
+  if (length(ys) == 0) {
+    res = t(sampleValue(par.set))
+    warningf("Infill optimizer CMA-ES crashed %i times. Random point generated instead.", control$infill.opt.restart)
+  } else {
+    j = which(rank(ys, ties.method="random") == 1L)
+    res = t(results[[j]]$par)
+  }
+  return(as.data.frame(res))
 }
 
 # FIXME: allow DiceOptim optimizer later...
