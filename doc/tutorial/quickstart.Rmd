@@ -1,1 +1,30 @@
-Coming soon ...
+# Quickstart
+
+**Info:** this Quickstart guide assumes, that you have some basic knowledge of model-based optimization. For a much more
+detailed introduction see [the next chapter](introduction.md).
+
+Here we provide a Quickstart example for you to make yourself familiar with **mlrMBO**. We aim to optimize the one dimensional Rastrigin function using model-based optimization. Instead of writing this function by hand, we make use of the soobench library, which offers a lot of common single objective optimization functions.
+
+```{r}
+library(soobench)
+library(mlr)
+library(mlrMBO)
+obj.fun = generate_rastrigin_function(1)
+plot(obj.fun)
+```
+
+We decide ourself to use kriging as our surrgate model. Furthermore we use Expected Improvement (EI) as the infill criterion, i. e., the criterion which determines which point(s) of the objective function should be evaluated in further iterations. Initially we generate a LHS design (latin hypercube) of 10 points.
+
+```{r}
+par.set = makeNumericParamSet(len = 1, id = "x", lower = lower_bounds(obj.fun), upper = upper_bounds(obj.fun))
+
+learner = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
+control = makeMBOControl(
+  propose.points = 1,
+  iters = 5,
+  infill.crit = "ei"
+)
+
+result = mbo(makeMBOFunction(obj.fun), par.set = par.set, learner = learner, control = control, show.info = TRUE)
+print(result)
+```
