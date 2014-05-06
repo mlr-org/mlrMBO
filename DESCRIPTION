@@ -3,7 +3,7 @@ Title: mlr: Model-based optimization
 Description: mlr: Model-based optimization
 Author: Bernd Bischl <bernd_bischl@gmx.net>
 Maintainer: Bernd Bischl <bernd_bischl@gmx.net>
-License: BSD
+License: BSD_3_clause + file LICENSE
 Depends:
     ParamHelpers,
     mlr,
