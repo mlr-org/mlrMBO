@@ -25,14 +25,14 @@
 #  \item{times [\code{numeric}]}{Vector of times it took to evaluate the objective.}
 generateMBODesign = function(design, fun, par.set, control, show.info, oldopts, more.args = list()) {
   # get parameter ids repeated length-times and appended number
-  rep.pids = getParamIds(par.set, repeated=TRUE, with.nr=TRUE)
+  rep.pids = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
   y.name = control$y.name
   times = numeric(0)
   opt.path = makeOptPathDF(par.set, y.name, control$minimize)
 
   if (is.null(design)) {
     design.x = generateDesign(control$init.design.points, par.set,
-      control$init.design.fun, control$init.design.args, trafo=FALSE)
+      control$init.design.fun, control$init.design.args, trafo = FALSE)
   } else {
     # sanity check: are paramter values and colnames of design consistent?
     if(!setequal(setdiff(colnames(design), y.name), rep.pids))
@@ -49,18 +49,18 @@ generateMBODesign = function(design, fun, par.set, control, show.info, oldopts, 
     }
   }
   # reorder
-  design.x = design.x[, rep.pids, drop=FALSE]
+  design.x = design.x[, rep.pids, drop = FALSE]
   xs = dfRowsToList(design.x, par.set)
   # we now have design.x and its rows as lists in xs
 
   # compute y-values if missing or initial design generated above
-  if (all(y.name %in% colnames(design.x))) {
-    design.y = design[, y.name]
-  } else if (!any(y.name %in% colnames(design.x))){
+  if (all(y.name %in% colnames(design))) {
+    design.y = matrix(design[, y.name])
+  } else if (!any(y.name %in% colnames(design))){
     if (show.info)
       messagef("Computing y column for design. Was not provided")
     evals = evalTargetFun(fun, par.set, xs, opt.path, control, show.info, oldopts, more.args)
-    design.y = evals$ys
+    design.y = matrix(evals$ys)
     times = c(times, evals$times)
   } else {
     stop("Only part of y-values are provided. Don't know what to do - provide either all or none.")
@@ -68,6 +68,6 @@ generateMBODesign = function(design, fun, par.set, control, show.info, oldopts, 
 
   # add initial values to optimization path
   ys = convertRowsToList(design.y)
-  Map(function(x,y) addOptPathEl(opt.path, x=x, y=y, dob=0), xs, ys)
+  Map(function(x, y) addOptPathEl(opt.path, x = x, y = y, dob = 0), xs, ys)
   return(list(design.x = design.x, design.y = design.y, opt.path = opt.path, times = times))
 }
