@@ -155,13 +155,13 @@ mbo = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, more
   ), class = "MBOResult")
 }
 
-# Print mbo result object.
-#
-# @param x [\code{\link{MBOResult}}]\cr
-#   mbo result object instance.
-# @param ... [any]\cr
-#   Not used.
-#' @method print MBOResult
+#' Print mbo result object.
+#'
+#' @param x [\code{\link{MBOResult}}]\cr
+#'   mbo result object instance.
+#' @param ... [any]\cr
+#'   Not used.
+#' @S3method print MBOResult
 print.MBOResult = function(x, ...) {
   op = x$opt.path
   catf("Recommended parameters:")
