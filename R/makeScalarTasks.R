@@ -56,7 +56,7 @@ makeScalarTasks = function(design, par.set, y.name, control) {
     lambdas = matrix(nrow = 0, ncol = control$number.of.targets)
   }
   lambdas = rbind(margin.points, lambdas)
-  print(lambdas)
+  #print(lambdas)
   
   # Create the scalarized regression Tasks
   tasks = vector(mode = "list", length = control$parEGO.propose.points)
