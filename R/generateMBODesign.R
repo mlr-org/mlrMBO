@@ -61,7 +61,8 @@ generateMBODesign = function(design, fun, par.set, control, show.info, oldopts, 
     if (show.info)
       messagef("Computing y column for design. Was not provided")
     evals = evalTargetFun(fun, par.set, xs, opt.path, control, show.info, oldopts, more.args)
-    design.y = matrix(evals$ys)
+    design.y = matrix(evals$ys, ncol = control$number.of.targets,
+      dimnames = list(NULL, control$y.name))
     times = c(times, evals$times)
   } else {
     stop("Only part of y-values are provided. Don't know what to do - provide either all or none.")

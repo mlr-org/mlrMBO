@@ -21,31 +21,47 @@ makeScalarTasks = function(design, par.set, y.name, control) {
   design.y = sweep(design.y, 2, apply(design.y, 2, min))
   design.y = sweep(design.y, 2, apply(design.y, 2, max), "/")
   
-  # Now Propose parEGO.propose.points points
-  # Sample weighting vectors. Here we create twice the number we need and reject
-  # the half with the smallest distance to another vector
-  lambdas = matrix(nrow = 2 * control$parEGO.propose.points, ncol = control$number.of.targets)
-  for(loop in 1:(2*control$parEGO.propose.points)) {
-    # sample the lambda-vector
-    repeat{
-      lambda = sample(control$parEGO.s, control$number.of.targets, replace = TRUE)
-      if (sum(lambda) == control$parEGO.s)
-        break
+  # Propose parEGO.propose.points points
+  # If desired - create the margin weight vector
+  margin.points = diag(control$number.of.targets)[control$parEGO.use.margin.points, , drop = FALSE]
+  # How many random weights should be used?
+  random.weights <- control$parEGO.propose.points - sum(control$parEGO.use.margin.points)
+  if (random.weights) {
+    # Sample weighting vectors using a rejection method. Sample a discrete weight
+    # vector and test if it sums up to 1. Here we create twice the number we need 
+    # and reject the half with the smallest distance to another vector
+    lambdas = matrix(nrow = 2 * random.weights, ncol = control$number.of.targets)
+    for (loop in 1:(2 * random.weights)) {
+      # sample the lambda-vector
+      repeat {
+        lambda = sample(control$parEGO.s, control$number.of.targets, replace = TRUE)
+        # make sure every lambda is unique
+        if (any(sapply(seq_len(nrow(lambdas)), function(i) all(lambdas[i, ] == lambda)), na.rm = TRUE))
+          next
+        if (any(sapply(seq_len(nrow(margin.points)), function(i) all(lambdas[i, ] == lambda)), na.rm = TRUE))
+          next
+        if (sum(lambda) == control$parEGO.s)
+          break
+      }
+      lambdas[loop, ] = lambda / control$parEGO.s
     }
-    lambdas[loop, ] = lambda
+    # Reject some lambdas ...
+    while (nrow(lambdas) > random.weights) {
+      dists = as.matrix(dist(lambdas))
+      dists[dists == 0] = Inf
+      nearest = which.min(apply(dists, 1, min))
+      lambdas = lambdas[-nearest, , drop = FALSE]
+    }
+  } else {
+    lambdas = matrix(nrow = 0, ncol = control$number.of.targets)
   }
-  # Reject some lambdas ...
-  while(nrow(lambdas) > control$parEGO.propose.points) {
-    dists = as.matrix(dist(lambdas))
-    dists[dists == 0] = Inf
-    nearest = which.min(apply(dists, 1, min))
-    lambdas = lambdas[-nearest, , drop= FALSE]
-  }
+  lambdas = rbind(margin.points, lambdas)
+  print(lambdas)
+  
   # Create the scalarized regression Tasks
   tasks = vector(mode = "list", length = control$parEGO.propose.points)
-  for(loop in 1:control$parEGO.propose.points) {
+  for (loop in 1:control$parEGO.propose.points) {
     lambda = lambdas[loop, ]
-    lambda = lambda / control$parEGO.s
     # Create the scalarized response 
     y.scalarized = sapply(1:nrow(design.y), function(i)
       max(lambda * design.y[i, ]) + control$parEGO.rho * sum(lambda * design.y[i, ]))

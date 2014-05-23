@@ -1,14 +1,14 @@
 #' Creates a control object for MBO optimization.
 #'
 #' @param minimize [\code{logical}]\cr
-#'   Should target functions be minimized? One value par target function
+#'   Should target functions be minimized? One value par target function.
 #'   Default is \code{TRUE} for ever target function.
 #' @param noisy [\code{logical(1)}]\cr
 #'   Is the target function noisy?
 #'   Default is \code{FALSE}.
 #' @param number.of.targets [\code{integer(1)}]\cr
 #'   How many target functions does the function have? Greater than one for
-#'   multicriteria optimization
+#'   multicriteria optimization, default ist 1.
 #' @param init.design.points [\code{integer(1)}]\cr
 #'   Number of points in inital design.
 #'   Only used if no design is given in \code{mbo} function.
@@ -160,6 +160,11 @@
 #'   suggested in parEGO paper.
 #' @param parEGO.propose.points [\code{integer(1)}]\cr
 #'   Number of points to propose in each parEGO iteration. Default is 1L.
+#' @param parEGO.use.margin.points [\code{logical}]\cr
+#'   For each target function: Should the weight vector (0, ..., 0, 1, 0, ..., 0),
+#'   i.e. the weight vector with only 0 and a single 1 at the i.th position for
+#'   the i.th target function, be drawn with probability 1? Number of TRUE entries
+#'   must be less or equal to \code{parEGO.propose.points}
 #' @param final.method [\code{character(1)}]\cr
 #'   How should the final point be proposed. Possible values are:
 #'   \dQuote{best.true.y}: Return best point ever visited according to true value of target function.
@@ -239,6 +244,7 @@ makeMBOControl = function(number.of.targets=1L,
   multipoint.multicrit.sbx.eta=15, multipoint.multicrit.sbx.p=1,
   multipoint.multicrit.pm.eta=15, multipoint.multicrit.pm.p=1,
   parEGO.s=20L, parEGO.rho=0.05, parEGO.propose.points=1L,
+  parEGO.use.margin.points=rep(FALSE, number.of.targets),
   final.method="best.true.y", final.evals=0L,
   y.name = "y",
   impute, impute.errors = FALSE, suppress.eval.errors = TRUE, save.model.at=iters,
@@ -305,6 +311,11 @@ makeMBOControl = function(number.of.targets=1L,
   checkArg(parEGO.rho, "numeric", len=1L, na.ok=FALSE, lower=0, upper=1)
   parEGO.propose.points = convertInteger(parEGO.propose.points)
   checkArg(parEGO.propose.points, "numeric", len=1L, na.ok=FALSE, lower=1)
+  checkArg(parEGO.use.margin.points, "logical", len=number.of.targets, na.ok=FALSE, lower=1)
+  if(sum(parEGO.use.margin.points) > parEGO.propose.points)
+    stopf("Can't use %s margin points when only proposing %s points each iteration.",
+      sum(parEGO.use.margin.points), parEGO.propose.points)
+  
 
   if (missing(impute))
     impute = rep(list(function(x, y, opt.path)
@@ -384,6 +395,7 @@ makeMBOControl = function(number.of.targets=1L,
     parEGO.s = parEGO.s,
     parEGO.rho = parEGO.rho,
     parEGO.propose.points = parEGO.propose.points,
+    parEGO.use.margin.points = parEGO.use.margin.points,
     final.method = final.method,
     final.evals = final.evals,
     y.name = y.name,

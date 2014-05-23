@@ -15,7 +15,7 @@ infillOptFocus = function(infill.crit, model, control, par.set, opt.path, design
     for (local.iter in 1:control$infill.opt.focussearch.maxit) {
       # predict on design where NAs were imputed, but return propsed points with NAs
       newdesign = generateDesign(control$infill.opt.focussearch.points, par.set,
-        randomLHS, ints.as.num=TRUE, logicals.as.factor=TRUE)
+        randomLHS)
       y = infill.crit(imputeFeatures(newdesign, par.set, control), model, control, par.set, design, ...)
 
       # get current best value

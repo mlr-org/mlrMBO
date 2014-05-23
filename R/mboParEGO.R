@@ -61,7 +61,7 @@ mboParEGO = function(fun, par.set, design=NULL, learner, control, show.info=TRUE
     # propose new points and evaluate target function
     prop.designs = lapply(models, proposePoints, par.set = par.set,
       control = control, opt.path = opt.path)
-    prop.designs = do.call(rbind, prop.designs)
+    prop.designs = do.call(rbind, lapply(prop.designs, function(x) x$prop.points))
     xs = dfRowsToList(prop.designs, par.set)
     xs = lapply(xs, repairPoint, par.set = par.set)
     evals = evalTargetFun(fun, par.set, xs, opt.path, control, show.info, oldopts, more.args)
