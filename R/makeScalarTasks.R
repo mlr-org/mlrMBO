@@ -30,20 +30,20 @@ makeScalarTasks = function(design, par.set, y.name, control) {
     # Sample weighting vectors using a rejection method. Sample a discrete weight
     # vector and test if it sums up to 1. Here we create twice the number we need 
     # and reject the half with the smallest distance to another vector
-    lambdas = matrix(nrow = 2 * random.weights, ncol = control$number.of.targets)
-    for (loop in 1:(2 * random.weights)) {
+    lambdas = matrix(nrow = control$parEGO.sample.more.weights * random.weights, ncol = control$number.of.targets)
+    for (loop in 1:(control$parEGO.sample.more.weights * random.weights)) {
       # sample the lambda-vector
       repeat {
-        lambda = sample(control$parEGO.s, control$number.of.targets, replace = TRUE)
+        lambda = sample(0:control$parEGO.s, control$number.of.targets, replace = TRUE) / control$parEGO.s
         # make sure every lambda is unique
         if (any(sapply(seq_len(nrow(lambdas)), function(i) all(lambdas[i, ] == lambda)), na.rm = TRUE))
           next
-        if (any(sapply(seq_len(nrow(margin.points)), function(i) all(lambdas[i, ] == lambda)), na.rm = TRUE))
+        if (any(sapply(seq_len(nrow(margin.points)), function(i) all(margin.points[i, ] == lambda)), na.rm = TRUE))
           next
-        if (sum(lambda) == control$parEGO.s)
+        if (sum(lambda) == 1)
           break
       }
-      lambdas[loop, ] = lambda / control$parEGO.s
+      lambdas[loop, ] = lambda
     }
     # Reject some lambdas ...
     while (nrow(lambdas) > random.weights) {
@@ -69,5 +69,5 @@ makeScalarTasks = function(design, par.set, y.name, control) {
     regr.design = regr.design[, -which(names(design) %in% control$y.name)]
     tasks[[loop]] = makeRegrTask(target = "y.scalarized", data = regr.design)
   }
-  return(tasks)
+  return(list(tasks = tasks, weights = lambdas))
 }

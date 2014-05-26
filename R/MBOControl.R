@@ -160,6 +160,10 @@
 #'   suggested in parEGO paper.
 #' @param parEGO.propose.points [\code{integer(1)}]\cr
 #'   Number of points to propose in each parEGO iteration. Default is 1L.
+#' @param parEGO.sample.more.weights [\code{numeric(1)}]\cr
+#'   In each iteration \code{parEGO.sample.more.weights} * \code{parEGO.propose.points}
+#'   are sampled and the weights with maximum distance to each other are chosen.
+#'   Default is 1, if only 1 point is proposed each iteration, otherwise 5.
 #' @param parEGO.use.margin.points [\code{logical}]\cr
 #'   For each target function: Should the weight vector (0, ..., 0, 1, 0, ..., 0),
 #'   i.e. the weight vector with only 0 and a single 1 at the i.th position for
@@ -243,8 +247,9 @@ makeMBOControl = function(number.of.targets=1L,
   multipoint.multicrit.maxit=100L,
   multipoint.multicrit.sbx.eta=15, multipoint.multicrit.sbx.p=1,
   multipoint.multicrit.pm.eta=15, multipoint.multicrit.pm.p=1,
-  parEGO.s=20L, parEGO.rho=0.05, parEGO.propose.points=1L,
+  parEGO.s=100L, parEGO.rho=0.05, parEGO.propose.points=1L,
   parEGO.use.margin.points=rep(FALSE, number.of.targets),
+  parEGO.sample.more.weights = 5L,
   final.method="best.true.y", final.evals=0L,
   y.name = "y",
   impute, impute.errors = FALSE, suppress.eval.errors = TRUE, save.model.at=iters,
@@ -310,11 +315,20 @@ makeMBOControl = function(number.of.targets=1L,
   checkArg(parEGO.s, "integer", len=1L, na.ok=FALSE, lower=1)
   checkArg(parEGO.rho, "numeric", len=1L, na.ok=FALSE, lower=0, upper=1)
   parEGO.propose.points = convertInteger(parEGO.propose.points)
-  checkArg(parEGO.propose.points, "numeric", len=1L, na.ok=FALSE, lower=1)
+  checkArg(parEGO.propose.points, "integer", len=1L, na.ok=FALSE, lower=1)
+  if (parEGO.propose.points == 1L)
+    parEGO.sample.more.weights = 1L
+  parEGO.sample.more.weights = convertInteger(parEGO.sample.more.weights)
+  checkArg(parEGO.sample.more.weights, "numeric", len=1L, na.ok=FALSE, lower=1)
   checkArg(parEGO.use.margin.points, "logical", len=number.of.targets, na.ok=FALSE, lower=1)
-  if(sum(parEGO.use.margin.points) > parEGO.propose.points)
+  
+  
+  if (sum(parEGO.use.margin.points) > parEGO.propose.points)
     stopf("Can't use %s margin points when only proposing %s points each iteration.",
       sum(parEGO.use.margin.points), parEGO.propose.points)
+  number.of.weights = choose(parEGO.s + number.of.targets - 1, number.of.targets - 1)
+  if (parEGO.sample.more.weights * parEGO.propose.points > number.of.weights)
+    stop("Trying to sample more weights than exists. Increase parEGO.s or decrease number of weights.")
   
 
   if (missing(impute))
@@ -396,6 +410,7 @@ makeMBOControl = function(number.of.targets=1L,
     parEGO.rho = parEGO.rho,
     parEGO.propose.points = parEGO.propose.points,
     parEGO.use.margin.points = parEGO.use.margin.points,
+    parEGO.sample.more.weights = parEGO.sample.more.weights,
     final.method = final.method,
     final.evals = final.evals,
     y.name = y.name,

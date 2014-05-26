@@ -52,11 +52,18 @@ mboParEGO = function(fun, par.set, design=NULL, learner, control, show.info=TRUE
   times = mboDesign$times
   y.name = control$y.name
   # we now have design.y and design
-
+  
+  # initialize data.frame to save the used weights
+  # FIXME: We want to save this information in the opt.path!
+  weight.path = data.frame()
+  
   # do the mbo magic
   for (loop in seq_len(control$iters)) {
     # create a couple of scalar tasks to optimize and eval in parallel
     scalarTasks = makeScalarTasks(design, par.set, y.name, control = control)
+    # Save the weights
+    weight.path = rbind(weight.path, data.frame(scalarTasks$weights, dob = loop))
+    scalarTasks = scalarTasks$tasks
     models = lapply(scalarTasks, train, learner = learner)
     # propose new points and evaluate target function
     prop.designs = lapply(models, proposePoints, par.set = par.set,
@@ -78,7 +85,8 @@ mboParEGO = function(fun, par.set, design=NULL, learner, control, show.info=TRUE
 
   makeS3Obj("ParEGOResult",
     pareto.front = pareto.front,
-    opt.path = opt.path
+    opt.path = opt.path,
+    weight.path = weight.path
   )
 }
 
