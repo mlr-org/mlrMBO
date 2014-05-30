@@ -111,14 +111,18 @@ mbo = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, more
     times = c(times, evals$times)
 
     # update optim trace and model
-    Map(function(x, y) addOptPathEl(opt.path, x = x, y = y, dob = loop), xs, evals$ys)
+    if(control$do.impute)
+      Map(function(x, y, err) addOptPathEl(opt.path, x = x, y = y, dob = loop, error.message = err),
+        xs, evals$ys, evals$error.messages)
+    else
+      Map(function(x, y) addOptPathEl(opt.path, x = x, y = y, dob = loop), xs, evals$ys)
     Map(function(x, y, cv) addOptPathEl(opt.path2, x = x, y = c(y, cv), dob = loop), xs, evals$ys, prop.points.crit.values)
-    rt = makeMBOTask(as.data.frame(opt.path, discretes.as.factor=TRUE), par.set, y.name, control=control)
+    rt = makeMBOTask(as.data.frame(opt.path, discretes.as.factor = TRUE), par.set, y.name, control = control)
     model = train(learner, rt)
     if (loop %in% control$save.model.at)
       models[[as.character(loop)]] = model
     if (loop %in% control$resample.at) {
-      r = resample(learner, rt, control$resample.desc, measures=control$resample.measures)
+      r = resample(learner, rt, control$resample.desc, measures = control$resample.measures)
       res.vals[[as.character(loop)]] = r$aggr
     }
   }
@@ -147,7 +151,8 @@ mbo = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, more
     x = best$x,
     # strip name
     y = as.numeric(best$y),
-    opt.path = opt.path2,
+    opt.path = opt.path,
+    opt.path2 = opt.path2,
     times = times,
     resample = res.vals,
     models = models,
@@ -171,5 +176,5 @@ print.MBOResult = function(x, ...) {
   n1 = sum(op$env$dob == 0)
   n2 = length(op$env$dob) - n1
   catf("%i + %i entries in total, displaying last 10 (or less):", n1, n2)
-  print(tail(as.data.frame(x$op), 10))
+  print(tail(as.data.frame(op), 10))
 }

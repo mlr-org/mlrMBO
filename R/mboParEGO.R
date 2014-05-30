@@ -44,7 +44,10 @@ mboParEGO = function(fun, par.set, design=NULL, learner, control, show.info=TRUE
   if (inherits(learner, "regr.randomForest")) {
     learner = setHyperPars(learner, fix.factors=TRUE)
   }
-
+  
+  # Calculate all possible weight vectors and save them
+  Lambdas = combWithSum(control$parEGO.s, control$number.of.targets) / control$parEGO.s
+  
   # generate initial design
   mboDesign = generateMBODesign(design, fun, par.set, control, show.info, oldopts, more.args)
   design = cbind(mboDesign$design.x, mboDesign$design.y)
@@ -60,7 +63,8 @@ mboParEGO = function(fun, par.set, design=NULL, learner, control, show.info=TRUE
   # do the mbo magic
   for (loop in seq_len(control$iters)) {
     # create a couple of scalar tasks to optimize and eval in parallel
-    scalarTasks = makeScalarTasks(design, par.set, y.name, control = control)
+    scalarTasks = makeScalarTasks(as.data.frame(opt.path, discretes.as.factor = TRUE),
+      par.set, control = control, Lambdas = Lambdas)
     # Save the weights
     weight.path = rbind(weight.path, data.frame(scalarTasks$weights, dob = loop))
     scalarTasks = scalarTasks$tasks
@@ -74,7 +78,11 @@ mboParEGO = function(fun, par.set, design=NULL, learner, control, show.info=TRUE
     evals = evalTargetFun(fun, par.set, xs, opt.path, control, show.info, oldopts, more.args)
     ys = convertRowsToList(evals$ys)
     # store in opt path
-    mapply(addOptPathEl, xs, ys, MoreArgs = list(op = opt.path, dob = loop))
+    if(control$impute.errors)
+      mapply(addOptPathEl, xs, ys, error.message = evals$error.messages,
+        MoreArgs = list(op = opt.path, dob = loop))
+    else
+      mapply(addOptPathEl, xs, ys, MoreArgs = list(op = opt.path, dob = loop))
   }
 
   front.index = getOptPathParetoFront(opt.path, index = TRUE)
@@ -101,4 +109,18 @@ print.ParEGOResult = function(x, ...) {
   op = x$opt.path
   print(x$pareto.front)
   print(tail(as.data.frame(x$op), 10))
+}
+
+
+# small helper: calculate all vectors of length k with sum n
+combWithSum <- function(n, k) {
+  stopifnot(k > 0L)
+  
+  REC <- function(n, k) {
+    if (k == 1L) list(n) else
+      unlist(lapply(0:n, function(i)Map(c, i, REC(n - i, k - 1L))),
+        recursive = FALSE)
+  }
+  
+  matrix(unlist(REC(n, k)), ncol = k, byrow = TRUE)
 }

@@ -153,8 +153,10 @@
 #'   Probability of 1-point mutation, see \code{\link[emoa]{pm_operator}}.
 #'   Default is 1
 #' @param parEGO.s [\code{integer(1)}]\cr
-#'   Parameter of parEGO - controls the number of weighting vectors. Default is
-#'   20 (guessed value).
+#'   Parameter of parEGO - controls the number of weighting vectors. The default
+#'   depends on \code{number.of.targets} and leads to 100000 different possible
+#'   weight vectors. The defaults for (2, 3, 4, 5, 6) dimensions are (100000, 
+#'   450, 75, 37, 23) and 10 for higher dimensions.
 #' @param parEGO.rho [\code{numeric(1)}]\cr
 #'   Parameter of parEGO - factor for Tchebycheff function. Default 0.05 as
 #'   suggested in parEGO paper.
@@ -247,7 +249,7 @@ makeMBOControl = function(number.of.targets=1L,
   multipoint.multicrit.maxit=100L,
   multipoint.multicrit.sbx.eta=15, multipoint.multicrit.sbx.p=1,
   multipoint.multicrit.pm.eta=15, multipoint.multicrit.pm.p=1,
-  parEGO.s=100L, parEGO.rho=0.05, parEGO.propose.points=1L,
+  parEGO.s, parEGO.rho=0.05, parEGO.propose.points=1L,
   parEGO.use.margin.points=rep(FALSE, number.of.targets),
   parEGO.sample.more.weights = 5L,
   final.method="best.true.y", final.evals=0L,
@@ -310,7 +312,8 @@ makeMBOControl = function(number.of.targets=1L,
   checkArg(multipoint.multicrit.pm.eta, "numeric", len=1L, na.ok=FALSE, lower=0)
   checkArg(multipoint.multicrit.pm.p, "numeric", len=1L, na.ok=FALSE, lower=0, upper=1)
 
-
+  if (missing(parEGO.s))
+    parEGO.s = switch(min(number.of.targets, 7), 1L, 100000L, 450L, 75L, 37L, 23L, 10L)
   parEGO.s = convertInteger(parEGO.s)
   checkArg(parEGO.s, "integer", len=1L, na.ok=FALSE, lower=1)
   checkArg(parEGO.rho, "numeric", len=1L, na.ok=FALSE, lower=0, upper=1)
@@ -330,8 +333,8 @@ makeMBOControl = function(number.of.targets=1L,
   if (parEGO.sample.more.weights * parEGO.propose.points > number.of.weights)
     stop("Trying to sample more weights than exists. Increase parEGO.s or decrease number of weights.")
   
-
-  if (missing(impute))
+  do.impute = !missing(impute)
+  if (missing(impute)) 
     impute = rep(list(function(x, y, opt.path)
       stopf("Infeasible y=%s value encountered at %s", as.character(y), convertToShortString(x))),
       number.of.targets)
@@ -414,6 +417,7 @@ makeMBOControl = function(number.of.targets=1L,
     final.method = final.method,
     final.evals = final.evals,
     y.name = y.name,
+    do.impute = do.impute,
     impute = impute,
     impute.errors = impute.errors,
     suppress.eval.errors = suppress.eval.errors,

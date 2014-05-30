@@ -2,19 +2,15 @@
 #
 # @param design [\code{\link[ParamHelpers]{ParamSet}}]\cr
 #   Initial design.
-# @param y.name [\code{character(1)}]\cr
-#   Name of y-column for target values in optimization path.
 # @return [\code{\link[mlr]{SupervisedTask}]:
 #   List of repaired points.
-makeScalarTasks = function(design, par.set, y.name, control) {
-  design$dob = design$eol = NULL
+makeScalarTasks = function(design, par.set, control, Lambdas) {
+  design$dob = design$eol = design$error.message = NULL
   if (any(sapply(design, is.integer)))
     design = as.data.frame(lapply(design, function(x) if(is.integer(x)) as.numeric(x) else x))
   if (any(sapply(design, is.logical)))
     design = as.data.frame(lapply(design, function(x) if(is.logical(x)) as.factor(x) else x))
   design = imputeFeatures(design, par.set, control)
-  #if (control$rank.trafo)
-  #  design[,y.name] = rank(design[,y.name])
   
   # normalize the targets to [0, 1]
   design.y = design[, control$y.name]
@@ -26,7 +22,7 @@ makeScalarTasks = function(design, par.set, y.name, control) {
   margin.points = diag(control$number.of.targets)[control$parEGO.use.margin.points, , drop = FALSE]
   # How many random weights should be used?
   random.weights <- control$parEGO.propose.points - sum(control$parEGO.use.margin.points)
-  if (random.weights) {
+  if (random.weights > 0) {
     # Sample weighting vectors using a rejection method. Sample a discrete weight
     # vector and test if it sums up to 1. Here we create twice the number we need 
     # and reject the half with the smallest distance to another vector
@@ -34,7 +30,7 @@ makeScalarTasks = function(design, par.set, y.name, control) {
     for (loop in 1:(control$parEGO.sample.more.weights * random.weights)) {
       # sample the lambda-vector
       repeat {
-        lambda = sample(0:control$parEGO.s, control$number.of.targets, replace = TRUE) / control$parEGO.s
+        lambda = Lambdas[sample(nrow(Lambdas), 1), ]
         # make sure every lambda is unique
         if (any(sapply(seq_len(nrow(lambdas)), function(i) all(lambdas[i, ] == lambda)), na.rm = TRUE))
           next
@@ -56,7 +52,6 @@ makeScalarTasks = function(design, par.set, y.name, control) {
     lambdas = matrix(nrow = 0, ncol = control$number.of.targets)
   }
   lambdas = rbind(margin.points, lambdas)
-  #print(lambdas)
   
   # Create the scalarized regression Tasks
   tasks = vector(mode = "list", length = control$parEGO.propose.points)

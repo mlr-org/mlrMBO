@@ -28,7 +28,8 @@ generateMBODesign = function(design, fun, par.set, control, show.info, oldopts, 
   rep.pids = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
   y.name = control$y.name
   times = numeric(0)
-  opt.path = makeOptPathDF(par.set, y.name, control$minimize)
+  opt.path = makeOptPathDF(par.set, y.name, control$minimize,
+    include.error.message = control$do.impute)
   opt.path2 = initMBOOptPathDF(par.set, control)
 
   if (is.null(design)) {
@@ -57,12 +58,13 @@ generateMBODesign = function(design, fun, par.set, control, show.info, oldopts, 
   # compute y-values if missing or initial design generated above
   if (all(y.name %in% colnames(design))) {
     design.y = matrix(design[, y.name])
+    error.messages = rep("", nrow(design.y))
   } else if (!any(y.name %in% colnames(design))){
     if (show.info)
       messagef("Computing y column for design. Was not provided")
     evals = evalTargetFun(fun, par.set, xs, opt.path, control, show.info, oldopts, more.args)
-    design.y = matrix(evals$ys, ncol = control$number.of.targets,
-      dimnames = list(NULL, control$y.name))
+    design.y = evals$ys
+    error.messages = evals$error.messages
     times = c(times, evals$times)
   } else {
     stop("Only part of y-values are provided. Don't know what to do - provide either all or none.")
@@ -70,7 +72,11 @@ generateMBODesign = function(design, fun, par.set, control, show.info, oldopts, 
 
   # add initial values to optimization path
   ys = convertRowsToList(design.y)
-  Map(function(x, y) addOptPathEl(opt.path, x = x, y = y, dob = 0), xs, ys)
+  if (control$do.impute)
+    Map(function(x, y, err) addOptPathEl(opt.path, x = x, y = y, dob = 0, error.message = err),
+      xs, ys, evals$error.messages)
+  else
+    Map(function(x, y) addOptPathEl(opt.path, x = x, y = y, dob = 0), xs, ys)
   Map(function(x, y) addOptPathEl(opt.path2, x = x, y = c(y, 0), dob = 0), xs, ys)
 
   return(list(design.x = design.x, design.y = design.y, opt.path = opt.path, opt.path2 = opt.path2, times = times))

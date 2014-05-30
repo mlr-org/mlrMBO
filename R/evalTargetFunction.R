@@ -25,13 +25,7 @@ evalTargetFun = function(fun, par.set, xs, opt.path, control, show.info, oldopts
   xs = lapply(xs, trafoValue, par=par.set)
   fun2 = function(x) {
     st = system.time({
-      if (control$impute.errors) {
-        y = try(do.call(fun, insert(list(x=x), more.args)), silent=control$suppress.eval.errors)
-        if (is.error(y))
-          y = NA_real_
-      } else {
         y = do.call(fun, insert(list(x=x), more.args))
-      }
     })
     if (length(y) != control$number.of.targets)
       stopf("Objective function output has wrong length: %i. Should be %i.",
@@ -41,14 +35,21 @@ evalTargetFun = function(fun, par.set, xs, opt.path, control, show.info, oldopts
   # restore mlr configuration
   configureMlr(on.learner.error = oldopts[["ole"]], show.learner.output = oldopts[["slo"]])
 
-  # apply fun2 and extract parts
-  ## FIXME: ATM we impute every error in the target function with an NA.
-  ## This works at the moment, on the long hand we want to save the errors
-  ## in the optimization path.
-  z = parallelMap(fun2, xs, impute.error =
-      function(x)
-        list(y = rep(NA, control$number.of.targets), time = NA)
-    )
+
+  
+  # If an error occurs in f and we don't want to impute, stop - in this case
+  # parallelMap gets NULL as impute function. In this case, execution will
+  # stop at this line. Otherwise we use the identity for imputation - now
+  # every element in z could be an error object.
+  z = parallelMap(fun2, xs, impute.error = if(control$impute.errors) identity else NULL)
+  # Check for errors - impute them with NA for now and save the error message
+  error.messages = character(length(z))
+  for (index in seq_along(z)) {
+    if(is.error(z[[index]])) {
+      error.messages[index] = z[[index]]$message
+      z[[index]] = list(y = rep(NA_real_, control$number.of.targets), time = NA_real_)
+    }
+  }
   
   # ys is row-matrix with number.of.targets cols
   ys = if (control$number.of.targets == 1L)
@@ -69,11 +70,27 @@ evalTargetFun = function(fun, par.set, xs, opt.path, control, show.info, oldopts
         paste(sprintf(num.format.string, control$y.name, ys[ind, ]), collapse = ", "))
     }
   }
-
-  configureMlr(on.learner.error=control$on.learner.error,
-    show.learner.output=control$show.learner.output)
-  # FIXME: this does not look good. we need to define sematincs of impute better.
-  # in imputation we probably need to know which objective we refer to?
+  
+  # FIXME: Do we need this here? This function is for function evaluation,
+  # we should not need to configure mlr in this function.
+  configureMlr(on.learner.error = control$on.learner.error,
+    show.learner.output = control$show.learner.output)
+  
+  # Generate impute-error-messages for the opt-path
+  for (ind in seq_len(nrow(ys))) {
+    na.inds = is.na(ys[ind, ])
+    if (any(na.inds)) {
+      new.error.message = paste("mlrMBO: NAs detected and imputed for: ",
+        collapse(control$y.name[is.na(ys[ind, ])], sep = ", "), sep = "")
+      if (error.messages[ind] == "")
+        error.messages[ind] = new.error.message
+      else
+        error.messages[ind] = paste(new.error.message, ". Original error message from target function: ",
+          error.messages[ind])
+    }
+  }
+  
+  # Now impute every NA with the given imputation function
   for (dim in seq_len(control$number.of.targets)) {
     # impute all broken y values in ys by imputation function of user
     broken = which(is.na(ys[, dim]) | is.nan(ys[, dim]) | is.infinite(ys[, dim]))
@@ -82,22 +99,7 @@ evalTargetFun = function(fun, par.set, xs, opt.path, control, show.info, oldopts
         MoreArgs = list(opt.path = opt.path), USE.NAMES = FALSE)
     }
   }
-#   if (is.matrix(ys)) {
-#     for (i in seq_row(ys)) {
-#       j = which(is.na(ys[i, ]) | is.nan(ys[i, ]) | is.infinite(ys[i, ]))
-#       if (length(j) > 0L) {
-#         ys[i, j] = mapply(control$impute, xs[j], ys[i, j],
-#           MoreArgs=list(opt.path=opt.path), USE.NAMES=FALSE)
-#       }
-#     }
-#   } else {
-#     # impute all broken y values in ys by imputation function of user
-#     broken = which(is.na(ys) | is.nan(ys) | is.infinite(ys))
-#     if (length(broken) > 0L) {
-#       ys[broken] = mapply(control$impute, xs[broken], ys[broken],
-#         MoreArgs = list(opt.path = opt.path), USE.NAMES = FALSE)
-#     }
-#   }
-  return(list(ys = ys, times = times))
+  
+  return(list(ys = ys, times = times, error.messages = error.messages))
 }
 

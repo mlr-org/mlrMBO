@@ -17,16 +17,23 @@ test_that("mbo parEGO works", {
   # Test wrong dimension
   ctrl = makeMBOControl(iters=5, infill.opt.focussearch.points=10,
     number.of.targets = 3)
-  ## FIXME: The new imputation surpresses the error message - the error
-  ## message must be saved somewhere (opt path), and the opt.path must be tested
   expect_error(mboParEGO(f, ps, learner = learner, control = ctrl),
-    "Infeasible y")
+    "wrong length: 2. Should be 3")
   
   # Test multippoint
-  ctrl = makeMBOControl(iters=5, infill.opt.focussearch.points=10,
-    number.of.targets = 2, parEGO.propose.points = 2L)
+  ctrl = makeMBOControl(iters=1, infill.opt.focussearch.points=10,
+    number.of.targets = 2, parEGO.propose.points = 50L)
   or = mboParEGO(f, ps, learner = learner, control = ctrl)
-  
+  # check used weights
+  expect_true(all(apply(or$weight.path[, 1:2], 1, sum) == 1))
+  expect_false(any(duplicated(or$weight.path[, 1])))
+  expect_false(any(duplicated(or$weight.path[, 2])))
+  # Test margin points
+  ctrl = makeMBOControl(iters=10, infill.opt.focussearch.points=10,
+    number.of.targets = 2, parEGO.propose.points = 2L, parEGO.use.margin.points = c(TRUE, TRUE))
+  or = mboParEGO(f, ps, learner = learner, control = ctrl)
+  expect_true(all(t(or$weight.path[, 1:2]) %in% 0:1))
+  expect_true(all(1 - or$weight.path[, 1] == or$weight.path[, 2]))
   # Test impute
   f1 = makeMBOFunction(function(x) {
     y = x^2
