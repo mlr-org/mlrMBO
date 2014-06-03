@@ -73,7 +73,7 @@ generateMBODesign = function(design, fun, par.set, control, show.info, oldopts, 
 
   # compute y-values if missing or initial design generated above
   if (all(y.name %in% colnames(design))) {
-    design.y = matrix(design[, y.name])
+    design.y = as.matrix(design[, y.name])
     error.messages = rep("", nrow(design.y))
   } else if (!any(y.name %in% colnames(design))){
     if (show.info)
@@ -85,7 +85,7 @@ generateMBODesign = function(design, fun, par.set, control, show.info, oldopts, 
   } else {
     stop("Only part of y-values are provided. Don't know what to do - provide either all or none.")
   }
-
+  
   # add initial values to optimization path
   if (!opt.path.restored) {
     ys = convertRowsToList(design.y)

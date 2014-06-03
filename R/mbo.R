@@ -130,7 +130,6 @@ mbo = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, more
       res.vals[[as.character(loop)]] = r$aggr
     }
     if (loop %in% control$save.on.disk.at) {
-      print(control$save.file.path[1])
       save(list = c("opt.path", "fun", "par.set", "learner", "control", "show.info", "more.args"),
         file = control$save.file.path)
     }

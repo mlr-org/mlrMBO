@@ -7,11 +7,18 @@ test_that("mbo parEGO works", {
     makeNumericParam("x2", lower=-1, upper=2)
   )
 
-  ## Test normal run
+  # Test normal run
   learner = makeLearner("regr.km", nugget.estim=TRUE)
   ctrl = makeMBOControl(iters=5, infill.opt.focussearch.points=10,
     number.of.targets = 2)
   or = mboParEGO(f, ps, learner = learner, control = ctrl)
+  expect_true(!any(is.na(or$pareto.front)))
+  
+  # Test with initial design
+  des = generateDesign(10, ps)
+  des = cbind(des, t(apply(des, 1, f)))
+  names(des)[3:4] = c("y_1", "y_2")
+  or = mboParEGO(f, ps, design = des, learner = learner, control = ctrl)
   expect_true(!any(is.na(or$pareto.front)))
   
   # Test wrong dimension

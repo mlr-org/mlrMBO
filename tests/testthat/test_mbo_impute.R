@@ -1,6 +1,9 @@
 context("mbo impute")
 
 test_that("mbo works with failures", {
+  # silent mode
+  options(parallelMap.suppress.local.errors = TRUE)
+  
   f1 = makeMBOFunction(function(x) {
     y = sum(x^2)
     if (y < 5)
@@ -44,4 +47,7 @@ test_that("mbo works with failures", {
     } else 
       expect_equal("", getOptPathErrorMessages(res$opt.path)[ind])
   }
+  
+  # turn off silent mode
+  options(parallelMap.suppress.local.errors = FALSE)
 })

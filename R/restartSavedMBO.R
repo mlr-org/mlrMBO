@@ -19,6 +19,10 @@ restartSavedMBO = function(file) {
     stopf("Whatever the file contained you specified - it was not saved by mbo. Please specify a correct file.")
   
   # Restart mbo
-  mbo(fun = fun, par.set = par.set, design = opt.path,
-    learner = learner, control = control, show.info = show.info, more.args = more.args)
+  if (control$number.of.targets == 1L)
+    mbo(fun = fun, par.set = par.set, design = opt.path,
+      learner = learner, control = control, show.info = show.info, more.args = more.args)
+  else
+    mboParEGO(fun = fun, par.set = par.set, design = opt.path,
+      learner = learner, control = control, show.info = show.info, more.args = more.args)
 }

@@ -61,7 +61,8 @@ mboParEGO = function(fun, par.set, design=NULL, learner, control, show.info=TRUE
   weight.path = data.frame()
   
   # do the mbo magic
-  for (loop in seq_len(control$iters)) {
+  start.loop = max(getOptPathDOB(opt.path)) + 1
+  for (loop in start.loop:control$iters) {
     # create a couple of scalar tasks to optimize and eval in parallel
     scalarTasks = makeScalarTasks(as.data.frame(opt.path, discretes.as.factor = TRUE),
       par.set, control = control, Lambdas = Lambdas)
@@ -83,6 +84,10 @@ mboParEGO = function(fun, par.set, design=NULL, learner, control, show.info=TRUE
         MoreArgs = list(op = opt.path, dob = loop))
     else
       mapply(addOptPathEl, xs, ys, MoreArgs = list(op = opt.path, dob = loop))
+    if (loop %in% control$save.on.disk.at) {
+      save(list = c("opt.path", "fun", "par.set", "learner", "control", "show.info", "more.args"),
+        file = control$save.file.path)
+    }
   }
 
   front.index = getOptPathParetoFront(opt.path, index = TRUE)
