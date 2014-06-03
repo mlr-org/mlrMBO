@@ -1,49 +1,39 @@
-#'  Optimizes a multicrit optimization problem  with sequential model based
-#'  optimization using the parEGO algorithm
-#'
-#' @param fun [\code{function(x, ...)}]\cr
-#'   Fitness functions to minimize. The first argument has to be a list of values.
-#'   The function has to return a numerical vector of the length defined via the
-#'   parameter number.of.targets in \code{control}.
-#' @param par.set [\code{\link[ParamHelpers]{ParamSet}}]\cr
-#'   Collection of parameters and their constraints for optimization.
-#' @param design [\code{data.frame} | NULL]\cr
-#'   Initial design as data frame.
-#'   If the parameters have corresponding trafo functions,
-#'   the design must not be transformed before it is passed!
-#'   If \code{NULL}, one is constructed from the settings in \code{control}.
-#' @param learner [\code{\link[mlr]{Learner}}]\cr
-#'   Regression learner to model \code{fun}.
-#' @param control [\code{\link{MBOControl}}]\cr
-#'   Control object for mbo.
-#' @param show.info [\code{logical(1)}]\cr
-#'   Verbose output on console?
-#'   Default is \code{TRUE}.
-#' @param more.args [any]\cr
-#'   Further arguments passed to fitness function.
-#' @return [\code{list}]:
-#'   \item{pareto.front [\code{matrix}]}{Pareto Front of all evaluated points.}
-#'   \item{opt.path [\code{\link[ParamHelpers]{OptPath}}]}{Optimization path.}
-#' @export
+#  Optimizes a multicrit optimization problem  with sequential model based
+#  optimization using the parEGO algorithm
+#
+# @param fun [\code{function(x, ...)}]\cr
+#   Fitness functions to minimize. The first argument has to be a list of values.
+#   The function has to return a numerical vector of the length defined via the
+#   parameter number.of.targets in \code{control}.
+# @param par.set [\code{\link[ParamHelpers]{ParamSet}}]\cr
+#   Collection of parameters and their constraints for optimization.
+# @param design [\code{data.frame} | NULL]\cr
+#   One of this 3:
+#   - Initial design as data frame.
+#     If the parameters have corresponding trafo functions,
+#     the design must not be transformed before it is passed!
+#   - A opt.path object:
+#     The design and all saved infos will be extracted from this
+#   - \code{NULL}:
+#     The design is constructed from the settings in \code{control}.
+# @param learner [\code{\link[mlr]{Learner}}]\cr
+#   Regression learner to model \code{fun}.
+# @param control [\code{\link{MBOControl}}]\cr
+#   Control object for mbo.
+# @param show.info [\code{logical(1)}]\cr
+#   Verbose output on console?
+#   Default is \code{TRUE}.
+# @param more.args [any]\cr
+#   Further arguments passed to fitness function.
+# @return [\code{list}]:
+#   \item{pareto.front [\code{matrix}]}{Pareto Front of all evaluated points.}
+#   \item{opt.path [\code{\link[ParamHelpers]{OptPath}}]}{Optimization path.}
 mboParEGO = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, more.args=list()) {
-  #FIXME: more param checks
-  checkStuff(fun, par.set, design, learner, control)
-  loadPackages(control)
   # save currently set options
   oldopts = list(
     ole = getOption("mlr.on.learner.error"),
     slo = getOption("mlr.show.learner.output")
   )
-
-  # configure mlr in an appropriate way
-  configureMlr(on.learner.error = control$on.learner.error,
-    show.learner.output=control$show.learner.output)
-
-  # FIXME: I am unsure wether we should do this, but otherwise RF sucks
-  # if it is a good idea it is not not general enuff
-  if (inherits(learner, "regr.randomForest")) {
-    learner = setHyperPars(learner, fix.factors=TRUE)
-  }
   
   # Calculate all possible weight vectors and save them
   Lambdas = combWithSum(control$parEGO.s, control$number.of.targets) / control$parEGO.s

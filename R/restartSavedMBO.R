@@ -20,9 +20,11 @@ restartSavedMBO = function(file) {
   
   # Restart mbo
   if (control$number.of.targets == 1L)
-    mbo(fun = fun, par.set = par.set, design = opt.path,
+    mboSingleObj(fun = fun, par.set = par.set, design = opt.path,
       learner = learner, control = control, show.info = show.info, more.args = more.args)
-  else
-    mboParEGO(fun = fun, par.set = par.set, design = opt.path,
-      learner = learner, control = control, show.info = show.info, more.args = more.args)
+  else {
+    if (control$multicrit.method == "parEGO")
+      mboParEGO(fun = fun, par.set = par.set, design = opt.path,
+        learner = learner, control = control, show.info = show.info, more.args = more.args)
+  }
 }

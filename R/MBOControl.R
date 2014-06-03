@@ -9,6 +9,9 @@
 #' @param number.of.targets [\code{integer(1)}]\cr
 #'   How many target functions does the function have? Greater than one for
 #'   multicriteria optimization, default ist 1.
+#' @param multicrit.method [\code{character(1)}]\cr
+#'   Which multicrit method should be used? At the moment only parEGO is
+#'   supported, which is also the default. 
 #' @param init.design.points [\code{integer(1)}]\cr
 #'   Number of points in inital design.
 #'   Only used if no design is given in \code{mbo} function.
@@ -240,7 +243,7 @@
 #' @aliases MBOControl
 #' @export
 makeMBOControl = function(number.of.targets=1L,
-  minimize=rep(TRUE, number.of.targets), noisy=FALSE,
+  minimize=rep(TRUE, number.of.targets), multicrit.method="parEGO", noisy=FALSE,
   init.design.points=20L, init.design.fun=maximinLHS, init.design.args=list(),
   iters=10L, propose.points=1L, infill.crit="mean", infill.crit.lcb.lambda=1,
   infill.opt="focussearch", infill.opt.restarts=1L,
@@ -271,12 +274,15 @@ makeMBOControl = function(number.of.targets=1L,
 ) {
 
   requirePackages("lhs", "makeMBOControl")
-
-  checkArg(minimize, "logical", len=number.of.targets, na.ok=FALSE)
-  checkArg(noisy, "logical", len=1L, na.ok=FALSE)
+  
+  number.of.targets = convertInteger(number.of.targets)
+  checkArg(number.of.targets, "integer", len = 1L, min = 1L, na.ok = FALSE)
+  checkArg(multicrit.method, choices = c("parEGO"))
+  checkArg(minimize, "logical", len=number.of.targets, na.ok = FALSE)
+  checkArg(noisy, "logical", len=1L, na.ok = FALSE)
 
   init.design.points = convertInteger(init.design.points)
-  checkArg(init.design.points, "integer", len=1L, na.ok=FALSE, lower=4L)
+  checkArg(init.design.points, "integer", len = 1L, na.ok = FALSE, lower = 4L)
   checkArg(init.design.fun, "function")
   checkArg(init.design.args, "list")
 
@@ -400,6 +406,7 @@ makeMBOControl = function(number.of.targets=1L,
     minimize = minimize,
     noisy = noisy,
     number.of.targets = number.of.targets,
+    multicrit.method = multicrit.method,
     init.design.points = init.design.points,
     init.design.fun = init.design.fun,
     init.design.args = init.design.args,

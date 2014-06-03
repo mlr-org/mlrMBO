@@ -1,10 +1,3 @@
-#FIXME: retrain kriging faster
-
-#FIXME: how to choose best element. with noise? without?
-#FIXME: different name for final evals in output (not last step number)
-
-#FIXME: cmaes doesn't work when optimum in constraints
-
 #'  Optimizes a function with sequential model based optimization.
 #'
 #' @param fun [\code{function(x, ...)}]\cr
@@ -38,151 +31,30 @@
 #' respectively the help pages of \code{\link[parallelMap]{parallelMap}} for instructions on how to set up parallization.
 #' @export
 #' @aliases MBOResult
+
 mbo = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, more.args=list()) {
+  
+  #FIXME: more param checks
   checkStuff(fun, par.set, design, learner, control)
   loadPackages(control)
-
-  # save currently set options
-  oldopts = list(
-    ole = getOption("mlr.on.learner.error"),
-    slo = getOption("mlr.show.learner.output")
-  )
-
+  
   # configure mlr in an appropriate way
-  configureMlr(on.learner.error=control$on.learner.error,
+  configureMlr(on.learner.error = control$on.learner.error,
     show.learner.output=control$show.learner.output)
-
+  
   # FIXME: I am unsure wether we should do this, but otherwise RF sucks
   # if it is a good idea it is not not general enuff
   if (inherits(learner, "regr.randomForest")) {
     learner = setHyperPars(learner, fix.factors=TRUE)
   }
   
-  # get parameter ids repeated length-times and appended number
-  y.name = control$y.name
-  
-  # generate initial design
-  mboDesign = generateMBODesign(design, fun, par.set, control, show.info, oldopts, more.args)
-  design = cbind(mboDesign$design.x, setColNames(mboDesign$design.y, y.name))
-  opt.path = mboDesign$opt.path
-  opt.path2 = mboDesign$opt.path2
-  times = mboDesign$times
-  
-  
-  # we now have design.y and design
-
-  # set up initial mbo task
-  rt = makeMBOTask(design, par.set, y.name, control=control)
-  model = train(learner, rt)
-
-  models = namedList(control$save.model.at)
-  res.vals = namedList(control$resample.at)
-
-  if (0L %in% control$save.model.at) {
-    models[["0"]] = model
+  # Call the correct mbo function
+  if (control$number.of.targets == 1L)
+    mboSingleObj(fun = fun, par.set = par.set, design = design,
+      learner = learner, control = control, show.info = show.info, more.args = more.args)
+  else {
+    if (control$multicrit.method == "parEGO")
+      mboParEGO(fun = fun, par.set = par.set, design = design,
+        learner = learner, control = control, show.info = show.info, more.args = more.args)
   }
-
-  if (0L %in% control$resample.model.at) {
-    r = resample(learner, rt, control$resample.desc, measures=control$resample.measures)
-    res.vals[["0"]] = r$aggr
-  }
-
-  # store sampled lambdas for this special method in return val
-  multipoint.lcb.lambdas = if (control$multipoint.method == "lcb")
-    matrix(nrow=0, ncol=control$propose.points)
-  else
-    NULL
-
-  # do the mbo magic
-  # if restarting, we possibly start in a higher iteration
-  start.loop = max(getOptPathDOB(opt.path)) + 1
-  for (loop in start.loop:control$iters) {
-
-    # propose new points and evaluate target function
-    prop.design = proposePoints(model, par.set, control, opt.path)
-    prop.points = prop.design$prop.points
-    prop.points.crit.values = prop.design$prop.points.crit.values
-
-    # handle lambdas for this method
-    if (control$multipoint.method == "lcb") {
-      multipoint.lcb.lambdas = rbind(multipoint.lcb.lambdas, attr(prop.points, "multipoint.lcb.lambdas"))
-      attr(prop.points, "multipoint.lcb.lambda") =  NULL
-    }
-
-    xs = dfRowsToList(prop.points, par.set)
-    xs = lapply(xs, repairPoint, par.set = par.set)
-    evals = evalTargetFun(fun, par.set, xs, opt.path, control, show.info, oldopts, more.args)
-    times = c(times, evals$times)
-
-    # update optim trace and model
-    if(control$do.impute)
-      Map(function(x, y, err) addOptPathEl(opt.path, x = x, y = y, dob = loop, error.message = err),
-        xs, evals$ys, evals$error.messages)
-    else
-      Map(function(x, y) addOptPathEl(opt.path, x = x, y = y, dob = loop), xs, evals$ys)
-    Map(function(x, y, cv) addOptPathEl(opt.path2, x = x, y = c(y, cv), dob = loop), xs, evals$ys, prop.points.crit.values)
-    rt = makeMBOTask(as.data.frame(opt.path, discretes.as.factor = TRUE), par.set, y.name, control = control)
-    model = train(learner, rt)
-    if (loop %in% control$save.model.at)
-      models[[as.character(loop)]] = model
-    if (loop %in% control$resample.at) {
-      r = resample(learner, rt, control$resample.desc, measures = control$resample.measures)
-      res.vals[[as.character(loop)]] = r$aggr
-    }
-    if (loop %in% control$save.on.disk.at) {
-      save(list = c("opt.path", "fun", "par.set", "learner", "control", "show.info", "more.args"),
-        file = control$save.file.path)
-    }
-  }
-
-  design = getTaskData(rt, target.extra=TRUE)$data
-  final.index = chooseFinalPoint(fun, par.set, model, opt.path, y.name, control)
-  best = getOptPathEl(opt.path, final.index)
-  x = best$x
-  y = best$y
-
-  if (control$final.evals > 0L) {
-    if (show.info)
-      messagef("Performing %i final evals", control$final.evals)
-    # do some final evaluations and compute mean of target fun values
-    xs = replicate(control$final.evals, best$x, simplify=FALSE)
-    evals = evalTargetFun(fun, par.set, xs, opt.path, control, show.info, oldopts, more.args)
-    ys = evals$ys
-    times = c(times, evals$times)
-    best$y = mean(ys)
-  }
-  # restore mlr configuration
-  configureMlr(on.learner.error=oldopts[["ole"]], show.learner.output=oldopts[["slo"]])
-
-  # make sure to strip name of y
-  structure(list(
-    x = best$x,
-    # strip name
-    y = as.numeric(best$y),
-    opt.path = opt.path,
-    opt.path2 = opt.path2,
-    times = times,
-    resample = res.vals,
-    models = models,
-    multipoint.lcb.lambdas = multipoint.lcb.lambdas
-  ), class = "MBOResult")
-}
-
-#' Print mbo result object.
-#'
-#' @param x [\code{\link{MBOResult}}]\cr
-#'   mbo result object instance.
-#' @param ... [any]\cr
-#'   Not used.
-#' @S3method print MBOResult
-print.MBOResult = function(x, ...) {
-  op = x$opt.path
-  catf("Recommended parameters:")
-  catf(paramValueToString(op$par.set, x$x))
-  catf("Objective: %s = %.3f\n", op$y.names[1], x$y)
-  catf("Optimization path")
-  n1 = sum(op$env$dob == 0)
-  n2 = length(op$env$dob) - n1
-  catf("%i + %i entries in total, displaying last 10 (or less):", n1, n2)
-  print(tail(as.data.frame(op), 10))
 }
