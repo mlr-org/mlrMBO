@@ -57,16 +57,18 @@ mbo = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, more
   if (inherits(learner, "regr.randomForest")) {
     learner = setHyperPars(learner, fix.factors=TRUE)
   }
-
+  
   # get parameter ids repeated length-times and appended number
   y.name = control$y.name
-
+  
   # generate initial design
   mboDesign = generateMBODesign(design, fun, par.set, control, show.info, oldopts, more.args)
   design = cbind(mboDesign$design.x, setColNames(mboDesign$design.y, y.name))
   opt.path = mboDesign$opt.path
   opt.path2 = mboDesign$opt.path2
   times = mboDesign$times
+  
+  
   # we now have design.y and design
 
   # set up initial mbo task
@@ -92,7 +94,9 @@ mbo = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, more
     NULL
 
   # do the mbo magic
-  for (loop in seq_len(control$iters)) {
+  # if restarting, we possibly start in a higher iteration
+  start.loop = max(getOptPathDOB(opt.path)) + 1
+  for (loop in start.loop:control$iters) {
 
     # propose new points and evaluate target function
     prop.design = proposePoints(model, par.set, control, opt.path)
@@ -124,6 +128,11 @@ mbo = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, more
     if (loop %in% control$resample.at) {
       r = resample(learner, rt, control$resample.desc, measures = control$resample.measures)
       res.vals[[as.character(loop)]] = r$aggr
+    }
+    if (loop %in% control$save.on.disk.at) {
+      print(control$save.file.path[1])
+      save(list = c("opt.path", "fun", "par.set", "learner", "control", "show.info", "more.args"),
+        file = control$save.file.path)
     }
   }
 

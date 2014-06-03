@@ -205,6 +205,15 @@
 #'   Should reporting of error messages during target function evaluations be suppressed?
 #'   Only used if \code{impute.errors} is \code{TRUE}.
 #'   Default is \code{TRUE}.
+#' @param save.on.disk.at [\code{integer}] \cr
+#'   Sequential optimization iteration when the actual state should be saved
+#'   on disk. Iteration 0 denotes the initial design. If the optimization
+#'   stops with an crucial error, it can be restarted with this file via the
+#'   function \link{restartSavedMBO}. Default is NULL. Make sure to specify
+#'   \code{save.file.path}.
+#' @param save.file.path [\code{character(1)}] \cr
+#'   If \code{save.on.disk.at} is used, this is the name of the file where the data
+#'   will be saved. Default is NULL.
 #' @param save.model.at [\code{integer}]\cr
 #'   Sequential optimization iterations when the model should be saved.
 #'   Iteration 0 is the model fit for the initial design.
@@ -254,7 +263,8 @@ makeMBOControl = function(number.of.targets=1L,
   parEGO.sample.more.weights = 5L,
   final.method="best.true.y", final.evals=0L,
   y.name = "y",
-  impute, impute.errors = FALSE, suppress.eval.errors = TRUE, save.model.at=iters,
+  impute, impute.errors = FALSE, suppress.eval.errors = TRUE, save.on.disk.at = NULL,
+  save.file.path = "", save.model.at=iters,
   resample.at = integer(0), resample.desc = makeResampleDesc("CV", iter=10), resample.measures = list(mse),
   on.learner.error = "warn", show.learner.output = FALSE,
   output.num.format = "%.3g"
@@ -359,7 +369,17 @@ makeMBOControl = function(number.of.targets=1L,
   if(number.of.targets > 1 && length(y.name) == 1 && y.name == "y")
     y.name = paste("y", 1:number.of.targets, sep = "_")
   checkArg(y.name, "character", len=number.of.targets, na.ok=FALSE)
-
+  
+  if (!is.null(save.on.disk.at)) {
+    save.on.disk.at = convertInteger(save.on.disk.at)
+    checkArg(save.on.disk.at, "integer")
+    if (save.file.path == "") {
+      stopf("You must specify a file for saving.")
+    } else {
+      checkArg(save.file.path, "character", len = 1)
+    }
+  }
+  
   save.model.at = convertIntegers(save.model.at)
   checkArg(save.model.at, "integer", na.ok=FALSE, lower=0L, upper=iters)
 
@@ -421,6 +441,8 @@ makeMBOControl = function(number.of.targets=1L,
     impute = impute,
     impute.errors = impute.errors,
     suppress.eval.errors = suppress.eval.errors,
+    save.on.disk.at = save.on.disk.at,
+    save.file.path = save.file.path,
     save.model.at = save.model.at,
     resample.desc = resample.desc,
     resample.at = resample.at,

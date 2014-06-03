@@ -1,10 +1,14 @@
 # Generates the initial design for a mbo or parego optimization
 #
 # @param design [\code{data.frame} | NULL]\cr
-#   Initial design as data frame.
-#   If the parameters have corresponding trafo functions,
-#   the design must not be transformed before it is passed!
-#   If \code{NULL}, one is constructed from the settings in \code{control}.
+#   One of this 3:
+#   - Initial design as data frame.
+#     If the parameters have corresponding trafo functions,
+#     the design must not be transformed before it is passed!
+#   - A opt.path object:
+#     The design and all saved infos will be extracted from this
+#   - \code{NULL}:
+#     The design is constructed from the settings in \code{control}.
 # @param fun [\code{function(x, ...)}]\cr
 #   Fitness function to minimize. The first argument has to be a list of values.
 #   The function has to return a single numerical value.
@@ -28,10 +32,20 @@ generateMBODesign = function(design, fun, par.set, control, show.info, oldopts, 
   rep.pids = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
   y.name = control$y.name
   times = numeric(0)
-  opt.path = makeOptPathDF(par.set, y.name, control$minimize,
-    include.error.message = control$do.impute)
   opt.path2 = initMBOOptPathDF(par.set, control)
-
+  
+  # If design is an opt.path, restore it as the new opt.path
+  if ("OptPath" %in% class(design)) {
+    opt.path.restored = TRUE
+    opt.path = design
+    x.names = extractSubList(par.set$pars, "id")
+    design = as.data.frame(opt.path)[, c(x.names, control$y.name)]
+  } else {
+    opt.path.restored = FALSE
+    opt.path = makeOptPathDF(par.set, y.name, control$minimize,
+      include.error.message = control$do.impute)
+  }
+  
   if (is.null(design)) {
     design.x = generateDesign(control$init.design.points, par.set,
       control$init.design.fun, control$init.design.args, trafo = FALSE)
@@ -39,16 +53,18 @@ generateMBODesign = function(design, fun, par.set, control, show.info, oldopts, 
     # sanity check: are paramter values and colnames of design consistent?
     if(!setequal(setdiff(colnames(design), y.name), rep.pids))
       stop("Column names of design 'design' must match names of parameters in 'par.set'!")
-    design.x = dropNamed(design, y.name)
-
+    
     # sanity check: do not allow transformed designs
-    if (attr(design, "trafo")) {
-      stop("Design must not be transformed!")
-    }
     # if no trafo attribute provided we act on the assumption that the design is not transformed
-    if ("trafo" %nin% attributes(design.x)) {
-      attr(design.x, "trafo") = FALSE
-    }
+    if ("trafo" %nin% names(attributes(design))) {
+      attr(design, "trafo") = FALSE
+    } else {
+      if (attr(design, "trafo")) {
+        stop("Design must not be transformed!")
+      }
+    } 
+    
+    design.x = dropNamed(design, y.name)
   }
   # reorder
   design.x = design.x[, rep.pids, drop = FALSE]
@@ -71,15 +87,24 @@ generateMBODesign = function(design, fun, par.set, control, show.info, oldopts, 
   }
 
   # add initial values to optimization path
-  ys = convertRowsToList(design.y)
-  if (control$do.impute)
-    Map(function(x, y, err) addOptPathEl(opt.path, x = x, y = y, dob = 0, error.message = err),
-      xs, ys, evals$error.messages)
-  else
-    Map(function(x, y) addOptPathEl(opt.path, x = x, y = y, dob = 0), xs, ys)
-  Map(function(x, y) addOptPathEl(opt.path2, x = x, y = c(y, 0), dob = 0), xs, ys)
-
-  return(list(design.x = design.x, design.y = design.y, opt.path = opt.path, opt.path2 = opt.path2, times = times))
+  if (!opt.path.restored) {
+    ys = convertRowsToList(design.y)
+    if (control$do.impute)
+      Map(function(x, y, err) addOptPathEl(opt.path, x = x, y = y, dob = 0, error.message = err),
+        xs, ys, evals$error.messages)
+    else
+      Map(function(x, y) addOptPathEl(opt.path, x = x, y = y, dob = 0), xs, ys)
+    Map(function(x, y) addOptPathEl(opt.path2, x = x, y = c(y, 0), dob = 0), xs, ys)
+    
+  }
+  
+  return(list(
+    design.x = design.x,
+    design.y = design.y,
+    opt.path = opt.path,
+    opt.path2 = opt.path2,
+    times = times
+    ))
 }
 
 initMBOOptPathDF = function(par.set, control) {
