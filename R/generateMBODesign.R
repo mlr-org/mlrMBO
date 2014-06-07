@@ -1,3 +1,5 @@
+# FIXME shorten this. What does this function do
+
 # Generates the initial design for a mbo or parego optimization
 #
 # @param design [\code{data.frame} | NULL]\cr
@@ -35,6 +37,8 @@ generateMBODesign = function(design, fun, par.set, control, show.info, oldopts, 
   opt.path2 = initMBOOptPathDF(par.set, control)
   
   # If design is an opt.path, restore it as the new opt.path
+  # FIXME use inherits
+  # FIXME we want to have a error.messages in EVERY optimization
   if ("OptPath" %in% class(design)) {
     opt.path.restored = TRUE
     opt.path = design

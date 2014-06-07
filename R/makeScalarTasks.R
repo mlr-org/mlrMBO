@@ -4,12 +4,15 @@
 #   Initial design.
 # @return [\code{\link[mlr]{SupervisedTask}]:
 #   List of repaired points.
+# FIXME Docu! lambdas!
 makeScalarTasks = function(design, par.set, control, Lambdas) {
   design$dob = design$eol = design$error.message = NULL
+  # FIXME use convertDFCols!
   if (any(sapply(design, is.integer)))
     design = as.data.frame(lapply(design, function(x) if(is.integer(x)) as.numeric(x) else x))
   if (any(sapply(design, is.logical)))
     design = as.data.frame(lapply(design, function(x) if(is.logical(x)) as.factor(x) else x))
+  # FIXME Use mlr here!
   design = imputeFeatures(design, par.set, control)
   
   # normalize the targets to [0, 1]
@@ -29,9 +32,11 @@ makeScalarTasks = function(design, par.set, control, Lambdas) {
     lambdas = matrix(nrow = control$parEGO.sample.more.weights * random.weights, ncol = control$number.of.targets)
     for (loop in 1:(control$parEGO.sample.more.weights * random.weights)) {
       # sample the lambda-vector
+      # FIXME: this can be done a bit intelligenter
       repeat {
         lambda = Lambdas[sample(nrow(Lambdas), 1), ]
         # make sure every lambda is unique
+        # FIXME seqRow statt seq_len(...)
         if (any(sapply(seq_len(nrow(lambdas)), function(i) all(lambdas[i, ] == lambda)), na.rm = TRUE))
           next
         if (any(sapply(seq_len(nrow(margin.points)), function(i) all(margin.points[i, ] == lambda)), na.rm = TRUE))

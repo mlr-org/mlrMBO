@@ -1,3 +1,5 @@
+# FIXME: this is copy p
+
 #  Optimizes a multicrit optimization problem  with sequential model based
 #  optimization using the parEGO algorithm
 #
@@ -28,6 +30,7 @@
 # @return [\code{list}]:
 #   \item{pareto.front [\code{matrix}]}{Pareto Front of all evaluated points.}
 #   \item{opt.path [\code{\link[ParamHelpers]{OptPath}}]}{Optimization path.}
+# FIXME EGO nach ego
 mboParEGO = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, more.args=list()) {
   # save currently set options
   oldopts = list(
@@ -36,9 +39,11 @@ mboParEGO = function(fun, par.set, design=NULL, learner, control, show.info=TRUE
   )
   
   # Calculate all possible weight vectors and save them
+  # lambdas nicht Lambdas
   Lambdas = combWithSum(control$parEGO.s, control$number.of.targets) / control$parEGO.s
   
   # generate initial design
+  # FIXME mbo.design
   mboDesign = generateMBODesign(design, fun, par.set, control, show.info, oldopts, more.args)
   design = cbind(mboDesign$design.x, mboDesign$design.y)
   opt.path = mboDesign$opt.path
@@ -51,9 +56,11 @@ mboParEGO = function(fun, par.set, design=NULL, learner, control, show.info=TRUE
   weight.path = data.frame()
   
   # do the mbo magic
+  # FIXME doc this
   start.loop = max(getOptPathDOB(opt.path)) + 1
   for (loop in start.loop:control$iters) {
     # create a couple of scalar tasks to optimize and eval in parallel
+    # FIXME scalar.tasks
     scalarTasks = makeScalarTasks(as.data.frame(opt.path, discretes.as.factor = TRUE),
       par.set, control = control, Lambdas = Lambdas)
     # Save the weights
@@ -80,12 +87,12 @@ mboParEGO = function(fun, par.set, design=NULL, learner, control, show.info=TRUE
     }
   }
 
-  front.index = getOptPathParetoFront(opt.path, index = TRUE)
   pareto.front = getOptPathParetoFront(opt.path, index = FALSE)
 
   # restore mlr configuration
   configureMlr(on.learner.error=oldopts[["ole"]], show.learner.output=oldopts[["slo"]])
-
+  
+  # FIXME ParEGO.x als liste von liste mit zurueckgeben, modells mit reingeben
   makeS3Obj("ParEGOResult",
     pareto.front = pareto.front,
     opt.path = opt.path,
@@ -108,8 +115,8 @@ print.ParEGOResult = function(x, ...) {
 
 
 # small helper: calculate all vectors of length k with sum n
+# FIXME Think about how to write this in nice
 combWithSum <- function(n, k) {
-  stopifnot(k > 0L)
   
   REC <- function(n, k) {
     if (k == 1L) list(n) else

@@ -143,6 +143,7 @@ mboSingleObj = function(fun, par.set, design=NULL, learner, control, show.info=T
   configureMlr(on.learner.error=oldopts[["ole"]], show.learner.output=oldopts[["slo"]])
 
   # make sure to strip name of y
+  # FIXME makeS3 Object and 
   structure(list(
     x = best$x,
     # strip name

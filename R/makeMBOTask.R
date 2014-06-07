@@ -8,10 +8,12 @@
 #   List of repaired points.
 makeMBOTask = function(design, par.set, y.name, control) {
   design$dob = design$eol = design[[control$infill.crit]] = design$error.message = NULL
+  # FIXME use convertDFCols!
   if (any(sapply(design, is.integer)))
     design = as.data.frame(lapply(design, function(x) if(is.integer(x)) as.numeric(x) else x))
   if (any(sapply(design, is.logical)))
     design = as.data.frame(lapply(design, function(x) if(is.logical(x)) as.factor(x) else x))
+  # FIXME Use mlr here!
   design = imputeFeatures(design, par.set, control)
   #if (control$rank.trafo)
   #  design[,y.name] = rank(design[,y.name])
