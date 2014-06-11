@@ -19,6 +19,8 @@
 #'   Default is \code{TRUE}.
 #' @param more.args [list]\cr
 #'   Further arguments passed to fitness function.
+#'   
+#'   The return value depends on the used algorithm. For single objective MBO it is:
 #' @return [\code{list}]:
 #'   \item{x [\code{list}]}{Named list of proposed optimal parameters.}
 #'   \item{y [\code{numeric(1)}]}{Value of fitness function at \code{x}, either from evals during optimization or from requested final evaluations, if those were greater than 0.}
@@ -53,8 +55,8 @@ mbo = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, more
     mboSingleObj(fun = fun, par.set = par.set, design = design,
       learner = learner, control = control, show.info = show.info, more.args = more.args)
   else {
-    if (control$multicrit.method == "parEGO")
-      mboParEGO(fun = fun, par.set = par.set, design = design,
+    if (control$multicrit.method == "parego")
+      mboParego(fun = fun, par.set = par.set, design = design,
         learner = learner, control = control, show.info = show.info, more.args = more.args)
   }
 }

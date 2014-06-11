@@ -33,12 +33,12 @@ generateMBODesign = function(design, fun, par.set, control, show.info, oldopts, 
   # get parameter ids repeated length-times and appended number
   rep.pids = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
   y.name = control$y.name
+  # FIXME: Save this information in the normal opt.path. both times and opt.path2 should not be necessary
   times = numeric(0)
   opt.path2 = initMBOOptPathDF(par.set, control)
   
   # If design is an opt.path, restore it as the new opt.path
   # FIXME use inherits
-  # FIXME we want to have a error.messages in EVERY optimization
   if ("OptPath" %in% class(design)) {
     opt.path.restored = TRUE
     opt.path = design
@@ -47,7 +47,7 @@ generateMBODesign = function(design, fun, par.set, control, show.info, oldopts, 
   } else {
     opt.path.restored = FALSE
     opt.path = makeOptPathDF(par.set, y.name, control$minimize,
-      include.error.message = control$do.impute)
+      include.error.message = TRUE)
   }
   
   if (is.null(design)) {
@@ -90,16 +90,12 @@ generateMBODesign = function(design, fun, par.set, control, show.info, oldopts, 
     stop("Only part of y-values are provided. Don't know what to do - provide either all or none.")
   }
   
-  # add initial values to optimization path
+  # add initial values to optimization path only if we don't have a restored opt.path
   if (!opt.path.restored) {
     ys = convertRowsToList(design.y)
-    if (control$do.impute)
-      Map(function(x, y, err) addOptPathEl(opt.path, x = x, y = y, dob = 0, error.message = err),
-        xs, ys, evals$error.messages)
-    else
-      Map(function(x, y) addOptPathEl(opt.path, x = x, y = y, dob = 0), xs, ys)
+    Map(function(x, y, err) addOptPathEl(opt.path, x = x, y = y, dob = 0, error.message = err),
+      xs, ys, error.messages)
     Map(function(x, y) addOptPathEl(opt.path2, x = x, y = c(y, 0), dob = 0), xs, ys)
-    
   }
   
   return(list(

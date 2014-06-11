@@ -69,7 +69,6 @@ infillCritLCB = function(points, model, control, par.set, design) {
 # augmented expected improvement, as designed by huang
 # useful for noisy
 infillCritAEI = function(points, model, control, par.set, design) {
-
   # FIXME: ugly!
   design2 = imputeFeatures(design, par.set, control)
   design2 = convertDfCols(design2, chars.as.factor = TRUE)

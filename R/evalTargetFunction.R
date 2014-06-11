@@ -24,9 +24,9 @@
 evalTargetFun = function(fun, par.set, xs, opt.path, control, show.info, oldopts, more.args = list()) {
   xs = lapply(xs, trafoValue, par=par.set)
   fun2 = function(x) {
-    st = system.time({
-        y = do.call(fun, insert(list(x=x), more.args))
-    })
+    st = proc.time()
+    y = do.call(fun, insert(list(x=x), more.args))
+    st = proc.time() - st
     if (length(y) != control$number.of.targets)
       stopf("Objective function output has wrong length: %i. Should be %i.",
         length(y), control$number.of.targets)

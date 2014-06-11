@@ -45,7 +45,7 @@ test_that("restart MBO", {
   ctrl = makeMBOControl(iters = 15, infill.opt.focussearch.points = 100, save.on.disk.at = 0:14,
     save.file.path = save.file, init.design.points = 10L, number.of.targets = 2)
   rm(or)
-  try(or <- mboParEGO(f, ps, learner = learner, control = ctrl, show.info = FALSE), silent = TRUE)
+  try(or <- mbo(f, ps, learner = learner, control = ctrl, show.info = FALSE), silent = TRUE)
   for(i in 1:100) {
     try(or <- restartSavedMBO(save.file), silent = TRUE)
     if(exists("or"))

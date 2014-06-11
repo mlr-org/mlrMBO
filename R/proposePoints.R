@@ -16,6 +16,8 @@ proposePoints = function(model, par.set, control, opt.path, ...) {
     return(generateDesign(control$propose.points, par.set, randomLHS, ints.as.num = TRUE))
 
   design = as.data.frame(opt.path)
+  design$dob = design$eol = design$error.message = NULL
+  design = convertDataFrameCols(design, ints.as.num = TRUE, logicals.as.factor = TRUE)
 
   if (control$propose.points == 1L) {
     # determine infill criterion

@@ -10,7 +10,7 @@
 #'   How many target functions does the function have? Greater than one for
 #'   multicriteria optimization, default ist 1.
 #' @param multicrit.method [\code{character(1)}]\cr
-#'   Which multicrit method should be used? At the moment only parEGO is
+#'   Which multicrit method should be used? At the moment only parego is
 #'   supported, which is also the default. 
 #' @param init.design.points [\code{integer(1)}]\cr
 #'   Number of points in inital design.
@@ -155,25 +155,25 @@
 #' @param multipoint.multicrit.pm.p [\code{numeric(1)}]\cr
 #'   Probability of 1-point mutation, see \code{\link[emoa]{pm_operator}}.
 #'   Default is 1
-#' @param parEGO.s [\code{integer(1)}]\cr
-#'   Parameter of parEGO - controls the number of weighting vectors. The default
+#' @param parego.s [\code{integer(1)}]\cr
+#'   Parameter of parego - controls the number of weighting vectors. The default
 #'   depends on \code{number.of.targets} and leads to 100000 different possible
 #'   weight vectors. The defaults for (2, 3, 4, 5, 6) dimensions are (100000, 
 #'   450, 75, 37, 23) and 10 for higher dimensions.
-#' @param parEGO.rho [\code{numeric(1)}]\cr
-#'   Parameter of parEGO - factor for Tchebycheff function. Default 0.05 as
-#'   suggested in parEGO paper.
-#' @param parEGO.propose.points [\code{integer(1)}]\cr
-#'   Number of points to propose in each parEGO iteration. Default is 1L.
-#' @param parEGO.sample.more.weights [\code{numeric(1)}]\cr
-#'   In each iteration \code{parEGO.sample.more.weights} * \code{parEGO.propose.points}
+#' @param parego.rho [\code{numeric(1)}]\cr
+#'   Parameter of parego - factor for Tchebycheff function. Default 0.05 as
+#'   suggested in parego paper.
+#' @param parego.propose.points [\code{integer(1)}]\cr
+#'   Number of points to propose in each parego iteration. Default is 1L.
+#' @param parego.sample.more.weights [\code{numeric(1)}]\cr
+#'   In each iteration \code{parego.sample.more.weights} * \code{parego.propose.points}
 #'   are sampled and the weights with maximum distance to each other are chosen.
 #'   Default is 1, if only 1 point is proposed each iteration, otherwise 5.
-#' @param parEGO.use.margin.points [\code{logical}]\cr
+#' @param parego.use.margin.points [\code{logical}]\cr
 #'   For each target function: Should the weight vector (0, ..., 0, 1, 0, ..., 0),
 #'   i.e. the weight vector with only 0 and a single 1 at the i.th position for
 #'   the i.th target function, be drawn with probability 1? Number of TRUE entries
-#'   must be less or equal to \code{parEGO.propose.points}
+#'   must be less or equal to \code{parego.propose.points}
 #' @param final.method [\code{character(1)}]\cr
 #'   How should the final point be proposed. Possible values are:
 #'   \dQuote{best.true.y}: Return best point ever visited according to true value of target function.
@@ -243,7 +243,7 @@
 #' @aliases MBOControl
 #' @export
 makeMBOControl = function(number.of.targets=1L,
-  minimize=rep(TRUE, number.of.targets), multicrit.method="parEGO", noisy=FALSE,
+  minimize=rep(TRUE, number.of.targets), multicrit.method="parego", noisy=FALSE,
   init.design.points=20L, init.design.fun=maximinLHS, init.design.args=list(),
   iters=10L, propose.points=1L, infill.crit="mean", infill.crit.lcb.lambda=1,
   infill.opt="focussearch", infill.opt.restarts=1L,
@@ -261,9 +261,9 @@ makeMBOControl = function(number.of.targets=1L,
   multipoint.multicrit.maxit=100L,
   multipoint.multicrit.sbx.eta=15, multipoint.multicrit.sbx.p=1,
   multipoint.multicrit.pm.eta=15, multipoint.multicrit.pm.p=1,
-  parEGO.s, parEGO.rho=0.05, parEGO.propose.points=1L,
-  parEGO.use.margin.points=rep(FALSE, number.of.targets),
-  parEGO.sample.more.weights = 5L,
+  parego.s, parego.rho=0.05, parego.propose.points=1L,
+  parego.use.margin.points=rep(FALSE, number.of.targets),
+  parego.sample.more.weights = 5L,
   final.method="best.true.y", final.evals=0L,
   y.name = "y",
   impute, impute.errors = FALSE, suppress.eval.errors = TRUE, save.on.disk.at = NULL,
@@ -277,7 +277,7 @@ makeMBOControl = function(number.of.targets=1L,
   
   number.of.targets = convertInteger(number.of.targets)
   checkArg(number.of.targets, "integer", len = 1L, min = 1L, na.ok = FALSE)
-  checkArg(multicrit.method, choices = c("parEGO"))
+  checkArg(multicrit.method, choices = c("parego"))
   checkArg(minimize, "logical", len=number.of.targets, na.ok = FALSE)
   checkArg(noisy, "logical", len=1L, na.ok = FALSE)
 
@@ -328,28 +328,27 @@ makeMBOControl = function(number.of.targets=1L,
   checkArg(multipoint.multicrit.pm.eta, "numeric", len=1L, na.ok=FALSE, lower=0)
   checkArg(multipoint.multicrit.pm.p, "numeric", len=1L, na.ok=FALSE, lower=0, upper=1)
 
-  if (missing(parEGO.s))
-    parEGO.s = switch(min(number.of.targets, 7), 1L, 100000L, 450L, 75L, 37L, 23L, 10L)
-  parEGO.s = convertInteger(parEGO.s)
-  checkArg(parEGO.s, "integer", len=1L, na.ok=FALSE, lower=1)
-  checkArg(parEGO.rho, "numeric", len=1L, na.ok=FALSE, lower=0, upper=1)
-  parEGO.propose.points = convertInteger(parEGO.propose.points)
-  checkArg(parEGO.propose.points, "integer", len=1L, na.ok=FALSE, lower=1)
-  if (parEGO.propose.points == 1L)
-    parEGO.sample.more.weights = 1L
-  parEGO.sample.more.weights = convertInteger(parEGO.sample.more.weights)
-  checkArg(parEGO.sample.more.weights, "numeric", len=1L, na.ok=FALSE, lower=1)
-  checkArg(parEGO.use.margin.points, "logical", len=number.of.targets, na.ok=FALSE, lower=1)
+  if (missing(parego.s))
+    parego.s = switch(min(number.of.targets, 7), 1L, 100000L, 450L, 75L, 37L, 23L, 10L)
+  parego.s = convertInteger(parego.s)
+  checkArg(parego.s, "integer", len=1L, na.ok=FALSE, lower=1)
+  checkArg(parego.rho, "numeric", len=1L, na.ok=FALSE, lower=0, upper=1)
+  parego.propose.points = convertInteger(parego.propose.points)
+  checkArg(parego.propose.points, "integer", len=1L, na.ok=FALSE, lower=1)
+  if (parego.propose.points == 1L)
+    parego.sample.more.weights = 1L
+  parego.sample.more.weights = convertInteger(parego.sample.more.weights)
+  checkArg(parego.sample.more.weights, "numeric", len=1L, na.ok=FALSE, lower=1)
+  checkArg(parego.use.margin.points, "logical", len=number.of.targets, na.ok=FALSE, lower=1)
   
   
-  if (sum(parEGO.use.margin.points) > parEGO.propose.points)
+  if (sum(parego.use.margin.points) > parego.propose.points)
     stopf("Can't use %s margin points when only proposing %s points each iteration.",
-      sum(parEGO.use.margin.points), parEGO.propose.points)
-  number.of.weights = choose(parEGO.s + number.of.targets - 1, number.of.targets - 1)
-  if (parEGO.sample.more.weights * parEGO.propose.points > number.of.weights)
-    stop("Trying to sample more weights than exists. Increase parEGO.s or decrease number of weights.")
+      sum(parego.use.margin.points), parego.propose.points)
+  number.of.weights = choose(parego.s + number.of.targets - 1, number.of.targets - 1)
+  if (parego.sample.more.weights * parego.propose.points > number.of.weights)
+    stop("Trying to sample more weights than exists. Increase parego.s or decrease number of weights.")
   
-  do.impute = !missing(impute)
   if (missing(impute)) 
     impute = rep(list(function(x, y, opt.path)
       stopf("Infeasible y=%s value encountered at %s", as.character(y), convertToShortString(x))),
@@ -436,15 +435,14 @@ makeMBOControl = function(number.of.targets=1L,
     multipoint.multicrit.sbx.p = multipoint.multicrit.sbx.p,
     multipoint.multicrit.pm.eta = multipoint.multicrit.pm.eta,
     multipoint.multicrit.pm.p = multipoint.multicrit.pm.p,
-    parEGO.s = parEGO.s,
-    parEGO.rho = parEGO.rho,
-    parEGO.propose.points = parEGO.propose.points,
-    parEGO.use.margin.points = parEGO.use.margin.points,
-    parEGO.sample.more.weights = parEGO.sample.more.weights,
+    parego.s = parego.s,
+    parego.rho = parego.rho,
+    parego.propose.points = parego.propose.points,
+    parego.use.margin.points = parego.use.margin.points,
+    parego.sample.more.weights = parego.sample.more.weights,
     final.method = final.method,
     final.evals = final.evals,
     y.name = y.name,
-    do.impute = do.impute,
     impute = impute,
     impute.errors = impute.errors,
     suppress.eval.errors = suppress.eval.errors,

@@ -1,6 +1,6 @@
-context("parEGO")
+context("parego")
 
-test_that("mbo parEGO works", {
+test_that("mbo parego works", {
   f = makeMBOFunction(function(x) x^2)
   ps = makeParamSet(
     makeNumericParam("x1", lower=-2, upper=1),
@@ -8,8 +8,8 @@ test_that("mbo parEGO works", {
   )
 
   # Test normal run
-  learner = makeLearner("regr.km", nugget.estim=TRUE)
-  ctrl = makeMBOControl(iters=5, infill.opt.focussearch.points=10,
+  learner = makeLearner("regr.km", nugget.estim = TRUE)
+  ctrl = makeMBOControl(iters = 5, infill.opt.focussearch.points = 10,
     number.of.targets = 2)
   or = mbo(f, ps, learner = learner, control = ctrl)
   expect_true(!any(is.na(or$pareto.front)))
@@ -29,7 +29,7 @@ test_that("mbo parEGO works", {
   
   # Test multippoint
   ctrl = makeMBOControl(iters=1, infill.opt.focussearch.points=10,
-    number.of.targets = 2, parEGO.propose.points = 50L)
+    number.of.targets = 2, parego.propose.points = 50L)
   or = mbo(f, ps, learner = learner, control = ctrl)
   # check used weights
   expect_true(all(apply(or$weight.path[, 1:2], 1, sum) == 1))
@@ -37,7 +37,7 @@ test_that("mbo parEGO works", {
   expect_false(any(duplicated(or$weight.path[, 2])))
   # Test margin points
   ctrl = makeMBOControl(iters=10, infill.opt.focussearch.points=10,
-    number.of.targets = 2, parEGO.propose.points = 2L, parEGO.use.margin.points = c(TRUE, TRUE))
+    number.of.targets = 2, parego.propose.points = 2L, parego.use.margin.points = c(TRUE, TRUE))
   or = mbo(f, ps, learner = learner, control = ctrl)
   expect_true(all(t(or$weight.path[, 1:2]) %in% 0:1))
   expect_true(all(1 - or$weight.path[, 1] == or$weight.path[, 2]))

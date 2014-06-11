@@ -1,37 +1,16 @@
-# FIXME: this is copy p
-
 #  Optimizes a multicrit optimization problem  with sequential model based
-#  optimization using the parEGO algorithm
+#  optimization using the parego algorithm
 #
-# @param fun [\code{function(x, ...)}]\cr
-#   Fitness functions to minimize. The first argument has to be a list of values.
-#   The function has to return a numerical vector of the length defined via the
-#   parameter number.of.targets in \code{control}.
-# @param par.set [\code{\link[ParamHelpers]{ParamSet}}]\cr
-#   Collection of parameters and their constraints for optimization.
-# @param design [\code{data.frame} | NULL]\cr
-#   One of this 3:
-#   - Initial design as data frame.
-#     If the parameters have corresponding trafo functions,
-#     the design must not be transformed before it is passed!
-#   - A opt.path object:
-#     The design and all saved infos will be extracted from this
-#   - \code{NULL}:
-#     The design is constructed from the settings in \code{control}.
-# @param learner [\code{\link[mlr]{Learner}}]\cr
-#   Regression learner to model \code{fun}.
-# @param control [\code{\link{MBOControl}}]\cr
-#   Control object for mbo.
-# @param show.info [\code{logical(1)}]\cr
-#   Verbose output on console?
-#   Default is \code{TRUE}.
-# @param more.args [any]\cr
-#   Further arguments passed to fitness function.
+# Input Params are the same as for the main mbo function, except for design.
+# In order to make an nice restart solution possible, design can also be a
+# opt.path here.
+#
 # @return [\code{list}]:
 #   \item{pareto.front [\code{matrix}]}{Pareto Front of all evaluated points.}
+#   \item{pareto.set [\code{list(list)}]}{List of named list of pareto set.}
 #   \item{opt.path [\code{\link[ParamHelpers]{OptPath}}]}{Optimization path.}
-# FIXME EGO nach ego
-mboParEGO = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, more.args=list()) {
+#   \item{weight.path [\code{data.frame}]{Data.frame containing all used weights.}
+mboParego = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, more.args=list()) {
   # save currently set options
   oldopts = list(
     ole = getOption("mlr.on.learner.error"),
@@ -39,34 +18,41 @@ mboParEGO = function(fun, par.set, design=NULL, learner, control, show.info=TRUE
   )
   
   # Calculate all possible weight vectors and save them
-  # lambdas nicht Lambdas
-  Lambdas = combWithSum(control$parEGO.s, control$number.of.targets) / control$parEGO.s
+  all.possible.weights = combWithSum(control$parego.s, control$number.of.targets) / control$parego.s
+  # rearrange them a bit - we want to have the margin weights on top of the matrix
+  # tricky: all margin weights have maximal varianz
+  vars = apply(all.possible.weights, 1, var)
+  all.possible.weights = rbind(diag(control$number.of.targets), all.possible.weights[!vars == max(vars),])
   
   # generate initial design
-  # FIXME mbo.design
-  mboDesign = generateMBODesign(design, fun, par.set, control, show.info, oldopts, more.args)
-  design = cbind(mboDesign$design.x, mboDesign$design.y)
-  opt.path = mboDesign$opt.path
-  times = mboDesign$times
+  mbo.design = generateMBODesign(design, fun, par.set, control, show.info, oldopts, more.args)
+  design = cbind(mbo.design$design.x, mbo.design$design.y)
+  opt.path = mbo.design$opt.path
+  times = mbo.design$times
   y.name = control$y.name
   # we now have design.y and design
   
+  # Save on disk?
+  if (0 %in% control$save.on.disk.at) {
+    save(list = c("opt.path", "fun", "par.set", "learner", "control", "show.info", "more.args"),
+      file = control$save.file.path)
+  }
+    
   # initialize data.frame to save the used weights
   # FIXME: We want to save this information in the opt.path!
   weight.path = data.frame()
   
   # do the mbo magic
-  # FIXME doc this
+  # if we are restarting from a save file, we possibly start in a higher iteration
   start.loop = max(getOptPathDOB(opt.path)) + 1
   for (loop in start.loop:control$iters) {
     # create a couple of scalar tasks to optimize and eval in parallel
-    # FIXME scalar.tasks
-    scalarTasks = makeScalarTasks(as.data.frame(opt.path, discretes.as.factor = TRUE),
-      par.set, control = control, Lambdas = Lambdas)
+    scalar.tasks = makeScalarTasks(as.data.frame(opt.path, discretes.as.factor = TRUE),
+      par.set, control = control, all.possible.weights = all.possible.weights)
     # Save the weights
-    weight.path = rbind(weight.path, data.frame(scalarTasks$weights, dob = loop))
-    scalarTasks = scalarTasks$tasks
-    models = lapply(scalarTasks, train, learner = learner)
+    weight.path = rbind(weight.path, data.frame(scalar.tasks$weights, dob = loop))
+    scalar.tasks = scalar.tasks$tasks
+    models = lapply(scalar.tasks, train, learner = learner)
     # propose new points and evaluate target function
     prop.designs = lapply(models, proposePoints, par.set = par.set,
       control = control, opt.path = opt.path)
@@ -76,53 +62,52 @@ mboParEGO = function(fun, par.set, design=NULL, learner, control, show.info=TRUE
     evals = evalTargetFun(fun, par.set, xs, opt.path, control, show.info, oldopts, more.args)
     ys = convertRowsToList(evals$ys)
     # store in opt path
-    if(control$impute.errors)
-      mapply(addOptPathEl, xs, ys, error.message = evals$error.messages,
-        MoreArgs = list(op = opt.path, dob = loop))
-    else
-      mapply(addOptPathEl, xs, ys, MoreArgs = list(op = opt.path, dob = loop))
+    mapply(addOptPathEl, xs, ys, error.message = evals$error.messages,
+      MoreArgs = list(op = opt.path, dob = loop))
+    # Save on disk?
     if (loop %in% control$save.on.disk.at) {
       save(list = c("opt.path", "fun", "par.set", "learner", "control", "show.info", "more.args"),
         file = control$save.file.path)
     }
   }
 
-  pareto.front = getOptPathParetoFront(opt.path, index = FALSE)
+  pareto.inds = getOptPathParetoFront(opt.path, index = TRUE)
+  pareto.front = getOptPathY(opt.path)[pareto.inds, ]
+  pareto.set = lapply(pareto.inds, function(i) getOptPathEl(opt.path, i)$x)
+  
 
   # restore mlr configuration
   configureMlr(on.learner.error=oldopts[["ole"]], show.learner.output=oldopts[["slo"]])
   
-  # FIXME ParEGO.x als liste von liste mit zurueckgeben, modells mit reingeben
-  makeS3Obj("ParEGOResult",
+  makeS3Obj("ParegoResult",
     pareto.front = pareto.front,
+    pareto.set = pareto.set,
     opt.path = opt.path,
     weight.path = weight.path
   )
 }
 
-# Print ParEGO result object.
+# Print Parego result object.
 #
-# @param x [\code{\link{ParEGOResult}}]\cr
+# @param x [\code{\link{ParegoResult}}]\cr
 #   mbo result object instance.
 # @param ... [any]\cr
 #   Not used.
-#' @S3method print ParEGOResult
-print.ParEGOResult = function(x, ...) {
-  op = x$opt.path
+#' @S3method print ParegoResult
+print.ParegoResult = function(x, ...) {
   print(x$pareto.front)
-  print(tail(as.data.frame(x$op), 10))
+  print(tail(as.data.frame(x$opt.path), 10))
 }
 
 
-# small helper: calculate all vectors of length k with sum n
-# FIXME Think about how to write this in nice
-combWithSum <- function(n, k) {
-  
-  REC <- function(n, k) {
-    if (k == 1L) list(n) else
-      unlist(lapply(0:n, function(i)Map(c, i, REC(n - i, k - 1L))),
+# small helper: calculate all integer vectors of length k with sum n
+combWithSum = function(n, k) { 
+  fun = function(n, k) {
+    if (k == 1L) 
+      list(n)
+    else
+      unlist(lapply(0:n, function(i) Map(c, i, fun(n - i, k - 1L))),
         recursive = FALSE)
   }
-  
-  matrix(unlist(REC(n, k)), ncol = k, byrow = TRUE)
+  matrix(unlist(fun(n, k)), ncol = k, byrow = TRUE)
 }

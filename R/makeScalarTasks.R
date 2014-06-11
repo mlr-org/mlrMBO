@@ -1,17 +1,17 @@
-# Generates a list of scalarized MBO multicrit tasks.
+# Generates a list of scalarized MBO multicrit tasks by sampling a unique weight
+# vector for each task. 
 #
-# @param design [\code{\link[ParamHelpers]{ParamSet}}]\cr
-#   Initial design.
-# @return [\code{\link[mlr]{SupervisedTask}]:
-#   List of repaired points.
-# FIXME Docu! lambdas!
-makeScalarTasks = function(design, par.set, control, Lambdas) {
+# params: design, par.set and control as known. all.possible.weights is a
+# matrix with control$number.of.targets cols, each row sums up to one. The weight
+# vectors are sampled uniquely from this rows. Notice: The first control$number.of.target rows
+# have to be the margin rows, as generated in mboParego
+#
+# @return
+#   tasks: list of tasks
+#   weights: matrix of used weight vectors
+makeScalarTasks = function(design, par.set, control, all.possible.weights) {
   design$dob = design$eol = design$error.message = NULL
-  # FIXME use convertDFCols!
-  if (any(sapply(design, is.integer)))
-    design = as.data.frame(lapply(design, function(x) if(is.integer(x)) as.numeric(x) else x))
-  if (any(sapply(design, is.logical)))
-    design = as.data.frame(lapply(design, function(x) if(is.logical(x)) as.factor(x) else x))
+  design = convertDataFrameCols(design, ints.as.num = TRUE, logicals.as.factor = TRUE)
   # FIXME Use mlr here!
   design = imputeFeatures(design, par.set, control)
   
@@ -20,51 +20,34 @@ makeScalarTasks = function(design, par.set, control, Lambdas) {
   design.y = sweep(design.y, 2, apply(design.y, 2, min))
   design.y = sweep(design.y, 2, apply(design.y, 2, max), "/")
   
-  # Propose parEGO.propose.points points
+  # Propose parego.propose.points points
   # If desired - create the margin weight vector
-  margin.points = diag(control$number.of.targets)[control$parEGO.use.margin.points, , drop = FALSE]
+  margin.points = diag(control$number.of.targets)[control$parego.use.margin.points, , drop = FALSE]
+  
   # How many random weights should be used?
-  random.weights <- control$parEGO.propose.points - sum(control$parEGO.use.margin.points)
-  if (random.weights > 0) {
-    # Sample weighting vectors using a rejection method. Sample a discrete weight
-    # vector and test if it sums up to 1. Here we create twice the number we need 
-    # and reject the half with the smallest distance to another vector
-    lambdas = matrix(nrow = control$parEGO.sample.more.weights * random.weights, ncol = control$number.of.targets)
-    for (loop in 1:(control$parEGO.sample.more.weights * random.weights)) {
-      # sample the lambda-vector
-      # FIXME: this can be done a bit intelligenter
-      repeat {
-        lambda = Lambdas[sample(nrow(Lambdas), 1), ]
-        # make sure every lambda is unique
-        # FIXME seqRow statt seq_len(...)
-        if (any(sapply(seq_len(nrow(lambdas)), function(i) all(lambdas[i, ] == lambda)), na.rm = TRUE))
-          next
-        if (any(sapply(seq_len(nrow(margin.points)), function(i) all(margin.points[i, ] == lambda)), na.rm = TRUE))
-          next
-        if (sum(lambda) == 1)
-          break
-      }
-      lambdas[loop, ] = lambda
-    }
-    # Reject some lambdas ...
-    while (nrow(lambdas) > random.weights) {
-      dists = as.matrix(dist(lambdas))
-      dists[dists == 0] = Inf
-      nearest = which.min(apply(dists, 1, min))
-      lambdas = lambdas[-nearest, , drop = FALSE]
-    }
-  } else {
-    lambdas = matrix(nrow = 0, ncol = control$number.of.targets)
+  random.weights = control$parego.propose.points - sum(control$parego.use.margin.points)
+  # sample the lambda-vectors as rows from the matrix of all possible weights
+  # if margin points should be used, exclude the corresponding rows
+  # the margin rows are allways the first rows!
+  # sample control$parego.sample.more.weights times the number of weights
+  inds = setdiff(seq_row(all.possible.weights), which(control$parego.use.margin.points))
+  lambdas = all.possible.weights[sample(inds, random.weights * control$parego.sample.more.weights), , drop = FALSE]
+  # Reject weights as long as we have too many. reject the one with smallest dist
+  while (nrow(lambdas) > random.weights) {
+    dists = as.matrix(dist(lambdas))
+    dists[dists == 0] = Inf
+    nearest = which.min(apply(dists, 1, min))
+    lambdas = lambdas[-nearest, , drop = FALSE]
   }
   lambdas = rbind(margin.points, lambdas)
   
   # Create the scalarized regression Tasks
-  tasks = vector(mode = "list", length = control$parEGO.propose.points)
-  for (loop in 1:control$parEGO.propose.points) {
+  tasks = vector(mode = "list", length = control$parego.propose.points)
+  for (loop in 1:control$parego.propose.points) {
     lambda = lambdas[loop, ]
     # Create the scalarized response 
     y.scalarized = sapply(1:nrow(design.y), function(i)
-      max(lambda * design.y[i, ]) + control$parEGO.rho * sum(lambda * design.y[i, ]))
+      max(lambda * design.y[i, ]) + control$parego.rho * sum(lambda * design.y[i, ]))
     regr.design = cbind(design, setColNames(data.frame(y.scalarized), "y.scalarized"))
     regr.design = regr.design[, -which(names(design) %in% control$y.name)]
     tasks[[loop]] = makeRegrTask(target = "y.scalarized", data = regr.design)
