@@ -41,6 +41,7 @@ test_that("mbo parego works", {
   or = mbo(f, ps, learner = learner, control = ctrl)
   expect_true(all(t(or$weight.path[, 1:2]) %in% 0:1))
   expect_true(all(1 - or$weight.path[, 1] == or$weight.path[, 2]))
+  
   # Test impute
   f1 = makeMBOFunction(function(x) {
     y = x^2
@@ -51,6 +52,10 @@ test_that("mbo parego works", {
   )
   ctrl = makeMBOControl(iters=5, infill.opt.focussearch.points=10,
     number.of.targets = 2, impute=function(x, y, opt.path) 0)
+  or = mbo(f1, ps, learner = learner, control = ctrl)
+  
+  ctrl = makeMBOControl(iters=5, infill.opt.focussearch.points=10,
+    number.of.targets = 2, impute=function(x, y, opt.path) 0, parego.propose.points = 2L)
   or = mbo(f1, ps, learner = learner, control = ctrl)
   
 })

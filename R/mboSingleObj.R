@@ -37,7 +37,7 @@ mboSingleObj = function(fun, par.set, design=NULL, learner, control, show.info=T
   # we now have design.y and design
 
   # set up initial mbo task
-  rt = makeMBOTask(design, par.set, y.name, control=control)
+  rt = makeMBOTask(design, par.set, control)
   model = train(learner, rt)
 
   models = namedList(control$save.model.at)
@@ -89,7 +89,7 @@ mboSingleObj = function(fun, par.set, design=NULL, learner, control, show.info=T
     Map(function(x, y, err) addOptPathEl(opt.path, x = x, y = y, dob = loop, error.message = err),
       xs, evals$ys, evals$error.messages)
     Map(function(x, y, cv) addOptPathEl(opt.path2, x = x, y = c(y, cv), dob = loop), xs, evals$ys, prop.points.crit.values)
-    rt = makeMBOTask(as.data.frame(opt.path, discretes.as.factor = TRUE), par.set, y.name, control = control)
+    rt = makeMBOTask(as.data.frame(opt.path, discretes.as.factor = TRUE), par.set, control)
     model = train(learner, rt)
     if (loop %in% control$save.model.at)
       models[[as.character(loop)]] = model
@@ -124,8 +124,7 @@ mboSingleObj = function(fun, par.set, design=NULL, learner, control, show.info=T
   configureMlr(on.learner.error=oldopts[["ole"]], show.learner.output=oldopts[["slo"]])
 
   # make sure to strip name of y
-  # FIXME makeS3 Object and 
-  structure(list(
+  makeS3Obj("MBOResult",
     x = best$x,
     # strip name
     y = as.numeric(best$y),
@@ -135,7 +134,7 @@ mboSingleObj = function(fun, par.set, design=NULL, learner, control, show.info=T
     resample = res.vals,
     models = models,
     multipoint.lcb.lambdas = multipoint.lcb.lambdas
-  ), class = "MBOResult")
+  )
 }
 
 #' Print mbo result object.

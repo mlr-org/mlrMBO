@@ -79,6 +79,7 @@ generateMBODesign = function(design, fun, par.set, control, show.info, oldopts, 
   if (all(y.name %in% colnames(design))) {
     design.y = as.matrix(design[, y.name])
     error.messages = rep("", nrow(design.y))
+    # FIXME: Print the design on the console! Even if it is provided!
   } else if (!any(y.name %in% colnames(design))){
     if (show.info)
       messagef("Computing y column for design. Was not provided")

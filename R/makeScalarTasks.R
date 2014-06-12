@@ -6,7 +6,7 @@
 # vectors are sampled uniquely from this rows. Notice: The first control$number.of.target rows
 # have to be the margin rows, as generated in mboParego
 #
-# @return
+# @return list of
 #   tasks: list of tasks
 #   weights: matrix of used weight vectors
 makeScalarTasks = function(design, par.set, control, all.possible.weights) {

@@ -1,19 +1,9 @@
 # Evaluates target fitness function on given set of points.
 #
-# @param fun [\code{function(x, ...)}]\cr
-#   Fitness function to minimize. The first argument has to be a list of values.
-#   The function has to return a single numerical value.
-# @param par.set [\code{\link[ParamHelpers]{ParamSet}}]\cr
-#   Collection of parameters and their constraints for optimization.
+# params fun, par.set, opt.path, control, show.info and more.args as usual
+#
 # @param xs [\code{list}]\cr
 #   Set of points on which fun shall be evaluated.
-# @param opt.path [\code{\link[ParamHelpers]{OptPath}}]\cr
-#   Optimization path to save of type \code{\link[ParamHelpers]{OptPath}}.
-# @param control [\code{\link{MBOControl}}]\cr
-#   Control object for mbo.
-# @param show.info [\code{logical(1)}]\cr
-#   Show info message after each function evaluation?
-#   Default is \code{TRUE}.
 # @param oldopts [\code{list}]\cr
 #   Old mlr configuration.
 # @param more.args [\code{list}]\cr
@@ -34,15 +24,13 @@ evalTargetFun = function(fun, par.set, xs, opt.path, control, show.info, oldopts
   }
   # restore mlr configuration
   configureMlr(on.learner.error = oldopts[["ole"]], show.learner.output = oldopts[["slo"]])
-
-
   
   # If an error occurs in f and we don't want to impute, stop - in this case
   # parallelMap gets NULL as impute function. In this case, execution will
   # stop at this line. Otherwise we use the identity for imputation - now
   # every element in z could be an error object.
   z = parallelMap(fun2, xs, impute.error = if(control$impute.errors) identity else NULL)
-  # Check for errors - impute them with NA for now and save the error message
+  # Check for errors - impute them with NA and save the error message
   error.messages = character(length(z))
   for (index in seq_along(z)) {
     if(is.error(z[[index]])) {

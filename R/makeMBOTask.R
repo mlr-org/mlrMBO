@@ -6,16 +6,12 @@
 #   Name of y-column for target values in optimization path.
 # @return [\code{\link[mlr]{SupervisedTask}]:
 #   List of repaired points.
-makeMBOTask = function(design, par.set, y.name, control) {
+makeMBOTask = function(design, par.set, control) {
   design$dob = design$eol = design[[control$infill.crit]] = design$error.message = NULL
-  # FIXME use convertDFCols!
-  if (any(sapply(design, is.integer)))
-    design = as.data.frame(lapply(design, function(x) if(is.integer(x)) as.numeric(x) else x))
-  if (any(sapply(design, is.logical)))
-    design = as.data.frame(lapply(design, function(x) if(is.logical(x)) as.factor(x) else x))
+  design = convertDataFrameCols(design, ints.as.num = TRUE, logicals.as.factor = TRUE)
   # FIXME Use mlr here!
   design = imputeFeatures(design, par.set, control)
   #if (control$rank.trafo)
   #  design[,y.name] = rank(design[,y.name])
-  makeRegrTask(target=y.name, data=design)
+  makeRegrTask(target = control$y.name, data = design)
 }

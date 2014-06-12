@@ -382,7 +382,15 @@ makeMBOControl = function(number.of.targets=1L,
       stopf("You must specify a file for saving.")
     } else {
       checkArg(save.file.path, "character", len = 1)
+      # FIXME: How to check if save.file.path is correct for saving?
+      # This does not look like a cool way to do it.
+      tmp = try(save(save.file.path, file = save.file.path))
+      if (inherits(tmp, "try-error"))
+        stopf("Please specify a correct save.file.path.")
     }
+  }
+  if (is.null(save.on.disk.at) & save.file.path != "") {
+    stopf("You specified a save.file.path, but you will never use it. You should specify iterations for saving.")
   }
   
   save.model.at = convertIntegers(save.model.at)

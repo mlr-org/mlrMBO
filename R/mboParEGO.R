@@ -79,7 +79,7 @@ mboParego = function(fun, par.set, design=NULL, learner, control, show.info=TRUE
   # restore mlr configuration
   configureMlr(on.learner.error=oldopts[["ole"]], show.learner.output=oldopts[["slo"]])
   
-  makeS3Obj("ParegoResult",
+  makeS3Obj("paregoResult",
     pareto.front = pareto.front,
     pareto.set = pareto.set,
     opt.path = opt.path,
@@ -94,7 +94,7 @@ mboParego = function(fun, par.set, design=NULL, learner, control, show.info=TRUE
 # @param ... [any]\cr
 #   Not used.
 #' @S3method print ParegoResult
-print.ParegoResult = function(x, ...) {
+print.paregoResult = function(x, ...) {
   print(x$pareto.front)
   print(tail(as.data.frame(x$opt.path), 10))
 }
