@@ -3,7 +3,7 @@
 checkStuff = function(fun, par.set, design, learner, control) {
   checkArg(fun, "function")
 
-  if (hasDiscrete(par.set) && !learner$factors) {
+  if (hasDiscrete(par.set) && !mlr:::hasProperties(learner, "factors")) {
     stop("Provided learner does not support factor parameters.")
   }
 
@@ -30,12 +30,14 @@ checkStuff = function(fun, par.set, design, learner, control) {
   }
 
   if (control$propose.points == 1L) {
-    if(control$infill.crit %in% c("ei", "aei", "lcb") && learner$predict.type != "se")
+    if(control$infill.crit %in% c("ei", "aei", "lcb") && learner$predict.type != "se") {
+      # FIXME hasProperties! without mlr:::
       stopf("For infill criterion '%s' predict.type of learner %s must be set to 'se'!%s",
         control$infill.crit, learner$id,
-        ifelse(learner$se, "",
+        ifelse(mlr:::hasProperties(learner, "se"), "",
           "\nBut this learner does not seem to support prediction of standard errors! You could use the mlr wrapper makeBaggingWrapper to bootstrap the standard error estimator."))
-  } else { # multipoint proposal
+    }
+        } else { # multipoint proposal
     if ((control$multipoint.method %in% c("lcb", "cl", "lcb") ||
          control$multipoint.method == "multicrit" && control$multipoint.multicrit.objective != "mean.dist" )
       && learner$predict.type != "se") {
@@ -44,7 +46,7 @@ checkStuff = function(fun, par.set, design, learner, control) {
         ifelse(control$multipoint.method == "multicrit",
           sprintf(" with objective '%s'", control$multipoint.multicrit.obj), ""),
         learner$id,
-        ifelse(learner$se, "",
+        ifelse(mlr:::hasProperties(learner, "se"), "",
           "\nBut this learner does not seem to support prediction of standard errors!"))
     }
   }

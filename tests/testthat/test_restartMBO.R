@@ -1,6 +1,9 @@
 context("restart MBO")
 
 test_that("restart MBO", {
+  # make sure there is no or - object in the environment
+  if (exists("or"))
+    rm(or)
   f = function(x) {
     i <<- i + 1
     if (i > 12)
@@ -20,7 +23,7 @@ test_that("restart MBO", {
   # First test sombo
   learner = makeLearner("regr.randomForest")
   save.file = tempfile(fileext  ="mboData")
-  ctrl = makeMBOControl(iters = 15, infill.opt.focussearch.points = 100, save.on.disk.at = 0:14,
+  ctrl = makeMBOControl(iters = 7, infill.opt.focussearch.points = 10, save.on.disk.at = 0:7,
     save.file.path = save.file, init.design.points = 10L, suppress.eval.errors = TRUE)
   try(or <- mbo(f, ps, learner = learner, control = ctrl, show.info = FALSE), silent = TRUE)
   for(i in 1:100) {
@@ -28,7 +31,7 @@ test_that("restart MBO", {
     if(exists("or"))
       break
   }
-  expect_equal(getOptPathLength(or$opt.path), 25)
+  expect_equal(getOptPathLength(or$opt.path), 17)
   
   # Now test parEGO
   f = function(x) {
@@ -42,8 +45,8 @@ test_that("restart MBO", {
   environment(f)$i <- 0
   
   f = makeMBOFunction(f)
-  ctrl = makeMBOControl(iters = 15, infill.opt.focussearch.points = 100, save.on.disk.at = 0:14,
-    save.file.path = save.file, init.design.points = 10L, number.of.targets = 2)
+  ctrl = makeMBOControl(iters = 7, infill.opt.focussearch.points = 100, save.on.disk.at = 0:7,
+    save.file.path = save.file, init.design.points = 10L, number.of.targets = 2, parego.s = 100)
   rm(or)
   try(or <- mbo(f, ps, learner = learner, control = ctrl, show.info = FALSE), silent = TRUE)
   for(i in 1:100) {
@@ -51,5 +54,5 @@ test_that("restart MBO", {
     if(exists("or"))
       break
   }
-  expect_equal(getOptPathLength(or$opt.path), 25)
+  expect_equal(getOptPathLength(or$opt.path), 17)
 })

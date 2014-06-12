@@ -31,7 +31,12 @@ mboParego = function(fun, par.set, design=NULL, learner, control, show.info=TRUE
   times = mbo.design$times
   y.name = control$y.name
   # we now have design.y and design
-
+  
+  
+  # new control object for the skalar single obj. optimization
+  ctrl2 = control
+  ctrl2$minimize = TRUE
+  
   # Save on disk?
   if (0 %in% control$save.on.disk.at) {
     save(list = c("opt.path", "fun", "par.set", "learner", "control", "show.info", "more.args"),
@@ -55,7 +60,7 @@ mboParego = function(fun, par.set, design=NULL, learner, control, show.info=TRUE
     models = lapply(scalar.tasks, train, learner = learner)
     # propose new points and evaluate target function
     prop.designs = lapply(models, proposePoints, par.set = par.set,
-      control = control, opt.path = opt.path)
+      control = ctrl2, opt.path = opt.path)
     prop.designs = do.call(rbind, lapply(prop.designs, function(x) x$prop.points))
     xs = dfRowsToList(prop.designs, par.set)
     xs = lapply(xs, repairPoint, par.set = par.set)

@@ -45,9 +45,12 @@ makeScalarTasks = function(design, par.set, control, all.possible.weights) {
   tasks = vector(mode = "list", length = control$parego.propose.points)
   for (loop in 1:control$parego.propose.points) {
     lambda = lambdas[loop, ]
+    # Make sure we allway minimize!
+    min.cor = ifelse(control$minimize, 1, -1)
     # Create the scalarized response 
     y.scalarized = sapply(1:nrow(design.y), function(i)
-      max(lambda * design.y[i, ]) + control$parego.rho * sum(lambda * design.y[i, ]))
+      max(lambda * design.y[i, ] * min.cor) +
+        control$parego.rho * sum(lambda * design.y[i, ] * min.cor))
     regr.design = cbind(design, setColNames(data.frame(y.scalarized), "y.scalarized"))
     regr.design = regr.design[, -which(names(design) %in% control$y.name)]
     tasks[[loop]] = makeRegrTask(target = "y.scalarized", data = regr.design)
