@@ -87,13 +87,13 @@ mboParego = function(fun, par.set, design=NULL, learner, control, show.info=TRUE
   )
 }
 
-# Print Parego result object.
-#
-# @param x [\code{\link{ParegoResult}}]\cr
-#   mbo result object instance.
-# @param ... [any]\cr
-#   Not used.
-#' @S3method print ParegoResult
+#' Print Parego result object.
+#'
+#' @param x [\code{\link{paregoResult}}]\cr
+#'   mbo result object instance.
+#' @param ... [any]\cr
+#'   Not used.
+#' @S3method print paregoResult
 print.paregoResult = function(x, ...) {
   print(x$pareto.front)
   print(tail(as.data.frame(x$opt.path), 10))
