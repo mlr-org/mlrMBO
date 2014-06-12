@@ -11,7 +11,7 @@
 #'   multicriteria optimization, default ist 1.
 #' @param multicrit.method [\code{character(1)}]\cr
 #'   Which multicrit method should be used? At the moment only parego is
-#'   supported, which is also the default. 
+#'   supported, which is also the default.
 #' @param init.design.points [\code{integer(1)}]\cr
 #'   Number of points in inital design.
 #'   Only used if no design is given in \code{mbo} function.
@@ -158,7 +158,7 @@
 #' @param parego.s [\code{integer(1)}]\cr
 #'   Parameter of parego - controls the number of weighting vectors. The default
 #'   depends on \code{number.of.targets} and leads to 100000 different possible
-#'   weight vectors. The defaults for (2, 3, 4, 5, 6) dimensions are (100000, 
+#'   weight vectors. The defaults for (2, 3, 4, 5, 6) dimensions are (100000,
 #'   450, 75, 37, 23) and 10 for higher dimensions.
 #' @param parego.rho [\code{numeric(1)}]\cr
 #'   Parameter of parego - factor for Tchebycheff function. Default 0.05 as
@@ -274,7 +274,7 @@ makeMBOControl = function(number.of.targets=1L,
 ) {
 
   requirePackages("lhs", "makeMBOControl")
-  
+
   number.of.targets = convertInteger(number.of.targets)
   checkArg(number.of.targets, "integer", len = 1L, min = 1L, na.ok = FALSE)
   checkArg(multicrit.method, choices = c("parego"))
@@ -340,16 +340,16 @@ makeMBOControl = function(number.of.targets=1L,
   parego.sample.more.weights = convertInteger(parego.sample.more.weights)
   checkArg(parego.sample.more.weights, "numeric", len=1L, na.ok=FALSE, lower=1)
   checkArg(parego.use.margin.points, "logical", len=number.of.targets, na.ok=FALSE, lower=1)
-  
-  
+
+
   if (sum(parego.use.margin.points) > parego.propose.points)
     stopf("Can't use %s margin points when only proposing %s points each iteration.",
       sum(parego.use.margin.points), parego.propose.points)
   number.of.weights = choose(parego.s + number.of.targets - 1, number.of.targets - 1)
   if (parego.sample.more.weights * parego.propose.points > number.of.weights)
     stop("Trying to sample more weights than exists. Increase parego.s or decrease number of weights.")
-  
-  if (missing(impute)) 
+
+  if (missing(impute))
     impute = rep(list(function(x, y, opt.path)
       stopf("Infeasible y=%s value encountered at %s", as.character(y), convertToShortString(x))),
       number.of.targets)
@@ -374,7 +374,7 @@ makeMBOControl = function(number.of.targets=1L,
   if(number.of.targets > 1 && length(y.name) == 1 && y.name == "y")
     y.name = paste("y", 1:number.of.targets, sep = "_")
   checkArg(y.name, "character", len=number.of.targets, na.ok=FALSE)
-  
+
   if (!is.null(save.on.disk.at)) {
     save.on.disk.at = convertInteger(save.on.disk.at)
     checkArg(save.on.disk.at, "integer")
@@ -392,7 +392,7 @@ makeMBOControl = function(number.of.targets=1L,
   if (is.null(save.on.disk.at) & save.file.path != "") {
     stopf("You specified a save.file.path, but you will never use it. You should specify iterations for saving.")
   }
-  
+
   save.model.at = convertIntegers(save.model.at)
   checkArg(save.model.at, "integer", na.ok=FALSE, lower=0L, upper=iters)
 
@@ -472,7 +472,7 @@ makeMBOControl = function(number.of.targets=1L,
 #'   Control object.
 #' @param ... [any]\cr
 #'   Not used.
-#' @S3method print MBOControl
+#' @export
 print.MBOControl = function(x, ...) {
   catf("Objective                   : %s = %s!", x$y.name, ifelse(x$minimize, "min", "max"))
   catf("Function type               : %s",  ifelse(x$noisy, "noisy", "deterministic"))

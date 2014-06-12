@@ -56,7 +56,6 @@
 #'   Further parameters.
 #FIXME: what are they used for? Document!
 #' @return [\code{list}]. List containing separate ggplot plots for each iteration.
-#' @S3method autoplot MBOExampleRun
 #' @export
 autoplot.MBOExampleRun = function(object, iters, pause=TRUE, densregion=TRUE,
   se.factor=1, xlim, ylim, point.size=3, line.size=1, trafo=NULL, ...) {

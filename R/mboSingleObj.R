@@ -24,10 +24,10 @@ mboSingleObj = function(fun, par.set, design=NULL, learner, control, show.info=T
     ole = getOption("mlr.on.learner.error"),
     slo = getOption("mlr.show.learner.output")
   )
-  
+
   # get parameter ids repeated length-times and appended number
   y.name = control$y.name
-  
+
   # generate initial design
   mbo.design = generateMBODesign(design, fun, par.set, control, show.info, oldopts, more.args)
   design = cbind(mbo.design$design.x, setColNames(mbo.design$design.y, y.name))
@@ -51,7 +51,7 @@ mboSingleObj = function(fun, par.set, design=NULL, learner, control, show.info=T
     r = resample(learner, rt, control$resample.desc, measures=control$resample.measures)
     res.vals[["0"]] = r$aggr
   }
-  
+
   # Save on disk?
   if (0 %in% control$save.on.disk.at) {
     save(list = c("opt.path", "fun", "par.set", "learner", "control", "show.info", "more.args"),
@@ -124,7 +124,7 @@ mboSingleObj = function(fun, par.set, design=NULL, learner, control, show.info=T
   configureMlr(on.learner.error=oldopts[["ole"]], show.learner.output=oldopts[["slo"]])
 
   # make sure to strip name of y
-  makeS3Obj("MBOResult",
+  makeS3Obj(c("MBOSingleObjResult", "MBOResult"),
     x = best$x,
     # strip name
     y = as.numeric(best$y),
@@ -137,13 +137,7 @@ mboSingleObj = function(fun, par.set, design=NULL, learner, control, show.info=T
   )
 }
 
-#' Print mbo result object.
-#'
-#' @param x [\code{\link{MBOResult}}]\cr
-#'   mbo result object instance.
-#' @param ... [any]\cr
-#'   Not used.
-#' @S3method print MBOResult
+#' @export
 print.MBOResult = function(x, ...) {
   op = x$opt.path
   catf("Recommended parameters:")

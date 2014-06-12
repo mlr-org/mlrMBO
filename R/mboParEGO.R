@@ -16,14 +16,14 @@ mboParego = function(fun, par.set, design=NULL, learner, control, show.info=TRUE
     ole = getOption("mlr.on.learner.error"),
     slo = getOption("mlr.show.learner.output")
   )
-  
+
   # Calculate all possible weight vectors and save them
   all.possible.weights = combWithSum(control$parego.s, control$number.of.targets) / control$parego.s
   # rearrange them a bit - we want to have the margin weights on top of the matrix
   # tricky: all margin weights have maximal varianz
   vars = apply(all.possible.weights, 1, var)
   all.possible.weights = rbind(diag(control$number.of.targets), all.possible.weights[!vars == max(vars),])
-  
+
   # generate initial design
   mbo.design = generateMBODesign(design, fun, par.set, control, show.info, oldopts, more.args)
   design = cbind(mbo.design$design.x, mbo.design$design.y)
@@ -31,17 +31,17 @@ mboParego = function(fun, par.set, design=NULL, learner, control, show.info=TRUE
   times = mbo.design$times
   y.name = control$y.name
   # we now have design.y and design
-  
+
   # Save on disk?
   if (0 %in% control$save.on.disk.at) {
     save(list = c("opt.path", "fun", "par.set", "learner", "control", "show.info", "more.args"),
       file = control$save.file.path)
   }
-    
+
   # initialize data.frame to save the used weights
   # FIXME: We want to save this information in the opt.path!
   weight.path = data.frame()
-  
+
   # do the mbo magic
   # if we are restarting from a save file, we possibly start in a higher iteration
   start.loop = max(getOptPathDOB(opt.path)) + 1
@@ -74,12 +74,12 @@ mboParego = function(fun, par.set, design=NULL, learner, control, show.info=TRUE
   pareto.inds = getOptPathParetoFront(opt.path, index = TRUE)
   pareto.front = getOptPathY(opt.path)[pareto.inds, ]
   pareto.set = lapply(pareto.inds, function(i) getOptPathEl(opt.path, i)$x)
-  
+
 
   # restore mlr configuration
   configureMlr(on.learner.error=oldopts[["ole"]], show.learner.output=oldopts[["slo"]])
-  
-  makeS3Obj("paregoResult",
+
+  makeS3Obj(c("MBOMultiObjResult", "MBOResult"),
     pareto.front = pareto.front,
     pareto.set = pareto.set,
     opt.path = opt.path,
@@ -87,23 +87,17 @@ mboParego = function(fun, par.set, design=NULL, learner, control, show.info=TRUE
   )
 }
 
-#' Print Parego result object.
-#'
-#' @param x [\code{\link{paregoResult}}]\cr
-#'   mbo result object instance.
-#' @param ... [any]\cr
-#'   Not used.
-#' @S3method print paregoResult
-print.paregoResult = function(x, ...) {
+#' @export
+print.MBOMultiObjResult = function(x, ...) {
   print(x$pareto.front)
   print(tail(as.data.frame(x$opt.path), 10))
 }
 
 
 # small helper: calculate all integer vectors of length k with sum n
-combWithSum = function(n, k) { 
+combWithSum = function(n, k) {
   fun = function(n, k) {
-    if (k == 1L) 
+    if (k == 1L)
       list(n)
     else
       unlist(lapply(0:n, function(i) Map(c, i, fun(n - i, k - 1L))),
