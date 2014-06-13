@@ -157,7 +157,7 @@ exampleRun = function(fun, par.set, global.opt = NA_real_, learner, control,
   ), class="MBOExampleRun")
 }
 
-#' @method print MBOExampleRun
+#' @export
 print.MBOExampleRun = function(x, ...) {
   gap = calculateGap(as.data.frame(x$mbo.res$opt.path), x$global.opt, x$control)
   catf("MBOExampleRun")

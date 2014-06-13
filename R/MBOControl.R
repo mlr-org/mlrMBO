@@ -11,7 +11,7 @@
 #'   multicriteria optimization, default ist 1.
 #' @param multicrit.method [\code{character(1)}]\cr
 #'   Which multicrit method should be used? At the moment only parego is
-#'   supported, which is also the default. 
+#'   supported, which is also the default.
 #' @param init.design.points [\code{integer(1)}]\cr
 #'   Number of points in inital design.
 #'   Only used if no design is given in \code{mbo} function.
@@ -41,7 +41,7 @@
 #'   Alternatively, you may pass a function name as string.
 #' @param infill.crit.lcb.lambda [\code{numeric(1)}]\cr
 #'   Lambda parameter for lower confidence bound infill criterion.
-#'   Only used if \code{infill.crit="lcb"}, ignored otherwise.
+#'   Only used if \code{infill.crit == "lcb"}, ignored otherwise.
 #'   Deafult is 1.
 #' @param infill.opt [\code{character(1)}]\cr
 #'   How should SINGLE points be proposed by using the surrogate model. Possible values are:
@@ -54,7 +54,7 @@
 #'   Alternatively, you may pass a function name as string.
 #' @param infill.opt.restarts [\code{integer(1)}]\cr
 #'   Number of independent restarts for optimizer of infill criterion.
-#'   If \code{infill.opt="cmaes"} the first start point for the optimizer is always the
+#'   If \code{infill.opt == "cmaes"} the first start point for the optimizer is always the
 #'   currently best point in the design of already visited points.
 #'   Subsequent restarts are started at random points.
 #'   Default is 1.
@@ -116,7 +116,7 @@
 #'   The population size is set to \code{propose.points}.
 #'   The selection criterion is \code{multipoint.multicrit.selection}.
 #'	 \dQuote{cl}: Proposes points by constant liar strategie.
-#'	 Only meaningfull if \code{infill.crit="lcb"}
+#'	 Only meaningfull if \code{infill.crit == "lcb"}
 #'   In the first step the kriging model is fitted based on the real data and the best point is calculated according to the regular EI-criterion.
 #'   Then, the function value of the best point is simply guessed by the worst seen function evaluation.
 #'   This lie is used to update the model in order to propose the subsequent point.
@@ -158,7 +158,7 @@
 #' @param parego.s [\code{integer(1)}]\cr
 #'   Parameter of parego - controls the number of weighting vectors. The default
 #'   depends on \code{number.of.targets} and leads to 100000 different possible
-#'   weight vectors. The defaults for (2, 3, 4, 5, 6) dimensions are (100000, 
+#'   weight vectors. The defaults for (2, 3, 4, 5, 6) dimensions are (100000,
 #'   450, 75, 37, 23) and 10 for higher dimensions.
 #' @param parego.rho [\code{numeric(1)}]\cr
 #'   Parameter of parego - factor for Tchebycheff function. Default 0.05 as
@@ -242,44 +242,44 @@
 #' @return [\code{\link{MBOControl}}].
 #' @aliases MBOControl
 #' @export
-makeMBOControl = function(number.of.targets=1L,
-  minimize=rep(TRUE, number.of.targets), multicrit.method="parego", noisy=FALSE,
-  init.design.points=20L, init.design.fun=maximinLHS, init.design.args=list(),
-  iters=10L, propose.points=1L, infill.crit="mean", infill.crit.lcb.lambda=1,
-  infill.opt="focussearch", infill.opt.restarts=1L,
-  infill.opt.focussearch.maxit=5L, infill.opt.focussearch.points=10000L,
-  infill.opt.cmaes.control=list(),
-  infill.opt.ea.maxit=500L, infill.opt.ea.mu=10L,
-  infill.opt.ea.sbx.eta=15, infill.opt.ea.sbx.p=0.5,
-  infill.opt.ea.pm.eta=15, infill.opt.ea.pm.p=0.5,
+makeMBOControl = function(number.of.targets = 1L,
+  minimize = rep(TRUE, number.of.targets), multicrit.method = "parego", noisy = FALSE,
+  init.design.points = 20L, init.design.fun = maximinLHS, init.design.args = list(),
+  iters = 10L, propose.points = 1L, infill.crit = "mean", infill.crit.lcb.lambda = 1,
+  infill.opt = "focussearch", infill.opt.restarts = 1L,
+  infill.opt.focussearch.maxit = 5L, infill.opt.focussearch.points = 10000L,
+  infill.opt.cmaes.control = list(),
+  infill.opt.ea.maxit = 500L, infill.opt.ea.mu = 10L,
+  infill.opt.ea.sbx.eta = 15, infill.opt.ea.sbx.p = 0.5,
+  infill.opt.ea.pm.eta = 15, infill.opt.ea.pm.p = 0.5,
   infill.opt.ea.lambda = 1L,
   feature.impute = "up",
-  multipoint.method="lcb",
-  multipoint.multicrit.objective="ei.dist",
-  multipoint.multicrit.dist="nearest.better",
-  multipoint.multicrit.selection="hypervolume",
-  multipoint.multicrit.maxit=100L,
-  multipoint.multicrit.sbx.eta=15, multipoint.multicrit.sbx.p=1,
-  multipoint.multicrit.pm.eta=15, multipoint.multicrit.pm.p=1,
-  parego.s, parego.rho=0.05, parego.propose.points=1L,
-  parego.use.margin.points=rep(FALSE, number.of.targets),
+  multipoint.method = "lcb",
+  multipoint.multicrit.objective = "ei.dist",
+  multipoint.multicrit.dist = "nearest.better",
+  multipoint.multicrit.selection = "hypervolume",
+  multipoint.multicrit.maxit = 100L,
+  multipoint.multicrit.sbx.eta = 15, multipoint.multicrit.sbx.p = 1,
+  multipoint.multicrit.pm.eta = 15, multipoint.multicrit.pm.p = 1,
+  parego.s, parego.rho = 0.05, parego.propose.points = 1L,
+  parego.use.margin.points = rep(FALSE, number.of.targets),
   parego.sample.more.weights = 5L,
-  final.method="best.true.y", final.evals=0L,
+  final.method = "best.true.y", final.evals = 0L,
   y.name = "y",
   impute, impute.errors = FALSE, suppress.eval.errors = TRUE, save.on.disk.at = NULL,
-  save.file.path = "", save.model.at=iters,
-  resample.at = integer(0), resample.desc = makeResampleDesc("CV", iter=10), resample.measures = list(mse),
+  save.file.path = "", save.model.at = iters,
+  resample.at = integer(0), resample.desc = makeResampleDesc("CV", iter = 10), resample.measures = list(mse),
   on.learner.error = "warn", show.learner.output = FALSE,
   output.num.format = "%.3g"
 ) {
 
   requirePackages("lhs", "makeMBOControl")
-  
+
   number.of.targets = convertInteger(number.of.targets)
   checkArg(number.of.targets, "integer", len = 1L, min = 1L, na.ok = FALSE)
   checkArg(multicrit.method, choices = c("parego"))
-  checkArg(minimize, "logical", len=number.of.targets, na.ok = FALSE)
-  checkArg(noisy, "logical", len=1L, na.ok = FALSE)
+  checkArg(minimize, "logical", len = number.of.targets, na.ok = FALSE)
+  checkArg(noisy, "logical", len = 1L, na.ok = FALSE)
 
   init.design.points = convertInteger(init.design.points)
   checkArg(init.design.points, "integer", len = 1L, na.ok = FALSE, lower = 4L)
@@ -287,94 +287,94 @@ makeMBOControl = function(number.of.targets=1L,
   checkArg(init.design.args, "list")
 
   iters = convertInteger(iters)
-  checkArg(iters, "integer", len=1L, na.ok=FALSE, lower=1L)
+  checkArg(iters, "integer", len = 1L, na.ok = FALSE, lower = 1L)
   propose.points = convertInteger(propose.points)
-  checkArg(propose.points, "integer", len=1L, na.ok=FALSE, lower=1L)
+  checkArg(propose.points, "integer", len = 1L, na.ok = FALSE, lower = 1L)
 
 
   # FIXME: BB: DO NOT FUCKING TOUCH THIS!
   # checkArg(infill.crit, choices = getSupportedInfillCritFunctions())
-  checkArg(infill.crit.lcb.lambda, "numeric", len=1L, na.ok=FALSE, lower=0)
+  checkArg(infill.crit.lcb.lambda, "numeric", len = 1L, na.ok = FALSE, lower = 0)
   checkArg(infill.opt, choices = getSupportedInfillOptFunctions())
   infill.opt.restarts = convertInteger(infill.opt.restarts)
-  checkArg(infill.opt.restarts, "integer", len=1L, na.ok=FALSE)
+  checkArg(infill.opt.restarts, "integer", len = 1L, na.ok = FALSE)
 
   infill.opt.focussearch.maxit = convertInteger(infill.opt.focussearch.maxit)
-  checkArg(infill.opt.focussearch.maxit, "integer", len=1L, na.ok=FALSE, lower=1L)
+  checkArg(infill.opt.focussearch.maxit, "integer", len = 1L, na.ok = FALSE, lower = 1L)
   infill.opt.focussearch.points = convertInteger(infill.opt.focussearch.points)
-  checkArg(infill.opt.focussearch.points, "integer", len=1L, na.ok=FALSE, lower=1L)
+  checkArg(infill.opt.focussearch.points, "integer", len = 1L, na.ok = FALSE, lower = 1L)
   checkArg(infill.opt.cmaes.control, "list")
 
   infill.opt.ea.maxit = convertInteger(infill.opt.ea.maxit)
-  checkArg(infill.opt.ea.maxit, "integer", len=1L, na.ok=FALSE, lower=1L)
+  checkArg(infill.opt.ea.maxit, "integer", len = 1L, na.ok = FALSE, lower = 1L)
   infill.opt.ea.mu = convertInteger(infill.opt.ea.mu)
-  checkArg(infill.opt.ea.mu, "integer", len=1L, na.ok=FALSE, lower=1L)
-  checkArg(infill.opt.ea.sbx.eta, "numeric", len=1L, na.ok=FALSE, lower=0)
-  checkArg(infill.opt.ea.sbx.p, "numeric", len=1L, na.ok=FALSE, lower=0, upper=1)
-  checkArg(infill.opt.ea.pm.eta, "numeric", len=1L, na.ok=FALSE, lower=0)
-  checkArg(infill.opt.ea.pm.p, "numeric", len=1L, na.ok=FALSE, lower=0, upper=1)
-  checkArg(infill.opt.ea.lambda, "integer", len=1L, na.ok=FALSE, lower=1L)
+  checkArg(infill.opt.ea.mu, "integer", len = 1L, na.ok = FALSE, lower = 1L)
+  checkArg(infill.opt.ea.sbx.eta, "numeric", len = 1L, na.ok = FALSE, lower = 0)
+  checkArg(infill.opt.ea.sbx.p, "numeric", len = 1L, na.ok = FALSE, lower = 0, upper = 1)
+  checkArg(infill.opt.ea.pm.eta, "numeric", len = 1L, na.ok = FALSE, lower = 0)
+  checkArg(infill.opt.ea.pm.p, "numeric", len = 1L, na.ok = FALSE, lower = 0, upper = 1)
+  checkArg(infill.opt.ea.lambda, "integer", len = 1L, na.ok = FALSE, lower = 1L)
 
-  checkArg(feature.impute, choices=c("up", "median"))
+  checkArg(feature.impute, choices = c("up", "median"))
 
   checkArg(multipoint.method, choices = getSupportedMultipointInfillOptFunctions())
-  checkArg(multipoint.multicrit.objective, choices=c("mean.dist", "ei.dist", "mean.se", "mean.se.dist"))
-  checkArg(multipoint.multicrit.selection, choices=c("hypervolume", "crowdingdist", "first", "last"))
-  checkArg(multipoint.multicrit.dist, choices=c("nearest.neighbor", "nearest.better"))
+  checkArg(multipoint.multicrit.objective, choices = c("mean.dist", "ei.dist", "mean.se", "mean.se.dist"))
+  checkArg(multipoint.multicrit.selection, choices = c("hypervolume", "crowdingdist", "first", "last"))
+  checkArg(multipoint.multicrit.dist, choices = c("nearest.neighbor", "nearest.better"))
   multipoint.multicrit.maxit = convertInteger(multipoint.multicrit.maxit)
-  checkArg(multipoint.multicrit.maxit, "integer", len=1L, na.ok=FALSE, lower=0L)
-  checkArg(multipoint.multicrit.sbx.eta, "numeric", len=1L, na.ok=FALSE, lower=0)
-  checkArg(multipoint.multicrit.sbx.p, "numeric", len=1L, na.ok=FALSE, lower=0, upper=1)
-  checkArg(multipoint.multicrit.pm.eta, "numeric", len=1L, na.ok=FALSE, lower=0)
-  checkArg(multipoint.multicrit.pm.p, "numeric", len=1L, na.ok=FALSE, lower=0, upper=1)
+  checkArg(multipoint.multicrit.maxit, "integer", len = 1L, na.ok = FALSE, lower = 0L)
+  checkArg(multipoint.multicrit.sbx.eta, "numeric", len = 1L, na.ok = FALSE, lower = 0)
+  checkArg(multipoint.multicrit.sbx.p, "numeric", len = 1L, na.ok = FALSE, lower = 0, upper = 1)
+  checkArg(multipoint.multicrit.pm.eta, "numeric", len = 1L, na.ok = FALSE, lower = 0)
+  checkArg(multipoint.multicrit.pm.p, "numeric", len = 1L, na.ok = FALSE, lower = 0, upper = 1)
 
   if (missing(parego.s))
     parego.s = switch(min(number.of.targets, 7), 1L, 100000L, 450L, 75L, 37L, 23L, 10L)
   parego.s = convertInteger(parego.s)
-  checkArg(parego.s, "integer", len=1L, na.ok=FALSE, lower=1)
-  checkArg(parego.rho, "numeric", len=1L, na.ok=FALSE, lower=0, upper=1)
+  checkArg(parego.s, "integer", len = 1L, na.ok = FALSE, lower = 1)
+  checkArg(parego.rho, "numeric", len = 1L, na.ok = FALSE, lower = 0, upper = 1)
   parego.propose.points = convertInteger(parego.propose.points)
-  checkArg(parego.propose.points, "integer", len=1L, na.ok=FALSE, lower=1)
+  checkArg(parego.propose.points, "integer", len = 1L, na.ok = FALSE, lower = 1)
   if (parego.propose.points == 1L)
     parego.sample.more.weights = 1L
   parego.sample.more.weights = convertInteger(parego.sample.more.weights)
-  checkArg(parego.sample.more.weights, "numeric", len=1L, na.ok=FALSE, lower=1)
-  checkArg(parego.use.margin.points, "logical", len=number.of.targets, na.ok=FALSE, lower=1)
-  
-  
+  checkArg(parego.sample.more.weights, "numeric", len = 1L, na.ok = FALSE, lower = 1)
+  checkArg(parego.use.margin.points, "logical", len = number.of.targets, na.ok = FALSE, lower = 1)
+
+
   if (sum(parego.use.margin.points) > parego.propose.points)
     stopf("Can't use %s margin points when only proposing %s points each iteration.",
       sum(parego.use.margin.points), parego.propose.points)
   number.of.weights = choose(parego.s + number.of.targets - 1, number.of.targets - 1)
   if (parego.sample.more.weights * parego.propose.points > number.of.weights)
     stop("Trying to sample more weights than exists. Increase parego.s or decrease number of weights.")
-  
-  if (missing(impute)) 
+
+  if (missing(impute))
     impute = rep(list(function(x, y, opt.path)
-      stopf("Infeasible y=%s value encountered at %s", as.character(y), convertToShortString(x))),
+      stopf("Infeasible y = %s value encountered at %s", as.character(y), convertToShortString(x))),
       number.of.targets)
   else if (is.function(impute)) {
-    checkArg(impute, formals=c("x", "y", "opt.path"))
+    checkArg(impute, formals = c("x", "y", "opt.path"))
     impute = rep(list(impute), number.of.targets)
   } else {
     checkArg(impute, cl = "list", len = number.of.targets)
-    lapply(impute, function(fun) checkArg(fun, formals=c("x", "y", "opt.path")))
+    lapply(impute, function(fun) checkArg(fun, formals = c("x", "y", "opt.path")))
   }
   if (is.null(names(impute)))
     names(impute) = y.name
   else
     checkArg(names(impute), choices = list(y.name))
-  checkArg(impute.errors, "logical", len=1L, na.ok=FALSE)
-  checkArg(suppress.eval.errors, "logical", len=1L, na.ok=FALSE)
+  checkArg(impute.errors, "logical", len = 1L, na.ok = FALSE)
+  checkArg(suppress.eval.errors, "logical", len = 1L, na.ok = FALSE)
 
-  checkArg(final.method, choices=c("last.proposed", "best.true.y", "best.predicted"))
+  checkArg(final.method, choices = c("last.proposed", "best.true.y", "best.predicted"))
   final.evals = convertInteger(final.evals)
-  checkArg(final.evals, "integer", len=1L, na.ok=FALSE, lower=0L)
+  checkArg(final.evals, "integer", len = 1L, na.ok = FALSE, lower = 0L)
 
   if(number.of.targets > 1 && length(y.name) == 1 && y.name == "y")
     y.name = paste("y", 1:number.of.targets, sep = "_")
-  checkArg(y.name, "character", len=number.of.targets, na.ok=FALSE)
-  
+  checkArg(y.name, "character", len = number.of.targets, na.ok = FALSE)
+
   if (!is.null(save.on.disk.at)) {
     save.on.disk.at = convertInteger(save.on.disk.at)
     checkArg(save.on.disk.at, "integer")
@@ -392,13 +392,13 @@ makeMBOControl = function(number.of.targets=1L,
   if (is.null(save.on.disk.at) & save.file.path != "") {
     stopf("You specified a save.file.path, but you will never use it. You should specify iterations for saving.")
   }
-  
+
   save.model.at = convertIntegers(save.model.at)
-  checkArg(save.model.at, "integer", na.ok=FALSE, lower=0L, upper=iters)
+  checkArg(save.model.at, "integer", na.ok = FALSE, lower = 0L, upper = iters)
 
   if (length(resample.at) > 0) {
     resample.at = convertIntegers(resample.at)
-    checkArg(resample.at, "integer", na.ok=FALSE, lower=0L, upper=iters)
+    checkArg(resample.at, "integer", na.ok = FALSE, lower = 0L, upper = iters)
   } else {
     resample.at = integer(0)
   }
@@ -472,7 +472,7 @@ makeMBOControl = function(number.of.targets=1L,
 #'   Control object.
 #' @param ... [any]\cr
 #'   Not used.
-#' @S3method print MBOControl
+#' @export
 print.MBOControl = function(x, ...) {
   catf("Objective                   : %s = %s!", x$y.name, ifelse(x$minimize, "min", "max"))
   catf("Function type               : %s",  ifelse(x$noisy, "noisy", "deterministic"))
