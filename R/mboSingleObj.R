@@ -41,7 +41,6 @@ mboSingleObj = function(fun, par.set, design = NULL, learner, control, show.info
         ex$multipoint.lcb.lambda = lambdas[i]
       exs[[i]] = ex
     }
-    print(exs)
     return(exs)
   }
 
@@ -77,9 +76,9 @@ mboSingleObj = function(fun, par.set, design = NULL, learner, control, show.info
   for (loop in start.loop:control$iters) {
 
     # propose new points and evaluate target function
-    prop.design = proposePoints(model, par.set, control, opt.path)
-    prop.points = prop.design$prop.points
-    prop.points.crit.values = prop.design$prop.points.crit.values
+    prop = proposePoints(model, par.set, control, opt.path)
+    prop.points = prop$prop.points
+    crit.vals = prop$crit.vals
 
     # handle lambdas for this method
     if (islcb) {
@@ -89,9 +88,8 @@ mboSingleObj = function(fun, par.set, design = NULL, learner, control, show.info
 
     xs = dfRowsToList(prop.points, par.set)
     xs = lapply(xs, repairPoint, par.set = par.set)
-    model.fail = inherits(model, "FailureModel")
     ys = evalTargetFun(fun, par.set, loop, xs, opt.path, control, show.info, oldopts, more.args,
-      extras = getExtras(prop.points.crit.values, model.fail, multipoint.lcb.lambdas))
+      extras = getExtras(crit.vals, prop$model.fail, multipoint.lcb.lambdas))
 
     rt = makeMBOTask(as.data.frame(opt.path, discretes.as.factor = TRUE), par.set, control)
     model = train(learner, rt)
