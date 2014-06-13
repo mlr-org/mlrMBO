@@ -23,35 +23,31 @@ mboSingleObj = function(fun, par.set, design = NULL, learner, control, show.info
   islcb = (control$propose.points > 1L && control$multipoint.method == "lcb")
   ninit = control$init.design.points
 
-  # create extra.par.set and opt.path
-  extra.par.set = if (islcb) {
-    makeParamSet(
-      makeNumericParam(crit),
-      makeNumericParam("multipoint.lcb.lambda")
-    )
-  } else {
-    makeParamSet(
-      makeNumericParam(crit)
-    )
-  }
+  # create opt.path
   opt.path = makeOptPathDF(
-    par.set, include.error.message = TRUE, include.exec.time = TRUE,
-    y.names = control$y.name,
+    par.set, y.names = control$y.name,
     minimize = control$minimize,
-    extra.par.set = extra.par.set
+    include.error.message = TRUE, include.exec.time = TRUE, include.extra = TRUE
   )
 
   # helper to get extras-list for opt.path logging
-  getExtras = function(crit.vals, lambdas) {
-    if (!islcb)
-      lapply(crit.vals, namedList, name = crit)
-    else
-     Map(function(v, l) setNames(list(v, l), c(crit, "multipoint.lcb.lambda")), crit.vals, lamdas)
+  getExtras = function(crit.vals, model.fail, lambdas) {
+    n = length(crit.vals)
+    exs = vector("list", n)
+    for (i in 1:n) {
+      ex = list(crit.vals[i], .model.fail = model.fail)
+      names(ex)[1] = crit
+      if (islcb)
+        ex$multipoint.lcb.lambda = lambdas[i]
+      exs[[i]] = ex
+    }
+    print(exs)
+    return(exs)
   }
 
   # generate initial design
   mbo.design = generateMBODesign(design, fun, par.set, opt.path, control, show.info, oldopts, more.args,
-    extras = getExtras(rep(NA_real_, ninit), rep(NA_real_, ninit)))
+    extras = getExtras(crit.vals = rep(NA_real_, ninit), model.fail = FALSE, lambdas = rep(NA_real_, ninit)))
 
   # set up initial mbo task
   rt = makeMBOSingleObjTask(par.set, opt.path, control)
@@ -93,8 +89,9 @@ mboSingleObj = function(fun, par.set, design = NULL, learner, control, show.info
 
     xs = dfRowsToList(prop.points, par.set)
     xs = lapply(xs, repairPoint, par.set = par.set)
+    model.fail = inherits(model, "FailureModel")
     ys = evalTargetFun(fun, par.set, loop, xs, opt.path, control, show.info, oldopts, more.args,
-      extras = getExtras(prop.points.crit.values, multipoint.lcb.lambdas))
+      extras = getExtras(prop.points.crit.values, model.fail, multipoint.lcb.lambdas))
 
     rt = makeMBOTask(as.data.frame(opt.path, discretes.as.factor = TRUE), par.set, control)
     model = train(learner, rt)
