@@ -25,7 +25,7 @@ mboSingleObj = function(fun, par.set, design = NULL, learner, control, show.info
   fevals = control$final.evals
 
   # create opt.path
-  opt.path = makeMBOOptPath(par.set, opt.path)
+  opt.path = makeMBOOptPath(par.set, control)
 
   # helper to get extras-list for opt.path logging
   getExtras = function(crit.vals, model.fail, lambdas) {
@@ -80,8 +80,8 @@ mboSingleObj = function(fun, par.set, design = NULL, learner, control, show.info
     }
 
     extras = getExtras(crit.vals, prop$model.fail, multipoint.lcb.lambdas)
-    evalProposedPoints(loop, props.points, par.set, opt.path, control,
-      fun, learner, show.info, more.args, extras)
+    evalProposedPoints(loop, prop.points, par.set, opt.path, control,
+      fun, learner, show.info, oldopts, more.args, extras)
 
     rt = makeMBOSingleObjTask(par.set, opt.path, control)
     model = train(learner, rt)
