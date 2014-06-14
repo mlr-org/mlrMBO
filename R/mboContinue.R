@@ -10,7 +10,6 @@
 #' @return See \code{\link{mbo}}.
 #' @export
 mboContinue = function(file) {
-
   checkArg(file, "character", len = 1)
   if (!file.exists(file)) {
     stopf("Specified file does not exist.")
@@ -18,14 +17,15 @@ mboContinue = function(file) {
 
   # load the file and check if every required object exists
   f = load2(file, simplify = FALSE)
-  if (any(c("fun", "par.set", "opt.path", "learner", "control", "show.info", "more.args") %nin% names(f)))
+  print(names(f))
+  if (any(c("fun", "learner", "par.set", "opt.path", "control", "show.info", "more.args") %nin% names(f)))
     stopf("Whatever the file contained you specified - it was not saved by mbo. Please specify a correct file.")
 
   # Restart mbo
-  if (control$number.of.targets == 1L) {
+  if (f$control$number.of.targets == 1L) {
     mboSingleObj(f$fun, f$par.set, f$opt.path, f$learner, f$control, f$show.info, f$more.args, continue = f$opt.path)
   } else {
-    if (control$multicrit.method == "parego")
+    if (f$control$multicrit.method == "parego")
       mboParego(f$fun, f$par.set, f$opt.path, f$learner, f$control, f$show.info, f$more.args, continue = f$opt.path)
   }
 }

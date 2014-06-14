@@ -61,7 +61,7 @@ mboSingleObj = function(fun, par.set, design = NULL, learner, control, show.info
     res.vals[["0"]] = r$aggr
   }
 
-  saveStateOnDisk(0L, control, fun, learner, par.set, opt.path, control, show.info, more.args)
+  saveStateOnDisk(0L, fun, learner, par.set, opt.path, control, show.info, more.args)
 
   # do the mbo magic
   # if we are restarting from a save file, we possibly start in a higher iteration
@@ -85,7 +85,7 @@ mboSingleObj = function(fun, par.set, design = NULL, learner, control, show.info
       r = resample(learner, rt, control$resample.desc, measures = control$resample.measures)
       res.vals[[as.character(loop)]] = r$aggr
     }
-    saveStateOnDisk(loop, control, fun, learner, par.set, opt.path, control, show.info, more.args)
+    saveStateOnDisk(loop, fun, learner, par.set, opt.path, control, show.info, more.args)
   }
 
   design = getTaskData(rt, target.extra = TRUE)$data

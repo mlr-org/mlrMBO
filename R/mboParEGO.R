@@ -41,7 +41,7 @@ mboParEGO = function(fun, par.set, design = NULL, learner, control, show.info = 
   ctrl2 = control
   ctrl2$minimize = TRUE
 
-  saveStateOnDisk(0L, control, fun, learner, par.set, opt.path, control, show.info, more.args)
+  saveStateOnDisk(0L, fun, learner, par.set, opt.path, control, show.info, more.args)
 
   # do the mbo magic
   # if we are restarting from a save file, we possibly start in a higher iteration
