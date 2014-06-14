@@ -30,9 +30,9 @@ test_that("impute y", {
   # Check for correct error messages
   na.inds = which(getOptPathY(res$opt.path) == 0)
   for (ind in 1:getOptPathLength(res$opt.path)) {
-    if(ind %in% na.inds) {
+    if(ind %in% na.inds)
       expect_equal(grep("mlrMBO:", getOptPathErrorMessages(res$opt.path)[ind]), 1)
-    } else
+    else
       expect_equal(NA_character_, getOptPathErrorMessages(res$opt.path)[ind])
   }
 
@@ -44,10 +44,9 @@ test_that("impute y", {
   # Check for correct error messages
   na.inds = which(getOptPathY(res$opt.path) == 0)
   for (ind in 1:getOptPathLength(res$opt.path)) {
-    if(ind %in% na.inds) {
-      expect_equal(grep("mlrMBO:", getOptPathErrorMessages(res$opt.path)[ind]), 1)
+    if(ind %in% na.inds)
       expect_equal(grep("foo", getOptPathErrorMessages(res$opt.path)[ind]), 1)
-    } else
+    else
       expect_equal(NA_character_, getOptPathErrorMessages(res$opt.path)[ind])
   }
 

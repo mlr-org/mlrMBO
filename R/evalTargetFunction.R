@@ -57,7 +57,6 @@ evalTargetFun = function(fun, par.set, dobs, xs, opt.path, control, show.info, o
 
     # objective fun problem? allow user to handle it
     y2 = y # changed y that we will use in opt.path
-    errmsg = NA_character_
     if (!yvalid) {
       if (is.null(imputey)) { # ok then stop
         if (is.error(y))
@@ -76,7 +75,7 @@ evalTargetFun = function(fun, par.set, dobs, xs, opt.path, control, show.info, o
       }
     }
 
-    showInfo(show.info, "[mbo] %i: %s : %s : %.1f secs%", dob,
+    showInfo(show.info, "[mbo] %i: %s : %s : %.1f secs%s", dob,
       paramValueToString(par.set, x, num.format = num.format),
       collapse(sprintf(num.format.string, y.name, y2), ", "),
       ytime,
