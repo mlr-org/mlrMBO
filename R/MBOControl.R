@@ -30,7 +30,7 @@
 #'   Number of sequential optimization steps.
 #'   Default is 10.
 #' @param propose.points [\code{integer(1)}]\cr
-#'   Number of proposed points after optimizing the surrogate model with \code{infill.opt}.
+#'   Number of proposed / really evaluated points each iteration.
 #'   Default is 1.
 #' @param infill.crit [\code{character(1)}]\cr
 #'   How should infill points be rated. Possible parameter values are:
@@ -163,17 +163,16 @@
 #' @param parego.rho [\code{numeric(1)}]\cr
 #'   Parameter of parego - factor for Tchebycheff function. Default 0.05 as
 #'   suggested in parego paper.
-#' @param parego.propose.points [\code{integer(1)}]\cr
-#'   Number of points to propose in each parego iteration. Default is 1L.
 #' @param parego.sample.more.weights [\code{numeric(1)}]\cr
-#'   In each iteration \code{parego.sample.more.weights} * \code{parego.propose.points}
+#'   In each iteration \code{parego.sample.more.weights} * \code{propose.points}
 #'   are sampled and the weights with maximum distance to each other are chosen.
 #'   Default is 1, if only 1 point is proposed each iteration, otherwise 5.
 #' @param parego.use.margin.points [\code{logical}]\cr
 #'   For each target function: Should the weight vector (0, ..., 0, 1, 0, ..., 0),
 #'   i.e. the weight vector with only 0 and a single 1 at the i.th position for
 #'   the i.th target function, be drawn with probability 1? Number of TRUE entries
-#'   must be less or equal to \code{parego.propose.points}
+#'   must be less or equal to \code{propose.points}
+#'   Default is not to do this.
 #' @param final.method [\code{character(1)}]\cr
 #'   How should the final point be proposed. Possible values are:
 #'   \dQuote{best.true.y}: Return best point ever visited according to true value of target function.
@@ -257,7 +256,7 @@ makeMBOControl = function(number.of.targets = 1L,
   multipoint.multicrit.maxit = 100L,
   multipoint.multicrit.sbx.eta = 15, multipoint.multicrit.sbx.p = 1,
   multipoint.multicrit.pm.eta = 15, multipoint.multicrit.pm.p = 1,
-  parego.s, parego.rho = 0.05, parego.propose.points = 1L,
+  parego.s, parego.rho = 0.05,
   parego.use.margin.points = rep(FALSE, number.of.targets),
   parego.sample.more.weights = 5L,
   final.method = "best.true.y", final.evals = 0L,
@@ -331,20 +330,18 @@ makeMBOControl = function(number.of.targets = 1L,
   parego.s = convertInteger(parego.s)
   checkArg(parego.s, "integer", len = 1L, na.ok = FALSE, lower = 1)
   checkArg(parego.rho, "numeric", len = 1L, na.ok = FALSE, lower = 0, upper = 1)
-  parego.propose.points = convertInteger(parego.propose.points)
-  checkArg(parego.propose.points, "integer", len = 1L, na.ok = FALSE, lower = 1)
-  if (parego.propose.points == 1L)
+  if (propose.points == 1L)
     parego.sample.more.weights = 1L
   parego.sample.more.weights = convertInteger(parego.sample.more.weights)
   checkArg(parego.sample.more.weights, "numeric", len = 1L, na.ok = FALSE, lower = 1)
   checkArg(parego.use.margin.points, "logical", len = number.of.targets, na.ok = FALSE, lower = 1)
 
 
-  if (sum(parego.use.margin.points) > parego.propose.points)
+  if (sum(parego.use.margin.points) >= propose.points)
     stopf("Can't use %s margin points when only proposing %s points each iteration.",
-      sum(parego.use.margin.points), parego.propose.points)
+      sum(parego.use.margin.points), propose.points)
   number.of.weights = choose(parego.s + number.of.targets - 1, number.of.targets - 1)
-  if (parego.sample.more.weights * parego.propose.points > number.of.weights)
+  if (parego.sample.more.weights * propose.points > number.of.weights)
     stop("Trying to sample more weights than exists. Increase parego.s or decrease number of weights.")
 
   if (!is.null(impute.y.fun))
@@ -430,7 +427,6 @@ makeMBOControl = function(number.of.targets = 1L,
     multipoint.multicrit.pm.p = multipoint.multicrit.pm.p,
     parego.s = parego.s,
     parego.rho = parego.rho,
-    parego.propose.points = parego.propose.points,
     parego.use.margin.points = parego.use.margin.points,
     parego.sample.more.weights = parego.sample.more.weights,
     final.method = final.method,

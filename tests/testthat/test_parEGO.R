@@ -25,26 +25,26 @@ test_that("mbo parego works", {
   # Test wrong dimension
   ctrl = makeMBOControl(iters = 5, infill.opt.focussearch.points = 10L,
     number.of.targets = 3, init.design.points = 5L, parego.s = 100)
-  expect_error(mbo(f, ps, learner = learner, control = ctrl),
-    "wrong length: 2. Should be 3")
+  expect_error(mbo(f, ps, learner = learner, control = ctrl), "numeric of length 3")
 
   # Test multippoint
   ctrl = makeMBOControl(iters = 1, infill.opt.focussearch.points = 10L,
-    number.of.targets = 2, parego.propose.points = 5L, init.design.points = 5L, parego.s = 100)
+    number.of.targets = 2, propose.points = 5L, init.design.points = 5L, parego.s = 100)
   or = mbo(f, ps, learner = learner, control = ctrl)
   # check used weights
-  expect_true(all(apply(or$weight.path[, 1:2], 1, sum) == 1))
-  expect_false(any(duplicated(or$weight.path[, 1])))
-  expect_false(any(duplicated(or$weight.path[, 2])))
+  w = as.data.frame(or$opt.path)[, c(".weight1", ".weight2")]
+  expect_true(all(rowSums(w[-(1:5),]) == 1))
+  expect_false(any(duplicated(w[-(1:5), 1])))
+  expect_false(any(duplicated(w[-c(1:5), 2])))
   # Multipoint with minimization and maximization
   ctrl = makeMBOControl(iters = 5, infill.opt.focussearch.points = 10L, minimize = c(TRUE, FALSE),
-    number.of.targets = 2, parego.propose.points = 5L, init.design.points = 5L, parego.s = 100)
+    number.of.targets = 2, propose.points = 5L, init.design.points = 5L, parego.s = 100)
   or = mbo(f2, ps, learner = learner, control = ctrl)
   # make sure the pareto.front is a matrix
   expect_true(sum(matrix(or$pareto.front, nrow = 2)[1,]^2) < 1e-4)
   # Test margin points
   ctrl = makeMBOControl(iters = 5, infill.opt.focussearch.points = 5,
-    number.of.targets = 2, parego.propose.points = 2L, parego.use.margin.points = c(TRUE, TRUE),
+    number.of.targets = 2, propose.points = 3L, parego.use.margin.points = c(TRUE, TRUE),
     init.design.points = 5L, parego.s = 100)
   or = mbo(f, ps, learner = learner, control = ctrl)
   expect_true(all(t(or$weight.path[, 1:2]) %in% 0:1))

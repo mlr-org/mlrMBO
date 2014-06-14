@@ -18,7 +18,7 @@ makeScalarTasks = function(par.set, opt.path, control, all.possible.weights) {
   y = normalize(y, method = "range", margin = 2L)
   data = dropNamed(data, control$y.name)
 
-  # Propose parego.propose.points points
+  # Propose points
   # If desired - create the margin weight vector
   margin.points = diag(control$number.of.targets)[control$parego.use.margin.points, , drop = FALSE]
 
