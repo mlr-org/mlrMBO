@@ -34,7 +34,7 @@ proposePoints = function(model, par.set, control, opt.path, ...) {
       multipoint.infill.opt.fun = getMultipointInfillOptFunction(control$multipoint.method)
       prop.design = multipoint.infill.opt.fun(model, control, par.set, opt.path, design, ...)
       prop.points = prop.design$prop.points
-      crit.vals = prop.design$crit.values
+      crit.vals = prop.design$crit.vals
     }
   }
   return(list(prop.points = prop.points, crit.vals = crit.vals, model.fail = model.fail))

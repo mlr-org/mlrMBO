@@ -73,13 +73,7 @@ mboSingleObj = function(fun, par.set, design = NULL, learner, control, show.info
     prop.points = prop$prop.points
     crit.vals = prop$crit.vals
 
-    # handle lambdas for this method
-    if (islcb) {
-      multipoint.lcb.lambdas = rbind(multipoint.lcb.lambdas, attr(prop.points, "multipoint.lcb.lambdas"))
-      attr(prop.points, "multipoint.lcb.lambda") =  NULL
-    }
-
-    extras = getExtras(crit.vals, prop$model.fail, multipoint.lcb.lambdas)
+    extras = getExtras(crit.vals, prop$model.fail, attr(prop.points, "multipoint.lcb.lambdas"))
     evalProposedPoints(loop, prop.points, par.set, opt.path, control,
       fun, learner, show.info, oldopts, more.args, extras)
 

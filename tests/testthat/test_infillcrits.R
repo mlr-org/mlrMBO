@@ -13,7 +13,7 @@ test_that("infill crits", {
   }
 
   mycheck = function(or, minimize) {
-    expect_equal(getOptPathLength(or$opt.path), ninit + niters)
+    expect_equal(getOptPathLength(or$opt.path), ninit + niters + 10L)
     expect_true(!is.na(or$y))
     if (minimize)
       expect_true(or$y < 50)

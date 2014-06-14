@@ -165,7 +165,7 @@ multipointInfillOptMulticrit = function(model, control, par.set, opt.path, desig
   rownames(X) = NULL
   #list(X = X, Y = Y, opt.path = opt.path)
   #FIXME: prop.points.crit.values sometimes is a matrix
-  return(list(prop.points = X, prop.points.crit.values = Y))
+  return(list(prop.points = X, crit.vals = Y))
 }
 
 
