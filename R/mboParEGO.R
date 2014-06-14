@@ -18,7 +18,7 @@ mboParEGO = function(fun, par.set, design = NULL, learner, control, show.info = 
     n = length(crit.vals)
     exs = vector("list", n)
     for (i in 1:n) {
-      ex = list(crit.vals[i], .model.fail = model.fail)
+      ex = list(crit.vals[i], .model.fail = model.fail[i])
       names(ex)[1] = crit
       w = setNames(as.list(wmat[i, ]), paste0(".weight", 1:ncol(wmat)))
       exs[[i]] = c(ex, w)
@@ -37,16 +37,14 @@ mboParEGO = function(fun, par.set, design = NULL, learner, control, show.info = 
   generateMBODesign(design, fun, par.set, opt.path, control, show.info, oldopts, more.args,
     extras = getExtras(rep(NA, ninit), model.fail = NA_character_, wmat))
 
-  # new control object for the scalar soo iteration, we always minimize here
+  # new control for scalar soo iteration, always minimize and propose 1 point
   ctrl2 = control
+  ctrl2$propose.points = 1L
   ctrl2$minimize = TRUE
 
   saveStateOnDisk(0L, fun, learner, par.set, opt.path, control, show.info, more.args)
 
-  # do the mbo magic
-  # if we are restarting from a save file, we possibly start in a higher iteration
-  start.loop = max(getOptPathDOB(opt.path)) + 1
-  for (loop in start.loop:control$iters) {
+  for (loop in 1:control$iters) {
     # scalarize + train + propose
     scalar = makeScalarTasks(par.set, opt.path, control, all.possible.weights)
     models = lapply(scalar$tasks, train, learner = learner)
@@ -59,7 +57,6 @@ mboParEGO = function(fun, par.set, design = NULL, learner, control, show.info = 
       model.fail = extractSubList(props, "model.fail"),
       wmat = scalar$weights
     )
-
     evalProposedPoints(loop, prop.points, par.set, opt.path, control,
       fun, learner, show.info, oldopts, more.args, extras)
   }

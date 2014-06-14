@@ -337,7 +337,7 @@ makeMBOControl = function(number.of.targets = 1L,
   checkArg(parego.use.margin.points, "logical", len = number.of.targets, na.ok = FALSE, lower = 1)
 
 
-  if (sum(parego.use.margin.points) >= propose.points)
+  if (sum(parego.use.margin.points) > propose.points)
     stopf("Can't use %s margin points when only proposing %s points each iteration.",
       sum(parego.use.margin.points), propose.points)
   number.of.weights = choose(parego.s + number.of.targets - 1, number.of.targets - 1)

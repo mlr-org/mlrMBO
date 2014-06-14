@@ -19,7 +19,7 @@
 #'   Default is \code{TRUE}.
 #' @param more.args [list]\cr
 #'   Further arguments passed to fitness function.
-#'   
+#'
 #'   The return value is a S3-objects and depends on the used algorithm.
 #'   For single objective MBO it is a MBOResult - object:
 # FIXME: How document this with roxygen?
@@ -45,17 +45,17 @@ mbo = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, more
   #FIXME: more param checks
   checkStuff(fun, par.set, design, learner, control)
   loadPackages(control)
-  
+
   # configure mlr in an appropriate way
   configureMlr(on.learner.error = control$on.learner.error,
     show.learner.output=control$show.learner.output)
-  
+
   # FIXME: I am unsure wether we should do this, but otherwise RF sucks
   # if it is a good idea it is not not general enuff
   if (inherits(learner, "regr.randomForest")) {
     learner = setHyperPars(learner, fix.factors=TRUE)
   }
-  
+
   # Call the correct mbo function
   if (control$number.of.targets == 1L)
     mboSingleObj(fun = fun, par.set = par.set, design = design,
