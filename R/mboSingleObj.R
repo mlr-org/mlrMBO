@@ -21,7 +21,7 @@ mboSingleObj = function(fun, par.set, design = NULL, learner, control, show.info
   y.name = control$y.name
   crit = control$infill.crit
   islcb = (control$propose.points > 1L && control$multipoint.method == "lcb")
-  ninit = control$init.design.points
+  ninit = if(is.null(design)) control$init.design.points else nrow(design)
   fevals = control$final.evals
 
   # create opt.path
@@ -80,7 +80,7 @@ mboSingleObj = function(fun, par.set, design = NULL, learner, control, show.info
     }
 
     extras = getExtras(crit.vals, prop$model.fail, multipoint.lcb.lambdas)
-    evalProposedPoints(loop, props.points, par.set, opt.path, control, 
+    evalProposedPoints(loop, props.points, par.set, opt.path, control,
       fun, learner, show.info, more.args, extras)
 
     rt = makeMBOSingleObjTask(par.set, opt.path, control)

@@ -8,7 +8,7 @@ mboParEGO = function(fun, par.set, design = NULL, learner, control, show.info = 
   )
 
   # shortcut names
-  ninit = control$init.design.points
+  ninit = if(is.null(design)) control$init.design.points else nrow(design)
   crit = control$infill.crit
 
   opt.path = makeMBOOptPath(par.set, control)

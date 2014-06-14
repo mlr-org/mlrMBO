@@ -37,7 +37,7 @@ generateMBODesign = function(design, fun, par.set, opt.path, control, show.info,
 
   # either only log init design stuff to opt.path or eval y-values
   if (all(y.name %in% colnames(design))) {
-    y = design[, y.name, drop = FALSE]
+    y = as.matrix(design[, y.name, drop = FALSE])
     lapply(seq_along(xs), function(i)
       addOptPathEl(opt.path, x = xs[[i]], y = y[i, ], dob = 0L,
         error.message = NA_character_, exec.time = NA_real_, extra = extras[[i]])

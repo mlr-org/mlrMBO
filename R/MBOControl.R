@@ -474,7 +474,8 @@ makeMBOControl = function(number.of.targets = 1L,
 #'   Not used.
 #' @export
 print.MBOControl = function(x, ...) {
-  catf("Objective                   : %s = %s!", x$y.name, ifelse(x$minimize, "min", "max"))
+  catf("Objective                   : %s",
+    collapsef("%s = %s!", x$y.name, ifelse(x$minimize, "min", "max"), sep = "; "))
   catf("Function type               : %s",  ifelse(x$noisy, "noisy", "deterministic"))
   catf("Init. design                : %i points", x$init.design.points)
   catf("Iterations                  : %i", x$iters)
