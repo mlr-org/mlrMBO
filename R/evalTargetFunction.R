@@ -19,6 +19,7 @@ evalTargetFun = function(fun, par.set, dobs, xs, opt.path, control, show.info, o
   num.format = control$output.num.format
   num.format.string = paste("%s = ", num.format, sep = "")
   dobs = ensureVector(dobs, n = nevals, cl = "integer")
+  imputey = control$impute.y.fun
 
   # trafo
   xs = lapply(xs, trafoValue, par = par.set)
@@ -28,46 +29,62 @@ evalTargetFun = function(fun, par.set, dobs, xs, opt.path, control, show.info, o
     st = proc.time()
     y = do.call(fun, insert(list(x = x), more.args))
     st = proc.time() - st
-    return(list(y = y, time = st[3], err = NA_character_))
+    list(y = y, time = st[3])
   }
+
+  # do we have a valid y object?
+  # FIXME: introduce helper in checkmate or BBmisc?
+  isYValid = function(y) {
+    !is.error(y) && is.numeric(y) && (length(y) == ny) && !any(is.na(y) | is.nan(y) | is.infinite(y))
+  }
+
   # restore mlr configuration
   configureMlr(on.learner.error = oldopts[["ole"]], show.learner.output = oldopts[["slo"]])
 
-  # If an error occurs in f and we don't want to impute, stop - in this case
-  # parallelMap gets NULL as impute function. In this case, execution will
-  # stop at this line. Otherwise we use the identity for imputation - now
-  # every element in z could be an error object.
-  res = parallelMap(wrapfun, xs, impute.error = if (control$impute.errors) identity else NULL)
+  # return error objects if we impute
+  res = parallelMap(wrapfun, xs, impute.error = identity)
 
   # loop evals and to some post-processing
   for (i in 1:nevals) {
     r = res[[i]]; x = xs[[i]]; dob = dobs[i]
-
+    # y is now either error object or return val
     if (is.error(r)) {
-      # if error produce fake result list
-      res[[i]] = list(y = rep(NA_real_, ny), time = NA_real_, err = r$message)
+      y = r; ytime = NA_real_; errmsg = r$message
     } else {
-      if (!(is.numeric(r$y) && length(r$y) == ny))
-        stopf("Objective function output must be a numeric of length: %i!", ny)
+      y = r$y; ytime = r$time; errmsg = NA_character_
     }
-    y = r$y
-    # are there NAs or NANs in the output? if so, produce custom error and impute with user fun
-    isna = is.na(y) | is.nan(y) | is.infinite(y)
-    if (any(isna)) {
-      r$err = sprintf("mlrMBO: NA or NaN in objective output and imputed: %s",
-        collapsef("%s = %g", y.name, y), sep = ", ")
-      y[isna] = mapply(which(isna), function(d)
-        control$impute[[d]], x, y[d], MoreArgs = list(opt.path = opt.path))
+    yvalid = isYValid(y)
+
+    # objective fun problem? allow user to handle it
+    y2 = y # changed y that we will use in opt.path
+    errmsg = NA_character_
+    if (!yvalid) {
+      if (is.null(imputey)) { # ok then stop
+        if (is.error(y))
+          stopf("Objective function error: %s ", y$message)
+        else
+          stopf("Objective function output must be a numeric of length %i, but we got: %s",
+            ny, convertToShortString(y))
+      } else { # let user impute
+        if (!is.error(r) && !yvalid)
+          errmsg = sprintf("mlrMBO: Imputed invalid objective function output. Original value was: %s",
+            convertToShortString(y))
+        y2 = imputey(x, y, opt.path)
+        if (!isYValid(y2))
+          stopf("Y-Imputation failed. Must return a numeric of length: %i, but we got: %s",
+            ny, convertToShortString(y2))
+      }
     }
 
-    if (show.info) { # show info on console
-      #FIXME: show time?
-      messagef("[mbo] %i: %s : %s", dob, paramValueToString(par.set, x, num.format = num.format),
-        collapse(sprintf(num.format.string, y.name, y), ", "))
-    }
+    showInfo(show.info, "[mbo] %i: %s : %s : %.1f secs%", dob,
+      paramValueToString(par.set, x, num.format = num.format),
+      collapse(sprintf(num.format.string, y.name, y2), ", "),
+      ytime,
+      ifelse(yvalid, "", " (imputed)")
+    )
     # log to opt path
-    addOptPathEl(opt.path, x = x, y = r$y, dob = dob,
-      error.message = r$err, exec.time = r$time, extra = extras[[i]])
+    addOptPathEl(opt.path, x = x, y = y2, dob = dob,
+      error.message = errmsg, exec.time = ytime, extra = extras[[i]])
   }
 
   # FIXME: Do we need this here? This function is for function evaluation,

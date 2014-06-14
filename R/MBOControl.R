@@ -188,22 +188,18 @@
 #' @param y.name [\code{character}]\cr
 #'   Vector for names of y-columns for target values in optimization path.
 #'   Default is \dQuote{y_i}, i = 1, ..., number.of.targets.
-#' @param impute [\code{list(function(x, y, opt.path), ...)}]\cr
-#'   List of functions that determine the return value in case the original fitness functions fails
-#'   (for whatever reason) and because of this failure returns a NA, NaN, Inf.
-#'   Must be a list of length number.of.targets. If named, the names must correspondend
-#'   with y.name and each function is used to impute the corresponding fitness function.
-#'   Alternatively a single function can be given, which will interly be converted
-#'   into a list of length number.of.targets, and this function will be used to
-#'   impute every fitness function.
-#'   \code{x} is the current x-value, \code{y} the current (infeasible) y-value and
-#'   \code{opt.path} the current optimization path.
-#'   Default is to stop with an error. This also happens, if the target function
-#'   generates an error.
-#' @param impute.errors [\code{logical(1)}]\cr
-#'   Should fitness function call be wrapped in a \code{try} and the same imputation
-#'   be used as in \code{impute}?
-#'   Default is \code{FALSE}.
+#' @param impute.y.fun [\code{function(x, y, opt.path), ...)}*]\cr
+#'   Functions that gets triggered if your objective evaluation produced
+#'   a) an exception b) a return object of invalid type c) a numeric vector that
+#'   contains \code{NA}, \code{NaN}, \code{Inf}.
+#'   You now have a chance to handle this. You are expected to return a numeric vector
+#'   of the correct length with concrete values.
+#'   The optimization path will show some information whether y-values where imputed
+#'   and what the original, faulty object was.
+#'   \code{x} is the current x-value, \code{y} the current (invalid) y-object (or an error object)
+#'   and \code{opt.path} the current optimization path.
+#'   Default is \code{NULL} which means to stop if the objective function did not produce the desired
+#'   result.
 #' @param suppress.eval.errors [\code{logical(1)}]\cr
 #'   Should reporting of error messages during target function evaluations be suppressed?
 #'   Only used if \code{impute.errors} is \code{TRUE}.
@@ -266,7 +262,9 @@ makeMBOControl = function(number.of.targets = 1L,
   parego.sample.more.weights = 5L,
   final.method = "best.true.y", final.evals = 0L,
   y.name = "y",
-  impute, impute.errors = FALSE, suppress.eval.errors = TRUE, save.on.disk.at = NULL,
+  impute.y.fun = NULL,
+  suppress.eval.errors = TRUE,
+  save.on.disk.at = NULL,
   save.file.path = "", save.model.at = iters,
   resample.at = integer(0), resample.desc = makeResampleDesc("CV", iter = 10), resample.measures = list(mse),
   on.learner.error = "warn", show.learner.output = FALSE,
@@ -349,22 +347,9 @@ makeMBOControl = function(number.of.targets = 1L,
   if (parego.sample.more.weights * parego.propose.points > number.of.weights)
     stop("Trying to sample more weights than exists. Increase parego.s or decrease number of weights.")
 
-  if (missing(impute))
-    impute = rep(list(function(x, y, opt.path)
-      stopf("Infeasible y = %s value encountered at %s", as.character(y), convertToShortString(x))),
-      number.of.targets)
-  else if (is.function(impute)) {
-    checkArg(impute, formals = c("x", "y", "opt.path"))
-    impute = rep(list(impute), number.of.targets)
-  } else {
-    checkArg(impute, cl = "list", len = number.of.targets)
-    lapply(impute, function(fun) checkArg(fun, formals = c("x", "y", "opt.path")))
-  }
-  if (is.null(names(impute)))
-    names(impute) = y.name
-  else
-    checkArg(names(impute), choices = list(y.name))
-  checkArg(impute.errors, "logical", len = 1L, na.ok = FALSE)
+  if (!is.null(impute.y.fun))
+    checkArg(impute.y.fun, formals = c("x", "y", "opt.path"))
+
   checkArg(suppress.eval.errors, "logical", len = 1L, na.ok = FALSE)
 
   checkArg(final.method, choices = c("last.proposed", "best.true.y", "best.predicted"))
@@ -409,7 +394,7 @@ makeMBOControl = function(number.of.targets = 1L,
   checkArg(show.learner.output, "logical", len = 1L, na.ok = FALSE)
   checkArg(output.num.format, "character", len = 1L, na.ok = FALSE)
 
-  structure(list(
+  makeS3Obj("MBOControl",
     minimize = minimize,
     noisy = noisy,
     number.of.targets = number.of.targets,
@@ -451,8 +436,7 @@ makeMBOControl = function(number.of.targets = 1L,
     final.method = final.method,
     final.evals = final.evals,
     y.name = y.name,
-    impute = impute,
-    impute.errors = impute.errors,
+    impute.y.fun = impute.y.fun,
     suppress.eval.errors = suppress.eval.errors,
     save.on.disk.at = save.on.disk.at,
     save.file.path = save.file.path,
@@ -463,7 +447,7 @@ makeMBOControl = function(number.of.targets = 1L,
     on.learner.error = on.learner.error,
     show.learner.output = show.learner.output,
     output.num.format = output.num.format
-  ), class= "MBOControl")
+  )
 }
 
 #' Print mbo control object.
