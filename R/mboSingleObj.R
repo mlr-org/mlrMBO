@@ -25,11 +25,7 @@ mboSingleObj = function(fun, par.set, design = NULL, learner, control, show.info
   fevals = control$final.evals
 
   # create opt.path
-  opt.path = makeOptPathDF(
-    par.set, y.names = control$y.name,
-    minimize = control$minimize,
-    include.error.message = TRUE, include.exec.time = TRUE, include.extra = TRUE
-  )
+  opt.path = makeMBOOptPath(par.set, opt.path)
 
   # helper to get extras-list for opt.path logging
   getExtras = function(crit.vals, model.fail, lambdas) {
@@ -65,11 +61,7 @@ mboSingleObj = function(fun, par.set, design = NULL, learner, control, show.info
     res.vals[["0"]] = r$aggr
   }
 
-  # Save on disk?
-  if (0 %in% control$save.on.disk.at) {
-    save(list = c("opt.path", "fun", "par.set", "learner", "control", "show.info", "more.args"),
-      file = control$save.file.path)
-  }
+  saveStateOnDisk(0L, control, fun, learner, par.set, opt.path, control, show.info, more.args)
 
   # do the mbo magic
   # if we are restarting from a save file, we possibly start in a higher iteration
@@ -87,10 +79,9 @@ mboSingleObj = function(fun, par.set, design = NULL, learner, control, show.info
       attr(prop.points, "multipoint.lcb.lambda") =  NULL
     }
 
-    xs = dfRowsToList(prop.points, par.set)
-    xs = lapply(xs, repairPoint, par.set = par.set)
-    ys = evalTargetFun(fun, par.set, loop, xs, opt.path, control, show.info, oldopts, more.args,
-      extras = getExtras(crit.vals, prop$model.fail, multipoint.lcb.lambdas))
+    extras = getExtras(crit.vals, prop$model.fail, multipoint.lcb.lambdas)
+    evalProposedPoints(loop, props.points, par.set, opt.path, control, 
+      fun, learner, show.info, more.args, extras)
 
     rt = makeMBOSingleObjTask(par.set, opt.path, control)
     model = train(learner, rt)
@@ -100,11 +91,7 @@ mboSingleObj = function(fun, par.set, design = NULL, learner, control, show.info
       r = resample(learner, rt, control$resample.desc, measures = control$resample.measures)
       res.vals[[as.character(loop)]] = r$aggr
     }
-    # Save on disk?
-    if (loop %in% control$save.on.disk.at) {
-      save(list = c("opt.path", "fun", "par.set", "learner", "control", "show.info", "more.args"),
-        file = control$save.file.path)
-    }
+    saveStateOnDisk(loop, control, fun, learner, par.set, opt.path, control, show.info, more.args)
   }
 
   design = getTaskData(rt, target.extra = TRUE)$data

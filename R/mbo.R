@@ -62,7 +62,7 @@ mbo = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, more
       learner = learner, control = control, show.info = show.info, more.args = more.args)
   else {
     if (control$multicrit.method == "parego")
-      mboParego(fun = fun, par.set = par.set, design = design,
+      mboParEGO(fun = fun, par.set = par.set, design = design,
         learner = learner, control = control, show.info = show.info, more.args = more.args)
   }
 }

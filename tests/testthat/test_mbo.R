@@ -48,7 +48,12 @@ test_that("mbo works with rf", {
   expect_true(is.numeric(df$x1))
 
   # discrete par
-  f = function(x) if(x[[3]] = ="a") x[[1]]^2+x[[2]]^2 else x[[1]]^2+x[[2]]^2 + 20
+  f = function(x) {
+    if (x[[3]] == "a")
+      x[[1]]^2+x[[2]]^2
+    else
+      x[[1]]^2+x[[2]]^2 + 20
+  }
 
   ps = makeParamSet(
     makeNumericParam("x1", lower = -2, upper = 1),
