@@ -9,11 +9,10 @@ generateMBODesign = function(design, fun, par.set, opt.path, control, show.info,
   # shortcut names
   pids = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
   y.name = control$y.name
-  ninit = control$init.design.points
 
   # either create design or check that the provided one seems ok
   if (is.null(design)) {
-    design.x = generateDesign(ninit, par.set,
+    design.x = generateDesign(control$init.design.points, par.set,
       control$init.design.fun, control$init.design.args, trafo = FALSE)
   } else {
     # sanity check: are paramter values and colnames of design consistent?
@@ -39,7 +38,7 @@ generateMBODesign = function(design, fun, par.set, opt.path, control, show.info,
   # either only log init design stuff to opt.path or eval y-values
   if (all(y.name %in% colnames(design))) {
     y = design[, y.name, drop = FALSE]
-    lapply(1:ninit, function(i)
+    lapply(seq_along(xs), function(i)
       addOptPathEl(opt.path, x = xs[[i]], y = y[i, ], dob = 0L,
         error.message = NA_character_, exec.time = NA_real_, extra = extras[[i]])
     )

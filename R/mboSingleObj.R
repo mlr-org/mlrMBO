@@ -91,7 +91,7 @@ mboSingleObj = function(fun, par.set, design = NULL, learner, control, show.info
     ys = evalTargetFun(fun, par.set, loop, xs, opt.path, control, show.info, oldopts, more.args,
       extras = getExtras(crit.vals, prop$model.fail, multipoint.lcb.lambdas))
 
-    rt = makeMBOTask(as.data.frame(opt.path, discretes.as.factor = TRUE), par.set, control)
+    rt = makeMBOSingleObjTask(par.set, opt.path, control)
     model = train(learner, rt)
     if (loop %in% control$save.model.at)
       models[[as.character(loop)]] = model
