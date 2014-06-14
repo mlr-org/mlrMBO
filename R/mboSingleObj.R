@@ -22,6 +22,7 @@ mboSingleObj = function(fun, par.set, design = NULL, learner, control, show.info
   crit = control$infill.crit
   islcb = (control$propose.points > 1L && control$multipoint.method == "lcb")
   ninit = control$init.design.points
+  fevals = control$final.evals
 
   # create opt.path
   opt.path = makeOptPathDF(
@@ -46,7 +47,7 @@ mboSingleObj = function(fun, par.set, design = NULL, learner, control, show.info
 
   # generate initial design
   mbo.design = generateMBODesign(design, fun, par.set, opt.path, control, show.info, oldopts, more.args,
-    extras = getExtras(crit.vals = rep(NA_real_, ninit), model.fail = FALSE, lambdas = rep(NA_real_, ninit)))
+    extras = getExtras(crit.vals = rep(NA_real_, ninit), model.fail = NA_character_, lambdas = rep(NA_real_, ninit)))
 
   # set up initial mbo task
   rt = makeMBOSingleObjTask(par.set, opt.path, control)
@@ -112,14 +113,12 @@ mboSingleObj = function(fun, par.set, design = NULL, learner, control, show.info
   x = best$x
   y = best$y
 
-  if (control$final.evals > 0L) {
-    if (show.info)
-      messagef("Performing %i final evals", control$final.evals)
+  if (fevals > 0L) {
+    showInfo(show.info, "Performing %i final evals", fevals)
     # do some final evaluations and compute mean of target fun values
-    xs = replicate(control$final.evals, best$x, simplify = FALSE)
-    evals = evalTargetFun(fun, par.set, xs, opt.path, control, show.info, oldopts, more.args)
-    ys = evals$ys
-    times = c(times, evals$times)
+    xs = replicate(fevals, best$x, simplify = FALSE)
+    ys = evalTargetFun(fun, par.set, loop, xs, opt.path, control, show.info, oldopts, more.args,
+      extras = getExtras(crit.vals = rep(NA_real_, fevals), model.fail = NA_character_, lambdas = rep(NA_real_, fevals)))
     best$y = mean(ys)
   }
   # restore mlr configuration

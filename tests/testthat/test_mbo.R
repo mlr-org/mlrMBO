@@ -7,12 +7,12 @@ test_that("mbo works with rf", {
     makeNumericParam("x1", lower = -2, upper = 1),
     makeNumericParam("x2", lower = -1, upper = 2)
   )
-  des = generateDesign(10, par.set=ps)
+  des = generateDesign(10, par.set = ps)
   y  = sapply(1:nrow(des), function(i) f(as.list(des[i,])))
   des$y = y
   learner = makeLearner("regr.randomForest")
   ctrl = makeMBOControl(iters = 5, infill.opt.focussearch.points = 100, save.model.at = c(0,5))
-  or = mbo(f, ps, des, learner, ctrl, show.info=FALSE)
+  or = mbo(f, ps, des, learner, ctrl, show.info = FALSE)
   expect_true(!is.na(or$y))
   expect_equal(or$y, f(or$x))
   expect_equal(getOptPathLength(or$opt.path), 15)
@@ -24,14 +24,14 @@ test_that("mbo works with rf", {
   expect_equal(length(or$models[[2]]$subset), 15)
 
   # check errors
-  ctrl = makeMBOControl(iters=5, infill.opt.focussearch.points=100, infill.crit="ei")
+  ctrl = makeMBOControl(iters = 5, infill.opt.focussearch.points = 100, infill.crit = "ei")
   expect_error(mbo(f, ps, des, learner, ctrl), "must be set to 'se'")
-  ctrl = makeMBOControl(iters=5, infill.opt.focussearch.points=100)
+  ctrl = makeMBOControl(iters = 5, infill.opt.focussearch.points = 100)
 
-  # f2=makeMBOFunction(function(x) x^2)
+  # f2 = makeMBOFunction(function(x) x^2)
   # expect_error(mbo(f2, ps, des, learner, ctrl), "wrong length")
 
-  ctrl = makeMBOControl(iters=5, infill.opt.focussearch.points=100)
+  ctrl = makeMBOControl(iters = 5, infill.opt.focussearch.points = 100)
   learner = makeLearner("classif.randomForest")
   expect_error(mbo(f, ps, des, learner, ctrl), "mbo requires regression learner")
   learner = makeLearner("regr.randomForest")
@@ -48,19 +48,19 @@ test_that("mbo works with rf", {
   expect_true(is.numeric(df$x1))
 
   # discrete par
-  f = function(x) if(x[[3]]=="a") x[[1]]^2+x[[2]]^2 else x[[1]]^2+x[[2]]^2 + 20
+  f = function(x) if(x[[3]] = ="a") x[[1]]^2+x[[2]]^2 else x[[1]]^2+x[[2]]^2 + 20
 
   ps = makeParamSet(
-    makeNumericParam("x1", lower=-2, upper=1),
-    makeIntegerParam("x2", lower=-1, upper=2),
-    makeDiscreteParam("x3", values=c("a", "b"))
+    makeNumericParam("x1", lower = -2, upper = 1),
+    makeIntegerParam("x2", lower = -1, upper = 2),
+    makeDiscreteParam("x3", values = c("a", "b"))
   )
-  des = generateDesign(10, par.set=ps)
+  des = generateDesign(10, par.set = ps)
   y  = sapply(1:nrow(des), function(i) f(as.list(des[i,])))
   des$y = y
   learner = makeLearner("regr.randomForest")
-  ctrl = makeMBOControl(iters=5, infill.opt.focussearch.points=100)
-  or = mbo(f, ps, des, learner, ctrl, show.info=FALSE)
+  ctrl = makeMBOControl(iters = 5, infill.opt.focussearch.points = 100)
+  or = mbo(f, ps, des, learner, ctrl, show.info = FALSE)
   expect_true(!is.na(or$y))
   expect_equal(getOptPathLength(or$opt.path), 15)
   df = as.data.frame(or$opt.path)
@@ -72,13 +72,13 @@ test_that("mbo works with rf", {
   expect_equal(names(or$x), names(ps$pars))
 
   # check best.predicted
-  ctrl = makeMBOControl(iters=5, infill.opt.focussearch.points=100, final.method="best.predicted")
-  or = mbo(f, ps, des, learner, ctrl, show.info=FALSE)
+  ctrl = makeMBOControl(iters = 5, infill.opt.focussearch.points = 100, final.method = "best.predicted")
+  or = mbo(f, ps, des, learner, ctrl, show.info = FALSE)
   expect_true(!is.na(or$y))
   expect_equal(getOptPathLength(or$opt.path), 15)
 
-  ctrl = makeMBOControl(init.design.points=10, iters=5, infill.opt.focussearch.points=100)
-  or = mbo(f, ps, des=NULL, learner, ctrl, show.info=FALSE)
+  ctrl = makeMBOControl(init.design.points = 10, iters = 5, infill.opt.focussearch.points = 100)
+  or = mbo(f, ps, des = NULL, learner, ctrl, show.info = FALSE)
   expect_true(!is.na(or$y))
   expect_equal(getOptPathLength(or$opt.path), 15)
   expect_equal(names(or$x), names(ps$pars))
@@ -87,19 +87,19 @@ test_that("mbo works with rf", {
   f = function(x) sum(x[[1]]^2) + (2 - x[[2]])^2
 
   ps = makeParamSet(
-    makeNumericVectorParam("v", lower=-5, upper=5, len=2),
-    makeNumericParam("w", lower=-5, upper=5)
+    makeNumericVectorParam("v", lower = -5, upper = 5, len = 2),
+    makeNumericParam("w", lower = -5, upper = 5)
   )
   learner = makeLearner("regr.randomForest")
-  ctrl = makeMBOControl(init.design.points=10, iters=3,
-    infill.opt="cmaes", infill.opt.cmaes.control=list(maxit=2))
-  or = mbo(f, ps, des=NULL, learner, ctrl, show.info = FALSE)
+  ctrl = makeMBOControl(init.design.points = 10, iters = 3,
+    infill.opt = "cmaes", infill.opt.cmaes.control = list(maxit = 2))
+  or = mbo(f, ps, des = NULL, learner, ctrl, show.info = FALSE)
   expect_true(!is.na(or$y))
   expect_equal(getOptPathLength(or$opt.path), 10 + 3)
-  ctrl = makeMBOControl(init.design.points=10, iters=3,
-    infill.opt="cmaes", infill.opt.cmaes.control=list(maxit=2),
-    final.method="best.predicted")
-  or = mbo(f, ps, des=NULL, learner, ctrl, show.info=FALSE)
+  ctrl = makeMBOControl(init.design.points = 10, iters = 3,
+    infill.opt = "cmaes", infill.opt.cmaes.control = list(maxit = 2),
+    final.method = "best.predicted")
+  or = mbo(f, ps, des = NULL, learner, ctrl, show.info = FALSE)
   expect_equal(getOptPathLength(or$opt.path), 10 + 3)
 
   # check more.args
@@ -115,7 +115,7 @@ test_that("mbo works with rf", {
   )
   learner = makeLearner("regr.randomForest")
   ctrl = makeMBOControl(iters = 5, infill.opt.focussearch.points = 100)
-  or = mbo(f, ps, des = NULL, learner, ctrl, show.info=FALSE, more.args = list(shift = 0))
+  or = mbo(f, ps, des = NULL, learner, ctrl, show.info = FALSE, more.args = list(shift = 0))
   expect_true(!is.na(or$y))
 })
 
@@ -132,14 +132,14 @@ test_that("mbo works with rf", {
 
 #   ps = makeParamSet(
 #     makeLogicalParam("a"),
-#     makeNumericVectorParam("b", len=2, lower=-3, upper=3)
+#     makeNumericVectorParam("b", len = 2, lower = -3, upper = 3)
 #   )
-#   learner = makeBaggingWrapper(makeLearner("regr.gbm"), bag.iters=10)
+#   learner = makeBaggingWrapper(makeLearner("regr.gbm"), bag.iters = 10)
 #   learner = setPredictType(learner, "se")
-#   ctrl = makeMBOControl(init.design.points=50, iters=10,
-#     infill.crit="ei", infill.opt="focussearch",
-#     infill.opt.restarts=3, infill.opt.focussearch.maxit=3, infill.opt.focussearch.points=5000)
-#   or = mbo(f, ps, learner=learner, control=ctrl, show.info=TRUE)
+#   ctrl = makeMBOControl(init.design.points = 50, iters = 10,
+#     infill.crit = "ei", infill.opt = "focussearch",
+#     infill.opt.restarts = 3, infill.opt.focussearch.maxit = 3, infill.opt.focussearch.points = 5000)
+#   or = mbo(f, ps, learner = learner, control = ctrl, show.info = TRUE)
 #   expect_true(!is.na(or$y))
 #   expect_equal(getOptPathLength(or$opt.path), 60)
 #   expect_equal(or$x$a, TRUE)

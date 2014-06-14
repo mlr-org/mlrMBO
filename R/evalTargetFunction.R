@@ -2,12 +2,13 @@
 #
 # xs = list of points
 # dobs = dobs values for xs, same len or 1 int
-# returns numeric-vector
 #
 # - trafo xs
 # - evals all xs, measures time
 # - potentially imputes errors, NAs, NaNs, Infs
 #
+# returns numeric-vector of y-vals
+
 evalTargetFun = function(fun, par.set, dobs, xs, opt.path, control, show.info, oldopts,
   more.args = list(), extras) {
 
@@ -76,6 +77,6 @@ evalTargetFun = function(fun, par.set, dobs, xs, opt.path, control, show.info, o
   configureMlr(on.learner.error = control$on.learner.error,
     show.learner.output = control$show.learner.output)
 
-  invisible(NULL)
+  extractSubList(res, "y")
 }
 
