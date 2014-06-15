@@ -1,9 +1,9 @@
 if(getRversion() >= "2.15.1")
   utils::globalVariables(c("y", "type"))
-  
-autoplotExampleRun2d = function(x, iters, pause=TRUE, densregion=TRUE, 
+
+autoplotExampleRun2d = function(x, iters, pause=TRUE, densregion=TRUE,
     trafo=NULL, ...)  {
-      
+
     # extract information from example run object
     par.set = x$par.set
     names.x = x$names.x
@@ -27,8 +27,8 @@ autoplotExampleRun2d = function(x, iters, pause=TRUE, densregion=TRUE,
     }
     opt.path = as.data.frame(mbo.res$opt.path)
 
-    idx.init = which(opt.path$dob == 0)  
-      
+    idx.init = which(opt.path$dob == 0)
+
     # save sequence of opt plots here
     plot.sequence = list()
 
@@ -37,25 +37,25 @@ autoplotExampleRun2d = function(x, iters, pause=TRUE, densregion=TRUE,
     for (i in iters) {
         catf("Iter %i", i)
         model = mbo.res$models[[i]]
-    
+
         idx.seq = which(opt.path$dob > 0 & opt.path$dob < i)
         idx.proposed = which(opt.path$dob == i)
         idx.past = which(opt.path$dob < i)
-        idx.pastpresent = which(opt.path$dob <= i)   
+        idx.pastpresent = which(opt.path$dob <= i)
 
         model.ok = !inherits(model, "FailureModel")
 
         if (model.ok) {
-            evals$yhat = mlrMBO:::infillCritMeanResponse(evals[, names.x, drop=FALSE], 
+            evals$yhat = infillCritMeanResponse(evals[, names.x, drop=FALSE],
             model, control, par.set, opt.path[idx.past, ])
             if (se) {
-                evals$se = -mlrMBO:::infillCritStandardError(evals[, names.x, drop=FALSE], 
+                evals$se = -infillCritStandardError(evals[, names.x, drop=FALSE],
                 model, control, par.set, opt.path[idx.past, ])
             }
             #FIXME this does not work for multipoint proposal
-            # write unit tests for this AND MANY OTHER CASES to check this 
+            # write unit tests for this AND MANY OTHER CASES to check this
             if (proppoints == 1L) {
-                evals[[name.crit]] = opt.direction * critfun(evals[, names.x, drop=FALSE], 
+                evals[[name.crit]] = opt.direction * critfun(evals[, names.x, drop=FALSE],
                 model, control, par.set, opt.path[idx.past, ])
             }
         }
@@ -80,7 +80,7 @@ autoplotExampleRun2d = function(x, iters, pause=TRUE, densregion=TRUE,
             if (!is.null(trafo)) {
                 title = paste(title, " (", attr(trafo, "name"), "-transformed)", sep="")
             }
-            
+
             pl = pl + ggtitle(title)
             pl = pl + scale_colour_manual(name="type", values=c("#000000", "red","gray"))
             pl = pl + xlab(NULL) # remove axis labels
@@ -100,8 +100,8 @@ autoplotExampleRun2d = function(x, iters, pause=TRUE, densregion=TRUE,
             x2=opt.path[idx, name.x2],
             y=opt.path[idx, name.y],
             type=as.factor(c(
-                rep("init", length(idx.init)), 
-                rep("seq", length(idx.seq)), 
+                rep("init", length(idx.init)),
+                rep("seq", length(idx.seq)),
                 rep("prop", length(idx.proposed)))))
 
 
@@ -112,12 +112,12 @@ autoplotExampleRun2d = function(x, iters, pause=TRUE, densregion=TRUE,
         if (se) {
             pl.se = plotSingleFun(gg.fun, gg.points, "se", trafo=trafo[["se"]])
         }
-        
+
         title = sprintf("Iter %i, x-axis: %s, y-axis: %s", i, name.x1, name.x2)
 
         if (se) {
-            pl.all = grid.arrange(pl.fun, pl.mod, pl.crit, pl.se, 
-                nrow=2, 
+            pl.all = grid.arrange(pl.fun, pl.mod, pl.crit, pl.se,
+                nrow=2,
                 main=title)
         } else {
             pl.all = grid.arrange(pl.fun, pl.mod, pl.crit, nrow=1)

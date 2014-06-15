@@ -111,7 +111,7 @@ autoplotExampleRun1d = function(x, iters, xlim, ylim, pause, se.factor, point.si
 
     # compute model prediction for current iter
     if (model.ok) {
-      evals$yhat = mlrMBO:::infillCritMeanResponse(evals.x, model,
+      evals$yhat = infillCritMeanResponse(evals.x, model,
         control, par.set, opt.path[idx.past,])
 
       if (propose.points == 1L) {
@@ -124,7 +124,7 @@ autoplotExampleRun1d = function(x, iters, xlim, ylim, pause, se.factor, point.si
 
       # prepare drawing of standard error (confidence interval)
       if (se) {
-        evals$se = -mlrMBO:::infillCritStandardError(evals.x, model, control, par.set, opt.path[idx.past,])
+        evals$se = -infillCritStandardError(evals.x, model, control, par.set, opt.path[idx.past,])
         evals$se.min = evals$yhat - se.factor * evals$se
         evals$se.max = evals$yhat + se.factor * evals$se
       }

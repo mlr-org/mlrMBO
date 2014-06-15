@@ -22,13 +22,13 @@ makeMBOControl(number.of.targets = 1L, minimize = rep(TRUE,
   multipoint.multicrit.maxit = 100L, multipoint.multicrit.sbx.eta = 15,
   multipoint.multicrit.sbx.p = 1, multipoint.multicrit.pm.eta = 15,
   multipoint.multicrit.pm.p = 1, parego.s, parego.rho = 0.05,
-  parego.propose.points = 1L, parego.use.margin.points = rep(FALSE,
-  number.of.targets), parego.sample.more.weights = 5L,
-  final.method = "best.true.y", final.evals = 0L, y.name = "y", impute,
-  impute.errors = FALSE, suppress.eval.errors = TRUE,
-  save.on.disk.at = NULL, save.file.path = "", save.model.at = iters,
-  resample.at = integer(0), resample.desc = makeResampleDesc("CV", iter =
-  10), resample.measures = list(mse), on.learner.error = "warn",
+  parego.use.margin.points = rep(FALSE, number.of.targets),
+  parego.sample.more.weights = 5L, final.method = "best.true.y",
+  final.evals = 0L, y.name = "y", impute.y.fun = NULL,
+  suppress.eval.errors = TRUE, save.on.disk.at = NULL,
+  save.file.path = "", save.model.at = iters, resample.at = integer(0),
+  resample.desc = makeResampleDesc("CV", iter = 10),
+  resample.measures = list(mse), on.learner.error = "warn",
   show.learner.output = FALSE, output.num.format = "\%.3g")
 }
 \arguments{
@@ -70,7 +70,7 @@ Number of sequential optimization steps.
 Default is 10.}
 
 \item{propose.points}{[\code{integer(1)}]\cr
-Number of proposed points after optimizing the surrogate model with \code{infill.opt}.
+Number of proposed / really evaluated points each iteration.
 Default is 1.}
 
 \item{infill.crit}{[\code{character(1)}]\cr
@@ -83,8 +83,8 @@ Alternatively, you may pass a function name as string.}
 
 \item{infill.crit.lcb.lambda}{[\code{numeric(1)}]\cr
 Lambda parameter for lower confidence bound infill criterion.
-Only used if \code{infill.crit="lcb"}, ignored otherwise.
-Deafult is 1.}
+Only used if \code{infill.crit == "lcb"}, ignored otherwise.
+Default is 1.}
 
 \item{infill.opt}{[\code{character(1)}]\cr
 How should SINGLE points be proposed by using the surrogate model. Possible values are:
@@ -98,7 +98,7 @@ Alternatively, you may pass a function name as string.}
 
 \item{infill.opt.restarts}{[\code{integer(1)}]\cr
 Number of independent restarts for optimizer of infill criterion.
-If \code{infill.opt="cmaes"} the first start point for the optimizer is always the
+If \code{infill.opt == "cmaes"} the first start point for the optimizer is always the
 currently best point in the design of already visited points.
 Subsequent restarts are started at random points.
 Default is 1.}
@@ -172,7 +172,7 @@ The EA is a (mu+1) type of algorithm and runs for \code{multipoint.multicrit.max
 The population size is set to \code{propose.points}.
 The selection criterion is \code{multipoint.multicrit.selection}.
    \dQuote{cl}: Proposes points by constant liar strategie.
-   Only meaningfull if \code{infill.crit="lcb"}
+   Only meaningfull if \code{infill.crit == "lcb"}
 In the first step the kriging model is fitted based on the real data and the best point is calculated according to the regular EI-criterion.
 Then, the function value of the best point is simply guessed by the worst seen function evaluation.
 This lie is used to update the model in order to propose the subsequent point.
@@ -229,11 +229,8 @@ weight vectors. The defaults for (2, 3, 4, 5, 6) dimensions are (100000,
 Parameter of parego - factor for Tchebycheff function. Default 0.05 as
 suggested in parego paper.}
 
-\item{parego.propose.points}{[\code{integer(1)}]\cr
-Number of points to propose in each parego iteration. Default is 1L.}
-
 \item{parego.sample.more.weights}{[\code{numeric(1)}]\cr
-In each iteration \code{parego.sample.more.weights} * \code{parego.propose.points}
+In each iteration \code{parego.sample.more.weights} * \code{propose.points}
 are sampled and the weights with maximum distance to each other are chosen.
 Default is 1, if only 1 point is proposed each iteration, otherwise 5.}
 
@@ -241,7 +238,8 @@ Default is 1, if only 1 point is proposed each iteration, otherwise 5.}
 For each target function: Should the weight vector (0, ..., 0, 1, 0, ..., 0),
 i.e. the weight vector with only 0 and a single 1 at the i.th position for
 the i.th target function, be drawn with probability 1? Number of TRUE entries
-must be less or equal to \code{parego.propose.points}}
+must be less or equal to \code{propose.points}
+Default is not to do this.}
 
 \item{final.method}{[\code{character(1)}]\cr
 How should the final point be proposed. Possible values are:
@@ -260,23 +258,18 @@ Default is 0.}
 Vector for names of y-columns for target values in optimization path.
 Default is \dQuote{y_i}, i = 1, ..., number.of.targets.}
 
-\item{impute}{[\code{list(function(x, y, opt.path), ...)}]\cr
-List of functions that determine the return value in case the original fitness functions fails
-(for whatever reason) and because of this failure returns a NA, NaN, Inf.
-Must be a list of length number.of.targets. If named, the names must correspondend
-with y.name and each function is used to impute the corresponding fitness function.
-Alternatively a single function can be given, which will interly be converted
-into a list of length number.of.targets, and this function will be used to
-impute every fitness function.
-\code{x} is the current x-value, \code{y} the current (infeasible) y-value and
-\code{opt.path} the current optimization path.
-Default is to stop with an error. This also happens, if the target function
-generates an error.}
-
-\item{impute.errors}{[\code{logical(1)}]\cr
-Should fitness function call be wrapped in a \code{try} and the same imputation
-be used as in \code{impute}?
-Default is \code{FALSE}.}
+\item{impute.y.fun}{[\code{function(x, y, opt.path), ...)}*]\cr
+Functions that gets triggered if your objective evaluation produced
+a) an exception b) a return object of invalid type c) a numeric vector that
+contains \code{NA}, \code{NaN}, \code{Inf}.
+You now have a chance to handle this. You are expected to return a numeric vector
+of the correct length with concrete values.
+The optimization path will show some information whether y-values where imputed
+and what the original, faulty object was.
+\code{x} is the current x-value, \code{y} the current (invalid) y-object (or an error object)
+and \code{opt.path} the current optimization path.
+Default is \code{NULL} which means to stop if the objective function did not produce the desired
+result.}
 
 \item{suppress.eval.errors}{[\code{logical(1)}]\cr
 Should reporting of error messages during target function evaluations be suppressed?
@@ -287,12 +280,13 @@ Default is \code{TRUE}.}
 Sequential optimization iteration when the actual state should be saved
 on disk. Iteration 0 denotes the initial design. If the optimization
 stops with an crucial error, it can be restarted with this file via the
-function \link{restartSavedMBO}. Default is NULL. Make sure to specify
-\code{save.file.path}.}
+function \code{\link{mboContinue}}.
+Default is NULL.}
 
 \item{save.file.path}{[\code{character(1)}] \cr
 If \code{save.on.disk.at} is used, this is the name of the file where the data
-will be saved. Default is NULL.}
+will be saved.
+Default is NULL.}
 
 \item{save.model.at}{[\code{integer}]\cr
 Sequential optimization iterations when the model should be saved.

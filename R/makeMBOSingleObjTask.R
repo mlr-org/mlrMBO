@@ -5,6 +5,6 @@
 # - imputes features
 #
 makeMBOSingleObjTask = function(par.set, opt.path, control) {
-  data = convertOptPathToDf(par.set, opt.path, control, impute = TRUE)
+  data = convertOptPathToDf(par.set, opt.path, control, impute.feats = TRUE)
   makeRegrTask(target = control$y.name, data = data)
 }

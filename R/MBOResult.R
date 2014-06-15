@@ -5,7 +5,6 @@
 #' @description
 #'
 #' \itemize{
-#' @return [\code{list}]:
 #'   \item{x [\code{list}]}{Named list of proposed optimal parameters.}
 #'   \item{y [\code{numeric(1)}]}{Value of fitness function at \code{x},
 #'     either from evals during optimization or from requested final evaluations,

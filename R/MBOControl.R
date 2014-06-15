@@ -207,11 +207,13 @@
 #'   Sequential optimization iteration when the actual state should be saved
 #'   on disk. Iteration 0 denotes the initial design. If the optimization
 #'   stops with an crucial error, it can be restarted with this file via the
-#'   function \link{restartSavedMBO}. Default is NULL. Make sure to specify
-#'   \code{save.file.path}.
+#'   function \code{\link{mboContinue}}.
+#'   Default is NULL.
+# FIXME: use better default, maybe in workdir
 #' @param save.file.path [\code{character(1)}] \cr
 #'   If \code{save.on.disk.at} is used, this is the name of the file where the data
-#'   will be saved. Default is NULL.
+#'   will be saved.
+#'   Default is NULL.
 #' @param save.model.at [\code{integer}]\cr
 #'   Sequential optimization iterations when the model should be saved.
 #'   Iteration 0 is the model fit for the initial design.

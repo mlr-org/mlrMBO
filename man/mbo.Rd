@@ -31,10 +31,10 @@ Verbose output on console?
 Default is \code{TRUE}.}
 
 \item{more.args}{[list]\cr
-  Further arguments passed to fitness function.
-
-  The return value is a S3-objects and depends on the used algorithm.
-  For single objective MBO it is a MBOResult - object:}
+Further arguments passed to fitness function.}
+}
+\value{
+[\code{\link{MBOSingleObjResult}} | \code{\link{MBOMultiObjResult}}]
 }
 \description{
 Optimizes a function with sequential model based optimization.
