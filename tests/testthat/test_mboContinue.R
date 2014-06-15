@@ -30,7 +30,7 @@ test_that("mboContinue", {
   }
   expect_equal(getOptPathLength(or$opt.path), 17)
 
-  # # Now test parEGO
+  # now test parEGO
   f = function(x) {
     i <<- i + 1
     if (i > 12)

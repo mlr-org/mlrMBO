@@ -47,6 +47,7 @@ mboParEGO = function(fun, par.set, design = NULL, learner, control, show.info = 
       return(mbo.result)
     }
     opt.path = continue$opt.path
+    models = continue$models
   }
 
   # new control for scalar soo iteration, always minimize and propose 1 point
