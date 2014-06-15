@@ -56,7 +56,7 @@ mboParEGO = function(fun, par.set, design = NULL, learner, control, show.info = 
   ctrl2$minimize = TRUE
 
   # if we are restarting from a save file, we possibly start in a higher iteration
-  loop = max(getOptPathDOB(opt.path)) + 1
+  loop = max(getOptPathDOB(opt.path)) + 1L
   while (loop <= control$iters) {
     # scalarize + train + propose
     scalar = makeScalarTasks(par.set, opt.path, control, all.possible.weights)
