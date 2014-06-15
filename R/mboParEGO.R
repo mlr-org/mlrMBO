@@ -39,7 +39,8 @@ mboParEGO = function(fun, par.set, design = NULL, learner, control, show.info = 
     wmat = matrix(NA, nrow = ninit, ncol = control$number.of.targets)
     generateMBODesign(design, fun, par.set, opt.path, control, show.info, oldopts, more.args,
       extras = getExtras(rep(NA, ninit), model.fail = NA_character_, wmat))
-    saveStateOnDisk(0L, fun, learner, par.set, opt.path, control, show.info, more.args, NULL, NULL, NULL)
+    models = namedList(control$save.model.at)
+    saveStateOnDisk(0L, fun, learner, par.set, opt.path, control, show.info, more.args, models, NULL, NULL)
   } else {
     if (!is.null(continue$mbo.result)) {
       warningf("mboContinue: No need to continue, we were already finished. Simply returning stored result.")
@@ -58,8 +59,10 @@ mboParEGO = function(fun, par.set, design = NULL, learner, control, show.info = 
   while (loop <= control$iters) {
     # scalarize + train + propose
     scalar = makeScalarTasks(par.set, opt.path, control, all.possible.weights)
-    models = lapply(scalar$tasks, train, learner = learner)
-    props = lapply(models, proposePoints, par.set = par.set,
+    newmods = lapply(scalar$tasks, train, learner = learner)
+    if (loop %in% control$save.model.at)
+      models[[as.character(loop)]] = newmods
+    props = lapply(newmods, proposePoints, par.set = par.set,
       control = ctrl2, opt.path = opt.path)
     prop.points = do.call(rbind, extractSubList(props, "prop.points", simplify = FALSE))
 
@@ -70,7 +73,7 @@ mboParEGO = function(fun, par.set, design = NULL, learner, control, show.info = 
     )
     evalProposedPoints(loop, prop.points, par.set, opt.path, control,
       fun, learner, show.info, oldopts, more.args, extras)
-    saveStateOnDisk(loop, fun, learner, par.set, opt.path, control, show.info, more.args, NULL, NULL, NULL)
+    saveStateOnDisk(loop, fun, learner, par.set, opt.path, control, show.info, more.args, models, NULL, NULL)
     loop = loop + 1L
   }
 
@@ -82,12 +85,13 @@ mboParEGO = function(fun, par.set, design = NULL, learner, control, show.info = 
   res = makeS3Obj(c("MBOMultiObjResult", "MBOResult"),
     pareto.front = getOptPathY(opt.path)[pareto.inds, ],
     pareto.set = lapply(pareto.inds, function(i) getOptPathEl(opt.path, i)$x),
-    opt.path = opt.path
+    opt.path = opt.path,
+    models = models
   )
 
   # make sure to save final res on disk
   saveStateOnDisk(loop, fun, learner, par.set, opt.path, control, show.info, more.args,
-    NULL, NULL, res)
+    models, NULL, res)
 
   return(res)
 }

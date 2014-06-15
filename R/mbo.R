@@ -19,28 +19,11 @@
 #'   Default is \code{TRUE}.
 #' @param more.args [list]\cr
 #'   Further arguments passed to fitness function.
-#'
-#'   The return value is a S3-objects and depends on the used algorithm.
-#'   For single objective MBO it is a MBOResult - object:
-# FIXME: How document this with roxygen?
-# @return [\code{list}]:
-#   \item{x [\code{list}]}{Named list of proposed optimal parameters.}
-#   \item{y [\code{numeric(1)}]}{Value of fitness function at \code{x}, either from evals during optimization or from requested final evaluations, if those were greater than 0.}
-#   \item{opt.path [\code{\link[ParamHelpers]{OptPath}}]}{Optimization path.}
-#   \item{times [\code{numeric}]}{Vector of times it took to evaluate the objective.}
-#   \item{models [List of \code{\link[mlr]{WrappedModel}}]}{List of saved regression models.}
-#   \item{multipoint.lcb.lambdas [\code{matrix(iters, proposed.points)}]}{Sampled lambda values for multipoint lcb method.}
-# For the multicrit Parego-algorithm it is a paregoResult - object:
-# @return [\code{list}]:
-#   \item{pareto.front [\code{matrix}]}{Pareto Front of all evaluated points.}
-#   \item{pareto.set [\code{list(list)}]}{List of named list of pareto set.}
-#   \item{opt.path [\code{\link[ParamHelpers]{OptPath}}]}{Optimization path.}
-#   \item{weight.path [\code{data.frame}]{Data.frame containing all used weights.}
+#' @return [\code{\link{MBOSingleObjResult}} | \code{\link{MBOMultiObjResult}}]
 #' @note It is possible to parallelize the evaluation of the target function to speed up the computation.
 #' Internally the evaluation of the target function is realized with the R package parallelMap. See the mlrMBO tutorial
 #' respectively the help pages of \code{\link[parallelMap]{parallelMap}} for instructions on how to set up parallization.
 #' @export
-
 mbo = function(fun, par.set, design = NULL, learner, control, show.info = TRUE, more.args = list()) {
 
   learner = checkLearner(learner, par.set, control)
