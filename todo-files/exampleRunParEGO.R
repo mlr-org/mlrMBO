@@ -8,8 +8,6 @@ exampleRunParEGO = function(fun, par.set, learner, control, show.info = TRUE,
 
   learner = checkLearner(learner, par.set, control, ...)
 
-  points.per.dim = convertInteger(points.per.dim)
-  checkArg(points.per.dim, "integer", len = 1L, na.ok = FALSE, lower = 1L)
   checkArg(show.info, "logical", len = 1L, na.ok = FALSE)
   ny = control$number.of.targets
 
@@ -52,7 +50,9 @@ exampleRunParEGO = function(fun, par.set, learner, control, show.info = TRUE,
 }
 
 
-autoplo = function(x, iters, pause = TRUE, y1lim = NULL, y2lim = NULL, ...)  {
+autoplo = function(x, iters, pause = TRUE, y1lim = NULL, y2lim = NULL, points.per.dim, ...)  {
+  points.per.dim = convertInteger(points.per.dim)
+  checkArg(points.per.dim, "integer", len = 1L, na.ok = FALSE, lower = 1L)
 
   # extract information from example run object
   par.set = x$par.set
@@ -153,6 +153,6 @@ ctrl = makeMBOControl(number.of.targets = 2L, init.design.points = 10L, iters = 
   infill.crit = "ei", infill.opt.focussearch.points = 10000L,
   parego.s = 1000)
 
-run = exampleRun2(makeMBOFunction(f), ps, control = ctrl)
+run = exampleRunParEGO(makeMBOFunction(f), ps, control = ctrl)
 
-autoplo(run, iters = 1:10, pause = T)
+autoplot(run, iters = 1:10, pause = T)
