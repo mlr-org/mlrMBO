@@ -44,7 +44,7 @@ mboParEGO = function(fun, par.set, design = NULL, learner, control, show.info = 
   } else {
     if (!is.null(continue$mbo.result)) {
       warningf("mboContinue: No need to continue, we were already finished. Simply returning stored result.")
-      return(mbo.result)
+      return(continue$mbo.result)
     }
     opt.path = continue$opt.path
     models = continue$models
