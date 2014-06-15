@@ -39,3 +39,14 @@ evalProposedPoints = function(loop, prop.points, par.set, opt.path, control,
   evalTargetFun(fun, par.set, loop, xs, opt.path, control, show.info, oldopts, more.args, extras)
 }
 
+# for Parego: calculate all integer vectors of length k with sum n
+combWithSum = function(n, k) {
+  fun = function(n, k) {
+    if (k == 1L)
+      list(n)
+    else
+      unlist(lapply(0:n, function(i) Map(c, i, fun(n - i, k - 1L))),
+        recursive = FALSE)
+  }
+  matrix(unlist(fun(n, k)), ncol = k, byrow = TRUE)
+}

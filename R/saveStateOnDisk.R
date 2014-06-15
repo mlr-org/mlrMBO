@@ -11,7 +11,8 @@ saveStateOnDisk = function(loop, fun, learner, par.set, opt.path, control, show.
       more.args = more.args,
       models = models,
       resample.vals = resample.vals,
-      mbo.result = mbo.result
+      mbo.result = mbo.result,
+      random.seed = .Random.seed
     )
   }
 }

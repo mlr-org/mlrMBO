@@ -14,13 +14,13 @@ mboParEGO = function(fun, par.set, design = NULL, learner, control, show.info = 
   crit = control$infill.crit
 
   # helper to get extras-list for opt.path logging
-  getExtras = function(crit.vals, model.fail, wmat) {
+  getExtras = function(crit.vals, model.fail, weight.mat) {
     n = length(crit.vals)
     exs = vector("list", n)
     for (i in 1:n) {
       ex = list(crit.vals[i], .model.fail = model.fail[i])
       names(ex)[1] = crit
-      w = setNames(as.list(wmat[i, ]), paste0(".weight", 1:ncol(wmat)))
+      w = setNames(as.list(weight.mat[i, ]), paste0(".weight", 1:ncol(weight.mat)))
       exs[[i]] = c(ex, w)
     }
     return(exs)
@@ -36,9 +36,9 @@ mboParEGO = function(fun, par.set, design = NULL, learner, control, show.info = 
   # for normal start, we setup initial design, otherwise take stuff from continue object from disk
   if (is.null(continue)) {
     opt.path = makeMBOOptPath(par.set, control)
-    wmat = matrix(NA, nrow = ninit, ncol = control$number.of.targets)
+    weight.mat = matrix(NA, nrow = ninit, ncol = control$number.of.targets)
     generateMBODesign(design, fun, par.set, opt.path, control, show.info, oldopts, more.args,
-      extras = getExtras(rep(NA, ninit), model.fail = NA_character_, wmat))
+      extras = getExtras(rep(NA, ninit), model.fail = NA_character_, weight.mat))
     models = namedList(control$save.model.at)
     saveStateOnDisk(0L, fun, learner, par.set, opt.path, control, show.info, more.args, models, NULL, NULL)
   } else {
@@ -60,17 +60,17 @@ mboParEGO = function(fun, par.set, design = NULL, learner, control, show.info = 
   while (loop <= control$iters) {
     # scalarize + train + propose
     scalar = makeScalarTasks(par.set, opt.path, control, all.possible.weights)
-    newmods = lapply(scalar$tasks, train, learner = learner)
+    new.mods = lapply(scalar$tasks, train, learner = learner)
     if (loop %in% control$save.model.at)
-      models[[as.character(loop)]] = newmods
-    props = lapply(newmods, proposePoints, par.set = par.set,
+      models[[as.character(loop)]] = new.mods
+    props = lapply(new.mods, proposePoints, par.set = par.set,
       control = ctrl2, opt.path = opt.path)
     prop.points = do.call(rbind, extractSubList(props, "prop.points", simplify = FALSE))
 
     extras = getExtras(
       crit.vals = extractSubList(props, "crit.vals"),
       model.fail = extractSubList(props, "model.fail"),
-      wmat = scalar$weights
+      weight.mat = scalar$weights
     )
     evalProposedPoints(loop, prop.points, par.set, opt.path, control,
       fun, learner, show.info, oldopts, more.args, extras)
@@ -103,15 +103,3 @@ print.MBOMultiObjResult = function(x, ...) {
   print(tail(as.data.frame(x$opt.path), 10))
 }
 
-
-# small helper: calculate all integer vectors of length k with sum n
-combWithSum = function(n, k) {
-  fun = function(n, k) {
-    if (k == 1L)
-      list(n)
-    else
-      unlist(lapply(0:n, function(i) Map(c, i, fun(n - i, k - 1L))),
-        recursive = FALSE)
-  }
-  matrix(unlist(fun(n, k)), ncol = k, byrow = TRUE)
-}

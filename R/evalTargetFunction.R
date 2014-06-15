@@ -2,12 +2,13 @@
 #
 # xs = list of points
 # dobs = dobs values for xs, same len or 1 int
+# extras = extra values to be logged in the opt.path.
 #
 # - trafo xs
 # - evals all xs, measures time
 # - potentially imputes errors, NAs, NaNs, Infs
 #
-# returns numeric-vector of y-vals
+# returns numeric-vector (matrix for multicrit) of y-vals
 
 evalTargetFun = function(fun, par.set, dobs, xs, opt.path, control, show.info, oldopts,
   more.args = list(), extras) {
@@ -19,13 +20,13 @@ evalTargetFun = function(fun, par.set, dobs, xs, opt.path, control, show.info, o
   num.format = control$output.num.format
   num.format.string = paste("%s = ", num.format, sep = "")
   dobs = ensureVector(dobs, n = nevals, cl = "integer")
-  imputey = control$impute.y.fun
+  imputeY = control$impute.y.fun
 
   # trafo
   xs = lapply(xs, trafoValue, par = par.set)
 
   # function to measure of fun call
-  wrapfun = function(x) {
+  wrapFun = function(x) {
     st = proc.time()
     y = do.call(fun, insert(list(x = x), more.args))
     st = proc.time() - st
@@ -42,7 +43,7 @@ evalTargetFun = function(fun, par.set, dobs, xs, opt.path, control, show.info, o
   configureMlr(on.learner.error = oldopts[["ole"]], show.learner.output = oldopts[["slo"]])
 
   # return error objects if we impute
-  res = parallelMap(wrapfun, xs, impute.error = if (is.null(imputey)) NULL else identity)
+  res = parallelMap(wrapFun, xs, impute.error = if (is.null(imputeY)) NULL else identity)
 
   # loop evals and to some post-processing
   for (i in 1:nevals) {
@@ -53,22 +54,22 @@ evalTargetFun = function(fun, par.set, dobs, xs, opt.path, control, show.info, o
     } else {
       y = r$y; ytime = r$time; errmsg = NA_character_
     }
-    yvalid = isYValid(y)
+    y.valid = isYValid(y)
 
     # objective fun problem? allow user to handle it
     y2 = y # changed y that we will use in opt.path
-    if (!yvalid) {
-      if (is.null(imputey)) { # ok then stop
+    if (!y.valid) {
+      if (is.null(imputeY)) { # ok then stop
         if (is.error(y))
           stopf("Objective function error: %s ", y$message)
         else
           stopf("Objective function output must be a numeric of length %i, but we got: %s",
             ny, convertToShortString(y))
       } else { # let user impute
-        if (!is.error(r) && !yvalid)
+        if (!is.error(r) && !y.valid)
           errmsg = sprintf("mlrMBO: Imputed invalid objective function output. Original value was: %s",
             convertToShortString(y))
-        y2 = imputey(x, y, opt.path)
+        y2 = imputeY(x, y, opt.path)
         if (!isYValid(y2))
           stopf("Y-Imputation failed. Must return a numeric of length: %i, but we got: %s",
             ny, convertToShortString(y2))
@@ -79,7 +80,7 @@ evalTargetFun = function(fun, par.set, dobs, xs, opt.path, control, show.info, o
       paramValueToString(par.set, x, num.format = num.format),
       collapse(sprintf(num.format.string, y.name, y2), ", "),
       ytime,
-      ifelse(yvalid, "", " (imputed)")
+      ifelse(y.valid, "", " (imputed)")
     )
     # log to opt path
     addOptPathEl(opt.path, x = x, y = y2, dob = dob,
