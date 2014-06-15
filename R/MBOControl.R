@@ -42,7 +42,7 @@
 #' @param infill.crit.lcb.lambda [\code{numeric(1)}]\cr
 #'   Lambda parameter for lower confidence bound infill criterion.
 #'   Only used if \code{infill.crit == "lcb"}, ignored otherwise.
-#'   Deafult is 1.
+#'   Default is 1.
 #' @param infill.opt [\code{character(1)}]\cr
 #'   How should SINGLE points be proposed by using the surrogate model. Possible values are:
 #'   \dQuote{focussearch}: In several iteration steps the parameter space is
