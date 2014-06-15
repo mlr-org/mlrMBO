@@ -1,6 +1,8 @@
 #  Optimizes a multicrit optimization problem with the parego algorithm
 
-mboParEGO = function(fun, par.set, design = NULL, learner, control, show.info = TRUE, more.args = list()) {
+mboParEGO = function(fun, par.set, design = NULL, learner, control, show.info = TRUE,
+  more.args = list(), continue = NULL) {
+
   # save currently set options
   oldopts = list(
     ole = getOption("mlr.on.learner.error"),
@@ -10,8 +12,6 @@ mboParEGO = function(fun, par.set, design = NULL, learner, control, show.info = 
   # shortcut names
   ninit = if(is.null(design)) control$init.design.points else nrow(design)
   crit = control$infill.crit
-
-  opt.path = makeMBOOptPath(par.set, control)
 
   # helper to get extras-list for opt.path logging
   getExtras = function(crit.vals, model.fail, wmat) {
@@ -33,18 +33,29 @@ mboParEGO = function(fun, par.set, design = NULL, learner, control, show.info = 
   vars = apply(all.possible.weights, 1, var)
   all.possible.weights = rbind(diag(control$number.of.targets), all.possible.weights[!vars == max(vars),])
 
-  wmat = matrix(NA, nrow = ninit, ncol = control$number.of.targets)
-  generateMBODesign(design, fun, par.set, opt.path, control, show.info, oldopts, more.args,
-    extras = getExtras(rep(NA, ninit), model.fail = NA_character_, wmat))
+  # for normal start, we setup initial design, otherwise take stuff from continue object from disk
+  if (is.null(continue)) {
+    opt.path = makeMBOOptPath(par.set, control)
+    wmat = matrix(NA, nrow = ninit, ncol = control$number.of.targets)
+    generateMBODesign(design, fun, par.set, opt.path, control, show.info, oldopts, more.args,
+      extras = getExtras(rep(NA, ninit), model.fail = NA_character_, wmat))
+    saveStateOnDisk(0L, fun, learner, par.set, opt.path, control, show.info, more.args, NULL, NULL, NULL)
+  } else {
+    if (!is.null(continue$mbo.result)) {
+      warningf("mboContinue: No need to continue, we were already finished. Simply returning stored result.")
+      return(mbo.result)
+    }
+    opt.path = continue$opt.path
+  }
 
   # new control for scalar soo iteration, always minimize and propose 1 point
   ctrl2 = control
   ctrl2$propose.points = 1L
   ctrl2$minimize = TRUE
 
-  saveStateOnDisk(0L, fun, learner, par.set, opt.path, control, show.info, more.args)
-
-  for (loop in 1:control$iters) {
+  # if we are restarting from a save file, we possibly start in a higher iteration
+  loop = max(getOptPathDOB(opt.path)) + 1
+  while (loop <= control$iters) {
     # scalarize + train + propose
     scalar = makeScalarTasks(par.set, opt.path, control, all.possible.weights)
     models = lapply(scalar$tasks, train, learner = learner)
@@ -59,6 +70,8 @@ mboParEGO = function(fun, par.set, design = NULL, learner, control, show.info = 
     )
     evalProposedPoints(loop, prop.points, par.set, opt.path, control,
       fun, learner, show.info, oldopts, more.args, extras)
+    saveStateOnDisk(loop, fun, learner, par.set, opt.path, control, show.info, more.args, NULL, NULL, NULL)
+    loop = loop + 1L
   }
 
   pareto.inds = getOptPathParetoFront(opt.path, index = TRUE)
@@ -66,11 +79,17 @@ mboParEGO = function(fun, par.set, design = NULL, learner, control, show.info = 
   # restore mlr configuration
   configureMlr(on.learner.error = oldopts[["ole"]], show.learner.output = oldopts[["slo"]])
 
-  makeS3Obj(c("MBOMultiObjResult", "MBOResult"),
+  res = makeS3Obj(c("MBOMultiObjResult", "MBOResult"),
     pareto.front = getOptPathY(opt.path)[pareto.inds, ],
     pareto.set = lapply(pareto.inds, function(i) getOptPathEl(opt.path, i)$x),
     opt.path = opt.path
   )
+
+  # make sure to save final res on disk
+  saveStateOnDisk(loop, fun, learner, par.set, opt.path, control, show.info, more.args,
+    NULL, NULL, res)
+
+  return(res)
 }
 
 #' @export

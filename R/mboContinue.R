@@ -17,15 +17,15 @@ mboContinue = function(file) {
 
   # load the file and check if every required object exists
   f = load2(file, simplify = FALSE)
-  print(names(f))
-  if (any(c("fun", "learner", "par.set", "opt.path", "control", "show.info", "more.args") %nin% names(f)))
+  if (any(c("fun", "learner", "par.set", "opt.path", "control", "show.info", "more.args", "models", "resample.vals") %nin% names(f)))
     stopf("Whatever the file contained you specified - it was not saved by mbo. Please specify a correct file.")
 
   # Restart mbo
+  continue = f[c("opt.path", "models", "resample.vals")]
   if (f$control$number.of.targets == 1L) {
-    mboSingleObj(f$fun, f$par.set, f$opt.path, f$learner, f$control, f$show.info, f$more.args, continue = f$opt.path)
+    mboSingleObj(f$fun, f$par.set, f$opt.path, f$learner, f$control, f$show.info, f$more.args, continue)
   } else {
     if (f$control$multicrit.method == "parego")
-      mboParego(f$fun, f$par.set, f$opt.path, f$learner, f$control, f$show.info, f$more.args, continue = f$opt.path)
+      mboParEGO(f$fun, f$par.set, f$opt.path, f$learner, f$control, f$show.info, f$more.args, continue)
   }
 }

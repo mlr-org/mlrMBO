@@ -8,8 +8,8 @@
 
 # performns single objective mbo, then creates result S3 object
 
-mboSingleObj = function(fun, par.set, design = NULL, learner, control, show.info = TRUE, more.args = list()) {
-
+mboSingleObj = function(fun, par.set, design = NULL, learner, control, show.info = TRUE,
+  more.args = list(), continue = NULL) {
 
   # save currently set options
   oldopts = list(
@@ -23,9 +23,6 @@ mboSingleObj = function(fun, par.set, design = NULL, learner, control, show.info
   islcb = (control$propose.points > 1L && control$multipoint.method == "lcb")
   ninit = if(is.null(design)) control$init.design.points else nrow(design)
   fevals = control$final.evals
-
-  # create opt.path
-  opt.path = makeMBOOptPath(par.set, control)
 
   # helper to get extras-list for opt.path logging
   getExtras = function(crit.vals, model.fail, lambdas) {
@@ -41,33 +38,44 @@ mboSingleObj = function(fun, par.set, design = NULL, learner, control, show.info
     return(exs)
   }
 
-  # generate initial design
-  mbo.design = generateMBODesign(design, fun, par.set, opt.path, control, show.info, oldopts, more.args,
-    extras = getExtras(crit.vals = rep(NA_real_, ninit), model.fail = NA_character_, lambdas = rep(NA_real_, ninit)))
+  # for normal start, we setup initial design, otherwise take stuff from continue object from disk
+  if (is.null(continue)) {
+    # create opt.path
+    opt.path = makeMBOOptPath(par.set, control)
+    # generate initial design
+    generateMBODesign(design, fun, par.set, opt.path, control, show.info, oldopts, more.args,
+      extras = getExtras(crit.vals = rep(NA_real_, ninit), model.fail = NA_character_, lambdas = rep(NA_real_, ninit)))
+    models = namedList(control$save.model.at)
+    resample.vals = namedList(control$resample.at)
+  } else {
+    if (!is.null(continue$mbo.result)) {
+      warningf("mboContinue: No need to continue, we were already finished. Simply returning stored result.")
+      return(mbo.result)
+    }
+    opt.path = continue$opt.path
+    models = continue$models
+    resample.vals = continue$resample.vals
+  }
 
-  # set up initial mbo task
+  # set up initial mbo task + train model
   rt = makeMBOSingleObjTask(par.set, opt.path, control)
   model = train(learner, rt)
 
-  models = namedList(control$save.model.at)
-  res.vals = namedList(control$resample.at)
-
-  if (0L %in% control$save.model.at) {
-    models[["0"]] = model
+  # save some stuff for iter 0, not necessary if we continue
+  if (is.null(continue)) {
+    if (0L %in% control$save.model.at)
+      models[["0"]] = model
+    if (0L %in% control$resample.model.at) {
+      r = resample(learner, rt, control$resample.desc, measures = control$resample.measures)
+      resample.vals[["0"]] = r$aggr
+    }
+    saveStateOnDisk(0L, fun, learner, par.set, opt.path, control, show.info, more.args,
+      models, resample.vals, NULL)
   }
 
-  if (0L %in% control$resample.model.at) {
-    r = resample(learner, rt, control$resample.desc, measures = control$resample.measures)
-    res.vals[["0"]] = r$aggr
-  }
-
-  saveStateOnDisk(0L, fun, learner, par.set, opt.path, control, show.info, more.args)
-
-  # do the mbo magic
   # if we are restarting from a save file, we possibly start in a higher iteration
-  start.loop = max(getOptPathDOB(opt.path)) + 1
-  for (loop in start.loop:control$iters) {
-
+  loop = max(getOptPathDOB(opt.path)) + 1
+  while (loop <= control$iters) {
     # propose new points and evaluate target function
     prop = proposePoints(model, par.set, control, opt.path)
     prop.points = prop$prop.points
@@ -83,9 +91,11 @@ mboSingleObj = function(fun, par.set, design = NULL, learner, control, show.info
       models[[as.character(loop)]] = model
     if (loop %in% control$resample.at) {
       r = resample(learner, rt, control$resample.desc, measures = control$resample.measures)
-      res.vals[[as.character(loop)]] = r$aggr
+      resample.vals[[as.character(loop)]] = r$aggr
     }
-    saveStateOnDisk(loop, fun, learner, par.set, opt.path, control, show.info, more.args)
+    saveStateOnDisk(loop, fun, learner, par.set, opt.path, control, show.info, more.args,
+      models, resample.vals, NULL)
+    loop = loop + 1L
   }
 
   design = getTaskData(rt, target.extra = TRUE)$data
@@ -105,15 +115,19 @@ mboSingleObj = function(fun, par.set, design = NULL, learner, control, show.info
   # restore mlr configuration
   configureMlr(on.learner.error = oldopts[["ole"]], show.learner.output = oldopts[["slo"]])
 
-  # make sure to strip name of y
-  makeS3Obj(c("MBOSingleObjResult", "MBOResult"),
+  res = makeS3Obj(c("MBOSingleObjResult", "MBOResult"),
     x = best$x,
-    # strip name
-    y = as.numeric(best$y),
+    y = as.numeric(best$y), # strip name
     opt.path = opt.path,
-    resample = res.vals,
+    resample = resample.vals,
     models = models
   )
+
+  # make sure to save final res on disk
+  saveStateOnDisk(loop, fun, learner, par.set, opt.path, control, show.info, more.args,
+    models, resample.vals, res)
+
+  return(res)
 }
 
 #' @export
