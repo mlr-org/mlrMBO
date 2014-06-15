@@ -41,20 +41,16 @@
 #' respectively the help pages of \code{\link[parallelMap]{parallelMap}} for instructions on how to set up parallization.
 #' @export
 
-mbo = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, more.args=list()) {
+mbo = function(fun, par.set, design = NULL, learner, control, show.info = TRUE, more.args = list()) {
+
+  learner = checkLearner(learner, par.set, control)
   #FIXME: more param checks
   checkStuff(fun, par.set, design, learner, control)
   loadPackages(control)
 
   # configure mlr in an appropriate way
   configureMlr(on.learner.error = control$on.learner.error,
-    show.learner.output=control$show.learner.output)
-
-  # FIXME: I am unsure wether we should do this, but otherwise RF sucks
-  # if it is a good idea it is not not general enuff
-  if (inherits(learner, "regr.randomForest")) {
-    learner = setHyperPars(learner, fix.factors=TRUE)
-  }
+    show.learner.output = control$show.learner.output)
 
   # Call the correct mbo function
   if (control$number.of.targets == 1L)

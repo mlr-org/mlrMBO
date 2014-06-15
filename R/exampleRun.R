@@ -33,7 +33,7 @@
 #'   DiceKriging.
 #'   \code{nugget.estim} is set to \code{TRUE} depending on whether we have
 #'   noisy observations or not.
-#FIXME use other learner if we have factors
+#FIXME: use other learner if we have factors
 #' @param control [\code{\link{MBOControl}}]\cr
 #'   See \code{\link{mbo}}.
 #' @param  points.per.dim [\code{integer}]\cr
@@ -57,8 +57,8 @@
 #'   \item{learner [\code{\link[mlr]{Learner}}]}{See argument.}
 #'   \item{control [\code{\link{MBOControl}}]}{See argument.}
 
-#FIXME doc soobench and add suggsts
-#FIXME can we allow functions with simpler signature?
+#FIXME: doc soobench and add suggsts
+#FIXME: can we allow functions with simpler signature?
 exampleRun = function(fun, par.set, global.opt = NA_real_, learner, control,
   points.per.dim = 50, noisy.evals = 10, show.info = TRUE, ...) {
 
@@ -80,17 +80,7 @@ exampleRun = function(fun, par.set, global.opt = NA_real_, learner, control,
   par.types = getTypes(par.set)
 
   noisy = control$noisy
-  if (missing(learner)) {
-    # set random forest as default learner if discrete params occur
-    if (hasDiscrete(par.set)) {
-      # FIXME: set further params
-      learner = makeLearner("regr.randomForest", predict.type = "se")
-    } else {
-      learner = makeLearner("regr.km", covtype = "matern5_2", predict.type = "se", nugget.estim = noisy, ...)
-    }
-  } else {
-    checkArg(learner, "Learner")
-  }
+  learner = checkLearner(learner, par.set, control, ...)
 
   points.per.dim = convertInteger(points.per.dim)
   checkArg(points.per.dim, "integer", len = 1L, na.ok = FALSE, lower = 1L)
@@ -139,9 +129,9 @@ exampleRun = function(fun, par.set, global.opt = NA_real_, learner, control,
   }
 
   # run optimizer now
-  res = mbo(fun, par.set, learner=learner, control=control, show.info=show.info)
+  res = mbo(fun, par.set, learner = learner, control = control, show.info = show.info)
 
-  structure(list(
+  makeS3Obj("MBOExampleRun",
     par.set = par.set,
     n.params = n.params,
     par.types = par.types,
@@ -154,7 +144,7 @@ exampleRun = function(fun, par.set, global.opt = NA_real_, learner, control,
     learner = learner,
     control = control,
     mbo.res = res
-  ), class="MBOExampleRun")
+  )
 }
 
 #' @export
@@ -258,7 +248,7 @@ evaluate = function(fun, par.set, n.params, par.types, noisy, noisy.evals, point
           fun(x)
         }
       }, xs, simplify = TRUE)
-      evals = cbind(eval.x, y=ys)
+      evals = cbind(eval.x, y = ys)
       colnames(evals) = c(names.x, name.y)
       return(evals)
     }

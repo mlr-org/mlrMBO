@@ -3,10 +3,7 @@ context("parego")
 test_that("mbo parego works", {
   f = makeMBOFunction(function(x) x^2)
   f2 = makeMBOFunction(function(x) c(1, -1) * x^2)
-  ps = makeParamSet(
-    makeNumericParam("x1", lower = -2, upper = 1),
-    makeNumericParam("x2", lower = -1, upper = 2)
-  )
+  ps = makeNumericParamSet(len = 2L, lower = -2, upper = 1)
 
   # Test normal run
   learner = makeLearner("regr.km", nugget.estim = TRUE)
