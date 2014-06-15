@@ -275,7 +275,7 @@ makeMBOControl = function(number.of.targets = 1L,
   requirePackages("lhs", "makeMBOControl")
 
   number.of.targets = convertInteger(number.of.targets)
-  checkArg(number.of.targets, "integer", len = 1L, min = 1L, na.ok = FALSE)
+  checkArg(number.of.targets, "integer", len = 1L, lower = 1L, na.ok = FALSE)
   checkArg(multicrit.method, choices = c("parego"))
   checkArg(minimize, "logical", len = number.of.targets, na.ok = FALSE)
   checkArg(noisy, "logical", len = 1L, na.ok = FALSE)

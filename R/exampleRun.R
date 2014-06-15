@@ -77,7 +77,7 @@ exampleRun = function(fun, par.set, global.opt = NA_real_, learner, control,
     checkArg(global.opt, "numeric", len = 1L, na.ok = TRUE)
   }
 
-  par.types = getTypes(par.set)
+  par.types = getTParamTypes(par.set)
 
   noisy = control$noisy
   learner = checkLearner(learner, par.set, control, ...)

@@ -7,11 +7,11 @@ License: BSD_3_clause + file LICENSE
 Depends:
     ParamHelpers,
     mlr,
-    gridExtra,
     grid,
     ggplot2
 Imports:
     BBmisc (>= 1.4),
+    gridExtra,
     parallelMap (>= 1.1)
 Suggests:
     cmaes,
