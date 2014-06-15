@@ -71,7 +71,7 @@ autoplo = function(x, iters, pause = TRUE, y1lim = NULL, y2lim = NULL, points.pe
     y2lim = range(yy[,2L])
   name.crit = control$infill.crit
   critfun = getInfillCritFunction(name.crit)
-  xgrid = generateGridDesign(par.set = par.set, resolution = x$points.per.dim)
+  xgrid = generateGridDesign(par.set = par.set, resolution = points.per.dim)
   # xgrid = generateGridDesign(par.set = par.set, resolution = 4)
   xgrid2 = xgrid
   nsga2.paretoset = x$nsga2.paretoset
@@ -153,6 +153,6 @@ ctrl = makeMBOControl(number.of.targets = 2L, init.design.points = 10L, iters = 
   infill.crit = "ei", infill.opt.focussearch.points = 10000L,
   parego.s = 1000)
 
-run = exampleRunParEGO(makeMBOFunction(f), ps, control = ctrl)
+#run = exampleRunParEGO(makeMBOFunction(f), ps, control = ctrl)
 
-autoplot(run, iters = 1:10, pause = T)
+autoplo(run, iters = 1:10, pause = T, resolution = ,points.per.dim = 50)

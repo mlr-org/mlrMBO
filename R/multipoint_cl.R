@@ -21,14 +21,14 @@ multipointInfillOptCL = function(model, control, par.set, opt.path, design, ...)
   while (nrow(newdes) < control$propose.points) {
     newdes1 = proposePoints(model, par.set, control2, op2)
     x = dfRowToList(newdes1$prop.points, par.set, 1)
-    addOptPathEl(op2, x=x, y=lie, dob=dob)
+    addOptPathEl(op2, x = x, y = lie, dob = dob)
     newdes = rbind(newdes, newdes1$prop.points)
     prop.points.crit.values=c(prop.points.crit.values, newdes1$prop.points.crit.values)
     
     # update model
-    rt = makeMBOTask(as.data.frame(op2, discretes.as.factor=TRUE), par.set, y.name, control=control)
+    rt = makeMBOSingleObjTask(as.data.frame(op2, discretes.as.factor = TRUE),
+      par.set, y.name, control = control)
     model = train(learner, rt)
   }
   return(list(prop.points = newdes, prop.points.crit.values = prop.points.crit.values))
 }
-
