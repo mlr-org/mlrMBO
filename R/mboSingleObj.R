@@ -74,7 +74,7 @@ mboSingleObj = function(fun, par.set, design = NULL, learner, control, show.info
   }
 
   # if we are restarting from a save file, we possibly start in a higher iteration
-  loop = max(getOptPathDOB(opt.path)) + 1
+  loop = max(getOptPathDOB(opt.path)) + 1L
   while (loop <= control$iters) {
     # propose new points and evaluate target function
     prop = proposePoints(model, par.set, control, opt.path)

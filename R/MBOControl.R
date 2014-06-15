@@ -327,22 +327,23 @@ makeMBOControl = function(number.of.targets = 1L,
 
   if (missing(parego.s))
     parego.s = switch(min(number.of.targets, 7), 1L, 100000L, 450L, 75L, 37L, 23L, 10L)
-  parego.s = convertInteger(parego.s)
-  checkArg(parego.s, "integer", len = 1L, na.ok = FALSE, lower = 1)
-  checkArg(parego.rho, "numeric", len = 1L, na.ok = FALSE, lower = 0, upper = 1)
-  if (propose.points == 1L)
-    parego.sample.more.weights = 1L
-  parego.sample.more.weights = convertInteger(parego.sample.more.weights)
-  checkArg(parego.sample.more.weights, "numeric", len = 1L, na.ok = FALSE, lower = 1)
-  checkArg(parego.use.margin.points, "logical", len = number.of.targets, na.ok = FALSE, lower = 1)
 
-
-  if (sum(parego.use.margin.points) > propose.points)
-    stopf("Can't use %s margin points when only proposing %s points each iteration.",
-      sum(parego.use.margin.points), propose.points)
-  number.of.weights = choose(parego.s + number.of.targets - 1, number.of.targets - 1)
-  if (parego.sample.more.weights * propose.points > number.of.weights)
-    stop("Trying to sample more weights than exists. Increase parego.s or decrease number of weights.")
+  if (number.of.targets > 1L) {
+    parego.s = convertInteger(parego.s)
+    checkArg(parego.s, "integer", len = 1L, na.ok = FALSE, lower = 1)
+    checkArg(parego.rho, "numeric", len = 1L, na.ok = FALSE, lower = 0, upper = 1)
+    if (propose.points == 1L)
+      parego.sample.more.weights = 1L
+    parego.sample.more.weights = convertInteger(parego.sample.more.weights)
+    checkArg(parego.sample.more.weights, "numeric", len = 1L, na.ok = FALSE, lower = 1)
+    checkArg(parego.use.margin.points, "logical", len = number.of.targets, na.ok = FALSE, lower = 1)
+    if (sum(parego.use.margin.points) > propose.points)
+      stopf("Can't use %s margin points when only proposing %s points each iteration.",
+        sum(parego.use.margin.points), propose.points)
+    number.of.weights = choose(parego.s + number.of.targets - 1, number.of.targets - 1)
+    if (parego.sample.more.weights * propose.points > number.of.weights)
+      stop("Trying to sample more weights than exists. Increase parego.s or decrease number of weights.")
+  }
 
   if (!is.null(impute.y.fun))
     checkArg(impute.y.fun, formals = c("x", "y", "opt.path"))
@@ -353,7 +354,7 @@ makeMBOControl = function(number.of.targets = 1L,
   final.evals = convertInteger(final.evals)
   checkArg(final.evals, "integer", len = 1L, na.ok = FALSE, lower = 0L)
 
-  if(number.of.targets > 1 && length(y.name) == 1 && y.name == "y")
+  if (number.of.targets > 1 && length(y.name) == 1 && y.name == "y")
     y.name = paste("y", 1:number.of.targets, sep = "_")
   checkArg(y.name, "character", len = number.of.targets, na.ok = FALSE)
 
