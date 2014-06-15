@@ -14,7 +14,8 @@ proposePoints = function(model, par.set, control, opt.path, ...) {
   # generate a few random points if model failed
   if (inherits(model, "FailureModel")) {
     model.fail = model$learner.model
-    prop.points = generateDesign(n, par.set, randomLHS, ints.as.num = TRUE)
+    prop.points = generateDesign(n, par.set, randomLHS)
+    propose.points = convertDataFrameCols(prop.points, ints.as.num = TRUE, logicals.as.factor = TRUE)
     crit.values = rep(NA_real_, n)
   } else {
     model.fail = NA_character_
