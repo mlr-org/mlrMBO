@@ -16,7 +16,7 @@ proposePoints = function(model, par.set, control, opt.path, ...) {
     model.fail = model$learner.model
     prop.points = generateDesign(n, par.set, randomLHS)
     propose.points = convertDataFrameCols(prop.points, ints.as.num = TRUE, logicals.as.factor = TRUE)
-    crit.values = rep(NA_real_, n)
+    crit.vals = rep(NA_real_, n)
   } else {
     model.fail = NA_character_
     #FIXME: shoule we impute features here or not?
