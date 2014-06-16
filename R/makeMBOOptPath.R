@@ -3,6 +3,7 @@ makeMBOOptPath = function(par.set, control) {
     par.set = par.set, 
     y.names = control$y.name,
     minimize = control$minimize,
+    add.transformed.x = TRUE,
     include.error.message = TRUE, 
     include.exec.time = TRUE, 
     include.extra = TRUE
