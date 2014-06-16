@@ -27,7 +27,7 @@ multipointInfillOptCL = function(model, control, par.set, opt.path, design, ...)
     
     # update model
     rt = makeMBOSingleObjTask(as.data.frame(op2, discretes.as.factor = TRUE),
-      par.set, y.name, control = control)
+      par.set, control = control)
     model = train(learner, rt)
   }
   return(list(prop.points = newdes, prop.points.crit.values = prop.points.crit.values))
