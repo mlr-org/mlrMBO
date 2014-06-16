@@ -91,8 +91,6 @@ mboParEGO = function(fun, par.set, design = NULL, learner, control, show.info = 
   )
 
   # make sure to save final res on disk
-  # FIXME: We want allways to do this. standard value: save every 10 iters. 
-  # except we are in unit test. globale 
   saveStateOnDisk(loop, fun, learner, par.set, opt.path, control, show.info, more.args,
     models, NULL, res)
 

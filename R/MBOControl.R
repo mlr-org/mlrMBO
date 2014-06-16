@@ -209,15 +209,15 @@
 #'   stops with an crucial error, it can be restarted with this file via the
 #'   function \code{\link{mboContinue}}.
 #'   Default is NULL.
-# FIXME: use better default, maybe in workdir
 #' @param save.file.path [\code{character(1)}] \cr
 #'   If \code{save.on.disk.at} is used, this is the name of the file where the data
-#'   will be saved.
-#'   Default is NULL.
+#'   will be saved. Default is a file named mboRun_XXXX.mboData in your current
+#'   working directory, where XXXX is a unique hexadecimal number with 11 digits.
 #' @param save.model.at [\code{integer}]\cr
 #'   Sequential optimization iterations when the model should be saved.
-#'   Iteration 0 is the model fit for the initial design.
-#'   Default is \code{iters}.
+#'   Iteration 0 is the model fit for the initial design, iters + 1 is a final
+#'   save containing the final results of the optimization. .
+#'   Default is \code{iters + 1}.
 #' @param resample.at [\code{integer}]\cr
 #'   At which iterations should the model be resampled and assessed?
 #'   Iteration 0 does some resampling on the initial design.
@@ -265,8 +265,9 @@ makeMBOControl = function(number.of.targets = 1L,
   y.name = "y",
   impute.y.fun = NULL,
   suppress.eval.errors = TRUE,
-  save.on.disk.at = NULL,
-  save.file.path = "", save.model.at = iters,
+  save.on.disk.at = iters + 1,
+  save.file.path = tempfile(pattern = "mlrMBORun_", tmpdir = getwd(), fileext = ".mboData"),
+  save.model.at = iters,
   resample.at = integer(0), resample.desc = makeResampleDesc("CV", iter = 10), resample.measures = list(mse),
   on.learner.error = "warn", show.learner.output = FALSE,
   output.num.format = "%.3g"
@@ -369,18 +370,23 @@ makeMBOControl = function(number.of.targets = 1L,
       checkArg(save.file.path, "character", len = 1)
       # FIXME: How to check if save.file.path is correct for saving?
       # This does not look like a cool way to do it.
-      tmp = try(save(save.file.path, file = save.file.path))
-      if (inherits(tmp, "try-error"))
-        stopf("Please specify a correct save.file.path.")
+      #tmp = try({save(save.file.path, file = save.file.path)})
+      #if (inherits(tmp, "try-error"))
+      #  stopf("Please specify a correct save.file.path.")
     }
   }
   if (is.null(save.on.disk.at) & save.file.path != "") {
     stopf("You specified a save.file.path, but you will never use it. You should specify iterations for saving.")
   }
-
+  if ((iters + 1) %nin% save.on.disk.at)
+    warningf("You turned off the final saving of the optimization result. Make sure to save it yourself!")
+  # If debug-mode, turn of saving.
+  if (getOption("mlrMBO.debug.mode", default = FALSE))
+    save.on.disk.at = NULL
+  
   save.model.at = convertIntegers(save.model.at)
   checkArg(save.model.at, "integer", na.ok = FALSE, lower = 0L, upper = iters)
-
+  
   if (length(resample.at) > 0) {
     resample.at = convertIntegers(resample.at)
     checkArg(resample.at, "integer", na.ok = FALSE, lower = 0L, upper = iters)

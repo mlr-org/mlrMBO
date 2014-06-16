@@ -14,5 +14,10 @@ saveStateOnDisk = function(loop, fun, learner, par.set, opt.path, control, show.
       mbo.result = mbo.result,
       random.seed = .Random.seed
     )
+    if (loop <= control$iters)
+      showInfo(show.info, "Saved the current state after iteration %i in the file %s.",
+        loop, control$save.file.path)
+    else
+      showInfo(show.info, "Saved the final state in the file %s", control$save.file.path)
   }
 }

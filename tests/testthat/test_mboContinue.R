@@ -1,4 +1,6 @@
 context("mboContinue")
+# Here we want to leave the debug-mode to test the saving
+options(mlrMBO.debug.mode = FALSE)
 
 test_that("mboContinue", {
   # make sure there is no or - object in the environment
@@ -20,7 +22,7 @@ test_that("mboContinue", {
   # First test sombo
   learner = makeLearner("regr.rpart")
   save.file = tempfile(fileext = "mboData")
-  ctrl = makeMBOControl(iters = 7, infill.opt.focussearch.points = 10, save.on.disk.at = 0:7,
+  ctrl = makeMBOControl(iters = 7, infill.opt.focussearch.points = 10, save.on.disk.at = 0:8,
     save.file.path = save.file, init.design.points = 10L)
   expect_error(or <- mbo(f, ps, learner = learner, control = ctrl, show.info = FALSE), "foo")
   for (i in 1:100) {
@@ -42,7 +44,7 @@ test_that("mboContinue", {
   environment(f)$i <- 0
 
   f = makeMBOFunction(f)
-  ctrl = makeMBOControl(iters = 7, infill.opt.focussearch.points = 100, save.on.disk.at = 0:7,
+  ctrl = makeMBOControl(iters = 7, infill.opt.focussearch.points = 100, save.on.disk.at = 0:8,
     save.file.path = save.file, init.design.points = 10L, number.of.targets = 2, parego.s = 100)
   rm("or")
   try(or <- mbo(f, ps, learner = learner, control = ctrl, show.info = FALSE), silent = TRUE)
@@ -61,7 +63,7 @@ test_that("mboContinue works when we at end", {
   ps = makeNumericParamSet(len = 2L, lower = -2, upper = 1)
   learner = makeLearner("regr.rpart")
   save.file = tempfile(fileext = "mboData")
-  ctrl = makeMBOControl(iters = 1, infill.opt.focussearch.points = 10, save.on.disk.at = 0:1,
+  ctrl = makeMBOControl(iters = 1, infill.opt.focussearch.points = 10, save.on.disk.at = 0:2,
     save.file.path = save.file, init.design.points = 10L)
   or = mbo(makeMBOFunction(f), ps, learner = learner, control = ctrl, show.info = FALSE)
   expect_equal(getOptPathLength(or$opt.path), 11L)
@@ -69,3 +71,5 @@ test_that("mboContinue works when we at end", {
   expect_equal(getOptPathLength(or$opt.path), 11L)
 })
 
+# reenter debug-mode
+options(mlrMBO.debug.mode = TRUE)
