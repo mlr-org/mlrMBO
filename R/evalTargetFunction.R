@@ -78,7 +78,7 @@ evalTargetFun = function(fun, par.set, dobs, xs, opt.path, control, show.info, o
     
     # showInfo - use the trafo'd value here!
     showInfo(show.info, "[mbo] %i: %s : %s : %.1f secs%s", dob,
-      paramValueToString(par.set, x, num.format = num.format),
+      paramValueToString(par.set, x.trafo, num.format = num.format),
       collapse(sprintf(num.format.string, y.name, y2), ", "),
       ytime,
       ifelse(y.valid, "", " (imputed)")
