@@ -42,12 +42,12 @@ evalTargetFun = function(fun, par.set, dobs, xs, opt.path, control, show.info, o
   # restore mlr configuration
   configureMlr(on.learner.error = oldopts[["ole"]], show.learner.output = oldopts[["slo"]])
 
-  # return error objects if we impute, only here we need the trafod value 
+  # return error objects if we impute
   res = parallelMap(wrapFun, xs.trafo, impute.error = if (is.null(imputeY)) NULL else identity)
 
   # loop evals and to some post-processing
   for (i in 1:nevals) {
-    r = res[[i]]; x = xs[[i]]; dob = dobs[i]
+    r = res[[i]]; x = xs[[i]]; x.trafo = xs.trafo[[i]]; dob = dobs[i]
     # y is now either error object or return val
     if (is.error(r)) {
       y = r; ytime = NA_real_; errmsg = r$message
@@ -75,14 +75,15 @@ evalTargetFun = function(fun, par.set, dobs, xs, opt.path, control, show.info, o
             ny, convertToShortString(y2))
       }
     }
-
+    
+    # showInfo - use the trafo'd value here!
     showInfo(show.info, "[mbo] %i: %s : %s : %.1f secs%s", dob,
       paramValueToString(par.set, x, num.format = num.format),
       collapse(sprintf(num.format.string, y.name, y2), ", "),
       ytime,
       ifelse(y.valid, "", " (imputed)")
     )
-    # log to opt path
+    # log to opt path - make sure to log the untrafo'd x-value!
     addOptPathEl(opt.path, x = x, y = y2, dob = dob,
       error.message = errmsg, exec.time = ytime, extra = extras[[i]])
   }
