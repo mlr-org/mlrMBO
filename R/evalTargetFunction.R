@@ -22,8 +22,8 @@ evalTargetFun = function(fun, par.set, dobs, xs, opt.path, control, show.info, o
   dobs = ensureVector(dobs, n = nevals, cl = "integer")
   imputeY = control$impute.y.fun
 
-  # trafo
-  xs = lapply(xs, trafoValue, par = par.set)
+  # trafo - but we only want to use the Trafo for function eval, not for logging
+  xs.trafo = lapply(xs, trafoValue, par = par.set)
 
   # function to measure of fun call
   wrapFun = function(x) {
@@ -42,8 +42,8 @@ evalTargetFun = function(fun, par.set, dobs, xs, opt.path, control, show.info, o
   # restore mlr configuration
   configureMlr(on.learner.error = oldopts[["ole"]], show.learner.output = oldopts[["slo"]])
 
-  # return error objects if we impute
-  res = parallelMap(wrapFun, xs, impute.error = if (is.null(imputeY)) NULL else identity)
+  # return error objects if we impute, only here we need the trafod value 
+  res = parallelMap(wrapFun, xs.trafo, impute.error = if (is.null(imputeY)) NULL else identity)
 
   # loop evals and to some post-processing
   for (i in 1:nevals) {
