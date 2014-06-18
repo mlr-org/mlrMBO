@@ -38,6 +38,7 @@
 #'   \dQuote{ei}: Expected improvement.
 #'   \dQuote{aei}: Augmented expected improvement.
 #'   \dQuote{lcb}: Lower confidence bound.
+#'   \dQuote{multiFid}: Multifidelity: Expected improvement on different levels of the perfomance parameter defined in the \code{MBOMultiFidControl}.
 #'   Alternatively, you may pass a function name as string.
 #' @param infill.crit.lcb.lambda [\code{numeric(1)}]\cr
 #'   Lambda parameter for lower confidence bound infill criterion.
@@ -173,6 +174,8 @@
 #'   the i.th target function, be drawn with probability 1? Number of TRUE entries
 #'   must be less or equal to \code{propose.points}
 #'   Default is not to do this.
+#' @param multiFid.control [\code{MBOmultiFidControl(1)}]\cr
+#'   Necessary if \code{infill.crit = "multiFid"}.
 #' @param final.method [\code{character(1)}]\cr
 #'   How should the final point be proposed. Possible values are:
 #'   \dQuote{best.true.y}: Return best point ever visited according to true value of target function.
@@ -261,6 +264,7 @@ makeMBOControl = function(number.of.targets = 1L,
   parego.s, parego.rho = 0.05,
   parego.use.margin.points = rep(FALSE, number.of.targets),
   parego.sample.more.weights = 5L,
+  multiFid.control = NULL,
   final.method = "best.true.y", final.evals = 0L,
   y.name = "y",
   impute.y.fun = NULL,
@@ -347,6 +351,9 @@ makeMBOControl = function(number.of.targets = 1L,
     if (parego.sample.more.weights * propose.points > number.of.weights)
       stop("Trying to sample more weights than exists. Increase parego.s or decrease number of weights.")
   }
+
+  if (infill.crit == "multiFid")
+    checkArg(multiFid.control, "MBOMultiFidControl")
 
   if (!is.null(impute.y.fun))
     checkArg(impute.y.fun, formals = c("x", "y", "opt.path"))
@@ -438,6 +445,7 @@ makeMBOControl = function(number.of.targets = 1L,
     parego.rho = parego.rho,
     parego.use.margin.points = parego.use.margin.points,
     parego.sample.more.weights = parego.sample.more.weights,
+    multiFid.control = multiFid.control,
     final.method = final.method,
     final.evals = final.evals,
     y.name = y.name,

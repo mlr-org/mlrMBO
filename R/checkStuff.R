@@ -8,8 +8,9 @@ checkStuff = function(fun, par.set, design, learner, control) {
     stop("No parameter can be of class 'LearnerParam'! Use basic parameters instead to describe you region of interest!")
   if (!hasFiniteBoxConstraints(par.set))
     stop("mbo requires finite box constraints!")
-  if (hasDiscrete(par.set) && !mlr:::hasProperties(learner, "factors"))
-    stop("Provided learner does not support factor parameters.")
+  #FIXME: Issue 57
+  #if (hasDiscrete(par.set) && !mlr:::hasProperties(learner, "factors"))
+  #  stop("Provided learner does not support factor parameters.")
   if (learner$type != "regr")
     stop("mbo requires regression learner!")
 

@@ -4,7 +4,7 @@
 # - either do y-evals or log points to opt.path manually
 
 generateMBODesign = function(design, fun, par.set, opt.path, control, show.info, oldopts,
-  more.args = list(), extras) {
+  more.args = list(), extras = NULL) {
 
   # shortcut names
   pids = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)

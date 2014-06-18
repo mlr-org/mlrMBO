@@ -36,12 +36,19 @@ mbo = function(fun, par.set, design = NULL, learner, control, show.info = TRUE, 
     show.learner.output = control$show.learner.output)
 
   # Call the correct mbo function
-  if (control$number.of.targets == 1L)
-    mboSingleObj(fun = fun, par.set = par.set, design = design,
-      learner = learner, control = control, show.info = show.info, more.args = more.args)
-  else {
-    if (control$multicrit.method == "parego")
-      mboParEGO(fun = fun, par.set = par.set, design = design,
+    if (control$infill.crit == "multiFid") {
+    mboMultiFid(fun = fun, par.set = par.set, design = design,
+      learner = learner, control = control, show.info = show.info, 
+      perf.param = control$multiFid.perf.param, cor.grid.points  = control$multiFid.cor.grid.points,
+      more.args = more.args)
+  } else {
+    if (control$number.of.targets == 1L)
+      mboSingleObj(fun = fun, par.set = par.set, design = design,
         learner = learner, control = control, show.info = show.info, more.args = more.args)
+    else {
+      if (control$multicrit.method == "parego")
+        mboParEGO(fun = fun, par.set = par.set, design = design,
+          learner = learner, control = control, show.info = show.info, more.args = more.args)
+    }
   }
 }

@@ -9,6 +9,7 @@ getInfillCritFunction = function(infill.crit) {
          eqi = infillCritEQI,
          mq  = infillCritMQ,
          eipi  =  infillCritEIPI,
+         multiFid = infillCritMultiFid,
          match.fun(infill.crit)
   )
 }
