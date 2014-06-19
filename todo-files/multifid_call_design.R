@@ -3,7 +3,8 @@
 library(devtools)
 library("BBmisc")
 library("ParamHelpers")
-load_all()
+load_all(".")
+options(warn = 2)
 
 task = load2("../2013-ml_big_data_tuning/datasets/waveform5000.RData")
 task = makeClassifTask(id="Sonar", data=getTaskData(task), target="class")
@@ -31,7 +32,7 @@ makeObjFun = function(lrn, task, rsm = makeResampleDesc(method = "Holdout", spli
   }
 }
 objfun = makeObjFun(lrn2, task)
-multiFid.control = makeMBOMultiFidControl(perf.param="dw.val")
+multiFid.control = makeMBOMultiFidControl(fid.param="dw.val")
 control = makeMBOControl(
   init.design.points = 15, #distributed over the different levels
   init.design.fun = maximinLHS,
@@ -43,7 +44,7 @@ control = makeMBOControl(
   infill.opt.restarts = 1L,
   infill.opt.focussearch.maxit = 1L,
   infill.opt.focussearch.points = 900L, #distributed over the different levels
-  multiFid.control = multiFid.control 
+  multiFid.control = multiFid.control
 )
 
 surrogat.model = makeLearner("regr.km", predict.type="se", nugget.estim=TRUE)

@@ -25,15 +25,15 @@
 #   Default is \code{TRUE}.
 # @param more.args [any]\cr
 #   Further arguments passed to fitness function.
-# @param perf.param [\code{character(1)}]\cr
+# @param fid.param [\code{character(1)}]\cr
 #   Necessary if \code{infill.crit = "multiFid"}. The name of the parameter which increases the performance but also calculation costs. Has to belong to a discrete Parameter.
 # @param cor.grid.points [\code{integer(1)}]\cr
-#   Numbers of points used to calculate the correlation between the different levels of the \code{multiFid.perf.param}.
+#   Numbers of points used to calculate the correlation between the different levels of the \code{multiFid.fid.param}.
 # @return [\code{list}]:
 #   \item{pareto.front [\code{matrix}]}{Pareto Front of all evaluated points.}
 #   \item{opt.path [\code{\link[ParamHelpers]{OptPath}}]}{Optimization path.}
 # FIXME EGO nach ego
-mboMultiFid = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, perf.param, cor.grid.points, more.args=list()) {
+mboMultiFid = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, fid.param, cor.grid.points, more.args=list()) {
   # save currently set options
   oldopts = list(
     ole = getOption("mlr.on.learner.error"),
@@ -60,7 +60,7 @@ mboMultiFid = function(fun, par.set, design=NULL, learner, control, show.info=TR
   
   times = mbo.design$times
   
-  mf.learner = makeMultiFidLearner(surrogat.learner = learner, par.set = par.set, perf.param.id = control$multiFid.control$perf.param)
+  mf.learner = makeMultiFidLearner(surrogat.learner = learner, par.set = par.set, fid.param.id = control$multiFid.control$fid.param)
   compound.model = train.MultiFidLearner(obj = mf.learner, task = convertOptPathToTask(opt.path))
   
   budget = control$iters
@@ -68,26 +68,26 @@ mboMultiFid = function(fun, par.set, design=NULL, learner, control, show.info=TR
   # local needed functions
   # calculate cost relation between model w/ par.val and last model
   calcModelCost = function(par.val) {
-    costs(par.val, unlist(tail(par.set$pars[[control$multiFid.control$perf.param]]$values, 1L)))
+    costs(par.val, unlist(tail(par.set$pars[[control$multiFid.control$fid.param]]$values, 1L)))
   }
   
-  #subsets a data.frame to a given value of the perf.param
+  #subsets a data.frame to a given value of the fid.param
   subsetOnPar = function(data, par.val){
-    data = subset(data, data[[control$multiFid.control$perf.param]] == par.val)
+    data = subset(data, data[[control$multiFid.control$fid.param]] == par.val)
   }
   
   # estimate process noise tau of real process belonging to par.val, we use residual sd here
   calcModelSD = function(par.val) {
     newdata = convertOptPathToDesign(opt.path)
     newdata = subsetOnPar(newdata, par.val)
-    newdata[[control$multiFid.control$perf.param]] = factor(newdata[[control$multiFid.control$perf.param]])
+    newdata[[control$multiFid.control$fid.param]] = factor(newdata[[control$multiFid.control$fid.param]])
     sqrt(estimateResidualVariance(compound.model, data = newdata, target = "y"))
   }
   
   # calculate GLOBAL correlation between model w/ par.val and last model. currently rank correlation.
   calcModelCor = function(par.val, grid) {
-    grid1 = grid; grid1[[control$multiFid.control$perf.param]] = par.val
-    grid2 = grid; grid2[[control$multiFid.control$perf.param]] = unlist(tail(par.set$pars[[control$multiFid.control$perf.param]]$values, 1L))
+    grid1 = grid; grid1[[control$multiFid.control$fid.param]] = par.val
+    grid2 = grid; grid2[[control$multiFid.control$fid.param]] = unlist(tail(par.set$pars[[control$multiFid.control$fid.param]]$values, 1L))
     p1 = predict(compound.model, newdata=grid1)$data$response
     p2 = predict(compound.model, newdata=grid2)$data$response
     # check whether vectors are constant, cor = NA then
@@ -97,7 +97,7 @@ mboMultiFid = function(fun, par.set, design=NULL, learner, control, show.info=TR
       max(cor(p1, p2, method="spearman"), 0)
   }
   
-  par.set.lower = par.set; par.set.lower$pars = Filter(function(p) p$id %nin% control$multiFid.control$perf.param, par.set$pars)
+  par.set.lower = par.set; par.set.lower$pars = Filter(function(p) p$id %nin% control$multiFid.control$fid.param, par.set$pars)
   corgrid = generateDesign(n=control$multiFid.control$cor.grid.points, par.set=par.set.lower)
   
   # do the mbo magic
@@ -106,18 +106,18 @@ mboMultiFid = function(fun, par.set, design=NULL, learner, control, show.info=TR
       messagef("loop=%i", loop)
     
     # evaluate stuff we need for MEI
-    models.sd = vnapply(par.set$pars[[control$multiFid.control$perf.param]]$values, calcModelSD)
-    models.cor = vnapply(par.set$pars[[control$multiFid.control$perf.param]]$values, calcModelCor, grid=corgrid)
-    models.cost = vnapply(par.set$pars[[control$multiFid.control$perf.param]]$values, calcModelCost)
+    models.sd = vnapply(par.set$pars[[control$multiFid.control$fid.param]]$values, calcModelSD)
+    models.cor = vnapply(par.set$pars[[control$multiFid.control$fid.param]]$values, calcModelCor, grid=corgrid)
+    models.cost = vnapply(par.set$pars[[control$multiFid.control$fid.param]]$values, calcModelCost)
     messagef("Estimated cor to last model = %s", collapse(sprintf("%.3g", models.cor), ", "))
     messagef("Estimated residual var = %s", collapse(sprintf("%.3g", models.sd), ", "))
     
     # every couple of levels we only optimize the last one
     # to ensure that we update that model and see what happens here
     if (loop %% control$multiFid.control$force.last.level.evals == 0)
-      avail.pars = tail(par.set$pars[[control$multiFid.control$perf.param]]$values, 1L)
+      avail.pars = tail(par.set$pars[[control$multiFid.control$fid.param]]$values, 1L)
     else
-      avail.pars = par.set$pars[[control$multiFid.control$perf.param]]$values
+      avail.pars = par.set$pars[[control$multiFid.control$fid.param]]$values
     
     prop = proposePoints(model = compound.model, par.set = par.set, control = control, opt.path = opt.path, model.cor = models.cor, model.cost = models.cost, model.sd = models.sd)
     #xs = dfRowsToList(prop$prop.points, par.set)
