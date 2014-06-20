@@ -123,45 +123,45 @@ makeMBOControl = function(number.of.targets = 1L,
   requirePackages("lhs", "makeMBOControl")
 
   number.of.targets = convertInteger(number.of.targets)
-  checkArg(number.of.targets, "integer", len = 1L, lower = 1L, na.ok = FALSE)
-  checkArg(minimize, "logical", len = number.of.targets, na.ok = FALSE)
-  checkArg(noisy, "logical", len = 1L, na.ok = FALSE)
+  assertInteger(number.of.targets, len = 1L, lower = 1L, any.missing = FALSE)
+  assertLogical(minimize, len = number.of.targets, any.missing = FALSE)
+  assertLogical(noisy, len = 1L, any.missing = FALSE)
 
   init.design.points = convertInteger(init.design.points)
-  checkArg(init.design.points, "integer", len = 1L, na.ok = FALSE, lower = 4L)
-  checkArg(init.design.fun, "function")
-  checkArg(init.design.args, "list")
+  assertInteger(init.design.points, len = 1L, lower = 4L, any.missing = FALSE)
+  assertFunction(init.design.fun)
+  assertList(init.design.args)
 
-  iters = convertInteger(iters)
-  checkArg(iters, "integer", len = 1L, na.ok = FALSE, lower = 1L)
+  iters = asCount(iters)
+  assertInteger(iters, len = 1L, lower = 1L, any.missing = FALSE)
   propose.points = convertInteger(propose.points)
-  checkArg(propose.points, "integer", len = 1L, na.ok = FALSE, lower = 1L)
+  assertInteger(propose.points, len = 1L, lower = 1L, any.missing = FALSE)
 
-  checkArg(feature.impute, choices = c("up", "median"))
+  assertChoice(feature.impute, choices = c("up", "median"))
 
   # if (infill.crit == "multiFid")
-  #   checkArg(multiFid.control, "MBOMultiFidControl")
+  #   assertClass(multiFid.control, "MBOMultiFidControl")
 
   if (!is.null(impute.y.fun))
-    checkArg(impute.y.fun, formals = c("x", "y", "opt.path"))
+    assertFunction(impute.y.fun, args = c("x", "y", "opt.path"))
 
-  checkArg(suppress.eval.errors, "logical", len = 1L, na.ok = FALSE)
+  assertLogical(suppress.eval.errors, len = 1L, any.missing = FALSE)
 
-  checkArg(final.method, choices = c("last.proposed", "best.true.y", "best.predicted"))
-  final.evals = convertInteger(final.evals)
-  checkArg(final.evals, "integer", len = 1L, na.ok = FALSE, lower = 0L)
+  assertChoice(final.method, choices = c("last.proposed", "best.true.y", "best.predicted"))
+  final.evals = asCount(final.evals)
+  assertInteger(final.evals, len = 1L, lower = 0L, any.missing = FALSE)
 
   if (number.of.targets > 1 && length(y.name) == 1 && y.name == "y")
     y.name = paste("y", 1:number.of.targets, sep = "_")
-  checkArg(y.name, "character", len = number.of.targets, na.ok = FALSE)
+  assertCharacter(y.name, len = number.of.targets, any.missing = FALSE)
 
   if (!is.null(save.on.disk.at)) {
-    save.on.disk.at = convertInteger(save.on.disk.at)
-    checkArg(save.on.disk.at, "integer")
+    save.on.disk.at = asInteger(save.on.disk.at)
+    assertInteger(save.on.disk.at)
     if (save.file.path == "") {
       stopf("You must specify a file for saving.")
     } else {
-      checkArg(save.file.path, "character", len = 1)
+      assertCharacter(save.file.path, len = 1, any.missing = FALSE)
       # FIXME: How to check if save.file.path is correct for saving?
       # This does not look like a cool way to do it.
       #tmp = try({save(save.file.path, file = save.file.path)})
@@ -178,21 +178,21 @@ makeMBOControl = function(number.of.targets = 1L,
   if (getOption("mlrMBO.debug.mode", default = FALSE))
     save.on.disk.at = NULL
   
-  store.model.at = convertIntegers(store.model.at)
-  checkArg(store.model.at, "integer", na.ok = FALSE, lower = 0L, upper = iters)
+  store.model.at = asInteger(store.model.at)
+  assertInteger(store.model.at, lower = 0L, upper = iters, any.missing = FALSE)
   
   if (length(resample.at) > 0) {
     resample.at = convertIntegers(resample.at)
-    checkArg(resample.at, "integer", na.ok = FALSE, lower = 0L, upper = iters)
+    assertInteger(resample.at, lower = 0L, upper = iters, any.missing = FALSE)
   } else {
     resample.at = integer(0)
   }
-  checkArg(resample.desc, "ResampleDesc")
-  checkArg(resample.measures, "list")
+  assertClass(resample.desc, "ResampleDesc")
+  assertList(resample.measures, "list")
 
-  checkArg(on.learner.error, choices = c("warn", "quiet", "stop"))
-  checkArg(show.learner.output, "logical", len = 1L, na.ok = FALSE)
-  checkArg(output.num.format, "character", len = 1L, na.ok = FALSE)
+  assertChoice(on.learner.error, choices = c("warn", "quiet", "stop"))
+  assertLogical(show.learner.output, len = 1L, any.missing = FALSE)
+  assertCharacter(output.num.format, len = 1L, any.missing = FALSE)
 
   control = makeS3Obj("MBOControl",
     minimize = minimize,
@@ -313,30 +313,30 @@ setMBOControlInfill = function(control,
   opt.ea.pm.eta = 15, opt.ea.pm.p = 0.5,
   opt.ea.lambda = 1L) {
 
-  checkArg(control, "MBOControl")
+  assertClass(control, "MBOControl")
 
   # FIXME: BB: DO NOT FUCKING TOUCH THIS!
-  # checkArg(crit, choices = getSupportedInfillCritFunctions())
-  checkArg(crit.lcb.lambda, "numeric", len = 1L, na.ok = FALSE, lower = 0)
-  checkArg(opt, choices = getSupportedInfillOptFunctions())
-  opt.restarts = convertInteger(opt.restarts)
-  checkArg(opt.restarts, "integer", len = 1L, na.ok = FALSE)
+  # assertChoice(crit, choices = getSupportedInfillCritFunctions())
+  assertNumeric(crit.lcb.lambda, len = 1L, any.missing = FALSE, lower = 0)
+  assertChoice(opt, choices = getSupportedInfillOptFunctions())
+  opt.restarts = asCount(opt.restarts)
+  assertCount(opt.restarts, na.ok = FALSE)
 
-  opt.focussearch.maxit = convertInteger(opt.focussearch.maxit)
-  checkArg(opt.focussearch.maxit, "integer", len = 1L, na.ok = FALSE, lower = 1L)
-  opt.focussearch.points = convertInteger(opt.focussearch.points)
-  checkArg(opt.focussearch.points, "integer", len = 1L, na.ok = FALSE, lower = 1L)
-  checkArg(opt.cmaes.control, "list")
+  opt.focussearch.maxit = asCount(opt.focussearch.maxit)
+  assertCount(opt.focussearch.maxit, na.ok = FALSE, positive = TRUE)
+  opt.focussearch.points = asCount(opt.focussearch.points)
+  assertCount(opt.focussearch.points, na.ok = FALSE, positive = TRUE)
+  assertList(opt.cmaes.control)
 
-  opt.ea.maxit = convertInteger(opt.ea.maxit)
-  checkArg(opt.ea.maxit, "integer", len = 1L, na.ok = FALSE, lower = 1L)
-  opt.ea.mu = convertInteger(opt.ea.mu)
-  checkArg(opt.ea.mu, "integer", len = 1L, na.ok = FALSE, lower = 1L)
-  checkArg(opt.ea.sbx.eta, "numeric", len = 1L, na.ok = FALSE, lower = 0)
-  checkArg(opt.ea.sbx.p, "numeric", len = 1L, na.ok = FALSE, lower = 0, upper = 1)
-  checkArg(opt.ea.pm.eta, "numeric", len = 1L, na.ok = FALSE, lower = 0)
-  checkArg(opt.ea.pm.p, "numeric", len = 1L, na.ok = FALSE, lower = 0, upper = 1)
-  checkArg(opt.ea.lambda, "integer", len = 1L, na.ok = FALSE, lower = 1L)
+  opt.ea.maxit = asCount(opt.ea.maxit)
+  assertCount(opt.ea.maxit, na.ok = FALSE, positive = TRUE)
+  opt.ea.mu = asCount(opt.ea.mu)
+  assertCount(opt.ea.mu, na.ok = FALSE, positive = TRUE)
+  assertNumber(opt.ea.sbx.eta, na.ok = FALSE, lower = 0)
+  assertNumber(opt.ea.sbx.p, na.ok = FALSE, lower = 0, upper = 1)
+  assertNumber(opt.ea.pm.eta, na.ok = FALSE, lower = 0)
+  assertNumber(opt.ea.pm.p, na.ok = FALSE, lower = 0, upper = 1)
+  assertCount(opt.ea.lambda, na.ok = FALSE)
 
   control$infill.crit = crit
   control$infill.crit.lcb.lambda = crit.lcb.lambda
@@ -424,18 +424,18 @@ setMBOControlMultipoint = function(control,
   multicrit.sbx.eta = 15, multicrit.sbx.p = 1,
   multicrit.pm.eta = 15, multicrit.pm.p = 1) {
 
-  checkArg(control, "MBOControl")
+  assertClass(control, "MBOControl")
 
-  checkArg(method, choices = getSupportedMultipointInfillOptFunctions())
-  checkArg(multicrit.objective, choices = c("mean.dist", "ei.dist", "mean.se", "mean.se.dist"))
-  checkArg(multicrit.selection, choices = c("hypervolume", "crowdingdist", "first", "last"))
-  checkArg(multicrit.dist, choices = c("nearest.neighbor", "nearest.better"))
-  multicrit.maxit = convertInteger(multicrit.maxit)
-  checkArg(multicrit.maxit, "integer", len = 1L, na.ok = FALSE, lower = 0L)
-  checkArg(multicrit.sbx.eta, "numeric", len = 1L, na.ok = FALSE, lower = 0)
-  checkArg(multicrit.sbx.p, "numeric", len = 1L, na.ok = FALSE, lower = 0, upper = 1)
-  checkArg(multicrit.pm.eta, "numeric", len = 1L, na.ok = FALSE, lower = 0)
-  checkArg(multicrit.pm.p, "numeric", len = 1L, na.ok = FALSE, lower = 0, upper = 1)
+  assertChoice(method, choices = getSupportedMultipointInfillOptFunctions())
+  assertChoice(multicrit.objective, choices = c("mean.dist", "ei.dist", "mean.se", "mean.se.dist"))
+  assertChoice(multicrit.selection, choices = c("hypervolume", "crowdingdist", "first", "last"))
+  assertChoice(multicrit.dist, choices = c("nearest.neighbor", "nearest.better"))
+  multicrit.maxit = asCount(multicrit.maxit)
+  assertCount(multicrit.maxit, na.ok = FALSE, positive = TRUE)
+  assertNumber(multicrit.sbx.eta, na.ok = FALSE, lower = 0)
+  assertNumber(multicrit.sbx.p, na.ok = FALSE, lower = 0, upper = 1)
+  assertNumber(multicrit.pm.eta, na.ok = FALSE, lower = 0)
+  assertNumber(multicrit.pm.p, na.ok = FALSE, lower = 0, upper = 1)
  
   control$multipoint.method = method
   control$multipoint.multicrit.objective = multicrit.objective
@@ -484,8 +484,8 @@ setMBOControlMulticrit = function(control,
   parego.use.margin.points = rep(FALSE, control$number.of.targets),
   parego.sample.more.weights = 5L) {
 
-  checkArg(control, "MBOControl")
-  checkArg(method, choices = c("parego"))
+  assertClass(control, "MBOControl")
+  assertChoice(method, choices = c("parego"))
 
   number.of.targets = control$number.of.targets
   propose.points = control$propose.points
@@ -495,13 +495,13 @@ setMBOControlMulticrit = function(control,
 
   if (number.of.targets > 1L) {
     parego.s = convertInteger(parego.s)
-    checkArg(parego.s, "integer", len = 1L, na.ok = FALSE, lower = 1)
-    checkArg(parego.rho, "numeric", len = 1L, na.ok = FALSE, lower = 0, upper = 1)
+    assertInt(parego.s, na.ok = FALSE, lower = 1)
+    assertNumber(parego.rho, na.ok = FALSE, lower = 0, upper = 1)
     if (propose.points == 1L)
       parego.sample.more.weights = 1L
-    parego.sample.more.weights = convertInteger(parego.sample.more.weights)
-    checkArg(parego.sample.more.weights, "numeric", len = 1L, na.ok = FALSE, lower = 1)
-    checkArg(parego.use.margin.points, "logical", len = number.of.targets, na.ok = FALSE, lower = 1)
+    parego.sample.more.weights = asInteger(parego.sample.more.weights)
+    assertNumber(parego.sample.more.weights, na.ok = FALSE, lower = 1)
+    assertLogical(parego.use.margin.points, len = number.of.targets, any.missing = FALSE)
     if (sum(parego.use.margin.points) > propose.points)
       stopf("Can't use %s margin points when only proposing %s points each iteration.",
         sum(parego.use.margin.points), propose.points)
