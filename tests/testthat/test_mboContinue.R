@@ -22,8 +22,9 @@ test_that("mboContinue", {
   # First test sombo
   learner = makeLearner("regr.rpart")
   save.file = tempfile(fileext = "mboData")
-  ctrl = makeMBOControl(iters = 7, infill.opt.focussearch.points = 10, save.on.disk.at = 0:8,
+  ctrl = makeMBOControl(iters = 7, save.on.disk.at = 0:8,
     save.file.path = save.file, init.design.points = 10L)
+  ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10)
   expect_error(or <- mbo(f, ps, learner = learner, control = ctrl, show.info = FALSE), "foo")
   for (i in 1:100) {
     try(or <- mboContinue(save.file), silent = TRUE)
@@ -44,8 +45,10 @@ test_that("mboContinue", {
   environment(f)$i <- 0
 
   f = makeMBOFunction(f)
-  ctrl = makeMBOControl(iters = 7, infill.opt.focussearch.points = 100, save.on.disk.at = 0:8,
-    save.file.path = save.file, init.design.points = 10L, number.of.targets = 2, parego.s = 100)
+  ctrl = makeMBOControl(iters = 7, save.on.disk.at = 0:8,
+    save.file.path = save.file, init.design.points = 10L, number.of.targets = 2)
+  ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100)
+  ctrl = setMBOControlMulticrit(ctrl, parego.s = 100)
   rm("or")
   try(or <- mbo(f, ps, learner = learner, control = ctrl, show.info = FALSE), silent = TRUE)
   for (i in 1:100) {
@@ -63,8 +66,9 @@ test_that("mboContinue works when we at end", {
   ps = makeNumericParamSet(len = 2L, lower = -2, upper = 1)
   learner = makeLearner("regr.rpart")
   save.file = tempfile(fileext = "mboData")
-  ctrl = makeMBOControl(iters = 1, infill.opt.focussearch.points = 10, save.on.disk.at = 0:2,
+  ctrl = makeMBOControl(iters = 1, save.on.disk.at = 0:2,
     save.file.path = save.file, init.design.points = 10L)
+  ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10)
   or = mbo(makeMBOFunction(f), ps, learner = learner, control = ctrl, show.info = FALSE)
   expect_equal(getOptPathLength(or$opt.path), 11L)
   or = mboContinue(save.file)

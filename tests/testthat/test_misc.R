@@ -15,7 +15,8 @@
 #     makeDiscreteParam("x3", values = c("a", "blasdfkjaslkdjaslkdjflkjsdafj")))
 #
 #   surrogate = makeLearner("regr.randomForest")
-#   ctrl = makeMBOControl(minimize=FALSE, infill.crit="mean", iters=30, infill.opt.focussearch.points=100)
+#   ctrl = makeMBOControl(minimize = FALSE, iters=30)
+#   ctrl = setMBOControlInfill(crit = "mean", opt.focussearch.points = 100)
 #   opt = mbo(fit, easy, learner = surrogate, control= ctrl)
 #   expect_true(opt$x$x1 > 45 && opt$x$x1 <= 50 && is.na(opt$x$x2) && opt$x$x3 == "a" && opt$y > 68 && opt$y <= 70)
 #})
@@ -67,6 +68,8 @@
 #     }
 #
 #     surrogate = makeLearner("regr.randomForest")
-#     opt = mbo(fit, ps, learner = surrogate, control = makeMBOControl(infill.opt.focussearch.points=10))
+#     ctrl = makeMBOControl()
+#     ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10)
+#     opt = mbo(fit, ps, learner = surrogate, control = ctrl)
 #   }
 # })

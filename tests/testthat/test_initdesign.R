@@ -10,7 +10,8 @@ test_that("init design", {
   )
 
   learner = makeLearner("regr.km", nugget.estim = TRUE)
-  ctrl = makeMBOControl(iters = 1, infill.opt.focussearch.points = 10)
+  ctrl = makeMBOControl(iters = 1)
+  ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10)
 
   des = generateDesign(10, par.set = ps)
 

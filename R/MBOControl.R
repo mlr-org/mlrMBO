@@ -9,9 +9,6 @@
 #' @param number.of.targets [\code{integer(1)}]\cr
 #'   How many target functions does the function have? Greater than one for
 #'   multicriteria optimization, default ist 1.
-#' @param multicrit.method [\code{character(1)}]\cr
-#'   Which multicrit method should be used? At the moment only parego is
-#'   supported, which is also the default.
 #' @param init.design.points [\code{integer(1)}]\cr
 #'   Number of points in inital design.
 #'   Only used if no design is given in \code{mbo} function.
@@ -32,148 +29,11 @@
 #' @param propose.points [\code{integer(1)}]\cr
 #'   Number of proposed / really evaluated points each iteration.
 #'   Default is 1.
-#' @param infill.crit [\code{character(1)}]\cr
-#'   How should infill points be rated. Possible parameter values are:
-#'   \dQuote{mean}: Mean response.
-#'   \dQuote{ei}: Expected improvement.
-#'   \dQuote{aei}: Augmented expected improvement.
-#'   \dQuote{lcb}: Lower confidence bound.
-#'   \dQuote{multiFid}: Multifidelity: Expected improvement on different levels of the perfomance parameter defined in the \code{MBOMultiFidControl}.
-#'   Alternatively, you may pass a function name as string.
-#' @param infill.crit.lcb.lambda [\code{numeric(1)}]\cr
-#'   Lambda parameter for lower confidence bound infill criterion.
-#'   Only used if \code{infill.crit == "lcb"}, ignored otherwise.
-#'   Default is 1.
-#' @param infill.opt [\code{character(1)}]\cr
-#'   How should SINGLE points be proposed by using the surrogate model. Possible values are:
-#'   \dQuote{focussearch}: In several iteration steps the parameter space is
-#'   focused on an especial promising region according to infill criterion.
-#'   \dQuote{cmaes}: Use CMAES to optimize infill criterion. If all CMAES runs fail, a random point is generated
-#'   instead and a warning informs about it.
-#'   \dQuote{ea}: Use an (mu+1) EA to optimize infill criterion.
-#'   Default is \dQuote{focussearch}.
-#'   Alternatively, you may pass a function name as string.
-#' @param infill.opt.restarts [\code{integer(1)}]\cr
-#'   Number of independent restarts for optimizer of infill criterion.
-#'   If \code{infill.opt == "cmaes"} the first start point for the optimizer is always the
-#'   currently best point in the design of already visited points.
-#'   Subsequent restarts are started at random points.
-#'   Default is 1.
-#' @param infill.opt.focussearch.maxit [\code{integer(1)}]\cr
-#'   For \code{infill.opt = "focussearch"}:
-#'   Number of iteration to shrink local focus.
-#'   Default is 5.
-#' @param infill.opt.focussearch.points [\code{integer(1)}]\cr
-#'   For \code{infill.opt = "focussearch"}:
-#'   Number of points in each iteration of the focus search optimizer.
-#'   Default is 10000.
-#' @param infill.opt.cmaes.control [\code{list}]\cr
-#'   For \code{infill.opt = "cmaes"}:
-#'   Control argument for cmaes optimizer.
-#'   Default is empty list.
-#' @param infill.opt.ea.maxit [\code{integer(1)}]\cr
-#'   For \code{infill.opt = "ea"}:
-#'   Number of iterations / generations of EA.
-#'   Default is 500.
-#' @param infill.opt.ea.mu [\code{integer(1)}]\cr
-#'   For \code{infill.opt = "ea"}:
-#'   Population size of EA.
-#'   Default is 10.
-#' @param infill.opt.ea.pm.eta [\code{numeric(1)}]\cr
-#'   For \code{infill.opt = "ea"}:
-#'   Distance parameter of mutation distribution, see \code{\link[emoa]{pm_operator}}.
-#'   Default is 15.
-#' @param infill.opt.ea.pm.p [\code{numeric(1)}]\cr
-#'   For \code{infill.opt = "ea"}:
-#'   Probability of 1-point mutation, see \code{\link[emoa]{pm_operator}}.
-#'   Default is 0.5.
-#' @param infill.opt.ea.sbx.eta [\code{numeric(1)}]\cr
-#'   For \code{infill.opt = "ea"}:
-#'   Distance parameter of crossover distribution , see \code{\link[emoa]{sbx_operator}}.
-#'   Default is 15.
-#' @param infill.opt.ea.sbx.p [\code{numeric(1)}]\cr
-#'   For \code{infill.opt = "ea"}:
-#'   Probability of 1-point crossover, see \code{\link[emoa]{sbx_operator}}.
-#'   Default is 0.5.
-#' @param infill.opt.ea.lambda [\code{numeric{1}}]\cr
-#'   For \code{infill.opt.ea = "ea"}.
-#'   Number of children generated in each generation.
-#'   Default is 1.
 #' @param feature.impute [\code{character(1)}]\cr
 #'   Method used for imputing features, which can / will be necessary for dependent parameters.
 #'   Possible values are:
 #'   \dQuote{up}: Numeric vars are imputed with 2 * upper bound.
 #'   \dQuote{median}: Imputes NAs with median and add logical is.na variable.
-#' @param multipoint.method [\code{character(1)}]\cr
-#'   Method used for proposal of multiple infill points, for parallel batch evaluation.
-#'   Possible values are:
-#'   \dQuote{lcb}: Proposes points by optimizing the lower confidence bound \dQuote{lcb} criterion,
-#'   \code{propose.points} times. Each lambda value for \dQuote{lcb} is drawn randomly from an
-#'   exp(1)-distribution, so do not define \code{infill.opt.lcb.lambda}.
-#'   The optimizer for each proposal is configured in the same way as for the single point case,
-#'   i.e., by specifying \code{infill.opt} and related stuff.
-#'   \dQuote{multicrit}: Proposes points by evolutionary multicriteria optimization.
-#'   The EA is a (mu+1) type of algorithm and runs for \code{multipoint.multicrit.maxit} generations.
-#'   The population size is set to \code{propose.points}.
-#'   The selection criterion is \code{multipoint.multicrit.selection}.
-#'	 \dQuote{cl}: Proposes points by constant liar strategie.
-#'	 Only meaningfull if \code{infill.crit == "lcb"}
-#'   In the first step the kriging model is fitted based on the real data and the best point is calculated according to the regular EI-criterion.
-#'   Then, the function value of the best point is simply guessed by the worst seen function evaluation.
-#'   This lie is used to update the model in order to propose the subsequent point.
-#'   The procedure is applied until the number of best points achieves \code{propose.points}.
-#'   Default is \code{lcb}
-#' @param multipoint.multicrit.objective [\code{character(1)}]\cr
-#'   Objectives which are optimized in multicrit approach.
-#'   Possible values are: \dQuote{mean.dist}, \dQuote{ei.dist}, \dQuote{mean.se}, \dQuote{mean.se.dist}.
-#'   Default is \dQuote{ei.dist}.
-#' @param multipoint.multicrit.dist [\code{character(1)}]\cr
-#'   Distance function used in multicrit EA.
-#'   Possible values are: \dQuote{nearest.neigbor}, \dQuote{nearest.better}.
-#'   Default is \dQuote{nearest.better}.
-#FIXME: a link to the definition of nearest.better and nearest.neigbor?
-#' @param multipoint.multicrit.selection [\code{character(1)}]\cr
-#'   Method used for selecting 1 element for removal from the population
-#'   in each iteration of the multicriteria EA.
-#'   Possible values are:
-#'   \dQuote{hypervolume}: Non-dominated sorting + hypervolume contribution.
-#'   \dQuote{crowdingdist}: Non-dominated sorting + crowding distance based ranking.
-#'   \dQuote{first}: Non-dominated sorting + first objective of \code{multipoint.multicrit.objective} as criterion.
-#'   \dQuote{last}: Non-dominated sorting + last objective of \code{multipoint.multicrit.objective} as criterion.
-#'   Default is \code{hypervolume}
-#' @param multipoint.multicrit.maxit [\code{character(1)}]\cr
-#'   Number of generations for multicriteria EA.
-#'   Default is 100.
-#' @param multipoint.multicrit.sbx.eta [\code{numeric(1)}]\cr
-#'   Distance parameter of crossover distribution, see \code{\link[emoa]{sbx_operator}}.
-#'   Default is 15.
-#' @param multipoint.multicrit.sbx.p [\code{numeric(1)}]\cr
-#'   Probability of 1-point crossover, see \code{\link[emoa]{sbx_operator}}.
-#'   Default is 1.
-#' @param multipoint.multicrit.pm.eta [\code{numeric(1)}]\cr
-#'   Distance parameter of mutation distribution, see \code{\link[emoa]{pm_operator}}.
-#'   Default is 15.
-#' @param multipoint.multicrit.pm.p [\code{numeric(1)}]\cr
-#'   Probability of 1-point mutation, see \code{\link[emoa]{pm_operator}}.
-#'   Default is 1
-#' @param parego.s [\code{integer(1)}]\cr
-#'   Parameter of parego - controls the number of weighting vectors. The default
-#'   depends on \code{number.of.targets} and leads to 100000 different possible
-#'   weight vectors. The defaults for (2, 3, 4, 5, 6) dimensions are (100000,
-#'   450, 75, 37, 23) and 10 for higher dimensions.
-#' @param parego.rho [\code{numeric(1)}]\cr
-#'   Parameter of parego - factor for Tchebycheff function. Default 0.05 as
-#'   suggested in parego paper.
-#' @param parego.sample.more.weights [\code{numeric(1)}]\cr
-#'   In each iteration \code{parego.sample.more.weights} * \code{propose.points}
-#'   are sampled and the weights with maximum distance to each other are chosen.
-#'   Default is 1, if only 1 point is proposed each iteration, otherwise 5.
-#' @param parego.use.margin.points [\code{logical}]\cr
-#'   For each target function: Should the weight vector (0, ..., 0, 1, 0, ..., 0),
-#'   i.e. the weight vector with only 0 and a single 1 at the i.th position for
-#'   the i.th target function, be drawn with probability 1? Number of TRUE entries
-#'   must be less or equal to \code{propose.points}
-#'   Default is not to do this.
 #' @param multiFid.control [\code{MBOmultiFidControl(1)}]\cr
 #'   Necessary if \code{infill.crit = "multiFid"}.
 #' @param final.method [\code{character(1)}]\cr
@@ -243,27 +103,10 @@
 #' @aliases MBOControl
 #' @export
 makeMBOControl = function(number.of.targets = 1L,
-  minimize = rep(TRUE, number.of.targets), multicrit.method = "parego", noisy = FALSE,
+  minimize = rep(TRUE, number.of.targets), noisy = FALSE,
   init.design.points = 20L, init.design.fun = maximinLHS, init.design.args = list(),
-  iters = 10L, propose.points = 1L, infill.crit = "mean", infill.crit.lcb.lambda = 1,
-  infill.opt = "focussearch", infill.opt.restarts = 1L,
-  infill.opt.focussearch.maxit = 5L, infill.opt.focussearch.points = 10000L,
-  infill.opt.cmaes.control = list(),
-  infill.opt.ea.maxit = 500L, infill.opt.ea.mu = 10L,
-  infill.opt.ea.sbx.eta = 15, infill.opt.ea.sbx.p = 0.5,
-  infill.opt.ea.pm.eta = 15, infill.opt.ea.pm.p = 0.5,
-  infill.opt.ea.lambda = 1L,
+  iters = 10L, propose.points = 1L,
   feature.impute = "up",
-  multipoint.method = "lcb",
-  multipoint.multicrit.objective = "ei.dist",
-  multipoint.multicrit.dist = "nearest.better",
-  multipoint.multicrit.selection = "hypervolume",
-  multipoint.multicrit.maxit = 100L,
-  multipoint.multicrit.sbx.eta = 15, multipoint.multicrit.sbx.p = 1,
-  multipoint.multicrit.pm.eta = 15, multipoint.multicrit.pm.p = 1,
-  parego.s, parego.rho = 0.05,
-  parego.use.margin.points = rep(FALSE, number.of.targets),
-  parego.sample.more.weights = 5L,
   multiFid.control = NULL,
   final.method = "best.true.y", final.evals = 0L,
   y.name = "y",
@@ -281,7 +124,6 @@ makeMBOControl = function(number.of.targets = 1L,
 
   number.of.targets = convertInteger(number.of.targets)
   checkArg(number.of.targets, "integer", len = 1L, lower = 1L, na.ok = FALSE)
-  checkArg(multicrit.method, choices = c("parego"))
   checkArg(minimize, "logical", len = number.of.targets, na.ok = FALSE)
   checkArg(noisy, "logical", len = 1L, na.ok = FALSE)
 
@@ -295,65 +137,10 @@ makeMBOControl = function(number.of.targets = 1L,
   propose.points = convertInteger(propose.points)
   checkArg(propose.points, "integer", len = 1L, na.ok = FALSE, lower = 1L)
 
-
-  # FIXME: BB: DO NOT FUCKING TOUCH THIS!
-  # checkArg(infill.crit, choices = getSupportedInfillCritFunctions())
-  checkArg(infill.crit.lcb.lambda, "numeric", len = 1L, na.ok = FALSE, lower = 0)
-  checkArg(infill.opt, choices = getSupportedInfillOptFunctions())
-  infill.opt.restarts = convertInteger(infill.opt.restarts)
-  checkArg(infill.opt.restarts, "integer", len = 1L, na.ok = FALSE)
-
-  infill.opt.focussearch.maxit = convertInteger(infill.opt.focussearch.maxit)
-  checkArg(infill.opt.focussearch.maxit, "integer", len = 1L, na.ok = FALSE, lower = 1L)
-  infill.opt.focussearch.points = convertInteger(infill.opt.focussearch.points)
-  checkArg(infill.opt.focussearch.points, "integer", len = 1L, na.ok = FALSE, lower = 1L)
-  checkArg(infill.opt.cmaes.control, "list")
-
-  infill.opt.ea.maxit = convertInteger(infill.opt.ea.maxit)
-  checkArg(infill.opt.ea.maxit, "integer", len = 1L, na.ok = FALSE, lower = 1L)
-  infill.opt.ea.mu = convertInteger(infill.opt.ea.mu)
-  checkArg(infill.opt.ea.mu, "integer", len = 1L, na.ok = FALSE, lower = 1L)
-  checkArg(infill.opt.ea.sbx.eta, "numeric", len = 1L, na.ok = FALSE, lower = 0)
-  checkArg(infill.opt.ea.sbx.p, "numeric", len = 1L, na.ok = FALSE, lower = 0, upper = 1)
-  checkArg(infill.opt.ea.pm.eta, "numeric", len = 1L, na.ok = FALSE, lower = 0)
-  checkArg(infill.opt.ea.pm.p, "numeric", len = 1L, na.ok = FALSE, lower = 0, upper = 1)
-  checkArg(infill.opt.ea.lambda, "integer", len = 1L, na.ok = FALSE, lower = 1L)
-
   checkArg(feature.impute, choices = c("up", "median"))
 
-  checkArg(multipoint.method, choices = getSupportedMultipointInfillOptFunctions())
-  checkArg(multipoint.multicrit.objective, choices = c("mean.dist", "ei.dist", "mean.se", "mean.se.dist"))
-  checkArg(multipoint.multicrit.selection, choices = c("hypervolume", "crowdingdist", "first", "last"))
-  checkArg(multipoint.multicrit.dist, choices = c("nearest.neighbor", "nearest.better"))
-  multipoint.multicrit.maxit = convertInteger(multipoint.multicrit.maxit)
-  checkArg(multipoint.multicrit.maxit, "integer", len = 1L, na.ok = FALSE, lower = 0L)
-  checkArg(multipoint.multicrit.sbx.eta, "numeric", len = 1L, na.ok = FALSE, lower = 0)
-  checkArg(multipoint.multicrit.sbx.p, "numeric", len = 1L, na.ok = FALSE, lower = 0, upper = 1)
-  checkArg(multipoint.multicrit.pm.eta, "numeric", len = 1L, na.ok = FALSE, lower = 0)
-  checkArg(multipoint.multicrit.pm.p, "numeric", len = 1L, na.ok = FALSE, lower = 0, upper = 1)
-
-  if (missing(parego.s))
-    parego.s = switch(min(number.of.targets, 7), 1L, 100000L, 450L, 75L, 37L, 23L, 10L)
-
-  if (number.of.targets > 1L) {
-    parego.s = convertInteger(parego.s)
-    checkArg(parego.s, "integer", len = 1L, na.ok = FALSE, lower = 1)
-    checkArg(parego.rho, "numeric", len = 1L, na.ok = FALSE, lower = 0, upper = 1)
-    if (propose.points == 1L)
-      parego.sample.more.weights = 1L
-    parego.sample.more.weights = convertInteger(parego.sample.more.weights)
-    checkArg(parego.sample.more.weights, "numeric", len = 1L, na.ok = FALSE, lower = 1)
-    checkArg(parego.use.margin.points, "logical", len = number.of.targets, na.ok = FALSE, lower = 1)
-    if (sum(parego.use.margin.points) > propose.points)
-      stopf("Can't use %s margin points when only proposing %s points each iteration.",
-        sum(parego.use.margin.points), propose.points)
-    number.of.weights = choose(parego.s + number.of.targets - 1, number.of.targets - 1)
-    if (parego.sample.more.weights * propose.points > number.of.weights)
-      stop("Trying to sample more weights than exists. Increase parego.s or decrease number of weights.")
-  }
-
-  if (infill.crit == "multiFid")
-    checkArg(multiFid.control, "MBOMultiFidControl")
+  # if (infill.crit == "multiFid")
+  #   checkArg(multiFid.control, "MBOMultiFidControl")
 
   if (!is.null(impute.y.fun))
     checkArg(impute.y.fun, formals = c("x", "y", "opt.path"))
@@ -407,44 +194,16 @@ makeMBOControl = function(number.of.targets = 1L,
   checkArg(show.learner.output, "logical", len = 1L, na.ok = FALSE)
   checkArg(output.num.format, "character", len = 1L, na.ok = FALSE)
 
-  makeS3Obj("MBOControl",
+  control = makeS3Obj("MBOControl",
     minimize = minimize,
     noisy = noisy,
     number.of.targets = number.of.targets,
-    multicrit.method = multicrit.method,
     init.design.points = init.design.points,
     init.design.fun = init.design.fun,
     init.design.args = init.design.args,
     iters = iters,
     propose.points = propose.points,
-    infill.crit = infill.crit,
-    infill.crit.lcb.lambda = infill.crit.lcb.lambda,
-    infill.opt = infill.opt,
-    infill.opt.restarts = infill.opt.restarts,
-    infill.opt.focussearch.maxit = infill.opt.focussearch.maxit,
-    infill.opt.focussearch.points = infill.opt.focussearch.points,
-    infill.opt.cmaes.control = infill.opt.cmaes.control,
-    infill.opt.ea.maxit = infill.opt.ea.maxit,
-    infill.opt.ea.mu = infill.opt.ea.mu,
-    infill.opt.ea.sbx.eta = infill.opt.ea.sbx.eta,
-    infill.opt.ea.sbx.p = infill.opt.ea.sbx.p,
-    infill.opt.ea.pm.eta = infill.opt.ea.pm.eta,
-    infill.opt.ea.pm.p = infill.opt.ea.pm.p,
-    infill.opt.ea.lambda = infill.opt.ea.lambda,
     feature.impute = feature.impute,
-    multipoint.method = multipoint.method,
-    multipoint.multicrit.objective = multipoint.multicrit.objective,
-    multipoint.multicrit.dist = multipoint.multicrit.dist,
-    multipoint.multicrit.selection = multipoint.multicrit.selection,
-    multipoint.multicrit.maxit = multipoint.multicrit.maxit,
-    multipoint.multicrit.sbx.eta = multipoint.multicrit.sbx.eta,
-    multipoint.multicrit.sbx.p = multipoint.multicrit.sbx.p,
-    multipoint.multicrit.pm.eta = multipoint.multicrit.pm.eta,
-    multipoint.multicrit.pm.p = multipoint.multicrit.pm.p,
-    parego.s = parego.s,
-    parego.rho = parego.rho,
-    parego.use.margin.points = parego.use.margin.points,
-    parego.sample.more.weights = parego.sample.more.weights,
     multiFid.control = multiFid.control,
     final.method = final.method,
     final.evals = final.evals,
@@ -461,6 +220,304 @@ makeMBOControl = function(number.of.targets = 1L,
     show.learner.output = show.learner.output,
     output.num.format = output.num.format
   )
+
+  # set defaults for infill methods and other stuff
+  control = setMBOControlInfill(control)
+  control = setMBOControlMultipoint(control)
+  control = setMBOControlMulticrit(control)
+
+  return(control)
+}
+
+#' Extends mbo control object with infill criteria and infill optimizer options.
+#'
+#' @param control [\code{\link{MBOControl}}]\cr
+#'   MBO control object.
+#' @param crit [\code{character(1)}]\cr
+#'   How should infill points be rated. Possible parameter values are:
+#'   \dQuote{mean}: Mean response.
+#'   \dQuote{ei}: Expected improvement.
+#'   \dQuote{aei}: Augmented expected improvement.
+#'   \dQuote{lcb}: Lower confidence bound.
+#'   \dQuote{multiFid}: Multifidelity: Expected improvement on different levels of the perfomance parameter defined in the \code{MBOMultiFidControl}.
+#'   Alternatively, you may pass a function name as string.
+#' @param crit.lcb.lambda [\code{numeric(1)}]\cr
+#'   Lambda parameter for lower confidence bound infill criterion.
+#'   Only used if \code{crit == "lcb"}, ignored otherwise.
+#'   Default is 1.
+#' @param opt [\code{character(1)}]\cr
+#'   How should SINGLE points be proposed by using the surrogate model. Possible values are:
+#'   \dQuote{focussearch}: In several iteration steps the parameter space is
+#'   focused on an especial promising region according to infill criterion.
+#'   \dQuote{cmaes}: Use CMAES to optimize infill criterion. If all CMAES runs fail, a random point is generated
+#'   instead and a warning informs about it.
+#'   \dQuote{ea}: Use an (mu+1) EA to optimize infill criterion.
+#'   Default is \dQuote{focussearch}.
+#'   Alternatively, you may pass a function name as string.
+#' @param opt.restarts [\code{integer(1)}]\cr
+#'   Number of independent restarts for optimizer of infill criterion.
+#'   If \code{opt == "cmaes"} the first start point for the optimizer is always the
+#'   currently best point in the design of already visited points.
+#'   Subsequent restarts are started at random points.
+#'   Default is 1.
+#' @param opt.focussearch.maxit [\code{integer(1)}]\cr
+#'   For \code{opt = "focussearch"}:
+#'   Number of iteration to shrink local focus.
+#'   Default is 5.
+#' @param opt.focussearch.points [\code{integer(1)}]\cr
+#'   For \code{opt = "focussearch"}:
+#'   Number of points in each iteration of the focus search optimizer.
+#'   Default is 10000.
+#' @param opt.cmaes.control [\code{list}]\cr
+#'   For \code{opt = "cmaes"}:
+#'   Control argument for cmaes optimizer.
+#'   Default is empty list.
+#' @param opt.ea.maxit [\code{integer(1)}]\cr
+#'   For \code{opt = "ea"}:
+#'   Number of iterations / generations of EA.
+#'   Default is 500.
+#' @param opt.ea.mu [\code{integer(1)}]\cr
+#'   For \code{opt = "ea"}:
+#'   Population size of EA.
+#'   Default is 10.
+#' @param opt.ea.pm.eta [\code{numeric(1)}]\cr
+#'   For \code{opt = "ea"}:
+#'   Distance parameter of mutation distribution, see \code{\link[emoa]{pm_operator}}.
+#'   Default is 15.
+#' @param opt.ea.pm.p [\code{numeric(1)}]\cr
+#'   For \code{opt = "ea"}:
+#'   Probability of 1-point mutation, see \code{\link[emoa]{pm_operator}}.
+#'   Default is 0.5.
+#' @param opt.ea.sbx.eta [\code{numeric(1)}]\cr
+#'   For \code{opt = "ea"}:
+#'   Distance parameter of crossover distribution , see \code{\link[emoa]{sbx_operator}}.
+#'   Default is 15.
+#' @param opt.ea.sbx.p [\code{numeric(1)}]\cr
+#'   For \code{opt = "ea"}:
+#'   Probability of 1-point crossover, see \code{\link[emoa]{sbx_operator}}.
+#'   Default is 0.5.
+#' @param opt.ea.lambda [\code{numeric{1}}]\cr
+#'   For \code{opt.ea = "ea"}.
+#'   Number of children generated in each generation.
+#'   Default is 1.
+#' @return [\code{\link{MBOControl}}].
+#' @seealso makeMBOControl
+#' @export
+setMBOControlInfill = function(control, 
+  crit = "mean", crit.lcb.lambda = 1,
+  opt = "focussearch", opt.restarts = 1L,
+  opt.focussearch.maxit = 5L, opt.focussearch.points = 10000L,
+  opt.cmaes.control = list(),
+  opt.ea.maxit = 500L, opt.ea.mu = 10L,
+  opt.ea.sbx.eta = 15, opt.ea.sbx.p = 0.5,
+  opt.ea.pm.eta = 15, opt.ea.pm.p = 0.5,
+  opt.ea.lambda = 1L) {
+
+  checkArg(control, "MBOControl")
+
+  # FIXME: BB: DO NOT FUCKING TOUCH THIS!
+  # checkArg(crit, choices = getSupportedInfillCritFunctions())
+  checkArg(crit.lcb.lambda, "numeric", len = 1L, na.ok = FALSE, lower = 0)
+  checkArg(opt, choices = getSupportedInfillOptFunctions())
+  opt.restarts = convertInteger(opt.restarts)
+  checkArg(opt.restarts, "integer", len = 1L, na.ok = FALSE)
+
+  opt.focussearch.maxit = convertInteger(opt.focussearch.maxit)
+  checkArg(opt.focussearch.maxit, "integer", len = 1L, na.ok = FALSE, lower = 1L)
+  opt.focussearch.points = convertInteger(opt.focussearch.points)
+  checkArg(opt.focussearch.points, "integer", len = 1L, na.ok = FALSE, lower = 1L)
+  checkArg(opt.cmaes.control, "list")
+
+  opt.ea.maxit = convertInteger(opt.ea.maxit)
+  checkArg(opt.ea.maxit, "integer", len = 1L, na.ok = FALSE, lower = 1L)
+  opt.ea.mu = convertInteger(opt.ea.mu)
+  checkArg(opt.ea.mu, "integer", len = 1L, na.ok = FALSE, lower = 1L)
+  checkArg(opt.ea.sbx.eta, "numeric", len = 1L, na.ok = FALSE, lower = 0)
+  checkArg(opt.ea.sbx.p, "numeric", len = 1L, na.ok = FALSE, lower = 0, upper = 1)
+  checkArg(opt.ea.pm.eta, "numeric", len = 1L, na.ok = FALSE, lower = 0)
+  checkArg(opt.ea.pm.p, "numeric", len = 1L, na.ok = FALSE, lower = 0, upper = 1)
+  checkArg(opt.ea.lambda, "integer", len = 1L, na.ok = FALSE, lower = 1L)
+
+  control$infill.crit = crit
+  control$infill.crit.lcb.lambda = crit.lcb.lambda
+  control$infill.opt = opt
+  control$infill.opt.restarts = opt.restarts
+  control$infill.opt.focussearch.maxit = opt.focussearch.maxit
+  control$infill.opt.focussearch.points = opt.focussearch.points
+  control$infill.opt.cmaes.control = opt.cmaes.control
+  control$infill.opt.ea.maxit = opt.ea.maxit
+  control$infill.opt.ea.mu = opt.ea.mu
+  control$infill.opt.ea.sbx.eta = opt.ea.sbx.eta
+  control$infill.opt.ea.sbx.p = opt.ea.sbx.p
+  control$infill.opt.ea.pm.eta = opt.ea.pm.eta
+  control$infill.opt.ea.pm.p = opt.ea.pm.p
+  control$infill.opt.ea.lambda = opt.ea.lambda
+
+  return(control)
+}
+
+#' Extends mbo control object with options for multipoint proposal.
+#'
+#' @param control [\code{\link{MBOControl}}]\cr
+#'   MBO control object.
+#' @param method [\code{character(1)}]\cr
+#'   Method used for proposal of multiple infill points, for parallel batch evaluation.
+#'   Possible values are:
+#'   \dQuote{lcb}: Proposes points by optimizing the lower confidence bound \dQuote{lcb} criterion,
+#'   \code{propose.points} times. Each lambda value for \dQuote{lcb} is drawn randomly from an
+#'   exp(1)-distribution, so do not define \code{infill.opt.lcb.lambda}.
+#'   The optimizer for each proposal is configured in the same way as for the single point case,
+#'   i.e., by specifying \code{infill.opt} and related stuff.
+#'   \dQuote{multicrit}: Proposes points by evolutionary multicriteria optimization.
+#'   The EA is a (mu+1) type of algorithm and runs for \code{multicrit.maxit} generations.
+#'   The population size is set to \code{propose.points}.
+#'   The selection criterion is \code{multicrit.selection}.
+#'   \dQuote{cl}: Proposes points by constant liar strategie.
+#'   Only meaningfull if \code{infill.crit == "lcb"}
+#'   In the first step the kriging model is fitted based on the real data and the best point is calculated according to the regular EI-criterion.
+#'   Then, the function value of the best point is simply guessed by the worst seen function evaluation.
+#'   This lie is used to update the model in order to propose the subsequent point.
+#'   The procedure is applied until the number of best points achieves \code{propose.points}.
+#'   Default is \code{lcb}
+#' @param multicrit.objective [\code{character(1)}]\cr
+#'   Objectives which are optimized in multicrit approach.
+#'   Possible values are: \dQuote{mean.dist}, \dQuote{ei.dist}, \dQuote{mean.se}, \dQuote{mean.se.dist}.
+#'   Default is \dQuote{ei.dist}.
+#' @param multicrit.dist [\code{character(1)}]\cr
+#'   Distance function used in multicrit EA.
+#'   Possible values are: \dQuote{nearest.neigbor}, \dQuote{nearest.better}.
+#'   Default is \dQuote{nearest.better}.
+#FIXME: a link to the definition of nearest.better and nearest.neigbor?
+#' @param multicrit.selection [\code{character(1)}]\cr
+#'   Method used for selecting 1 element for removal from the population
+#'   in each iteration of the multicriteria EA.
+#'   Possible values are:
+#'   \dQuote{hypervolume}: Non-dominated sorting + hypervolume contribution.
+#'   \dQuote{crowdingdist}: Non-dominated sorting + crowding distance based ranking.
+#'   \dQuote{first}: Non-dominated sorting + first objective of \code{multicrit.objective} as criterion.
+#'   \dQuote{last}: Non-dominated sorting + last objective of \code{multicrit.objective} as criterion.
+#'   Default is \code{hypervolume}.
+#' @param multicrit.maxit [\code{character(1)}]\cr
+#'   Number of generations for multicriteria EA.
+#'   Default is 100.
+#' @param multicrit.sbx.eta [\code{numeric(1)}]\cr
+#'   Distance parameter of crossover distribution, see \code{\link[emoa]{sbx_operator}}.
+#'   Default is 15.
+#' @param multicrit.sbx.p [\code{numeric(1)}]\cr
+#'   Probability of 1-point crossover, see \code{\link[emoa]{sbx_operator}}.
+#'   Default is 1.
+#' @param multicrit.pm.eta [\code{numeric(1)}]\cr
+#'   Distance parameter of mutation distribution, see \code{\link[emoa]{pm_operator}}.
+#'   Default is 15.
+#' @param multicrit.pm.p [\code{numeric(1)}]\cr
+#'   Probability of 1-point mutation, see \code{\link[emoa]{pm_operator}}.
+#'   Default is 1.
+#' @return [\code{\link{MBOControl}}].
+#' @seealso makeMBOControl
+#' @export
+setMBOControlMultipoint = function(control,
+  method = "lcb",
+  multicrit.objective = "ei.dist",
+  multicrit.dist = "nearest.better",
+  multicrit.selection = "hypervolume",
+  multicrit.maxit = 100L,
+  multicrit.sbx.eta = 15, multicrit.sbx.p = 1,
+  multicrit.pm.eta = 15, multicrit.pm.p = 1) {
+
+  checkArg(control, "MBOControl")
+
+  checkArg(method, choices = getSupportedMultipointInfillOptFunctions())
+  checkArg(multicrit.objective, choices = c("mean.dist", "ei.dist", "mean.se", "mean.se.dist"))
+  checkArg(multicrit.selection, choices = c("hypervolume", "crowdingdist", "first", "last"))
+  checkArg(multicrit.dist, choices = c("nearest.neighbor", "nearest.better"))
+  multicrit.maxit = convertInteger(multicrit.maxit)
+  checkArg(multicrit.maxit, "integer", len = 1L, na.ok = FALSE, lower = 0L)
+  checkArg(multicrit.sbx.eta, "numeric", len = 1L, na.ok = FALSE, lower = 0)
+  checkArg(multicrit.sbx.p, "numeric", len = 1L, na.ok = FALSE, lower = 0, upper = 1)
+  checkArg(multicrit.pm.eta, "numeric", len = 1L, na.ok = FALSE, lower = 0)
+  checkArg(multicrit.pm.p, "numeric", len = 1L, na.ok = FALSE, lower = 0, upper = 1)
+ 
+  control$multipoint.method = method
+  control$multipoint.multicrit.objective = multicrit.objective
+  control$multipoint.multicrit.dist = multicrit.dist
+  control$multipoint.multicrit.selection = multicrit.selection
+  control$multipoint.multicrit.maxit = multicrit.maxit
+  control$multipoint.multicrit.sbx.eta = multicrit.sbx.eta
+  control$multipoint.multicrit.sbx.p = multicrit.sbx.p
+  control$multipoint.multicrit.pm.eta = multicrit.pm.eta
+  control$multipoint.multicrit.pm.p = multicrit.pm.p
+
+  return(control)
+}
+
+#' Extends mbo control object with multi-criteria specific options.
+#'
+#' @param control [\code{MBOControl}]\cr
+#'   MBO control object.
+#' @param method [\code{character(1)}]\cr
+#'   Which multicrit method should be used? At the moment only parego is
+#'   supported, which is also the default.
+#' @param parego.s [\code{integer(1)}]\cr
+#'   Parameter of parego - controls the number of weighting vectors. The default
+#'   depends on \code{number.of.targets} and leads to 100000 different possible
+#'   weight vectors. The defaults for (2, 3, 4, 5, 6) dimensions are (100000,
+#'   450, 75, 37, 23) and 10 for higher dimensions.
+#' @param parego.rho [\code{numeric(1)}]\cr
+#'   Parameter of parego - factor for Tchebycheff function. Default 0.05 as
+#'   suggested in parego paper.
+#' @param parego.sample.more.weights [\code{numeric(1)}]\cr
+#'   In each iteration \code{parego.sample.more.weights} * \code{propose.points}
+#'   are sampled and the weights with maximum distance to each other are chosen.
+#'   Default is 1, if only 1 point is proposed each iteration, otherwise 5.
+#' @param parego.use.margin.points [\code{logical}]\cr
+#'   For each target function: Should the weight vector (0, ..., 0, 1, 0, ..., 0),
+#'   i.e. the weight vector with only 0 and a single 1 at the i.th position for
+#'   the i.th target function, be drawn with probability 1? Number of TRUE entries
+#'   must be less or equal to \code{propose.points}
+#'   Default is not to do this.
+#' @return [\code{\link{MBOControl}}].
+#' @seealso makeMBOControl 
+#' @export
+setMBOControlMulticrit = function(control, 
+  method = "parego", 
+  parego.s, parego.rho = 0.05,
+  parego.use.margin.points = rep(FALSE, control$number.of.targets),
+  parego.sample.more.weights = 5L) {
+
+  checkArg(control, "MBOControl")
+  checkArg(method, choices = c("parego"))
+
+  number.of.targets = control$number.of.targets
+  propose.points = control$propose.points
+
+  if (missing(parego.s))
+    parego.s = switch(min(number.of.targets, 7), 1L, 100000L, 450L, 75L, 37L, 23L, 10L)
+
+  if (number.of.targets > 1L) {
+    parego.s = convertInteger(parego.s)
+    checkArg(parego.s, "integer", len = 1L, na.ok = FALSE, lower = 1)
+    checkArg(parego.rho, "numeric", len = 1L, na.ok = FALSE, lower = 0, upper = 1)
+    if (propose.points == 1L)
+      parego.sample.more.weights = 1L
+    parego.sample.more.weights = convertInteger(parego.sample.more.weights)
+    checkArg(parego.sample.more.weights, "numeric", len = 1L, na.ok = FALSE, lower = 1)
+    checkArg(parego.use.margin.points, "logical", len = number.of.targets, na.ok = FALSE, lower = 1)
+    if (sum(parego.use.margin.points) > propose.points)
+      stopf("Can't use %s margin points when only proposing %s points each iteration.",
+        sum(parego.use.margin.points), propose.points)
+    number.of.weights = choose(parego.s + number.of.targets - 1, number.of.targets - 1)
+    if (parego.sample.more.weights * propose.points > number.of.weights)
+      stop("Trying to sample more weights than exists. Increase parego.s or decrease number of weights.")
+  }
+
+  # extend control object
+  control$multicrit.method = method
+  control$parego.s = parego.s
+  control$parego.rho = parego.rho
+  control$parego.use.margin.points = parego.use.margin.points
+  control$parego.sample.more.weights = parego.sample.more.weights
+
+  return(control)
 }
 
 #' Print mbo control object.
@@ -478,11 +535,11 @@ print.MBOControl = function(x, ...) {
   catf("Iterations                  : %i", x$iters)
   catf("Points proposed per iter:   : %i", x$propose.points)
   if (x$propose.points == 1) {
-  catf("Infill criterion            : %s", x$infill.crit)
+  catf("Infill criterion            : %s", x$control$crit)
   catf("Infill optimizer            : %s", x$infill.opt)
   catf("Infill optimizer restarts   : %i", x$infill.opt.restarts)
   } else {
-  catf("Multipoint method           : %s", x$multipoint.method)
+  catf("Multipoint method           : %s", x$control$multipoint.method)
   }
   catf("Final point by              : %s", x$final.method)
 }

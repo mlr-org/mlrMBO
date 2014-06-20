@@ -17,8 +17,9 @@ test_that("mbo works with different learners", {
     makeNumericParam("num1", lower = 0, upper = 1)
   )
   
-  ctrl = makeMBOControl(iters = 2, init.design.points = 10,
-    infill.opt.focussearch.points = 100)
+  ctrl = makeMBOControl(iters = 2, init.design.points = 10)
+  ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100)
+
   mbo(f, ps, learner = makeLearner("regr.rpart"), control = ctrl)
   mbo(f, ps, learner = makeLearner("regr.lm"), control = ctrl)
   mbo(f, ps, learner = makeLearner("regr.mob"), control = ctrl)

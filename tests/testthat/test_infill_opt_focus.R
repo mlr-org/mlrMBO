@@ -10,16 +10,17 @@ test_that("simple random search, no dependencies, no focussing", {
   }
 
   ps = makeParamSet(
-    makeIntegerParam("x0", lower=3L, upper=4L),
-    makeNumericParam("x1", lower=-2, upper=2),
-    makeDiscreteParam("x2", values=c("v1", "v2")),
+    makeIntegerParam("x0", lower = 3L, upper = 4L),
+    makeNumericParam("x1", lower = -2, upper = 2),
+    makeDiscreteParam("x2", values = c("v1", "v2")),
     makeLogicalParam("x3"),
-    makeNumericVectorParam("x4", len=2L, lower=1, upper=2)
+    makeNumericVectorParam("x4", len = 2L, lower = 1, upper = 2)
   )
 
   learner = makeLearner("regr.randomForest")
-  ctrl = makeMBOControl(init.design.points=20, iters=2, infill.opt="focussearch",
-    infill.opt.restarts=1, infill.opt.focussearch.maxit=1, infill.opt.focussearch.points=30)
+  ctrl = makeMBOControl(init.design.points = 20, iters = 2)
+  ctrl = setMBOControlInfill(ctrl, opt = "focussearch",
+    opt.restarts = 1, opt.focussearch.maxit = 1, opt.focussearch.points = 30)
   or = mbo(f, ps, learner=learner, control=ctrl, show.info=FALSE)
   expect_true(!is.na(or$y))
 })
@@ -32,15 +33,16 @@ test_that("dependent params, but no focussing", {
 
   ps = makeParamSet(
     makeDiscreteParam("foo", values = c("a", "b")),
-    makeNumericParam("x0", lower=3, upper=4),
-    makeNumericParam("x1", lower=-2, upper=2, requires=quote(foo == "a")),
-    makeDiscreteParam("x2", values=c("v1", "v2"), requires=quote(foo == "b"))
+    makeNumericParam("x0", lower = 3, upper = 4),
+    makeNumericParam("x1", lower = -2, upper = 2, requires = quote(foo == "a")),
+    makeDiscreteParam("x2", values = c("v1", "v2"), requires = quote(foo == "b"))
   )
 
   learner = makeLearner("regr.randomForest")
-  ctrl = makeMBOControl(init.design.points=20, iters=2, infill.opt="focussearch",
-    infill.opt.restarts=1, infill.opt.focussearch.maxit=1, infill.opt.focussearch.points=500)
-  or = mbo(f, ps, learner=learner, control=ctrl, show.info=FALSE)
+  ctrl = makeMBOControl(init.design.points = 20, iters = 2)
+  ctrl = setMBOControlInfill(ctrl, opt = "focussearch", opt.restarts = 1, opt.focussearch.maxit = 1, 
+    opt.focussearch.points = 500)
+  or = mbo(f, ps, learner = learner, control = ctrl, show.info = FALSE)
   expect_true(!is.na(or$y))
 })
 
@@ -58,28 +60,30 @@ test_that("complex param space, dependencies, focussing, restarts", {
   }
 
   ps = makeParamSet(
-    makeNumericParam("real1", lower=0, upper=1000),
-    makeIntegerParam("int1", lower=-100, upper=100),
-    makeNumericVectorParam("realVec", len=10, lower=-50, upper=50),
-    makeIntegerVectorParam("intVec", len=3, lower=0, upper=100),
-    makeNumericParam("real2", lower=-1, upper=1),
-    makeDiscreteParam("disc1", values=c("foo", "bar"), requires=quote(real2 < 0)),
-    makeNumericParam("real3", lower=-100, upper=100, requires=quote(real2 > 0)),
-    makeDiscreteParam("disc2", values=c("a", "b", "c")),
-    makeNumericParam("realA", lower=0, upper=100, requires=quote(disc2 == "a")),
-    makeIntegerParam("intA", lower=-100, upper=100, requires=quote(disc2 == "a")),
-    makeDiscreteParam("discA", values=c("m", "w"), requires=quote(disc2 == "a")),
-    makeNumericParam("realB", lower=-100, upper=100, requires=quote(disc2 == "b")),
-    makeDiscreteParam("discB", values=c("R", "NR"), requires=quote(disc2 == "b")),
-    makeNumericParam("realBR", lower=0, upper=2*pi,
+    makeNumericParam("real1", lower = 0, upper = 1000),
+    makeIntegerParam("int1", lower = -100, upper = 100),
+    makeNumericVectorParam("realVec", len = 10, lower = -50, upper = 50),
+    makeIntegerVectorParam("intVec", len = 3, lower = 0, upper = 100),
+    makeNumericParam("real2", lower = -1, upper = 1),
+    makeDiscreteParam("disc1", values = c("foo", "bar"), requires = quote(real2 < 0)),
+    makeNumericParam("real3", lower = -100, upper = 100, requires = quote(real2 > 0)),
+    makeDiscreteParam("disc2", values = c("a", "b", "c")),
+    makeNumericParam("realA", lower = 0, upper = 100, requires = quote(disc2 == "a")),
+    makeIntegerParam("intA", lower = -100, upper = 100, requires = quote(disc2 == "a")),
+    makeDiscreteParam("discA", values = c("m", "w"), requires = quote(disc2 == "a")),
+    makeNumericParam("realB", lower = -100, upper=100, requires = quote(disc2 == "b")),
+    makeDiscreteParam("discB", values = c("R", "NR"), requires = quote(disc2 == "b")),
+    makeNumericParam("realBR", lower = 0, upper = 2*pi,
       requires=quote(identical(discB, "R") && identical(disc2, "b"))),
-    makeNumericParam("realBNR", lower=0, upper=2*pi,
+    makeNumericParam("realBNR", lower = 0, upper = 2*pi,
       requires=quote(identical(discB, "NR") && identical(disc2, "b")))
   )
 
-  learner = makeLearner("regr.randomForest", predict.type="se")
-  ctrl = makeMBOControl(init.design.points=20, iters=2, infill.crit="ei", infill.opt="focussearch",
-    infill.opt.restarts=2L, infill.opt.focussearch.maxit=2L, infill.opt.focussearch.points=100)
+  ctrl = makeMBOControl(init.design.points = 20, iters = 2)
+  ctrl = setMBOControlInfill(ctrl, crit="ei", opt = "focussearch",
+    opt.restarts = 2L, opt.focussearch.maxit = 2L, opt.focussearch.points = 100)
+  learner = makeLearner("regr.randomForest", predict.type = "se")
+
   or = mbo(f, ps, learner=learner, control=ctrl, show.info=FALSE)
   expect_true(!is.na(or$y))
 })

@@ -5,25 +5,9 @@
 \title{Creates a control object for MBO optimization.}
 \usage{
 makeMBOControl(number.of.targets = 1L, minimize = rep(TRUE,
-  number.of.targets), multicrit.method = "parego", noisy = FALSE,
-  init.design.points = 20L, init.design.fun = maximinLHS,
-  init.design.args = list(), iters = 10L, propose.points = 1L,
-  infill.crit = "mean", infill.crit.lcb.lambda = 1,
-  infill.opt = "focussearch", infill.opt.restarts = 1L,
-  infill.opt.focussearch.maxit = 5L, infill.opt.focussearch.points = 10000L,
-  infill.opt.cmaes.control = list(), infill.opt.ea.maxit = 500L,
-  infill.opt.ea.mu = 10L, infill.opt.ea.sbx.eta = 15,
-  infill.opt.ea.sbx.p = 0.5, infill.opt.ea.pm.eta = 15,
-  infill.opt.ea.pm.p = 0.5, infill.opt.ea.lambda = 1L,
-  feature.impute = "up", multipoint.method = "lcb",
-  multipoint.multicrit.objective = "ei.dist",
-  multipoint.multicrit.dist = "nearest.better",
-  multipoint.multicrit.selection = "hypervolume",
-  multipoint.multicrit.maxit = 100L, multipoint.multicrit.sbx.eta = 15,
-  multipoint.multicrit.sbx.p = 1, multipoint.multicrit.pm.eta = 15,
-  multipoint.multicrit.pm.p = 1, parego.s, parego.rho = 0.05,
-  parego.use.margin.points = rep(FALSE, number.of.targets),
-  parego.sample.more.weights = 5L, multiFid.control = NULL,
+  number.of.targets), noisy = FALSE, init.design.points = 20L,
+  init.design.fun = maximinLHS, init.design.args = list(), iters = 10L,
+  propose.points = 1L, feature.impute = "up", multiFid.control = NULL,
   final.method = "best.true.y", final.evals = 0L, y.name = "y",
   impute.y.fun = NULL, suppress.eval.errors = TRUE,
   save.on.disk.at = iters + 1, save.file.path = tempfile(pattern =
@@ -45,10 +29,6 @@ Default is \code{FALSE}.}
 \item{number.of.targets}{[\code{integer(1)}]\cr
 How many target functions does the function have? Greater than one for
 multicriteria optimization, default ist 1.}
-
-\item{multicrit.method}{[\code{character(1)}]\cr
-Which multicrit method should be used? At the moment only parego is
-supported, which is also the default.}
 
 \item{init.design.points}{[\code{integer(1)}]\cr
 Number of points in inital design.
@@ -75,174 +55,11 @@ Default is 10.}
 Number of proposed / really evaluated points each iteration.
 Default is 1.}
 
-\item{infill.crit}{[\code{character(1)}]\cr
-How should infill points be rated. Possible parameter values are:
-\dQuote{mean}: Mean response.
-\dQuote{ei}: Expected improvement.
-\dQuote{aei}: Augmented expected improvement.
-\dQuote{lcb}: Lower confidence bound.
-\dQuote{multiFid}: Multifidelity: Expected improvement on different levels of the perfomance parameter defined in the \code{MBOMultiFidControl}.
-Alternatively, you may pass a function name as string.}
-
-\item{infill.crit.lcb.lambda}{[\code{numeric(1)}]\cr
-Lambda parameter for lower confidence bound infill criterion.
-Only used if \code{infill.crit == "lcb"}, ignored otherwise.
-Default is 1.}
-
-\item{infill.opt}{[\code{character(1)}]\cr
-How should SINGLE points be proposed by using the surrogate model. Possible values are:
-\dQuote{focussearch}: In several iteration steps the parameter space is
-focused on an especial promising region according to infill criterion.
-\dQuote{cmaes}: Use CMAES to optimize infill criterion. If all CMAES runs fail, a random point is generated
-instead and a warning informs about it.
-\dQuote{ea}: Use an (mu+1) EA to optimize infill criterion.
-Default is \dQuote{focussearch}.
-Alternatively, you may pass a function name as string.}
-
-\item{infill.opt.restarts}{[\code{integer(1)}]\cr
-Number of independent restarts for optimizer of infill criterion.
-If \code{infill.opt == "cmaes"} the first start point for the optimizer is always the
-currently best point in the design of already visited points.
-Subsequent restarts are started at random points.
-Default is 1.}
-
-\item{infill.opt.focussearch.maxit}{[\code{integer(1)}]\cr
-For \code{infill.opt = "focussearch"}:
-Number of iteration to shrink local focus.
-Default is 5.}
-
-\item{infill.opt.focussearch.points}{[\code{integer(1)}]\cr
-For \code{infill.opt = "focussearch"}:
-Number of points in each iteration of the focus search optimizer.
-Default is 10000.}
-
-\item{infill.opt.cmaes.control}{[\code{list}]\cr
-For \code{infill.opt = "cmaes"}:
-Control argument for cmaes optimizer.
-Default is empty list.}
-
-\item{infill.opt.ea.maxit}{[\code{integer(1)}]\cr
-For \code{infill.opt = "ea"}:
-Number of iterations / generations of EA.
-Default is 500.}
-
-\item{infill.opt.ea.mu}{[\code{integer(1)}]\cr
-For \code{infill.opt = "ea"}:
-Population size of EA.
-Default is 10.}
-
-\item{infill.opt.ea.pm.eta}{[\code{numeric(1)}]\cr
-For \code{infill.opt = "ea"}:
-Distance parameter of mutation distribution, see \code{\link[emoa]{pm_operator}}.
-Default is 15.}
-
-\item{infill.opt.ea.pm.p}{[\code{numeric(1)}]\cr
-For \code{infill.opt = "ea"}:
-Probability of 1-point mutation, see \code{\link[emoa]{pm_operator}}.
-Default is 0.5.}
-
-\item{infill.opt.ea.sbx.eta}{[\code{numeric(1)}]\cr
-For \code{infill.opt = "ea"}:
-Distance parameter of crossover distribution , see \code{\link[emoa]{sbx_operator}}.
-Default is 15.}
-
-\item{infill.opt.ea.sbx.p}{[\code{numeric(1)}]\cr
-For \code{infill.opt = "ea"}:
-Probability of 1-point crossover, see \code{\link[emoa]{sbx_operator}}.
-Default is 0.5.}
-
-\item{infill.opt.ea.lambda}{[\code{numeric{1}}]\cr
-For \code{infill.opt.ea = "ea"}.
-Number of children generated in each generation.
-Default is 1.}
-
 \item{feature.impute}{[\code{character(1)}]\cr
 Method used for imputing features, which can / will be necessary for dependent parameters.
 Possible values are:
 \dQuote{up}: Numeric vars are imputed with 2 * upper bound.
 \dQuote{median}: Imputes NAs with median and add logical is.na variable.}
-
-\item{multipoint.method}{[\code{character(1)}]\cr
-Method used for proposal of multiple infill points, for parallel batch evaluation.
-Possible values are:
-\dQuote{lcb}: Proposes points by optimizing the lower confidence bound \dQuote{lcb} criterion,
-\code{propose.points} times. Each lambda value for \dQuote{lcb} is drawn randomly from an
-exp(1)-distribution, so do not define \code{infill.opt.lcb.lambda}.
-The optimizer for each proposal is configured in the same way as for the single point case,
-i.e., by specifying \code{infill.opt} and related stuff.
-\dQuote{multicrit}: Proposes points by evolutionary multicriteria optimization.
-The EA is a (mu+1) type of algorithm and runs for \code{multipoint.multicrit.maxit} generations.
-The population size is set to \code{propose.points}.
-The selection criterion is \code{multipoint.multicrit.selection}.
-   \dQuote{cl}: Proposes points by constant liar strategie.
-   Only meaningfull if \code{infill.crit == "lcb"}
-In the first step the kriging model is fitted based on the real data and the best point is calculated according to the regular EI-criterion.
-Then, the function value of the best point is simply guessed by the worst seen function evaluation.
-This lie is used to update the model in order to propose the subsequent point.
-The procedure is applied until the number of best points achieves \code{propose.points}.
-Default is \code{lcb}}
-
-\item{multipoint.multicrit.objective}{[\code{character(1)}]\cr
-Objectives which are optimized in multicrit approach.
-Possible values are: \dQuote{mean.dist}, \dQuote{ei.dist}, \dQuote{mean.se}, \dQuote{mean.se.dist}.
-Default is \dQuote{ei.dist}.}
-
-\item{multipoint.multicrit.dist}{[\code{character(1)}]\cr
-Distance function used in multicrit EA.
-Possible values are: \dQuote{nearest.neigbor}, \dQuote{nearest.better}.
-Default is \dQuote{nearest.better}.}
-
-\item{multipoint.multicrit.selection}{[\code{character(1)}]\cr
-Method used for selecting 1 element for removal from the population
-in each iteration of the multicriteria EA.
-Possible values are:
-\dQuote{hypervolume}: Non-dominated sorting + hypervolume contribution.
-\dQuote{crowdingdist}: Non-dominated sorting + crowding distance based ranking.
-\dQuote{first}: Non-dominated sorting + first objective of \code{multipoint.multicrit.objective} as criterion.
-\dQuote{last}: Non-dominated sorting + last objective of \code{multipoint.multicrit.objective} as criterion.
-Default is \code{hypervolume}}
-
-\item{multipoint.multicrit.maxit}{[\code{character(1)}]\cr
-Number of generations for multicriteria EA.
-Default is 100.}
-
-\item{multipoint.multicrit.sbx.eta}{[\code{numeric(1)}]\cr
-Distance parameter of crossover distribution, see \code{\link[emoa]{sbx_operator}}.
-Default is 15.}
-
-\item{multipoint.multicrit.sbx.p}{[\code{numeric(1)}]\cr
-Probability of 1-point crossover, see \code{\link[emoa]{sbx_operator}}.
-Default is 1.}
-
-\item{multipoint.multicrit.pm.eta}{[\code{numeric(1)}]\cr
-Distance parameter of mutation distribution, see \code{\link[emoa]{pm_operator}}.
-Default is 15.}
-
-\item{multipoint.multicrit.pm.p}{[\code{numeric(1)}]\cr
-Probability of 1-point mutation, see \code{\link[emoa]{pm_operator}}.
-Default is 1}
-
-\item{parego.s}{[\code{integer(1)}]\cr
-Parameter of parego - controls the number of weighting vectors. The default
-depends on \code{number.of.targets} and leads to 100000 different possible
-weight vectors. The defaults for (2, 3, 4, 5, 6) dimensions are (100000,
-450, 75, 37, 23) and 10 for higher dimensions.}
-
-\item{parego.rho}{[\code{numeric(1)}]\cr
-Parameter of parego - factor for Tchebycheff function. Default 0.05 as
-suggested in parego paper.}
-
-\item{parego.sample.more.weights}{[\code{numeric(1)}]\cr
-In each iteration \code{parego.sample.more.weights} * \code{propose.points}
-are sampled and the weights with maximum distance to each other are chosen.
-Default is 1, if only 1 point is proposed each iteration, otherwise 5.}
-
-\item{parego.use.margin.points}{[\code{logical}]\cr
-For each target function: Should the weight vector (0, ..., 0, 1, 0, ..., 0),
-i.e. the weight vector with only 0 and a single 1 at the i.th position for
-the i.th target function, be drawn with probability 1? Number of TRUE entries
-must be less or equal to \code{propose.points}
-Default is not to do this.}
 
 \item{multiFid.control}{[\code{MBOmultiFidControl(1)}]\cr
 Necessary if \code{infill.crit = "multiFid"}.}
