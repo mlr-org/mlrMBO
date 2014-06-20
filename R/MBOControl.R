@@ -216,7 +216,7 @@
 #'   If \code{save.on.disk.at} is used, this is the name of the file where the data
 #'   will be saved. Default is a file named mboRun_XXXX.mboData in your current
 #'   working directory, where XXXX is a unique hexadecimal number with 11 digits.
-#' @param save.model.at [\code{integer}]\cr
+#' @param store.model.at [\code{integer}]\cr
 #'   Sequential optimization iterations when the model should be saved.
 #'   Iteration 0 is the model fit for the initial design, iters + 1 is a final
 #'   save containing the final results of the optimization. .
@@ -271,7 +271,7 @@ makeMBOControl = function(number.of.targets = 1L,
   suppress.eval.errors = TRUE,
   save.on.disk.at = iters + 1,
   save.file.path = tempfile(pattern = "mlrMBORun_", tmpdir = getwd(), fileext = ".mboData"),
-  save.model.at = iters,
+  store.model.at = iters,
   resample.at = integer(0), resample.desc = makeResampleDesc("CV", iter = 10), resample.measures = list(mse),
   on.learner.error = "warn", show.learner.output = FALSE,
   output.num.format = "%.3g"
@@ -391,8 +391,8 @@ makeMBOControl = function(number.of.targets = 1L,
   if (getOption("mlrMBO.debug.mode", default = FALSE))
     save.on.disk.at = NULL
   
-  save.model.at = convertIntegers(save.model.at)
-  checkArg(save.model.at, "integer", na.ok = FALSE, lower = 0L, upper = iters)
+  store.model.at = convertIntegers(store.model.at)
+  checkArg(store.model.at, "integer", na.ok = FALSE, lower = 0L, upper = iters)
   
   if (length(resample.at) > 0) {
     resample.at = convertIntegers(resample.at)
@@ -453,7 +453,7 @@ makeMBOControl = function(number.of.targets = 1L,
     suppress.eval.errors = suppress.eval.errors,
     save.on.disk.at = save.on.disk.at,
     save.file.path = save.file.path,
-    save.model.at = save.model.at,
+    store.model.at = store.model.at,
     resample.desc = resample.desc,
     resample.at = resample.at,
     resample.measures = resample.measures,

@@ -45,7 +45,7 @@ mboSingleObj = function(fun, par.set, design = NULL, learner, control, show.info
     # generate initial design
     generateMBODesign(design, fun, par.set, opt.path, control, show.info, oldopts, more.args,
       extras = getExtras(crit.vals = rep(NA_real_, ninit), model.fail = NA_character_, lambdas = rep(NA_real_, ninit)))
-    models = namedList(control$save.model.at)
+    models = namedList(control$store.model.at)
     resample.vals = namedList(control$resample.at)
   } else {
     if (!is.null(continue$mbo.result)) {
@@ -63,7 +63,7 @@ mboSingleObj = function(fun, par.set, design = NULL, learner, control, show.info
 
   # save some stuff for iter 0, not necessary if we continue
   if (is.null(continue)) {
-    if (0L %in% control$save.model.at)
+    if (0L %in% control$store.model.at)
       models[["0"]] = model
     if (0L %in% control$resample.model.at) {
       r = resample(learner, rt, control$resample.desc, measures = control$resample.measures)
@@ -87,7 +87,7 @@ mboSingleObj = function(fun, par.set, design = NULL, learner, control, show.info
 
     rt = makeMBOSingleObjTask(par.set, opt.path, control)
     model = train(learner, rt)
-    if (loop %in% control$save.model.at)
+    if (loop %in% control$store.model.at)
       models[[as.character(loop)]] = model
     if (loop %in% control$resample.at) {
       r = resample(learner, rt, control$resample.desc, measures = control$resample.measures)

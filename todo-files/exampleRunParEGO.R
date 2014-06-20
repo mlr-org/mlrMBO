@@ -14,7 +14,7 @@ exampleRunParEGO = function(fun, par.set, learner, control, show.info = TRUE,
   if (ny >= 3L)
     stopf("exampleRun can only be applied for functions with at most 2 objectives, but you have %iD", ny)
 
-  control$save.model.at = 1:control$iters
+  control$store.model.at = 1:control$iters
   names.x = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
   names.y = control$y.name
 

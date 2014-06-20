@@ -39,7 +39,7 @@ mboParEGO = function(fun, par.set, design = NULL, learner, control, show.info = 
     weight.mat = matrix(NA, nrow = ninit, ncol = control$number.of.targets)
     generateMBODesign(design, fun, par.set, opt.path, control, show.info, oldopts, more.args,
       extras = getExtras(rep(NA, ninit), model.fail = NA_character_, weight.mat))
-    models = namedList(control$save.model.at)
+    models = namedList(control$store.model.at)
     saveStateOnDisk(0L, fun, learner, par.set, opt.path, control, show.info, more.args, models, NULL, NULL)
   } else {
     if (!is.null(continue$mbo.result)) {
@@ -61,7 +61,7 @@ mboParEGO = function(fun, par.set, design = NULL, learner, control, show.info = 
     # scalarize + train + propose
     scalar = makeScalarTasks(par.set, opt.path, control, all.possible.weights)
     new.mods = lapply(scalar$tasks, train, learner = learner)
-    if (loop %in% control$save.model.at)
+    if (loop %in% control$store.model.at)
       models[[as.character(loop)]] = new.mods
     props = lapply(new.mods, proposePoints, par.set = par.set,
       control = ctrl2, opt.path = opt.path)

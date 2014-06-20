@@ -11,7 +11,7 @@ test_that("mbo works with rf", {
   y  = sapply(1:nrow(des), function(i) f(as.list(des[i,])))
   des$y = y
   learner = makeLearner("regr.randomForest")
-  ctrl = makeMBOControl(iters = 5, infill.opt.focussearch.points = 100, save.model.at = c(0,5))
+  ctrl = makeMBOControl(iters = 5, infill.opt.focussearch.points = 100, store.model.at = c(0,5))
   or = mbo(f, ps, des, learner, ctrl, show.info = FALSE)
   expect_true(!is.na(or$y))
   expect_equal(or$y, f(or$x))
