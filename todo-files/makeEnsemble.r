@@ -1,6 +1,6 @@
-makeRLEnsemble = function(id="RLEnsemble", base.learners) {
-  checkArg(id, "character", len=1L, na.o=FALSE)
-  checkArg(base.learners, "list")
+makeRLEnsemble = function(id = "RLEnsemble", base.learners) {
+  assertCharacter(id, "character", len = 1L, any.missing = FALSE)
+  assertList(base.learners)
   checkListElementClass(base.learners, "Learner")
   types = unique(extractSubList(base.learners, "type"))
   if (!identical(types, "regr"))

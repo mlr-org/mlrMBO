@@ -13,7 +13,7 @@ checkLearner = function(learner, par.set, control, ...) {
       learner = makeLearner("regr.km", covtype = "matern5_2", predict.type = "se",
         nugget.estim = control$noisy, ...)
   } else {
-    checkArg(learner, "Learner")
+    assertClass(learner, "Learner")
   }
   # FIXME: I am unsure wether we should do this, but otherwise RF sucks
   # if it is a good idea it is not not general enuff

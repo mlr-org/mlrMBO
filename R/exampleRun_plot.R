@@ -76,17 +76,17 @@ plot.MBOExampleRun = function(x, iters, pause=TRUE,
     iters = seq_len(niters)
   } else {
     iters = convertIntegers(iters)
-    checkArg(iters, "integer", min.len=1L, lower=1, upper=niters, na.ok=FALSE)
+    assertInteger(iters, min.len = 1L, lower = 1, upper = niters, any.missing = FALSE)
   }
-  checkArg(pause, "logical", len=1L, na.ok=FALSE)
-  checkArg(densregion, "logical", len=1L, na.ok=FALSE)
-  checkArg(se.factor1, "numeric", len=1L, na.ok=FALSE)
-  checkArg(se.factor2, "numeric", len=1L, na.ok=FALSE)
+  assertLogical(pause, len = 1L, any.missing = FALSE)
+  assertLogical(densregion, len = 1L, any.missing = FALSE)
+  assertNumber(se.factor1, na.ok = FALSE)
+  assertNumber(se.factor2, na.ok = FALSE)
   #FIXME implement and document meaning for xlim, ylim for 2D plots
   if (!missing(xlim))
-    checkArg(xlim, "numeric", len=2L, na.ok=FALSE)
+    assertNumeric(xlim, len = 2L, any.missing = FALSE)
   if (!missing(ylim))
-    checkArg(ylim, "numeric", len=2L, na.ok=FALSE)
+    assertNumeric(ylim, len = 2L, any.missing = FALSE)
   
   if (x$n.params == 1L) {
     if (x$par.types %in% c("numeric", "numericvector")) {

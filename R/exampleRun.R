@@ -62,19 +62,19 @@
 exampleRun = function(fun, par.set, global.opt = NA_real_, learner, control,
   points.per.dim = 50, noisy.evals = 10, show.info = TRUE, ...) {
 
-  checkArg(fun, "function")
-  checkArg(control, "MBOControl")
+  assertFunction(fun)
+  assertClass(control, "MBOControl")
 
   if (missing(par.set) && is_soo_function("soo_function")) {
     par.set = makeNumericParamSet(lower = lower_bounds(fun), upper = upper_bounds(fun))
   } else {
-    checkArg(par.set, "ParamSet")
+    assertClass(par.set, "ParamSet")
   }
 
   if (missing(global.opt) && is_soo_function(fun)) {
     global.opt = global_minimum(fun)$val
   } else {
-    checkArg(global.opt, "numeric", len = 1L, na.ok = TRUE)
+    assertNumber(global.opt, na.ok = TRUE)
   }
 
   par.types = getParamTypes(par.set)
@@ -83,10 +83,10 @@ exampleRun = function(fun, par.set, global.opt = NA_real_, learner, control,
   learner = checkLearner(learner, par.set, control, ...)
 
   points.per.dim = convertInteger(points.per.dim)
-  checkArg(points.per.dim, "integer", len = 1L, na.ok = FALSE, lower = 1L)
+  assertCount(points.per.dim, na.ok = FALSE, positive = TRUE)
   noisy.evals = convertInteger(noisy.evals)
-  checkArg(noisy.evals, "integer", len = 1L, na.ok = FALSE, lower = 1L)
-  checkArg(show.info, "logical", len = 1L, na.ok = FALSE)
+  assertCount(noisy.evals, na.ok = FALSE, positive = TRUE)
+  assertLogical(show.info, len = 1L, any.missing = FALSE)
   n.params = sum(getParamLengths(par.set))
 
   if (n.params >= 3L) {

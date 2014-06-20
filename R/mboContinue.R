@@ -10,7 +10,7 @@
 #' @return See \code{\link{mbo}}.
 #' @export
 mboContinue = function(file) {
-  checkArg(file, "character", len = 1)
+  assertCharacter(file, len = 1L)
   if (!file.exists(file)) {
     stopf("Specified file does not exist.")
   }

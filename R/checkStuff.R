@@ -1,7 +1,7 @@
 # FIXME: add a correct check for dependent params / model
 # check whether the user selected valid options / combinations
 checkStuff = function(fun, par.set, design, learner, control) {
-  checkArg(fun, "function")
+  assertFunction(fun)
 
   #####  check params + learner #####
   if (any(sapply(par.set$pars, inherits, what = "LearnerParam")))

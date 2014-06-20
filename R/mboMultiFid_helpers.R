@@ -28,14 +28,14 @@ generateMBOMultiFidDesign = function(par.set, control){
 #' @return \code{MBOMultiFidControl}
 #' @export
 makeMBOMultiFidControl = function(fid.param, cor.grid.points = 10L, costs = NULL, force.last.level.evals = 10L){
-  checkArg(fid.param, "character", len = 1L)
-  checkArg(cor.grid.points, "integer", len = 1L)
+  assertCharacter(fid.param, len = 1L)
+  assertInt(cor.grid.points)
   if (is.null(costs)) {
     costs = function(cur, last) (last / cur)^2
   } else {
-    checkArg(costs, "function", formals = c("cur", "last"))
+    assertFunction(costs, args = c("cur", "last"))
   }
-  checkArg(force.last.level.evals, "integer", len = 1L)
+  assertInt(force.last.level.evals)
   structure(
     list(
       fid.param = fid.param,

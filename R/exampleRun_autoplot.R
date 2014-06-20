@@ -57,23 +57,23 @@
 #FIXME: what are they used for? Document!
 #' @return [\code{list}]. List containing separate ggplot plots for each iteration.
 #' @export
-autoplot.MBOExampleRun = function(object, iters, pause=TRUE, densregion=TRUE,
-  se.factor=1, xlim, ylim, point.size=3, line.size=1, trafo=NULL, ...) {
+autoplot.MBOExampleRun = function(object, iters, pause = TRUE, densregion = TRUE,
+  se.factor = 1, xlim, ylim, point.size = 3, line.size = 1, trafo = NULL, ...) {
 
   iters.max = object$control$iters
   if (missing(iters)) {
     iters = seq_len(iters.max)
   } else {
     iters = convertIntegers(iters)
-    checkArg(iters, "integer", min.len=1L, lower=1, upper=iters.max, na.ok=FALSE)
+    assertInteger(iters, min.len = 1L, lower = 1, upper = iters.max, any.missing = FALSE)
   }
-  checkArg(pause, "logical", len=1L, na.ok=FALSE)
-  checkArg(densregion, "logical", len=1L, na.ok=FALSE)
-  checkArg(se.factor, "numeric", len=1L, na.ok=FALSE)
+  assertLogical(pause, len = 1L, any.missing = FALSE)
+  assertLogical(densregion, len = 1L, any.missing = FALSE)
+  assertNumber(se.factor, na.ok = FALSE)
   if (!missing(xlim))
-    checkArg(xlim, "numeric", len=2L, na.ok=FALSE)
+    assertNumeric(xlim, len = 2L, any.missing = FALSE)
   if (!missing(ylim))
-    checkArg(ylim, "numeric", len=2L, na.ok=FALSE)
+    assertNumeric(ylim, len = 2L, any.missing = FALSE)
 
   n.params = object$n.params
   par.types = object$par.types
@@ -101,10 +101,10 @@ autoplot.MBOExampleRun = function(object, iters, pause=TRUE, densregion=TRUE,
 #   List of trafo functions with format that is expected by exampleRun plot functions.
 buildTrafoList = function(n.params, input.trafo) {
   if (n.params == 1) {
-    checkArg(names(input.trafo), subset=c("y", "crit"))
+    assertSubset(names(input.trafo), choices = c("y", "crit"))
     trafo.defaults = list("y" = NULL, "crit" = NULL)
   } else {
-    checkArg(names(input.trafo), subset=c("y", "yhat", "crit", "se"))
+    assertSubset(names(input.trafo), choices = c("y", "yhat", "crit", "se"))
     trafo.defaults = list("y" = NULL, "yhat" = NULL, "crit" = NULL, "se" = NULL)
   }
 
@@ -121,13 +121,10 @@ buildTrafoList = function(n.params, input.trafo) {
   } else {
     # otherwise check if all elements are of an appropriate type
     lapply(input.trafo, function(t)
-      if(!is.null(t)) checkArg(t, "MBOTrafoFunction")
+      if(!is.null(t)) assertClass(t, "MBOTrafoFunction")
     )
     trafo = trafo.defaults
     trafo[names(input.trafo)] = input.trafo
   }
   return(trafo)
 }
-
-
-#' Determines number of discrete parameters of

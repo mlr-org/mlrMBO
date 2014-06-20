@@ -1,14 +1,14 @@
 exampleRunParEGO = function(fun, par.set, learner, control, show.info = TRUE,
   nsga2.args = list(), ...) {
 
-  checkArg(fun, "function")
-  checkArg(control, "MBOControl")
-  checkArg(par.set, "ParamSet")
+  assertFunction(fun)
+  assertClass(control, "MBOControl")
+  assertClass(par.set, "ParamSet")
   par.types = getParamTypes(par.set)
 
   learner = checkLearner(learner, par.set, control, ...)
 
-  checkArg(show.info, "logical", len = 1L, na.ok = FALSE)
+  assertLogical(show.info, len = 1L, any.missing = FALSE)
   ny = control$number.of.targets
 
   if (ny >= 3L)
@@ -52,7 +52,7 @@ exampleRunParEGO = function(fun, par.set, learner, control, show.info = TRUE,
 
 autoplo = function(x, iters, pause = TRUE, y1lim = NULL, y2lim = NULL, points.per.dim, ...)  {
   points.per.dim = convertInteger(points.per.dim)
-  checkArg(points.per.dim, "integer", len = 1L, na.ok = FALSE, lower = 1L)
+  assertCount(points.per.dim, na.ok = FALSE, positive = TRUE)
 
   # extract information from example run object
   par.set = x$par.set
