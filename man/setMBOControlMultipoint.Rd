@@ -79,6 +79,9 @@ Default is 1.}
 \description{
 Extends mbo control object with options for multipoint proposal.
 }
+\note{
+See the other setMBOControl... functions and \code{makeMBOControl} for referenced arguments.
+}
 \seealso{
 makeMBOControl
 }

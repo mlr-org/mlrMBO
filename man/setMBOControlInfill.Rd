@@ -101,6 +101,9 @@ Default is 1.}
 \description{
 Extends mbo control object with infill criteria and infill optimizer options.
 }
+\note{
+See the other setMBOControl... functions and \code{makeMBOControl} for referenced arguments.
+}
 \seealso{
 makeMBOControl
 }

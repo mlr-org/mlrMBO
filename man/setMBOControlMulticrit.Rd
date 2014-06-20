@@ -43,6 +43,9 @@ Default is not to do this.}
 \description{
 Extends mbo control object with multi-criteria specific options.
 }
+\note{
+See the other setMBOControl... functions and \code{makeMBOControl} for referenced arguments.
+}
 \seealso{
 makeMBOControl
 }
