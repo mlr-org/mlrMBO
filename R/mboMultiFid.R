@@ -33,18 +33,14 @@
 #   \item{pareto.front [\code{matrix}]}{Pareto Front of all evaluated points.}
 #   \item{opt.path [\code{\link[ParamHelpers]{OptPath}}]}{Optimization path.}
 # FIXME EGO nach ego
-mboMultiFid = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, fid.param, cor.grid.points, more.args=list()) {
+mboMultiFid = function(fun, par.set, design=NULL, learner, control, show.info=TRUE, more.args=list()) {
   # save currently set options
   oldopts = list(
     ole = getOption("mlr.on.learner.error"),
     slo = getOption("mlr.show.learner.output")
   )
   
-  if (is.null(control$multiFid.control$costs)) {
-    costs = function(cur, last) (last / cur)^2
-  } else {
-    costs = control$multiFid.control$costs
-  }
+  costs = control$multifid.costs
   
   # generate initial design
   # FIXME mbo.design
@@ -60,7 +56,7 @@ mboMultiFid = function(fun, par.set, design=NULL, learner, control, show.info=TR
   
   times = mbo.design$times
   
-  mf.learner = makeMultiFidLearner(surrogat.learner = learner, par.set = par.set, fid.param.id = control$multiFid.control$fid.param)
+  mf.learner = makeMultiFidLearner(surrogat.learner = learner, par.set = par.set, control = control)
   compound.model = train.MultiFidLearner(obj = mf.learner, task = convertOptPathToTask(opt.path))
   
   budget = control$iters
@@ -68,26 +64,25 @@ mboMultiFid = function(fun, par.set, design=NULL, learner, control, show.info=TR
   # local needed functions
   # calculate cost relation between model w/ par.val and last model
   calcModelCost = function(par.val) {
-    costs(par.val, unlist(tail(par.set$pars[[control$multiFid.control$fid.param]]$values, 1L)))
+    costs(par.val, tail(control$multifid.lvls, 1))
   }
   
   #subsets a data.frame to a given value of the fid.param
   subsetOnPar = function(data, par.val){
-    data = subset(data, data[[control$multiFid.control$fid.param]] == par.val)
+    data = subset(data, data[[control$multifid.param]] == par.val)
   }
   
   # estimate process noise tau of real process belonging to par.val, we use residual sd here
   calcModelSD = function(par.val) {
     newdata = convertOptPathToDesign(opt.path)
     newdata = subsetOnPar(newdata, par.val)
-    newdata[[control$multiFid.control$fid.param]] = factor(newdata[[control$multiFid.control$fid.param]])
     sqrt(estimateResidualVariance(compound.model, data = newdata, target = "y"))
   }
   
   # calculate GLOBAL correlation between model w/ par.val and last model. currently rank correlation.
   calcModelCor = function(par.val, grid) {
-    grid1 = grid; grid1[[control$multiFid.control$fid.param]] = par.val
-    grid2 = grid; grid2[[control$multiFid.control$fid.param]] = unlist(tail(par.set$pars[[control$multiFid.control$fid.param]]$values, 1L))
+    grid1 = grid; grid1[[control$multifid.param]] = par.val
+    grid2 = grid; grid2[[control$multifid.param]] = tail(control$multifid.lvls, 1)
     p1 = predict(compound.model, newdata=grid1)$data$response
     p2 = predict(compound.model, newdata=grid2)$data$response
     # check whether vectors are constant, cor = NA then
@@ -97,8 +92,8 @@ mboMultiFid = function(fun, par.set, design=NULL, learner, control, show.info=TR
       max(cor(p1, p2, method="spearman"), 0)
   }
   
-  par.set.lower = par.set; par.set.lower$pars = Filter(function(p) p$id %nin% control$multiFid.control$fid.param, par.set$pars)
-  corgrid = generateDesign(n=control$multiFid.control$cor.grid.points, par.set=par.set.lower)
+  par.set.lower = parSetWithout(par.set, control$multifid.param)
+  corgrid = generateDesign(n=control$multifid.cor.grid.points, par.set=par.set.lower)
   
   # do the mbo magic
   for(loop in seq_len(budget)) {
@@ -106,24 +101,24 @@ mboMultiFid = function(fun, par.set, design=NULL, learner, control, show.info=TR
       messagef("loop=%i", loop)
     
     # evaluate stuff we need for MEI
-    models.sd = vnapply(par.set$pars[[control$multiFid.control$fid.param]]$values, calcModelSD)
-    models.cor = vnapply(par.set$pars[[control$multiFid.control$fid.param]]$values, calcModelCor, grid=corgrid)
-    models.cost = vnapply(par.set$pars[[control$multiFid.control$fid.param]]$values, calcModelCost)
+    models.sd = vnapply(control$multifid.lvls, calcModelSD)
+    models.cor = vnapply(control$multifid.lvls, calcModelCor, grid=corgrid)
+    models.cost = vnapply(control$multifid.lvls, calcModelCost)
     messagef("Estimated cor to last model = %s", collapse(sprintf("%.3g", models.cor), ", "))
     messagef("Estimated residual var = %s", collapse(sprintf("%.3g", models.sd), ", "))
     
     # every couple of levels we only optimize the last one
     # to ensure that we update that model and see what happens here
-    if (loop %% control$multiFid.control$force.last.level.evals == 0)
-      avail.pars = tail(par.set$pars[[control$multiFid.control$fid.param]]$values, 1L)
+    if (loop %% control$multifid.force.last.level.evals == 0)
+      avail.pars = tail(control$multifid.lvls, 1L)
     else
-      avail.pars = par.set$pars[[control$multiFid.control$fid.param]]$values
+      avail.pars = control$multifid.lvls
     
     prop = proposePoints(model = compound.model, par.set = par.set, control = control, opt.path = opt.path, model.cor = models.cor, model.cost = models.cost, model.sd = models.sd)
-    #xs = dfRowsToList(prop$prop.points, par.set)
-    evalProposedPoints(loop = loop, prop.points = prop$prop.points, par.set = par.set, opt.path = opt.path, control = control, fun = objfun, show.info = show.info, oldopts = oldopts, more.args = more.args, extras = NULL)
+    prop$prop.points = expandDesign(design = prop$porp.points, control = control)
+    evalProposedPoints(loop = loop, prop.points = prop$porp.points, par.set = par.set, opt.path = opt.path, control = control, fun = objfun, show.info = show.info, oldopts = oldopts, more.args = more.args, extras = NULL)
     #evals = evalTargetFun(fun = objfun, par.set = par.set, dobs = loop, xs = xs, opt.path = opt.path, control = control, show.info = show.info, oldopts = oldopts, more.args = more.args, extras = NULL)
-    compound.model = train.MultiFidModel(compound.model, task = convertOptPathToTask(opt.path))
+    compound.model = update.MultiFidModel(compound.model, task = convertOptPathToTask(opt.path))
   }
   
   # return complete designs for all levels

@@ -38,9 +38,7 @@ mbo = function(fun, par.set, design = NULL, learner, control, show.info = TRUE, 
   # Call the correct mbo function
     if (control$infill.crit == "multiFid") {
     mboMultiFid(fun = fun, par.set = par.set, design = design,
-      learner = learner, control = control, show.info = show.info, 
-      fid.param = control$multiFid.fid.param, cor.grid.points  = control$multiFid.cor.grid.points,
-      more.args = more.args)
+      learner = learner, control = control, show.info = show.info, more.args = more.args)
   } else {
     if (control$number.of.targets == 1L)
       mboSingleObj(fun = fun, par.set = par.set, design = design,

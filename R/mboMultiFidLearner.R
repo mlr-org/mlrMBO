@@ -1,11 +1,10 @@
-makeMultiFidLearner = function(surrogat.learner, par.set, fid.param.id) {
-  fid.param = par.set$pars[[fid.param.id]] #set + string = extract param
-  fid.vals = fid.param$values
-  lrn.list = replicate(length(fid.vals), surrogat.learner, simplify = FALSE)
-  names(lrn.list) = fid.vals
+makeMultiFidLearner = function(surrogat.learner, par.set, control) {
+  lrn.list = replicate(length(control$multifid.lvls), surrogat.learner, simplify = FALSE)
+  names(lrn.list) = control$multifid.lvls
   makeS3Obj(c("MultiFidLearner", "Learner"),
     learners = lrn.list,
-    fid.param = fid.param
+    fid.param = par.set$pars[[control$multifid.param]],
+    fid.lvls = control$multifid.lvls
   )
 }
 
@@ -15,16 +14,16 @@ train.MultiFidLearner = function(obj, task) {
   # some shortcuts
   learner = obj
   fid.par = learner$fid.param
-  fid.vals = as.numeric(fid.par$values)
-  fid.ns = names(fid.par$values)
+  fid.lvls = learner$fid.lvls
+  fid.ns = as.character(fid.lvls)
   data = getTaskData(task)
   cns = colnames(data)
 
-  if (!all(learner$fid.param$values %in% data[[learner$fid.param$id]]))
-    stopf("MultiFid model has to be initialized on all values of '%s'", learner$fid.param)
+  if (!all(fid.lvls %in% data[[fid.par$id]]))
+    stopf("MultiFid model has to be initialized on all values of '%s'", paste(fid.lvls, collapse=", "))
   models = namedList(fid.ns, NULL) #init named empty model list
   v.prev = NULL
-  for (v in fid.vals) {
+  for (v in fid.lvls) {
     r.inds = which(data[[fid.par$id]] == v)
     c.names = setdiff(cns, fid.par$id)
     sub.task = subsetTask(task, subset = r.inds, features = c.names)
@@ -35,9 +34,8 @@ train.MultiFidLearner = function(obj, task) {
     } else {
       #train deltas
       #calculcate surrogate values of one level below (usage of predict.MultiFid would be awsome here)
-      preds = lapply(models[learner$fid.param$values < v], predict, task = sub.task)
-      # FIXME: bad code, update BBmisc
-      preds.response = extractSubList(extractSubList(preds, element = "data", simplify = FALSE), element = "response")
+      preds = lapply(models[fid.lvls < v], predict, task = sub.task)
+      preds.response = extractSubList(xs = preds, element = c("data", "response"), simplify = TRUE)
       traindata = getTaskData(sub.task)
       traindata$y = traindata$y - rowSums(preds.response)
       sub.task = mlr:::changeData(task = sub.task, data = traindata)
@@ -49,8 +47,7 @@ train.MultiFidLearner = function(obj, task) {
   makeS3Obj(c("MultiFidModel","WrappedModel"), learner = learner, models = models)
 }
 
-# FIXME: updateMultiFidModel a better name?
-train.MultiFidModel = function(obj, task) {
+update.MultiFidModel = function(obj, task) {
   # FIXME: implement updating mechanism here later!
   learner = obj$learner
   train.MultiFidLearner(learner, task)
@@ -59,17 +56,17 @@ train.MultiFidModel = function(obj, task) {
 predict.MultiFidModel = function(model, task, newdata, ...) {
   # some shortcuts
   fid.par = model$learner$fid.param
-  fid.vals = as.numeric(fid.par$values)
-  fid.ns = names(fid.par$values)
+  fid.lvls = model$learner$fid.lvls
+  fid.ns = as.character(fid.lvls)
 
   # we calculate a lot of unneccessary things here (for now)
-  #e ignore the given perf.val in (newdata, task) and calcuate it for all
+  # we ignore the given perf.val in (newdata, task) and calcuate it for all
   if (!missing(newdata)) {
-    nd.fid.vals = newdata[[fid.par$id]]
+    nd.fid.lvls = newdata[[fid.par$id]]
     newdata = newdata[,  setdiff(colnames(newdata) , fid.par$id), drop = FALSE]
     preds = lapply(model$models, mlr:::predict.WrappedModel, newdata = newdata)
   } else {
-    nd.fid.vals = getTaskData(task)[[fid.par$id]]
+    nd.fid.lvls = getTaskData(task)[[fid.par$id]]
     task = dropFeatures(task, fid.par$id)
     preds = lapply(model$models, mlr:::predict.WrappedModel, task = task)
   }
@@ -77,8 +74,8 @@ predict.MultiFidModel = function(model, task, newdata, ...) {
   #calculate means + ses for each perf.val step
   #calculate means for each perf.val step
   getByVal = function(el) {
-    res = lapply(fid.vals, function(v) {
-      els = lapply(preds[fid.vals <= v], function(x) x$data[[el]])
+    res = lapply(fid.lvls, function(v) {
+      els = lapply(preds[fid.lvls <= v], function(x) x$data[[el]])
       Reduce('+', els)
     })
     setNames(res, fid.ns)
@@ -88,11 +85,11 @@ predict.MultiFidModel = function(model, task, newdata, ...) {
 
   #FIXME: the following lines look suspicious. looks MUCH too complicated. what do we do here?
   #extract the values according to the perf.val value in the given (newdata,task) and place them in the correct order
-  mean = sapply(seq_along(nd.fid.vals), function(i) {
-    means.by.val[[as.character(nd.fid.vals[i])]][i]
+  mean = sapply(seq_along(nd.fid.lvls), function(i) {
+    means.by.val[[as.character(nd.fid.lvls[i])]][i]
   })
-  se = sapply(seq_along(nd.fid.vals), function(i) {
-    ses.by.val[[as.character(nd.fid.vals[i])]][i]
+  se = sapply(seq_along(nd.fid.lvls), function(i) {
+    ses.by.val[[as.character(nd.fid.lvls[i])]][i]
   })
   p = preds[[1L]]
   p$data$response = mean
