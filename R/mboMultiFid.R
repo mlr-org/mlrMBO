@@ -114,9 +114,12 @@ mboMultiFid = function(fun, par.set, design=NULL, learner, control, show.info=TR
     else
       avail.pars = control$multifid.lvls
     
-    prop = proposePoints(model = compound.model, par.set = par.set, control = control, opt.path = opt.path, model.cor = models.cor, model.cost = models.cost, model.sd = models.sd)
-    prop$prop.points = expandDesign(design = prop$porp.points, control = control)
-    evalProposedPoints(loop = loop, prop.points = prop$porp.points, par.set = par.set, opt.path = opt.path, control = control, fun = objfun, show.info = show.info, oldopts = oldopts, more.args = more.args, extras = NULL)
+    prop = proposePoints.MultiFid(model = compound.model, par.set = par.set, control = control, opt.path = opt.path, model.cor = models.cor, model.cost = models.cost, model.sd = models.sd)
+    infill.vals = extractSubList(prop, "crit.vals")
+    messagef("Infill vals = %s", collapse(sprintf("%.3g", infill.vals), ", "))
+    # we still technically minimize
+    best.points = prop[[getMinIndex(infill.vals)]]$prop.points
+    evalProposedPoints(loop = loop, prop.points = best.points, par.set = par.set, opt.path = opt.path, control = control, fun = objfun, show.info = show.info, oldopts = oldopts, more.args = more.args, extras = NULL)
     #evals = evalTargetFun(fun = objfun, par.set = par.set, dobs = loop, xs = xs, opt.path = opt.path, control = control, show.info = show.info, oldopts = oldopts, more.args = more.args, extras = NULL)
     compound.model = update.MultiFidModel(compound.model, task = convertOptPathToTask(opt.path))
   }

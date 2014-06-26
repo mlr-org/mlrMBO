@@ -19,6 +19,15 @@ convertOptPathToDesign = function(opt.path, drop=TRUE) {
     d
 }
 
+proposePoints.MultiFid = function(model, par.set, control, opt.path, model.cor, model.cost, model.sd){
+  lapply(control$multifid.lvls, function(v) {
+    this.par.set = par.set
+    this.par.set$pars[[control$multifid.param]]$lower = v
+    this.par.set$pars[[control$multifid.param]]$upper = v
+    proposePoints(model = model, par.set = this.par.set, control = control, opt.path = opt.path, model.cor = model.cor, model.cost = model.cost, model.sd = model.sd)
+  })
+}
+
 convertOptPathToTask = function(opt.path, control, drop=TRUE) {
   d = convertOptPathToDesign(opt.path)
   makeRegrTask(id="surrogate", data=d, target="y")

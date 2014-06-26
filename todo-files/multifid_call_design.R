@@ -33,7 +33,7 @@ makeObjFun = function(lrn, task, rsm = makeResampleDesc(method = "Holdout", spli
 }
 objfun = makeObjFun(lrn2, task)
 control = makeMBOControl(
-  init.design.points = 9L, #distributed over the different levels
+  init.design.points = 15L, #distributed over the different levels
   init.design.fun = maximinLHS,
   iters = 10,
   on.learner.error = "stop",
