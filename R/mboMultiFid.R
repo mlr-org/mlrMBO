@@ -92,8 +92,9 @@ mboMultiFid = function(fun, par.set, design=NULL, learner, control, show.info=TR
       max(cor(p1, p2, method="spearman"), 0)
   }
   
-  par.set.lower = parSetWithout(par.set, control$multifid.param)
-  corgrid = generateDesign(n=control$multifid.cor.grid.points, par.set=par.set.lower)
+  corgrid = generateDesign(n=control$multifid.cor.grid.points, par.set=parSetWithout(par.set, control$multifid.param))
+  
+  plot.data = list()
   
   # do the mbo magic
   for(loop in seq_len(budget)) {
@@ -101,11 +102,11 @@ mboMultiFid = function(fun, par.set, design=NULL, learner, control, show.info=TR
       messagef("loop=%i", loop)
     
     # evaluate stuff we need for MEI
-    models.sd = vnapply(control$multifid.lvls, calcModelSD)
-    models.cor = vnapply(control$multifid.lvls, calcModelCor, grid=corgrid)
-    models.cost = vnapply(control$multifid.lvls, calcModelCost)
-    messagef("Estimated cor to last model = %s", collapse(sprintf("%.3g", models.cor), ", "))
-    messagef("Estimated residual var = %s", collapse(sprintf("%.3g", models.sd), ", "))
+    model.sd = vnapply(control$multifid.lvls, calcModelSD)
+    model.cor = vnapply(control$multifid.lvls, calcModelCor, grid=corgrid)
+    model.cost = vnapply(control$multifid.lvls, calcModelCost)
+    messagef("Estimated cor to last model = %s", collapse(sprintf("%.3g", model.cor), ", "))
+    messagef("Estimated residual var = %s", collapse(sprintf("%.3g", model.sd), ", "))
     
     # every couple of levels we only optimize the last one
     # to ensure that we update that model and see what happens here
@@ -114,11 +115,14 @@ mboMultiFid = function(fun, par.set, design=NULL, learner, control, show.info=TR
     else
       avail.pars = control$multifid.lvls
     
-    prop = proposePoints.MultiFid(model = compound.model, par.set = par.set, control = control, opt.path = opt.path, model.cor = models.cor, model.cost = models.cost, model.sd = models.sd)
+    prop = proposePoints.MultiFid(model = compound.model, par.set = par.set, control = control, opt.path = opt.path, model.cor = model.cor, model.cost = model.cost, model.sd = model.sd)
     infill.vals = extractSubList(prop, "crit.vals")
     messagef("Infill vals = %s", collapse(sprintf("%.3g", infill.vals), ", "))
     # we still technically minimize
     best.points = prop[[getMinIndex(infill.vals)]]$prop.points
+    
+    plot.data[[loop]] = genPlotData(compound.model = compound.model, par.set = par.set, control = control, fun = objfun, opt.path = opt.path, model.cor = model.cor, model.sd = model.sd, model.cost = model.cost, best.points = best.points)
+    
     evalProposedPoints(loop = loop, prop.points = best.points, par.set = par.set, opt.path = opt.path, control = control, fun = objfun, show.info = show.info, oldopts = oldopts, more.args = more.args, extras = NULL)
     #evals = evalTargetFun(fun = objfun, par.set = par.set, dobs = loop, xs = xs, opt.path = opt.path, control = control, show.info = show.info, oldopts = oldopts, more.args = more.args, extras = NULL)
     compound.model = update.MultiFidModel(compound.model, task = convertOptPathToTask(opt.path))
@@ -139,6 +143,7 @@ mboMultiFid = function(fun, par.set, design=NULL, learner, control, show.info=TR
     opt.path = opt.path,
     model = compound.model,
     y.hat = y.hat,
-    proposed = proposed
+    proposed = proposed,
+    plot.data = plot.data
   )
 }

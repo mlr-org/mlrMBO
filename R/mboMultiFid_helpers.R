@@ -41,7 +41,7 @@ parSetWithout = function(par.set, without) {
 
 expandDesign = function(design, control, ns = NULL) {
   if(is.null(ns)){
-    ns = rep(ncol(design), times = length(control$multifid.lvls))
+    ns = rep(nrow(design), times = length(control$multifid.lvls))
   }
   designs = lapply(seq_along(ns), function(i) {
     des = design[seq_len(ns[i]),, drop=FALSE]
