@@ -40,12 +40,19 @@ control = makeMBOControl(
   show.learner.output = FALSE,
 )
 control = setMBOControlInfill(control = control, crit = "multiFid", opt = "focussearch", opt.restarts = 1L, opt.focussearch.maxit = 1L, opt.focussearch.points = 300L)
-control = setMBOControlMultiFid(control = control, multifid.param = "dw.perc", multifid.lvls = c(0.1, 0.3, 1))
+control = setMBOControlMultiFid(control = control, multifid.param = "dw.perc", multifid.lvls = c(0.1, 0.2, 0.5, 1))
 surrogat.model = makeLearner("regr.km", predict.type="se", nugget.estim=TRUE)
 result = mbo(fun = objfun, par.set = par.set, learner = surrogat.model, control = control, show.info = TRUE)
 as.data.frame(result$opt.path)
 result$y.hat
 
+pdf("multifid_steps.pdf", width=10, height=12)
+for(plot in result$plot.data)
+  print(plot)
+dev.off()
+
+
+stop()
 ### DEBUG:
 mf.learner = makeMultiFidLearner(surrogat.learner=surrogat.model, par.set=par.set, control=control)
 mf.design = generateMBOMultiFidDesign(par.set=par.set, control=control)
