@@ -40,8 +40,6 @@ mboMultiFid = function(fun, par.set, design=NULL, learner, control, show.info=TR
     slo = getOption("mlr.show.learner.output")
   )
   
-  costs = control$multifid.costs
-  
   # generate initial design
   # FIXME mbo.design
   if(is.null(design)) {
@@ -62,14 +60,10 @@ mboMultiFid = function(fun, par.set, design=NULL, learner, control, show.info=TR
   budget = control$iters
   
   # local needed functions
+  
   # calculate cost relation between model w/ par.val and last model
   calcModelCost = function(par.val) {
-    costs(par.val, tail(control$multifid.lvls, 1))
-  }
-  
-  #subsets a data.frame to a given value of the fid.param
-  subsetOnPar = function(data, par.val){
-    data = subset(data, data[[control$multifid.param]] == par.val)
+    control$multifid.costs(par.val, tail(control$multifid.lvls, 1))
   }
   
   # estimate process noise tau of real process belonging to par.val, we use residual sd here
@@ -103,8 +97,11 @@ mboMultiFid = function(fun, par.set, design=NULL, learner, control, show.info=TR
     
     # evaluate stuff we need for MEI
     model.sd = vnapply(control$multifid.lvls, calcModelSD)
+    names(model.sd) = control$multifid.lvls
     model.cor = vnapply(control$multifid.lvls, calcModelCor, grid=corgrid)
+    names(model.cor) = control$multifid.lvls
     model.cost = vnapply(control$multifid.lvls, calcModelCost)
+    names(model.cost) = control$multifid.lvls
     messagef("Estimated cor to last model = %s", collapse(sprintf("%.3g", model.cor), ", "))
     messagef("Estimated residual var = %s", collapse(sprintf("%.3g", model.sd), ", "))
     
@@ -140,10 +137,10 @@ mboMultiFid = function(fun, par.set, design=NULL, learner, control, show.info=TR
   configureMlr(on.learner.error=oldopts[["ole"]], show.learner.output=oldopts[["slo"]])
   
   makeS3Obj("MultiFidResult",
-    opt.path = opt.path,
-    model = compound.model,
-    y.hat = y.hat,
-    proposed = proposed,
-    plot.data = plot.data
+            opt.path = opt.path,
+            model = compound.model,
+            y.hat = y.hat,
+            proposed = proposed,
+            plot.data = plot.data
   )
 }
