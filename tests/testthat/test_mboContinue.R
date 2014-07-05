@@ -21,7 +21,7 @@ test_that("mboContinue", {
 
   # First test sombo
   learner = makeLearner("regr.rpart")
-  save.file = tempfile(fileext = "mboData")
+  save.file = tempfile(fileext = "RData")
   ctrl = makeMBOControl(iters = 7, save.on.disk.at = 0:8,
     save.file.path = save.file, init.design.points = 10L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10)
@@ -65,7 +65,7 @@ test_that("mboContinue works when we at end", {
   f = makeMBOFunction(f)
   ps = makeNumericParamSet(len = 2L, lower = -2, upper = 1)
   learner = makeLearner("regr.rpart")
-  save.file = tempfile(fileext = "mboData")
+  save.file = tempfile(fileext = "RData")
   ctrl = makeMBOControl(iters = 1, save.on.disk.at = 0:2,
     save.file.path = save.file, init.design.points = 10L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10)

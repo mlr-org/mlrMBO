@@ -74,7 +74,7 @@
 #'   Default is NULL.
 #' @param save.file.path [\code{character(1)}] \cr
 #'   If \code{save.on.disk.at} is used, this is the name of the file where the data
-#'   will be saved. Default is a file named mboRun_XXXX.mboData in your current
+#'   will be saved. Default is a file named mboRun_XXXX.RData in your current
 #'   working directory, where XXXX is a unique hexadecimal number with 11 digits.
 #' @param store.model.at [\code{integer}]\cr
 #'   Sequential optimization iterations when the model should be saved.
@@ -113,7 +113,7 @@ makeMBOControl = function(number.of.targets = 1L,
   impute.y.fun = NULL,
   suppress.eval.errors = TRUE,
   save.on.disk.at = iters + 1,
-  save.file.path = tempfile(pattern = "mlrMBORun_", tmpdir = getwd(), fileext = ".mboData"),
+  save.file.path = tempfile(pattern = "mlrMBORun_", tmpdir = getwd(), fileext = ".RData"),
   store.model.at = iters,
   resample.at = integer(0), resample.desc = makeResampleDesc("CV", iter = 10), resample.measures = list(mse),
   on.learner.error = "warn", show.learner.output = FALSE,
@@ -177,10 +177,10 @@ makeMBOControl = function(number.of.targets = 1L,
   # If debug-mode, turn of saving.
   if (getOption("mlrMBO.debug.mode", default = FALSE))
     save.on.disk.at = NULL
-  
+
   store.model.at = asInteger(store.model.at)
   assertInteger(store.model.at, lower = 0L, upper = iters, any.missing = FALSE)
-  
+
   if (length(resample.at) > 0) {
     resample.at = convertIntegers(resample.at)
     assertInteger(resample.at, lower = 0L, upper = iters, any.missing = FALSE)
@@ -303,7 +303,7 @@ makeMBOControl = function(number.of.targets = 1L,
 #' @note See the other setMBOControl... functions and \code{makeMBOControl} for referenced arguments.
 #' @seealso makeMBOControl
 #' @export
-setMBOControlInfill = function(control, 
+setMBOControlInfill = function(control,
   crit = "mean", crit.lcb.lambda = 1,
   opt = "focussearch", opt.restarts = 1L,
   opt.focussearch.maxit = 5L, opt.focussearch.points = 10000L,
@@ -437,7 +437,7 @@ setMBOControlMultipoint = function(control,
   assertNumber(multicrit.sbx.p, na.ok = FALSE, lower = 0, upper = 1)
   assertNumber(multicrit.pm.eta, na.ok = FALSE, lower = 0)
   assertNumber(multicrit.pm.p, na.ok = FALSE, lower = 0, upper = 1)
- 
+
   control$multipoint.method = method
   control$multipoint.multicrit.objective = multicrit.objective
   control$multipoint.multicrit.dist = multicrit.dist
@@ -478,10 +478,10 @@ setMBOControlMultipoint = function(control,
 #'   Default is not to do this.
 #' @return [\code{\link{MBOControl}}].
 #' @note See the other setMBOControl... functions and \code{makeMBOControl} for referenced arguments.
-#' @seealso makeMBOControl 
+#' @seealso makeMBOControl
 #' @export
-setMBOControlMulticrit = function(control, 
-  method = "parego", 
+setMBOControlMulticrit = function(control,
+  method = "parego",
   parego.s, parego.rho = 0.05,
   parego.use.margin.points = rep(FALSE, control$number.of.targets),
   parego.sample.more.weights = 5L) {
@@ -538,12 +538,12 @@ setMBOControlMulticrit = function(control,
 #'   How many evaluations should be done on the last value of fid.param.
 #' @return [\code{\link{MBOControl}}].
 #' @note See the other setMBOControl... functions and \code{makeMBOControl} for referenced arguments.
-#' @seealso makeMBOControl 
+#' @seealso makeMBOControl
 #' @export
-setMBOControlMultiFid = function(control, 
-                                 multifid.param, 
-                                 multifid.lvls, 
-                                 multifid.costs = NULL, 
+setMBOControlMultiFid = function(control,
+                                 multifid.param,
+                                 multifid.lvls,
+                                 multifid.costs = NULL,
                                  multifid.cor.grid.points = 10L,
                                  multifid.force.last.level.evals = 10L){
   assertClass(control, "MBOControl")
@@ -556,14 +556,14 @@ setMBOControlMultiFid = function(control,
   }
   assertInt(multifid.cor.grid.points, lower=2L)
   assertInt(multifid.force.last.level.evals, lower=0L)
-  
+
   # extend control object
   control$multifid.param = multifid.param
   control$multifid.lvls = multifid.lvls
   control$multifid.costs = multifid.costs
   control$multifid.cor.grid.points = multifid.cor.grid.points
   control$multifid.force.last.level.evals = multifid.force.last.level.evals
-  
+
   return(control)
 }
 
