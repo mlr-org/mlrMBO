@@ -10,7 +10,7 @@ makeMultiFidLearner = function(surrogat.learner, par.set, control) {
 
 # trains the learners inside of MultiFidLearner with on task data and
 # returns ????  a list splits automaticaly ??
-train.MultiFidLearner = function(obj, task) {
+train.MultiFidLearner = function(obj, task, subset) {
   # some shortcuts
   learner = obj
   fid.par = learner$fid.param
@@ -44,7 +44,8 @@ train.MultiFidLearner = function(obj, task) {
     }
     v.prev = v
   }
-  makeS3Obj(c("MultiFidModel","WrappedModel"), learner = learner, models = models)
+  #FIXME: maybe use makeWrappedModel
+  makeS3Obj(c("MultiFidModel","WrappedModel"), learner = learner, models = models, task.desc = task$task.desc)
 }
 
 update.MultiFidModel = function(obj, task) {
@@ -53,7 +54,7 @@ update.MultiFidModel = function(obj, task) {
   train.MultiFidLearner(learner, task)
 }
 
-predict.MultiFidModel = function(model, task, newdata, ...) {
+predict.MultiFidModel = function(model, task, newdata, subset = NULL, ...) {
   # some shortcuts
   fid.par = model$learner$fid.param
   fid.lvls = model$learner$fid.lvls
@@ -61,38 +62,37 @@ predict.MultiFidModel = function(model, task, newdata, ...) {
 
   # we calculate a lot of unneccessary things here (for now)
   # we ignore the given perf.val in (newdata, task) and calcuate it for all
-  if (!missing(newdata)) {
-    nd.fid.lvls = newdata[[fid.par$id]]
-    newdata = newdata[,  setdiff(colnames(newdata) , fid.par$id), drop = FALSE]
-    preds = lapply(model$models, mlr:::predict.WrappedModel, newdata = newdata)
-  } else {
-    nd.fid.lvls = getTaskData(task)[[fid.par$id]]
-    task = dropFeatures(task, fid.par$id)
-    preds = lapply(model$models, mlr:::predict.WrappedModel, task = task)
+  if (missing(newdata))
+    newdata = getTaskData(task, subset = subset)
+  else if (!is.null(subset)) {
+    newdata = newdata[subset, , drop = FALSE]
   }
-
-  #calculate means + ses for each perf.val step
-  #calculate means for each perf.val step
-  getByVal = function(el) {
-    res = lapply(fid.lvls, function(v) {
-      els = lapply(preds[fid.lvls <= v], function(x) x$data[[el]])
-      Reduce('+', els)
-    })
-    setNames(res, fid.ns)
+  fid.par.col = newdata[[fid.par$id]]
+  newdata = newdata[,  setdiff(colnames(newdata) , fid.par$id), drop = FALSE] #remove column with fid.par
+  split.inds = split(seq_row(newdata), fid.par.col)
+  
+  preds = lapply(fid.lvls, function(v) {
+    this.data = subset(newdata, fid.par.col == v)
+    preds.each = lapply(model$models[fid.lvls <= v], mlr:::predict.WrappedModel, newdata = this.data)
+    se = extractSubList(preds.each, c("data", "se"), simplify = FALSE)
+    response = extractSubList(preds.each, c("data", "response"), simplify = FALSE)
+    pred = preds.each[[1]]
+    pred$data$se = Reduce('+', se)
+    pred$data$response = Reduce('+', response)
+    pred
+  })
+  names(preds) = fid.lvls
+  
+  #initialize empty df for pred data in right order
+  pred.data = do.call(rbind, extractSubList(preds, element = "data", simplify = FALSE)) #FIXME: Improve: Init an empty DF
+  for (vs in fid.ns) {
+    if (!is.null(split.inds[[vs]]))
+      pred.data[split.inds[[vs]], ] = preds[[vs]]$data
   }
-  means.by.val = getByVal("response")
-  ses.by.val = getByVal("se")
-
-  #FIXME: the following lines look suspicious. looks MUCH too complicated. what do we do here?
-  #extract the values according to the perf.val value in the given (newdata,task) and place them in the correct order
-  mean = sapply(seq_along(nd.fid.lvls), function(i) {
-    means.by.val[[as.character(nd.fid.lvls[i])]][i]
-  })
-  se = sapply(seq_along(nd.fid.lvls), function(i) {
-    ses.by.val[[as.character(nd.fid.lvls[i])]][i]
-  })
-  p = preds[[1L]]
-  p$data$response = mean
-  p$data$se = se
-  p
+  #FIXME: maybe use makePrediction
+  pred = preds[[1]]
+  pred$data = pred.data
+  pred$task.desc$size = sum(extractSubList(preds, c("task.desc","size")))
+  
+  pred
 }

@@ -80,8 +80,3 @@ replaceByList = function(x, rep.list){
   }
   res
 }
-
-#subsets a data.frame to a given value of the fid.param
-subsetOnPar = function(data, par.val){
-  data = subset(data, data[[control$multifid.param]] == par.val)
-}

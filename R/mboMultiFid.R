@@ -61,6 +61,11 @@ mboMultiFid = function(fun, par.set, design=NULL, learner, control, show.info=TR
   
   # local needed functions
   
+  #subsets a data.frame to a given value of the fid.param
+  subsetOnPar = function(data, par.val){
+    data = subset(data, data[[control$multifid.param]] == par.val)
+  }
+  
   # calculate cost relation between model w/ par.val and last model
   calcModelCost = function(par.val) {
     control$multifid.costs(par.val, tail(control$multifid.lvls, 1))

@@ -4,6 +4,7 @@ genPlotData = function(compound.model, opt.path, control, fun, res = 100, model.
   grid.design = generateGridDesign(par.set = par.set.lower, resolution = res)
   grid.design = expandDesign(design = grid.design, control = control)
   old.points = convertOptPathToDesign(opt.path)
+  grid.design = rbind(grid.design, old.points[,colnames(grid.design)]) #so plot lines also have the exact points
   p = predict(compound.model, newdata = grid.design)
   z = infillCritMultiFid2(points = grid.design, model = compound.model, control = control, par.set = par.set, design = old.points , model.cor = model.cor, model.sd = model.sd, model.cost = model.cost)
   z.df = do.call(cbind.data.frame, z)
