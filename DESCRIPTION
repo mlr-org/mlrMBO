@@ -10,14 +10,15 @@ Depends:
 Imports:
     BBmisc (>= 1.7),
     checkmate (>= 1.1),
-    parallelMap (>= 1.1)
+    parallelMap (>= 1.1),
+    plyr,
+    reshape2
 Suggests:
     cmaes,
     DiceOptim,
     emoa,
     ggplot2,
     gridExtra,
-    reshape2,
     soobench,
     testthat
 LazyData: yes

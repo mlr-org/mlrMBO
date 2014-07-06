@@ -1,5 +1,6 @@
-#' Perform an mbo run on a test function and and visualize what happens.
+#' @title Perform an mbo run on a test function and and visualize what happens.
 #'
+#' @description
 #' Usually used for 1D or 2D examples,
 #' useful for figuring out how stuff works and for teaching purposes.
 #' Currently only parameter spaces with numerical parameters are supported.
