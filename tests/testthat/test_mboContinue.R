@@ -32,6 +32,7 @@ test_that("mboContinue", {
       break
   }
   expect_equal(getOptPathLength(or$opt.path), 17)
+  unlink(save.file)
 
   # now test parEGO
   f = function(x) {

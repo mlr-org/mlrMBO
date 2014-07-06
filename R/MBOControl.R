@@ -71,11 +71,11 @@
 #'   on disk. Iteration 0 denotes the initial design. If the optimization
 #'   stops with an crucial error, it can be restarted with this file via the
 #'   function \code{\link{mboContinue}}.
-#'   Default is NULL.
+#'   Default is \code{0:iters+1}.
 #' @param save.file.path [\code{character(1)}] \cr
 #'   If \code{save.on.disk.at} is used, this is the name of the file where the data
-#'   will be saved. Default is a file named mboRun_XXXX.RData in your current
-#'   working directory, where XXXX is a unique hexadecimal number with 11 digits.
+#'   will be saved.
+#'   Default \dQuote{mbo_run.RData} in your current working directory.
 #' @param store.model.at [\code{integer}]\cr
 #'   Sequential optimization iterations when the model should be saved.
 #'   Iteration 0 is the model fit for the initial design, iters + 1 is a final
@@ -112,30 +112,24 @@ makeMBOControl = function(number.of.targets = 1L,
   y.name = "y",
   impute.y.fun = NULL,
   suppress.eval.errors = TRUE,
-  save.on.disk.at = iters + 1,
-  save.file.path = tempfile(pattern = "mlrMBORun_", tmpdir = getwd(), fileext = ".RData"),
+  save.on.disk.at = 0:(iters+1),
+  save.file.path = file.path(getwd(), "mlr_run.RData"),
   store.model.at = iters,
   resample.at = integer(0), resample.desc = makeResampleDesc("CV", iter = 10), resample.measures = list(mse),
   on.learner.error = "warn", show.learner.output = FALSE,
   output.num.format = "%.3g"
 ) {
 
-  requirePackages("lhs", "makeMBOControl")
-
-  number.of.targets = convertInteger(number.of.targets)
-  assertInteger(number.of.targets, len = 1L, lower = 1L, any.missing = FALSE)
+  number.of.targets = asInt(number.of.targets, lower = 1L)
   assertLogical(minimize, len = number.of.targets, any.missing = FALSE)
-  assertLogical(noisy, len = 1L, any.missing = FALSE)
+  assertFlag(noisy)
 
-  init.design.points = convertInteger(init.design.points)
-  assertInteger(init.design.points, len = 1L, lower = 4L, any.missing = FALSE)
+  init.design.points = asInt(init.design.points)
   assertFunction(init.design.fun)
   assertList(init.design.args)
 
-  iters = asCount(iters)
-  assertInteger(iters, len = 1L, lower = 1L, any.missing = FALSE)
-  propose.points = convertInteger(propose.points)
-  assertInteger(propose.points, len = 1L, lower = 1L, any.missing = FALSE)
+  iters = asInt(iters, lower = 0L)
+  propose.points = asInt(propose.points, lower = 1L)
 
   assertChoice(feature.impute, choices = c("up", "median"))
 
@@ -145,54 +139,32 @@ makeMBOControl = function(number.of.targets = 1L,
   if (!is.null(impute.y.fun))
     assertFunction(impute.y.fun, args = c("x", "y", "opt.path"))
 
-  assertLogical(suppress.eval.errors, len = 1L, any.missing = FALSE)
+  assertFlag(suppress.eval.errors)
 
   assertChoice(final.method, choices = c("last.proposed", "best.true.y", "best.predicted"))
-  final.evals = asCount(final.evals)
-  assertInteger(final.evals, len = 1L, lower = 0L, any.missing = FALSE)
+  final.evals = asInt(final.evals, lower = 0L)
 
   if (number.of.targets > 1 && length(y.name) == 1 && y.name == "y")
     y.name = paste("y", 1:number.of.targets, sep = "_")
   assertCharacter(y.name, len = number.of.targets, any.missing = FALSE)
 
-  if (!is.null(save.on.disk.at)) {
-    save.on.disk.at = asInteger(save.on.disk.at)
-    assertInteger(save.on.disk.at)
-    if (save.file.path == "") {
-      stopf("You must specify a file for saving.")
-    } else {
-      assertCharacter(save.file.path, len = 1, any.missing = FALSE)
-      # FIXME: How to check if save.file.path is correct for saving?
-      # This does not look like a cool way to do it.
-      #tmp = try({save(save.file.path, file = save.file.path)})
-      #if (inherits(tmp, "try-error"))
-      #  stopf("Please specify a correct save.file.path.")
-    }
-  }
-  if (is.null(save.on.disk.at) & save.file.path != "") {
-    stopf("You specified a save.file.path, but you will never use it. You should specify iterations for saving.")
-  }
+  save.on.disk.at = asInteger(save.on.disk.at, any.missing = FALSE, lower = 0, upper = iters + 1)
+  assertPathForOutput(save.file.path)
+
   if ((iters + 1) %nin% save.on.disk.at)
     warningf("You turned off the final saving of the optimization result. Make sure to save it yourself!")
   # If debug-mode, turn of saving.
   if (getOption("mlrMBO.debug.mode", default = FALSE))
     save.on.disk.at = NULL
 
-  store.model.at = asInteger(store.model.at)
-  assertInteger(store.model.at, lower = 0L, upper = iters, any.missing = FALSE)
-
-  if (length(resample.at) > 0) {
-    resample.at = convertIntegers(resample.at)
-    assertInteger(resample.at, lower = 0L, upper = iters, any.missing = FALSE)
-  } else {
-    resample.at = integer(0)
-  }
+  store.model.at = asInteger(store.model.at, any.missing = FALSE, lower = 0, upper = iters + 1)
+  resample.at = asInteger(resample.at, any.missing = FALSE, lower = 0L, upper = iters + 1)
   assertClass(resample.desc, "ResampleDesc")
-  assertList(resample.measures, "list")
+  assertList(resample.measures, types = "Measure")
 
   assertChoice(on.learner.error, choices = c("warn", "quiet", "stop"))
-  assertLogical(show.learner.output, len = 1L, any.missing = FALSE)
-  assertCharacter(output.num.format, len = 1L, any.missing = FALSE)
+  assertFlag(show.learner.output)
+  assertString(output.num.format)
 
   control = makeS3Obj("MBOControl",
     minimize = minimize,
