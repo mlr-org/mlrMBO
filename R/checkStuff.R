@@ -9,17 +9,16 @@ checkStuff = function(fun, par.set, design, learner, control) {
   if (!hasFiniteBoxConstraints(par.set))
     stop("mbo requires finite box constraints!")
   #FIXME: Issue 57
-  #if (hasDiscrete(par.set) && !mlr:::hasProperties(learner, "factors"))
+  #if (hasDiscrete(par.set) && !hasProperties(learner, "factors"))
   #  stop("Provided learner does not support factor parameters.")
   if (learner$type != "regr")
     stop("mbo requires regression learner!")
 
   ##### general infill stuff. relavant for single obj and parego
   if (control$infill.crit %in% c("ei", "aei", "lcb") && learner$predict.type != "se") {
-    # FIXME hasProperties! without mlr:::
     stopf("For infill criterion '%s' predict.type of learner %s must be set to 'se'!%s",
       control$infill.crit, learner$id,
-      ifelse(mlr:::hasProperties(learner, "se"), "",
+      ifelse(hasProperties(learner, "se"), "",
         "\nBut this learner does not seem to support prediction of standard errors! You could use the mlr wrapper makeBaggingWrapper to bootstrap the standard error estimator."))
   }
   if (control$infill.opt == "cmaes" && !isNumeric(par.set))
@@ -42,7 +41,7 @@ checkStuff = function(fun, par.set, design, learner, control) {
           ifelse(control$multipoint.method == "multicrit",
             sprintf(" with objective '%s'", control$multipoint.multicrit.obj), ""),
           learner$id,
-          ifelse(mlr:::hasProperties(learner, "se"), "",
+          ifelse(hasProperties(learner, "se"), "",
             "\nBut this learner does not seem to support prediction of standard errors!"))
       }
     }
