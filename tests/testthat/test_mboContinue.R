@@ -48,7 +48,7 @@ test_that("mboContinue", {
   ctrl = makeMBOControl(iters = 7, save.on.disk.at = 0:8,
     save.file.path = save.file, init.design.points = 10L, number.of.targets = 2)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100)
-  ctrl = setMBOControlMulticrit(ctrl, parego.s = 100)
+  ctrl = setMBOControlMultiCrit(ctrl, parego.s = 100)
   rm("or")
   try(or <- mbo(f, ps, learner = learner, control = ctrl, show.info = FALSE), silent = TRUE)
   for (i in 1:100) {

@@ -11,10 +11,9 @@ makeMBOControl(number.of.targets = 1L, minimize = rep(TRUE,
   final.method = "best.true.y", final.evals = 0L, y.name = "y",
   impute.y.fun = NULL, suppress.eval.errors = TRUE,
   save.on.disk.at = iters + 1, save.file.path = tempfile(pattern =
-  "mlrMBORun_", tmpdir = getwd(), fileext = ".mboData"),
-  store.model.at = iters, resample.at = integer(0),
-  resample.desc = makeResampleDesc("CV", iter = 10),
-  resample.measures = list(mse), on.learner.error = "warn",
+  "mlrMBORun_", tmpdir = getwd(), fileext = ".RData"), store.model.at = iters,
+  resample.at = integer(0), resample.desc = makeResampleDesc("CV", iter =
+  10), resample.measures = list(mse), on.learner.error = "warn",
   show.learner.output = FALSE, output.num.format = "\%.3g")
 }
 \arguments{
@@ -108,7 +107,7 @@ Default is NULL.}
 
 \item{save.file.path}{[\code{character(1)}] \cr
 If \code{save.on.disk.at} is used, this is the name of the file where the data
-will be saved. Default is a file named mboRun_XXXX.mboData in your current
+will be saved. Default is a file named mboRun_XXXX.RData in your current
 working directory, where XXXX is a unique hexadecimal number with 11 digits.}
 
 \item{store.model.at}{[\code{integer}]\cr

@@ -84,7 +84,7 @@ mboParEGO = function(fun, par.set, design = NULL, learner, control, show.info = 
   configureMlr(on.learner.error = oldopts[["ole"]], show.learner.output = oldopts[["slo"]])
 
   res = makeS3Obj(c("MBOMultiObjResult", "MBOResult"),
-    pareto.front = getOptPathY(opt.path)[pareto.inds, drop = FALSE],
+    pareto.front = getOptPathY(opt.path)[pareto.inds, , drop = FALSE],
     pareto.set = lapply(pareto.inds, function(i) getOptPathEl(opt.path, i)$x),
     opt.path = opt.path,
     models = models

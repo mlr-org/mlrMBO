@@ -11,7 +11,7 @@ test_that("multipoint multicrit", {
       for (sel in c("hypervolume", "crowdingdist", "first", "last")) {
 
         ctrl = makeMBOControl(init.design.points = 10, iters = 1, propose.points = 4)
-        ctrl = setMBOControlMultipoint(ctrl,
+        ctrl = setMBOControlMultiPoint(ctrl,
           method = "multicrit",
           multicrit.objective = obj,
           multicrit.dist = dist,
