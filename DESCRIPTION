@@ -6,18 +6,18 @@ Maintainer: Bernd Bischl <bernd_bischl@gmx.net>
 License: BSD_3_clause + file LICENSE
 Depends:
     ParamHelpers,
-    mlr,
-    grid,
-    ggplot2,
-    checkmate
+    mlr (>= 2.0)
 Imports:
-    BBmisc (>= 1.4),
-    gridExtra,
+    BBmisc (>= 1.7),
+    checkmate (>= 1.1),
     parallelMap (>= 1.1)
 Suggests:
     cmaes,
     DiceOptim,
     emoa,
+    ggplot2,
+    gridExtra,
+    reshape2,
     soobench,
     testthat
 LazyData: yes

@@ -1,7 +1,6 @@
 #' @import BBmisc
-#' @import ParamHelpers
+#' @import checkmate
 #' @import mlr
-#' @import ggplot2
-#' @import gridExtra
 #' @import parallelMap
+#' @import ParamHelpers
 NULL
