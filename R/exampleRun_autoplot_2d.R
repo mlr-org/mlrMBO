@@ -124,7 +124,7 @@ autoplotExampleRun2d = function(x, iters, pause = TRUE, densregion = TRUE, point
       "pl.fun" = pl.fun,
       "pl.mod" = pl.mod,
       "pl.crit" = pl.crit,
-      "pl.se" = if(exists("pl.se")) pl.se else NA,
+      "pl.se" = if (exists("pl.se")) pl.se else NA,
       "pl.all" = pl.all)
 
     print(pl.all)
