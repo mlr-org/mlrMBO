@@ -49,7 +49,7 @@ addMyExps = function(id) {
   des = makeDesign(id, exhaustive = list(
     iter = 1:CV_FOLDS_OUTER)
   )
-  addExperiments(reg, algo.designs = des)
+  addExperiments(reg, algo.designs = des, skip.defined = TRUE)
 }
 
 addMyExps("random")

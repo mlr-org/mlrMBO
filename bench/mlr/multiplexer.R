@@ -1,9 +1,10 @@
 
 base.learners = list(
-  makeLearner("classif.rpart"),
+  # makeLearner("classif.rpart"),
   makeLearner("classif.ksvm"),
   makeLearner("classif.randomForest"),
-  makeLearner("classif.lda")
+  makeLearner("classif.gbm")
+  # makeLearner("classif.lda")
 
 )
 
@@ -17,12 +18,11 @@ par.set = makeModelMultiplexerParamSet(mplexer,
     makeIntegerParam("mtry", lower = 1, upper = 20)
   ),
 
-  # classif.gbm = makeParamSet(
-  #   makeIntegerParam("n.trees", lower = 100L, upper = 5000L),
-  #   makeIntegerParam("interaction.depth", lower = 1L, upper = 4L),
-  #   makeNumericParam("shrinkage", lower = 1e-5, upper = 1e-1),
-  #   makeNumericParam("bag.fraction", lower = 0.7, upper = 1)
-  # ),
+  classif.gbm = makeParamSet(
+    makeIntegerParam("n.trees", lower = 100L, upper = 5000L),
+    makeIntegerParam("interaction.depth", lower = 1L, upper = 4L),
+    makeNumericParam("shrinkage", lower = 1e-5, upper = 1e-1)
+  ),
 
   classif.ksvm = makeParamSet(
     makeNumericParam("C", lower = -12, upper = 12, trafo = function(x) 2^x),

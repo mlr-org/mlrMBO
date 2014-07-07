@@ -13,13 +13,14 @@ addAlgorithm(reg, id = "mbo", fun = function(static, iter, learner.class, tune.m
     save.on.disk.at = integer(0L),
   )
   mbo.ctrl = setMBOControlInfill(mbo.ctrl,
-    crit = "mean",
+    crit = MBO_INFILL_CRIT,
     opt.restarts = MBO_FOCUSSEARCH_RESTARTS,
     opt.focussearch.maxit = MBO_FOCUSSEARCH_ITERS,
     opt.focussearch.points = MBO_FOCUSSEARCH_POINTS
   )
-  # surrogate = makeLearner("regr.randomForest", ntree = MBO_SURROGATE_NTREES)
-  surrogate = makeLearner("regr.kknn")
+  surrogate = makeLearner(MBO_SURROGATE)
+  surrogate = setHyperPars(surrogate, par.vals = MBO_SURROGATE_VALS)
+  surrogate = setPredictType(surrogate, "se")
   tctrl = mlr:::makeTuneControlMBO(learner = surrogate, mbo.control =  mbo.ctrl)
   algoTemplate(static, iter, tctrl)
 })
