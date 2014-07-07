@@ -27,6 +27,8 @@
 mbo = function(fun, par.set, design = NULL, learner, control, show.info = TRUE, more.args = list()) {
 
   learner = checkLearner(learner, par.set, control)
+  #FIXME: impute wrapper must be correctly configureg. TODO for BB
+  learner = makeImputeWrapper(learner, classes = list("numeric" = imputeMedian()))
   #FIXME: more param checks
   checkStuff(fun, par.set, design, learner, control)
   loadPackages(control)

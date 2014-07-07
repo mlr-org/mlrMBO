@@ -70,8 +70,9 @@ infillCritLCB = function(points, model, control, par.set, design) {
 # useful for noisy
 infillCritAEI = function(points, model, control, par.set, design) {
   # FIXME: ugly!
-  design2 = imputeFeatures(design, par.set, control)
-  design2 = convertDfCols(design2, chars.as.factor = TRUE)
+  # FIXME check completely
+  # design2 = imputeFeatures(design, par.set, control)
+  # design2 = convertDfCols(design2, chars.as.factor = TRUE)
 
   #FIXME: generalize new.noise.var for all models
   maximize.mult = ifelse(control$minimize, 1, -1)
