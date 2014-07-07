@@ -75,7 +75,7 @@ evalTargetFun = function(fun, par.set, dobs, xs, opt.path, control, show.info, o
             ny, convertToShortString(y2))
       }
     }
-    
+
     # showInfo - use the trafo'd value here!
     showInfo(show.info, "[mbo] %i: %s : %s : %.1f secs%s", dob,
       paramValueToString(par.set, x.trafo, num.format = num.format),

@@ -2,6 +2,7 @@
 # check whether the user selected valid options / combinations
 checkStuff = function(fun, par.set, design, learner, control) {
   assertFunction(fun)
+  pids = getParamIds(par.set)
 
   #####  check params + learner #####
   if (any(sapply(par.set$pars, inherits, what = "LearnerParam")))
@@ -53,4 +54,10 @@ checkStuff = function(fun, par.set, design, learner, control) {
   #      stop("Expected improvement can currently only be used with learner 'regr.km' and 'regr.kmforrester'!")
   # if (!(inherits(learner, "regr.randomForest") || inherits(learner, "regr.rpart")) && hasRequires(par.set))
   #   stop("Parameter sets with dependent parameters currently require the learner to be a randomForest or rpart.")
+
+  ##### multifid #####
+  if (control$multifid.param %nin% pids)
+    stopf("Fidelity param '%s' must be in par.set!", control$multifid.param)
+
+
 }

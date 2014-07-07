@@ -20,7 +20,7 @@ train.MultiFidLearner = function(obj, task, subset) {
   cns = colnames(data)
 
   if (!all(fid.lvls %in% data[[fid.par$id]]))
-    stopf("MultiFid model has to be initialized on all values of '%s'", paste(fid.lvls, collapse=", "))
+    stopf("MultiFid model has to be initialized on all values of '%s'", collapse(fid.lvls))
   models = namedList(fid.ns, NULL) #init named empty model list
   v.prev = NULL
   for (v in fid.lvls) {
@@ -39,6 +39,7 @@ train.MultiFidLearner = function(obj, task, subset) {
       traindata = getTaskData(sub.task)
       traindata$y = traindata$y - rowSums(preds.response)
       sub.task = mlr:::changeData(task = sub.task, data = traindata)
+      #FIXME: in case we have nearly a perfect constant shift between levels, kriging of course crashes here....
       models[[as.character(v)]] =
         train(learner = learner$learners[[as.character(v)]], task = sub.task)
     }
@@ -70,7 +71,7 @@ predict.MultiFidModel = function(model, task, newdata, subset = NULL, ...) {
   fid.par.col = newdata[[fid.par$id]]
   newdata = newdata[,  setdiff(colnames(newdata) , fid.par$id), drop = FALSE] #remove column with fid.par
   split.inds = split(seq_row(newdata), fid.par.col)
-  
+
   preds = lapply(fid.lvls, function(v) {
     this.data = subset(newdata, fid.par.col == v)
     preds.each = lapply(model$models[fid.lvls <= v], mlr:::predict.WrappedModel, newdata = this.data)
@@ -82,7 +83,7 @@ predict.MultiFidModel = function(model, task, newdata, subset = NULL, ...) {
     pred
   })
   names(preds) = fid.lvls
-  
+
   #initialize empty df for pred data in right order
   pred.data = do.call(rbind, extractSubList(preds, element = "data", simplify = FALSE)) #FIXME: Improve: Init an empty DF
   for (vs in fid.ns) {
@@ -93,6 +94,6 @@ predict.MultiFidModel = function(model, task, newdata, subset = NULL, ...) {
   pred = preds[[1]]
   pred$data = pred.data
   pred$task.desc$size = sum(extractSubList(preds, c("task.desc","size")))
-  
+
   pred
 }
