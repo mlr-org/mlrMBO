@@ -10,10 +10,10 @@ makeMBOControl(number.of.targets = 1L, minimize = rep(TRUE,
   propose.points = 1L, feature.impute = "up", multiFid.control = NULL,
   final.method = "best.true.y", final.evals = 0L, y.name = "y",
   impute.y.fun = NULL, suppress.eval.errors = TRUE,
-  save.on.disk.at = iters + 1, save.file.path = tempfile(pattern =
-  "mlrMBORun_", tmpdir = getwd(), fileext = ".RData"), store.model.at = iters,
-  resample.at = integer(0), resample.desc = makeResampleDesc("CV", iter =
-  10), resample.measures = list(mse), on.learner.error = "warn",
+  save.on.disk.at = 0:(iters + 1), save.file.path = file.path(getwd(),
+  "mlr_run.RData"), store.model.at = iters, resample.at = integer(0),
+  resample.desc = makeResampleDesc("CV", iter = 10),
+  resample.measures = list(mse), on.learner.error = "warn",
   show.learner.output = FALSE, output.num.format = "\%.3g")
 }
 \arguments{
@@ -103,12 +103,12 @@ Sequential optimization iteration when the actual state should be saved
 on disk. Iteration 0 denotes the initial design. If the optimization
 stops with an crucial error, it can be restarted with this file via the
 function \code{\link{mboContinue}}.
-Default is NULL.}
+Default is \code{0:iters+1}.}
 
 \item{save.file.path}{[\code{character(1)}] \cr
 If \code{save.on.disk.at} is used, this is the name of the file where the data
-will be saved. Default is a file named mboRun_XXXX.RData in your current
-working directory, where XXXX is a unique hexadecimal number with 11 digits.}
+will be saved.
+Default \dQuote{mbo_run.RData} in your current working directory.}
 
 \item{store.model.at}{[\code{integer}]\cr
 Sequential optimization iterations when the model should be saved.
