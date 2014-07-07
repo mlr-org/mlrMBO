@@ -6,7 +6,8 @@ Maintainer: Bernd Bischl <bernd_bischl@gmx.net>
 License: BSD_3_clause + file LICENSE
 Depends:
     ParamHelpers,
-    mlr (>= 2.0)
+    mlr (>= 2.0),
+    lhs
 Imports:
     BBmisc (>= 1.7),
     checkmate (>= 1.1),
