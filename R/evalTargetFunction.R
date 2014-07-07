@@ -34,7 +34,6 @@ evalTargetFun = function(fun, par.set, dobs, xs, opt.path, control, show.info, o
   }
 
   # do we have a valid y object?
-  # FIXME: introduce helper in checkmate or BBmisc?
   isYValid = function(y) {
     !is.error(y) && is.numeric(y) && (length(y) == ny) && !any(is.na(y) | is.nan(y) | is.infinite(y))
   }
