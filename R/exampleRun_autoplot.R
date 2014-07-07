@@ -60,6 +60,7 @@
 autoplot.MBOExampleRun = function(object, iters, pause = TRUE, densregion = TRUE,
   se.factor = 1, xlim, ylim, point.size = 3, line.size = 1, trafo = NULL, ...) {
 
+  requirePackages("gridExtra", why = "autoplot.MBOExampleRun")
   iters.max = object$control$iters
   if (missing(iters)) {
     iters = seq_len(iters.max)
