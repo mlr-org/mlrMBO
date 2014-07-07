@@ -1,4 +1,6 @@
-#' Extends mbo control object with multiFid-algorithm specific options.
+#FIXME: document breifly in mbo how multifid is enabled
+
+#' @title Extends mbo control object with multiFid-algorithm specific options.
 #'
 #' @param control [\code{MBOControl}]\cr
 #'   MBO control object.
@@ -33,6 +35,7 @@ setMBOControlMultiFid = function(control, param, lvls, costs = NULL, cor.grid.po
   force.last.level.evals = asInt(force.last.level.evals, lower = 0L)
 
   # extend control object
+  control$multifid = TRUE
   control$multifid.param = param
   control$multifid.lvls = lvls
   control$multifid.costs = costs

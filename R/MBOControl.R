@@ -149,7 +149,8 @@ makeMBOControl = function(number.of.targets = 1L,
   assertCharacter(y.name, len = number.of.targets, any.missing = FALSE)
 
   save.on.disk.at = asInteger(save.on.disk.at, any.missing = FALSE, lower = 0, upper = iters + 1)
-  assertPathForOutput(save.file.path)
+  if (length(save.on.disk.at) > 0L)
+    assertPathForOutput(save.file.path)
 
   if ((iters + 1) %nin% save.on.disk.at)
     warningf("You turned off the final saving of the optimization result. Make sure to save it yourself!")
@@ -189,7 +190,8 @@ makeMBOControl = function(number.of.targets = 1L,
     resample.measures = resample.measures,
     on.learner.error = on.learner.error,
     show.learner.output = show.learner.output,
-    output.num.format = output.num.format
+    output.num.format = output.num.format,
+    multifid = FALSE
   )
 
   # set defaults for infill methods and other stuff

@@ -60,16 +60,16 @@
 autoplot.MBOExampleRun = function(object, iters, pause = TRUE, densregion = TRUE,
   se.factor = 1, xlim, ylim, point.size = 3, line.size = 1, trafo = NULL, ...) {
 
+  requirePackages("gridExtra", why = "autoplot.MBOExampleRun")
   iters.max = object$control$iters
   if (missing(iters)) {
     iters = seq_len(iters.max)
   } else {
-    iters = convertIntegers(iters)
-    assertInteger(iters, min.len = 1L, lower = 1, upper = iters.max, any.missing = FALSE)
+    iters = asInteger(iters, min.len = 1L, lower = 1L, upper = iters.max, any.missing = FALSE)
   }
-  assertLogical(pause, len = 1L, any.missing = FALSE)
-  assertLogical(densregion, len = 1L, any.missing = FALSE)
-  assertNumber(se.factor, na.ok = FALSE)
+  assertFlag(pause)
+  assertFlag(densregion)
+  assertNumber(se.factor, lower = 0)
   if (!missing(xlim))
     assertNumeric(xlim, len = 2L, any.missing = FALSE)
   if (!missing(ylim))
@@ -80,11 +80,11 @@ autoplot.MBOExampleRun = function(object, iters, pause = TRUE, densregion = TRUE
   trafo = buildTrafoList(n.params, trafo)
 
   if (n.params == 1) {
-    autoplotExampleRun1d(object, iters=iters, xlim=xlim, ylim=ylim, se.factor=se.factor, pause=pause,
-      point.size=point.size, line.size=line.size, trafo=trafo, densregion=densregion, ...)
+    autoplotExampleRun1d(object, iters = iters, xlim = xlim, ylim = ylim, se.factor = se.factor, pause = pause,
+      point.size = point.size, line.size = line.size, trafo = trafo, densregion = densregion, ...)
   } else if (n.params == 2) {
-    autoplotExampleRun2d(object, iters=iters, xlim=xlim, ylim=ylim, pause=pause,
-      point.size=point.size, line.size=line.size, trafo=trafo, ...)
+    autoplotExampleRun2d(object, iters = iters, xlim = xlim, ylim = ylim, pause = pause,
+      point.size = point.size, line.size = line.size, trafo = trafo, ...)
   } else {
     stopf("Functions with greater than 3 parameters are not supported.")
   }

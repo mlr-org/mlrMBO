@@ -56,8 +56,8 @@ checkStuff = function(fun, par.set, design, learner, control) {
   #   stop("Parameter sets with dependent parameters currently require the learner to be a randomForest or rpart.")
 
   ##### multifid #####
-  if (control$multifid.param %nin% pids)
-    stopf("Fidelity param '%s' must be in par.set!", control$multifid.param)
-
-
+  if (control$multifid) {
+    if (control$multifid.param %nin% pids)
+      stopf("Fidelity param '%s' must be in par.set!", control$multifid.param)
+  }
 }
