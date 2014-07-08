@@ -127,13 +127,13 @@ mboMultiFid = function(fun, par.set, design = NULL, learner, control, show.info 
     best.points = prop[[getMinIndex(infill.vals)]]$prop.points
 
     plot.data[[loop]] = genPlotData(compound.model = compound.model, par.set = par.set,
-      control = control, fun = objfun, opt.path = opt.path,
+      control = control, fun = fun, opt.path = opt.path,
       model.cor = model.cor, model.sd = model.sd, model.cost = model.cost, best.points = best.points)
 
     evalProposedPoints(loop = loop, prop.points = best.points, par.set = par.set,
-      opt.path = opt.path, control = control, fun = objfun, show.info = show.info,
+      opt.path = opt.path, control = control, fun = fun, show.info = show.info,
       oldopts = oldopts, more.args = more.args, extras = NULL)
-    #evals = evalTargetFun(fun = objfun, par.set = par.set, dobs = loop, xs = xs, opt.path = opt.path, control = control, show.info = show.info, oldopts = oldopts, more.args = more.args, extras = NULL)
+    #evals = evalTargetFun(fun = fun, par.set = par.set, dobs = loop, xs = xs, opt.path = opt.path, control = control, show.info = show.info, oldopts = oldopts, more.args = more.args, extras = NULL)
     compound.model = update.MultiFidModel(compound.model, task = convertOptPathToTask(opt.path))
   }
 
