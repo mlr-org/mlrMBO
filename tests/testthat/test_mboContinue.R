@@ -4,8 +4,7 @@ options(mlrMBO.debug.mode = FALSE)
 
 test_that("mboContinue", {
   # make sure there is no or - object in the environment
-  if (exists("or"))
-    rm("or")
+  or = NULL
   f = function(x) {
     i <<- i + 1
     if (i > 12)
@@ -28,7 +27,7 @@ test_that("mboContinue", {
   expect_error(or <- mbo(f, ps, learner = learner, control = ctrl, show.info = FALSE), "foo")
   for (i in 1:100) {
     try(or <- mboContinue(save.file), silent = TRUE)
-    if (exists("or"))
+    if (!is.null(or))
       break
   }
   expect_equal(getOptPathLength(or$opt.path), 17)
@@ -50,11 +49,11 @@ test_that("mboContinue", {
     save.file.path = save.file, init.design.points = 10L, number.of.targets = 2)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100)
   ctrl = setMBOControlMultiCrit(ctrl, parego.s = 100)
-  rm("or")
+  or = NULL
   try(or <- mbo(f, ps, learner = learner, control = ctrl, show.info = FALSE), silent = TRUE)
   for (i in 1:100) {
     try(or <- mboContinue(save.file), silent = TRUE)
-    if (exists("or"))
+    if (!is.null(or))
       break
   }
   expect_equal(getOptPathLength(or$opt.path), 17)
