@@ -19,7 +19,7 @@ genPlotData = function(compound.model, opt.path, control, fun, res = 100, model.
   return(list(m.all = m.all, xname = xname, zname = zname, old.points = old.points, best.points = best.points))
 }
 
-genGgplot = function(plotdata, subset.variable = NULL) {
+genGgplot = function(plotdata, subset.variable = NULL, title = character(0)) {
   m.all = plotdata$m.all
   if (!is.null(subset.variable)) {
     m.all = subset(m.all, subset=m.all[["variable"]] %in% subset.variable)
@@ -33,5 +33,8 @@ genGgplot = function(plotdata, subset.variable = NULL) {
   g = g + geom_point(data = old.points)
   g = g + geom_vline(data = best.points, aes_string(xintercept=xname, color=zname), lty=2)
   g = g + facet_wrap(~variable, scales="free_y", ncol=1)
+  if (length(title)>0) {
+    g = g + ggtitle(title)
+  }
   return(g)
 }

@@ -51,15 +51,14 @@ control = setMBOControlMultiFid(control = control,
                                 lvls = c(0.1, 0.3, 1))
 surrogat.model = makeLearner("regr.km", predict.type="se", nugget.estim=TRUE)
 result = mbo(fun = objfun, par.set = par.set, learner = surrogat.model, control = control, show.info = TRUE)
-as.data.frame(result$opt.path)
-result$y.hat
-
 pdf("multifid_steps.pdf", width=6, height=6)
-for (plot.data in result$plot.data) {
-  plot = genGgplot(plot.data, subset.variable=c("response", "crit"))
+for (i in seq_along(result$plot.data)) {
+  plot = genGgplot(result$plot.data[[i]], subset.variable=c("response", "crit"), title = sprintf("Step %i", i))
   print(plot)
 }
 dev.off()
+as.data.frame(result$opt.path)
+result$y.hat
 
 
 stop()
