@@ -149,10 +149,11 @@ f = zdt2
 ps = makeNumericParamSet(len = 2L, lower = 0, upper = 1)
 
 
-ctrl = makeMBOControl(number.of.targets = 2L, init.design.points = 10L, iters = 10,
-  infill.crit = "ei", infill.opt.focussearch.points = 10000L,
-  parego.s = 1000)
+ctrl = makeMBOControl(number.of.targets = 2L, init.design.points = 10L, iters = 5)
 
-#run = exampleRunParEGO(makeMBOFunction(f), ps, control = ctrl)
+ctrl = setMBOControlInfill(ctrl, crit = "ei", opt.focussearch.points = 1000, opt.restarts = 5L)
+ctrl = setMBOControlMulticrit(ctrl)
+
+run = exampleRunParEGO(makeMBOFunction(f), ps, control = ctrl)
 
 autoplo(run, iters = 1:10, pause = T, resolution = ,points.per.dim = 50)
