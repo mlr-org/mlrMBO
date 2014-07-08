@@ -54,16 +54,16 @@ result = mbo(fun = objfun, par.set = par.set, learner = surrogat.model, control 
 as.data.frame(result$opt.path)
 result$y.hat
 
-pdf("multifid_steps.pdf", width=10, height=12)
-for (plot.data in result$plot.data) {}
-  plot = genGgplot(plot.data)
+pdf("multifid_steps.pdf", width=6, height=6)
+for (plot.data in result$plot.data) {
+  plot = genGgplot(plot.data, subset.variable=c("response", "crit"))
   print(plot)
 }
 dev.off()
 
 
 stop()
-### DEBUG:
+### DEBUG: ####
 mf.learner = makeMultiFidLearner(surrogat.learner=surrogat.model, par.set=par.set, control=control)
 mf.design = mlrMBO:::generateMBOMultiFidDesign(par.set=par.set, control=control)
 oldopts = list(
@@ -81,6 +81,12 @@ predict(mf.model$models[[3]], newdata=convertOptPathToDesign(opt.path)[,1,drop=F
 
 ## Crtieria
 compound.model = mf.model
+
+#subsets a data.frame to a given value of the fid.param
+subsetOnPar = function(data, par.val){
+  data = subset(data, data[[control$multifid.param]] == par.val)
+}
+
 # local needed functions
 # calculate cost relation between model w/ par.val and last model
 calcModelCost = function(par.val) {
