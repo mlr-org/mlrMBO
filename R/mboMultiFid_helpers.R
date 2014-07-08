@@ -59,9 +59,13 @@ infillCritMultiFid = function(points, model, control, par.set, design, model.cor
 
 # return all crap so we can plot it later
 infillCritMultiFid2 = function(points, model, control, par.set, design, model.cor, model.sd, model.cost, ...) {
+  lastPoints = function(x) {
+    x[[control$multifid.param]] = tail(control$multifid.lvls,1)
+    x
+  }
   # note: mbo returns the negated EI (and SE), so have to later minimize the huang crit.
   # which is done by default by our optimizer anyway
-  ei.last = infillCritEI(points = points, model = model, control = control, par.set = par.set, design = design)
+  ei.last = infillCritEI(points = lastPoints(points), model = model, control = control, par.set = par.set, design = lastPoints(design))
   alpha1 = replaceByList(points[[control$multifid.param]], model.cor)
   se = -infillCritStandardError(points = points, model = model, control = control, par.set = par.set, design = design)
   # FIXME: do we really have to adapt this? alpha2 should be 0 when?
