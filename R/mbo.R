@@ -28,6 +28,7 @@ mbo = function(fun, par.set, design = NULL, learner, control, show.info = TRUE, 
 
   learner = checkLearner(learner, par.set, control)
   #FIXME: impute wrapper must be correctly configureg. TODO for BB
+  # also: only do this for dep. params
   learner = makeImputeWrapper(learner, classes = list("numeric" = imputeMedian()))
   #FIXME: more param checks
   checkStuff(fun, par.set, design, learner, control)
@@ -38,7 +39,7 @@ mbo = function(fun, par.set, design = NULL, learner, control, show.info = TRUE, 
     show.learner.output = control$show.learner.output)
 
   # Call the correct mbo function
-    if (control$infill.crit == "multiFid") {
+  if (control$infill.crit == "multiFid") {
     mboMultiFid(fun = fun, par.set = par.set, design = design,
       learner = learner, control = control, show.info = show.info, more.args = more.args)
   } else {
