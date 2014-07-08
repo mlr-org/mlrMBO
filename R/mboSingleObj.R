@@ -1,7 +1,5 @@
-#FIXME: retrain kriging faster
 
 #FIXME: how to choose best element. with noise? without?
-#FIXME: different name for final evals in output (not last step number)
 
 #FIXME: cmaes doesn't work when optimum in constraints
 

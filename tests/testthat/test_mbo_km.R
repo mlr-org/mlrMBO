@@ -21,7 +21,6 @@ test_that("mbo works with km", {
   expect_true(is.numeric(df$x2))
   expect_true(is.list(or$x))
   expect_equal(names(or$x), names(ps$pars))
-  expect_true(is(or$models[[1]]$learner, "regr.km"))
   expect_equal(length(or$models[[1]]$subset), 15)
 
   ps = makeParamSet(

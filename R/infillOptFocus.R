@@ -16,12 +16,11 @@ infillOptFocus = function(infill.crit, model, control, par.set, opt.path, design
       # predict on design where NAs were imputed, but return propsed points with NAs
       newdesign = generateDesign(control$infill.opt.focussearch.points, par.set,
         randomLHS)
-      y = infill.crit(imputeFeatures(newdesign, par.set, control), model, control, par.set, design, ...)
-
+      y = infill.crit(newdesign, model, control, par.set, design, ...)
       # get current best value
-      local.index = getMinIndex(y, ties.method="random")
+      local.index = getMinIndex(y, ties.method = "random")
       local.y = y[local.index]
-      local.x.df = newdesign[local.index, , drop=FALSE]
+      local.x.df = newdesign[local.index, , drop = FALSE]
       local.x.list = dfRowToList(recodeTypes(local.x.df, par.set), par.set, 1)
 
       # if we found a new best value, store it

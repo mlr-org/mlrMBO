@@ -19,9 +19,7 @@ test_that("mbo works with rf", {
   expect_equal(getOptPathLength(or$opt.path), 15)
   expect_true(is.list(or$x))
   expect_equal(names(or$x), names(ps$pars))
-  expect_true(is(or$models[[1]]$learner, "regr.randomForest"))
   expect_equal(length(or$models[[1]]$subset), 10)
-  expect_true(is(or$models[[2]]$learner, "regr.randomForest"))
   expect_equal(length(or$models[[2]]$subset), 15)
 
   # check errors

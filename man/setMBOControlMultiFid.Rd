@@ -3,28 +3,29 @@
 \alias{setMBOControlMultiFid}
 \title{Extends mbo control object with multiFid-algorithm specific options.}
 \usage{
-setMBOControlMultiFid(control, multifid.param, multifid.lvls,
-  multifid.costs = NULL, multifid.cor.grid.points = 10L,
-  multifid.force.last.level.evals = 10L)
+setMBOControlMultiFid(control, param, lvls, costs = NULL,
+  cor.grid.points = 10L, force.last.level.evals = 10L)
 }
 \arguments{
 \item{control}{[\code{MBOControl}]\cr
 MBO control object.}
 
-\item{multifid.param}{[\code{character(1)}]\cr
-The name of the parameter which increases the performance but also calculation costs. Has to belong to a discrete Parameter.}
+\item{param}{[\code{character(1)}]\cr
+The name of the parameter which increases the performance but also calculation costs.
+Must be a discrete parameter.}
 
-\item{multifid.param.lvls}{[\code{numeric}]\cr
-The values of the multifid.param the learner should be trained with.}
+\item{lvls}{[\code{numeric}]\cr
+The values of the param the learner should be trained with.}
 
-\item{multifid.cor.grid.points}{[\code{integer(1)}]\cr
-Numbers of points used to calculate the correlation between the different levels of the \code{multiFid.fid.param}.}
+\item{cor.grid.points}{[\code{integer(1)}]\cr
+Numbers of points used to calculate the correlation between the different levels of
+the \code{param}.}
 
-\item{multifid.costs}{[\code{function}]\cr
+\item{costs}{[\code{function}]\cr
 Vektorized (?) cost function with the params \code{cur} and \code{last}.}
 
 \item{force.last.level.evals}{[\code{integer(1)}]
-How many evaluations should be done on the last value of fid.param.}
+How many evaluations should be done on the last value of fid.param?}
 }
 \value{
 [\code{\link{MBOControl}}].

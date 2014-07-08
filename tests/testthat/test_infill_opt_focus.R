@@ -40,9 +40,10 @@ test_that("dependent params, but no focussing", {
 
   learner = makeLearner("regr.randomForest")
   ctrl = makeMBOControl(init.design.points = 20, iters = 2)
-  ctrl = setMBOControlInfill(ctrl, opt = "focussearch", opt.restarts = 1, opt.focussearch.maxit = 1, 
+  ctrl = setMBOControlInfill(ctrl, opt = "focussearch", opt.restarts = 1, opt.focussearch.maxit = 1,
     opt.focussearch.points = 500)
   or = mbo(f, ps, learner = learner, control = ctrl, show.info = FALSE)
+  expect_true(all(is.na(as.data.frame(or$opt.path)[[".model.fail"]])))
   expect_true(!is.na(or$y))
 })
 

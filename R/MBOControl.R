@@ -152,8 +152,8 @@ makeMBOControl = function(number.of.targets = 1L,
   if (length(save.on.disk.at) > 0L)
     assertPathForOutput(save.file.path)
 
-  if ((iters + 1) %nin% save.on.disk.at)
-    warningf("You turned off the final saving of the optimization result. Make sure to save it yourself!")
+  if (length(save.on.disk.at) > 0L && (iters + 1) %nin% save.on.disk.at)
+    warningf("You turned off the final saving of the optimization result at (iter + 1)! Do you really want this?")
   # If debug-mode, turn of saving.
   if (getOption("mlrMBO.debug.mode", default = FALSE))
     save.on.disk.at = NULL

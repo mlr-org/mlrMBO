@@ -13,7 +13,7 @@ generateMBODesign = function(design, fun, par.set, opt.path, control, show.info,
   # either create design or check that the provided one seems ok
   if (is.null(design)) {
     design.x = generateDesign(control$init.design.points, par.set,
-      control$init.design.fun, control$init.design.args, trafo = FALSE)
+      fun = control$init.design.fun, fun.args = control$init.design.args, trafo = FALSE)
   } else {
     # sanity check: are paramter values and colnames of design consistent?
     if (!setequal(setdiff(colnames(design), y.name), pids))
