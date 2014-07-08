@@ -1,12 +1,10 @@
 library(BatchExperiments)
 library(mco)
 library(emoa)
-library(ParamHelpers)
 load_all("..")
 
 unlink("mco_bench-files", recursive = TRUE)
 reg = makeExperimentRegistry("mco_bench", packages = c(
-    "ParamHelpers",
     "mco",
     "emoa",
     "mlrMBO"
@@ -30,6 +28,8 @@ for (i in 1:10) {
   addMyProblem(fname, get(fname), lower = 0, upper = 1)
 }
 
+# add more testfunctions
+
 
 addAlgorithm(reg, "nsga2", fun = function(static) {
   par.set = static$par.set
@@ -41,6 +41,7 @@ addAlgorithm(reg, "nsga2", fun = function(static) {
   pareto.set = setColNames(as.data.frame(res$par[res$pareto.optimal, ]), names.x)
   pareto.front = res$value[res$pareto.optimal, ]
   hv = dominated_hypervolume(t(pareto.front), ref = static$ref)
+  # add crowding dist and r2 indic
   list(pareto.set = pareto.set, pareto.front = pareto.front, hv = hv)
 })
 
@@ -57,6 +58,7 @@ addAlgorithm(reg, "parego", fun = function(static) {
   res = mbo(makeMBOFunction(static$objective), static$par.set,
     learner = learner, control = ctrl, show.info = TRUE)
   hv = dominated_hypervolume(t(res$pareto.front), ref = static$ref)
+  # add crowding dist and r2 indic
   list(paretoset = res$pareto.set, pareto.front = res$pareto.front, hv = hv)
 })
 
