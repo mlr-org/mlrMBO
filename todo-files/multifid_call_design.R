@@ -1,5 +1,6 @@
 #mlrMBO workflow
-
+#library("mlrMBO")
+library("lhs")
 library(devtools)
 library("BBmisc")
 library("ParamHelpers")
@@ -33,29 +34,38 @@ makeObjFun = function(lrn, task, rsm = makeResampleDesc(method = "Holdout", spli
 }
 objfun = makeObjFun(lrn2, task)
 control = makeMBOControl(
-  init.design.points = 15L, #distributed over the different levels, seems not to work for <5 each
+  init.design.points = 9L, #distributed over the different levels, seems not to work for <5 each
   init.design.fun = maximinLHS,
   iters = 10,
   on.learner.error = "stop",
   show.learner.output = FALSE,
 )
-control = setMBOControlInfill(control = control, crit = "multiFid", opt = "focussearch", opt.restarts = 1L, opt.focussearch.maxit = 1L, opt.focussearch.points = 300L)
-control = setMBOControlMultiFid(control = control, multifid.param = "dw.perc", multifid.lvls = c(0.1, 0.3, 1))
+control = setMBOControlInfill(control = control, 
+                              crit = "multiFid", 
+                              opt = "focussearch", 
+                              opt.restarts = 1L, 
+                              opt.focussearch.maxit = 1L, 
+                              opt.focussearch.points = 300L)
+control = setMBOControlMultiFid(control = control, 
+                                param = "dw.perc", 
+                                lvls = c(0.1, 0.3, 1))
 surrogat.model = makeLearner("regr.km", predict.type="se", nugget.estim=TRUE)
 result = mbo(fun = objfun, par.set = par.set, learner = surrogat.model, control = control, show.info = TRUE)
 as.data.frame(result$opt.path)
 result$y.hat
 
 pdf("multifid_steps.pdf", width=10, height=12)
-for(plot in result$plot.data)
+for (plot.data in result$plot.data) {}
+  plot = genGgplot(plot.data)
   print(plot)
+}
 dev.off()
 
 
 stop()
 ### DEBUG:
 mf.learner = makeMultiFidLearner(surrogat.learner=surrogat.model, par.set=par.set, control=control)
-mf.design = generateMBOMultiFidDesign(par.set=par.set, control=control)
+mf.design = mlrMBO:::generateMBOMultiFidDesign(par.set=par.set, control=control)
 oldopts = list(
   ole = getOption("mlr.on.learner.error"),
   slo = getOption("mlr.show.learner.output")
@@ -63,9 +73,9 @@ oldopts = list(
 opt.path = makeOptPathDF(par.set, control$y.name, control$minimize,
                          include.error.message = FALSE,
                          include.exec.time = TRUE)
-mbo.design = generateMBODesign(design=mf.design, fun=objfun, par.set=par.set, opt.path=opt.path, control=control, show.info=TRUE, oldopts=oldopts, more.args=list())
-mf.model = train.MultiFidLearner(mf.learner, task=convertOptPathToTask(opt.path))
-predict(mf.model, task=convertOptPathToTask(opt.path))
+mbo.design = mlrMBO:::generateMBODesign(design=mf.design, fun=objfun, par.set=par.set, opt.path=opt.path, control=control, show.info=TRUE, oldopts=oldopts, more.args=list())
+mf.model = train.MultiFidLearner(mf.learner, task=mlrMBO:::convertOptPathToTask(opt.path))
+predict(mf.model, task=mlrMBO:::convertOptPathToTask(opt.path))
 predict(mf.model, newdata=data.frame(sigma=2, dw.perc=0.3))
 predict(mf.model$models[[3]], newdata=convertOptPathToDesign(opt.path)[,1,drop=F])
 

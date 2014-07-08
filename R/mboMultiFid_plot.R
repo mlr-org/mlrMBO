@@ -10,12 +10,24 @@ genPlotData = function(compound.model, opt.path, control, fun, res = 100, model.
   z.df = do.call(cbind.data.frame, z)
   all = cbind(grid.design, response=p$data$response, z)
   stopifnot(length(par.set.lower$pars) == 1) #nur 1d-plots
-  m.all = melt(all, id.vars=c(names(par.set.lower$pars), control$multifid.param))
+  xname = names(par.set.lower$pars)
+  zname = control$multifid.param
+  m.all = melt(all, id.vars=c(xname, zname))
   old.points = rename(old.points, c("y"="value")); old.points$variable = "response"
-  g = ggplot(m.all, aes(x=sigma, y=value, color=as.factor(dw.perc), group=dw.perc))
+  
+  return(list(m.all = m.all, xname = xname, zname = zname, old.points = old.points, best.points = best.points))
+}
+
+genGgplot = function(plotdata) {
+  m.all = plotdata$m.all
+  xname = plotdata$xname
+  zname = plotdata$zname
+  old.points = plotdata$old.points
+  best.points = plotdata$best.points
+  g = ggplot(m.all, aes_string(x=xname, y="value", color=zname, group=zname))
   g = g + geom_line()
   g = g + geom_point(data = old.points)
-  g = g + geom_vline(data = best.points, aes(xintercept=sigma, color=as.factor(dw.perc)), alpha = 0.5, lty=2, )
+  g = g + geom_vline(data = best.points, aes_string(xintercept=xname, color=zname), lty=2)
   g = g + facet_wrap(~variable, scales="free_y", ncol=1)
   return(g)
 }
