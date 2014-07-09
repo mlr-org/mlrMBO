@@ -116,6 +116,7 @@ mboSingleObj = function(fun, par.set, design = NULL, learner, control, show.info
   res = makeS3Obj(c("MBOSingleObjResult", "MBOResult"),
     x = best$x,
     y = as.numeric(best$y), # strip name
+    best.ind = final.index,
     opt.path = opt.path,
     resample = resample.vals,
     models = models
