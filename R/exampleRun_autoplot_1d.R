@@ -118,8 +118,14 @@ autoplotExampleRun1d = function(x, iters, xlim, ylim, pause, se.factor, point.si
         evals[[name.crit]] = opt.direction *
           critfun(evals.x, model, control, par.set, opt.path[idx.past, ])
       } else {
-        stop("FIXME: Compute infill citeria value on multipoint proposal.")
-        # evals[[name.crit]] =
+        objective = control$multipoint.multicrit.objective
+        if (objective == "mean.dist") {
+          evals[[name.crit]] = opt.direction * infillCritMeanResponse(evals.x, model, control, par.set, opt.path[idx.past, ])
+        } else if (objective == "ei.dist") {
+          evals[[name.crit]] = opt.direction * infillCritEI(evals.x, model, control, par.set, opt.path[idx.past, ])
+        } else if (objective %in% c("mean.se", "mean.se.dist")) {
+          evals[[name.crit]] = opt.direction * infillCritMeanResponse(evals.x, model, control, par.set, opt.path[idx.past, ])
+        }
       }
 
       # prepare drawing of standard error (confidence interval)
