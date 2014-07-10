@@ -15,7 +15,10 @@ getInfillCritFunction = function(infill.crit) {
 }
 
 
-#FIXME: export
+#' Get supported infill-criteria.
+#'
+#' @return [\code{list}] List of supported infill-criteria.
+#' @export
 getInfillCrits = function() {
   c("mean", "ei", "aei", "lcb")
 }
