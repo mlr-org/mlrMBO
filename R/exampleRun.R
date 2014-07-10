@@ -107,7 +107,7 @@ exampleRun = function(fun, par.set, global.opt = NA_real_, learner, control,
     )
   }
 
-  if (is_soo_function("soo_function")) {
+  if (is_soo_function(fun)) {
     fun = makeMBOFunction(fun)
   }
 
