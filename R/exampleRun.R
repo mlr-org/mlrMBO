@@ -4,8 +4,8 @@
 #' Usually used for 1D or 2D examples,
 #' useful for figuring out how stuff works and for teaching purposes.
 #' Currently only parameter spaces with numerical parameters are supported.
-#' For visualization, run \code{plot} on the resulting object.
-#' What is displayed is documented here: \code{\link{plot.MBOExampleRun}}.
+#' For visualization, run \code{autoplot} on the resulting object.
+#' What is displayed is documented here: \code{\link{autoplot.MBOExampleRun}}.
 #'
 #' Please note the following things:
 #' - The true objective function (and later everything which is predicted from our surrogate model)
@@ -50,14 +50,7 @@
 #'   Default is \code{TRUE}.
 #' @param ... [any]\cr
 #'   Further arguments passed to the learner.
-#' @return [\code{list}]:
-#'   \item{xseq [\code{numeric}]}{Sequence of x values from the domain of \code{fun}.}
-#'   \item{yseq [\code{numeric}]}{Sequence of evaluated points.}
-#'   \item{ymat [\code{numeric}]}{Sequence of evaluated points.}
-#'   \item{mbo.res [\code{\link{MBOResult}}]}{MBO result object.}
-#'   \item{par.set [\code{\link[ParamHelpers]{ParamSet}}]}{See argument.}
-#'   \item{learner [\code{\link[mlr]{Learner}}]}{See argument.}
-#'   \item{control [\code{\link{MBOControl}}]}{See argument.}
+#' @return [\code{MBOExampleRun}]
 exampleRun = function(fun, par.set, global.opt = NA_real_, learner, control,
   points.per.dim = 50, noisy.evals = 10, show.info = TRUE, ...) {
 
@@ -65,7 +58,7 @@ exampleRun = function(fun, par.set, global.opt = NA_real_, learner, control,
   assertClass(control, "MBOControl")
 
   if (missing(par.set) && is_soo_function(fun)) {
-    par.set = extractParamSetFormSooFunction(fun)
+    par.set = extractParamSetFromSooFunction(fun)
   }
   assertClass(par.set, "ParamSet")
 

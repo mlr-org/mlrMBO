@@ -49,21 +49,14 @@ Default is \code{TRUE}.}
 Further arguments passed to the learner.}
 }
 \value{
-[\code{list}]:
-  \item{xseq [\code{numeric}]}{Sequence of x values from the domain of \code{fun}.}
-  \item{yseq [\code{numeric}]}{Sequence of evaluated points.}
-  \item{ymat [\code{numeric}]}{Sequence of evaluated points.}
-  \item{mbo.res [\code{\link{MBOResult}}]}{MBO result object.}
-  \item{par.set [\code{\link[ParamHelpers]{ParamSet}}]}{See argument.}
-  \item{learner [\code{\link[mlr]{Learner}}]}{See argument.}
-  \item{control [\code{\link{MBOControl}}]}{See argument.}
+[\code{MBOExampleRun}]
 }
 \description{
 Usually used for 1D or 2D examples,
 useful for figuring out how stuff works and for teaching purposes.
 Currently only parameter spaces with numerical parameters are supported.
-For visualization, run \code{plot} on the resulting object.
-What is displayed is documented here: \code{\link{plot.MBOExampleRun}}.
+For visualization, run \code{autoplot} on the resulting object.
+What is displayed is documented here: \code{\link{autoplot.MBOExampleRun}}.
 
 Please note the following things:
 - The true objective function (and later everything which is predicted from our surrogate model)
