@@ -58,7 +58,6 @@
 #'   \item{par.set [\code{\link[ParamHelpers]{ParamSet}}]}{See argument.}
 #'   \item{learner [\code{\link[mlr]{Learner}}]}{See argument.}
 #'   \item{control [\code{\link{MBOControl}}]}{See argument.}
-#FIXME: can we allow functions with simpler signature?
 exampleRun = function(fun, par.set, global.opt = NA_real_, learner, control,
   points.per.dim = 50, noisy.evals = 10, show.info = TRUE, ...) {
 
