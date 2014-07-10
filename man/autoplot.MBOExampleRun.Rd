@@ -60,10 +60,10 @@ This way one can specify different transformations for different plots.
 If a single function is provided, this function is used for all plots.}
 
 \item{...}{[any]\cr
-Further parameters.}
+Currently not used.}
 }
 \value{
-[\code{list}]. List containing separate ggplot plots for each iteration.
+[\code{list}]. List containing seperate ggplot plots for each iteration.
 }
 \description{
 The plot will show the following elements per iteration:
