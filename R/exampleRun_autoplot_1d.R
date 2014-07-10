@@ -40,11 +40,10 @@ if(getRversion() >= "2.15.1")
 #   Only used if learner supports computation of standard error.
 # @param ... [\code{list}]\cr
 #   Further parameters.
-# @return Nothing.
+# @return [\code{list}] List of length \code{iters}. Each list element is a list of plots.
 autoplotExampleRun1d = function(x, iters, xlim, ylim, pause, se.factor, point.size, line.size, trafo, densregion = TRUE, ...) {
   # extract relevant data from MBOExampleRun
   par.set = x$par.set
-  par.types = x$par.types
   names.x = x$names.x
   name.y = x$name.y
   control = x$control
@@ -136,7 +135,7 @@ autoplotExampleRun1d = function(x, iters, xlim, ylim, pause, se.factor, point.si
       }
     }
 
-    if (par.types %in% c("numeric", "numericvector")) {
+    if (isNumeric(par.set)) {
       # ggplot stuff
       n = nrow(evals)
 
@@ -220,14 +219,14 @@ autoplotExampleRun1d = function(x, iters, xlim, ylim, pause, se.factor, point.si
         "pl.fun" = pl.fun,
         "pl.crit" = pl.crit
       )
-    } else if (par.types %in% c("discrete")) {
+    } else if (isDiscrete(par.set)) {
       if (!noisy) {
         stopf("Deterministic 1d function with a single factor parameter are not supported.")
       }
 
       gg.points = buildPointsData(opt.path, names.x, name.y, idx, idx.init, idx.seq, idx.proposed)
 
-      pl.fun = ggplot(data=gg.points, aes(x = x, y = y, colour = type, shape = type))
+      pl.fun = ggplot(data = gg.points, aes(x = x, y = y, colour = type, shape = type))
       pl.fun = pl.fun + geom_point(size = point.size)
 
       if (se & densregion) {
