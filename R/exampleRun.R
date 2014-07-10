@@ -19,7 +19,8 @@
 #'   signature does not adhere the \dQuote{parameter must be a list}-specification.
 #'
 #' @param fun [\code{function}]\cr
-#'   See \code{\link{mbo}}.
+#'   Target function. See \code{\link{mbo}} for details. It is also possible to
+#'   provide a function from the \code{soobench} package.
 #' @param par.set [\code{\link[ParamHelpers]{ParamSet}}]\cr
 #'   See \code{\link{mbo}}.
 #' @param global.opt [\code{numeric(1)}]\cr
@@ -34,7 +35,6 @@
 #'   DiceKriging.
 #'   \code{nugget.estim} is set to \code{TRUE} depending on whether we have
 #'   noisy observations or not.
-#FIXME: use other learner if we have factors
 #' @param control [\code{\link{MBOControl}}]\cr
 #'   See \code{\link{mbo}}.
 #' @param  points.per.dim [\code{integer}]\cr
@@ -57,8 +57,6 @@
 #'   \item{par.set [\code{\link[ParamHelpers]{ParamSet}}]}{See argument.}
 #'   \item{learner [\code{\link[mlr]{Learner}}]}{See argument.}
 #'   \item{control [\code{\link{MBOControl}}]}{See argument.}
-
-#FIXME: doc soobench and add suggsts
 #FIXME: can we allow functions with simpler signature?
 exampleRun = function(fun, par.set, global.opt = NA_real_, learner, control,
   points.per.dim = 50, noisy.evals = 10, show.info = TRUE, ...) {
@@ -66,17 +64,15 @@ exampleRun = function(fun, par.set, global.opt = NA_real_, learner, control,
   assertFunction(fun)
   assertClass(control, "MBOControl")
 
-  if (missing(par.set) && is_soo_function("soo_function")) {
-    par.set = makeNumericParamSet(lower = lower_bounds(fun), upper = upper_bounds(fun))
-  } else {
-    assertClass(par.set, "ParamSet")
+  if (missing(par.set) && is_soo_function(fun)) {
+    par.set = extractParamSetFormSooFunction(fun)
   }
+  assertClass(par.set, "ParamSet")
 
   if (missing(global.opt) && is_soo_function(fun)) {
     global.opt = global_minimum(fun)$val
-  } else {
-    assertNumber(global.opt, na.ok = TRUE)
   }
+  assertNumber(global.opt, na.ok = TRUE)
 
   par.types = getParamTypes(par.set)
 
@@ -118,7 +114,7 @@ exampleRun = function(fun, par.set, global.opt = NA_real_, learner, control,
   colnames(evals) = c(names.x, name.y)
 
   if (is.na(global.opt))
-    global.opt.estim = ifelse(control$minimize, min(evals[,name.y]), max(evals[,name.y]))
+    global.opt.estim = ifelse(control$minimize, min(evals[, name.y]), max(evals[, name.y]))
   else
     global.opt.estim = NA_real_
 
