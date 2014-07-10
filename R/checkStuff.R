@@ -1,5 +1,15 @@
-# FIXME: add a correct check for dependent params / model
-# check whether the user selected valid options / combinations
+# Helper to check whether the user selected valid options and combinations of options.
+#
+# @param fun [\code{function}]
+#   Objective fun
+# @param par.set [\code{\link[ParamHelpers]{ParamSet}}]
+#   Collection of parameters and their constraints for optimization.
+# @param design
+#   Sampling plan.
+# @param learner [\code{\link[mlr]{Learner}}]
+#   Learner object.
+# @param control [\code{\link{MBOControl}}]
+#   MBO control object.
 checkStuff = function(fun, par.set, design, learner, control) {
   assertFunction(fun)
   assertClass(par.set, "ParamSet")
