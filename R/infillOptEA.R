@@ -1,15 +1,15 @@
-# simple EA that uses operators from emao functions
+# simple EA that uses operators from emoa functions
 # kind of mimics our multicrit approach, so we can
 # compare more honestly
 
-#FIXME potentially allow more than 1 kid
 #FIXME check what this optimizer can do in checkStuff and allow rounding of integers
 infillOptEA = function(infill.crit, model, control, par.set, opt.path, design, ...) {
-  requirePackages("emoa", why="infillOptEA")
+  requirePackages("emoa", why = "infillOptEA")
 
   # get constants and init shit
-  repids = getParamIds(par.set, repeated=TRUE, with.nr = TRUE)
+  repids = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
   d = sum(getParamLengths(par.set))
+
   # (mu + lambda) strategy
   mu = control$infill.opt.ea.mu
   lambda = control$infill.opt.ea.lambda
@@ -24,41 +24,33 @@ infillOptEA = function(infill.crit, model, control, par.set, opt.path, design, .
   for (restart.iter in 1:control$infill.opt.restarts) {
 
     # random inital population:
-    X = generateDesign(mu, par.set, fun=randomLHS)
+    X = generateDesign(mu, par.set, fun = randomLHS)
     y = infill.crit(X, model, control, par.set, design, ...)
 
     for (i in 1:control$infill.opt.ea.maxit) {
       # Create new individual (mu + lambda)
-
       parentSet = replicate(lambda, sample(1:mu, 2))
 
       # get two kids from crossover, select 1 randomly and mutate
       for (i in 1:ncol(parentSet)) {
-        parents = parentSet[,i]
-        child = crossover(t(X[parents, , drop=FALSE]))
-        child1 = child[,sample(c(1, 2), 1)]
+        parents = parentSet[, i]
+        child = crossover(t(X[parents, , drop = FALSE]))
+        child1 = child[, sample(c(1, 2), 1)]
         child1 = mutate(child1)
         # Add new individual:
-        X[nrow(X) + 1,] = child1
+        X[nrow(X) + 1, ] = child1
         child2 = setColNames(as.data.frame(as.list(child1)), repids)
         y[length(y) + 1] = infill.crit(child2, model, control, par.set, design, ...)
       }
 
       # get elements we want to remove from current population
       to.survive = order(y)[1:mu]
-      # print("y\n:")
-      # print(y)
-      # print(length(y))
-      # print("Choosen to survice:\n")
-      # print(y[to.survive])
-      # print(length(y[to.survive]))
-      # stop("testPlatformEquivalence")
-      X = X[to.survive, ,drop=FALSE]
+      X = X[to.survive, ,drop = FALSE]
       y = y[to.survive]
     }
     select = getMinIndex(y)
     y1 = y[select]
-    x1 = X[select, , drop=FALSE]
+    x1 = X[select, , drop = FALSE]
     if (y1 < best.y) {
       best.x = x1
       best.y = y1
