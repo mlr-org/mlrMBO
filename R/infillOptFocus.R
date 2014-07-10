@@ -1,4 +1,3 @@
-
 # random search, where we shrink the region of interest after restarts
 # around the currently best point. only numeric / ints are currently "shrunken"
 # works for ALL parameter sets
@@ -13,7 +12,7 @@ infillOptFocus = function(infill.crit, model, control, par.set, opt.path, design
   for (restart.iter in 1:control$infill.opt.restarts) {
     # do iterations where we focus the region-of-interest around the current best point
     for (local.iter in 1:control$infill.opt.focussearch.maxit) {
-      # predict on design where NAs were imputed, but return propsed points with NAs
+      # predict on design where NAs were imputed, but return proposed points with NAs
       newdesign = generateDesign(control$infill.opt.focussearch.points, par.set,
         randomLHS)
       y = infill.crit(newdesign, model, control, par.set, design, ...)
@@ -35,16 +34,16 @@ infillOptFocus = function(infill.crit, model, control, par.set, opt.path, design
         val = local.x.list[[par$id]]
         # only shrink when there is a value
         if (!isScalarNA(val)) {
-          if (par$type %in% c("numeric", "integer", "numericvector", "integervector")) {
+          if (isNumeric(par)) {
             # shrink to range / 2, centered at val
             range = par$upper - par$lower
-            par$lower = pmax(par$lower, val - range/4)
-            par$upper = pmin(par$upper, val + range/4)
-            if (par$type %in% c("integer", "integervector")) {
+            par$lower = pmax(par$lower, val - (range / 4))
+            par$upper = pmin(par$upper, val + (range / 4))
+            if (isInteger(par)) {
               par$lower = floor(par$lower)
               par$upper = ceiling(par$upper)
             }
-          } else if (par$type %in% c("discrete", "discretevector")) {
+          } else if (isDiscrete(par)) {
             # randomly drop a level, which is not val
             if (length(par$values) > 1L) {
               val.names = names(par$values)
@@ -68,12 +67,9 @@ recodeTypes = function(df, par.set) {
   types = unlist(lapply(par.set$pars, function(p) rep(p$type, p$len)))
   for (i in seq_col(df)) {
     if (types[i] %in% c("integer", "integervector"))
-      df[,i] = as.integer(df[,i])
+      df[, i] = as.integer(df[,i])
     else if (types[i] %in% c("logical", "logicalvector"))
-      df[,i] = as.logical(as.character(df[,i]))
+      df[, i] = as.logical(as.character(df[,i]))
   }
   return(df)
 }
-
-
-

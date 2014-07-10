@@ -1,4 +1,4 @@
-#'  Optimizes a function with sequential model based optimization.
+#' Optimizes a function with sequential model based optimization.
 #'
 #' @param fun [\code{function(x, ...)}]\cr
 #'   Fitness function to minimize. The first argument has to be a list of values.
@@ -25,6 +25,7 @@
 #' respectively the help pages of \code{\link[parallelMap]{parallelMap}} for instructions on how to set up parallization.
 #' @export
 mbo = function(fun, par.set, design = NULL, learner, control, show.info = TRUE, more.args = list()) {
+  assertFlag(show.info)
 
   learner = checkLearner(learner, par.set, control)
   #FIXME: impute wrapper must be correctly configureg. TODO for BB
@@ -33,8 +34,8 @@ mbo = function(fun, par.set, design = NULL, learner, control, show.info = TRUE, 
      numeric = imputeMedian(),
      factor = imputeConstant("__miss__")
   ))
-  #FIXME: more param checks
   checkStuff(fun, par.set, design, learner, control)
+
   loadPackages(control)
 
   # configure mlr in an appropriate way

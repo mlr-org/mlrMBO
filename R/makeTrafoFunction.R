@@ -9,8 +9,8 @@
 makeTrafoFunction = function(name, fun) {
     structure(
         fun,
-        name=name,
-        class=c("MBOTrafoFunction", class(fun)))
+        name = name,
+        class = c("MBOTrafoFunction", class(fun)))
 }
 
 # @export

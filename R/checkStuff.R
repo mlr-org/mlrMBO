@@ -2,9 +2,13 @@
 # check whether the user selected valid options / combinations
 checkStuff = function(fun, par.set, design, learner, control) {
   assertFunction(fun)
+  assertClass(par.set, "ParamSet")
+  assertClass(control, "MBOControl")
+  assertClass(learner, "Learner")
+
   pids = getParamIds(par.set)
 
-  #####  check params + learner #####
+  # check params + learner
   if (any(sapply(par.set$pars, inherits, what = "LearnerParam")))
     stop("No parameter can be of class 'LearnerParam'! Use basic parameters instead to describe you region of interest!")
   if (!hasFiniteBoxConstraints(par.set))
@@ -15,7 +19,7 @@ checkStuff = function(fun, par.set, design, learner, control) {
   if (learner$type != "regr")
     stop("mbo requires regression learner!")
 
-  ##### general infill stuff. relavant for single obj and parego
+  # general infill stuff. relavant for single obj and parego
   if (control$infill.crit %in% c("ei", "aei", "lcb") && learner$predict.type != "se") {
     stopf("For infill criterion '%s' predict.type of learner %s must be set to 'se'!%s",
       control$infill.crit, learner$id,
@@ -30,7 +34,7 @@ checkStuff = function(fun, par.set, design, learner, control) {
   if (control$multipoint.method == "cl" && learner$id != "regr.km")
     stop("Constant liar can currently only be used with Kriging surrograte.")
 
-  ##### single ob j#####
+  #  single objective
   if (control$number.of.targets == 1L) {
     if (control$propose.points == 1L) { # single point
     } else {                            # multi point
