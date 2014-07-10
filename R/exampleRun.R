@@ -32,9 +32,10 @@
 #' @param learner [\code{\link[mlr]{Learner}}]\cr
 #'   See \code{\link{mbo}}.
 #'   Default is mlr learner \dQuote{regr.km}, which is kriging from package
-#'   DiceKriging.
-#'   \code{nugget.estim} is set to \code{TRUE} depending on whether we have
-#'   noisy observations or not.
+#'   DiceKriging, if all parameters are numeric. \code{nugget.estim} is set
+#'   to \code{TRUE} depending on whether we have noisy observations or not.
+#'   If a least one parameter is discrete the mlr learner \dQuote{regr.randomForest}
+#'   from package RandomForest is used as the default.
 #' @param control [\code{\link{MBOControl}}]\cr
 #'   See \code{\link{mbo}}.
 #' @param  points.per.dim [\code{integer}]\cr
