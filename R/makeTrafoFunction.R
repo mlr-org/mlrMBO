@@ -7,10 +7,9 @@
 #' @return Object of type MBOTrafoFunction.
 #' @export
 makeTrafoFunction = function(name, fun) {
-  makeS3Obj(c("MBOTrafoFunction", class(fun)))
-    fun = fun,
-    name = name
-  )
+  fun = addClasses(fun, "MBOTrafoFunction")
+  fun = setAttribute(fun, "name", name)
+  return(fun)
 }
 
 # @export
