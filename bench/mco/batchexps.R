@@ -64,7 +64,7 @@ addAlgorithm(reg, "nsga2", fun = function(static) {
   pareto.front = res$value[res$pareto.optimal, ]
   hv = dominated_hypervolume(t(pareto.front), ref = static$ref)
   cd = crowding_distance(t(pareto.front))
-  r2 = unary_r2_indicator(t(pareto.front))
+  r2 = unary_r2_indicator(t(pareto.front), weights = WEIGHTS)
   list(pareto.set = pareto.set, pareto.front = pareto.front, hv = hv, cd = cd, r2 = r2)
 })
 
@@ -77,20 +77,20 @@ addAlgorithm(reg, "parego", fun = function(static) {
   ctrl = makeMBOControl(number.of.targets = static$ny, init.design.points = INIT_DESIGN_POINTS, 
     iters = ITERS, propose.points = PROP_POINTS) 
   ctrl = setMBOControlInfill(ctrl, crit = "ei", opt.focussearch.points = 100, opt.restarts = 1L)
-  ctrl = setMBOControlMulticrit(ctrl)
+  ctrl = setMBOControlMultiCrit(ctrl)
 
   res = mbo(makeMBOFunction(static$objective), static$par.set,
     learner = learner, control = ctrl, show.info = TRUE)
   hv = dominated_hypervolume(t(res$pareto.front), ref = static$ref)
   cd = crowding_distance(t(res$pareto.front))
-  r2 = unary_r2_indicator(t(res$pareto.front))
+  r2 = unary_r2_indicator(t(res$pareto.front), weights = WEIGHTS)
   list(paretoset = res$pareto.set, pareto.front = res$pareto.front, hv = hv, cd = cd, r2 = r2)
 })
 
 
 addExperiments(reg, repls = REPLS)
 
-testJob(reg, 600, external = FALSE)
+testJob(reg, 9, external = FALSE)
 
 # submitJobs(reg, resources=list(walltime=8*3600, memory=2*1024),
 #   wait=function(retries) 1, max.retries=10)
