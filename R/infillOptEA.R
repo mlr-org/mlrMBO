@@ -45,7 +45,7 @@ infillOptEA = function(infill.crit, model, control, par.set, opt.path, design, .
 
       # get elements we want to remove from current population
       to.survive = order(y)[1:mu]
-      X = X[to.survive, ,drop = FALSE]
+      X = X[to.survive, , drop = FALSE]
       y = y[to.survive]
     }
     select = getMinIndex(y)
