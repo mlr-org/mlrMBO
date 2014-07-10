@@ -20,7 +20,8 @@ proposePoints = function(model, par.set, control, opt.path, ...) {
   } else {
     model.fail = NA_character_
     #FIXME: shoule we impute features here or not?
-    design = convertOptPathToDf(par.set, opt.path, control, impute.feats = FALSE)
+    #DH: Must be Done in MLR now.
+    design = convertOptPathToDf(par.set, opt.path, control)
 
     if (n == 1L) {
       # single point proposal

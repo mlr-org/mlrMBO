@@ -14,4 +14,3 @@ getInfillCritFunction = function(infill.crit) {
   )
 }
 
-

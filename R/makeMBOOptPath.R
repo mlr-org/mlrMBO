@@ -1,3 +1,5 @@
+# Create the opt.path with MBO-specific defaults - 
+# allways include error.message, exec.time and extra params, but never add transformed x.
 makeMBOOptPath = function(par.set, control) {
   makeOptPathDF(
     par.set = par.set, 

@@ -9,6 +9,10 @@ getInfillOptFunction = function(infill.opt) {
   )
 }
 
+#' Get supported infill-criteria optimizers.
+#'
+#' @return [\code{list}] List of supported infill optimizers.
+#' @export
 getSupportedInfillOptFunctions = function() {
   c("cmaes", "focussearch",  "ea")
 }

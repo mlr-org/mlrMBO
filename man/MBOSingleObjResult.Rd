@@ -8,9 +8,11 @@
   \item{y [\code{numeric(1)}]}{Value of objective function at \code{x},
     either from evals during optimization or from requested final evaluations,
     if those were greater than 0.}
+    \item{best.ind [\code{numeric(1)}]}{Index of \code{x} in the opt.path.}
   \item{opt.path [\code{\link[ParamHelpers]{OptPath}}]}{Optimization path.
     Includes all evaluated points and additional information.
     You can convert it via \code{as.data.frame}.}
+  \item{resample.vals ???}{???}
   \item{models [List of \code{\link[mlr]{WrappedModel}}]}{List of saved regression models.}
 }
 }
