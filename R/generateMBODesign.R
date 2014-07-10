@@ -21,8 +21,8 @@ generateMBODesign = function(design, fun, par.set, opt.path, control, show.info,
 
     # sanity check: do not allow transformed designs
     # if no trafo attribute provided we act on the assumption that the design is not transformed
-    if ("trafo" %nin% names(attributes(design))) {
-      attr(design, "trafo") = FALSE
+    if (!hasAttributes(design, "trafo")) {
+      design = setAttribute(design, "trafo", FALSE)
     } else {
       if (attr(design, "trafo")) {
         stop("Design must not be transformed!")
