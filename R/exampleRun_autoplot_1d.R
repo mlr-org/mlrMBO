@@ -76,7 +76,7 @@ autoplotExampleRun1d = function(x, iters, xlim, ylim, pause, se.factor, point.si
   }
 
   evals = x$evals
-  evals.x = evals[, names.x, drop=FALSE]
+  evals.x = evals[, names.x, drop = FALSE]
   opt.path = as.data.frame(mbo.res$opt.path)
 
   idx.init = which(opt.path$dob == 0)
@@ -112,11 +112,11 @@ autoplotExampleRun1d = function(x, iters, xlim, ylim, pause, se.factor, point.si
     # compute model prediction for current iter
     if (model.ok) {
       evals$yhat = infillCritMeanResponse(evals.x, model,
-        control, par.set, opt.path[idx.past,])
+        control, par.set, opt.path[idx.past, ])
 
       if (propose.points == 1L) {
         evals[[name.crit]] = opt.direction *
-          critfun(evals.x, model, control, par.set, opt.path[idx.past,])
+          critfun(evals.x, model, control, par.set, opt.path[idx.past, ])
       } else {
         stop("FIXME: Compute infill citeria value on multipoint proposal.")
         # evals[[name.crit]] =
@@ -124,7 +124,7 @@ autoplotExampleRun1d = function(x, iters, xlim, ylim, pause, se.factor, point.si
 
       # prepare drawing of standard error (confidence interval)
       if (se) {
-        evals$se = -infillCritStandardError(evals.x, model, control, par.set, opt.path[idx.past,])
+        evals$se = -infillCritStandardError(evals.x, model, control, par.set, opt.path[idx.past, ])
         evals$se.min = evals$yhat - se.factor * evals$se
         evals$se.max = evals$yhat + se.factor * evals$se
       }
@@ -210,13 +210,9 @@ autoplotExampleRun1d = function(x, iters, xlim, ylim, pause, se.factor, point.si
       }
       pl.crit = pl.crit + scale_y_continuous(name = ylab)
 
-      # arrange stuff in grid
-      pl.all = grid.arrange(pl.fun, pl.crit, nrow = 2)
-
       plot.sequence[[i]] = list(
         "pl.fun" = pl.fun,
-        "pl.crit" = pl.crit,
-        "pl.all" = pl.all
+        "pl.crit" = pl.crit
       )
     } else if (par.types %in% c("discrete")) {
       if (!noisy) {
