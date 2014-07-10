@@ -14,8 +14,3 @@ getInfillCritFunction = function(infill.crit) {
   )
 }
 
-
-#FIXME: export
-getInfillCrits = function() {
-  c("mean", "ei", "aei", "lcb")
-}

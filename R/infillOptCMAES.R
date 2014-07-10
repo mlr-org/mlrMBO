@@ -23,7 +23,6 @@
 # cmaes with simple random restarts.
 # the first start is always at the best point of the current opt.path.
 # works only for numerics and integers, latter are simply rounded.
-
 infillOptCMAES = function(infill.crit, model, control, par.set, opt.path, design, ...) {
   # extract lower and upper bound for params
   low = getLower(par.set)

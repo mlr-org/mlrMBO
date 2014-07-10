@@ -1,9 +1,11 @@
 # Infill criteria.
+# Used to select update/infill points to increase (global) model accuracy.
 # CONVENTION: INFILL CRITERIA ARE ALWAYS MINIMIZED. SO A FEW BELOW ARE NEGATED VERSIONS!
+
 #FIXME think about which criterias are for determinitic, which are for noisy case
 # below is just guessed this...
 
-# General interface
+# Please stick to the following general interface. 
 #
 # @param points [\code{data.frame}]\cr
 #   Points where to evaluate.
@@ -17,20 +19,20 @@
 #   Design of already visited points.
 # @return [\code{numeric}]. Criterion values at \code{points}.
 
-# mean response of model
-# useful for deterministic and noisy
+# MEAN RESPONSE OF MODEL
+# (useful for deterministic and noisy)
 infillCritMeanResponse = function(points, model, control, par.set, design) {
-  ifelse(control$minimize, 1, -1) * predict(model, newdata=points)$data$response
+  ifelse(control$minimize, 1, -1) * predict(model, newdata = points)$data$response
 }
 
-# model uncertainty
-# on its own not really useful for anything I suppose...
+# MODEL UNCERTAINTY
+# (on its own not really useful for anything I suppose ...)
 infillCritStandardError = function(points, model, control, par.set, design) {
-  -predict(model, newdata=points)$data$se
+  -predict(model, newdata = points)$data$se
 }
 
-# expected improvement
-# useful for deterministic
+# EXPECTED IMPROVEMENT
+# (useful for deterministic)
 infillCritEI = function(points, model, control, par.set, design) {
   maximize.mult = ifelse(control$minimize, 1, -1)
   y = maximize.mult * design[, control$y.name]
@@ -53,14 +55,11 @@ infillCritEI = function(points, model, control, par.set, design) {
   ifelse(p.se < 1e-6, 0, -ei)
 }
 
-
-# lower confidence bound
-# useful for deterministic
+# LOWER CONFIDENCE BOUND
+# (useful for deterministic)
 infillCritLCB = function(points, model, control, par.set, design) {
   maximize.mult = ifelse(control$minimize, 1, -1)
   p = predict(model, newdata = points)$data
   lcb = maximize.mult * (p$response - control$infill.crit.lcb.lambda * p$se)
   return(lcb)
 }
-
-

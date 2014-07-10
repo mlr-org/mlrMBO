@@ -5,12 +5,12 @@
 # @param par.set [\code{\link[ParamHelpers]{ParamSet}}]\cr
 #   Collection of parameters and their constraints for optimization.
 # @param x [\code{list}]\cr
-#   List of values which evantually are located below bounds.
+#   List of values which eventually are located outside of the bounds.
 # @return [\code{list}]:
 #   List of repaired points.
 repairPoint = function(par.set, x) {
   Map(function(p, v) {
-    if (p$type %in% c("numeric", "numericvector", "integer", "integervector")) {
+    if (isNumeric(p)) {
       if (!(length(v) == 1L && is.na(v)) && any(v < p$lower | v > p$upper)) {
         warningf("Repairing value for %s: %s", p$id, as.character(v))
         v = pmax(p$lower, v)

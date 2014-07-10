@@ -13,7 +13,7 @@ makeScalarTasks = function(par.set, opt.path, control, all.possible.weights) {
 
   n.points = control$propose.points
   # get data + normalize the targets to [0, 1] + drop them from data
-  data = convertOptPathToDf(par.set, opt.path, control, impute.feats = TRUE)
+  data = convertOptPathToDf(par.set, opt.path, control)
   data = dropNamed(data, control$y.name)
   y = getOptPathY(opt.path)
   y = normalize(y, method = "range", margin = 2L)

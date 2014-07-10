@@ -10,6 +10,7 @@
 #' - Initial design points
 #' - Points from previous sequential iterations
 #' - Proposed point in current iteration.
+#'
 #' @param object [\code{function}]\cr
 #'   Objective function.
 #' @param iters [\code{integer}]\cr
@@ -51,11 +52,9 @@
 #'   or \dQuote{se}.
 #'   This way one can specify different transformations for different plots.
 #'   If a single function is provided, this function is used for all plots.
-#FIXME: if only these names are allowed, check them!
 #' @param ... [any]\cr
-#'   Further parameters.
-#FIXME: what are they used for? Document!
-#' @return [\code{list}]. List containing separate ggplot plots for each iteration.
+#'   Currently not used.
+#' @return [\code{list}]. List containing seperate ggplot plots for each iteration.
 #' @export
 autoplot.MBOExampleRun = function(object, iters, pause = TRUE, densregion = TRUE,
   se.factor = 1, xlim, ylim, point.size = 3, line.size = 1, trafo = NULL, ...) {
