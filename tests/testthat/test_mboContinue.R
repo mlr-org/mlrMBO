@@ -7,7 +7,7 @@ test_that("mboContinue", {
   or = NULL
   f = function(x) {
     i <<- i + 1
-    if (i > 12)
+    if (i > 6)
       if (rbinom(1, 1, 0.5))
         stop("foo")
     sum(x^2)
