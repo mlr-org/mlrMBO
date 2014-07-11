@@ -10,20 +10,24 @@ library(ggplot2)
 library(grid)
 library(gridExtra)
 
-load_all(".", reset=TRUE)
+load_all(".", reset = TRUE)
 
-configureMlr(show.learner.output=FALSE)
+configureMlr(show.learner.output = FALSE)
 
-objfun = generate_branin_function()
+set.seed(423)
 
-ctrl = makeMBOControl(init.design.points=10, iters=10, propose.points=1,
-  infill.crit="ei", infill.opt="focussearch", infill.opt.focussearch.points=2000)
+obj.fun = branin_function()
 
-lrn = makeLearner("regr.km", predict.type="se", covtype="matern3_2")
+par.set = extractParamSetFromSooFunction(obj.fun)
 
-run = exampleRun(objfun, learner=lrn, control=ctrl, points.per.dim=50)
+ctrl = makeMBOControl(init.design.points = 10, iters = 10, propose.points = 1)
+ctrl = setMBOControlInfill(ctrl, crit = "ei", opt = "focussearch", opt.focussearch.points = 2000)
+
+lrn = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
+
+run = exampleRun(obj.fun, par.set = par.set, learner = lrn, control = ctrl, points.per.dim = 50)
 
 print(run)
 
-autoplot(run, pause=TRUE)
+res = autoplot(run, pause = FALSE)
 

@@ -11,9 +11,9 @@ library(ggplot2)
 library(grid)
 library(gridExtra)
 
-load_all(".", reset=TRUE)
+load_all(".", reset = TRUE)
 
-configureMlr(show.learner.output=TRUE)
+configureMlr(show.learner.output = TRUE)
 
 objfun = function(x) {
   if (x$foo == "a")
@@ -24,17 +24,18 @@ objfun = function(x) {
     sum(x$x^2) - 10
 }
 
-ps = makeParamSet(
-    makeDiscreteParam("foo", values = c("a", "b", "c")),
-    makeNumericVectorParam("x", len=1, lower=-2, upper=3)
-  )
+par.set = makeParamSet(
+  makeDiscreteParam("foo", values = letters[1:3]),
+  makeNumericVectorParam("x", len = 1, lower = -2, upper = 3)
+)
 
-lrn = makeLearner("regr.randomForest", predict.type="se")
+lrn = makeLearner("regr.randomForest", predict.type = "se")
 
-ctrl = makeMBOControl(init.design.points=6, iters=10, propose.points=1, infill.crit="ei")
+ctrl = makeMBOControl(init.design.points = 6, iters = 10, propose.points = 1)
+ctrl = setMBOControlInfill(ctrl, crit = "ei")
 
-run = exampleRun(objfun, ps, global.opt=-10, learner=lrn,
-  control=ctrl, points.per.dim=100)
+run = exampleRun(objfun, par.set = par.set, global.opt = -10, learner = lrn,
+  control = ctrl, points.per.dim = 100)
 
 print(run)
 
