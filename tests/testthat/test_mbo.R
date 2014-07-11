@@ -74,7 +74,7 @@ test_that("mbo works with rf", {
   df = as.data.frame(or$opt.path)
   expect_true(is.numeric(df$x1))
   expect_true(is.integer(df$x2))
-  expect_true(is.character(df$x3))
+  expect_true(is.factor(df$x3))
   expect_true(is.numeric(df$y))
   expect_true(is.list(or$x))
   expect_equal(names(or$x), names(ps$pars))
