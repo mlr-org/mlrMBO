@@ -226,29 +226,34 @@ autoplotExampleRun1d = function(x, iters, xlim, ylim, pause, se.factor, point.si
 
       gg.points = buildPointsData(opt.path, names.x, name.y, idx, idx.init, idx.seq, idx.proposed)
 
+      if (se & densregion) {
+        gg.points$se = -infillCritStandardError(data.frame(x = gg.points$x), model, control, par.set, opt.path[idx.past, ])
+        gg.points$se.min = gg.points$y - se.factor * gg.points$se
+        gg.points$se.max = gg.points$y + se.factor * gg.points$se
+      }
+
       pl.fun = ggplot(data = gg.points, aes(x = x, y = y, colour = type, shape = type))
       pl.fun = pl.fun + geom_point(size = point.size)
-
       if (se & densregion) {
-        print("SE is active")
+        pl.fun = pl.fun + geom_errorbar(aes(ymin = se.min, ymax = se.max), width = .1, alpha = .5)
       }
+      print(gg.points)
+
 
       pl.fun = pl.fun + xlab(names.x)
       pl.fun = pl.fun + ylab(name.y)
-      pl.fun = pl.fun + scale_colour_discrete(name="type")
+      pl.fun = pl.fun + scale_colour_discrete(name = "type")
       pl.fun = pl.fun + ggtitle(
         sprintf("Iter = %i, Gap = %.4e", i,
         calculateGap(opt.path[idx.pastpresent,], global.opt, control))
       )
+
       pl.fun = pl.fun + theme(
         legend.position = "top",
         legend.box = "horizontal",
         plot.title = element_text(size = 11, face = "bold")
       )
 
-      print(pl.fun)
-
-      # save plot
       plot.sequence[[i]] = list(
         "pl.fun" = pl.fun
       )
