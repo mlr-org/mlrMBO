@@ -1,6 +1,6 @@
 genPlotData = function(compound.model, opt.path, control, fun, res = 100, model.cor, model.sd, model.cost, par.set, best.points) {
   requirePackages(packs=c("ggplot2", "reshape2"), why="generate MultiFid Plot")
-  par.set.lower = parSetWithout(par.set, control$multifid.param)
+  par.set.lower = dropParams(par.set, control$multifid.param)
   grid.design = generateGridDesign(par.set = par.set.lower, resolution = res)
   grid.design = expandDesign(design = grid.design, control = control)
   old.points = convertOptPathToDesign(opt.path)
