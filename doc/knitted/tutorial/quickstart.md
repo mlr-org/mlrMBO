@@ -14,6 +14,8 @@ library(ParamHelpers)
 obj.fun = rastrigin_function(1)
 ```
 
+**Note:** Since all this stuff here is under heavy developement it might be neccessary to install the github developement version of the ParamHelpers package via the ```devtools::install_github``` function.
+
 We decide ourself to use kriging as our surrgate model. Furthermore we use Expected Improvement (EI) as the infill criterion, i. e., the criterion which determines which point(s) of the objective function should be evaluated in further iterations (keep in mind, that using EI as the infill criterion needs the learner to support standard error estimation). Initially we let mbo generate an initial design of 30 points (the default algorithm is maximinLHS from package lhs).
 
 
@@ -51,7 +53,7 @@ result = mbo(makeMBOFunction(obj.fun), par.set = par.set, learner = learner, con
 ## [mbo] 0: x1=-0.31 : y = 13.8 : 0.0 secs
 ## [mbo] 0: x1=4.32 : y = 33 : 0.0 secs
 ## [mbo] 0: x1=1.48 : y = 22.1 : 0.0 secs
-## [mbo] 0: x1=-2.21 : y = 12.4 : 0.0 secs
+## [mbo] 0: x1=-2.21 : y = 12.4 : 0.9 secs
 ## [mbo] 0: x1=-1.61 : y = 20.3 : 0.0 secs
 ## [mbo] 0: x1=-4.32 : y = 32.6 : 0.0 secs
 ## [mbo] 0: x1=-1.78 : y = 11.3 : 0.0 secs
@@ -89,14 +91,14 @@ print(result)
 ## Optimization path
 ## 30 + 10 entries in total, displaying last 10 (or less):
 ##          x1        y dob eol error.message exec.time       ei .model.fail
-## 31 -1.71758 14.97313   1  NA          <NA>     0.000 -0.10154        <NA>
-## 32 -0.05024  0.49671   2  NA          <NA>     0.000 -0.76134        <NA>
-## 33  0.98873  1.00265   3  NA          <NA>     0.000 -0.47515        <NA>
-## 34  4.06821 17.45491   4  NA          <NA>     0.001 -0.18690        <NA>
-## 35 -1.03802  1.36144   5  NA          <NA>     0.000 -0.39812        <NA>
-## 36 -0.00877  0.01525   6  NA          <NA>     0.000 -0.31555        <NA>
-## 37  0.11191  2.38435   7  NA          <NA>     0.000 -0.18567        <NA>
-## 38 -1.99600  3.98717   8  NA          <NA>     0.000 -0.09983        <NA>
-## 39  1.98862  3.98016   9  NA          <NA>     0.000 -0.08164        <NA>
-## 40  1.04274  1.44581  10  NA          <NA>     0.000 -0.06965        <NA>
+## 31 -1.71758 14.97313   1  NA          <NA>         0 -0.10154        <NA>
+## 32 -0.05024  0.49671   2  NA          <NA>         0 -0.76134        <NA>
+## 33  0.98873  1.00265   3  NA          <NA>         0 -0.47515        <NA>
+## 34  4.06821 17.45491   4  NA          <NA>         0 -0.18690        <NA>
+## 35 -1.03802  1.36144   5  NA          <NA>         0 -0.39812        <NA>
+## 36 -0.00877  0.01525   6  NA          <NA>         0 -0.31555        <NA>
+## 37  0.11191  2.38435   7  NA          <NA>         0 -0.18567        <NA>
+## 38 -1.99600  3.98717   8  NA          <NA>         0 -0.09983        <NA>
+## 39  1.98862  3.98016   9  NA          <NA>         0 -0.08164        <NA>
+## 40  1.04274  1.44581  10  NA          <NA>         0 -0.06965        <NA>
 ```
