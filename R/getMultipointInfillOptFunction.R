@@ -10,11 +10,3 @@ getMultipointInfillOptFunction = function(multipoint.infill.opt) {
     match.fun(multipoint.infill.opt)
   )
 }
-
-#' Get supported multipoint infill-criteria opimizers.
-#'
-#' @return [\code{list}] List of supported multipoint infill optimizers.
-#' @export
-getSupportedMultipointInfillOptFunctions = function() {
-  c("cl", "lcb", "multicrit")
-}

@@ -2,7 +2,7 @@
 #'
 #' @return [\code{character}]
 #' @export
-getInfillCrits = function() {
+getSupportedInfillCritFunctions = function() {
   c("mean", "ei", "aei", "lcb")
 }
 
