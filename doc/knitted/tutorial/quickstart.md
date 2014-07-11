@@ -90,7 +90,7 @@ print(result)
 ## 
 ## Optimization path
 ## 30 + 10 entries in total, displaying last 10 (or less):
-##          x1        y dob eol error.message exec.time       ei .model.fail
+##          x1        y dob eol error.message exec.time       ei error.model
 ## 31 -1.71758 14.97313   1  NA          <NA>         0 -0.10154        <NA>
 ## 32 -0.05024  0.49671   2  NA          <NA>         0 -0.76134        <NA>
 ## 33  0.98873  1.00265   3  NA          <NA>         0 -0.47515        <NA>

@@ -14,11 +14,11 @@ mboParEGO = function(fun, par.set, design = NULL, learner, control, show.info = 
   crit = control$infill.crit
 
   # helper to get extras-list for opt.path logging
-  getExtras = function(crit.vals, model.fail, weight.mat) {
+  getExtras = function(crit.vals, error.model, weight.mat) {
     n = length(crit.vals)
     exs = vector("list", n)
     for (i in 1:n) {
-      ex = list(crit.vals[i], .model.fail = model.fail[i])
+      ex = list(crit.vals[i], error.model = error.model[i])
       names(ex)[1] = crit
       w = setNames(as.list(weight.mat[i, ]), paste0(".weight", 1:ncol(weight.mat)))
       exs[[i]] = c(ex, w)
@@ -38,7 +38,7 @@ mboParEGO = function(fun, par.set, design = NULL, learner, control, show.info = 
     opt.path = makeMBOOptPath(par.set, control)
     weight.mat = matrix(NA, nrow = ninit, ncol = control$number.of.targets)
     generateMBODesign(design, fun, par.set, opt.path, control, show.info, oldopts, more.args,
-      extras = getExtras(rep(NA, ninit), model.fail = NA_character_, weight.mat))
+      extras = getExtras(rep(NA, ninit), error.model = NA_character_, weight.mat))
     models = namedList(control$store.model.at)
     saveStateOnDisk(0L, fun, learner, par.set, opt.path, control, show.info, more.args, models, NULL, NULL)
   } else {
@@ -69,7 +69,7 @@ mboParEGO = function(fun, par.set, design = NULL, learner, control, show.info = 
 
     extras = getExtras(
       crit.vals = extractSubList(props, "crit.vals"),
-      model.fail = extractSubList(props, "model.fail"),
+      error.model = extractSubList(props, "error.model"),
       weight.mat = scalar$weights
     )
     evalProposedPoints(loop, prop.points, par.set, opt.path, control,
