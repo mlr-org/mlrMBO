@@ -115,21 +115,18 @@ autoplotExampleRun2d = function(x, iters, pause = TRUE, densregion = TRUE, point
 
     title = sprintf("Iter %i, x-axis: %s, y-axis: %s", i, name.x1, name.x2)
 
-    if (se) {
-      pl.all = grid.arrange(pl.fun, pl.mod, pl.crit, pl.se, nrow = 2, main = title)
-    } else {
-      pl.all = grid.arrange(pl.fun, pl.mod, pl.crit, nrow = 1)
-    }
     plot.sequence[[i]] = list(
       "pl.fun" = pl.fun,
       "pl.mod" = pl.mod,
       "pl.crit" = pl.crit,
-      "pl.se" = if (exists("pl.se")) pl.se else NA,
-      "pl.all" = pl.all)
-
-    print(pl.all)
+      "pl.se" = if (exists("pl.se")) pl.se else NA)
 
     if (pause) {
+      if (se) {
+        grid.arrange(pl.fun, pl.mod, pl.crit, pl.se, nrow = 2, main = title)
+      } else {
+        grid.arrange(pl.fun, pl.mod, pl.crit, nrow = 1)
+      }
       pause()
     }
   }
