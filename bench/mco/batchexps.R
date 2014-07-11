@@ -3,8 +3,6 @@ library(mco)
 library(emoa)
 library(devtools)
 
-setwd("bench/mco")
-load_all("../..")
 source("DTLZ.R")
 source("LZ09.R")
 source("UF.R")
@@ -18,7 +16,10 @@ reg = makeExperimentRegistry("mco_bench", packages = c(
     "mco",
     "emoa",
     "mlrMBO"
-))
+  ), src.files = c(
+    "defs.R"
+  )
+)
 
 addMyProblem = function(id, objective, lower, upper) {
   addProblem(reg, id = id,, static = list(
@@ -32,11 +33,11 @@ addMyProblem = function(id, objective, lower, upper) {
 # test functions
 for (i in 1:6) {
   fname = sprintf("dtlz%i", i)
-  addMyProblem(fname, get(fname), lower = 0, upper = 1)   
+  addMyProblem(fname, get(fname), lower = 0, upper = 1)
 }
 for (i in c(1:5, 7:9)) {
-  fname = sprintf("lz%i", i)  
-  addMyProblem(fname, get(fname), lower = 0, upper = 1)    
+  fname = sprintf("lz%i", i)
+  addMyProblem(fname, get(fname), lower = 0, upper = 1)
 }
 for (i in 4:7) {
   fname = sprintf("uf%i", i)
@@ -48,7 +49,7 @@ for (i in 1:9) {
 }
 for (i in c(1:4, 6)) {
   fname = sprintf("zdt%i", i)
-  addMyProblem(fname, get(fname), lower = 0, upper = 1) 
+  addMyProblem(fname, get(fname), lower = 0, upper = 1)
 }
 
 
@@ -57,7 +58,7 @@ addAlgorithm(reg, "nsga2", fun = function(static) {
   par.set = static$par.set
   names.x = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
 
-  res = nsga2(static$objective, idim = getParamNr(par.set, devectorize = TRUE), 
+  res = nsga2(static$objective, idim = getParamNr(par.set, devectorize = TRUE),
     odim = static$ny, lower.bounds = getLower(par.set), upper.bounds = getUpper(par.set),
     popsize = POPSIZE, generations = GENERATIONS)
   pareto.set = setColNames(as.data.frame(res$par[res$pareto.optimal, ]), names.x)
@@ -74,8 +75,9 @@ addAlgorithm(reg, "parego", fun = function(static) {
 
   learner = makeLearner("regr.km", predict.type = "se")
 
-  ctrl = makeMBOControl(number.of.targets = static$ny, init.design.points = INIT_DESIGN_POINTS, 
-    iters = ITERS, propose.points = PROP_POINTS) 
+  ctrl = makeMBOControl(number.of.targets = static$ny, init.design.points = INIT_DESIGN_POINTS,
+    iters = ITERS, propose.points = PROP_POINTS,
+    save.on.disk.at = integer(0L))
   ctrl = setMBOControlInfill(ctrl, crit = "ei", opt.focussearch.points = 100, opt.restarts = 1L)
   ctrl = setMBOControlMultiCrit(ctrl)
 
@@ -90,7 +92,7 @@ addAlgorithm(reg, "parego", fun = function(static) {
 
 addExperiments(reg, repls = REPLS)
 
-testJob(reg, 9, external = FALSE)
+testJob(reg, 11, external = TRUE)
 
 # submitJobs(reg, resources=list(walltime=8*3600, memory=2*1024),
 #   wait=function(retries) 1, max.retries=10)
