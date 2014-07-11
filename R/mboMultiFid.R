@@ -94,7 +94,7 @@ mboMultiFid = function(fun, par.set, design = NULL, learner, control, show.info 
   }
 
   corgrid = generateDesign(n = control$multifid.cor.grid.points,
-    par.set = parSetWithout(par.set, control$multifid.param))
+    par.set = dropParams(par.set, control$multifid.param))
 
   plot.data = list()
 

@@ -33,12 +33,6 @@ convertOptPathToTask = function(opt.path, control, drop = TRUE) {
   makeRegrTask(id = "surrogate", data = d, target = "y")
 }
 
-#FIXME: move to PH: dropParams
-parSetWithout = function(par.set, without) {
-  par.set$pars = Filter(function(p) p$id %nin% without, par.set$pars)
-  return(par.set)
-}
-
 expandDesign = function(design, control, ns = NULL) {
   if (is.null(ns)){
     ns = rep(nrow(design), times = length(control$multifid.lvls))
