@@ -54,13 +54,13 @@ for (i in c(1:4, 6)) {
 
 
 
-addAlgorithm(reg, "nsga2", fun = function(static) {
+addAlgorithm(reg, "nsga2", fun = function(static, generations) {
   par.set = static$par.set
   names.x = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
 
   res = nsga2(static$objective, idim = getParamNr(par.set, devectorize = TRUE),
     odim = static$ny, lower.bounds = getLower(par.set), upper.bounds = getUpper(par.set),
-    popsize = POPSIZE, generations = GENERATIONS)
+    popsize = POPSIZE, generations = generations)
   pareto.set = setColNames(as.data.frame(res$par[res$pareto.optimal, ]), names.x)
   pareto.front = res$value[res$pareto.optimal, ]
   hv = dominated_hypervolume(t(pareto.front), ref = static$ref)
@@ -90,9 +90,14 @@ addAlgorithm(reg, "parego", fun = function(static) {
 })
 
 
-addExperiments(reg, repls = REPLS)
+des = makeDesign("nsga2", exhaustive = list(
+  generations = c(GENERATIONS1, GENERATIONS2)
+))
 
-testJob(reg, 11, external = TRUE)
+addExperiments(reg, algo.design = des, repls = REPLS)
+addExperiments(reg, algo.design = "parego", repls = REPLS)
+
+# testJob(reg, 11, external = TRUE)
 
 # submitJobs(reg, resources=list(walltime=8*3600, memory=2*1024),
 #   wait=function(retries) 1, max.retries=10)
