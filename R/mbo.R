@@ -43,17 +43,23 @@ mbo = function(fun, par.set, design = NULL, learner, control, show.info = TRUE, 
     show.learner.output = control$show.learner.output)
 
   # Call the correct mbo function
+  mbo.fun = determineMBOFun(control)
+  mbo.fun(fun = fun, par.set = par.set, design = design, 
+    learner = learner, control = control,
+    show.info = show.info, more.args = more.args)
+}
+
+# Helper function which selects the correct mbo main function
+# based on the user settings.
+determineMBOFun = function(control) {
   if (control$infill.crit == "multiFid") {
-    mboMultiFid(fun = fun, par.set = par.set, design = design,
-      learner = learner, control = control, show.info = show.info, more.args = more.args)
-  } else {
-    if (control$number.of.targets == 1L)
-      mboSingleObj(fun = fun, par.set = par.set, design = design,
-        learner = learner, control = control, show.info = show.info, more.args = more.args)
-    else {
-      if (control$multicrit.method == "parego")
-        mboParEGO(fun = fun, par.set = par.set, design = design,
-          learner = learner, control = control, show.info = show.info, more.args = more.args)
-    }
+    return(mboMultiFid)
   }
+  if (control$number.of.targets == 1L) {
+    return(mboSingleObj)
+  } else {
+    if (control$multicrit.method == "parego") {
+      return(mboParEGO)
+    }
+  }  
 }
