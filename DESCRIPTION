@@ -1,8 +1,10 @@
 Package: mlrMBO
 Title: mlr: Model-based optimization
 Description: mlr: Model-based optimization
-Author: Bernd Bischl <bernd_bischl@gmx.net>
-Maintainer: Bernd Bischl <bernd_bischl@gmx.net>
+Authors@R: c(person("Bernd", "Bischl", email = "bernd_bischl@gmx.net", role =
+    c("aut", "cre")), person("Jakob", "Bossek", email =
+    "jakob.bossek@tu-dortmund.de", role = "aut"), person("Daniel", "Horn",
+    email = "daniel.horn@tu-dortmund.de", role = "aut"))
 License: BSD_3_clause + file LICENSE
 Depends:
     ParamHelpers,
