@@ -9,22 +9,23 @@ Here we provide a Quickstart example for you to make yourself familiar with **ml
 library(soobench)
 library(mlr)
 library(mlrMBO)
-obj.fun = generate_rastrigin_function(1)
-plot(obj.fun)
+library(ParamHelpers)
+obj.fun = rastrigin_function(1)
 ```
 
-We decide ourself to use kriging as our surrgate model. Furthermore we use Expected Improvement (EI) as the infill criterion, i. e., the criterion which determines which point(s) of the objective function should be evaluated in further iterations. Initially we generate a LHS design (latin hypercube) of 10 points.
+We decide ourself to use kriging as our surrgate model. Furthermore we use Expected Improvement (EI) as the infill criterion, i. e., the criterion which determines which point(s) of the objective function should be evaluated in further iterations (keep in mind, that using EI as the infill criterion needs the learner to support standard error estimation). Initially we let mbo generate an initial design of 30 points (the default algorithm is maximinLHS from package lhs).
 
 ```{r}
-par.set = makeNumericParamSet(len = 1, id = "x", lower = lower_bounds(obj.fun), upper = upper_bounds(obj.fun))
+par.set = extractParamSetFromSooFunction(obj.fun)
 
 learner = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
-control = makeMBOControl(
-  propose.points = 1,
-  iters = 5,
-  infill.crit = "ei"
-)
+control = makeMBOControl(iters = 10L, init.design.points = 30L)
+control = setMBOControlInfill(control, crit = "ei")
+```
 
+Finally we start the optimization process and print the result object.
+
+```{r}
 result = mbo(makeMBOFunction(obj.fun), par.set = par.set, learner = learner, control = control, show.info = TRUE)
 print(result)
 ```

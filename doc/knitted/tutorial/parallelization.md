@@ -10,14 +10,16 @@ informs you about the available options. Here we just provide a simple example o
 library("mlrMBO")
 library("parallelMap")
 
-parallelStartMulticore(cpus = 2)  # use 2 CPUs
+parallelStartMulticore(cpus = 2) # use 2 CPUs
 
 obj.fun = makeMBOFunction(function(x) sum(x^2))
 par.set = makeNumericParamSet(len = 1, id = "x", lower = -10, upper = 10)
 learner = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
-control = makeMBOControl(init.design.points = 5, iters = 3)
+control = makeMBOControl(
+    init.design.points = 5,
+    iters = 3
+)
 res = mbo(obj.fun, par.set, learner = learner, control = control)
 
 parallelStop()
 ```
-
