@@ -21,10 +21,13 @@ checkStuff = function(fun, par.set, design, learner, control) {
   # check params + learner
   if (any(sapply(par.set$pars, inherits, what = "LearnerParam")))
     stop("No parameter can be of class 'LearnerParam'! Use basic parameters instead to describe you region of interest!")
+
   if (!hasFiniteBoxConstraints(par.set))
     stop("mbo requires finite box constraints!")
+
   if (hasDiscrete(par.set) && !hasProperties(learner, "factors"))
     stop("Provided learner does not support factor parameters.")
+  
   if (learner$type != "regr")
     stop("mbo requires regression learner!")
 
@@ -35,8 +38,9 @@ checkStuff = function(fun, par.set, design, learner, control) {
       ifelse(hasProperties(learner, "se"), "",
         "\nBut this learner does not seem to support prediction of standard errors! You could use the mlr wrapper makeBaggingWrapper to bootstrap the standard error estimator."))
   }
-  if (control$infill.opt == "cmaes" && !isNumeric(par.set))
-    stop("Optimizer CMAES can only be applied to numeric, integer, numericvector, integervector parameters!")
+
+  if (control$infill.opt %in% c("cmaes", "ea") && !isNumeric(par.set))
+    stopf("Optimizer '%s' can only be applied to numeric, integer, numericvector, integervector parameters!", control$infill.opt)
 
   # For now allow constant liar only in combinaton with Kriging
   # (see https://github.com/berndbischl/mlrMBO/issues/12)
@@ -56,7 +60,7 @@ checkStuff = function(fun, par.set, design, learner, control) {
             sprintf(" with objective '%s'", control$multipoint.multicrit.obj), ""),
           learner$id,
           ifelse(hasProperties(learner, "se"), "",
-            "\nBut this learner does not seem to support prediction of standard errors!"))
+            "\nBut this learner does not support prediction of standard errors!"))
       }
     }
   }

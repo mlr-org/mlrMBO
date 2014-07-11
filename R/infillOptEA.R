@@ -2,7 +2,7 @@
 # kind of mimics our multicrit approach, so we can
 # compare more honestly
 
-#FIXME check what this optimizer can do in checkStuff and allow rounding of integers
+#FIXME allow rounding of integers
 infillOptEA = function(infill.crit, model, control, par.set, opt.path, design, ...) {
   requirePackages("emoa", why = "infillOptEA")
 
