@@ -86,6 +86,7 @@ setMBOControlInfill = function(control,
   assertClass(control, "MBOControl")
 
   # FIXME: BB: DO NOT FUCKING TOUCH THIS!
+  # JR: I think we can ununcomment this becaus multiFid now is in getSupportedInfillCritFunctions()
   # assertChoice(crit, choices = getSupportedInfillCritFunctions())
   assertNumeric(crit.lcb.lambda, len = 1L, any.missing = FALSE, lower = 0)
   assertChoice(opt, choices = getSupportedInfillOptFunctions())
