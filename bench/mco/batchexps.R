@@ -17,7 +17,8 @@ reg = makeExperimentRegistry("mco_bench", packages = c(
     "emoa",
     "mlrMBO"
   ), src.files = c(
-    "defs.R"
+    "defs.R", 
+    "WFG.R"
   )
 )
 
@@ -26,7 +27,7 @@ addMyProblem = function(id, objective, lower, upper) {
       objective = objective,
       par.set = makeNumericParamSet("x", len = 5L, lower = lower, upper = upper),
       ny = 2L,
-      ref = c(1, 1)
+      ref = c(11, 11)
   ))
 }
 
@@ -99,6 +100,7 @@ addExperiments(reg, algo.design = "parego", repls = REPLS)
 
 # testJob(reg, 11, external = TRUE)
 
-# submitJobs(reg, resources=list(walltime=8*3600, memory=2*1024),
-#   wait=function(retries) 1, max.retries=10)
+submitJobs(reg, ids = chunk(getJobIds(reg), n.chunks = 33, shuffle = TRUE),
+  resources=list(walltime=8*3600, memory=2*1024),
+  wait=function(retries) 1, max.retries=10)
 
