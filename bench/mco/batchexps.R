@@ -62,8 +62,9 @@ addAlgorithm(reg, "nsga2", fun = function(static, generations) {
   res = nsga2(static$objective, idim = getParamNr(par.set, devectorize = TRUE),
     odim = static$ny, lower.bounds = getLower(par.set), upper.bounds = getUpper(par.set),
     popsize = POPSIZE, generations = generations)
-  pareto.set = setColNames(as.data.frame(res$par[res$pareto.optimal, ]), names.x)
-  pareto.front = res$value[res$pareto.optimal, ]
+  pareto.set = setColNames(as.data.frame(subset(res$par, res$pareto.optimal, drop = FALSE)), 
+    names.x)
+  pareto.front = subset(res$value, res$pareto.optimal, drop = FALSE)
   hv = dominated_hypervolume(t(pareto.front), ref = static$ref)
   cd = crowding_distance(t(pareto.front))
   r2 = unary_r2_indicator(t(pareto.front), weights = WEIGHTS)
@@ -98,7 +99,7 @@ des = makeDesign("nsga2", exhaustive = list(
 addExperiments(reg, algo.design = des, repls = REPLS)
 addExperiments(reg, algo.design = "parego", repls = REPLS)
 
-# testJob(reg, 11, external = TRUE)
+# testJob(reg, 71, external = T)
 
 submitJobs(reg, ids = chunk(getJobIds(reg), n.chunks = 33, shuffle = TRUE),
   resources=list(walltime=8*3600, memory=2*1024),
