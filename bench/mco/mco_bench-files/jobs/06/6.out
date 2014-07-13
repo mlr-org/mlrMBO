@@ -1,0 +1,2904 @@
+
+R version 3.1.1 (2014-07-10) -- "Sock it to Me"
+Copyright (C) 2014 The R Foundation for Statistical Computing
+Platform: x86_64-unknown-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> Sys.sleep(0.000000)
+> options(BatchJobs.on.slave = TRUE, BatchJobs.resources.path = '/home/schork/mlrMBO/bench/mco/mco_bench-files/resources/resources_1405265848.RData')
+> library(BatchJobs)
+Loading required package: BBmisc
+> res = BatchJobs:::doJob(
++ 	reg = loadRegistry('/home/schork/mlrMBO/bench/mco/mco_bench-files'),
++ 	ids = c(6L,37L,48L,83L,87L,154L,155L,190L,260L,296L,319L,365L,417L,437L,466L,512L,602L,626L,654L,664L,666L,668L,697L,756L,762L,799L,812L,823L,953L),
++ 	multiple.result.files = FALSE,
++ 	disable.mail = FALSE,
++ 	first = 15L,
++ 	last = 7L,
++ 	array.id = NA)
+Loading registry: /home/schork/mlrMBO/bench/mco/mco_bench-files/registry.RData
+Loading required package: BatchExperiments
+Loading required package: emoa
+
+Attaching package: ‘emoa’
+
+The following object is masked from ‘package:BBmisc’:
+
+    coalesce
+
+Loading required package: mco
+Loading required package: mlrMBO
+Loading required package: ParamHelpers
+Loading required package: mlr
+Loading required package: lhs
+Loading conf: 
+2014-07-13 17:37:31: Starting job on node compute1.
+Auto-mailer settings: start=first+last, done=first+last, error=first+last.
+Setting work dir: /home/schork/mlrMBO/bench/mco
+########## Executing jid=6 ##########
+Timestamp: 2014-07-13 17:37:34
+Experiment: 
+  Problem: dtlz1 
+  Problem parameters:  
+  Algorithm: nsga2 
+  Algorithm parameters: generations=10 
+  Replication: 6 
+  Seed: 473457491 
+  Problem seed: 564376421 
+Setting seed: 473457491
+Applying Algorithm nsga2 ...
+Result:
+List of 5
+ $ pareto.set  :'data.frame':	8 obs. of  5 variables:
+ $ pareto.front: num [1:8, 1:2] 112.194 26.874 0.758 77.567 112.198 ...
+ $ hv          : num 6.42
+ $ cd          : num [1:8] 34.6 67.2 30.1 34.7 Inf ...
+ $ r2          : num 3.33
+NULL
+Writing result file: /home/schork/mlrMBO/bench/mco/mco_bench-files/jobs/06/6-result.RData
+########## Executing jid=37 ##########
+Timestamp: 2014-07-13 17:37:34
+Experiment: 
+  Problem: dtlz2 
+  Problem parameters:  
+  Algorithm: nsga2 
+  Algorithm parameters: generations=100 
+  Replication: 7 
+  Seed: 473457522 
+  Problem seed: 16520664 
+Setting seed: 473457522
+Applying Algorithm nsga2 ...
+Result:
+List of 5
+ $ pareto.set  :'data.frame':	20 obs. of  5 variables:
+ $ pareto.front: num [1:20, 1:2] 1.00 4.39e-11 2.80e-01 6.83e-01 9.85e-01 ...
+ $ hv          : num 120
+ $ cd          : num [1:20] Inf Inf 0.315 0.288 0.274 ...
+ $ r2          : num 0.219
+NULL
+Writing result file: /home/schork/mlrMBO/bench/mco/mco_bench-files/jobs/37/37-result.RData
+########## Executing jid=48 ##########
+Timestamp: 2014-07-13 17:37:34
+Experiment: 
+  Problem: dtlz3 
+  Problem parameters:  
+  Algorithm: nsga2 
+  Algorithm parameters: generations=10 
+  Replication: 8 
+  Seed: 473457533 
+  Problem seed: 279235397 
+Setting seed: 473457533
+Applying Algorithm nsga2 ...
+Result:
+List of 5
+ $ pareto.set  :'data.frame':	16 obs. of  5 variables:
+ $ pareto.front: num [1:16, 1:2] 79.6 72.7 71.9 10.8 72.6 ...
+ $ hv          : num 0
+ $ cd          : num [1:16] Inf 7.09 22.92 112.3 5.55 ...
+ $ r2          : num 15.3
+NULL
+Writing result file: /home/schork/mlrMBO/bench/mco/mco_bench-files/jobs/48/48-result.RData
+########## Executing jid=83 ##########
+Timestamp: 2014-07-13 17:37:34
+Experiment: 
+  Problem: dtlz5 
+  Problem parameters:  
+  Algorithm: nsga2 
+  Algorithm parameters: generations=10 
+  Replication: 3 
+  Seed: 473457568 
+  Problem seed: 17641584 
+Setting seed: 473457568
+Applying Algorithm nsga2 ...
+Result:
+List of 5
+ $ pareto.set  :'data.frame':	16 obs. of  5 variables:
+ $ pareto.front: num [1:16, 1:2] 3.3161 0.0349 4.2543 0.947 1.6917 ...
+ $ hv          : num 109
+ $ cd          : num [1:16] 0.465 Inf 0.354 1.116 1.198 ...
+ $ r2          : num 0.815
+NULL
+Writing result file: /home/schork/mlrMBO/bench/mco/mco_bench-files/jobs/83/83-result.RData
+########## Executing jid=87 ##########
+Timestamp: 2014-07-13 17:37:35
+Experiment: 
+  Problem: dtlz5 
+  Problem parameters:  
+  Algorithm: nsga2 
+  Algorithm parameters: generations=10 
+  Replication: 7 
+  Seed: 473457572 
+  Problem seed: 697968306 
+Setting seed: 473457572
+Applying Algorithm nsga2 ...
+Result:
+List of 5
+ $ pareto.set  :'data.frame':	19 obs. of  5 variables:
+ $ pareto.front: num [1:19, 1:2] 3.7733 3.46588 0.73627 0.97796 0.00462 ...
+ $ hv          : num 108
+ $ cd          : num [1:19] 0.713 1.666 1.069 1.456 Inf ...
+ $ r2          : num 0.866
+NULL
+Writing result file: /home/schork/mlrMBO/bench/mco/mco_bench-files/jobs/87/87-result.RData
+########## Executing jid=154 ##########
+Timestamp: 2014-07-13 17:37:35
+Experiment: 
+  Problem: lz2 
+  Problem parameters:  
+  Algorithm: nsga2 
+  Algorithm parameters: generations=100 
+  Replication: 4 
+  Seed: 473457639 
+  Problem seed: 759696499 
+Setting seed: 473457639
+Applying Algorithm nsga2 ...
+Result:
+List of 5
+ $ pareto.set  :'data.frame':	20 obs. of  5 variables:
+ $ pareto.front: num [1:20, 1:2] 0.0563 0.9476 0.0573 0.4927 0.4064 ...
+ $ hv          : num 117
+ $ cd          : num [1:20] Inf Inf 0.708 0.508 0.42 ...
+ $ r2          : num 0.0798
+NULL
+Writing result file: /home/schork/mlrMBO/bench/mco/mco_bench-files/jobs/54/154-result.RData
+########## Executing jid=155 ##########
+Timestamp: 2014-07-13 17:37:35
+Experiment: 
+  Problem: lz2 
+  Problem parameters:  
+  Algorithm: nsga2 
+  Algorithm parameters: generations=100 
+  Replication: 5 
+  Seed: 473457640 
+  Problem seed: 169178701 
+Setting seed: 473457640
+Applying Algorithm nsga2 ...
+Result:
+List of 5
+ $ pareto.set  :'data.frame':	20 obs. of  5 variables:
+ $ pareto.front: num [1:20, 1:2] 0.9117 0.0558 0.056 0.7798 0.6665 ...
+ $ hv          : num 119
+ $ cd          : num [1:20] Inf Inf 0.554 0.261 0.207 ...
+ $ r2          : num 0.125
+NULL
+Writing result file: /home/schork/mlrMBO/bench/mco/mco_bench-files/jobs/55/155-result.RData
+Warning in sqliteCloseConnection(conn, ...) :
+  RS-DBI driver warning: (closing pending result sets before closing this connection)
+########## Executing jid=190 ##########
+Timestamp: 2014-07-13 17:37:37
+Experiment: 
+  Problem: lz4 
+  Problem parameters:  
+  Algorithm: nsga2 
+  Algorithm parameters: generations=10 
+  Replication: 10 
+  Seed: 473457675 
+  Problem seed: 845314444 
+Setting seed: 473457675
+Applying Algorithm nsga2 ...
+Result:
+List of 5
+ $ pareto.set  :'data.frame':	20 obs. of  5 variables:
+ $ pareto.front: num [1:20, 1:2] 1.426 0.17 0.958 0.769 0.822 ...
+ $ hv          : num 118
+ $ cd          : num [1:20] Inf Inf 0.607 0.295 0.218 ...
+ $ r2          : num 0.117
+NULL
+Writing result file: /home/schork/mlrMBO/bench/mco/mco_bench-files/jobs/90/190-result.RData
+########## Executing jid=260 ##########
+Timestamp: 2014-07-13 17:37:37
+Experiment: 
+  Problem: lz8 
+  Problem parameters:  
+  Algorithm: nsga2 
+  Algorithm parameters: generations=100 
+  Replication: 10 
+  Seed: 473457745 
+  Problem seed: 517593472 
+Setting seed: 473457745
+Applying Algorithm nsga2 ...
+Result:
+List of 5
+ $ pareto.set  :'data.frame':	10 obs. of  5 variables:
+ $ pareto.front: num [1:10, 1:2] 0.525 0.528 0.521 0.521 0.521 ...
+ $ hv          : num 112
+ $ cd          : num [1:10] 0.0114 Inf 0.0338 Inf 0 ...
+ $ r2          : num 0.00213
+NULL
+Writing result file: /home/schork/mlrMBO/bench/mco/mco_bench-files/jobs/60/260-result.RData
+########## Executing jid=296 ##########
+Timestamp: 2014-07-13 17:37:38
+Experiment: 
+  Problem: uf4 
+  Problem parameters:  
+  Algorithm: nsga2 
+  Algorithm parameters: generations=100 
+  Replication: 6 
+  Seed: 473457781 
+  Problem seed: 22507176 
+Setting seed: 473457781
+Applying Algorithm nsga2 ...
+Result:
+List of 5
+ $ pareto.set  :'data.frame':	20 obs. of  5 variables:
+ $ pareto.front: num [1:20, 1:2] 0.0596 1.1804 0.5832 0.9755 0.8266 ...
+ $ hv          : num 119
+ $ cd          : num [1:20] Inf Inf 0.342 0.321 0.275 ...
+ $ r2          : num 0.199
+NULL
+Writing result file: /home/schork/mlrMBO/bench/mco/mco_bench-files/jobs/96/296-result.RData
+########## Executing jid=319 ##########
+Timestamp: 2014-07-13 17:37:38
+Experiment: 
+  Problem: uf5 
+  Problem parameters:  
+  Algorithm: nsga2 
+  Algorithm parameters: generations=100 
+  Replication: 9 
+  Seed: 473457804 
+  Problem seed: 229308193 
+Setting seed: 473457804
+Applying Algorithm nsga2 ...
+Result:
+List of 5
+ $ pareto.set  :'data.frame':	17 obs. of  5 variables:
+ $ pareto.front: num [1:17, 1:2] 0.0147 0.0107 0.5505 0.6769 0.0107 ...
+ $ hv          : num 115
+ $ cd          : num [1:17] 2.039 Inf 0.128 Inf 0 ...
+ $ r2          : num 0.153
+NULL
+Writing result file: /home/schork/mlrMBO/bench/mco/mco_bench-files/jobs/19/319-result.RData
+########## Executing jid=365 ##########
+Timestamp: 2014-07-13 17:37:39
+Experiment: 
+  Problem: wfg1 
+  Problem parameters:  
+  Algorithm: nsga2 
+  Algorithm parameters: generations=10 
+  Replication: 5 
+  Seed: 473457850 
+  Problem seed: 974019464 
+Setting seed: 473457850
+Applying Algorithm nsga2 ...
+Result:
+List of 5
+ $ pareto.set  :'data.frame':	20 obs. of  5 variables:
+ $ pareto.front: num [1:20, 1:2] 2.6 2.8 2.64 2.69 2.62 ...
+ $ hv          : num 84.8
+ $ cd          : num [1:20] Inf Inf 0.221 0.19 0.19 ...
+ $ r2          : num 0.0431
+NULL
+Writing result file: /home/schork/mlrMBO/bench/mco/mco_bench-files/jobs/65/365-result.RData
+########## Executing jid=417 ##########
+Timestamp: 2014-07-13 17:37:39
+Experiment: 
+  Problem: wfg3 
+  Problem parameters:  
+  Algorithm: nsga2 
+  Algorithm parameters: generations=100 
+  Replication: 7 
+  Seed: 473457902 
+  Problem seed: 304143596 
+Setting seed: 473457902
+Applying Algorithm nsga2 ...
+Result:
+List of 5
+ $ pareto.set  :'data.frame':	20 obs. of  5 variables:
+ $ pareto.front: num [1:20, 1:2] 0.0129 1.9955 0.2046 1.7046 1.0087 ...
+ $ hv          : num 116
+ $ cd          : num [1:20] Inf Inf 0.888 0.735 0.636 ...
+ $ r2          : num 0.462
+NULL
+Writing result file: /home/schork/mlrMBO/bench/mco/mco_bench-files/jobs/17/417-result.RData
+########## Executing jid=437 ##########
+Timestamp: 2014-07-13 17:37:40
+Experiment: 
+  Problem: wfg4 
+  Problem parameters:  
+  Algorithm: nsga2 
+  Algorithm parameters: generations=100 
+  Replication: 7 
+  Seed: 473457922 
+  Problem seed: 659290801 
+Setting seed: 473457922
+Applying Algorithm nsga2 ...
+Result:
+List of 5
+ $ pareto.set  :'data.frame':	20 obs. of  5 variables:
+ $ pareto.front: num [1:20, 1:2] 2.0386 0.0541 1.8483 1.4077 1.3169 ...
+ $ hv          : num 114
+ $ cd          : num [1:20] Inf Inf 0.771 0.674 0.597 ...
+ $ r2          : num 0.581
+NULL
+Writing result file: /home/schork/mlrMBO/bench/mco/mco_bench-files/jobs/37/437-result.RData
+########## Executing jid=466 ##########
+Timestamp: 2014-07-13 17:37:41
+Experiment: 
+  Problem: wfg6 
+  Problem parameters:  
+  Algorithm: nsga2 
+  Algorithm parameters: generations=10 
+  Replication: 6 
+  Seed: 473457951 
+  Problem seed: 255030662 
+Setting seed: 473457951
+Applying Algorithm nsga2 ...
+Result:
+List of 5
+ $ pareto.set  :'data.frame':	20 obs. of  5 variables:
+ $ pareto.front: num [1:20, 1:2] 2.002 0.311 0.782 0.979 0.574 ...
+ $ hv          : num 108
+ $ cd          : num [1:20] Inf Inf 0.776 0.59 0.46 ...
+ $ r2          : num 0.501
+NULL
+Writing result file: /home/schork/mlrMBO/bench/mco/mco_bench-files/jobs/66/466-result.RData
+########## Executing jid=512 ##########
+Timestamp: 2014-07-13 17:37:41
+Experiment: 
+  Problem: wfg8 
+  Problem parameters:  
+  Algorithm: nsga2 
+  Algorithm parameters: generations=100 
+  Replication: 2 
+  Seed: 473457997 
+  Problem seed: 863400935 
+Setting seed: 473457997
+Applying Algorithm nsga2 ...
+Result:
+List of 5
+ $ pareto.set  :'data.frame':	20 obs. of  5 variables:
+ $ pareto.front: num [1:20, 1:2] 0.00373 2.00164 0.34156 0.67933 1.88784 ...
+ $ hv          : num 114
+ $ cd          : num [1:20] Inf Inf 0.691 0.693 0.975 ...
+ $ r2          : num 0.592
+NULL
+Writing result file: /home/schork/mlrMBO/bench/mco/mco_bench-files/jobs/12/512-result.RData
+########## Executing jid=602 ##########
+Timestamp: 2014-07-13 17:37:42
+Experiment: 
+  Problem: zdt4 
+  Problem parameters:  
+  Algorithm: nsga2 
+  Algorithm parameters: generations=10 
+  Replication: 2 
+  Seed: 473458087 
+  Problem seed: 179545001 
+Setting seed: 473458087
+Applying Algorithm nsga2 ...
+Result:
+List of 5
+ $ pareto.set  :'data.frame':	13 obs. of  5 variables:
+ $ pareto.front: num [1:13, 1:2] 1.47e-05 1.77e-01 6.04e-02 8.63e-05 2.14e-03 ...
+ $ hv          : num 55.7
+ $ cd          : num [1:13] 19.07 2.33 3.45 3.46 8.94 ...
+ $ r2          : num 0.14
+NULL
+Writing result file: /home/schork/mlrMBO/bench/mco/mco_bench-files/jobs/02/602-result.RData
+########## Executing jid=626 ##########
+Timestamp: 2014-07-13 17:37:42
+Experiment: 
+  Problem: zdt6 
+  Problem parameters:  
+  Algorithm: nsga2 
+  Algorithm parameters: generations=10 
+  Replication: 6 
+  Seed: 473458111 
+  Problem seed: 424958111 
+Setting seed: 473458111
+Applying Algorithm nsga2 ...
+Result:
+List of 5
+ $ pareto.set  :'data.frame':	6 obs. of  5 variables:
+ $ pareto.front: num [1:6, 1:2] 0.538 0.633 0.985 0.631 0.633 ...
+ $ hv          : num 64.6
+ $ cd          : num [1:6] Inf 0.881 Inf 1.205 0.747 ...
+ $ r2          : num 0.1
+NULL
+Writing result file: /home/schork/mlrMBO/bench/mco/mco_bench-files/jobs/26/626-result.RData
+########## Executing jid=654 ##########
+Timestamp: 2014-07-13 17:37:42
+Experiment: 
+  Problem: dtlz2 
+  Problem parameters:  
+  Algorithm: parego 
+  Algorithm parameters:  
+  Replication: 4 
+  Seed: 473458139 
+  Problem seed: 497117070 
+Setting seed: 473458139
+Applying Algorithm parego ...
+Loading required package: DiceKriging
+Computing y column(s) for design. Not provided.
+[mbo] 0: x=0.499,0.666,0.264,0.26,0.265 : y_1 = 0.847, y_2 = 0.844 : 0.0 secs
+[mbo] 0: x=0.464,0.279,0.67,0.481,0.105 : y_1 = 0.921, y_2 = 0.822 : 0.0 secs
+[mbo] 0: x=0.677,0.388,0.336,0.72,0.925 : y_1 = 0.616, y_2 = 1.11 : 0.0 secs
+[mbo] 0: x=0.85,0.705,0.624,0.306,0.814 : y_1 = 0.279, y_2 = 1.16 : 0.0 secs
+[mbo] 0: x=0.557,0.84,0.323,0.623,0.444 : y_1 = 0.747, y_2 = 0.894 : 0.0 secs
+[mbo] 0: x=0.104,0.435,0.519,0.746,0.345 : y_1 = 1.07, y_2 = 0.176 : 0.0 secs
+[mbo] 0: x=0.639,0.523,0.425,0.572,0.66 : y_1 = 0.557, y_2 = 0.875 : 0.0 secs
+[mbo] 0: x=0.707,0.157,0.532,0.232,0.61 : y_1 = 0.535, y_2 = 1.08 : 0.0 secs
+[mbo] 0: x=0.379,0.528,0.676,0.536,0.466 : y_1 = 0.857, y_2 = 0.579 : 0.0 secs
+[mbo] 0: x=0.236,0.753,0.806,0.785,0.31 : y_1 = 1.19, y_2 = 0.462 : 0.0 secs
+[mbo] 0: x=0.817,0.48,0.0424,0.626,0.18 : y_1 = 0.377, y_2 = 1.27 : 0.0 secs
+[mbo] 0: x=0.285,0.944,0.598,0.583,0.883 : y_1 = 1.23, y_2 = 0.588 : 0.0 secs
+[mbo] 0: x=0.06,0.458,0.0945,0.185,0.525 : y_1 = 1.26, y_2 = 0.119 : 0.0 secs
+[mbo] 0: x=0.945,0.586,0.707,0.804,0.711 : y_1 = 0.102, y_2 = 1.18 : 0.0 secs
+[mbo] 0: x=0.344,0.402,0.235,0.696,0.777 : y_1 = 1.02, y_2 = 0.615 : 0.0 secs
+[mbo] 0: x=0.199,0.0539,0.185,0.449,0.233 : y_1 = 1.31, y_2 = 0.422 : 0.0 secs
+[mbo] 0: x=0.143,0.0966,0.56,0.0701,0.383 : y_1 = 1.33, y_2 = 0.305 : 0.0 secs
+[mbo] 0: x=0.503,0.558,0.643,0.362,0.143 : y_1 = 0.823, y_2 = 0.832 : 0.0 secs
+[mbo] 0: x=0.799,0.677,0.225,0.403,0.963 : y_1 = 0.413, y_2 = 1.27 : 0.0 secs
+[mbo] 0: x=0.891,0.329,0.442,0.508,0.364 : y_1 = 0.179, y_2 = 1.04 : 0.0 secs
+[mbo] 0: x=0.316,0.609,0.381,0.347,0.592 : y_1 = 0.93, y_2 = 0.504 : 0.0 secs
+[mbo] 0: x=0.21,0.373,0.856,0.908,0.631 : y_1 = 1.26, y_2 = 0.429 : 0.0 secs
+[mbo] 0: x=0.43,0.258,0.151,0.864,0.173 : y_1 = 1.11, y_2 = 0.888 : 0.0 secs
+[mbo] 0: x=0.614,0.745,0.499,0.979,0.528 : y_1 = 0.735, y_2 = 1.06 : 0.0 secs
+[mbo] 0: x=0.999,0.198,0.825,0.944,0.412 : y_1 = 0.00146, y_2 = 1.4 : 0.0 secs
+[mbo] 0: x=0.534,0.868,0.796,0.283,0.677 : y_1 = 0.869, y_2 = 0.968 : 0.0 secs
+[mbo] 0: x=0.97,0.878,0.958,0.201,0.0128 : y_1 = 0.0791, y_2 = 1.68 : 0.0 secs
+[mbo] 0: x=0.6,0.244,0.0641,0.0795,0.57 : y_1 = 0.845, y_2 = 1.16 : 0.0 secs
+[mbo] 0: x=0.0776,0.303,0.898,0.168,0.745 : y_1 = 1.36, y_2 = 0.166 : 0.0 secs
+[mbo] 0: x=0.275,0.647,0.136,0.00481,0.0879 : y_1 = 1.43, y_2 = 0.657 : 0.0 secs
+[mbo] 0: x=0.666,0.0409,0.915,0.026,0.99 : y_1 = 0.925, y_2 = 1.6 : 0.0 secs
+[mbo] 0: x=0.152,0.101,0.758,0.889,0.039 : y_1 = 1.54, y_2 = 0.376 : 0.0 secs
+[mbo] 0: x=0.912,0.807,0.355,0.768,0.055 : y_1 = 0.192, y_2 = 1.37 : 0.0 secs
+[mbo] 0: x=0.0456,0.13,0.283,0.471,0.766 : y_1 = 1.25, y_2 = 0.0899 : 0.0 secs
+[mbo] 0: x=0.418,0.98,0.946,0.841,0.906 : y_1 = 1.36, y_2 = 1.04 : 0.0 secs
+[mbo] 0: x=0.731,0.904,0.115,0.121,0.5 : y_1 = 0.596, y_2 = 1.33 : 0.0 secs
+[mbo] 0: x=0.769,0.203,0.995,0.142,0.204 : y_1 = 0.549, y_2 = 1.45 : 0.0 secs
+[mbo] 0: x=0.358,0.956,0.00858,0.959,0.857 : y_1 = 1.51, y_2 = 0.954 : 0.0 secs
+[mbo] 0: x=0.868,0.0156,0.463,0.652,0.844 : y_1 = 0.284, y_2 = 1.35 : 0.0 secs
+[mbo] 0: x=0.0199,0.788,0.741,0.398,0.299 : y_1 = 1.19, y_2 = 0.0373 : 0.0 secs
+[mbo] 1: x=0.000167,0.424,0.702,0.35,0.557 : y_1 = 1.07, y_2 = 0.000281 : 0.0 secs
+[mbo] 1: x=1,0.795,0.933,0.559,0.234 : y_1 = 0.000228, y_2 = 1.35 : 0.0 secs
+[mbo] 1: x=1,0.999,0.0481,0.993,0.789 : y_1 = 0.000318, y_2 = 1.78 : 0.0 secs
+[mbo] 1: x=0.999,0.146,0.0152,0.984,0.397 : y_1 = 0.00139, y_2 = 1.61 : 0.0 secs
+[mbo] 1: x=0.0014,0.677,0.252,0.997,0.987 : y_1 = 1.58, y_2 = 0.00348 : 0.0 secs
+[mbo] 2: x=0.000484,0.837,0.688,0.176,0.566 : y_1 = 1.26, y_2 = 0.000958 : 0.0 secs
+[mbo] 2: x=1,0.4,0.112,0.000612,0.784 : y_1 = 0.000587, y_2 = 1.49 : 0.0 secs
+[mbo] 2: x=0.999,0.864,0.244,0.385,0.216 : y_1 = 0.00126, y_2 = 1.29 : 0.0 secs
+[mbo] 2: x=0.757,0.999,1,0.965,0.0984 : y_1 = 0.699, y_2 = 1.74 : 0.0 secs
+[mbo] 2: x=0.00105,0.476,0.382,0.0665,0.999 : y_1 = 1.45, y_2 = 0.0024 : 0.0 secs
+[mbo] 3: x=1,0.967,0.467,0.00886,0.956 : y_1 = 8.86e-05, y_2 = 1.67 : 0.0 secs
+[mbo] 3: x=0.00025,0.771,0.14,0.535,0.489 : y_1 = 1.2, y_2 = 0.000472 : 0.0 secs
+[mbo] 3: x=1,0.607,0.187,0.774,0.496 : y_1 = 0.000253, y_2 = 1.18 : 0.0 secs
+[mbo] 3: x=0.999,0.00719,0.307,0.389,0.0562 : y_1 = 0.00134, y_2 = 1.49 : 0.0 secs
+[mbo] 3: x=0.00085,0.339,1,0.0298,0.00632 : y_1 = 1.74, y_2 = 0.00232 : 0.0 secs
+[mbo] 4: x=1,0.106,0.999,0.313,0.969 : y_1 = 0.00121, y_2 = 1.66 : 0.0 secs
+[mbo] 4: x=0.999,0.865,0.981,0.392,0.912 : y_1 = 0.00249, y_2 = 1.55 : 0.0 secs
+[mbo] 4: x=0.602,0.00022,0.93,0.924,0.327 : y_1 = 0.962, y_2 = 1.33 : 0.0 secs
+[mbo] 4: x=0.000397,0.979,0.114,0.893,0.0151 : y_1 = 1.77, y_2 = 0.0011 : 0.0 secs
+[mbo] 4: x=0.000837,0.918,0.876,0.954,0.837 : y_1 = 1.64, y_2 = 0.00215 : 0.0 secs
+[mbo] 5: x=0.000836,0.671,0.195,0.42,0.862 : y_1 = 1.26, y_2 = 0.00165 : 0.0 secs
+[mbo] 5: x=0.998,0.551,0.634,0.000117,0.275 : y_1 = 0.00315, y_2 = 1.32 : 0.0 secs
+[mbo] 5: x=1,0.351,0.556,0.625,0.763 : y_1 = 0.00012, y_2 = 1.11 : 0.0 secs
+[mbo] 5: x=0.00113,0.151,0.268,0.434,0.000324 : y_1 = 1.43, y_2 = 0.00253 : 0.0 secs
+[mbo] 5: x=0.0429,0.0559,0.782,0.996,0.995 : y_1 = 1.76, y_2 = 0.119 : 0.0 secs
+[mbo] 6: x=0.149,0.886,0.0443,0.00159,0.953 : y_1 = 1.76, y_2 = 0.42 : 0.0 secs
+[mbo] 6: x=0.991,0.0751,0.0169,0.473,0.955 : y_1 = 0.0226, y_2 = 1.62 : 0.0 secs
+[mbo] 6: x=0.998,0.943,0.208,0.998,0.148 : y_1 = 0.00451, y_2 = 1.65 : 0.0 secs
+[mbo] 6: x=0.00357,0.0143,0.0167,0.99,0.461 : y_1 = 1.71, y_2 = 0.0096 : 0.0 secs
+[mbo] 6: x=1.35e-06,0.591,0.506,0.286,0.907 : y_1 = 1.22, y_2 = 2.59e-06 : 0.0 secs
+[mbo] 7: x=0.941,0.299,0.00366,0.059,0.00169 : y_1 = 0.159, y_2 = 1.72 : 0.0 secs
+[mbo] 7: x=0.000341,0.52,0.657,0.932,0.0338 : y_1 = 1.43, y_2 = 0.000765 : 0.0 secs
+[mbo] 7: x=1,0.00296,0.606,0.166,0.512 : y_1 = 0.000341, y_2 = 1.37 : 0.0 secs
+[mbo] 7: x=0.647,0.000869,0.225,0.00327,0.0372 : y_1 = 0.941, y_2 = 1.52 : 0.0 secs
+[mbo] 7: x=0.0112,0.557,0.994,0.997,0.0318 : y_1 = 1.71, y_2 = 0.03 : 0.0 secs
+[mbo] 8: x=0.998,0.11,0.876,0.992,1 : y_1 = 0.00486, y_2 = 1.78 : 0.0 secs
+[mbo] 8: x=1,0.998,0.655,0.0373,0.232 : y_1 = 0.000429, y_2 = 1.56 : 0.0 secs
+[mbo] 8: x=0.000137,0.771,0.998,0.543,1 : y_1 = 1.57, y_2 = 0.000338 : 0.0 secs
+[mbo] 8: x=0.217,0.997,0.647,0.998,0.00269 : y_1 = 1.66, y_2 = 0.59 : 0.0 secs
+[mbo] 8: x=0.405,0.996,0.96,0.000733,0.000981 : y_1 = 1.57, y_2 = 1.16 : 0.0 secs
+[mbo] 9: x=0.5,0.0755,0.998,0.559,0.986 : y_1 = 1.18, y_2 = 1.18 : 0.0 secs
+[mbo] 9: x=5.74e-05,0.225,0.0901,0.285,0.405 : y_1 = 1.3, y_2 = 0.000117 : 0.0 secs
+[mbo] 9: x=0.994,0.277,0.652,0.0036,0.999 : y_1 = 0.0156, y_2 = 1.57 : 0.0 secs
+[mbo] 9: x=0.301,0.00132,0.666,0.404,1 : y_1 = 1.37, y_2 = 0.698 : 0.0 secs
+[mbo] 9: x=1,0.35,0.275,0.215,0.359 : y_1 = 8.93e-06, y_2 = 1.17 : 0.0 secs
+[mbo] 10: x=0.00038,0.718,0.984,0.648,0.491 : y_1 = 1.3, y_2 = 0.000777 : 0.0 secs
+[mbo] 10: x=1,0.425,0.0893,0.952,0.937 : y_1 = 9.28e-05, y_2 = 1.57 : 0.0 secs
+[mbo] 10: x=0.114,0.696,0.602,0.361,0.00041 : y_1 = 1.3, y_2 = 0.234 : 0.0 secs
+[mbo] 10: x=0.772,0.865,0.404,0.000314,0.0247 : y_1 = 0.566, y_2 = 1.52 : 0.0 secs
+[mbo] 10: x=0.00153,0.972,0.327,0.00211,0.00202 : y_1 = 1.75, y_2 = 0.0042 : 0.0 secs
+[mbo] 11: x=0.000347,0.622,0.29,0.21,0.246 : y_1 = 1.21, y_2 = 0.000659 : 0.0 secs
+[mbo] 11: x=0.868,0.39,1,0.692,0.609 : y_1 = 0.271, y_2 = 1.28 : 0.0 secs
+[mbo] 11: x=0.999,0.0407,0.193,0.15,0.721 : y_1 = 0.00248, y_2 = 1.48 : 0.0 secs
+[mbo] 11: x=0.216,0.999,0.0163,0.412,0.0283 : y_1 = 1.62, y_2 = 0.57 : 0.0 secs
+[mbo] 11: x=0.456,3.02e-05,0.995,0.148,0.329 : y_1 = 1.24, y_2 = 1.08 : 0.0 secs
+[mbo] 12: x=0.837,0.137,0.921,0.971,0.00344 : y_1 = 0.45, y_2 = 1.72 : 0.0 secs
+[mbo] 12: x=0.000392,0.707,0.0298,0.997,0.25 : y_1 = 1.57, y_2 = 0.000969 : 0.0 secs
+[mbo] 12: x=0.475,0.491,0.475,0.0103,0.987 : y_1 = 1.09, y_2 = 1 : 0.0 secs
+[mbo] 12: x=0.243,0.347,1,0.422,0.0953 : y_1 = 1.34, y_2 = 0.538 : 0.0 secs
+[mbo] 12: x=1,0.411,0.692,0.869,0.00371 : y_1 = 0.000567, y_2 = 1.43 : 0.0 secs
+[mbo] 13: x=0.999,0.652,0.686,0.217,0.592 : y_1 = 0.00148, y_2 = 1.15 : 0.0 secs
+[mbo] 13: x=0.734,1,0.614,0.764,0.98 : y_1 = 0.635, y_2 = 1.43 : 0.0 secs
+[mbo] 13: x=0.00019,0.243,0.178,0.881,0.65 : y_1 = 1.34, y_2 = 0.0004 : 0.0 secs
+[mbo] 13: x=0.788,0.999,0.656,0.651,0.545 : y_1 = 0.425, y_2 = 1.23 : 0.0 secs
+[mbo] 13: x=0.0144,1,0.316,0.255,0.79 : y_1 = 1.43, y_2 = 0.0323 : 0.0 secs
+[mbo] 14: x=0.798,0.4,0.55,0.983,0.27 : y_1 = 0.405, y_2 = 1.23 : 0.0 secs
+[mbo] 14: x=0.003,0.0238,0.965,0.464,0.334 : y_1 = 1.47, y_2 = 0.00692 : 0.0 secs
+[mbo] 14: x=0.355,0.932,0.499,0.56,0.575 : y_1 = 1.01, y_2 = 0.633 : 0.0 secs
+[mbo] 14: x=0.00333,0.00154,0.795,0.882,0.399 : y_1 = 1.49, y_2 = 0.0078 : 0.0 secs
+[mbo] 14: x=0.999,0.938,0.977,0.95,0.686 : y_1 = 0.00362, y_2 = 1.66 : 0.0 secs
+[mbo] 15: x=0.818,0.94,0.999,0.00122,0.4 : y_1 = 0.481, y_2 = 1.63 : 0.0 secs
+[mbo] 15: x=3.65e-05,0.433,0.685,0.815,0.905 : y_1 = 1.3, y_2 = 7.46e-05 : 0.0 secs
+[mbo] 15: x=0.745,0.713,0.956,0.217,0.744 : y_1 = 0.543, y_2 = 1.28 : 0.0 secs
+[mbo] 15: x=9.36e-05,0.42,0.806,0.774,0.976 : y_1 = 1.4, y_2 = 0.000206 : 0.0 secs
+[mbo] 15: x=1,0.525,0.741,0.217,0.00362 : y_1 = 7.5e-05, y_2 = 1.39 : 0.0 secs
+[mbo] 16: x=0.113,0.143,0.321,0.209,0.182 : y_1 = 1.32, y_2 = 0.238 : 0.0 secs
+[mbo] 16: x=0.761,0.00399,0.0465,0.854,0.00545 : y_1 = 0.669, y_2 = 1.69 : 0.0 secs
+[mbo] 16: x=0.000154,0.807,0.35,0.918,0.812 : y_1 = 1.39, y_2 = 0.000336 : 0.0 secs
+[mbo] 16: x=1,0.832,0.516,0.995,0.955 : y_1 = 0.001, y_2 = 1.56 : 0.0 secs
+[mbo] 16: x=0.000886,0.842,0.000316,0.00525,0.552 : y_1 = 1.61, y_2 = 0.00225 : 0.0 secs
+[mbo] 17: x=0.999,0.448,4.16e-06,0.762,0.185 : y_1 = 0.00277, y_2 = 1.42 : 0.0 secs
+[mbo] 17: x=0.000709,0.00764,0.000958,0.185,0.994 : y_1 = 1.84, y_2 = 0.00204 : 0.0 secs
+[mbo] 17: x=0.139,0.999,0.811,0.426,0.548 : y_1 = 1.32, y_2 = 0.293 : 0.0 secs
+[mbo] 17: x=0.853,0.59,0.892,0.515,0.367 : y_1 = 0.27, y_2 = 1.15 : 0.0 secs
+[mbo] 17: x=0.929,0.879,0.00068,0.205,0.596 : y_1 = 0.166, y_2 = 1.48 : 0.0 secs
+[mbo] 18: x=0.000154,0.363,0.267,0.00973,0.667 : y_1 = 1.34, y_2 = 0.000325 : 0.0 secs
+[mbo] 18: x=0.18,0.387,0.489,0.241,0.147 : y_1 = 1.16, y_2 = 0.336 : 0.0 secs
+[mbo] 18: x=0.508,0.863,0.494,0.725,0.69 : y_1 = 0.85, y_2 = 0.873 : 0.0 secs
+[mbo] 18: x=0.982,0.231,0.245,0.998,0.00458 : y_1 = 0.0454, y_2 = 1.63 : 0.0 secs
+[mbo] 18: x=0.188,0.61,0.367,0.92,0.999 : y_1 = 1.39, y_2 = 0.422 : 0.0 secs
+[mbo] 19: x=0.087,0.997,0.0347,0.852,0.693 : y_1 = 1.61, y_2 = 0.221 : 0.0 secs
+[mbo] 19: x=0.999,0.887,0.204,0.566,0.998 : y_1 = 0.0022, y_2 = 1.49 : 0.0 secs
+[mbo] 19: x=0.934,0.853,0.153,0.322,0.904 : y_1 = 0.15, y_2 = 1.43 : 0.0 secs
+[mbo] 19: x=1.99e-05,0.0987,0.983,0.269,0.989 : y_1 = 1.69, y_2 = 5.29e-05 : 0.0 secs
+[mbo] 19: x=0.999,0.0195,0.996,0.0336,0.236 : y_1 = 0.0029, y_2 = 1.76 : 0.0 secs
+[mbo] 20: x=0.997,0.000166,0.338,0.908,0.618 : y_1 = 0.00692, y_2 = 1.46 : 0.0 secs
+[mbo] 20: x=0.228,0.00578,0.0342,0.991,0.764 : y_1 = 1.66, y_2 = 0.62 : 0.0 secs
+[mbo] 20: x=0.788,0.724,0.73,0.685,0.265 : y_1 = 0.39, y_2 = 1.13 : 0.0 secs
+[mbo] 20: x=0.00017,0.555,0.000134,0.745,0.0335 : y_1 = 1.53, y_2 = 0.000408 : 0.0 secs
+[mbo] 20: x=0.369,0.303,0.363,0.977,0.921 : y_1 = 1.22, y_2 = 0.801 : 0.0 secs
+[mbo] 21: x=0.147,0.779,0.156,0.441,0.372 : y_1 = 1.18, y_2 = 0.279 : 0.0 secs
+[mbo] 21: x=0.0558,0.857,0.595,0.677,0.999 : y_1 = 1.41, y_2 = 0.124 : 0.0 secs
+[mbo] 21: x=2.39e-05,0.115,0.0226,0.0394,0.253 : y_1 = 1.65, y_2 = 6.19e-05 : 0.0 secs
+[mbo] 21: x=0.967,0.2,0.00275,0.492,0.567 : y_1 = 0.0704, y_2 = 1.34 : 0.0 secs
+[mbo] 21: x=0.54,0.923,0.645,0.321,0.53 : y_1 = 0.815, y_2 = 0.924 : 0.0 secs
+[mbo] 22: x=1,0.588,0.234,0.959,0.629 : y_1 = 0.000191, y_2 = 1.31 : 0.0 secs
+[mbo] 22: x=0.996,0.474,0.681,0.373,0.148 : y_1 = 0.00715, y_2 = 1.17 : 0.0 secs
+[mbo] 22: x=0.201,0.708,0.986,0.0531,0.988 : y_1 = 1.63, y_2 = 0.534 : 0.0 secs
+[mbo] 22: x=1,0.00225,1,0.681,0.07 : y_1 = 0.000141, y_2 = 1.72 : 0.0 secs
+[mbo] 22: x=0.0113,0.354,0.0884,0.844,0.457 : y_1 = 1.31, y_2 = 0.0233 : 0.0 secs
+[mbo] 23: x=0.0697,0.176,0.169,1,0.000645 : y_1 = 1.7, y_2 = 0.187 : 0.0 secs
+[mbo] 23: x=0.999,0.063,0.459,0.512,0.304 : y_1 = 0.00198, y_2 = 1.23 : 0.0 secs
+[mbo] 23: x=0.594,0.953,0.961,0.139,0.619 : y_1 = 0.931, y_2 = 1.26 : 0.0 secs
+[mbo] 23: x=1,0.119,0.785,0.375,0.608 : y_1 = 0.000261, y_2 = 1.25 : 0.0 secs
+[mbo] 23: x=0.269,0.662,0.19,0.867,0.149 : y_1 = 1.26, y_2 = 0.565 : 0.0 secs
+[mbo] 24: x=0.905,0.819,0.00108,0.983,0.448 : y_1 = 0.236, y_2 = 1.57 : 0.0 secs
+[mbo] 24: x=0.0592,0.591,0.997,0.992,0.723 : y_1 = 1.54, y_2 = 0.144 : 0.0 secs
+[mbo] 24: x=0.209,0.286,0.669,0.918,0.524 : y_1 = 1.18, y_2 = 0.403 : 0.0 secs
+[mbo] 24: x=0.63,0.788,0.668,0.406,0.389 : y_1 = 0.621, y_2 = 0.946 : 0.0 secs
+[mbo] 24: x=0.251,0.725,0.536,0.503,0.553 : y_1 = 0.974, y_2 = 0.405 : 0.0 secs
+[mbo] 25: x=0.835,0.244,0.88,0.107,0.527 : y_1 = 0.351, y_2 = 1.32 : 0.0 secs
+[mbo] 25: x=1.54e-05,0.785,0.796,0.508,0.0706 : y_1 = 1.35, y_2 = 3.27e-05 : 0.0 secs
+[mbo] 25: x=0.273,0.534,0.696,0.837,0.696 : y_1 = 1.08, y_2 = 0.495 : 0.0 secs
+[mbo] 25: x=0.172,0.13,1.31e-05,0.00357,0.994 : y_1 = 1.81, y_2 = 0.502 : 0.0 secs
+[mbo] 25: x=0.993,0.504,1,0.00274,0.674 : y_1 = 0.0173, y_2 = 1.53 : 0.0 secs
+[mbo] 26: x=0.000544,0.125,0.996,0.998,0.231 : y_1 = 1.71, y_2 = 0.00146 : 0.0 secs
+[mbo] 26: x=0.995,0.461,0.886,0.76,0.963 : y_1 = 0.0117, y_2 = 1.43 : 0.0 secs
+[mbo] 26: x=0.122,7.07e-05,0.998,0.668,0.688 : y_1 = 1.53, y_2 = 0.299 : 0.0 secs
+[mbo] 26: x=0.538,0.878,0.34,0.162,0.343 : y_1 = 0.869, y_2 = 0.978 : 0.0 secs
+[mbo] 26: x=1,0.76,0.227,0.087,0.129 : y_1 = 0.000101, y_2 = 1.45 : 0.0 secs
+[mbo] 27: x=0.000248,0.223,0.222,0.838,0.999 : y_1 = 1.52, y_2 = 0.00059 : 0.0 secs
+[mbo] 27: x=0.932,0.463,0.131,0.603,0.398 : y_1 = 0.123, y_2 = 1.15 : 0.0 secs
+[mbo] 27: x=0.0696,0.996,0.996,0.00551,0.478 : y_1 = 1.73, y_2 = 0.189 : 0.0 secs
+[mbo] 27: x=0.864,0.101,0.226,0.00381,0.888 : y_1 = 0.345, y_2 = 1.59 : 0.0 secs
+[mbo] 27: x=0.746,0.852,0.0616,0.514,0.494 : y_1 = 0.51, y_2 = 1.21 : 0.0 secs
+[mbo] 28: x=0.565,0.749,0.485,0.629,0.342 : y_1 = 0.697, y_2 = 0.856 : 0.0 secs
+[mbo] 28: x=0.749,0.993,0.000102,0.974,0.000444 : y_1 = 0.755, y_2 = 1.82 : 0.0 secs
+[mbo] 28: x=0.999,0.546,0.966,0.983,0.209 : y_1 = 0.00263, y_2 = 1.54 : 0.0 secs
+[mbo] 28: x=0.000527,0.998,0.167,0.263,0.173 : y_1 = 1.52, y_2 = 0.00126 : 0.0 secs
+[mbo] 28: x=0.33,0.616,0.442,0.261,0.573 : y_1 = 0.937, y_2 = 0.535 : 0.0 secs
+[mbo] 29: x=0.839,0.451,0.632,0.911,1 : y_1 = 0.361, y_2 = 1.39 : 0.0 secs
+[mbo] 29: x=0.134,0.92,0.67,0.727,0.241 : y_1 = 1.3, y_2 = 0.278 : 0.0 secs
+[mbo] 29: x=0.000581,0.144,0.629,0.00265,0.173 : y_1 = 1.5, y_2 = 0.00137 : 0.0 secs
+[mbo] 29: x=0.239,0.568,0.35,0.511,0.586 : y_1 = 0.963, y_2 = 0.38 : 0.0 secs
+[mbo] 29: x=0.409,0.305,0.986,0.872,0.787 : y_1 = 1.2, y_2 = 0.896 : 0.0 secs
+[mbo] 30: x=1,0.0185,0.897,0.764,0.789 : y_1 = 9.97e-05, y_2 = 1.54 : 0.0 secs
+[mbo] 30: x=0.0116,0.585,0.849,0.000334,0.462 : y_1 = 1.38, y_2 = 0.0252 : 0.0 secs
+[mbo] 30: x=0.756,0.969,0.306,0.226,0.0462 : y_1 = 0.575, y_2 = 1.43 : 0.0 secs
+[mbo] 30: x=0.35,0.0396,0.0422,0.845,0.000279 : y_1 = 1.53, y_2 = 0.935 : 0.0 secs
+[mbo] 30: x=0.54,0.321,0.132,0.19,0.828 : y_1 = 0.907, y_2 = 1.03 : 0.0 secs
+[mbo] 31: x=0.359,0.944,0.847,0.435,0.0914 : y_1 = 1.26, y_2 = 0.795 : 0.0 secs
+[mbo] 31: x=0.153,0.947,0.233,0.211,0.825 : y_1 = 1.42, y_2 = 0.348 : 0.0 secs
+[mbo] 31: x=1,0.975,0.626,0.851,0.233 : y_1 = 0.000505, y_2 = 1.44 : 0.0 secs
+[mbo] 31: x=0.592,0.481,0.158,0.804,0.483 : y_1 = 0.723, y_2 = 0.97 : 0.0 secs
+[mbo] 31: x=0.0843,0.0134,0.747,0.24,0.00206 : y_1 = 1.6, y_2 = 0.213 : 0.0 secs
+[mbo] 32: x=0.888,0.969,0.875,1,0.995 : y_1 = 0.325, y_2 = 1.83 : 0.0 secs
+[mbo] 32: x=2.44e-05,0.0557,0.471,0.725,0.141 : y_1 = 1.38, y_2 = 5.27e-05 : 0.0 secs
+[mbo] 32: x=0.663,0.731,0.243,0.529,0.584 : y_1 = 0.569, y_2 = 0.973 : 0.0 secs
+[mbo] 32: x=0.419,0.78,0.45,0.692,0.539 : y_1 = 0.885, y_2 = 0.685 : 0.0 secs
+[mbo] 32: x=0.63,0.785,0.968,0.821,0.0025 : y_1 = 0.906, y_2 = 1.38 : 0.0 secs
+Result:
+List of 5
+ $ paretoset   :List of 11
+  .. [list output truncated]
+ $ pareto.front: num [1:11, 1:2] 0.557 0.857 0.823 0.179 0.93 ...
+  ..- attr(*, "dimnames")=List of 2
+ $ hv          : num 120
+ $ cd          : num [1:11] 0.698 0.434 0.436 0.793 0.306 ...
+ $ r2          : num 0.237
+NULL
+Writing result file: /home/schork/mlrMBO/bench/mco/mco_bench-files/jobs/54/654-result.RData
+########## Executing jid=664 ##########
+Timestamp: 2014-07-13 17:39:35
+Experiment: 
+  Problem: dtlz3 
+  Problem parameters:  
+  Algorithm: parego 
+  Algorithm parameters:  
+  Replication: 4 
+  Seed: 473458149 
+  Problem seed: 881760425 
+Setting seed: 473458149
+Applying Algorithm parego ...
+Computing y column(s) for design. Not provided.
+[mbo] 0: x=0.612,0.641,0.185,0.374,0.231 : y_1 = 283, y_2 = 405 : 0.0 secs
+[mbo] 0: x=0.443,0.248,0.696,0.565,0.821 : y_1 = 352, y_2 = 294 : 0.0 secs
+[mbo] 0: x=0.642,0.808,0.546,0.315,0.295 : y_1 = 146, y_2 = 232 : 0.0 secs
+[mbo] 0: x=0.72,0.664,0.76,0.674,0.607 : y_1 = 200, y_2 = 426 : 0.0 secs
+[mbo] 0: x=0.305,0.311,0.489,0.638,0.465 : y_1 = 338, y_2 = 176 : 0.0 secs
+[mbo] 0: x=0.773,0.293,0.654,0.414,0.438 : y_1 = 147, y_2 = 396 : 0.0 secs
+[mbo] 0: x=0.415,0.396,0.367,0.933,0.0625 : y_1 = 407, y_2 = 311 : 0.0 secs
+[mbo] 0: x=0.513,0.793,0.31,0.755,0.909 : y_1 = 192, y_2 = 200 : 0.0 secs
+[mbo] 0: x=0.181,0.586,0.127,0.843,0.552 : y_1 = 541, y_2 = 158 : 0.0 secs
+[mbo] 0: x=0.277,0.417,0.336,0.224,0.322 : y_1 = 362, y_2 = 168 : 0.0 secs
+[mbo] 0: x=0.571,0.859,0.597,0.0598,0.686 : y_1 = 277, y_2 = 346 : 0.0 secs
+[mbo] 0: x=0.678,0.557,0.643,0.577,0.274 : y_1 = 281, y_2 = 507 : 0.0 secs
+[mbo] 0: x=0.815,0.773,0.175,0.505,0.627 : y_1 = 101, y_2 = 338 : 0.0 secs
+[mbo] 0: x=0.857,0.508,0.45,0.193,0.129 : y_1 = 82.2, y_2 = 359 : 0.0 secs
+[mbo] 0: x=0.391,0.146,0.111,0.274,0.735 : y_1 = 429, y_2 = 303 : 0.0 secs
+[mbo] 0: x=0.0889,0.259,0.811,0.951,0.543 : y_1 = 631, y_2 = 88.7 : 0.0 secs
+[mbo] 0: x=0.233,0.212,0.725,0.494,0.225 : y_1 = 235, y_2 = 90 : 0.0 secs
+[mbo] 0: x=0.904,0.451,0.987,0.454,0.368 : y_1 = 89.3, y_2 = 591 : 0.0 secs
+[mbo] 0: x=0.271,0.899,0.274,0.174,0.516 : y_1 = 262, y_2 = 119 : 0.0 secs
+[mbo] 0: x=0.938,0.182,0.218,0.685,0.588 : y_1 = 19.7, y_2 = 203 : 0.0 secs
+[mbo] 0: x=0.138,0.901,0.796,0.428,0.483 : y_1 = 194, y_2 = 42.8 : 0.0 secs
+[mbo] 0: x=0.733,0.837,0.904,0.33,0.11 : y_1 = 150, y_2 = 336 : 0.0 secs
+[mbo] 0: x=0.124,0.678,0.625,0.796,0.157 : y_1 = 391, y_2 = 77.5 : 0.0 secs
+[mbo] 0: x=0.0645,0.172,0.879,0.601,0.99 : y_1 = 263, y_2 = 26.7 : 0.0 secs
+[mbo] 0: x=0.465,0.336,0.56,0.387,0.671 : y_1 = 381, y_2 = 342 : 0.0 secs
+[mbo] 0: x=0.53,0.0835,0.242,0.736,0.0821 : y_1 = 339, y_2 = 372 : 0.0 secs
+[mbo] 0: x=0.834,0.0207,0.829,0.717,0.843 : y_1 = 128, y_2 = 478 : 0.0 secs
+[mbo] 0: x=0.346,0.989,0.739,0.901,0.7 : y_1 = 213, y_2 = 129 : 0.0 secs
+[mbo] 0: x=0.358,0.62,0.0338,0.54,0.792 : y_1 = 380, y_2 = 239 : 0.0 secs
+[mbo] 0: x=0.981,0.972,0.385,0.113,0.404 : y_1 = 7.25, y_2 = 237 : 0.0 secs
+[mbo] 0: x=0.898,0.527,0.464,0.982,0.97 : y_1 = 80.7, y_2 = 502 : 0.0 secs
+[mbo] 0: x=0.169,0.445,0.929,0.0489,0.387 : y_1 = 575, y_2 = 156 : 0.0 secs
+[mbo] 0: x=0.788,0.727,0.955,0.296,0.773 : y_1 = 152, y_2 = 441 : 0.0 secs
+[mbo] 0: x=0.671,0.045,0.513,0.00633,0.0334 : y_1 = 224, y_2 = 394 : 0.0 secs
+[mbo] 0: x=0.22,0.112,0.295,0.859,0.866 : y_1 = 391, y_2 = 141 : 0.0 secs
+[mbo] 0: x=0.000978,0.495,0.073,0.245,0.00751 : y_1 = 374, y_2 = 0.574 : 0.0 secs
+[mbo] 0: x=0.491,0.927,0.0815,0.809,0.338 : y_1 = 295, y_2 = 287 : 0.0 secs
+[mbo] 0: x=0.0373,0.701,0.41,0.0992,0.93 : y_1 = 192, y_2 = 11.3 : 0.0 secs
+[mbo] 0: x=0.957,0.0592,0.00386,0.126,0.877 : y_1 = 30.5, y_2 = 454 : 0.0 secs
+[mbo] 0: x=0.582,0.369,0.859,0.897,0.181 : y_1 = 259, y_2 = 336 : 0.0 secs
+[mbo] 1: x=0.153,0.588,0.767,0.513,0.664 : y_1 = 371, y_2 = 90.9 : 0.0 secs
+[mbo] 1: x=0.962,0.187,0.434,0.659,0.688 : y_1 = 24.3, y_2 = 411 : 0.0 secs
+[mbo] 1: x=0.826,0.856,0.455,0.233,0.452 : y_1 = 203, y_2 = 727 : 0.0 secs
+[mbo] 1: x=0.0891,0.754,0.452,0.405,0.83 : y_1 = 549, y_2 = 77.3 : 0.0 secs
+[mbo] 1: x=0.975,0.564,0.292,0.285,0.511 : y_1 = 9.96, y_2 = 254 : 0.0 secs
+[mbo] 2: x=0.0616,0.338,0.823,0.277,0.983 : y_1 = 435, y_2 = 42.2 : 0.0 secs
+[mbo] 2: x=0.239,0.225,0.724,0.157,0.946 : y_1 = 579, y_2 = 229 : 0.0 secs
+[mbo] 2: x=0.971,0.0658,0.213,0.151,0.813 : y_1 = 20.9, y_2 = 466 : 0.0 secs
+[mbo] 2: x=0.954,0.831,0.00601,0.521,0.482 : y_1 = 22.4, y_2 = 311 : 0.0 secs
+[mbo] 2: x=0.643,0.727,0.782,0.273,0.309 : y_1 = 168, y_2 = 267 : 0.0 secs
+[mbo] 3: x=0.995,0.392,0.165,0.154,0.503 : y_1 = 2.86, y_2 = 397 : 0.0 secs
+[mbo] 3: x=0.0376,0.597,0.74,0.212,0.8 : y_1 = 234, y_2 = 13.9 : 0.0 secs
+[mbo] 3: x=0.915,0.25,0.0235,0.693,0.532 : y_1 = 63.4, y_2 = 474 : 0.0 secs
+[mbo] 3: x=0.0609,0.0976,0.915,0.926,0.959 : y_1 = 405, y_2 = 38.9 : 0.0 secs
+[mbo] 3: x=0.452,0.787,0.91,0.735,0.0902 : y_1 = 209, y_2 = 180 : 0.0 secs
+[mbo] 4: x=0.138,0.815,0.682,0.526,0.477 : y_1 = 301, y_2 = 66.4 : 0.0 secs
+[mbo] 4: x=0.951,0.541,0.0766,0.553,0.588 : y_1 = 40.2, y_2 = 517 : 0.0 secs
+[mbo] 4: x=0.728,0.955,0.287,0.18,0.404 : y_1 = 139, y_2 = 304 : 0.0 secs
+[mbo] 4: x=0.00228,0.735,0.386,0.359,0.0675 : y_1 = 554, y_2 = 1.99 : 0.0 secs
+[mbo] 4: x=0.989,0.487,0.527,0.278,0.778 : y_1 = 5.44, y_2 = 322 : 0.0 secs
+[mbo] 5: x=0.0339,0.657,0.418,0.131,0.623 : y_1 = 496, y_2 = 26.5 : 0.0 secs
+[mbo] 5: x=0.866,0.0806,0.3,0.744,0.589 : y_1 = 65, y_2 = 305 : 0.0 secs
+[mbo] 5: x=0.205,0.29,0.943,0.467,0.282 : y_1 = 421, y_2 = 141 : 0.0 secs
+[mbo] 5: x=0.0572,0.638,0.667,0.121,0.595 : y_1 = 418, y_2 = 37.7 : 0.0 secs
+[mbo] 5: x=0.977,0.532,0.246,0.271,0.347 : y_1 = 24.9, y_2 = 682 : 0.0 secs
+[mbo] 6: x=0.0485,0.611,0.738,0.0516,0.766 : y_1 = 584, y_2 = 44.6 : 0.0 secs
+[mbo] 6: x=0.0514,0.598,0.722,0.35,0.264 : y_1 = 459, y_2 = 37.1 : 0.0 secs
+[mbo] 6: x=0.981,0.477,0.335,0.306,0.63 : y_1 = 12, y_2 = 395 : 0.0 secs
+[mbo] 6: x=0.941,0.513,0.625,0.7,0.615 : y_1 = 16.8, y_2 = 182 : 0.0 secs
+[mbo] 6: x=0.668,0.0663,0.544,0.449,0.785 : y_1 = 307, y_2 = 534 : 0.0 secs
+[mbo] 7: x=0.873,0.212,0.961,0.635,0.0647 : y_1 = 114, y_2 = 563 : 0.0 secs
+[mbo] 7: x=0.994,0.442,0.867,0.285,0.326 : y_1 = 4.59, y_2 = 508 : 0.0 secs
+[mbo] 7: x=0.0834,0.104,0.477,0.917,0.155 : y_1 = 385, y_2 = 50.7 : 0.0 secs
+[mbo] 7: x=0.989,0.824,0.337,0.118,0.408 : y_1 = 6.05, y_2 = 364 : 0.0 secs
+[mbo] 7: x=0.193,0.905,0.0556,0.727,0.324 : y_1 = 430, y_2 = 134 : 0.0 secs
+[mbo] 8: x=0.677,0.609,0.276,0.284,0.238 : y_1 = 172, y_2 = 310 : 0.0 secs
+[mbo] 8: x=0.998,0.463,0.646,0.303,0.48 : y_1 = 1.33, y_2 = 444 : 0.0 secs
+[mbo] 8: x=0.731,0.304,0.625,0.464,0.248 : y_1 = 197, y_2 = 438 : 0.0 secs
+[mbo] 8: x=0.219,0.212,0.915,0.113,0.244 : y_1 = 319, y_2 = 114 : 0.0 secs
+[mbo] 8: x=0.84,0.859,0.577,0.287,0.542 : y_1 = 126, y_2 = 492 : 0.0 secs
+[mbo] 9: x=0.0752,0.406,0.497,0.638,0.171 : y_1 = 320, y_2 = 37.9 : 0.0 secs
+[mbo] 9: x=0.18,0.279,0.725,0.463,0.469 : y_1 = 469, y_2 = 137 : 0.0 secs
+[mbo] 9: x=0.988,0.818,0.814,0.687,0.755 : y_1 = 6.52, y_2 = 353 : 0.0 secs
+[mbo] 9: x=0.68,0.364,0.374,0.6,0.38 : y_1 = 168, y_2 = 305 : 0.0 secs
+[mbo] 9: x=0.944,0.0804,0.292,0.686,0.637 : y_1 = 27.6, y_2 = 315 : 0.0 secs
+[mbo] 10: x=0.983,0.578,0.704,0.292,0.542 : y_1 = 7.72, y_2 = 295 : 0.0 secs
+[mbo] 10: x=0.0994,0.176,0.848,0.406,0.893 : y_1 = 344, y_2 = 54.1 : 0.0 secs
+[mbo] 10: x=0.388,0.182,0.308,0.192,0.572 : y_1 = 184, y_2 = 128 : 0.0 secs
+[mbo] 10: x=1,0.324,0.449,0.287,0.144 : y_1 = 0.127, y_2 = 538 : 0.0 secs
+[mbo] 10: x=0.478,0.839,0.21,0.0754,0.465 : y_1 = 358, y_2 = 334 : 0.0 secs
+[mbo] 11: x=0.974,0.818,0.432,0.197,0.57 : y_1 = 14.1, y_2 = 352 : 0.0 secs
+[mbo] 11: x=0.0305,0.692,0.747,0.293,0.818 : y_1 = 305, y_2 = 14.6 : 0.0 secs
+[mbo] 11: x=0.828,0.71,0.592,0.206,0.501 : y_1 = 14.2, y_2 = 51.4 : 0.0 secs
+[mbo] 11: x=0.739,0.51,0.614,0.983,0.584 : y_1 = 73.3, y_2 = 169 : 0.0 secs
+[mbo] 11: x=0.974,0.324,0.113,0.716,0.612 : y_1 = 9.2, y_2 = 225 : 0.0 secs
+[mbo] 12: x=0.193,0.706,0.555,0.311,0.785 : y_1 = 272, y_2 = 85 : 0.0 secs
+[mbo] 12: x=0.884,0.558,0.543,0.18,0.597 : y_1 = 82.8, y_2 = 450 : 0.0 secs
+[mbo] 12: x=0.308,0.518,0.914,0.512,0.232 : y_1 = 257, y_2 = 135 : 0.0 secs
+[mbo] 12: x=0.477,0.939,0.728,0.697,0.808 : y_1 = 257, y_2 = 239 : 0.0 secs
+[mbo] 12: x=0.151,0.856,0.788,0.557,0.793 : y_1 = 436, y_2 = 105 : 0.0 secs
+[mbo] 13: x=0.962,0.408,0.575,0.704,0.612 : y_1 = 8.82, y_2 = 149 : 0.0 secs
+[mbo] 13: x=0.996,0.704,0.438,0.73,0.636 : y_1 = 2.91, y_2 = 486 : 0.0 secs
+[mbo] 13: x=0.138,0.126,0.689,0.936,0.828 : y_1 = 446, y_2 = 98.6 : 0.0 secs
+[mbo] 13: x=0.0436,0.427,0.968,0.466,0.603 : y_1 = 437, y_2 = 30 : 0.0 secs
+[mbo] 13: x=0.525,0.715,0.131,0.308,0.844 : y_1 = 283, y_2 = 307 : 0.0 secs
+[mbo] 14: x=0.462,0.284,0.111,0.519,0.636 : y_1 = 238, y_2 = 211 : 0.0 secs
+[mbo] 14: x=0.999,0.342,0.449,0.681,0.81 : y_1 = 0.493, y_2 = 483 : 0.0 secs
+[mbo] 14: x=0.311,0.0426,0.0977,0.56,0.529 : y_1 = 470, y_2 = 249 : 0.0 secs
+[mbo] 14: x=0.999,0.337,0.853,0.682,0.662 : y_1 = 0.895, y_2 = 619 : 0.0 secs
+[mbo] 14: x=0.913,0.481,0.967,0.959,0.629 : y_1 = 76.9, y_2 = 561 : 0.0 secs
+[mbo] 15: x=0.933,0.73,0.21,0.172,0.515 : y_1 = 34.8, y_2 = 330 : 0.0 secs
+[mbo] 15: x=0.888,0.805,0.0396,0.398,0.781 : y_1 = 50, y_2 = 281 : 0.0 secs
+[mbo] 15: x=0.808,0.767,0.569,0.205,0.771 : y_1 = 130, y_2 = 420 : 0.0 secs
+[mbo] 15: x=0.00559,0.718,0.438,0.519,0.104 : y_1 = 318, y_2 = 2.79 : 0.0 secs
+[mbo] 15: x=0.922,0.244,0.951,0.548,0.613 : y_1 = 80.1, y_2 = 647 : 0.0 secs
+[mbo] 16: x=0.925,0.624,0.4,0.649,0.755 : y_1 = 59, y_2 = 498 : 0.0 secs
+[mbo] 16: x=0.0178,0.503,0.0729,0.305,0.167 : y_1 = 301, y_2 = 8.41 : 0.0 secs
+[mbo] 16: x=0.846,0.738,0.598,0.0664,0.503 : y_1 = 85.4, y_2 = 345 : 0.0 secs
+[mbo] 16: x=0.15,0.069,0.776,0.634,0.822 : y_1 = 492, y_2 = 118 : 0.0 secs
+[mbo] 16: x=0.999,0.709,0.282,0.335,0.72 : y_1 = 0.343, y_2 = 321 : 0.0 secs
+[mbo] 17: x=0.981,0.83,0.59,0.108,0.682 : y_1 = 7.5, y_2 = 248 : 0.0 secs
+[mbo] 17: x=0.841,0.617,0.329,0.206,0.448 : y_1 = 98.7, y_2 = 386 : 0.0 secs
+[mbo] 17: x=0.935,0.886,0.0847,0.671,0.337 : y_1 = 41.5, y_2 = 407 : 0.0 secs
+[mbo] 17: x=0.563,0.866,0.62,0.977,0.626 : y_1 = 287, y_2 = 351 : 0.0 secs
+[mbo] 17: x=0.0751,0.684,0.675,0.368,0.861 : y_1 = 484, y_2 = 57.4 : 0.0 secs
+[mbo] 18: x=0.0682,0.414,0.668,0.279,0.183 : y_1 = 320, y_2 = 34.4 : 0.0 secs
+[mbo] 18: x=0.928,0.447,0.308,0.683,0.172 : y_1 = 45.6, y_2 = 403 : 0.0 secs
+[mbo] 18: x=0.268,0.768,0.924,0.43,0.532 : y_1 = 485, y_2 = 217 : 0.0 secs
+[mbo] 18: x=0.687,0.172,0.0406,0.187,0.563 : y_1 = 257, y_2 = 480 : 0.0 secs
+[mbo] 18: x=0.972,0.402,0.415,0.694,0.603 : y_1 = 2.55, y_2 = 59 : 0.0 secs
+[mbo] 19: x=0.817,0.494,0.851,0.203,0.5 : y_1 = 65.3, y_2 = 221 : 0.0 secs
+[mbo] 19: x=0.968,0.351,0.4,0.787,0.938 : y_1 = 21.9, y_2 = 439 : 0.0 secs
+[mbo] 19: x=0.898,0.989,0.615,0.201,0.406 : y_1 = 16.5, y_2 = 103 : 0.0 secs
+[mbo] 19: x=0.047,0.707,0.461,0.169,0.671 : y_1 = 465, y_2 = 34.4 : 0.0 secs
+[mbo] 19: x=0.0782,0.2,0.831,0.647,0.0337 : y_1 = 530, y_2 = 65.4 : 0.0 secs
+[mbo] 20: x=0.116,0.879,0.699,0.659,0.322 : y_1 = 360, y_2 = 66.7 : 0.0 secs
+[mbo] 20: x=0.967,0.715,0.403,0.689,0.573 : y_1 = 9.85, y_2 = 192 : 0.0 secs
+[mbo] 20: x=0.677,0.0661,0.015,0.36,0.177 : y_1 = 250, y_2 = 449 : 0.0 secs
+[mbo] 20: x=0.0463,0.411,0.825,0.356,0.707 : y_1 = 345, y_2 = 25.1 : 0.0 secs
+[mbo] 20: x=0.921,0.62,0.408,0.652,0.312 : y_1 = 39.7, y_2 = 317 : 0.0 secs
+[mbo] 21: x=0.56,0.512,0.107,0.131,0.00692 : y_1 = 152, y_2 = 183 : 0.0 secs
+[mbo] 21: x=0.655,0.835,0.272,0.912,0.14 : y_1 = 273, y_2 = 452 : 0.0 secs
+[mbo] 21: x=0.0939,0.849,0.644,0.663,0.347 : y_1 = 770, y_2 = 114 : 0.0 secs
+[mbo] 21: x=0.995,0.182,0.163,0.141,0.415 : y_1 = 3.7, y_2 = 487 : 0.0 secs
+[mbo] 21: x=0.33,0.571,0.756,0.602,0.337 : y_1 = 433, y_2 = 247 : 0.0 secs
+[mbo] 22: x=0.393,0.513,0.42,0.257,0.838 : y_1 = 398, y_2 = 282 : 0.0 secs
+[mbo] 22: x=0.0578,0.0989,0.724,0.801,0.561 : y_1 = 301, y_2 = 27.4 : 0.0 secs
+[mbo] 22: x=0.438,0.507,0.645,0.0519,0.0367 : y_1 = 475, y_2 = 391 : 0.0 secs
+[mbo] 22: x=0.827,0.559,0.611,0.984,0.459 : y_1 = 124, y_2 = 445 : 0.0 secs
+[mbo] 22: x=0.975,0.44,0.487,0.732,0.717 : y_1 = 16.7, y_2 = 420 : 0.0 secs
+[mbo] 23: x=0.951,0.775,0.936,0.768,0.596 : y_1 = 34.6, y_2 = 446 : 0.0 secs
+[mbo] 23: x=0.833,0.33,0.12,0.463,0.498 : y_1 = 100, y_2 = 374 : 0.0 secs
+[mbo] 23: x=0.146,0.171,0.844,0.0724,0.172 : y_1 = 590, y_2 = 138 : 0.0 secs
+[mbo] 23: x=0.832,0.532,0.624,0.144,0.523 : y_1 = 140, y_2 = 519 : 0.0 secs
+[mbo] 23: x=0.0938,0.555,0.305,0.398,0.874 : y_1 = 323, y_2 = 48 : 0.0 secs
+[mbo] 24: x=0.959,0.845,0.251,0.111,0.565 : y_1 = 39.8, y_2 = 611 : 0.0 secs
+[mbo] 24: x=0.995,0.952,0.139,0.359,0.678 : y_1 = 5.21, y_2 = 681 : 0.0 secs
+[mbo] 24: x=0.973,0.351,0.415,0.294,0.407 : y_1 = 11.4, y_2 = 267 : 0.0 secs
+[mbo] 24: x=0.049,0.566,0.993,0.49,0.936 : y_1 = 386, y_2 = 29.8 : 0.0 secs
+[mbo] 24: x=0.0274,0.181,0.74,0.355,0.942 : y_1 = 664, y_2 = 28.6 : 0.0 secs
+[mbo] 25: x=0.893,0.739,0.883,0.439,0.501 : y_1 = 70.9, y_2 = 420 : 0.0 secs
+[mbo] 25: x=0.967,0.767,0.307,0.701,0.706 : y_1 = 9.51, y_2 = 183 : 0.0 secs
+[mbo] 25: x=0.0308,0.306,0.898,0.77,0.476 : y_1 = 258, y_2 = 12.5 : 0.0 secs
+[mbo] 25: x=0.138,0.898,0.6,0.529,0.363 : y_1 = 305, y_2 = 67.1 : 0.0 secs
+[mbo] 25: x=0.254,0.807,0.594,0.863,0.46 : y_1 = 360, y_2 = 152 : 0.0 secs
+[mbo] 26: x=0.963,0.868,0.591,0.644,0.734 : y_1 = 30.9, y_2 = 524 : 0.0 secs
+[mbo] 26: x=0.255,0.506,0.853,0.768,0.273 : y_1 = 447, y_2 = 190 : 0.0 secs
+[mbo] 26: x=0.727,0.606,0.191,0.231,0.499 : y_1 = 72.8, y_2 = 159 : 0.0 secs
+[mbo] 26: x=0.0513,0.316,0.824,0.616,0.276 : y_1 = 302, y_2 = 24.4 : 0.0 secs
+[mbo] 26: x=0.602,0.494,0.288,0.317,0.0935 : y_1 = 70.1, y_2 = 97.2 : 0.0 secs
+[mbo] 27: x=0.989,0.318,0.949,0.462,0.698 : y_1 = 7.58, y_2 = 455 : 0.0 secs
+[mbo] 27: x=0.873,0.493,0.123,0.938,0.579 : y_1 = 75.2, y_2 = 373 : 0.0 secs
+[mbo] 27: x=0.0862,0.184,0.527,0.434,0.401 : y_1 = 325, y_2 = 44.3 : 0.0 secs
+[mbo] 27: x=0.0106,0.0366,0.389,0.11,0.493 : y_1 = 257, y_2 = 4.26 : 0.0 secs
+[mbo] 27: x=0.997,0.245,0.826,0.402,0.751 : y_1 = 2.44, y_2 = 526 : 0.0 secs
+[mbo] 28: x=0.865,0.181,0.415,0.81,0.985 : y_1 = 44.4, y_2 = 206 : 0.0 secs
+[mbo] 28: x=0.00489,0.73,0.416,0.505,0.491 : y_1 = 203, y_2 = 1.56 : 0.0 secs
+[mbo] 28: x=0.199,0.225,0.00233,0.153,0.539 : y_1 = 498, y_2 = 161 : 0.0 secs
+[mbo] 28: x=0.968,0.604,0.421,0.32,0.807 : y_1 = 8.41, y_2 = 169 : 0.0 secs
+[mbo] 28: x=0.831,0.381,0.118,0.205,0.341 : y_1 = 88, y_2 = 324 : 0.0 secs
+[mbo] 29: x=0.218,0.487,0.2,0.297,0.519 : y_1 = 106, y_2 = 37.9 : 0.0 secs
+[mbo] 29: x=0.964,0.104,0.479,0.803,0.367 : y_1 = 14.6, y_2 = 256 : 0.0 secs
+[mbo] 29: x=0.13,0.759,0.689,0.957,0.0766 : y_1 = 526, y_2 = 109 : 0.0 secs
+[mbo] 29: x=0.925,0.175,0.57,0.738,0.451 : y_1 = 73, y_2 = 619 : 0.0 secs
+[mbo] 29: x=0.997,0.293,0.741,0.413,0.866 : y_1 = 2.07, y_2 = 402 : 0.0 secs
+[mbo] 30: x=0.994,0.477,0.392,0.388,0.542 : y_1 = 2.84, y_2 = 320 : 0.0 secs
+[mbo] 30: x=0.484,0.321,0.418,0.239,0.771 : y_1 = 328, y_2 = 312 : 0.0 secs
+[mbo] 30: x=0.0896,0.891,0.992,0.452,0.332 : y_1 = 410, y_2 = 58.1 : 0.0 secs
+[mbo] 30: x=0.974,0.591,0.163,0.518,0.731 : y_1 = 16.1, y_2 = 395 : 0.0 secs
+[mbo] 30: x=0.976,0.354,0.303,0.708,0.926 : y_1 = 13.1, y_2 = 343 : 0.0 secs
+[mbo] 31: x=0.102,0.726,0.529,0.721,0.754 : y_1 = 509, y_2 = 82.4 : 0.0 secs
+[mbo] 31: x=0.0107,0.694,0.406,0.134,0.613 : y_1 = 222, y_2 = 3.74 : 0.0 secs
+[mbo] 31: x=0.543,0.315,0.593,0.00288,0.173 : y_1 = 137, y_2 = 157 : 0.0 secs
+[mbo] 31: x=0.965,0.557,0.188,0.698,0.574 : y_1 = 18.6, y_2 = 334 : 0.0 secs
+[mbo] 31: x=0.362,0.988,0.776,0.2,0.542 : y_1 = 298, y_2 = 190 : 0.0 secs
+[mbo] 32: x=0.783,0.445,0.956,0.84,0.722 : y_1 = 232, y_2 = 654 : 0.0 secs
+[mbo] 32: x=0.955,0.634,0.296,0.657,0.611 : y_1 = 27.1, y_2 = 379 : 0.0 secs
+[mbo] 32: x=0.925,0.766,0.353,0.275,0.907 : y_1 = 58.1, y_2 = 489 : 0.0 secs
+[mbo] 32: x=0.939,0.925,0.62,0.364,0.998 : y_1 = 36.5, y_2 = 381 : 0.0 secs
+[mbo] 32: x=0.983,0.677,0.49,0.372,0.75 : y_1 = 11.9, y_2 = 441 : 0.0 secs
+Result:
+List of 5
+ $ paretoset   :List of 8
+  .. [list output truncated]
+ $ pareto.front: num [1:8, 1:2] 373.997 191.602 0.127 14.191 0.343 ...
+  ..- attr(*, "dimnames")=List of 2
+ $ hv          : num 0
+ $ cd          : num [1:8] Inf 133 Inf 125 482 ...
+ $ r2          : num 19
+NULL
+Writing result file: /home/schork/mlrMBO/bench/mco/mco_bench-files/jobs/64/664-result.RData
+########## Executing jid=666 ##########
+Timestamp: 2014-07-13 17:43:03
+Experiment: 
+  Problem: dtlz3 
+  Problem parameters:  
+  Algorithm: parego 
+  Algorithm parameters:  
+  Replication: 6 
+  Seed: 473458151 
+  Problem seed: 580393185 
+Setting seed: 473458151
+Applying Algorithm parego ...
+Computing y column(s) for design. Not provided.
+[mbo] 0: x=0.276,0.65,0.73,0.47,0.919 : y_1 = 498, y_2 = 230 : 0.0 secs
+[mbo] 0: x=0.523,0.762,0.51,0.597,0.565 : y_1 = 247, y_2 = 266 : 0.0 secs
+[mbo] 0: x=0.562,0.833,0.595,0.444,0.282 : y_1 = 268, y_2 = 326 : 0.0 secs
+[mbo] 0: x=0.774,0.535,0.22,0.617,0.318 : y_1 = 123, y_2 = 331 : 0.0 secs
+[mbo] 0: x=0.8,0.431,0.92,0.419,0.612 : y_1 = 98, y_2 = 302 : 0.0 secs
+[mbo] 0: x=0.232,0.178,0.896,0.511,0.467 : y_1 = 269, y_2 = 102 : 0.0 secs
+[mbo] 0: x=0.208,0.74,0.438,0.799,0.666 : y_1 = 500, y_2 = 169 : 0.0 secs
+[mbo] 0: x=0.724,0.557,0.711,0.389,0.85 : y_1 = 191, y_2 = 412 : 0.0 secs
+[mbo] 0: x=0.425,0.367,0.102,0.289,0.575 : y_1 = 232, y_2 = 183 : 0.0 secs
+[mbo] 0: x=0.171,0.304,0.285,0.476,0.151 : y_1 = 346, y_2 = 95.3 : 0.0 secs
+[mbo] 0: x=0.647,0.579,0.354,0.888,0.477 : y_1 = 214, y_2 = 346 : 0.0 secs
+[mbo] 0: x=0.491,0.947,0.469,0.543,0.536 : y_1 = 512, y_2 = 498 : 0.0 secs
+[mbo] 0: x=0.19,0.789,0.388,0.348,0.24 : y_1 = 434, y_2 = 133 : 0.0 secs
+[mbo] 0: x=0.548,0.881,0.673,0.0608,0.704 : y_1 = 259, y_2 = 301 : 0.0 secs
+[mbo] 0: x=0.657,0.227,0.692,0.998,0.791 : y_1 = 94.2, y_2 = 157 : 0.0 secs
+[mbo] 0: x=0.317,0.523,0.798,0.205,0.356 : y_1 = 266, y_2 = 145 : 0.0 secs
+[mbo] 0: x=0.383,0.209,0.311,0.93,0.12 : y_1 = 230, y_2 = 158 : 0.0 secs
+[mbo] 0: x=0.978,0.817,0.171,0.741,0.52 : y_1 = 15.8, y_2 = 460 : 0.0 secs
+[mbo] 0: x=0.577,0.632,0.757,0.722,0.449 : y_1 = 391, y_2 = 498 : 0.0 secs
+[mbo] 0: x=0.745,0.7,0.0205,0.184,0.743 : y_1 = 137, y_2 = 324 : 0.0 secs
+[mbo] 0: x=0.691,0.286,0.13,0.567,0.773 : y_1 = 212, y_2 = 402 : 0.0 secs
+[mbo] 0: x=0.831,0.485,0.617,0.304,0.345 : y_1 = 78.9, y_2 = 290 : 0.0 secs
+[mbo] 0: x=0.366,0.327,0.625,0.683,0.955 : y_1 = 413, y_2 = 267 : 0.0 secs
+[mbo] 0: x=0.0122,0.274,0.85,0.12,0.0872 : y_1 = 455, y_2 = 8.69 : 0.0 secs
+[mbo] 0: x=0.129,0.173,0.403,0.0161,0.687 : y_1 = 227, y_2 = 46.6 : 0.0 secs
+[mbo] 0: x=0.401,0.618,0.0417,0.651,0.413 : y_1 = 405, y_2 = 295 : 0.0 secs
+[mbo] 0: x=0.78,0.412,0.485,0.146,0.987 : y_1 = 114, y_2 = 317 : 0.0 secs
+[mbo] 0: x=0.075,0.0711,0.843,0.871,0.184 : y_1 = 538, y_2 = 63.7 : 0.0 secs
+[mbo] 0: x=0.0354,0.902,0.348,0.364,0.837 : y_1 = 563, y_2 = 31.3 : 0.0 secs
+[mbo] 0: x=0.874,0.452,0.967,0.829,0.0626 : y_1 = 137, y_2 = 679 : 0.0 secs
+[mbo] 0: x=0.96,0.0364,0.0843,0.166,0.38 : y_1 = 30.1, y_2 = 483 : 0.0 secs
+[mbo] 0: x=0.938,0.019,0.984,0.903,0.818 : y_1 = 24, y_2 = 244 : 0.0 secs
+[mbo] 0: x=0.346,0.981,0.806,0.235,0.144 : y_1 = 406, y_2 = 246 : 0.0 secs
+[mbo] 0: x=0.122,0.697,0.528,0.972,0.202 : y_1 = 268, y_2 = 51.9 : 0.0 secs
+[mbo] 0: x=0.914,0.398,0.0638,0.767,0.0192 : y_1 = 57.5, y_2 = 425 : 0.0 secs
+[mbo] 0: x=0.883,0.959,0.243,0.0415,0.261 : y_1 = 145, y_2 = 780 : 0.0 secs
+[mbo] 0: x=0.453,0.136,0.939,0.258,0.649 : y_1 = 581, y_2 = 501 : 0.0 secs
+[mbo] 0: x=0.0874,0.121,0.192,0.632,0.94 : y_1 = 451, y_2 = 62.4 : 0.0 secs
+[mbo] 0: x=0.262,0.0959,0.275,0.0943,0.0338 : y_1 = 297, y_2 = 130 : 0.0 secs
+[mbo] 0: x=0.61,0.853,0.568,0.809,0.891 : y_1 = 237, y_2 = 337 : 0.0 secs
+[mbo] 1: x=0.847,0.443,0.292,0.396,0.32 : y_1 = 67.1, y_2 = 274 : 0.0 secs
+[mbo] 1: x=0.947,0.816,0.169,0.583,0.738 : y_1 = 36.8, y_2 = 440 : 0.0 secs
+[mbo] 1: x=0.239,0.61,0.567,0.256,0.743 : y_1 = 523, y_2 = 206 : 0.0 secs
+[mbo] 1: x=0.107,0.417,0.402,0.492,0.357 : y_1 = 258, y_2 = 43.9 : 0.0 secs
+[mbo] 1: x=0.659,0.0824,0.681,0.459,0.671 : y_1 = 229, y_2 = 385 : 0.0 secs
+[mbo] 2: x=0.677,0.254,0.695,0.245,0.296 : y_1 = 205, y_2 = 368 : 0.0 secs
+[mbo] 2: x=0.95,0.24,0.978,0.909,0.786 : y_1 = 29.1, y_2 = 368 : 0.0 secs
+[mbo] 2: x=0.815,0.468,0.728,0.114,0.379 : y_1 = 115, y_2 = 384 : 0.0 secs
+[mbo] 2: x=0.253,0.436,0.596,0.318,0.278 : y_1 = 288, y_2 = 121 : 0.0 secs
+[mbo] 2: x=0.0248,0.513,0.629,0.248,0.538 : y_1 = 538, y_2 = 21 : 0.0 secs
+[mbo] 3: x=0.941,0.149,0.263,0.615,0.379 : y_1 = 47.6, y_2 = 508 : 0.0 secs
+[mbo] 3: x=0.702,0.226,0.694,0.757,0.408 : y_1 = 152, y_2 = 301 : 0.0 secs
+[mbo] 3: x=0.655,0.283,0.779,0.829,0.849 : y_1 = 254, y_2 = 421 : 0.0 secs
+[mbo] 3: x=0.145,0.164,0.339,0.119,0.342 : y_1 = 605, y_2 = 140 : 0.0 secs
+[mbo] 3: x=0.0444,0.221,0.647,0.35,0.475 : y_1 = 584, y_2 = 40.8 : 0.0 secs
+[mbo] 4: x=0.00177,0.209,0.665,0.572,0.631 : y_1 = 446, y_2 = 1.24 : 0.0 secs
+[mbo] 4: x=0.299,0.176,0.685,0.855,0.476 : y_1 = 402, y_2 = 204 : 0.0 secs
+[mbo] 4: x=0.853,0.486,0.818,0.401,0.271 : y_1 = 53.3, y_2 = 226 : 0.0 secs
+[mbo] 4: x=0.839,0.323,0.691,0.41,0.402 : y_1 = 32.4, y_2 = 125 : 0.0 secs
+[mbo] 4: x=0.944,0.602,0.123,0.597,0.228 : y_1 = 20.8, y_2 = 237 : 0.0 secs
+[mbo] 5: x=0.971,0.723,0.157,0.586,0.435 : y_1 = 22.5, y_2 = 495 : 0.0 secs
+[mbo] 5: x=0.164,0.226,0.0674,0.442,0.772 : y_1 = 572, y_2 = 150 : 0.0 secs
+[mbo] 5: x=0.838,0.741,0.626,0.468,0.418 : y_1 = 127, y_2 = 488 : 0.0 secs
+[mbo] 5: x=0.451,0.199,0.292,0.534,0.686 : y_1 = 166, y_2 = 142 : 0.0 secs
+[mbo] 5: x=0.0472,0.394,0.81,0.32,0.339 : y_1 = 285, y_2 = 21.1 : 0.0 secs
+[mbo] 6: x=0.0809,0.193,0.298,0.887,0.628 : y_1 = 194, y_2 = 24.8 : 0.0 secs
+[mbo] 6: x=0.925,0.596,0.344,0.972,0.128 : y_1 = 55.2, y_2 = 468 : 0.0 secs
+[mbo] 6: x=0.846,0.475,0.293,0.399,0.452 : y_1 = 75.4, y_2 = 306 : 0.0 secs
+[mbo] 6: x=0.331,0.0566,0.196,0.000802,0.188 : y_1 = 247, y_2 = 141 : 0.0 secs
+[mbo] 6: x=0.824,0.273,0.624,0.803,0.686 : y_1 = 72, y_2 = 253 : 0.0 secs
+[mbo] 7: x=0.851,0.324,0.651,0.453,0.372 : y_1 = 145, y_2 = 606 : 0.0 secs
+[mbo] 7: x=0.852,0.567,0.691,0.19,0.724 : y_1 = 69.4, y_2 = 293 : 0.0 secs
+[mbo] 7: x=0.941,0.478,0.11,0.55,0.131 : y_1 = 43.6, y_2 = 470 : 0.0 secs
+[mbo] 7: x=0.841,0.55,0.913,0.629,0.639 : y_1 = 138, y_2 = 541 : 0.0 secs
+[mbo] 7: x=0.161,0.149,0.466,0.000605,0.736 : y_1 = 543, y_2 = 140 : 0.0 secs
+[mbo] 8: x=0.834,0.273,0.884,0.41,0.0681 : y_1 = 92.9, y_2 = 348 : 0.0 secs
+[mbo] 8: x=0.12,0.718,0.527,0.458,0.228 : y_1 = 477, y_2 = 90.6 : 0.0 secs
+[mbo] 8: x=0.0132,0.323,0.24,0.135,0.209 : y_1 = 476, y_2 = 9.87 : 0.0 secs
+[mbo] 8: x=0.863,0.152,0.697,0.257,0.745 : y_1 = 131, y_2 = 600 : 0.0 secs
+[mbo] 8: x=0.24,0.0544,0.1,0.0331,0.327 : y_1 = 480, y_2 = 190 : 0.0 secs
+[mbo] 9: x=0.829,0.601,0.494,0.411,0.35 : y_1 = 62.3, y_2 = 226 : 0.0 secs
+[mbo] 9: x=0.929,0.466,0.34,0.595,0.311 : y_1 = 40.9, y_2 = 365 : 0.0 secs
+[mbo] 9: x=0.915,0.301,0.697,0.443,0.426 : y_1 = 41.4, y_2 = 309 : 0.0 secs
+[mbo] 9: x=0.107,0.645,0.848,0.211,0.47 : y_1 = 566, y_2 = 95.7 : 0.0 secs
+[mbo] 9: x=0.732,0.0727,0.961,0.723,0.575 : y_1 = 215, y_2 = 481 : 0.0 secs
+[mbo] 10: x=0.929,0.378,0.316,0.348,0.407 : y_1 = 38.7, y_2 = 348 : 0.0 secs
+[mbo] 10: x=0.128,0.291,0.00883,0.485,0.287 : y_1 = 132, y_2 = 27 : 0.0 secs
+[mbo] 10: x=0.426,0.699,0.58,0.257,0.304 : y_1 = 219, y_2 = 173 : 0.0 secs
+[mbo] 10: x=0.444,0.291,0.568,0.312,0.348 : y_1 = 300, y_2 = 252 : 0.0 secs
+[mbo] 10: x=0.19,0.535,0.637,0.391,0.679 : y_1 = 403, y_2 = 124 : 0.0 secs
+[mbo] 11: x=0.949,0.478,0.118,0.427,0.462 : y_1 = 35.5, y_2 = 442 : 0.0 secs
+[mbo] 11: x=0.443,0.194,0.299,0.889,0.435 : y_1 = 169, y_2 = 141 : 0.0 secs
+[mbo] 11: x=0.391,0.238,0.293,0.291,0.144 : y_1 = 345, y_2 = 243 : 0.0 secs
+[mbo] 11: x=0.865,0.485,0.468,0.395,0.223 : y_1 = 60.7, y_2 = 283 : 0.0 secs
+[mbo] 11: x=0.72,0.228,0.502,0.635,0.688 : y_1 = 138, y_2 = 294 : 0.0 secs
+[mbo] 12: x=0.541,0.533,0.797,0.442,0.0409 : y_1 = 365, y_2 = 416 : 0.0 secs
+[mbo] 12: x=0.587,0.617,0.154,0.196,0.262 : y_1 = 275, y_2 = 363 : 0.0 secs
+[mbo] 12: x=0.849,0.743,0.693,0.578,0.216 : y_1 = 81.5, y_2 = 336 : 0.0 secs
+[mbo] 12: x=0.919,0.0295,0.768,0.813,0.87 : y_1 = 61.8, y_2 = 483 : 0.0 secs
+[mbo] 12: x=0.0133,0.737,0.333,0.617,0.632 : y_1 = 521, y_2 = 10.9 : 0.0 secs
+[mbo] 13: x=0.447,0.706,0.703,0.531,0.365 : y_1 = 243, y_2 = 206 : 0.0 secs
+[mbo] 13: x=0.0616,0.594,0.882,0.511,0.689 : y_1 = 131, y_2 = 12.7 : 0.0 secs
+[mbo] 13: x=0.857,0.415,0.484,0.607,0.0849 : y_1 = 36.1, y_2 = 158 : 0.0 secs
+[mbo] 13: x=0.519,0.0492,0.175,0.387,0.385 : y_1 = 277, y_2 = 295 : 0.0 secs
+[mbo] 13: x=0.0824,0.548,0.328,0.323,0.426 : y_1 = 517, y_2 = 67.3 : 0.0 secs
+[mbo] 14: x=0.115,0.763,0.127,0.623,0.286 : y_1 = 420, y_2 = 77 : 0.0 secs
+[mbo] 14: x=0.0987,0.289,0.0827,0.662,0.289 : y_1 = 299, y_2 = 46.7 : 0.0 secs
+[mbo] 14: x=0.949,0.728,0.128,0.69,0.348 : y_1 = 38.6, y_2 = 481 : 0.0 secs
+[mbo] 14: x=0.836,0.241,0.754,0.155,0.596 : y_1 = 154, y_2 = 584 : 0.0 secs
+[mbo] 14: x=0.0655,0.465,0.821,0.295,0.357 : y_1 = 443, y_2 = 45.7 : 0.0 secs
+[mbo] 15: x=0.0835,0.28,0.295,0.596,0.586 : y_1 = 124, y_2 = 16.3 : 0.0 secs
+[mbo] 15: x=0.0137,0.883,0.813,0.917,0.089 : y_1 = 221, y_2 = 4.74 : 0.0 secs
+[mbo] 15: x=0.0457,0.376,0.533,0.328,0.377 : y_1 = 455, y_2 = 32.7 : 0.0 secs
+[mbo] 15: x=0.0735,0.815,0.688,0.972,0.249 : y_1 = 423, y_2 = 49 : 0.0 secs
+[mbo] 15: x=0.914,0.887,0.75,0.425,0.753 : y_1 = 75.3, y_2 = 551 : 0.0 secs
+[mbo] 16: x=0.0301,0.549,0.916,0.515,0.584 : y_1 = 351, y_2 = 16.6 : 0.0 secs
+[mbo] 16: x=0.92,0.393,0.319,0.536,0.295 : y_1 = 31.3, y_2 = 248 : 0.0 secs
+[mbo] 16: x=0.847,0.728,0.584,0.405,0.206 : y_1 = 44.9, y_2 = 183 : 0.0 secs
+[mbo] 16: x=0.0487,0.346,0.321,0.453,0.585 : y_1 = 513, y_2 = 39.3 : 0.0 secs
+[mbo] 16: x=0.538,0.411,0.229,0.639,0.16 : y_1 = 350, y_2 = 395 : 0.0 secs
+[mbo] 17: x=0.835,0.52,0.595,0.455,0.426 : y_1 = 96.3, y_2 = 364 : 0.0 secs
+[mbo] 17: x=0.167,0.273,0.354,0.598,0.591 : y_1 = 323, y_2 = 86.9 : 0.0 secs
+[mbo] 17: x=0.438,0.888,0.356,0.344,0.131 : y_1 = 452, y_2 = 371 : 0.0 secs
+[mbo] 17: x=0.867,0.63,0.684,0.484,0.531 : y_1 = 75.3, y_2 = 355 : 0.0 secs
+[mbo] 17: x=0.0259,0.414,0.31,0.61,0.606 : y_1 = 89.9, y_2 = 3.66 : 0.0 secs
+[mbo] 18: x=0.912,0.268,0.273,0.577,0.178 : y_1 = 61.5, y_2 = 441 : 0.0 secs
+[mbo] 18: x=0.864,0.885,0.103,0.676,0.36 : y_1 = 74.2, y_2 = 343 : 0.0 secs
+[mbo] 18: x=0.00489,0.426,0.304,0.89,0.629 : y_1 = 274, y_2 = 2.1 : 0.0 secs
+[mbo] 18: x=0.106,0.268,0.204,0.683,0.585 : y_1 = 258, y_2 = 43.3 : 0.0 secs
+[mbo] 18: x=0.318,0.471,0.372,0.419,0.696 : y_1 = 277, y_2 = 151 : 0.0 secs
+[mbo] 19: x=0.0524,0.343,0.301,0.857,0.571 : y_1 = 523, y_2 = 43.2 : 0.0 secs
+[mbo] 19: x=0.0824,0.293,0.298,0.698,0.284 : y_1 = 74.1, y_2 = 9.64 : 0.0 secs
+[mbo] 19: x=0.223,0.36,0.284,0.747,0.451 : y_1 = 601, y_2 = 220 : 0.0 secs
+[mbo] 19: x=0.947,0.314,0.161,0.0585,0.0602 : y_1 = 53.1, y_2 = 633 : 0.0 secs
+[mbo] 19: x=0.92,0.213,0.314,0.434,0.16 : y_1 = 52.7, y_2 = 419 : 0.0 secs
+[mbo] 20: x=0.0561,0.257,0.464,0.685,0.702 : y_1 = 410, y_2 = 36.2 : 0.0 secs
+[mbo] 20: x=0.226,0.743,0.522,0.0142,0.51 : y_1 = 341, y_2 = 126 : 0.0 secs
+[mbo] 20: x=0.134,0.878,0.173,0.678,0.358 : y_1 = 478, y_2 = 102 : 0.0 secs
+[mbo] 20: x=0.459,0.98,0.554,0.167,0.184 : y_1 = 382, y_2 = 335 : 0.0 secs
+[mbo] 20: x=0.854,0.71,0.915,0.352,0.139 : y_1 = 107, y_2 = 460 : 0.0 secs
+[mbo] 21: x=0.855,0.644,0.423,0.554,0.201 : y_1 = 110, y_2 = 477 : 0.0 secs
+[mbo] 21: x=0.19,0.258,0.998,0.772,0.164 : y_1 = 499, y_2 = 154 : 0.0 secs
+[mbo] 21: x=0.445,0.0596,0.671,0.0783,0.122 : y_1 = 401, y_2 = 337 : 0.0 secs
+[mbo] 21: x=0.211,0.812,0.298,0.82,0.703 : y_1 = 122, y_2 = 42.1 : 0.0 secs
+[mbo] 21: x=0.372,0.332,0.186,0.301,0.787 : y_1 = 199, y_2 = 132 : 0.0 secs
+[mbo] 22: x=0.94,0.224,0.755,0.738,0.284 : y_1 = 49.7, y_2 = 526 : 0.0 secs
+[mbo] 22: x=0.0391,0.0477,0.634,0.605,0.592 : y_1 = 394, y_2 = 24.2 : 0.0 secs
+[mbo] 22: x=0.858,0.44,0.634,0.413,0.347 : y_1 = 126, y_2 = 556 : 0.0 secs
+[mbo] 22: x=0.753,0.0525,0.999,0.793,0.136 : y_1 = 167, y_2 = 408 : 0.0 secs
+[mbo] 22: x=0.675,0.897,0.871,0.379,0.546 : y_1 = 210, y_2 = 375 : 0.0 secs
+[mbo] 23: x=0.00406,0.289,0.149,0.571,0.634 : y_1 = 526, y_2 = 3.36 : 0.0 secs
+[mbo] 23: x=0.974,0.73,0.499,0.612,0.347 : y_1 = 15, y_2 = 365 : 0.0 secs
+[mbo] 23: x=0.0836,0.23,0.298,0.666,0.0449 : y_1 = 512, y_2 = 67.6 : 0.0 secs
+[mbo] 23: x=0.946,0.556,0.159,0.438,0.328 : y_1 = 58, y_2 = 682 : 0.0 secs
+[mbo] 23: x=0.563,0.694,0.253,0.871,0.985 : y_1 = 263, y_2 = 321 : 0.0 secs
+[mbo] 24: x=0.568,0.841,0.601,0.326,0.415 : y_1 = 217, y_2 = 269 : 0.0 secs
+[mbo] 24: x=0.0478,0.267,0.847,0.671,0.598 : y_1 = 493, y_2 = 37.1 : 0.0 secs
+[mbo] 24: x=0.841,0.41,0.771,0.605,0.213 : y_1 = 49.4, y_2 = 194 : 0.0 secs
+[mbo] 24: x=0.84,0.809,0.65,0.167,0.231 : y_1 = 132, y_2 = 514 : 0.0 secs
+[mbo] 24: x=0.636,0.263,0.426,0.488,0.00114 : y_1 = 179, y_2 = 277 : 0.0 secs
+[mbo] 25: x=0.639,0.206,0.0804,0.666,0.484 : y_1 = 163, y_2 = 256 : 0.0 secs
+[mbo] 25: x=0.534,0.759,0.985,0.0161,0.486 : y_1 = 242, y_2 = 269 : 0.0 secs
+[mbo] 25: x=0.968,0.793,0.074,0.767,0.442 : y_1 = 24.4, y_2 = 485 : 0.0 secs
+[mbo] 25: x=0.133,0.705,0.465,0.52,0.206 : y_1 = 250, y_2 = 52.9 : 0.0 secs
+[mbo] 25: x=0.878,0.601,0.609,0.851,0.717 : y_1 = 53.9, y_2 = 279 : 0.0 secs
+[mbo] 26: x=0.94,0.414,0.383,0.751,0.636 : y_1 = 43.7, y_2 = 459 : 0.0 secs
+[mbo] 26: x=0.591,0.985,0.0248,0.311,0.743 : y_1 = 244, y_2 = 327 : 0.0 secs
+[mbo] 26: x=0.0694,0.994,0.557,0.872,0.673 : y_1 = 468, y_2 = 51.3 : 0.0 secs
+[mbo] 26: x=0.834,0.578,0.188,0.661,0.325 : y_1 = 104, y_2 = 389 : 0.0 secs
+[mbo] 26: x=0.868,0.598,0.323,0.741,0.471 : y_1 = 84.7, y_2 = 404 : 0.0 secs
+[mbo] 27: x=0.0814,0.546,0.806,0.706,0.282 : y_1 = 286, y_2 = 36.8 : 0.0 secs
+[mbo] 27: x=0.615,0.176,0.268,0.821,0.239 : y_1 = 298, y_2 = 432 : 0.0 secs
+[mbo] 27: x=0.668,0.28,0.635,0.113,0.377 : y_1 = 185, y_2 = 322 : 0.0 secs
+[mbo] 27: x=0.606,0.869,0.336,0.079,0.955 : y_1 = 361, y_2 = 507 : 0.0 secs
+[mbo] 27: x=0.871,0.651,0.595,0.808,0.709 : y_1 = 50.8, y_2 = 247 : 0.0 secs
+[mbo] 28: x=0.775,0.633,0.147,0.349,0.959 : y_1 = 265, y_2 = 720 : 0.0 secs
+[mbo] 28: x=0.0467,0.614,0.764,0.196,0.108 : y_1 = 248, y_2 = 18.2 : 0.0 secs
+[mbo] 28: x=0.294,0.666,0.141,0.938,0.287 : y_1 = 522, y_2 = 260 : 0.0 secs
+[mbo] 28: x=0.432,0.961,0.794,0.173,0.243 : y_1 = 417, y_2 = 336 : 0.0 secs
+[mbo] 28: x=0.856,0.0327,0.233,0.662,0.122 : y_1 = 133, y_2 = 579 : 0.0 secs
+[mbo] 29: x=0.0441,0.338,0.276,0.196,0.454 : y_1 = 481, y_2 = 33.4 : 0.0 secs
+[mbo] 29: x=0.334,0.727,0.768,0.458,0.876 : y_1 = 492, y_2 = 285 : 0.0 secs
+[mbo] 29: x=0.624,0.801,0.236,0.473,0.726 : y_1 = 226, y_2 = 336 : 0.0 secs
+[mbo] 29: x=0.537,0.185,0.489,0.56,0.121 : y_1 = 229, y_2 = 258 : 0.0 secs
+[mbo] 29: x=0.372,0.449,0.402,0.647,0.152 : y_1 = 514, y_2 = 339 : 0.0 secs
+[mbo] 30: x=0.52,0.731,0.886,0.95,0.53 : y_1 = 371, y_2 = 395 : 0.0 secs
+[mbo] 30: x=0.973,0.814,0.552,0.835,0.723 : y_1 = 21.3, y_2 = 507 : 0.0 secs
+[mbo] 30: x=0.441,0.0676,0.474,0.903,0.047 : y_1 = 389, y_2 = 323 : 0.0 secs
+[mbo] 30: x=0.174,0.448,0.772,0.325,0.33 : y_1 = 539, y_2 = 151 : 0.0 secs
+[mbo] 30: x=0.0877,0.411,0.415,0.613,0.284 : y_1 = 155, y_2 = 21.4 : 0.0 secs
+[mbo] 31: x=0.0493,0.286,0.579,0.0685,0.0943 : y_1 = 299, y_2 = 23.2 : 0.0 secs
+[mbo] 31: x=0.0267,0.878,0.91,0.917,0.158 : y_1 = 400, y_2 = 16.8 : 0.0 secs
+[mbo] 31: x=0.392,0.882,0.858,0.805,0.431 : y_1 = 346, y_2 = 245 : 0.0 secs
+[mbo] 31: x=0.922,0.431,0.423,0.43,0.214 : y_1 = 49.4, y_2 = 401 : 0.0 secs
+[mbo] 31: x=0.762,0.228,0.688,0.261,0.913 : y_1 = 142, y_2 = 363 : 0.0 secs
+[mbo] 32: x=0.205,0.483,0.237,0.246,0.664 : y_1 = 568, y_2 = 189 : 0.0 secs
+[mbo] 32: x=0.881,0.604,0.872,0.698,0.453 : y_1 = 62.8, y_2 = 333 : 0.0 secs
+[mbo] 32: x=0.763,0.565,0.542,0.938,0.313 : y_1 = 209, y_2 = 535 : 0.0 secs
+[mbo] 32: x=0.492,0.768,0.437,0.809,0.817 : y_1 = 293, y_2 = 285 : 0.0 secs
+[mbo] 32: x=0.764,0.0624,0.478,0.378,0.711 : y_1 = 138, y_2 = 354 : 0.0 secs
+Result:
+List of 5
+ $ paretoset   :List of 7
+  .. [list output truncated]
+ $ pareto.front: num [1:7, 1:2] 445.7 32.4 20.8 89.9 274 ...
+  ..- attr(*, "dimnames")=List of 2
+ $ hv          : num 0
+ $ cd          : num [1:7] Inf 280 257 207 358 ...
+ $ r2          : num 20.4
+NULL
+Writing result file: /home/schork/mlrMBO/bench/mco/mco_bench-files/jobs/66/666-result.RData
+########## Executing jid=668 ##########
+Timestamp: 2014-07-13 17:45:57
+Experiment: 
+  Problem: dtlz3 
+  Problem parameters:  
+  Algorithm: parego 
+  Algorithm parameters:  
+  Replication: 8 
+  Seed: 473458153 
+  Problem seed: 850631706 
+Setting seed: 473458153
+Applying Algorithm parego ...
+Computing y column(s) for design. Not provided.
+[mbo] 0: x=0.64,0.471,0.826,0.337,0.635 : y_1 = 304, y_2 = 479 : 0.0 secs
+[mbo] 0: x=0.216,0.769,0.286,0.476,0.766 : y_1 = 414, y_2 = 146 : 0.0 secs
+[mbo] 0: x=0.225,0.573,0.333,0.279,0.6 : y_1 = 324, y_2 = 120 : 0.0 secs
+[mbo] 0: x=0.876,0.949,0.745,0.557,0.319 : y_1 = 131, y_2 = 665 : 0.0 secs
+[mbo] 0: x=0.419,0.341,0.659,0.772,0.57 : y_1 = 501, y_2 = 388 : 0.0 secs
+[mbo] 0: x=0.575,0.862,0.0707,0.802,0.139 : y_1 = 331, y_2 = 420 : 0.0 secs
+[mbo] 0: x=0.778,0.519,0.568,0.219,0.548 : y_1 = 164, y_2 = 451 : 0.0 secs
+[mbo] 0: x=0.357,0.354,0.517,0.432,0.0104 : y_1 = 374, y_2 = 235 : 0.0 secs
+[mbo] 0: x=0.308,0.611,0.586,0.401,0.736 : y_1 = 203, y_2 = 107 : 0.0 secs
+[mbo] 0: x=0.173,0.956,0.544,0.826,0.357 : y_1 = 697, y_2 = 194 : 0.0 secs
+[mbo] 0: x=0.149,0.376,0.491,0.127,0.709 : y_1 = 255, y_2 = 60.9 : 0.0 secs
+[mbo] 0: x=0.658,0.543,0.262,0.611,0.65 : y_1 = 305, y_2 = 513 : 0.0 secs
+[mbo] 0: x=0.71,0.0178,0.451,0.701,0.81 : y_1 = 138, y_2 = 283 : 0.0 secs
+[mbo] 0: x=0.801,0.421,0.808,0.631,0.44 : y_1 = 129, y_2 = 401 : 0.0 secs
+[mbo] 0: x=0.528,0.584,0.765,0.301,0.214 : y_1 = 177, y_2 = 193 : 0.0 secs
+[mbo] 0: x=0.475,0.172,0.376,0.0449,0.162 : y_1 = 458, y_2 = 424 : 0.0 secs
+[mbo] 0: x=0.196,0.321,0.174,0.982,0.414 : y_1 = 298, y_2 = 94.8 : 0.0 secs
+[mbo] 0: x=0.113,0.226,0.679,0.528,0.699 : y_1 = 311, y_2 = 55.9 : 0.0 secs
+[mbo] 0: x=0.461,0.663,0.183,0.598,0.101 : y_1 = 188, y_2 = 166 : 0.0 secs
+[mbo] 0: x=0.293,0.146,0.0298,0.452,0.389 : y_1 = 526, y_2 = 261 : 0.0 secs
+[mbo] 0: x=0.83,0.734,0.432,0.351,0.922 : y_1 = 160, y_2 = 585 : 0.0 secs
+[mbo] 0: x=0.929,0.441,0.886,0.242,0.875 : y_1 = 60.7, y_2 = 542 : 0.0 secs
+[mbo] 0: x=0.0689,0.686,0.406,0.164,0.259 : y_1 = 413, y_2 = 44.8 : 0.0 secs
+[mbo] 0: x=0.736,0.833,0.112,0.971,0.593 : y_1 = 146, y_2 = 330 : 0.0 secs
+[mbo] 0: x=0.964,0.214,0.24,0.0808,0.522 : y_1 = 22.5, y_2 = 398 : 0.0 secs
+[mbo] 0: x=0.552,0.89,0.614,0.671,0.488 : y_1 = 146, y_2 = 172 : 0.0 secs
+[mbo] 0: x=0.336,0.281,0.952,0.000336,0.47 : y_1 = 387, y_2 = 226 : 0.0 secs
+[mbo] 0: x=0.989,0.483,0.637,0.934,0.974 : y_1 = 9.42, y_2 = 528 : 0.0 secs
+[mbo] 0: x=0.515,0.0555,0.702,0.692,0.343 : y_1 = 297, y_2 = 311 : 0.0 secs
+[mbo] 0: x=0.61,0.189,0.0235,0.79,0.854 : y_1 = 220, y_2 = 314 : 0.0 secs
+[mbo] 0: x=0.432,0.818,0.936,0.186,0.936 : y_1 = 370, y_2 = 298 : 0.0 secs
+[mbo] 0: x=0.0774,0.917,0.325,0.519,0.783 : y_1 = 300, y_2 = 36.6 : 0.0 secs
+[mbo] 0: x=0.00889,0.642,0.365,0.894,0.0451 : y_1 = 592, y_2 = 8.27 : 0.0 secs
+[mbo] 0: x=0.698,0.076,0.126,0.727,0.0527 : y_1 = 261, y_2 = 507 : 0.0 secs
+[mbo] 0: x=0.76,0.977,0.218,0.257,0.3 : y_1 = 138, y_2 = 348 : 0.0 secs
+[mbo] 0: x=0.0359,0.784,0.985,0.396,0.249 : y_1 = 331, y_2 = 18.7 : 0.0 secs
+[mbo] 0: x=0.4,0.12,0.912,0.856,0.978 : y_1 = 354, y_2 = 257 : 0.0 secs
+[mbo] 0: x=0.851,0.0321,0.86,0.105,0.181 : y_1 = 106, y_2 = 443 : 0.0 secs
+[mbo] 0: x=0.92,0.707,0.793,0.921,0.0803 : y_1 = 26.2, y_2 = 209 : 0.0 secs
+[mbo] 0: x=0.269,0.261,0.0774,0.0698,0.847 : y_1 = 589, y_2 = 265 : 0.0 secs
+[mbo] 1: x=0.641,0.555,0.596,0.746,0.552 : y_1 = 323, y_2 = 510 : 0.0 secs
+[mbo] 1: x=0.465,0.622,0.73,0.744,0.139 : y_1 = 452, y_2 = 405 : 0.0 secs
+[mbo] 1: x=0.936,0.573,0.694,0.694,0.295 : y_1 = 14.5, y_2 = 144 : 0.0 secs
+[mbo] 1: x=0.0114,0.374,0.732,0.487,0.388 : y_1 = 312, y_2 = 5.58 : 0.0 secs
+[mbo] 1: x=0.0455,0.724,0.532,0.567,0.466 : y_1 = 544, y_2 = 38.9 : 0.0 secs
+[mbo] 2: x=0.51,0.936,0.615,0.631,0.704 : y_1 = 263, y_2 = 272 : 0.0 secs
+[mbo] 2: x=0.929,0.586,0.69,0.772,0.104 : y_1 = 23.5, y_2 = 208 : 0.0 secs
+[mbo] 2: x=0.0159,0.547,0.629,0.637,0.148 : y_1 = 706, y_2 = 17.6 : 0.0 secs
+[mbo] 2: x=0.264,0.681,0.0843,0.85,0.734 : y_1 = 458, y_2 = 202 : 0.0 secs
+[mbo] 2: x=0.312,0.421,0.323,0.313,0.725 : y_1 = 272, y_2 = 145 : 0.0 secs
+[mbo] 3: x=0.0275,0.791,0.813,0.465,0.42 : y_1 = 299, y_2 = 12.9 : 0.0 secs
+[mbo] 3: x=0.128,0.389,0.442,0.275,0.714 : y_1 = 351, y_2 = 71.6 : 0.0 secs
+[mbo] 3: x=0.939,0.536,0.737,0.706,0.626 : y_1 = 43.9, y_2 = 457 : 0.0 secs
+[mbo] 3: x=0.935,0.642,0.866,0.486,0.279 : y_1 = 48.6, y_2 = 476 : 0.0 secs
+[mbo] 3: x=0.877,0.893,0.814,0.696,0.395 : y_1 = 16, y_2 = 82.2 : 0.0 secs
+[mbo] 4: x=0.885,0.367,0.875,0.708,0.554 : y_1 = 85.9, y_2 = 471 : 0.0 secs
+[mbo] 4: x=0.938,0.219,0.877,0.324,0.3 : y_1 = 26.5, y_2 = 269 : 0.0 secs
+[mbo] 4: x=0.0132,0.55,0.765,0.444,0.399 : y_1 = 561, y_2 = 11.6 : 0.0 secs
+[mbo] 4: x=0.929,0.895,0.872,0.224,0.454 : y_1 = 49.9, y_2 = 447 : 0.0 secs
+[mbo] 4: x=0.777,0.9,0.877,0.382,0.396 : y_1 = 62.4, y_2 = 170 : 0.0 secs
+[mbo] 5: x=0.304,0.856,0.562,0.398,0.674 : y_1 = 435, y_2 = 225 : 0.0 secs
+[mbo] 5: x=0.916,0.761,0.71,0.915,0.0101 : y_1 = 40.6, y_2 = 308 : 0.0 secs
+[mbo] 5: x=0.947,0.679,0.656,0.407,0.434 : y_1 = 36.1, y_2 = 437 : 0.0 secs
+[mbo] 5: x=0.000478,0.733,0.746,0.515,0.637 : y_1 = 569, y_2 = 0.428 : 0.0 secs
+[mbo] 5: x=0.11,0.235,0.609,0.0206,0.707 : y_1 = 288, y_2 = 50.3 : 0.0 secs
+[mbo] 6: x=0.87,0.821,0.876,0.85,0.585 : y_1 = 89.6, y_2 = 434 : 0.0 secs
+[mbo] 6: x=0.876,0.814,0.892,0.869,0.708 : y_1 = 46.6, y_2 = 236 : 0.0 secs
+[mbo] 6: x=0.821,0.874,0.653,0.729,0.586 : y_1 = 135, y_2 = 466 : 0.0 secs
+[mbo] 6: x=0.138,0.573,0.997,0.707,0.258 : y_1 = 343, y_2 = 75.7 : 0.0 secs
+[mbo] 6: x=0.732,0.671,0.847,0.809,0.394 : y_1 = 152, y_2 = 339 : 0.0 secs
+[mbo] 7: x=0.908,0.897,0.556,0.746,0.608 : y_1 = 61.4, y_2 = 423 : 0.0 secs
+[mbo] 7: x=0.142,0.396,0.49,0.451,0.759 : y_1 = 405, y_2 = 91.7 : 0.0 secs
+[mbo] 7: x=0.988,0.815,0.139,0.695,0.19 : y_1 = 5.2, y_2 = 276 : 0.0 secs
+[mbo] 7: x=0.15,0.301,0.286,0.0853,0.847 : y_1 = 307, y_2 = 73.9 : 0.0 secs
+[mbo] 7: x=0.96,0.494,0.592,0.624,0.468 : y_1 = 16.8, y_2 = 264 : 0.0 secs
+[mbo] 8: x=0.0228,0.214,0.00394,0.831,0.908 : y_1 = 251, y_2 = 9 : 0.0 secs
+[mbo] 8: x=0.0706,0.779,0.85,0.173,0.359 : y_1 = 604, y_2 = 67.2 : 0.0 secs
+[mbo] 8: x=0.931,0.769,0.831,0.807,0.835 : y_1 = 51.6, y_2 = 474 : 0.0 secs
+[mbo] 8: x=0.644,0.385,0.503,0.353,0.424 : y_1 = 180, y_2 = 287 : 0.0 secs
+[mbo] 8: x=0.911,0.852,0.809,0.607,0.0174 : y_1 = 45.6, y_2 = 323 : 0.0 secs
+[mbo] 9: x=0.933,0.235,0.306,0.197,0.406 : y_1 = 20.8, y_2 = 197 : 0.0 secs
+[mbo] 9: x=0.23,0.431,0.0246,0.524,0.603 : y_1 = 329, y_2 = 124 : 0.0 secs
+[mbo] 9: x=0.918,0.238,0.681,0.237,0.489 : y_1 = 57, y_2 = 441 : 0.0 secs
+[mbo] 9: x=0.864,0.753,0.576,0.924,0.87 : y_1 = 118, y_2 = 545 : 0.0 secs
+[mbo] 9: x=0.655,0.652,0.994,0.453,0.57 : y_1 = 290, y_2 = 481 : 0.0 secs
+[mbo] 10: x=0.942,0.322,0.891,0.473,0.2 : y_1 = 21.7, y_2 = 240 : 0.0 secs
+[mbo] 10: x=0.851,0.808,0.868,0.955,0.773 : y_1 = 120, y_2 = 501 : 0.0 secs
+[mbo] 10: x=0.0399,0.329,0.386,0.539,0.857 : y_1 = 546, y_2 = 34.3 : 0.0 secs
+[mbo] 10: x=0.0509,0.0439,0.445,0.643,0.256 : y_1 = 798, y_2 = 63.9 : 0.0 secs
+[mbo] 10: x=0.948,0.325,0.549,0.353,0.214 : y_1 = 44.8, y_2 = 546 : 0.0 secs
+[mbo] 11: x=0.796,0.76,0.892,0.471,0.201 : y_1 = 111, y_2 = 335 : 0.0 secs
+[mbo] 11: x=0.923,0.739,0.252,0.39,0.702 : y_1 = 49.6, y_2 = 408 : 0.0 secs
+[mbo] 11: x=0.0746,0.668,0.51,0.0843,0.796 : y_1 = 234, y_2 = 27.5 : 0.0 secs
+[mbo] 11: x=0.963,0.587,0.542,0.845,0.117 : y_1 = 28.4, y_2 = 494 : 0.0 secs
+[mbo] 11: x=0.582,0.873,0.619,0.817,0.149 : y_1 = 282, y_2 = 366 : 0.0 secs
+[mbo] 12: x=0.919,0.716,0.566,0.694,0.224 : y_1 = 40.1, y_2 = 312 : 0.0 secs
+[mbo] 12: x=0.917,0.651,0.987,0.628,0.00392 : y_1 = 53, y_2 = 405 : 0.0 secs
+[mbo] 12: x=0.0422,0.249,0.21,0.0894,0.897 : y_1 = 289, y_2 = 19.2 : 0.0 secs
+[mbo] 12: x=0.899,0.761,0.695,0.7,0.194 : y_1 = 33.7, y_2 = 211 : 0.0 secs
+[mbo] 12: x=0.433,0.676,0.722,0.134,0.89 : y_1 = 301, y_2 = 244 : 0.0 secs
+[mbo] 13: x=0.92,0.545,0.716,0.708,0.232 : y_1 = 51.9, y_2 = 409 : 0.0 secs
+[mbo] 13: x=0.00663,0.164,0.206,0.163,0.0599 : y_1 = 574, y_2 = 5.98 : 0.0 secs
+[mbo] 13: x=0.0235,0.704,0.764,0.501,0.427 : y_1 = 295, y_2 = 10.9 : 0.0 secs
+[mbo] 13: x=0.958,0.796,0.065,0.281,0.379 : y_1 = 22, y_2 = 332 : 0.0 secs
+[mbo] 13: x=0.1,0.326,0.477,0.0953,0.749 : y_1 = 416, y_2 = 66.2 : 0.0 secs
+[mbo] 14: x=0.223,0.588,0.494,0.405,0.545 : y_1 = 223, y_2 = 81.6 : 0.0 secs
+[mbo] 14: x=0.0464,0.425,0.74,0.13,0.383 : y_1 = 482, y_2 = 35.2 : 0.0 secs
+[mbo] 14: x=0.901,0.845,0.729,0.695,0.385 : y_1 = 59.9, y_2 = 383 : 0.0 secs
+[mbo] 14: x=0.769,0.0648,0.548,0.519,0.704 : y_1 = 159, y_2 = 420 : 0.0 secs
+[mbo] 14: x=0.843,0.422,0.73,0.684,0.229 : y_1 = 97.6, y_2 = 387 : 0.0 secs
+[mbo] 15: x=0.134,0.403,0.574,0.171,0.706 : y_1 = 251, y_2 = 53.6 : 0.0 secs
+[mbo] 15: x=0.26,0.542,0.573,0.11,0.299 : y_1 = 315, y_2 = 136 : 0.0 secs
+[mbo] 15: x=0.0665,0.614,0.516,0.291,0.581 : y_1 = 165, y_2 = 17.3 : 0.0 secs
+[mbo] 15: x=0.938,0.807,0.753,0.393,0.51 : y_1 = 24.6, y_2 = 253 : 0.0 secs
+[mbo] 15: x=0.309,0.659,0.352,0.475,0.375 : y_1 = 520, y_2 = 274 : 0.0 secs
+[mbo] 16: x=0.869,0.866,0.88,0.696,0.132 : y_1 = 84.4, y_2 = 404 : 0.0 secs
+[mbo] 16: x=0.264,0.862,0.586,0.4,0.365 : y_1 = 350, y_2 = 154 : 0.0 secs
+[mbo] 16: x=0.219,0.26,0.804,0.625,0.296 : y_1 = 290, y_2 = 104 : 0.0 secs
+[mbo] 16: x=0.709,0.98,0.571,0.446,0.637 : y_1 = 259, y_2 = 526 : 0.0 secs
+[mbo] 16: x=0.445,0.205,0.206,0.352,0.902 : y_1 = 190, y_2 = 160 : 0.0 secs
+[mbo] 17: x=0.806,0.322,0.0289,0.49,0.41 : y_1 = 81.7, y_2 = 259 : 0.0 secs
+[mbo] 17: x=0.666,0.875,0.566,0.382,0.36 : y_1 = 255, y_2 = 442 : 0.0 secs
+[mbo] 17: x=0.924,0.797,0.202,0.64,0.499 : y_1 = 24.3, y_2 = 203 : 0.0 secs
+[mbo] 17: x=0.024,0.29,0.726,0.985,0.74 : y_1 = 385, y_2 = 14.5 : 0.0 secs
+[mbo] 17: x=0.502,0.431,0.00388,0.741,0.868 : y_1 = 362, y_2 = 364 : 0.0 secs
+[mbo] 18: x=0.0353,0.335,0.559,0.734,0.423 : y_1 = 597, y_2 = 33.1 : 0.0 secs
+[mbo] 18: x=0.866,0.686,0.0564,0.602,0.407 : y_1 = 55.8, y_2 = 262 : 0.0 secs
+[mbo] 18: x=0.971,0.901,0.202,0.639,0.665 : y_1 = 16.9, y_2 = 369 : 0.0 secs
+[mbo] 18: x=0.934,0.795,0.414,0.457,0.293 : y_1 = 26.6, y_2 = 256 : 0.0 secs
+[mbo] 18: x=0.773,0.104,0.879,0.799,0.162 : y_1 = 106, y_2 = 285 : 0.0 secs
+[mbo] 19: x=0.239,0.026,0.0611,0.341,0.689 : y_1 = 501, y_2 = 197 : 0.0 secs
+[mbo] 19: x=0.506,0.905,0.438,0.922,0.11 : y_1 = 228, y_2 = 233 : 0.0 secs
+[mbo] 19: x=0.882,0.582,0.592,0.677,0.512 : y_1 = 34.4, y_2 = 183 : 0.0 secs
+[mbo] 19: x=0.909,0.797,0.272,0.764,0.524 : y_1 = 57.2, y_2 = 398 : 0.0 secs
+[mbo] 19: x=0.911,0.988,0.67,0.869,0.167 : y_1 = 69.8, y_2 = 498 : 0.0 secs
+[mbo] 20: x=0.959,0.831,0.619,0.618,0.114 : y_1 = 21, y_2 = 322 : 0.0 secs
+[mbo] 20: x=0.934,0.52,0.831,0.17,0.655 : y_1 = 58.5, y_2 = 560 : 0.0 secs
+[mbo] 20: x=0.0527,0.515,0.343,0.215,0.582 : y_1 = 339, y_2 = 28.2 : 0.0 secs
+[mbo] 20: x=0.639,0.822,0.799,0.909,0.396 : y_1 = 72.5, y_2 = 114 : 0.0 secs
+[mbo] 20: x=0.506,0.629,0.567,0.458,0.661 : y_1 = 448, y_2 = 458 : 0.0 secs
+[mbo] 21: x=0.886,0.681,0.511,0.676,0.458 : y_1 = 67.3, y_2 = 372 : 0.0 secs
+[mbo] 21: x=0.0345,0.196,0.754,0.751,0.606 : y_1 = 429, y_2 = 23.3 : 0.0 secs
+[mbo] 21: x=0.125,0.577,0.85,0.0686,0.233 : y_1 = 600, y_2 = 120 : 0.0 secs
+[mbo] 21: x=0.615,0.798,0.221,0.602,0.0571 : y_1 = 172, y_2 = 250 : 0.0 secs
+[mbo] 21: x=0.12,0.254,0.678,0.889,0.741 : y_1 = 507, y_2 = 97 : 0.0 secs
+[mbo] 22: x=0.0707,0.713,0.375,0.717,0.582 : y_1 = 248, y_2 = 27.7 : 0.0 secs
+[mbo] 22: x=0.0387,0.568,0.859,0.498,0.42 : y_1 = 412, y_2 = 25.1 : 0.0 secs
+[mbo] 22: x=0.368,0.0672,0.29,0.564,0.559 : y_1 = 450, y_2 = 293 : 0.0 secs
+[mbo] 22: x=0.917,0.269,0.278,0.232,0.472 : y_1 = 65.1, y_2 = 494 : 0.0 secs
+[mbo] 22: x=0.512,0.0832,0.98,0.469,0.697 : y_1 = 212, y_2 = 220 : 0.0 secs
+[mbo] 23: x=0.0556,0.66,0.886,0.508,0.584 : y_1 = 294, y_2 = 25.7 : 0.0 secs
+[mbo] 23: x=0.926,0.808,0.24,0.594,0.269 : y_1 = 42.1, y_2 = 359 : 0.0 secs
+[mbo] 23: x=0.662,0.257,0.67,0.0912,0.246 : y_1 = 287, y_2 = 489 : 0.0 secs
+[mbo] 23: x=0.884,0.863,0.811,0.648,0.236 : y_1 = 105, y_2 = 574 : 0.0 secs
+[mbo] 23: x=0.843,0.71,0.503,0.959,0.47 : y_1 = 88.7, y_2 = 352 : 0.0 secs
+[mbo] 24: x=0.938,0.831,0.22,0.515,0.419 : y_1 = 31.4, y_2 = 321 : 0.0 secs
+[mbo] 24: x=0.601,0.581,0.755,0.155,0.793 : y_1 = 288, y_2 = 398 : 0.0 secs
+[mbo] 24: x=0.693,0.59,0.944,0.872,0.666 : y_1 = 243, y_2 = 465 : 0.0 secs
+[mbo] 24: x=0.94,0.532,0.498,0.694,0.502 : y_1 = 14.9, y_2 = 157 : 0.0 secs
+[mbo] 24: x=0.958,0.424,0.869,0.418,0.296 : y_1 = 20.9, y_2 = 313 : 0.0 secs
+[mbo] 25: x=0.024,0.24,0.548,0.156,0.847 : y_1 = 802, y_2 = 30.3 : 0.0 secs
+[mbo] 25: x=0.339,0.82,0.202,0.44,0.341 : y_1 = 396, y_2 = 233 : 0.0 secs
+[mbo] 25: x=0.567,0.866,0.635,0.694,0.489 : y_1 = 226, y_2 = 279 : 0.0 secs
+[mbo] 25: x=0.889,0.94,0.367,0.698,0.443 : y_1 = 95, y_2 = 539 : 0.0 secs
+[mbo] 25: x=0.132,0.32,0.747,0.306,0.704 : y_1 = 291, y_2 = 61.2 : 0.0 secs
+[mbo] 26: x=0.713,0.527,0.341,0.0102,0.126 : y_1 = 203, y_2 = 419 : 0.0 secs
+[mbo] 26: x=0.543,0.924,0.348,0.561,0.478 : y_1 = 376, y_2 = 431 : 0.0 secs
+[mbo] 26: x=0.631,0.816,0.000757,0.472,0.704 : y_1 = 113, y_2 = 173 : 0.0 secs
+[mbo] 26: x=0.902,0.894,0.856,0.52,0.617 : y_1 = 53.8, y_2 = 347 : 0.0 secs
+[mbo] 26: x=0.481,0.0689,0.288,0.841,0.509 : y_1 = 293, y_2 = 276 : 0.0 secs
+[mbo] 27: x=0.948,0.674,0.297,0.661,0.219 : y_1 = 29.7, y_2 = 364 : 0.0 secs
+[mbo] 27: x=0.561,0.397,0.87,0.49,0.669 : y_1 = 198, y_2 = 240 : 0.0 secs
+[mbo] 27: x=0.19,0.833,0.421,0.172,0.555 : y_1 = 539, y_2 = 165 : 0.0 secs
+[mbo] 27: x=0.921,0.735,0.999,0.0888,0.208 : y_1 = 30.9, y_2 = 249 : 0.0 secs
+[mbo] 27: x=0.912,0.794,0.146,0.52,0.505 : y_1 = 41.8, y_2 = 301 : 0.0 secs
+[mbo] 28: x=0.0635,0.409,0.677,0.141,0.711 : y_1 = 331, y_2 = 33.1 : 0.0 secs
+[mbo] 28: x=0.869,0.923,0.938,0.664,0.155 : y_1 = 138, y_2 = 660 : 0.0 secs
+[mbo] 28: x=0.839,0.77,0.516,0.211,0.274 : y_1 = 83.3, y_2 = 322 : 0.0 secs
+[mbo] 28: x=0.56,0.857,0.0395,0.683,0.102 : y_1 = 304, y_2 = 368 : 0.0 secs
+[mbo] 28: x=0.265,0.818,0.00712,0.155,0.705 : y_1 = 293, y_2 = 130 : 0.0 secs
+[mbo] 29: x=0.259,0.939,0.806,0.627,0.377 : y_1 = 380, y_2 = 164 : 0.0 secs
+[mbo] 29: x=0.0279,0.705,0.791,0.599,0.536 : y_1 = 198, y_2 = 8.68 : 0.0 secs
+[mbo] 29: x=0.308,0.989,0.564,0.741,0.475 : y_1 = 444, y_2 = 233 : 0.0 secs
+[mbo] 29: x=0.194,0.197,0.237,0.619,0.941 : y_1 = 436, y_2 = 137 : 0.0 secs
+[mbo] 29: x=0.916,0.807,0.845,0.748,0.854 : y_1 = 84.3, y_2 = 635 : 0.0 secs
+[mbo] 30: x=0.193,0.906,0.366,0.828,0.905 : y_1 = 318, y_2 = 99.6 : 0.0 secs
+[mbo] 30: x=0.256,0.941,0.0495,0.459,0.845 : y_1 = 752, y_2 = 320 : 0.0 secs
+[mbo] 30: x=0.737,0.0566,0.247,0.64,0.785 : y_1 = 260, y_2 = 595 : 0.0 secs
+[mbo] 30: x=0.902,0.768,0.898,0.367,0.497 : y_1 = 49.2, y_2 = 316 : 0.0 secs
+[mbo] 30: x=0.296,0.137,0.858,0.242,0.384 : y_1 = 560, y_2 = 281 : 0.0 secs
+[mbo] 31: x=0.2,0.178,0.0678,0.734,0.223 : y_1 = 480, y_2 = 156 : 0.0 secs
+[mbo] 31: x=0.15,0.602,0.497,0.539,0.572 : y_1 = 292, y_2 = 69.9 : 0.0 secs
+[mbo] 31: x=0.0474,0.529,0.639,0.621,0.737 : y_1 = 556, y_2 = 41.4 : 0.0 secs
+[mbo] 31: x=0.546,0.0234,0.838,0.657,0.495 : y_1 = 326, y_2 = 377 : 0.0 secs
+[mbo] 31: x=0.97,0.801,0.409,0.632,0.383 : y_1 = 10.5, y_2 = 226 : 0.0 secs
+[mbo] 32: x=0.365,0.709,0.793,0.11,0.758 : y_1 = 226, y_2 = 146 : 0.0 secs
+[mbo] 32: x=0.915,0.715,0.694,0.735,0.107 : y_1 = 33.1, y_2 = 246 : 0.0 secs
+[mbo] 32: x=0.939,0.637,0.717,0.702,0.192 : y_1 = 24.3, y_2 = 253 : 0.0 secs
+[mbo] 32: x=0.961,0.237,0.854,0.58,0.114 : y_1 = 30.7, y_2 = 505 : 0.0 secs
+[mbo] 32: x=0.522,0.519,0.657,0.898,0.156 : y_1 = 325, y_2 = 349 : 0.0 secs
+Result:
+List of 5
+ $ paretoset   :List of 8
+  .. [list output truncated]
+ $ pareto.front: num [1:8, 1:2] 14.5 311.6 16 569.3 5.2 ...
+  ..- attr(*, "dimnames")=List of 2
+ $ hv          : num 0
+ $ cd          : num [1:8] 149 380 277 Inf Inf ...
+ $ r2          : num 27.3
+NULL
+Writing result file: /home/schork/mlrMBO/bench/mco/mco_bench-files/jobs/68/668-result.RData
+########## Executing jid=697 ##########
+Timestamp: 2014-07-13 17:49:05
+Experiment: 
+  Problem: dtlz6 
+  Problem parameters:  
+  Algorithm: parego 
+  Algorithm parameters:  
+  Replication: 7 
+  Seed: 473458182 
+  Problem seed: 245901612 
+Setting seed: 473458182
+Applying Algorithm parego ...
+Computing y column(s) for design. Not provided.
+[mbo] 0: x=0.642,0.235,0.508,0.106,0.293 : y_1 = 1.36, y_2 = 13.2 : 0.0 secs
+[mbo] 0: x=0.624,0.667,0.391,0.699,0.508 : y_1 = 1.32, y_2 = 24.4 : 0.0 secs
+[mbo] 0: x=0.426,0.389,0.713,0.442,0.259 : y_1 = 0.902, y_2 = 19.6 : 0.0 secs
+[mbo] 0: x=0.989,0.419,0.785,0.913,0.312 : y_1 = 2.09, y_2 = 23.4 : 0.0 secs
+[mbo] 0: x=0.315,0.184,0.814,0.308,0.651 : y_1 = 0.667, y_2 = 22 : 0.0 secs
+[mbo] 0: x=0.264,0.171,0.65,0.76,0.789 : y_1 = 0.559, y_2 = 26.5 : 0.0 secs
+[mbo] 0: x=0.215,0.367,0.415,0.487,0.703 : y_1 = 0.454, y_2 = 22.7 : 0.0 secs
+[mbo] 0: x=0.424,0.462,0.3,0.375,0.199 : y_1 = 0.897, y_2 = 15.1 : 0.0 secs
+[mbo] 0: x=0.54,0.512,0.229,0.749,0.496 : y_1 = 1.14, y_2 = 22.9 : 0.0 secs
+[mbo] 0: x=0.8,0.0655,0.368,0.213,0.882 : y_1 = 1.69, y_2 = 17.3 : 0.0 secs
+[mbo] 0: x=0.834,0.857,0.587,0.418,0.134 : y_1 = 1.76, y_2 = 22.6 : 0.0 secs
+[mbo] 0: x=0.911,0.569,0.575,0.18,0.687 : y_1 = 1.93, y_2 = 22.4 : 0.0 secs
+[mbo] 0: x=0.699,0.927,0.149,0.667,0.0985 : y_1 = 1.48, y_2 = 18.6 : 0.0 secs
+[mbo] 0: x=0.278,0.285,0.332,0.935,0.839 : y_1 = 0.588, y_2 = 26.6 : 0.0 secs
+[mbo] 0: x=0.502,0.756,0.256,0.00874,0.804 : y_1 = 1.06, y_2 = 20.9 : 0.0 secs
+[mbo] 0: x=0.327,0.545,0.947,0.386,0.983 : y_1 = 0.691, y_2 = 30.4 : 0.0 secs
+[mbo] 0: x=0.396,0.494,0.605,0.153,0.637 : y_1 = 0.838, y_2 = 20.3 : 0.0 secs
+[mbo] 0: x=0.761,0.582,0.543,0.888,0.221 : y_1 = 1.61, y_2 = 22.8 : 0.0 secs
+[mbo] 0: x=0.0985,0.688,0.76,0.819,0.437 : y_1 = 0.208, y_2 = 29.3 : 0.0 secs
+[mbo] 0: x=0.0481,0.0204,0.923,0.594,0.389 : y_1 = 0.102, y_2 = 22.2 : 0.0 secs
+[mbo] 0: x=0.244,0.838,0.0532,0.842,0.559 : y_1 = 0.516, y_2 = 25.8 : 0.0 secs
+[mbo] 0: x=0.789,0.444,0.179,0.127,0.457 : y_1 = 1.67, y_2 = 13.9 : 0.0 secs
+[mbo] 0: x=0.585,0.61,0.429,0.508,0.912 : y_1 = 1.24, y_2 = 27.1 : 0.0 secs
+[mbo] 0: x=0.183,0.138,0.0166,0.549,0.347 : y_1 = 0.386, y_2 = 13.8 : 0.0 secs
+[mbo] 0: x=0.478,0.103,0.889,0.644,0.858 : y_1 = 1.01, y_2 = 26.9 : 0.0 secs
+[mbo] 0: x=0.897,0.322,0.209,0.991,0.403 : y_1 = 1.9, y_2 = 22 : 0.0 secs
+[mbo] 0: x=0.356,0.876,0.163,0.465,0.0723 : y_1 = 0.753, y_2 = 17.7 : 0.0 secs
+[mbo] 0: x=0.462,0.906,0.645,0.874,0.00782 : y_1 = 0.979, y_2 = 26 : 0.0 secs
+[mbo] 0: x=0.856,0.748,0.959,0.0661,0.743 : y_1 = 1.81, y_2 = 27.9 : 0.0 secs
+[mbo] 0: x=0.0749,0.718,0.498,0.797,0.962 : y_1 = 0.159, y_2 = 32 : 0.0 secs
+[mbo] 0: x=0.11,0.783,0.684,0.291,0.169 : y_1 = 0.233, y_2 = 21.9 : 0.0 secs
+[mbo] 0: x=0.724,0.266,0.739,0.255,0.353 : y_1 = 1.53, y_2 = 16.4 : 0.0 secs
+[mbo] 0: x=0.672,0.8,0.868,0.722,0.618 : y_1 = 1.42, y_2 = 30.2 : 0.0 secs
+[mbo] 0: x=0.748,0.0312,0.118,0.329,0.0388 : y_1 = 1.58, y_2 = 6.23 : 0.0 secs
+[mbo] 0: x=0.156,0.648,0.0947,0.23,0.592 : y_1 = 0.33, y_2 = 18.6 : 0.0 secs
+[mbo] 0: x=0.554,0.0984,0.283,0.551,0.931 : y_1 = 1.17, y_2 = 21.7 : 0.0 secs
+[mbo] 0: x=0.939,0.954,0.987,0.0849,0.1 : y_1 = 1.99, y_2 = 22.5 : 0.0 secs
+[mbo] 0: x=0.129,0.326,0.47,0.974,0.245 : y_1 = 0.273, y_2 = 22.8 : 0.0 secs
+[mbo] 0: x=0.0106,0.215,0.841,0.0303,0.759 : y_1 = 0.0224, y_2 = 21.5 : 0.0 secs
+[mbo] 0: x=0.952,0.99,0.0383,0.625,0.533 : y_1 = 2.01, y_2 = 22.5 : 0.0 secs
+[mbo] 1: x=0.00018,0.411,0.135,0.91,0.433 : y_1 = 0.000382, y_2 = 22 : 0.0 secs
+[mbo] 1: x=0.112,0.00172,0.0186,0.197,0.0207 : y_1 = 0.238, y_2 = 5.84 : 0.0 secs
+[mbo] 1: x=0.000799,0.677,0.42,0.0789,0.0491 : y_1 = 0.00169, y_2 = 15.7 : 0.0 secs
+[mbo] 1: x=0.000583,0.681,0.0181,0.107,0.00596 : y_1 = 0.00123, y_2 = 11.7 : 0.0 secs
+[mbo] 1: x=0.472,0.114,0.00125,0.0261,0.129 : y_1 = 0.999, y_2 = 5.57 : 0.0 secs
+[mbo] 2: x=0.00138,0.0148,0.0708,0.0259,0.139 : y_1 = 0.00292, y_2 = 6.38 : 0.0 secs
+[mbo] 2: x=0.00248,0.00235,0.0856,0.474,0.00209 : y_1 = 0.00524, y_2 = 9.36 : 0.0 secs
+[mbo] 2: x=6.38e-06,0.644,0.975,0.401,0.662 : y_1 = 1.35e-05, y_2 = 29.5 : 0.0 secs
+[mbo] 2: x=0.155,0.0629,0.00345,0.705,0.000255 : y_1 = 0.327, y_2 = 11 : 0.0 secs
+[mbo] 2: x=0.228,0.722,0.974,0.00301,0.00426 : y_1 = 0.483, y_2 = 20.2 : 0.0 secs
+[mbo] 3: x=0.00338,0.0364,0.0101,0.148,0.722 : y_1 = 0.00716, y_2 = 12.7 : 0.0 secs
+[mbo] 3: x=0.241,0.0395,0.00363,0.00306,0.546 : y_1 = 0.511, y_2 = 9.64 : 0.0 secs
+[mbo] 3: x=0.000876,0.945,0.353,0.138,0.996 : y_1 = 0.00185, y_2 = 27.2 : 0.0 secs
+[mbo] 3: x=0.196,0.000386,0.00227,0.0118,0.92 : y_1 = 0.416, y_2 = 12.8 : 0.0 secs
+[mbo] 3: x=0.0016,0.99,0.218,0.0288,0.972 : y_1 = 0.0034, y_2 = 25 : 0.0 secs
+[mbo] 4: x=0.646,0.0167,0.999,0.992,0.000492 : y_1 = 1.37, y_2 = 21.3 : 0.0 secs
+[mbo] 4: x=0.967,0.0248,0.963,0.477,0.00197 : y_1 = 2.05, y_2 = 15 : 0.0 secs
+[mbo] 4: x=0.102,0.917,0.000559,0.998,0.00108 : y_1 = 0.216, y_2 = 21.8 : 0.0 secs
+[mbo] 4: x=8.81e-05,0.278,0.585,0.549,0.137 : y_1 = 0.000187, y_2 = 18.7 : 0.0 secs
+[mbo] 4: x=0.967,0.00951,0.991,0.0318,0.0593 : y_1 = 2.05, y_2 = 11.5 : 0.0 secs
+[mbo] 5: x=0.58,0.00268,0.0668,0.0871,0.0175 : y_1 = 1.23, y_2 = 5.46 : 0.0 secs
+[mbo] 5: x=0.253,0.00039,0.804,0.00462,0.0146 : y_1 = 0.535, y_2 = 11.8 : 0.0 secs
+[mbo] 5: x=0.000537,0.00888,0.474,0.858,0.852 : y_1 = 0.00114, y_2 = 24.9 : 0.0 secs
+[mbo] 5: x=0.16,0.0845,0.999,0.116,0.0521 : y_1 = 0.338, y_2 = 15.6 : 0.0 secs
+[mbo] 5: x=0.0329,0.169,0.101,0.00616,0.00115 : y_1 = 0.0696, y_2 = 6.53 : 0.0 secs
+[mbo] 6: x=0.051,0.000718,0.185,0.0183,0.00489 : y_1 = 0.108, y_2 = 5.78 : 0.0 secs
+[mbo] 6: x=0.0739,0.444,0.0112,0.000303,0.0273 : y_1 = 0.156, y_2 = 8.29 : 0.0 secs
+[mbo] 6: x=0.000261,0.803,0.149,0.00239,0.395 : y_1 = 0.000552, y_2 = 16.9 : 0.0 secs
+[mbo] 6: x=0.998,0.0175,0.185,0.00984,0.0367 : y_1 = 2.11, y_2 = 2.41 : 0.0 secs
+[mbo] 6: x=0.344,0.0238,0.194,0.911,0.00581 : y_1 = 0.728, y_2 = 13.7 : 0.0 secs
+[mbo] 7: x=0.000217,0.148,0.238,0.0523,0.314 : y_1 = 0.000458, y_2 = 11.2 : 0.0 secs
+[mbo] 7: x=0.265,0.728,0.0227,0.00263,0.0495 : y_1 = 0.56, y_2 = 11.6 : 0.0 secs
+[mbo] 7: x=0.13,0.00337,0.00954,0.988,0.868 : y_1 = 0.274, y_2 = 21.4 : 0.0 secs
+[mbo] 7: x=0.995,0.0117,0.286,0.306,0.27 : y_1 = 2.1, y_2 = 8.45 : 0.0 secs
+[mbo] 7: x=4.39e-05,0.367,0.0394,0.00118,0.886 : y_1 = 9.29e-05, y_2 = 16.3 : 0.0 secs
+[mbo] 8: x=3.1e-05,0.00145,0.452,0.198,0.488 : y_1 = 6.57e-05, y_2 = 14.9 : 0.0 secs
+[mbo] 8: x=0.551,0.866,0.981,0.257,0.0475 : y_1 = 1.17, y_2 = 24.5 : 0.0 secs
+[mbo] 8: x=0.645,0.638,0.915,0.00557,0.00237 : y_1 = 1.37, y_2 = 17.1 : 0.0 secs
+[mbo] 8: x=0.00131,0.00486,0.79,0.00342,0.00641 : y_1 = 0.00277, y_2 = 11.7 : 0.0 secs
+[mbo] 8: x=0.999,0.135,0.000272,0.127,0.598 : y_1 = 2.11, y_2 = 8.22 : 0.0 secs
+[mbo] 9: x=0.999,0.391,0.0935,0.576,0.000764 : y_1 = 2.11, y_2 = 10.1 : 0.0 secs
+[mbo] 9: x=0.449,0.996,0.0702,0.00852,0.241 : y_1 = 0.951, y_2 = 15.2 : 0.0 secs
+[mbo] 9: x=0.999,0.0667,0.185,0.637,0.999 : y_1 = 2.11, y_2 = 18 : 0.0 secs
+[mbo] 9: x=0.305,0.984,0.999,0.996,0.304 : y_1 = 0.645, y_2 = 34.8 : 0.0 secs
+[mbo] 9: x=0.000224,0.765,0.842,0.00381,0.456 : y_1 = 0.000475, y_2 = 23.7 : 0.0 secs
+[mbo] 10: x=0.264,0.48,0.00918,0.939,0.164 : y_1 = 0.558, y_2 = 19.1 : 0.0 secs
+[mbo] 10: x=0.328,0.0103,0.0145,0.0319,0.00576 : y_1 = 0.695, y_2 = 3.72 : 0.0 secs
+[mbo] 10: x=8.32e-07,0.0242,0.579,0.968,0.019 : y_1 = 1.76e-06, y_2 = 19.1 : 0.0 secs
+[mbo] 10: x=0.78,1,0.179,0.0884,0.998 : y_1 = 1.65, y_2 = 23.7 : 0.0 secs
+[mbo] 10: x=0.671,0.00175,0.99,0.00638,0.972 : y_1 = 1.42, y_2 = 20.3 : 0.0 secs
+[mbo] 11: x=6.85e-05,0.993,0.949,0.809,0.181 : y_1 = 0.000145, y_2 = 31.9 : 0.0 secs
+[mbo] 11: x=0.302,0.987,0.0118,0.0089,0.988 : y_1 = 0.638, y_2 = 22.5 : 0.0 secs
+[mbo] 11: x=0.417,0.00133,0.0578,0.209,0.985 : y_1 = 0.882, y_2 = 14.3 : 0.0 secs
+[mbo] 11: x=0.989,0.000347,0.0148,0.972,0.0963 : y_1 = 2.09, y_2 = 10.6 : 0.0 secs
+[mbo] 11: x=0.464,0.00145,0.382,0.016,0.0052 : y_1 = 0.982, y_2 = 6.7 : 0.0 secs
+[mbo] 12: x=0.177,0.823,0.939,0.000103,0.979 : y_1 = 0.374, y_2 = 29.9 : 0.0 secs
+[mbo] 12: x=0.56,0.992,0.126,0.993,0.961 : y_1 = 1.19, y_2 = 33.2 : 0.0 secs
+[mbo] 12: x=1,0.805,0.851,0.00697,0.934 : y_1 = 2.12, y_2 = 24.7 : 0.0 secs
+[mbo] 12: x=0.691,0.181,0.000565,0.0083,0.554 : y_1 = 1.46, y_2 = 8.25 : 0.0 secs
+[mbo] 12: x=0.000811,0.196,0.000609,0.411,0.514 : y_1 = 0.00172, y_2 = 14.7 : 0.0 secs
+[mbo] 13: x=0.135,0.995,0.000173,0.00277,0.0119 : y_1 = 0.286, y_2 = 13.2 : 0.0 secs
+[mbo] 13: x=0.759,0.0012,0.0144,0.965,0.82 : y_1 = 1.61, y_2 = 18.7 : 0.0 secs
+[mbo] 13: x=0.101,0.0334,0.995,0.887,0.997 : y_1 = 0.214, y_2 = 31.3 : 0.0 secs
+[mbo] 13: x=0.925,0.141,0.0142,0.019,0.246 : y_1 = 1.96, y_2 = 6.82 : 0.0 secs
+[mbo] 13: x=0.000456,1,0.434,0.873,0.779 : y_1 = 0.000965, y_2 = 33.4 : 0.0 secs
+[mbo] 14: x=0.201,0.00331,0.97,0.825,0.00861 : y_1 = 0.425, y_2 = 21.1 : 0.0 secs
+[mbo] 14: x=0.974,0.000876,0.995,0.969,0.814 : y_1 = 2.06, y_2 = 27.3 : 0.0 secs
+[mbo] 14: x=0.671,0.0242,0.000682,0.732,0.0785 : y_1 = 1.42, y_2 = 9.51 : 0.0 secs
+[mbo] 14: x=7.17e-05,0.991,0.563,0.616,0.193 : y_1 = 0.000152, y_2 = 26.5 : 0.0 secs
+[mbo] 14: x=0.31,0.00198,0.994,0.895,0.000229 : y_1 = 0.655, y_2 = 21.4 : 0.0 secs
+[mbo] 15: x=0.767,0.983,0.000781,0.00148,0.111 : y_1 = 1.62, y_2 = 12.2 : 0.0 secs
+[mbo] 15: x=0.17,0.144,0.354,0.066,0.00652 : y_1 = 0.359, y_2 = 9.16 : 0.0 secs
+[mbo] 15: x=0.645,0.999,0.252,0.00373,0.00618 : y_1 = 1.37, y_2 = 14.2 : 0.0 secs
+[mbo] 15: x=0.000845,0.68,0.575,0.738,0.00423 : y_1 = 0.00179, y_2 = 23 : 0.0 secs
+[mbo] 15: x=0.0832,0.00729,0.332,0.00127,0.994 : y_1 = 0.176, y_2 = 16.4 : 0.0 secs
+[mbo] 16: x=0.999,0.803,0.074,0.00912,0.28 : y_1 = 2.11, y_2 = 11.1 : 0.0 secs
+[mbo] 16: x=0.721,0.228,0.932,0.999,1 : y_1 = 1.53, y_2 = 31.1 : 0.0 secs
+[mbo] 16: x=0.852,0.618,0.00141,0.949,0.996 : y_1 = 1.8, y_2 = 28.4 : 0.0 secs
+[mbo] 16: x=0.00103,0.929,0.00207,0.55,0.9 : y_1 = 0.00218, y_2 = 26.7 : 0.0 secs
+[mbo] 16: x=0.714,0.199,0.00171,0.00259,0.0406 : y_1 = 1.51, y_2 = 3.31 : 0.0 secs
+[mbo] 17: x=0.000173,0.299,0.44,0.572,0.98 : y_1 = 0.000365, y_2 = 25.8 : 0.0 secs
+[mbo] 17: x=0.744,0.000107,0.333,0.00265,0.0996 : y_1 = 1.57, y_2 = 5.37 : 0.0 secs
+[mbo] 17: x=0.689,0.00201,0.021,0.253,0.0558 : y_1 = 1.46, y_2 = 4.36 : 0.0 secs
+[mbo] 17: x=0.777,0.00132,0.974,0.00334,0.00209 : y_1 = 1.64, y_2 = 11.4 : 0.0 secs
+[mbo] 17: x=0.066,0.00541,0.194,0.72,0.00601 : y_1 = 0.14, y_2 = 12.5 : 0.0 secs
+[mbo] 18: x=0.391,0.498,0.374,0.0471,0.404 : y_1 = 0.827, y_2 = 14.9 : 0.0 secs
+[mbo] 18: x=0.999,0.938,0.00578,0.0137,0.999 : y_1 = 2.11, y_2 = 18.7 : 0.0 secs
+[mbo] 18: x=0.0479,0.995,0.00112,0.103,0.0955 : y_1 = 0.101, y_2 = 15.2 : 0.0 secs
+[mbo] 18: x=0.000617,0.978,0.2,0.999,0.143 : y_1 = 0.00131, y_2 = 26.1 : 0.0 secs
+[mbo] 18: x=0.351,0.92,0.886,0.0425,0.00171 : y_1 = 0.742, y_2 = 20.4 : 0.0 secs
+[mbo] 19: x=0.671,0.362,0.000939,0.628,0.997 : y_1 = 1.42, y_2 = 20.5 : 0.0 secs
+[mbo] 19: x=0.193,0.000493,0.00419,0.000258,0.0606 : y_1 = 0.407, y_2 = 4.48 : 0.0 secs
+[mbo] 19: x=0.496,0.0253,0.817,0.98,0.00454 : y_1 = 1.05, y_2 = 20.8 : 0.0 secs
+[mbo] 19: x=0.425,0.0414,0.0113,0.388,0.00364 : y_1 = 0.899, y_2 = 6.6 : 0.0 secs
+[mbo] 19: x=0.000844,0.607,0.4,0.000715,0.67 : y_1 = 0.00179, y_2 = 20 : 0.0 secs
+[mbo] 20: x=0.433,0.437,0.00359,0.0425,0.000733 : y_1 = 0.916, y_2 = 7.04 : 0.0 secs
+[mbo] 20: x=0.791,0.0446,0.0138,0.0325,0.0178 : y_1 = 1.67, y_2 = 3.49 : 0.0 secs
+[mbo] 20: x=0.987,0.000196,0.821,0.00914,1 : y_1 = 2.09, y_2 = 17.8 : 0.0 secs
+[mbo] 20: x=0.167,0.999,0.918,0.47,0.674 : y_1 = 0.353, y_2 = 32.9 : 0.0 secs
+[mbo] 20: x=0.263,0.0018,0.402,0.435,0.0556 : y_1 = 0.556, y_2 = 12.4 : 0.0 secs
+[mbo] 21: x=0.0624,1,0.277,0.19,0.582 : y_1 = 0.132, y_2 = 23.3 : 0.0 secs
+[mbo] 21: x=0.94,0.000948,0.00427,0.208,0.865 : y_1 = 1.99, y_2 = 12.5 : 0.0 secs
+[mbo] 21: x=0.576,0.000248,0.735,0.0945,0.00252 : y_1 = 1.22, y_2 = 11.8 : 0.0 secs
+[mbo] 21: x=0.411,0.665,0.000219,0.999,0.896 : y_1 = 0.87, y_2 = 26.7 : 0.0 secs
+[mbo] 21: x=0.846,0.00188,0.971,0.927,0.0463 : y_1 = 1.79, y_2 = 22.4 : 0.0 secs
+[mbo] 22: x=0.618,0.311,0.18,1,0.00196 : y_1 = 1.31, y_2 = 17.2 : 0.0 secs
+[mbo] 22: x=0.348,0.301,0.00153,0.171,0.591 : y_1 = 0.736, y_2 = 13 : 0.0 secs
+[mbo] 22: x=0.0876,0.00543,0.698,0.00023,0.143 : y_1 = 0.185, y_2 = 11.7 : 0.0 secs
+[mbo] 22: x=0.000204,0.278,0.0149,0.703,0.659 : y_1 = 0.000431, y_2 = 19.8 : 0.0 secs
+[mbo] 22: x=1,0.000728,0.00908,0.0688,0.0467 : y_1 = 2.12, y_2 = 1.2 : 0.0 secs
+[mbo] 23: x=0.197,0.984,0.737,0.903,0.00165 : y_1 = 0.417, y_2 = 28.9 : 0.0 secs
+[mbo] 23: x=0.836,0.998,0.0073,0.862,0.00328 : y_1 = 1.77, y_2 = 21.5 : 0.0 secs
+[mbo] 23: x=0.0695,0.000668,0.72,0.359,0.988 : y_1 = 0.147, y_2 = 23.4 : 0.0 secs
+[mbo] 23: x=0.931,0.0683,0.824,0.0546,0.652 : y_1 = 1.97, y_2 = 17.8 : 0.0 secs
+[mbo] 23: x=0.549,0.822,0.000679,0.559,0.198 : y_1 = 1.16, y_2 = 19 : 0.0 secs
+[mbo] 24: x=0.552,0.875,0.447,0.801,0.693 : y_1 = 1.17, y_2 = 30.8 : 0.0 secs
+[mbo] 24: x=0.999,0.549,0.969,0.587,0.999 : y_1 = 2.11, y_2 = 29.6 : 0.0 secs
+[mbo] 24: x=0.891,0.273,0.634,0.0209,4.8e-06 : y_1 = 1.89, y_2 = 12.6 : 0.0 secs
+[mbo] 24: x=0.481,0.993,0.954,0.775,0.993 : y_1 = 1.02, y_2 = 38.5 : 0.0 secs
+[mbo] 24: x=0.112,0.877,0.0538,0.0024,0.88 : y_1 = 0.236, y_2 = 20.8 : 0.0 secs
+[mbo] 25: x=0.69,1,0.747,0.00125,0.807 : y_1 = 1.46, y_2 = 25.5 : 0.0 secs
+[mbo] 25: x=0.294,0.48,0.791,0.0497,0.104 : y_1 = 0.623, y_2 = 17.2 : 0.0 secs
+[mbo] 25: x=0.454,0.0053,0.141,0.996,0.994 : y_1 = 0.96, y_2 = 23 : 0.0 secs
+[mbo] 25: x=0.00051,0.00041,0.194,0.369,0.739 : y_1 = 0.00108, y_2 = 16.4 : 0.0 secs
+[mbo] 25: x=0.993,0.354,0.00162,0.0713,0.000971 : y_1 = 2.1, y_2 = 4.25 : 0.0 secs
+[mbo] 26: x=1,0.521,0.0609,0.997,0.97 : y_1 = 2.12, y_2 = 24.3 : 0.0 secs
+[mbo] 26: x=0.215,0.547,0.00841,0.368,0.994 : y_1 = 0.454, y_2 = 22.2 : 0.0 secs
+[mbo] 26: x=0.598,0.999,0.00278,0.257,0.76 : y_1 = 1.26, y_2 = 22.7 : 0.0 secs
+[mbo] 26: x=8.16e-05,0.0341,0.996,0.453,0.0211 : y_1 = 0.000173, y_2 = 18.3 : 0.0 secs
+[mbo] 26: x=0.697,0.862,0.547,0.888,0.673 : y_1 = 1.47, y_2 = 29.4 : 0.0 secs
+[mbo] 27: x=0.854,0.00141,0.0011,0.549,0.187 : y_1 = 1.81, y_2 = 11 : 0.0 secs
+[mbo] 27: x=2.44e-05,0.482,0.125,0.85,0.165 : y_1 = 5.15e-05, y_2 = 19.5 : 0.0 secs
+[mbo] 27: x=0.259,0.999,0.681,0.039,0.999 : y_1 = 0.549, y_2 = 29.8 : 0.0 secs
+[mbo] 27: x=0.501,0.00552,0.827,0.000939,0.71 : y_1 = 1.06, y_2 = 18.2 : 0.0 secs
+[mbo] 27: x=0.387,0.425,0.843,0.996,0.624 : y_1 = 0.818, y_2 = 29.9 : 0.0 secs
+[mbo] 28: x=0.000698,0.892,0.876,0.606,0.923 : y_1 = 0.00148, y_2 = 35.4 : 0.0 secs
+[mbo] 28: x=0.457,0.736,0.999,0.00665,0.201 : y_1 = 0.968, y_2 = 21.2 : 0.0 secs
+[mbo] 28: x=0.525,0.531,0.298,0.01,0.00295 : y_1 = 1.11, y_2 = 11.9 : 0.0 secs
+[mbo] 28: x=0.456,0.132,0.417,0.597,0.337 : y_1 = 0.964, y_2 = 16.8 : 0.0 secs
+[mbo] 28: x=0.278,0.0138,0.999,0.0113,0.986 : y_1 = 0.588, y_2 = 23 : 0.0 secs
+[mbo] 29: x=0.0528,0.765,0.833,0.0961,0.00203 : y_1 = 0.112, y_2 = 19.9 : 0.0 secs
+[mbo] 29: x=0.00844,0.439,0.992,0.999,0.347 : y_1 = 0.0179, y_2 = 30.4 : 0.0 secs
+[mbo] 29: x=0.871,0.603,0.851,0.966,0.16 : y_1 = 1.84, y_2 = 28.6 : 0.0 secs
+[mbo] 29: x=0.921,0.726,0.00384,0.2,0.00605 : y_1 = 1.95, y_2 = 11.9 : 0.0 secs
+[mbo] 29: x=0.55,0.453,0.996,0.000717,0.994 : y_1 = 1.16, y_2 = 27.3 : 0.0 secs
+[mbo] 30: x=0.996,0.997,0.495,0.646,0.0335 : y_1 = 2.11, y_2 = 20.8 : 0.0 secs
+[mbo] 30: x=0.209,0.351,0.00172,0.357,0.00239 : y_1 = 0.442, y_2 = 10.7 : 0.0 secs
+[mbo] 30: x=0.958,0.224,0.919,0.675,0.345 : y_1 = 2.03, y_2 = 22.1 : 0.0 secs
+[mbo] 30: x=0.0398,0.0131,0.00111,0.992,0.528 : y_1 = 0.0843, y_2 = 18.5 : 0.0 secs
+[mbo] 30: x=0.000109,0.971,0.214,0.19,0.00252 : y_1 = 0.000232, y_2 = 17.1 : 0.0 secs
+[mbo] 31: x=0.294,0.665,0.203,0.897,0.892 : y_1 = 0.622, y_2 = 28.9 : 0.0 secs
+[mbo] 31: x=0.383,0.00881,0.794,0.0456,0.101 : y_1 = 0.811, y_2 = 11.4 : 0.0 secs
+[mbo] 31: x=0.000188,0.777,0.00881,0.332,0.148 : y_1 = 0.000398, y_2 = 16.1 : 0.0 secs
+[mbo] 31: x=0.0946,0.999,0.993,0.201,0.928 : y_1 = 0.2, y_2 = 33.3 : 0.0 secs
+[mbo] 31: x=0.0566,0.0273,0.0242,0.00852,0.185 : y_1 = 0.12, y_2 = 6.11 : 0.0 secs
+[mbo] 32: x=0.187,0.0138,0.775,0.277,0.229 : y_1 = 0.395, y_2 = 16.2 : 0.0 secs
+[mbo] 32: x=0.748,0.892,0.998,0.0693,0.215 : y_1 = 1.58, y_2 = 22 : 0.0 secs
+[mbo] 32: x=0.000127,0.416,0.662,0.223,0.799 : y_1 = 0.000269, y_2 = 24 : 0.0 secs
+[mbo] 32: x=0.927,0.0377,0.00866,0.801,0.000797 : y_1 = 1.96, y_2 = 10.8 : 0.0 secs
+[mbo] 32: x=0.0437,0.317,0.0348,0.993,0.00991 : y_1 = 0.0925, y_2 = 16.7 : 0.0 secs
+Result:
+List of 5
+ $ paretoset   :List of 10
+  .. [list output truncated]
+ $ pareto.front: num [1:10, 1:2] 2.92e-03 1.08e-01 2.11 4.58e-04 6.57e-05 ...
+  ..- attr(*, "dimnames")=List of 2
+ $ hv          : num 102
+ $ cd          : num [1:10] 5.49 2.31 2.71 8.47 7.98 ...
+ $ r2          : num 0.574
+NULL
+Writing result file: /home/schork/mlrMBO/bench/mco/mco_bench-files/jobs/97/697-result.RData
+########## Executing jid=756 ##########
+Timestamp: 2014-07-13 17:51:24
+Experiment: 
+  Problem: lz7 
+  Problem parameters:  
+  Algorithm: parego 
+  Algorithm parameters:  
+  Replication: 6 
+  Seed: 473458241 
+  Problem seed: 864523317 
+Setting seed: 473458241
+Applying Algorithm parego ...
+Computing y column(s) for design. Not provided.
+[mbo] 0: x=0.288,0.967,0.664,0.484,0.594 : y_1 = 3.94, y_2 = 4.23 : 0.0 secs
+[mbo] 0: x=0.31,0.33,0.782,0.381,0.575 : y_1 = 2.49, y_2 = 1.47 : 0.0 secs
+[mbo] 0: x=0.375,0.201,0.629,0.59,0.484 : y_1 = 2.81, y_2 = 5.13 : 0.0 secs
+[mbo] 0: x=0.542,0.353,0.499,0.515,0.728 : y_1 = 2.91, y_2 = 4.86 : 0.0 secs
+[mbo] 0: x=0.645,0.561,0.748,0.637,0.54 : y_1 = 4.6, y_2 = 2.5 : 0.0 secs
+[mbo] 0: x=0.27,0.604,0.175,0.783,0.221 : y_1 = 3.95, y_2 = 5.58 : 0.0 secs
+[mbo] 0: x=0.743,0.053,0.373,0.535,0.304 : y_1 = 3.53, y_2 = 5.59 : 0.0 secs
+[mbo] 0: x=0.241,0.857,0.345,0.57,0.829 : y_1 = 4.67, y_2 = 4.48 : 0.0 secs
+[mbo] 0: x=0.654,0.807,0.534,0.616,0.915 : y_1 = 3.7, y_2 = 1.81 : 0.0 secs
+[mbo] 0: x=0.211,0.311,0.578,0.431,0.357 : y_1 = 4.11, y_2 = 4.44 : 0.0 secs
+[mbo] 0: x=0.911,0.457,0.719,0.178,0.299 : y_1 = 3.38, y_2 = 3.83 : 0.0 secs
+[mbo] 0: x=0.017,0.444,0.862,0.268,0.766 : y_1 = 7.02, y_2 = 2.67 : 0.0 secs
+[mbo] 0: x=0.492,0.632,0.623,0.24,0.0506 : y_1 = 3.6, y_2 = 3.41 : 0.0 secs
+[mbo] 0: x=0.464,0.406,0.211,0.209,0.46 : y_1 = 0.969, y_2 = 2.75 : 0.0 secs
+[mbo] 0: x=0.6,0.592,0.242,0.693,0.444 : y_1 = 4.56, y_2 = 1.82 : 0.0 secs
+[mbo] 0: x=0.76,0.922,0.428,0.421,0.521 : y_1 = 3.53, y_2 = 1.09 : 0.0 secs
+[mbo] 0: x=0.83,0.132,0.141,0.311,0.948 : y_1 = 3.98, y_2 = 4.36 : 0.0 secs
+[mbo] 0: x=0.178,0.541,0.455,0.763,0.962 : y_1 = 5.36, y_2 = 5.52 : 0.0 secs
+[mbo] 0: x=0.367,0.272,0.755,0.725,0.724 : y_1 = 5.93, y_2 = 3.37 : 0.0 secs
+[mbo] 0: x=0.722,0.942,0.846,0.0527,0.395 : y_1 = 4.85, y_2 = 4.08 : 0.0 secs
+[mbo] 0: x=0.675,0.792,0.169,0.326,0.149 : y_1 = 2.96, y_2 = 0.798 : 0.0 secs
+[mbo] 0: x=0.974,0.673,0.376,0.897,0.603 : y_1 = 6.39, y_2 = 2.49 : 0.0 secs
+[mbo] 0: x=0.331,0.191,0.034,0.7,0.875 : y_1 = 3.72, y_2 = 4.06 : 0.0 secs
+[mbo] 0: x=0.428,0.239,0.982,0.164,0.998 : y_1 = 6.13, y_2 = 4.6 : 0.0 secs
+[mbo] 0: x=0.513,0.484,0.552,0.668,0.197 : y_1 = 2.08, y_2 = 1.64 : 0.0 secs
+[mbo] 0: x=0.158,0.828,0.312,0.143,0.264 : y_1 = 2.27, y_2 = 3.97 : 0.0 secs
+[mbo] 0: x=0.802,0.275,0.095,0.841,0.24 : y_1 = 5.74, y_2 = 5.69 : 0.0 secs
+[mbo] 0: x=0.591,0.0774,0.816,0.0234,0.409 : y_1 = 1.92, y_2 = 4.97 : 0.0 secs
+[mbo] 0: x=0.0469,0.041,0.515,0.357,0.681 : y_1 = 4.28, y_2 = 4.44 : 0.0 secs
+[mbo] 0: x=0.0807,0.718,0.939,0.0771,0.106 : y_1 = 6.79, y_2 = 3.37 : 0.0 secs
+[mbo] 0: x=0.892,0.684,0.117,0.113,0.658 : y_1 = 5.52, y_2 = 2.62 : 0.0 secs
+[mbo] 0: x=0.788,0.508,0.906,0.949,0.627 : y_1 = 2.84, y_2 = 2.93 : 0.0 secs
+[mbo] 0: x=0.553,0.884,0.0565,0.858,0.817 : y_1 = 2.62, y_2 = 3.84 : 0.0 secs
+[mbo] 0: x=0.106,0.998,0.879,0.822,0.0257 : y_1 = 2.72, y_2 = 6.76 : 0.0 secs
+[mbo] 0: x=0.874,0.0196,0.274,0.918,0.872 : y_1 = 6.08, y_2 = 6.82 : 0.0 secs
+[mbo] 0: x=0.0554,0.118,0.959,0.967,0.333 : y_1 = 6.92, y_2 = 7.03 : 0.0 secs
+[mbo] 0: x=0.928,0.169,0.288,0.0292,0.0883 : y_1 = 7.06, y_2 = 8.1 : 0.0 secs
+[mbo] 0: x=0.141,0.386,0.02,0.451,0.17 : y_1 = 4.09, y_2 = 3.13 : 0.0 secs
+[mbo] 0: x=0.984,0.758,0.409,0.988,0.0111 : y_1 = 7.82, y_2 = 0.361 : 0.0 secs
+[mbo] 0: x=0.405,0.736,0.691,0.291,0.783 : y_1 = 4.65, y_2 = 2.55 : 0.0 secs
+[mbo] 1: x=0.469,0.407,0.463,0.0966,0.396 : y_1 = 1.89, y_2 = 1.26 : 0.0 secs
+[mbo] 1: x=0.414,0.427,0.227,0.208,0.418 : y_1 = 1.81, y_2 = 1.8 : 0.0 secs
+[mbo] 1: x=0.323,0.357,0.786,0.241,0.665 : y_1 = 3.8, y_2 = 1.96 : 0.0 secs
+[mbo] 1: x=0.587,0.367,0.00366,0.343,0.151 : y_1 = 4.45, y_2 = 4.63 : 0.0 secs
+[mbo] 1: x=0.775,0.794,0.319,0.696,0.215 : y_1 = 4.73, y_2 = 1.77 : 0.0 secs
+[mbo] 2: x=0.488,0.817,0.231,0.187,0.637 : y_1 = 3.23, y_2 = 4.2 : 0.0 secs
+[mbo] 2: x=0.437,0.445,0.564,0.656,0.37 : y_1 = 3.84, y_2 = 3.39 : 0.0 secs
+[mbo] 2: x=0.472,0.416,0.554,0.631,0.267 : y_1 = 2.52, y_2 = 1.96 : 0.0 secs
+[mbo] 2: x=0.695,0.789,0.167,0.11,0.0862 : y_1 = 4.53, y_2 = 1.9 : 0.0 secs
+[mbo] 2: x=0.431,0.358,0.312,0.748,0.392 : y_1 = 3.19, y_2 = 2.56 : 0.0 secs
+[mbo] 3: x=0.934,0.874,0.132,0.558,0.397 : y_1 = 5.33, y_2 = 3.94 : 0.0 secs
+[mbo] 3: x=0.439,0.284,0.693,0.508,0.465 : y_1 = 1.15, y_2 = 3.42 : 0.0 secs
+[mbo] 3: x=0.659,0.778,0.222,0.713,0.263 : y_1 = 3.96, y_2 = 1.91 : 0.0 secs
+[mbo] 3: x=0.497,0.49,0.512,0.692,0.218 : y_1 = 0.825, y_2 = 2.98 : 0.0 secs
+[mbo] 3: x=0.745,0.422,0.428,0.2,0.281 : y_1 = 2.76, y_2 = 3.44 : 0.0 secs
+[mbo] 4: x=0.673,0.788,0.195,0.186,0.461 : y_1 = 1.76, y_2 = 3.01 : 0.0 secs
+[mbo] 4: x=0.447,0.525,0.378,0.247,0.362 : y_1 = 3.35, y_2 = 3.05 : 0.0 secs
+[mbo] 4: x=0.463,0.196,0.555,0.116,0.442 : y_1 = 2.53, y_2 = 2.22 : 0.0 secs
+[mbo] 4: x=0.448,0.582,0.106,0.286,0.454 : y_1 = 2.86, y_2 = 2.01 : 0.0 secs
+[mbo] 4: x=0.418,0.493,0.228,0.0245,0.487 : y_1 = 2.87, y_2 = 2.45 : 0.0 secs
+[mbo] 5: x=0.769,0.853,0.411,0.67,0.499 : y_1 = 4.88, y_2 = 0.306 : 0.0 secs
+[mbo] 5: x=0.586,0.774,0.581,0.504,0.699 : y_1 = 2.98, y_2 = 1.08 : 0.0 secs
+[mbo] 5: x=0.411,0.259,0.242,0.497,0.579 : y_1 = 4.29, y_2 = 3.23 : 0.0 secs
+[mbo] 5: x=0.673,0.764,0.194,0.702,0.0893 : y_1 = 4.22, y_2 = 2.95 : 0.0 secs
+[mbo] 5: x=0.55,0.622,0.192,0.248,0.421 : y_1 = 5.02, y_2 = 4.04 : 0.0 secs
+[mbo] 6: x=0.765,0.594,0.195,0.512,0.94 : y_1 = 5.63, y_2 = 2.51 : 0.0 secs
+[mbo] 6: x=0.48,0.383,0.497,0.101,0.276 : y_1 = 1.17, y_2 = 1.95 : 0.0 secs
+[mbo] 6: x=0.751,0.861,0.422,0.524,0.48 : y_1 = 4.11, y_2 = 2.21 : 0.0 secs
+[mbo] 6: x=0.468,0.321,0.579,0.366,0.671 : y_1 = 3.92, y_2 = 3.39 : 0.0 secs
+[mbo] 6: x=0.405,0.495,0.881,0.502,0.111 : y_1 = 2.24, y_2 = 2.61 : 0.0 secs
+[mbo] 7: x=0.468,0.605,0.444,0.0686,0.121 : y_1 = 2.45, y_2 = 1.99 : 0.0 secs
+[mbo] 7: x=0.388,0.408,0.216,0.207,0.346 : y_1 = 2.84, y_2 = 1.29 : 0.0 secs
+[mbo] 7: x=0.501,0.471,0.702,0.556,0.183 : y_1 = 2.49, y_2 = 1.39 : 0.0 secs
+[mbo] 7: x=0.696,0.843,0.584,0.363,0.286 : y_1 = 3.57, y_2 = 0.699 : 0.0 secs
+[mbo] 7: x=0.567,0.793,0.368,0.279,0.154 : y_1 = 3.03, y_2 = 2.64 : 0.0 secs
+[mbo] 8: x=0.202,0.315,0.842,0.863,0.515 : y_1 = 4.88, y_2 = 5.13 : 0.0 secs
+[mbo] 8: x=0.536,0.57,0.603,0.569,0.115 : y_1 = 3.16, y_2 = 3.36 : 0.0 secs
+[mbo] 8: x=0.687,0.82,0.515,0.428,0.586 : y_1 = 4.2, y_2 = 2.19 : 0.0 secs
+[mbo] 8: x=0.524,0.729,0.601,0.612,0.134 : y_1 = 3.92, y_2 = 0.589 : 0.0 secs
+[mbo] 8: x=0.455,0.342,0.573,0.175,0.41 : y_1 = 3.28, y_2 = 4.29 : 0.0 secs
+[mbo] 9: x=0.5,0.241,0.522,0.0922,0.155 : y_1 = 2.42, y_2 = 1.82 : 0.0 secs
+[mbo] 9: x=0.0515,0.536,0.0205,0.796,0.0296 : y_1 = 0.568, y_2 = 4.87 : 0.0 secs
+[mbo] 9: x=0.0646,0.685,0.571,0.341,0.0608 : y_1 = 1.97, y_2 = 4.39 : 0.0 secs
+[mbo] 9: x=0.514,0.463,0.553,0.71,0.273 : y_1 = 0.99, y_2 = 2.69 : 0.0 secs
+[mbo] 9: x=0.687,0.819,0.198,0.331,0.374 : y_1 = 3.5, y_2 = 0.47 : 0.0 secs
+[mbo] 10: x=0.508,0.438,0.47,0.045,0.274 : y_1 = 1.02, y_2 = 2.29 : 0.0 secs
+[mbo] 10: x=0.362,0.326,0.409,0.147,0.743 : y_1 = 4.44, y_2 = 2.12 : 0.0 secs
+[mbo] 10: x=0.423,0.293,0.179,0.173,0.85 : y_1 = 3.86, y_2 = 4.64 : 0.0 secs
+[mbo] 10: x=0.47,0.301,0.228,0.0591,0.579 : y_1 = 3.15, y_2 = 3.21 : 0.0 secs
+[mbo] 10: x=0.409,0.779,0.91,0.271,0.707 : y_1 = 3.04, y_2 = 2.4 : 0.0 secs
+[mbo] 11: x=0.782,0.373,0.438,0.221,0.154 : y_1 = 4.31, y_2 = 2.34 : 0.0 secs
+[mbo] 11: x=0.33,0.345,0.956,0.377,0.868 : y_1 = 6.23, y_2 = 1.91 : 0.0 secs
+[mbo] 11: x=0.53,0.438,0.797,0.344,0.278 : y_1 = 0.903, y_2 = 1.59 : 0.0 secs
+[mbo] 11: x=0.927,0.941,0.898,0.33,0.759 : y_1 = 3.02, y_2 = 2.45 : 0.0 secs
+[mbo] 11: x=0.52,0.376,0.527,0.799,0.3 : y_1 = 0.809, y_2 = 4.52 : 0.0 secs
+[mbo] 12: x=0.977,0.0863,0.899,0.712,0.433 : y_1 = 3.63, y_2 = 5.31 : 0.0 secs
+[mbo] 12: x=0.857,0.8,0.635,0.0468,0.0817 : y_1 = 4.77, y_2 = 4.37 : 0.0 secs
+[mbo] 12: x=0.386,0.576,0.267,0.624,0.248 : y_1 = 4.27, y_2 = 3.53 : 0.0 secs
+[mbo] 12: x=0.466,0.248,0.767,0.369,0.459 : y_1 = 1.78, y_2 = 2.86 : 0.0 secs
+[mbo] 12: x=0.748,0.766,0.222,0.743,0.141 : y_1 = 4.22, y_2 = 3.75 : 0.0 secs
+[mbo] 13: x=0.52,0.493,0.805,0.382,0.273 : y_1 = 1.2, y_2 = 0.643 : 0.0 secs
+[mbo] 13: x=0.323,0.256,0.395,0.117,0.211 : y_1 = 3.52, y_2 = 2.97 : 0.0 secs
+[mbo] 13: x=0.515,0.57,0.896,0.5,0.13 : y_1 = 5.13, y_2 = 4.27 : 0.0 secs
+[mbo] 13: x=0.567,0.763,0.841,0.606,0.478 : y_1 = 2.84, y_2 = 1.63 : 0.0 secs
+[mbo] 13: x=0.506,0.445,0.807,0.398,0.265 : y_1 = 1.6, y_2 = 1.1 : 0.0 secs
+[mbo] 14: x=0.437,0.439,0.371,0.0999,0.32 : y_1 = 3.6, y_2 = 1.9 : 0.0 secs
+[mbo] 14: x=0.44,0.343,0.702,0.57,0.483 : y_1 = 1.54, y_2 = 2.48 : 0.0 secs
+[mbo] 14: x=0.979,0.0332,0.492,0.742,0.105 : y_1 = 6.74, y_2 = 4.59 : 0.0 secs
+[mbo] 14: x=0.459,0.239,0.313,0.344,0.44 : y_1 = 2.76, y_2 = 2.41 : 0.0 secs
+[mbo] 14: x=0.695,0.536,0.308,0.145,0.174 : y_1 = 4.54, y_2 = 2.99 : 0.0 secs
+[mbo] 15: x=0.528,0.644,0.753,0.234,0.302 : y_1 = 1.09, y_2 = 3.68 : 0.0 secs
+[mbo] 15: x=0.463,0.175,0.207,0.356,0.43 : y_1 = 1.28, y_2 = 1.85 : 0.0 secs
+[mbo] 15: x=0.991,0.877,0.194,0.22,0.147 : y_1 = 8.46, y_2 = 4.47 : 0.0 secs
+[mbo] 15: x=0.505,0.277,0.492,0.779,0.249 : y_1 = 0.568, y_2 = 4.26 : 0.0 secs
+[mbo] 15: x=0.998,0.241,0.098,0.766,0.0851 : y_1 = 11, y_2 = 2.65 : 0.0 secs
+[mbo] 16: x=0.463,0.527,0.212,0.586,0.449 : y_1 = 1.01, y_2 = 2.61 : 0.0 secs
+[mbo] 16: x=0.442,0.476,0.739,0.54,0.508 : y_1 = 2.81, y_2 = 1.69 : 0.0 secs
+[mbo] 16: x=0.461,0.631,0.994,0.73,0.371 : y_1 = 3.69, y_2 = 3.16 : 0.0 secs
+[mbo] 16: x=0.646,0.8,0.0882,0.552,0.34 : y_1 = 4.16, y_2 = 0.525 : 0.0 secs
+[mbo] 16: x=0.502,0.818,0.736,0.574,0.275 : y_1 = 0.971, y_2 = 2.76 : 0.0 secs
+[mbo] 17: x=0.113,0.00369,0.582,0.369,0.318 : y_1 = 2.47, y_2 = 4.48 : 0.0 secs
+[mbo] 17: x=0.839,0.71,0.837,0.464,0.3 : y_1 = 3.25, y_2 = 1.96 : 0.0 secs
+[mbo] 17: x=0.504,0.835,0.503,0.143,0.257 : y_1 = 0.508, y_2 = 2.91 : 0.0 secs
+[mbo] 17: x=0.394,0.428,0.22,0.168,0.419 : y_1 = 2.18, y_2 = 2.66 : 0.0 secs
+[mbo] 17: x=0.529,0.6,0.81,0.386,0.64 : y_1 = 3.61, y_2 = 2.34 : 0.0 secs
+[mbo] 18: x=0.602,0.262,0.975,0.635,0.506 : y_1 = 5.13, y_2 = 2.92 : 0.0 secs
+[mbo] 18: x=0.466,0.886,0.21,0.455,0.453 : y_1 = 1.02, y_2 = 3.12 : 0.0 secs
+[mbo] 18: x=0.946,0.267,0.305,0.182,0.144 : y_1 = 6.76, y_2 = 4.81 : 0.0 secs
+[mbo] 18: x=0.499,0.401,0.711,0.619,0.455 : y_1 = 1.82, y_2 = 1.85 : 0.0 secs
+[mbo] 18: x=0.786,0.917,0.613,0.007,0.812 : y_1 = 3.27, y_2 = 3.22 : 0.0 secs
+[mbo] 19: x=0.117,0.751,0.874,0.168,0.413 : y_1 = 4.89, y_2 = 5.04 : 0.0 secs
+[mbo] 19: x=0.526,0.966,0.706,0.388,0.263 : y_1 = 1.91, y_2 = 0.545 : 0.0 secs
+[mbo] 19: x=0.0589,0.656,0.514,0.596,0.91 : y_1 = 6.45, y_2 = 5.81 : 0.0 secs
+[mbo] 19: x=0.527,0.71,0.709,0.631,0.776 : y_1 = 2.8, y_2 = 0.604 : 0.0 secs
+[mbo] 19: x=0.529,0.536,0.758,0.83,0.272 : y_1 = 0.904, y_2 = 2.92 : 0.0 secs
+[mbo] 20: x=0.507,0.273,0.493,0.358,0.252 : y_1 = 0.575, y_2 = 2.03 : 0.0 secs
+[mbo] 20: x=0.668,0.109,0.383,0.863,0.105 : y_1 = 3.45, y_2 = 4.23 : 0.0 secs
+[mbo] 20: x=0.494,0.0731,0.492,0.0594,0.253 : y_1 = 0.521, y_2 = 4.63 : 0.0 secs
+[mbo] 20: x=0.512,0.426,0.988,0.445,0.872 : y_1 = 5.02, y_2 = 2.48 : 0.0 secs
+[mbo] 20: x=0.514,0.307,0.572,0.618,0.241 : y_1 = 1.57, y_2 = 2.84 : 0.0 secs
+[mbo] 21: x=0.052,0.386,0.0247,0.533,0.0264 : y_1 = 0.455, y_2 = 3.77 : 0.0 secs
+[mbo] 21: x=0.525,0.712,0.622,0.643,0.537 : y_1 = 2.64, y_2 = 0.643 : 0.0 secs
+[mbo] 21: x=0.135,0.803,0.699,0.608,0.982 : y_1 = 6.55, y_2 = 4.57 : 0.0 secs
+[mbo] 21: x=0.811,0.652,0.588,0.43,0.259 : y_1 = 3.67, y_2 = 1.42 : 0.0 secs
+[mbo] 21: x=0.521,0.496,0.557,0.403,0.247 : y_1 = 1.09, y_2 = 0.892 : 0.0 secs
+[mbo] 22: x=0.985,0.521,0.46,0.574,0.141 : y_1 = 6.48, y_2 = 3.54 : 0.0 secs
+[mbo] 22: x=0.543,0.49,0.81,0.363,0.319 : y_1 = 1.1, y_2 = 0.919 : 0.0 secs
+[mbo] 22: x=0.698,0.851,0.286,0.341,0.18 : y_1 = 4.2, y_2 = 0.503 : 0.0 secs
+[mbo] 22: x=0.527,0.468,0.406,0.49,0.158 : y_1 = 4.63, y_2 = 2.52 : 0.0 secs
+[mbo] 22: x=0.633,0.8,0.386,0.708,0.876 : y_1 = 1.97, y_2 = 0.979 : 0.0 secs
+[mbo] 23: x=0.526,0.34,0.705,0.139,0.865 : y_1 = 4.87, y_2 = 3.09 : 0.0 secs
+[mbo] 23: x=0.628,0.583,0.383,0.245,0.879 : y_1 = 1.89, y_2 = 1.11 : 0.0 secs
+[mbo] 23: x=0.745,0.0488,0.878,0.268,0.475 : y_1 = 4.24, y_2 = 6.39 : 0.0 secs
+[mbo] 23: x=0.539,0.47,0.131,0.633,0.261 : y_1 = 3.14, y_2 = 0.887 : 0.0 secs
+[mbo] 23: x=0.529,0.718,0.164,0.636,0.58 : y_1 = 4.07, y_2 = 0.553 : 0.0 secs
+[mbo] 24: x=0.726,0.626,0.179,0.587,0.64 : y_1 = 4.56, y_2 = 0.837 : 0.0 secs
+[mbo] 24: x=0.203,0.472,0.704,0.695,0.288 : y_1 = 1.45, y_2 = 3.99 : 0.0 secs
+[mbo] 24: x=0.506,0.251,0.506,0.252,0.274 : y_1 = 0.603, y_2 = 3.55 : 0.0 secs
+[mbo] 24: x=0.619,0.789,0.33,0.514,0.0704 : y_1 = 2.77, y_2 = 0.441 : 0.0 secs
+[mbo] 24: x=0.499,0.662,0.494,0.151,0.265 : y_1 = 0.586, y_2 = 1.68 : 0.0 secs
+[mbo] 25: x=0.00153,0.499,0.824,0.54,0.702 : y_1 = 6.57, y_2 = 3.91 : 0.0 secs
+[mbo] 25: x=0.63,0.653,0.387,0.372,0.874 : y_1 = 1.94, y_2 = 4.28 : 0.0 secs
+[mbo] 25: x=0.477,0.433,0.467,0.0844,0.68 : y_1 = 1.96, y_2 = 0.837 : 0.0 secs
+[mbo] 25: x=0.53,0.553,0.549,0.589,0.268 : y_1 = 0.697, y_2 = 2.49 : 0.0 secs
+[mbo] 25: x=0.514,0.455,0.0603,0.614,0.16 : y_1 = 3.85, y_2 = 0.851 : 0.0 secs
+[mbo] 26: x=0.46,0.549,0.21,0.281,0.428 : y_1 = 1.23, y_2 = 2.68 : 0.0 secs
+[mbo] 26: x=0.0937,0.418,0.826,0.324,0.241 : y_1 = 2.65, y_2 = 3.62 : 0.0 secs
+[mbo] 26: x=0.702,0.0837,0.415,0.225,0.0232 : y_1 = 2.6, y_2 = 4.93 : 0.0 secs
+[mbo] 26: x=0.961,0.555,0.973,0.58,0.218 : y_1 = 3.56, y_2 = 4.52 : 0.0 secs
+[mbo] 26: x=0.939,0.235,0.16,0.71,0.459 : y_1 = 5.71, y_2 = 3.14 : 0.0 secs
+[mbo] 27: x=0.358,0.447,0.565,0.917,0.973 : y_1 = 5.63, y_2 = 4.89 : 0.0 secs
+[mbo] 27: x=0.578,0.0883,0.963,0.265,0.829 : y_1 = 4.13, y_2 = 4.87 : 0.0 secs
+[mbo] 27: x=0.466,0.809,0.596,0.237,0.21 : y_1 = 2.54, y_2 = 3.84 : 0.0 secs
+[mbo] 27: x=0.533,0.961,0.685,0.385,0.309 : y_1 = 2.6, y_2 = 0.605 : 0.0 secs
+[mbo] 27: x=0.458,0.147,0.677,0.823,0.486 : y_1 = 1.45, y_2 = 2.81 : 0.0 secs
+[mbo] 28: x=0.512,0.931,0.385,0.406,0.177 : y_1 = 4.13, y_2 = 1.28 : 0.0 secs
+[mbo] 28: x=0.492,0.799,0.502,0.145,0.245 : y_1 = 0.524, y_2 = 2.95 : 0.0 secs
+[mbo] 28: x=0.751,0.419,0.831,0.976,0.436 : y_1 = 4.27, y_2 = 3.39 : 0.0 secs
+[mbo] 28: x=0.573,0.409,0.376,0.992,0.518 : y_1 = 2.58, y_2 = 4.64 : 0.0 secs
+[mbo] 28: x=0.495,0.423,0.486,0.293,0.242 : y_1 = 0.523, y_2 = 1.72 : 0.0 secs
+[mbo] 29: x=0.582,0.386,0.543,0.82,0.691 : y_1 = 3.37, y_2 = 5.37 : 0.0 secs
+[mbo] 29: x=0.529,0.975,0.636,0.38,0.612 : y_1 = 4.4, y_2 = 0.527 : 0.0 secs
+[mbo] 29: x=0.636,0.58,0.213,0.229,0.306 : y_1 = 4.54, y_2 = 1.26 : 0.0 secs
+[mbo] 29: x=0.616,0.795,0.37,0.522,0.322 : y_1 = 1.77, y_2 = 0.681 : 0.0 secs
+[mbo] 29: x=0.0318,0.194,0.488,0.527,0.708 : y_1 = 3.94, y_2 = 2.13 : 0.0 secs
+[mbo] 30: x=0.686,0.804,0.277,0.341,0.24 : y_1 = 3.35, y_2 = 0.72 : 0.0 secs
+[mbo] 30: x=0.249,0.627,0.202,0.97,0.339 : y_1 = 1.41, y_2 = 7.15 : 0.0 secs
+[mbo] 30: x=0.538,0.963,0.521,0.592,0.267 : y_1 = 0.781, y_2 = 1.51 : 0.0 secs
+[mbo] 30: x=0.506,0.484,0.46,0.336,0.286 : y_1 = 1.37, y_2 = 0.831 : 0.0 secs
+[mbo] 30: x=0.523,0.982,0.819,0.378,0.218 : y_1 = 2.3, y_2 = 0.567 : 0.0 secs
+[mbo] 31: x=0.308,0.88,0.965,0.807,0.458 : y_1 = 6.21, y_2 = 5.77 : 0.0 secs
+[mbo] 31: x=0.516,0.445,0.487,0.0758,0.254 : y_1 = 0.809, y_2 = 1.64 : 0.0 secs
+[mbo] 31: x=0.756,0.902,0.72,0.388,0.815 : y_1 = 1.4, y_2 = 0.855 : 0.0 secs
+[mbo] 31: x=0.522,0.704,0.68,0.653,0.44 : y_1 = 3.91, y_2 = 0.887 : 0.0 secs
+[mbo] 31: x=0.549,0.681,0.478,0.409,0.342 : y_1 = 2.28, y_2 = 1.22 : 0.0 secs
+[mbo] 32: x=0.998,0.216,0.575,0.274,0.999 : y_1 = 3.08, y_2 = 5.1 : 0.0 secs
+[mbo] 32: x=0.535,0.337,0.771,0.762,0.285 : y_1 = 0.824, y_2 = 5.3 : 0.0 secs
+[mbo] 32: x=0.537,0.979,0.888,0.393,0.411 : y_1 = 4.9, y_2 = 0.514 : 0.0 secs
+[mbo] 32: x=0.514,0.412,0.509,0.368,0.242 : y_1 = 0.672, y_2 = 1.45 : 0.0 secs
+[mbo] 32: x=0.497,0.464,0.481,0.0936,0.447 : y_1 = 1.41, y_2 = 0.829 : 0.0 secs
+Result:
+List of 5
+ $ paretoset   :List of 10
+  .. [list output truncated]
+ $ pareto.front: num [1:10, 1:2] 4.884 1.199 0.508 1.907 0.455 ...
+  ..- attr(*, "dimnames")=List of 2
+ $ hv          : num 111
+ $ cd          : num [1:10] Inf 1.16 2.12 1.77 Inf ...
+ $ r2          : num 0.245
+NULL
+Writing result file: /home/schork/mlrMBO/bench/mco/mco_bench-files/jobs/56/756-result.RData
+########## Executing jid=762 ##########
+Timestamp: 2014-07-13 17:54:29
+Experiment: 
+  Problem: lz8 
+  Problem parameters:  
+  Algorithm: parego 
+  Algorithm parameters:  
+  Replication: 2 
+  Seed: 473458247 
+  Problem seed: 397355516 
+Setting seed: 473458247
+Applying Algorithm parego ...
+Computing y column(s) for design. Not provided.
+[mbo] 0: x=0.694,0.586,0.712,0.65,0.732 : y_1 = 1.79, y_2 = 2.41 : 0.0 secs
+[mbo] 0: x=0.481,0.622,0.348,0.458,0.244 : y_1 = 2.32, y_2 = 0.928 : 0.0 secs
+[mbo] 0: x=0.414,0.403,0.435,0.564,0.372 : y_1 = 1.43, y_2 = 2.28 : 0.0 secs
+[mbo] 0: x=0.304,0.667,0.885,0.416,0.804 : y_1 = 6.16, y_2 = 2.7 : 0.0 secs
+[mbo] 0: x=0.656,0.567,0.633,0.213,0.38 : y_1 = 2.47, y_2 = 2.51 : 0.0 secs
+[mbo] 0: x=0.208,0.253,0.491,0.384,0.466 : y_1 = 4.27, y_2 = 1.32 : 0.0 secs
+[mbo] 0: x=0.192,0.779,0.694,0.918,0.659 : y_1 = 4.43, y_2 = 6.64 : 0.0 secs
+[mbo] 0: x=0.752,0.358,0.239,0.312,0.302 : y_1 = 3.23, y_2 = 3.13 : 0.0 secs
+[mbo] 0: x=0.343,0.499,0.852,0.292,0.426 : y_1 = 5.11, y_2 = 1.01 : 0.0 secs
+[mbo] 0: x=0.967,0.634,0.61,0.264,0.705 : y_1 = 1.85, y_2 = 2.6 : 0.0 secs
+[mbo] 0: x=0.631,0.0983,0.674,0.629,0.983 : y_1 = 4.02, y_2 = 5.31 : 0.0 secs
+[mbo] 0: x=0.146,0.325,0.124,0.811,0.0441 : y_1 = 1.03, y_2 = 5.18 : 0.0 secs
+[mbo] 0: x=0.893,0.819,0.56,0.793,0.274 : y_1 = 5.4, y_2 = 2.18 : 0.0 secs
+[mbo] 0: x=0.00665,0.276,0.537,0.436,0.774 : y_1 = 7.31, y_2 = 4.43 : 0.0 secs
+[mbo] 0: x=0.596,0.755,0.253,0.0944,0.339 : y_1 = 1.28, y_2 = 2.08 : 0.0 secs
+[mbo] 0: x=0.454,0.994,0.946,0.861,0.777 : y_1 = 5.72, y_2 = 3.99 : 0.0 secs
+[mbo] 0: x=0.382,0.0641,0.296,0.351,0.611 : y_1 = 5.05, y_2 = 5.24 : 0.0 secs
+[mbo] 0: x=0.531,0.68,0.38,0.534,0.574 : y_1 = 3.41, y_2 = 2.25 : 0.0 secs
+[mbo] 0: x=0.371,0.448,0.508,0.758,0.941 : y_1 = 5.47, y_2 = 4.31 : 0.0 secs
+[mbo] 0: x=0.117,0.862,0.833,0.186,0.508 : y_1 = 4.84, y_2 = 3.72 : 0.0 secs
+[mbo] 0: x=0.52,0.744,0.3,0.929,0.0895 : y_1 = 2.93, y_2 = 3.37 : 0.0 secs
+[mbo] 0: x=0.435,0.00329,0.0839,0.124,0.19 : y_1 = 0.952, y_2 = 4.67 : 0.0 secs
+[mbo] 0: x=0.0521,0.155,0.00543,0.506,0.422 : y_1 = 2.94, y_2 = 1.82 : 0.0 secs
+[mbo] 0: x=0.856,0.885,0.225,0.957,0.541 : y_1 = 5.35, y_2 = 2.39 : 0.0 secs
+[mbo] 0: x=0.788,0.47,0.79,0.886,0.122 : y_1 = 3.57, y_2 = 1.19 : 0.0 secs
+[mbo] 0: x=0.927,0.311,0.457,0.624,0.583 : y_1 = 4.16, y_2 = 3.18 : 0.0 secs
+[mbo] 0: x=0.56,0.501,0.806,0.34,0.834 : y_1 = 3.07, y_2 = 2.56 : 0.0 secs
+[mbo] 0: x=0.0293,0.233,0.0727,0.707,0.958 : y_1 = 5.7, y_2 = 2.98 : 0.0 secs
+[mbo] 0: x=0.234,0.39,0.589,0.587,0.163 : y_1 = 4.67, y_2 = 2.72 : 0.0 secs
+[mbo] 0: x=0.912,0.112,0.759,0.231,0.278 : y_1 = 5.72, y_2 = 5.95 : 0.0 secs
+[mbo] 0: x=0.743,0.936,0.406,0.0621,0.868 : y_1 = 5.19, y_2 = 5.06 : 0.0 secs
+[mbo] 0: x=0.286,0.531,0.0459,0.0494,0.647 : y_1 = 2.3, y_2 = 4.47 : 0.0 secs
+[mbo] 0: x=0.264,0.184,0.923,0.00435,0.129 : y_1 = 4.09, y_2 = 2.46 : 0.0 secs
+[mbo] 0: x=0.708,0.0471,0.135,0.734,0.218 : y_1 = 4.27, y_2 = 4.21 : 0.0 secs
+[mbo] 0: x=0.835,0.72,0.736,0.997,0.907 : y_1 = 4.7, y_2 = 3.13 : 0.0 secs
+[mbo] 0: x=0.997,0.826,0.174,0.486,0.0146 : y_1 = 9.6, y_2 = 3.52 : 0.0 secs
+[mbo] 0: x=0.604,0.952,0.963,0.129,0.0739 : y_1 = 4.05, y_2 = 2.85 : 0.0 secs
+[mbo] 0: x=0.0933,0.208,0.979,0.698,0.692 : y_1 = 5.68, y_2 = 4.09 : 0.0 secs
+[mbo] 0: x=0.173,0.922,0.176,0.827,0.477 : y_1 = 0.987, y_2 = 6.16 : 0.0 secs
+[mbo] 0: x=0.816,0.142,0.359,0.173,0.877 : y_1 = 5.02, y_2 = 6.37 : 0.0 secs
+[mbo] 1: x=0.331,0.843,0.154,0.677,0.371 : y_1 = 1.77, y_2 = 5.07 : 0.0 secs
+[mbo] 1: x=0.507,0.631,0.439,0.389,0.249 : y_1 = 4.07, y_2 = 3.47 : 0.0 secs
+[mbo] 1: x=0.732,0.526,0.689,0.2,0.701 : y_1 = 2.85, y_2 = 3.97 : 0.0 secs
+[mbo] 1: x=0.152,0.612,0.356,0.602,0.24 : y_1 = 1.64, y_2 = 3.6 : 0.0 secs
+[mbo] 1: x=0.469,0.607,0.455,0.388,0.159 : y_1 = 2.74, y_2 = 1.38 : 0.0 secs
+[mbo] 2: x=0.335,0.772,0.499,0.0752,0.271 : y_1 = 3, y_2 = 1.53 : 0.0 secs
+[mbo] 2: x=0.425,0.483,0.224,0.946,0.244 : y_1 = 2.81, y_2 = 4.6 : 0.0 secs
+[mbo] 2: x=0.152,0.643,0.496,0.45,0.577 : y_1 = 5.83, y_2 = 2.98 : 0.0 secs
+[mbo] 2: x=0.232,0.622,0.871,0.633,0.369 : y_1 = 3.63, y_2 = 5.23 : 0.0 secs
+[mbo] 2: x=0.538,0.778,0.302,0.203,0.339 : y_1 = 3.01, y_2 = 3.18 : 0.0 secs
+[mbo] 3: x=0.407,0.167,0.466,0.376,0.197 : y_1 = 3.12, y_2 = 2.47 : 0.0 secs
+[mbo] 3: x=0.518,0.091,0.657,0.86,0.881 : y_1 = 4.14, y_2 = 3.07 : 0.0 secs
+[mbo] 3: x=0.499,0.754,0.831,0.506,0.297 : y_1 = 2.56, y_2 = 2.51 : 0.0 secs
+[mbo] 3: x=0.279,0.563,0.245,0.496,0.614 : y_1 = 3.94, y_2 = 2.97 : 0.0 secs
+[mbo] 3: x=0.43,0.0964,0.175,0.17,0.213 : y_1 = 4.09, y_2 = 5.42 : 0.0 secs
+[mbo] 4: x=0.331,0.728,0.527,0.0882,0.331 : y_1 = 1.38, y_2 = 4.3 : 0.0 secs
+[mbo] 4: x=0.354,0.0186,0.554,0.612,0.0354 : y_1 = 3.45, y_2 = 2.61 : 0.0 secs
+[mbo] 4: x=0.454,0.493,0.857,0.455,0.397 : y_1 = 3.81, y_2 = 2.54 : 0.0 secs
+[mbo] 4: x=0.568,0.584,0.203,0.0996,0.426 : y_1 = 4.67, y_2 = 3.2 : 0.0 secs
+[mbo] 4: x=0.377,0.768,0.517,0.0875,0.273 : y_1 = 3.1, y_2 = 2.87 : 0.0 secs
+[mbo] 5: x=0.854,0.884,0.239,0.897,0.891 : y_1 = 4.16, y_2 = 1.71 : 0.0 secs
+[mbo] 5: x=0.187,0.431,0.166,0.523,0.472 : y_1 = 1.57, y_2 = 2.89 : 0.0 secs
+[mbo] 5: x=0.551,0.568,0.474,0.837,0.669 : y_1 = 1.87, y_2 = 2.94 : 0.0 secs
+[mbo] 5: x=0.284,0.357,0.711,0.128,0.0679 : y_1 = 4.84, y_2 = 2.49 : 0.0 secs
+[mbo] 5: x=0.409,0.6,0.467,0.504,0.329 : y_1 = 2.37, y_2 = 2.68 : 0.0 secs
+[mbo] 6: x=0.71,0.656,0.926,0.173,0.104 : y_1 = 3.52, y_2 = 3.6 : 0.0 secs
+[mbo] 6: x=0.353,0.22,0.212,0.118,0.187 : y_1 = 2.6, y_2 = 1.78 : 0.0 secs
+[mbo] 6: x=0.459,0.616,0.051,0.465,0.271 : y_1 = 2.98, y_2 = 2.66 : 0.0 secs
+[mbo] 6: x=0.443,0.0515,0.24,0.547,0.0392 : y_1 = 2.97, y_2 = 4.01 : 0.0 secs
+[mbo] 6: x=0.496,0.955,0.0753,0.821,0.026 : y_1 = 5.18, y_2 = 3.63 : 0.0 secs
+[mbo] 7: x=0.885,0.46,0.481,0.168,0.208 : y_1 = 4, y_2 = 4.05 : 0.0 secs
+[mbo] 7: x=0.746,0.598,0.791,0.805,0.526 : y_1 = 2.82, y_2 = 2.06 : 0.0 secs
+[mbo] 7: x=0.378,0.375,0.847,0.554,0.375 : y_1 = 3.97, y_2 = 2.49 : 0.0 secs
+[mbo] 7: x=0.293,0.748,0.348,0.622,0.245 : y_1 = 2.21, y_2 = 2.68 : 0.0 secs
+[mbo] 7: x=0.961,0.551,0.0125,0.238,0.189 : y_1 = 8.34, y_2 = 6.68 : 0.0 secs
+[mbo] 8: x=0.563,0.699,0.348,0.422,0.231 : y_1 = 2.85, y_2 = 3.59 : 0.0 secs
+[mbo] 8: x=0.213,0.693,0.149,0.517,0.358 : y_1 = 1.52, y_2 = 4.56 : 0.0 secs
+[mbo] 8: x=0.359,0.0143,0.595,0.388,0.586 : y_1 = 4.68, y_2 = 3.01 : 0.0 secs
+[mbo] 8: x=0.4,0.691,0.439,0.719,0.327 : y_1 = 2.53, y_2 = 2.42 : 0.0 secs
+[mbo] 8: x=0.351,0.673,0.85,0.316,0.773 : y_1 = 3.8, y_2 = 0.724 : 0.0 secs
+[mbo] 9: x=0.212,0.501,0.144,0.0537,0.455 : y_1 = 3.69, y_2 = 2.63 : 0.0 secs
+[mbo] 9: x=0.393,0.194,0.431,0.774,0.394 : y_1 = 2.32, y_2 = 5.4 : 0.0 secs
+[mbo] 9: x=0.0458,0.477,0.914,0.00764,0.805 : y_1 = 9.33, y_2 = 1.82 : 0.0 secs
+[mbo] 9: x=0.819,0.419,0.186,0.724,0.876 : y_1 = 5.51, y_2 = 4.62 : 0.0 secs
+[mbo] 9: x=0.958,0.704,0.738,0.0976,0.524 : y_1 = 3.78, y_2 = 4.56 : 0.0 secs
+[mbo] 10: x=0.376,0.602,0.345,0.518,0.198 : y_1 = 2.42, y_2 = 4.35 : 0.0 secs
+[mbo] 10: x=0.809,0.864,0.474,0.0571,0.118 : y_1 = 5.84, y_2 = 3.89 : 0.0 secs
+[mbo] 10: x=0.95,0.691,0.896,0.772,0.907 : y_1 = 3.7, y_2 = 2.22 : 0.0 secs
+[mbo] 10: x=0.164,0.667,0.714,0.538,0.918 : y_1 = 5.64, y_2 = 4.52 : 0.0 secs
+[mbo] 10: x=0.345,0.121,0.0825,0.126,0.18 : y_1 = 2.32, y_2 = 2.87 : 0.0 secs
+[mbo] 11: x=0.579,0.404,0.293,0.918,0.366 : y_1 = 3.66, y_2 = 2.16 : 0.0 secs
+[mbo] 11: x=0.73,0.0177,0.869,0.231,0.104 : y_1 = 2.98, y_2 = 3.87 : 0.0 secs
+[mbo] 11: x=0.0783,0.321,0.996,0.0603,0.3 : y_1 = 5.55, y_2 = 2.93 : 0.0 secs
+[mbo] 11: x=0.537,0.998,0.687,0.442,0.748 : y_1 = 2.23, y_2 = 2.49 : 0.0 secs
+[mbo] 11: x=0.291,0.359,0.243,0.574,0.395 : y_1 = 2.41, y_2 = 3.62 : 0.0 secs
+[mbo] 12: x=0.825,0.724,0.896,0.939,0.477 : y_1 = 4.43, y_2 = 2.97 : 0.0 secs
+[mbo] 12: x=0.382,0.0942,0.327,0.211,0.218 : y_1 = 2.06, y_2 = 3.86 : 0.0 secs
+[mbo] 12: x=0.95,0.742,0.0455,0.734,0.91 : y_1 = 5.92, y_2 = 3.58 : 0.0 secs
+[mbo] 12: x=0.388,0.189,0.952,0.441,0.545 : y_1 = 4.28, y_2 = 1.47 : 0.0 secs
+[mbo] 12: x=0.2,0.0422,0.161,0.585,0.455 : y_1 = 2.7, y_2 = 5.52 : 0.0 secs
+[mbo] 13: x=0.327,0.889,0.529,0.163,0.36 : y_1 = 2.05, y_2 = 2.77 : 0.0 secs
+[mbo] 13: x=0.298,0.512,0.972,0.741,0.503 : y_1 = 3.85, y_2 = 3.68 : 0.0 secs
+[mbo] 13: x=0.603,0.839,0.302,0.311,0.279 : y_1 = 2.91, y_2 = 2.82 : 0.0 secs
+[mbo] 13: x=0.202,0.417,0.815,0.904,0.297 : y_1 = 5.15, y_2 = 4.9 : 0.0 secs
+[mbo] 13: x=0.833,0.317,0.705,0.102,0.977 : y_1 = 3.21, y_2 = 5.36 : 0.0 secs
+[mbo] 14: x=0.414,0.634,0.466,0.166,0.369 : y_1 = 3.02, y_2 = 4.21 : 0.0 secs
+[mbo] 14: x=0.316,0.74,0.238,0.421,0.322 : y_1 = 4.45, y_2 = 2.81 : 0.0 secs
+[mbo] 14: x=0.0136,0.716,0.991,0.556,0.366 : y_1 = 5.55, y_2 = 5.54 : 0.0 secs
+[mbo] 14: x=0.702,0.511,0.181,0.166,0.62 : y_1 = 5.67, y_2 = 3.88 : 0.0 secs
+[mbo] 14: x=0.355,0.687,0.0328,0.8,0.0707 : y_1 = 2.76, y_2 = 5 : 0.0 secs
+[mbo] 15: x=0.713,0.779,0.611,0.832,0.687 : y_1 = 3.36, y_2 = 3.56 : 0.0 secs
+[mbo] 15: x=0.627,0.247,0.236,0.79,0.497 : y_1 = 3.18, y_2 = 4.93 : 0.0 secs
+[mbo] 15: x=0.109,0.888,0.892,0.261,0.989 : y_1 = 7.02, y_2 = 2.8 : 0.0 secs
+[mbo] 15: x=0.608,0.617,0.26,0.0617,0.282 : y_1 = 4.68, y_2 = 1.94 : 0.0 secs
+[mbo] 15: x=0.534,0.677,0.211,0.609,0.15 : y_1 = 4.05, y_2 = 3.66 : 0.0 secs
+[mbo] 16: x=0.748,0.77,0.394,0.113,0.817 : y_1 = 2.44, y_2 = 2.83 : 0.0 secs
+[mbo] 16: x=0.638,0.941,0.518,0.144,0.909 : y_1 = 3.73, y_2 = 1.86 : 0.0 secs
+[mbo] 16: x=0.263,0.0352,0.841,0.611,0.879 : y_1 = 5.47, y_2 = 3.25 : 0.0 secs
+[mbo] 16: x=0.0727,0.921,0.383,0.898,0.561 : y_1 = 4.24, y_2 = 6.27 : 0.0 secs
+[mbo] 16: x=0.159,0.226,0.129,0.779,0.0496 : y_1 = 1.4, y_2 = 5.15 : 0.0 secs
+[mbo] 17: x=0.726,0.842,0.694,0.335,0.734 : y_1 = 2.19, y_2 = 4.03 : 0.0 secs
+[mbo] 17: x=0.242,0.96,0.556,0.733,0.8 : y_1 = 5.13, y_2 = 5.53 : 0.0 secs
+[mbo] 17: x=0.766,0.157,0.365,0.282,0.415 : y_1 = 3.6, y_2 = 3.14 : 0.0 secs
+[mbo] 17: x=0.741,0.44,0.43,0.15,0.124 : y_1 = 3.38, y_2 = 5.64 : 0.0 secs
+[mbo] 17: x=0.42,0.684,0.407,0.563,0.361 : y_1 = 1.72, y_2 = 2.64 : 0.0 secs
+[mbo] 18: x=0.184,0.7,0.138,0.469,0.339 : y_1 = 2.45, y_2 = 1.82 : 0.0 secs
+[mbo] 18: x=0.334,0.55,0.386,0.106,0.195 : y_1 = 1.96, y_2 = 3.01 : 0.0 secs
+[mbo] 18: x=0.563,0.652,0.971,0.887,0.278 : y_1 = 3.8, y_2 = 2.85 : 0.0 secs
+[mbo] 18: x=0.112,0.748,0.356,0.612,0.233 : y_1 = 4.23, y_2 = 3.41 : 0.0 secs
+[mbo] 18: x=0.597,0.94,0.595,0.226,0.612 : y_1 = 1.63, y_2 = 2.18 : 0.0 secs
+[mbo] 19: x=0.133,0.48,0.602,0.368,0.938 : y_1 = 6.81, y_2 = 3.69 : 0.0 secs
+[mbo] 19: x=0.597,0.675,0.355,0.571,0.468 : y_1 = 1.28, y_2 = 1.59 : 0.0 secs
+[mbo] 19: x=0.284,0.924,0.564,0.914,0.548 : y_1 = 4.7, y_2 = 5.31 : 0.0 secs
+[mbo] 19: x=0.207,0.878,0.436,0.783,0.334 : y_1 = 2.49, y_2 = 7.03 : 0.0 secs
+[mbo] 19: x=0.506,0.215,0.657,0.481,0.632 : y_1 = 3.72, y_2 = 1.77 : 0.0 secs
+[mbo] 20: x=0.547,0.636,0.127,0.69,0.175 : y_1 = 1.63, y_2 = 2.43 : 0.0 secs
+[mbo] 20: x=0.658,0.675,0.368,0.184,0.639 : y_1 = 4, y_2 = 2.75 : 0.0 secs
+[mbo] 20: x=0.619,0.675,0.522,0.596,0.542 : y_1 = 2.32, y_2 = 2.82 : 0.0 secs
+[mbo] 20: x=0.593,0.752,0.46,0.281,0.485 : y_1 = 2.97, y_2 = 1.37 : 0.0 secs
+[mbo] 20: x=0.204,0.516,0.254,0.667,0.696 : y_1 = 4.38, y_2 = 5.26 : 0.0 secs
+[mbo] 21: x=0.586,0.817,0.26,0.0439,0.386 : y_1 = 2.48, y_2 = 4.2 : 0.0 secs
+[mbo] 21: x=0.356,0.558,0.726,0.0183,0.0868 : y_1 = 2.34, y_2 = 2.85 : 0.0 secs
+[mbo] 21: x=0.525,0.992,0.797,0.971,0.511 : y_1 = 4.73, y_2 = 2.46 : 0.0 secs
+[mbo] 21: x=0.597,0.981,0.879,0.213,0.329 : y_1 = 3.91, y_2 = 2.74 : 0.0 secs
+[mbo] 21: x=0.247,0.051,0.301,0.519,0.399 : y_1 = 1.98, y_2 = 2.8 : 0.0 secs
+[mbo] 22: x=0.137,0.55,0.952,0.13,0.394 : y_1 = 5.13, y_2 = 2.56 : 0.0 secs
+[mbo] 22: x=0.911,0.876,0.504,0.785,0.00441 : y_1 = 5.88, y_2 = 0.447 : 0.0 secs
+[mbo] 22: x=0.827,0.571,0.875,0.228,0.469 : y_1 = 3.34, y_2 = 2.51 : 0.0 secs
+[mbo] 22: x=0.645,0.344,0.699,0.755,0.676 : y_1 = 3.31, y_2 = 3.25 : 0.0 secs
+[mbo] 22: x=0.321,0.842,0.00114,0.325,0.154 : y_1 = 2.58, y_2 = 3.22 : 0.0 secs
+[mbo] 23: x=0.763,0.152,0.386,0.946,0.655 : y_1 = 3.75, y_2 = 5.83 : 0.0 secs
+[mbo] 23: x=0.95,0.716,0.602,0.363,0.815 : y_1 = 4.98, y_2 = 3.19 : 0.0 secs
+[mbo] 23: x=0.558,0.692,0.501,0.626,0.662 : y_1 = 2.22, y_2 = 3.89 : 0.0 secs
+[mbo] 23: x=0.3,0.871,0.409,0.175,0.335 : y_1 = 3.72, y_2 = 3.34 : 0.0 secs
+[mbo] 23: x=0.203,0.61,0.344,0.0988,0.347 : y_1 = 3.16, y_2 = 1.31 : 0.0 secs
+[mbo] 24: x=0.515,0.674,0.362,0.32,0.816 : y_1 = 5.28, y_2 = 2.31 : 0.0 secs
+[mbo] 24: x=0.17,0.943,0.189,0.263,0.459 : y_1 = 1.53, y_2 = 3.89 : 0.0 secs
+[mbo] 24: x=0.00751,0.834,0.0936,0.627,0.0161 : y_1 = 3.84, y_2 = 7 : 0.0 secs
+[mbo] 24: x=0.835,0.671,0.235,0.139,0.0311 : y_1 = 8, y_2 = 4.15 : 0.0 secs
+[mbo] 24: x=0.107,0.196,0.396,0.18,0.85 : y_1 = 5.26, y_2 = 3.09 : 0.0 secs
+[mbo] 25: x=0.415,0.422,0.172,0.905,0.185 : y_1 = 4.2, y_2 = 4.89 : 0.0 secs
+[mbo] 25: x=0.559,0.458,0.476,0.88,0.668 : y_1 = 1.44, y_2 = 4.15 : 0.0 secs
+[mbo] 25: x=0.393,0.646,0.0351,0.504,0.117 : y_1 = 2.04, y_2 = 2.93 : 0.0 secs
+[mbo] 25: x=0.601,0.221,0.213,0.0161,0.179 : y_1 = 3.29, y_2 = 4.27 : 0.0 secs
+[mbo] 25: x=0.408,0.801,0.766,0.0539,0.0971 : y_1 = 3.64, y_2 = 1.46 : 0.0 secs
+[mbo] 26: x=0.113,0.23,0.48,0.182,0.323 : y_1 = 4.13, y_2 = 2.78 : 0.0 secs
+[mbo] 26: x=0.837,0.829,0.937,0.41,0.0742 : y_1 = 4.98, y_2 = 2.88 : 0.0 secs
+[mbo] 26: x=0.255,0.609,0.574,0.512,0.56 : y_1 = 3.39, y_2 = 3.26 : 0.0 secs
+[mbo] 26: x=0.429,0.876,0.00595,0.0234,0.524 : y_1 = 1.76, y_2 = 2.39 : 0.0 secs
+[mbo] 26: x=0.567,0.729,0.075,0.822,0.0142 : y_1 = 4.71, y_2 = 1.97 : 0.0 secs
+[mbo] 27: x=0.317,0.347,0.297,0.0737,0.971 : y_1 = 4.19, y_2 = 0.725 : 0.0 secs
+[mbo] 27: x=0.255,0.515,0.357,0.522,0.241 : y_1 = 2.83, y_2 = 1.35 : 0.0 secs
+[mbo] 27: x=0.62,0.631,0.106,0.0962,0.122 : y_1 = 3.08, y_2 = 1.41 : 0.0 secs
+[mbo] 27: x=0.508,0.323,0.102,0.284,0.379 : y_1 = 2.13, y_2 = 2.99 : 0.0 secs
+[mbo] 27: x=0.249,0.395,0.36,0.452,0.242 : y_1 = 2.85, y_2 = 2.87 : 0.0 secs
+[mbo] 28: x=0.116,0.131,0.565,0.125,0.564 : y_1 = 2.52, y_2 = 1.09 : 0.0 secs
+[mbo] 28: x=0.174,0.578,0.342,0.668,0.252 : y_1 = 0.521, y_2 = 2.8 : 0.0 secs
+[mbo] 28: x=0.463,0.577,0.159,0.401,0.808 : y_1 = 4.31, y_2 = 2.2 : 0.0 secs
+[mbo] 28: x=0.534,0.387,0.789,0.109,0.181 : y_1 = 0.913, y_2 = 1.58 : 0.0 secs
+[mbo] 28: x=0.269,0.719,0.775,0.778,0.296 : y_1 = 1.74, y_2 = 4.88 : 0.0 secs
+[mbo] 29: x=0.204,0.664,0.564,0.493,0.0566 : y_1 = 1.08, y_2 = 5.37 : 0.0 secs
+[mbo] 29: x=0.0732,0.511,0.0361,0.873,0.152 : y_1 = 2.41, y_2 = 5.81 : 0.0 secs
+[mbo] 29: x=0.855,0.16,0.706,0.885,0.952 : y_1 = 1.83, y_2 = 2.79 : 0.0 secs
+[mbo] 29: x=0.596,0.782,0.415,0.575,0.376 : y_1 = 1.14, y_2 = 3.87 : 0.0 secs
+[mbo] 29: x=0.931,0.595,0.554,0.771,0.895 : y_1 = 2.88, y_2 = 1.64 : 0.0 secs
+[mbo] 30: x=0.655,0.427,0.692,0.027,0.893 : y_1 = 3.18, y_2 = 3.19 : 0.0 secs
+[mbo] 30: x=0.559,0.744,0.183,0.574,0.185 : y_1 = 4.09, y_2 = 1.96 : 0.0 secs
+[mbo] 30: x=0.503,0.125,0.472,0.831,0.295 : y_1 = 2.2, y_2 = 5.49 : 0.0 secs
+[mbo] 30: x=0.615,0.359,0.335,0.282,0.357 : y_1 = 4.14, y_2 = 1.11 : 0.0 secs
+[mbo] 30: x=0.255,0.0687,0.857,0.154,0.733 : y_1 = 7.46, y_2 = 2.04 : 0.0 secs
+[mbo] 31: x=0.593,0.785,0.55,0.994,0.77 : y_1 = 3.27, y_2 = 4.01 : 0.0 secs
+[mbo] 31: x=0.346,0.902,0.305,0.0566,0.747 : y_1 = 3.87, y_2 = 2.93 : 0.0 secs
+[mbo] 31: x=0.209,0.146,0.357,0.596,0.309 : y_1 = 2.11, y_2 = 4.55 : 0.0 secs
+[mbo] 31: x=0.526,0.0611,0.00835,0.945,0.703 : y_1 = 2.66, y_2 = 5.59 : 0.0 secs
+[mbo] 31: x=0.256,0.972,0.423,0.955,0.495 : y_1 = 1.41, y_2 = 6.42 : 0.0 secs
+[mbo] 32: x=0.947,0.913,0.769,0.256,0.0562 : y_1 = 5.83, y_2 = 3 : 0.0 secs
+[mbo] 32: x=0.00317,0.171,0.591,0.196,0.968 : y_1 = 6.39, y_2 = 2.45 : 0.0 secs
+[mbo] 32: x=0.629,0.604,0.217,0.884,0.812 : y_1 = 4.93, y_2 = 3.86 : 0.0 secs
+[mbo] 32: x=0.824,0.432,0.717,0.576,0.019 : y_1 = 6.03, y_2 = 4 : 0.0 secs
+[mbo] 32: x=0.696,0.809,0.407,0.853,0.796 : y_1 = 2.66, y_2 = 3.04 : 0.0 secs
+Result:
+List of 5
+ $ paretoset   :List of 5
+ $ pareto.front: num [1:5, 1:2] 2.321 3.804 5.882 0.521 0.913 ...
+  ..- attr(*, "dimnames")=List of 2
+ $ hv          : num 107
+ $ cd          : num [1:5] 3.75 4.04 Inf Inf 3.68
+ $ r2          : num 0.39
+NULL
+Writing result file: /home/schork/mlrMBO/bench/mco/mco_bench-files/jobs/62/762-result.RData
+########## Executing jid=799 ##########
+Timestamp: 2014-07-13 17:56:44
+Experiment: 
+  Problem: uf5 
+  Problem parameters:  
+  Algorithm: parego 
+  Algorithm parameters:  
+  Replication: 9 
+  Seed: 473458284 
+  Problem seed: 953550432 
+Setting seed: 473458284
+Applying Algorithm parego ...
+Computing y column(s) for design. Not provided.
+[mbo] 0: x=0.62,0.268,0.332,0.0342,0.247 : y_1 = 10.4, y_2 = 11.2 : 0.0 secs
+[mbo] 0: x=0.546,0.528,0.472,0.286,0.345 : y_1 = 5.02, y_2 = 5.06 : 0.0 secs
+[mbo] 0: x=0.786,0.293,0.537,0.613,0.774 : y_1 = 8.22, y_2 = 5.6 : 0.0 secs
+[mbo] 0: x=0.417,0.434,0.32,0.643,0.905 : y_1 = 8.99, y_2 = 4.51 : 0.0 secs
+[mbo] 0: x=0.398,0.747,0.186,0.72,0.174 : y_1 = 4.73, y_2 = 3.56 : 0.0 secs
+[mbo] 0: x=0.191,0.509,0.698,0.417,0.373 : y_1 = 6.33, y_2 = 2.93 : 0.0 secs
+[mbo] 0: x=0.683,0.932,0.141,0.212,0.58 : y_1 = 6.07, y_2 = 4.03 : 0.0 secs
+[mbo] 0: x=0.346,0.752,0.413,0.244,0.0764 : y_1 = 4.09, y_2 = 3.57 : 0.0 secs
+[mbo] 0: x=0.0416,0.695,0.823,0.97,0.675 : y_1 = 4.4, y_2 = 4.57 : 0.0 secs
+[mbo] 0: x=0.743,0.648,0.86,0.446,0.00216 : y_1 = 3.12, y_2 = 3.15 : 0.0 secs
+[mbo] 0: x=0.435,0.496,0.957,0.107,0.619 : y_1 = 9.71, y_2 = 2.43 : 0.0 secs
+[mbo] 0: x=0.65,0.417,0.643,0.4,0.46 : y_1 = 4.71, y_2 = 4.34 : 0.0 secs
+[mbo] 0: x=0.721,0.963,0.562,0.539,0.307 : y_1 = 2.27, y_2 = 2.51 : 0.0 secs
+[mbo] 0: x=0.462,0.463,0.434,0.265,0.83 : y_1 = 8.84, y_2 = 1.79 : 0.0 secs
+[mbo] 0: x=0.114,0.137,0.61,0.521,0.507 : y_1 = 4.91, y_2 = 3.8 : 0.0 secs
+[mbo] 0: x=0.556,0.838,0.257,0.818,0.681 : y_1 = 3.17, y_2 = 7.06 : 0.0 secs
+[mbo] 0: x=0.356,0.366,0.504,0.847,0.296 : y_1 = 3.45, y_2 = 6.36 : 0.0 secs
+[mbo] 0: x=0.982,0.615,0.376,0.683,0.536 : y_1 = 8.35, y_2 = 1.71 : 0.0 secs
+[mbo] 0: x=0.64,0.0193,0.493,0.773,0.856 : y_1 = 4.79, y_2 = 8.57 : 0.0 secs
+[mbo] 0: x=0.145,0.389,0.163,0.777,0.741 : y_1 = 4.53, y_2 = 6.05 : 0.0 secs
+[mbo] 0: x=0.302,0.991,0.592,0.324,0.568 : y_1 = 4.22, y_2 = 7.25 : 0.0 secs
+[mbo] 0: x=0.517,0.176,0.362,0.337,0.206 : y_1 = 3.58, y_2 = 2.2 : 0.0 secs
+[mbo] 0: x=0.483,0.0825,0.0146,0.138,0.967 : y_1 = 5.8, y_2 = 1.27 : 0.0 secs
+[mbo] 0: x=0.929,0.115,0.0929,0.735,0.266 : y_1 = 10.5, y_2 = 3.48 : 0.0 secs
+[mbo] 0: x=0.578,0.671,0.947,0.599,0.388 : y_1 = 8.13, y_2 = 4.47 : 0.0 secs
+[mbo] 0: x=0.827,0.857,0.782,0.873,0.818 : y_1 = 9.03, y_2 = 11.1 : 0.0 secs
+[mbo] 0: x=0.169,0.787,0.848,0.479,0.926 : y_1 = 9.79, y_2 = 6.34 : 0.0 secs
+[mbo] 0: x=0.902,0.2,0.978,0.457,0.645 : y_1 = 5.54, y_2 = 3.09 : 0.0 secs
+[mbo] 0: x=0.018,0.318,0.286,0.0522,0.432 : y_1 = 6.94, y_2 = 10.4 : 0.0 secs
+[mbo] 0: x=0.757,0.703,0.233,0.37,0.0491 : y_1 = 2.09, y_2 = 4.12 : 0.0 secs
+[mbo] 0: x=0.294,0.0272,0.671,0.195,0.878 : y_1 = 1.9, y_2 = 10.8 : 0.0 secs
+[mbo] 0: x=0.0962,0.908,0.735,0.66,0.2 : y_1 = 3.46, y_2 = 9.15 : 0.0 secs
+[mbo] 0: x=0.871,0.563,0.212,0.982,0.989 : y_1 = 3.14, y_2 = 5.15 : 0.0 secs
+[mbo] 0: x=0.957,0.593,0.717,0.925,0.052 : y_1 = 7.85, y_2 = 3.46 : 0.0 secs
+[mbo] 0: x=0.066,0.339,0.911,0.0946,0.132 : y_1 = 5.21, y_2 = 5.3 : 0.0 secs
+[mbo] 0: x=0.242,0.0684,0.0474,0.913,0.118 : y_1 = 11.1, y_2 = 2.52 : 0.0 secs
+[mbo] 0: x=0.816,0.802,0.756,0.175,0.7 : y_1 = 8.48, y_2 = 6.38 : 0.0 secs
+[mbo] 0: x=0.212,0.879,0.057,0.559,0.495 : y_1 = 3.98, y_2 = 7.8 : 0.0 secs
+[mbo] 0: x=0.264,0.241,0.888,0.898,0.794 : y_1 = 3.7, y_2 = 2.56 : 0.0 secs
+[mbo] 0: x=0.894,0.155,0.123,0.0227,0.412 : y_1 = 5.72, y_2 = 4.58 : 0.0 secs
+[mbo] 1: x=0.688,0.887,0.422,0.427,0.112 : y_1 = 4.16, y_2 = 3.77 : 0.0 secs
+[mbo] 1: x=0.482,0.204,0.336,0.212,0.332 : y_1 = 3.07, y_2 = 4.68 : 0.0 secs
+[mbo] 1: x=0.167,0.965,0.591,0.478,0.308 : y_1 = 5.17, y_2 = 9.72 : 0.0 secs
+[mbo] 1: x=0.726,0.933,0.785,0.392,0.206 : y_1 = 3.45, y_2 = 4.21 : 0.0 secs
+[mbo] 1: x=0.053,0.182,0.534,0.565,0.557 : y_1 = 3.84, y_2 = 6.01 : 0.0 secs
+[mbo] 2: x=0.71,0.979,0.307,0.668,0.353 : y_1 = 4.53, y_2 = 1.53 : 0.0 secs
+[mbo] 2: x=0.681,0.97,0.797,0.543,0.337 : y_1 = 3.25, y_2 = 2.85 : 0.0 secs
+[mbo] 2: x=0.718,0.672,0.185,0.748,0.289 : y_1 = 4.05, y_2 = 3.93 : 0.0 secs
+[mbo] 2: x=0.493,0.143,0.334,0.419,0.245 : y_1 = 4.02, y_2 = 2.97 : 0.0 secs
+[mbo] 2: x=0.715,0.856,0.448,0.814,0.324 : y_1 = 2.16, y_2 = 3.56 : 0.0 secs
+[mbo] 3: x=0.713,0.172,0.69,0.27,0.35 : y_1 = 1.35, y_2 = 6.88 : 0.0 secs
+[mbo] 3: x=0.369,0.235,0.958,0.952,0.851 : y_1 = 6.97, y_2 = 7.16 : 0.0 secs
+[mbo] 3: x=0.261,0.855,0.633,0.921,0.776 : y_1 = 3.21, y_2 = 4.23 : 0.0 secs
+[mbo] 3: x=0.513,0.1,0.294,0.168,0.405 : y_1 = 2.03, y_2 = 4.52 : 0.0 secs
+[mbo] 3: x=0.764,0.958,0.602,0.517,0.306 : y_1 = 5.1, y_2 = 4.97 : 0.0 secs
+[mbo] 4: x=0.522,0.179,0.776,0.428,0.153 : y_1 = 8.85, y_2 = 2.54 : 0.0 secs
+[mbo] 4: x=0.735,0.934,0.264,0.567,0.112 : y_1 = 3.21, y_2 = 5.47 : 0.0 secs
+[mbo] 4: x=0.365,0.8,0.877,0.825,0.266 : y_1 = 2.33, y_2 = 3.89 : 0.0 secs
+[mbo] 4: x=0.268,0.0669,0.271,0.552,0.376 : y_1 = 7.63, y_2 = 5.88 : 0.0 secs
+[mbo] 4: x=0.724,0.867,0.543,0.716,0.102 : y_1 = 1.99, y_2 = 3.01 : 0.0 secs
+[mbo] 5: x=0.714,0.987,0.266,0.88,0.434 : y_1 = 6.01, y_2 = 3.85 : 0.0 secs
+[mbo] 5: x=0.714,0.738,0.534,0.991,0.226 : y_1 = 4.96, y_2 = 6.92 : 0.0 secs
+[mbo] 5: x=0.419,0.156,0.487,0.337,0.176 : y_1 = 3.9, y_2 = 3.23 : 0.0 secs
+[mbo] 5: x=0.52,0.868,0.697,0.429,0.53 : y_1 = 6.93, y_2 = 9.54 : 0.0 secs
+[mbo] 5: x=0.895,0.71,0.159,0.739,0.04 : y_1 = 10.3, y_2 = 3.1 : 0.0 secs
+[mbo] 6: x=0.868,0.831,0.279,0.149,0.979 : y_1 = 3.59, y_2 = 9.17 : 0.0 secs
+[mbo] 6: x=0.712,0.842,0.742,0.556,0.221 : y_1 = 3.3, y_2 = 3.73 : 0.0 secs
+[mbo] 6: x=0.883,0.859,0.552,0.539,0.229 : y_1 = 6.81, y_2 = 7.08 : 0.0 secs
+[mbo] 6: x=0.46,0.0381,0.57,0.807,0.661 : y_1 = 4.91, y_2 = 6.99 : 0.0 secs
+[mbo] 6: x=0.972,0.613,0.482,0.705,0.324 : y_1 = 5.82, y_2 = 1.4 : 0.0 secs
+[mbo] 7: x=0.36,0.884,0.835,0.834,0.273 : y_1 = 0.545, y_2 = 3.5 : 0.0 secs
+[mbo] 7: x=0.247,0.691,0.433,0.828,0.966 : y_1 = 1.8, y_2 = 4.81 : 0.0 secs
+[mbo] 7: x=0.386,0.494,0.666,0.278,0.342 : y_1 = 1.58, y_2 = 4.33 : 0.0 secs
+[mbo] 7: x=0.0909,0.19,0.223,0.0793,0.244 : y_1 = 1.55, y_2 = 4.26 : 0.0 secs
+[mbo] 7: x=0.648,0.887,0.682,0.737,0.521 : y_1 = 4.52, y_2 = 1.81 : 0.0 secs
+[mbo] 8: x=0.302,0.701,0.149,0.187,0.976 : y_1 = 8.41, y_2 = 7.93 : 0.0 secs
+[mbo] 8: x=0.7,0.962,0.544,0.631,0.29 : y_1 = 2.76, y_2 = 2.49 : 0.0 secs
+[mbo] 8: x=0.719,0.4,0.752,0.267,0.285 : y_1 = 3.92, y_2 = 3.3 : 0.0 secs
+[mbo] 8: x=0.104,0.262,0.923,0.991,0.83 : y_1 = 10.1, y_2 = 9.74 : 0.0 secs
+[mbo] 8: x=0.514,0.166,0.104,0.195,0.425 : y_1 = 1.61, y_2 = 4.47 : 0.0 secs
+[mbo] 9: x=0.625,0.947,0.961,0.905,0.761 : y_1 = 2.56, y_2 = 2.89 : 0.0 secs
+[mbo] 9: x=0.848,0.648,0.36,0.99,0.336 : y_1 = 3.1, y_2 = 10.5 : 0.0 secs
+[mbo] 9: x=0.362,0.177,0.706,0.553,0.285 : y_1 = 3.04, y_2 = 6.96 : 0.0 secs
+[mbo] 9: x=0.714,0.981,0.801,0.594,0.624 : y_1 = 5.08, y_2 = 2.02 : 0.0 secs
+[mbo] 9: x=0.964,0.471,0.154,0.749,0.2 : y_1 = 12.4, y_2 = 2.19 : 0.0 secs
+[mbo] 10: x=0.359,0.823,0.746,0.642,0.259 : y_1 = 2.42, y_2 = 3.58 : 0.0 secs
+[mbo] 10: x=0.72,0.981,0.315,0.642,0.469 : y_1 = 5.63, y_2 = 4.5 : 0.0 secs
+[mbo] 10: x=0.412,0.609,0.435,0.888,0.903 : y_1 = 9.44, y_2 = 7.08 : 0.0 secs
+[mbo] 10: x=0.724,0.758,0.519,0.512,0.195 : y_1 = 4.11, y_2 = 2.86 : 0.0 secs
+[mbo] 10: x=0.727,0.74,0.606,0.378,0.0503 : y_1 = 1.43, y_2 = 4.45 : 0.0 secs
+[mbo] 11: x=0.0153,0.142,0.292,0.978,0.159 : y_1 = 6.25, y_2 = 10.7 : 0.0 secs
+[mbo] 11: x=0.899,0.951,0.923,0.345,0.0305 : y_1 = 11.6, y_2 = 7 : 0.0 secs
+[mbo] 11: x=0.245,0.691,0.456,0.766,0.96 : y_1 = 2.69, y_2 = 5.96 : 0.0 secs
+[mbo] 11: x=0.511,0.22,0.203,0.436,0.212 : y_1 = 5.86, y_2 = 3.38 : 0.0 secs
+[mbo] 11: x=0.382,0.945,0.695,0.44,0.315 : y_1 = 1.54, y_2 = 2.46 : 0.0 secs
+[mbo] 12: x=0.51,0.692,0.255,0.28,0.432 : y_1 = 3.55, y_2 = 5.38 : 0.0 secs
+[mbo] 12: x=0.731,0.358,0.671,0.714,0.0456 : y_1 = 2.9, y_2 = 4.67 : 0.0 secs
+[mbo] 12: x=0.0492,0.573,0.163,0.507,0.873 : y_1 = 6.98, y_2 = 5.33 : 0.0 secs
+[mbo] 12: x=0.71,0.963,0.639,0.52,0.7 : y_1 = 5.71, y_2 = 2.64 : 0.0 secs
+[mbo] 12: x=0.732,0.582,0.518,0.46,0.292 : y_1 = 1.5, y_2 = 1.54 : 0.0 secs
+[mbo] 13: x=0.373,0.618,0.737,0.606,0.342 : y_1 = 1.96, y_2 = 4.98 : 0.0 secs
+[mbo] 13: x=0.631,0.85,0.326,0.134,0.254 : y_1 = 9.36, y_2 = 9.38 : 0.0 secs
+[mbo] 13: x=0.511,0.0768,0.725,0.332,0.234 : y_1 = 8.77, y_2 = 2.37 : 0.0 secs
+[mbo] 13: x=0.739,0.526,0.575,0.431,0.234 : y_1 = 3.58, y_2 = 1.66 : 0.0 secs
+[mbo] 13: x=0.941,0.616,0.897,0.284,0.25 : y_1 = 6.28, y_2 = 5.15 : 0.0 secs
+[mbo] 14: x=0.729,0.9,0.463,0.572,0.312 : y_1 = 3.05, y_2 = 4.15 : 0.0 secs
+[mbo] 14: x=0.204,0.708,0.243,0.299,0.786 : y_1 = 0.697, y_2 = 6.34 : 0.0 secs
+[mbo] 14: x=0.426,0.236,0.174,0.491,0.247 : y_1 = 2.84, y_2 = 5.7 : 0.0 secs
+[mbo] 14: x=0.714,0.743,0.52,0.454,0.385 : y_1 = 3.5, y_2 = 3.53 : 0.0 secs
+[mbo] 14: x=0.319,0.0706,0.13,0.837,0.899 : y_1 = 9.2, y_2 = 9.12 : 0.0 secs
+[mbo] 15: x=0.45,0.441,0.11,0.207,0.0863 : y_1 = 0.547, y_2 = 3.25 : 0.0 secs
+[mbo] 15: x=0.363,0.62,0.616,0.229,0.207 : y_1 = 1.63, y_2 = 5.33 : 0.0 secs
+[mbo] 15: x=0.875,0.995,0.28,0.631,0.495 : y_1 = 3.96, y_2 = 9.14 : 0.0 secs
+[mbo] 15: x=0.712,0.884,0.516,0.782,0.319 : y_1 = 3.33, y_2 = 4.15 : 0.0 secs
+[mbo] 15: x=0.735,0.545,0.847,0.514,0.266 : y_1 = 4.38, y_2 = 2.97 : 0.0 secs
+[mbo] 16: x=0.816,0.785,0.467,0.54,0.526 : y_1 = 4.37, y_2 = 7.46 : 0.0 secs
+[mbo] 16: x=0.348,0.331,0.491,0.583,0.958 : y_1 = 7.6, y_2 = 7.45 : 0.0 secs
+[mbo] 16: x=0.146,0.0128,0.874,0.179,0.678 : y_1 = 11.3, y_2 = 4.75 : 0.0 secs
+[mbo] 16: x=0.727,0.692,0.465,0.547,0.03 : y_1 = 2.83, y_2 = 3.47 : 0.0 secs
+[mbo] 16: x=0.714,0.505,0.428,0.647,0.315 : y_1 = 2.22, y_2 = 4.23 : 0.0 secs
+[mbo] 17: x=0.646,0.848,0.756,0.69,0.592 : y_1 = 3.01, y_2 = 1.25 : 0.0 secs
+[mbo] 17: x=0.657,0.583,0.78,0.397,0.726 : y_1 = 3.55, y_2 = 5.43 : 0.0 secs
+[mbo] 17: x=0.415,0.544,0.252,0.693,0.793 : y_1 = 8.12, y_2 = 7.19 : 0.0 secs
+[mbo] 17: x=0.946,0.551,0.114,0.222,0.748 : y_1 = 7.34, y_2 = 6.36 : 0.0 secs
+[mbo] 17: x=0.852,0.0544,0.527,0.545,0.466 : y_1 = 4.56, y_2 = 2.48 : 0.0 secs
+[mbo] 18: x=0.737,0.605,0.415,0.68,0.295 : y_1 = 2.46, y_2 = 4.21 : 0.0 secs
+[mbo] 18: x=0.161,0.642,0.494,0.679,0.56 : y_1 = 4.25, y_2 = 7.76 : 0.0 secs
+[mbo] 18: x=0.434,0.406,0.769,0.247,0.26 : y_1 = 4.81, y_2 = 2.96 : 0.0 secs
+[mbo] 18: x=0.257,0.424,0.109,0.633,0.769 : y_1 = 5.77, y_2 = 2.49 : 0.0 secs
+[mbo] 18: x=0.519,0.74,0.617,0.961,0.817 : y_1 = 4.82, y_2 = 9.47 : 0.0 secs
+[mbo] 19: x=0.704,0.777,0.646,0.466,0.296 : y_1 = 4.93, y_2 = 1.66 : 0.0 secs
+[mbo] 19: x=0.52,0.202,0.304,0.255,0.156 : y_1 = 4.43, y_2 = 3.72 : 0.0 secs
+[mbo] 19: x=0.0725,0.859,0.339,0.773,0.555 : y_1 = 5.14, y_2 = 8.03 : 0.0 secs
+[mbo] 19: x=0.256,0.337,0.319,0.731,0.616 : y_1 = 6.61, y_2 = 2.82 : 0.0 secs
+[mbo] 19: x=0.981,0.405,0.224,0.388,0.1 : y_1 = 9.95, y_2 = 4.55 : 0.0 secs
+[mbo] 20: x=0.359,0.031,0.827,0.867,0.294 : y_1 = 0.812, y_2 = 9.79 : 0.0 secs
+[mbo] 20: x=0.419,0.868,0.695,0.0616,0.905 : y_1 = 11.9, y_2 = 1.43 : 0.0 secs
+[mbo] 20: x=0.873,0.763,0.181,0.335,0.7 : y_1 = 4.55, y_2 = 5.29 : 0.0 secs
+[mbo] 20: x=0.577,0.922,0.294,0.037,0.502 : y_1 = 4.26, y_2 = 12.7 : 0.0 secs
+[mbo] 20: x=0.65,0.881,0.169,0.719,0.968 : y_1 = 9.36, y_2 = 1.81 : 0.0 secs
+[mbo] 21: x=0.379,0.906,0.662,0.464,0.203 : y_1 = 2.33, y_2 = 2.32 : 0.0 secs
+[mbo] 21: x=0.477,0.0769,0.779,0.337,0.434 : y_1 = 7.69, y_2 = 2.3 : 0.0 secs
+[mbo] 21: x=0.969,0.897,0.322,0.787,0.184 : y_1 = 10.7, y_2 = 3.18 : 0.0 secs
+[mbo] 21: x=0.917,0.793,0.209,0.719,0.725 : y_1 = 4.26, y_2 = 3.9 : 0.0 secs
+[mbo] 21: x=0.383,0.32,0.807,0.447,0.313 : y_1 = 3.22, y_2 = 6.93 : 0.0 secs
+[mbo] 22: x=0.708,0.617,0.518,0.463,0.252 : y_1 = 3.41, y_2 = 3.05 : 0.0 secs
+[mbo] 22: x=0.363,0.975,0.801,0.694,0.287 : y_1 = 1.34, y_2 = 2.66 : 0.0 secs
+[mbo] 22: x=0.997,0.879,0.438,0.253,0.669 : y_1 = 6.01, y_2 = 5.17 : 0.0 secs
+[mbo] 22: x=0.793,0.825,0.0693,0.335,0.969 : y_1 = 7.4, y_2 = 5.9 : 0.0 secs
+[mbo] 22: x=0.432,0.577,0.216,0.915,0.411 : y_1 = 3.71, y_2 = 9.95 : 0.0 secs
+[mbo] 23: x=0.283,0.38,0.67,0.36,0.839 : y_1 = 2.15, y_2 = 6.75 : 0.0 secs
+[mbo] 23: x=0.917,0.381,0.36,0.381,0.815 : y_1 = 3.72, y_2 = 2.93 : 0.0 secs
+[mbo] 23: x=0.243,0.215,0.396,0.712,0.959 : y_1 = 1.85, y_2 = 4 : 0.0 secs
+[mbo] 23: x=0.646,0.884,0.842,0.673,0.575 : y_1 = 4.61, y_2 = 0.89 : 0.0 secs
+[mbo] 23: x=0.933,0.0573,0.525,0.497,0.543 : y_1 = 4.33, y_2 = 4.66 : 0.0 secs
+[mbo] 24: x=0.097,0.494,0.22,0.169,0.247 : y_1 = 0.697, y_2 = 3.39 : 0.0 secs
+[mbo] 24: x=0.424,0.676,0.717,0.119,0.863 : y_1 = 11, y_2 = 3.26 : 0.0 secs
+[mbo] 24: x=0.706,0.00758,0.411,0.607,0.97 : y_1 = 9.29, y_2 = 10.1 : 0.0 secs
+[mbo] 24: x=0.388,0.866,0.725,0.643,0.318 : y_1 = 3.04, y_2 = 3.28 : 0.0 secs
+[mbo] 24: x=0.733,0.554,0.369,0.411,0.766 : y_1 = 7.38, y_2 = 1.89 : 0.0 secs
+[mbo] 25: x=0.736,0.609,0.567,0.486,0.395 : y_1 = 5.67, y_2 = 3.47 : 0.0 secs
+[mbo] 25: x=0.453,0.464,0.681,0.28,0.775 : y_1 = 10.3, y_2 = 3.51 : 0.0 secs
+[mbo] 25: x=0.703,0.996,0.642,0.524,0.277 : y_1 = 4.67, y_2 = 1.46 : 0.0 secs
+[mbo] 25: x=0.716,0.799,0.768,0.648,0.056 : y_1 = 3.4, y_2 = 3.65 : 0.0 secs
+[mbo] 25: x=0.104,0.955,0.226,0.336,0.246 : y_1 = 1.74, y_2 = 4.98 : 0.0 secs
+[mbo] 26: x=0.262,0.271,0.641,0.887,0.774 : y_1 = 3.22, y_2 = 3.46 : 0.0 secs
+[mbo] 26: x=0.41,0.925,0.472,0.627,0.193 : y_1 = 2.96, y_2 = 3.36 : 0.0 secs
+[mbo] 26: x=0.359,0.971,0.818,0.578,0.295 : y_1 = 0.974, y_2 = 0.887 : 0.0 secs
+[mbo] 26: x=0.604,0.436,0.894,0.997,0.196 : y_1 = 6.62, y_2 = 2.41 : 0.0 secs
+[mbo] 26: x=0.532,0.155,0.0208,0.702,0.848 : y_1 = 3.38, y_2 = 3.42 : 0.0 secs
+[mbo] 27: x=0.368,0.64,0.672,0.186,0.341 : y_1 = 4.55, y_2 = 4.45 : 0.0 secs
+[mbo] 27: x=0.704,0.821,0.469,0.69,0.212 : y_1 = 2.34, y_2 = 2.98 : 0.0 secs
+[mbo] 27: x=0.879,0.894,0.244,0.643,0.919 : y_1 = 2.54, y_2 = 7.13 : 0.0 secs
+[mbo] 27: x=0.288,0.837,0.876,0.458,0.291 : y_1 = 5.5, y_2 = 5.68 : 0.0 secs
+[mbo] 27: x=0.73,0.257,0.527,0.183,0.309 : y_1 = 1.64, y_2 = 4.68 : 0.0 secs
+[mbo] 28: x=0.449,0.294,0.108,0.52,0.0857 : y_1 = 0.493, y_2 = 3.72 : 0.0 secs
+[mbo] 28: x=0.763,0.603,0.726,0.889,0.351 : y_1 = 5.29, y_2 = 9.34 : 0.0 secs
+[mbo] 28: x=0.292,0.756,0.658,0.283,0.86 : y_1 = 1.51, y_2 = 5.48 : 0.0 secs
+[mbo] 28: x=0.741,0.56,0.231,0.428,0.297 : y_1 = 3.08, y_2 = 2.88 : 0.0 secs
+[mbo] 28: x=0.288,0.626,0.288,0.364,0.913 : y_1 = 5.95, y_2 = 7.17 : 0.0 secs
+[mbo] 29: x=0.127,0.897,0.0396,0.3,0.0487 : y_1 = 2.34, y_2 = 7.38 : 0.0 secs
+[mbo] 29: x=0.64,0.948,0.889,0.758,0.213 : y_1 = 5.2, y_2 = 3.56 : 0.0 secs
+[mbo] 29: x=0.116,0.224,0.5,0.9,0.33 : y_1 = 3.81, y_2 = 11.4 : 0.0 secs
+[mbo] 29: x=0.394,0.773,0.56,0.577,0.261 : y_1 = 1.16, y_2 = 3.87 : 0.0 secs
+[mbo] 29: x=0.673,0.773,0.723,0.532,0.184 : y_1 = 1.92, y_2 = 1.92 : 0.0 secs
+[mbo] 30: x=0.74,0.627,0.547,0.399,0.29 : y_1 = 3.8, y_2 = 2.89 : 0.0 secs
+[mbo] 30: x=0.998,0.966,0.632,0.965,0.765 : y_1 = 4.25, y_2 = 1.89 : 0.0 secs
+[mbo] 30: x=0.654,0.973,0.764,0.779,0.64 : y_1 = 1.31, y_2 = 3.04 : 0.0 secs
+[mbo] 30: x=0.384,0.303,0.589,0.488,0.29 : y_1 = 2.4, y_2 = 7.31 : 0.0 secs
+[mbo] 30: x=0.273,0.563,0.316,0.837,0.149 : y_1 = 8.79, y_2 = 2.85 : 0.0 secs
+[mbo] 31: x=0.693,0.61,0.802,0.611,0.258 : y_1 = 1.28, y_2 = 4.15 : 0.0 secs
+[mbo] 31: x=0.66,0.785,0.586,0.585,0.455 : y_1 = 5.82, y_2 = 2.74 : 0.0 secs
+[mbo] 31: x=0.653,0.81,0.77,0.985,0.663 : y_1 = 1.57, y_2 = 4.21 : 0.0 secs
+[mbo] 31: x=0.748,0.548,0.166,0.966,0.577 : y_1 = 5.89, y_2 = 10.2 : 0.0 secs
+[mbo] 31: x=0.425,0.134,0.497,0.837,0.159 : y_1 = 3.15, y_2 = 8.31 : 0.0 secs
+[mbo] 32: x=0.858,0.697,0.00229,0.681,0.372 : y_1 = 5.86, y_2 = 5.51 : 0.0 secs
+[mbo] 32: x=0.689,0.885,0.78,0.525,0.2 : y_1 = 4.18, y_2 = 3.79 : 0.0 secs
+[mbo] 32: x=0.802,0.0255,0.265,0.8,0.258 : y_1 = 1.78, y_2 = 6.79 : 0.0 secs
+[mbo] 32: x=0.694,0.794,0.508,0.898,0.247 : y_1 = 3.03, y_2 = 4.09 : 0.0 secs
+[mbo] 32: x=0.23,0.0392,0.736,0.0108,0.0157 : y_1 = 9.03, y_2 = 7.56 : 0.0 secs
+Result:
+List of 5
+ $ paretoset   :List of 4
+ $ pareto.front: num [1:4, 1:2] 0.545 0.547 0.974 0.493 3.5 ...
+  ..- attr(*, "dimnames")=List of 2
+ $ hv          : num 105
+ $ cd          : num [1:4] 0.529 3.043 Inf Inf
+ $ r2          : num 0.198
+NULL
+Writing result file: /home/schork/mlrMBO/bench/mco/mco_bench-files/jobs/99/799-result.RData
+########## Executing jid=812 ##########
+Timestamp: 2014-07-13 17:59:41
+Experiment: 
+  Problem: uf7 
+  Problem parameters:  
+  Algorithm: parego 
+  Algorithm parameters:  
+  Replication: 2 
+  Seed: 473458297 
+  Problem seed: 792036162 
+Setting seed: 473458297
+Applying Algorithm parego ...
+Computing y column(s) for design. Not provided.
+[mbo] 0: x=0.16,0.624,0.868,0.199,0.521 : y_1 = 3.67, y_2 = 1.65 : 0.0 secs
+[mbo] 0: x=0.722,0.227,0.718,0.796,0.421 : y_1 = 1.48, y_2 = 2.72 : 0.0 secs
+[mbo] 0: x=0.197,0.0313,0.324,0.711,0.586 : y_1 = 0.938, y_2 = 0.511 : 0.0 secs
+[mbo] 0: x=0.626,0.466,0.403,0.839,0.265 : y_1 = 3.46, y_2 = 0.473 : 0.0 secs
+[mbo] 0: x=0.773,0.782,0.218,0.17,0.062 : y_1 = 0.964, y_2 = 0.613 : 0.0 secs
+[mbo] 0: x=0.785,0.671,0.184,0.638,0.387 : y_1 = 1.31, y_2 = 2.14 : 0.0 secs
+[mbo] 0: x=0.425,0.493,0.396,0.735,0.826 : y_1 = 3.59, y_2 = 2.04 : 0.0 secs
+[mbo] 0: x=0.868,0.565,0.505,0.517,0.71 : y_1 = 1.34, y_2 = 1.17 : 0.0 secs
+[mbo] 0: x=0.146,0.42,0.545,0.411,0.642 : y_1 = 2.31, y_2 = 1.14 : 0.0 secs
+[mbo] 0: x=0.737,0.856,0.653,0.472,0.367 : y_1 = 1.58, y_2 = 0.44 : 0.0 secs
+[mbo] 0: x=0.401,0.813,0.374,0.242,0.696 : y_1 = 2.7, y_2 = 0.178 : 0.0 secs
+[mbo] 0: x=0.514,0.137,0.727,0.361,0.449 : y_1 = 2.68, y_2 = 0.207 : 0.0 secs
+[mbo] 0: x=0.601,0.504,0.577,0.765,0.528 : y_1 = 1.89, y_2 = 0.281 : 0.0 secs
+[mbo] 0: x=0.0673,0.19,0.63,0.33,0.131 : y_1 = 0.704, y_2 = 1.92 : 0.0 secs
+[mbo] 0: x=0.0352,0.595,0.0111,0.288,0.575 : y_1 = 3.46, y_2 = 1.2 : 0.0 secs
+[mbo] 0: x=0.122,0.174,0.247,0.557,0.311 : y_1 = 0.921, y_2 = 1.64 : 0.0 secs
+[mbo] 0: x=0.311,0.533,0.949,0.624,0.746 : y_1 = 0.808, y_2 = 1.05 : 0.0 secs
+[mbo] 0: x=0.669,0.748,0.84,0.0444,0.604 : y_1 = 1.05, y_2 = 2.44 : 0.0 secs
+[mbo] 0: x=0.486,0.381,0.0733,0.441,0.101 : y_1 = 1.18, y_2 = 0.93 : 0.0 secs
+[mbo] 0: x=0.3,0.00969,0.767,0.674,0.663 : y_1 = 1.03, y_2 = 3.04 : 0.0 secs
+[mbo] 0: x=0.553,0.718,0.803,0.889,0.181 : y_1 = 3.81, y_2 = 1.75 : 0.0 secs
+[mbo] 0: x=0.978,0.22,0.486,0.853,0.808 : y_1 = 2.09, y_2 = 1.75 : 0.0 secs
+[mbo] 0: x=0.693,0.682,0.118,0.484,0.784 : y_1 = 4.13, y_2 = 0.479 : 0.0 secs
+[mbo] 0: x=0.355,0.287,0.156,0.94,0.035 : y_1 = 3.16, y_2 = 2.65 : 0.0 secs
+[mbo] 0: x=0.0852,0.429,0.277,0.109,0.155 : y_1 = 0.717, y_2 = 0.565 : 0.0 secs
+[mbo] 0: x=0.548,0.831,0.435,0.972,0.95 : y_1 = 0.944, y_2 = 2.78 : 0.0 secs
+[mbo] 0: x=0.847,0.0699,0.571,0.203,0.925 : y_1 = 2.3, y_2 = 0.103 : 0.0 secs
+[mbo] 0: x=0.463,0.321,0.965,0.0173,0.294 : y_1 = 4.37, y_2 = 0.175 : 0.0 secs
+[mbo] 0: x=0.348,0.999,0.912,0.258,0.888 : y_1 = 1.93, y_2 = 0.866 : 0.0 secs
+[mbo] 0: x=0.204,0.882,0.0333,0.132,0.927 : y_1 = 0.937, y_2 = 3.79 : 0.0 secs
+[mbo] 0: x=0.26,0.943,0.472,0.596,0.469 : y_1 = 2.15, y_2 = 1.75 : 0.0 secs
+[mbo] 0: x=0.824,0.0924,0.274,0.317,0.223 : y_1 = 1.4, y_2 = 0.164 : 0.0 secs
+[mbo] 0: x=0.378,0.256,0.144,0.992,0.773 : y_1 = 3.73, y_2 = 3.44 : 0.0 secs
+[mbo] 0: x=0.933,0.916,0.795,0.538,0.979 : y_1 = 0.986, y_2 = 1.48 : 0.0 secs
+[mbo] 0: x=0.888,0.754,0.333,0.0799,0.493 : y_1 = 1.74, y_2 = 3.13 : 0.0 secs
+[mbo] 0: x=0.579,0.974,0.998,0.377,0.00516 : y_1 = 5.43, y_2 = 2.89 : 0.0 secs
+[mbo] 0: x=0.0124,0.35,0.68,0.801,0.225 : y_1 = 0.76, y_2 = 2.31 : 0.0 secs
+[mbo] 0: x=0.958,0.118,0.881,0.681,0.331 : y_1 = 2.11, y_2 = 1.87 : 0.0 secs
+[mbo] 0: x=0.901,0.643,0.0888,0.903,0.0815 : y_1 = 4.93, y_2 = 0.783 : 0.0 secs
+[mbo] 0: x=0.243,0.359,0.604,0.0669,0.863 : y_1 = 0.824, y_2 = 2.79 : 0.0 secs
+[mbo] 1: x=0.85,0.161,0.257,0.232,0.164 : y_1 = 2.05, y_2 = 0.189 : 0.0 secs
+[mbo] 1: x=0.145,0.65,0.314,0.152,0.342 : y_1 = 1.08, y_2 = 1.46 : 0.0 secs
+[mbo] 1: x=0.783,0.547,0.362,0.166,0.122 : y_1 = 1.24, y_2 = 0.317 : 0.0 secs
+[mbo] 1: x=0.829,0.852,0.468,0.771,0.155 : y_1 = 2.17, y_2 = 4.11 : 0.0 secs
+[mbo] 1: x=0.223,0.842,0.09,0.751,0.133 : y_1 = 3.71, y_2 = 2.28 : 0.0 secs
+[mbo] 2: x=0.698,0.165,0.831,0.222,0.571 : y_1 = 1.41, y_2 = 3.1 : 0.0 secs
+[mbo] 2: x=0.805,0.554,0.366,0.72,0.0661 : y_1 = 1.58, y_2 = 2.48 : 0.0 secs
+[mbo] 2: x=0.219,0.616,0.233,0.185,0.117 : y_1 = 3.37, y_2 = 2.25 : 0.0 secs
+[mbo] 2: x=0.633,0.624,0.277,0.341,0.205 : y_1 = 4.25, y_2 = 1.81 : 0.0 secs
+[mbo] 2: x=0.0911,0.408,0.362,0.274,0.165 : y_1 = 0.749, y_2 = 0.692 : 0.0 secs
+[mbo] 3: x=0.755,0.662,0.598,0.193,0.183 : y_1 = 1.43, y_2 = 0.125 : 0.0 secs
+[mbo] 3: x=0.539,0.662,0.953,0.582,0.538 : y_1 = 3.2, y_2 = 1.64 : 0.0 secs
+[mbo] 3: x=0.776,0.498,0.318,0.0651,0.258 : y_1 = 1.23, y_2 = 0.0903 : 0.0 secs
+[mbo] 3: x=0.594,0.493,0.363,0.755,0.767 : y_1 = 1.68, y_2 = 0.268 : 0.0 secs
+[mbo] 3: x=0.782,0.495,0.123,0.511,0.37 : y_1 = 1.28, y_2 = 1.16 : 0.0 secs
+[mbo] 4: x=0.409,0.755,0.449,0.00196,0.655 : y_1 = 2.53, y_2 = 0.246 : 0.0 secs
+[mbo] 4: x=0.744,0.787,0.0448,0.883,0.35 : y_1 = 1.92, y_2 = 2.35 : 0.0 secs
+[mbo] 4: x=0.896,0.496,0.692,0.757,0.855 : y_1 = 1.24, y_2 = 0.439 : 0.0 secs
+[mbo] 4: x=0.909,0.325,0.783,0.234,0.719 : y_1 = 1.44, y_2 = 1.59 : 0.0 secs
+[mbo] 4: x=0.74,0.824,0.261,0.269,0.376 : y_1 = 1.6, y_2 = 0.14 : 0.0 secs
+[mbo] 5: x=0.832,0.111,0.206,0.198,0.282 : y_1 = 1.28, y_2 = 0.0642 : 0.0 secs
+[mbo] 5: x=0.879,0.481,0.784,0.677,0.958 : y_1 = 1.92, y_2 = 0.71 : 0.0 secs
+[mbo] 5: x=0.204,0.0348,0.273,0.557,0.838 : y_1 = 0.733, y_2 = 0.273 : 0.0 secs
+[mbo] 5: x=0.296,0.679,0.997,0.673,0.82 : y_1 = 0.789, y_2 = 0.635 : 0.0 secs
+[mbo] 5: x=0.766,0.0852,0.0242,0.24,0.198 : y_1 = 1.21, y_2 = 0.934 : 0.0 secs
+[mbo] 6: x=0.103,0.0915,0.206,0.644,0.471 : y_1 = 1.4, y_2 = 2.51 : 0.0 secs
+[mbo] 6: x=0.188,0.17,0.173,0.743,0.728 : y_1 = 0.73, y_2 = 0.904 : 0.0 secs
+[mbo] 6: x=0.195,0.0471,0.268,0.722,0.752 : y_1 = 0.758, y_2 = 0.564 : 0.0 secs
+[mbo] 6: x=0.574,0.305,0.833,0.733,0.601 : y_1 = 1.79, y_2 = 0.162 : 0.0 secs
+[mbo] 6: x=0.727,0.73,0.248,0.927,0.423 : y_1 = 1.9, y_2 = 1.89 : 0.0 secs
+[mbo] 7: x=0.635,0.827,0.562,0.849,0.525 : y_1 = 1.88, y_2 = 0.149 : 0.0 secs
+[mbo] 7: x=0.598,0.525,0.76,0.974,0.984 : y_1 = 0.903, y_2 = 0.106 : 0.0 secs
+[mbo] 7: x=0.804,0.223,0.0225,0.128,0.636 : y_1 = 1.59, y_2 = 0.0841 : 0.0 secs
+[mbo] 7: x=0.941,0.591,0.941,0.178,0.481 : y_1 = 1.9, y_2 = 2.67 : 0.0 secs
+[mbo] 7: x=0.344,0.541,0.342,0.0603,0.227 : y_1 = 2.34, y_2 = 2.7 : 0.0 secs
+[mbo] 8: x=0.193,0.00463,0.23,0.128,0.608 : y_1 = 0.808, y_2 = 0.651 : 0.0 secs
+[mbo] 8: x=0.81,0.0683,0.752,0.0502,0.267 : y_1 = 3.2, y_2 = 0.0586 : 0.0 secs
+[mbo] 8: x=0.621,0.588,0.651,0.943,0.994 : y_1 = 1.26, y_2 = 0.145 : 0.0 secs
+[mbo] 8: x=0.853,0.105,0.122,0.378,0.876 : y_1 = 1.13, y_2 = 0.0753 : 0.0 secs
+[mbo] 8: x=0.616,0.487,0.785,0.95,0.85 : y_1 = 0.975, y_2 = 0.208 : 0.0 secs
+[mbo] 9: x=0.652,0.837,0.169,0.833,0.891 : y_1 = 3.93, y_2 = 0.121 : 0.0 secs
+[mbo] 9: x=0.213,0.0168,0.252,0.422,0.773 : y_1 = 0.796, y_2 = 0.436 : 0.0 secs
+[mbo] 9: x=0.422,0.892,0.885,0.134,0.262 : y_1 = 2.49, y_2 = 0.504 : 0.0 secs
+[mbo] 9: x=0.983,0.023,0.417,0.148,0.499 : y_1 = 2.46, y_2 = 5.4 : 0.0 secs
+[mbo] 9: x=0.881,0.833,0.865,0.866,0.571 : y_1 = 2.56, y_2 = 2.51 : 0.0 secs
+[mbo] 10: x=0.906,0.597,0.441,0.423,0.968 : y_1 = 1.04, y_2 = 1.18 : 0.0 secs
+[mbo] 10: x=0.491,0.229,0.839,0.111,0.734 : y_1 = 4.06, y_2 = 0.253 : 0.0 secs
+[mbo] 10: x=0.0351,0.7,0.574,0.224,0.000154 : y_1 = 0.829, y_2 = 1.05 : 0.0 secs
+[mbo] 10: x=0.299,0.185,0.114,0.156,0.638 : y_1 = 3.85, y_2 = 4.37 : 0.0 secs
+[mbo] 10: x=0.909,0.268,0.506,0.852,0.537 : y_1 = 1.84, y_2 = 0.0192 : 0.0 secs
+[mbo] 11: x=0.552,0.0859,0.0789,0.501,0.805 : y_1 = 1.26, y_2 = 0.23 : 0.0 secs
+[mbo] 11: x=0.273,0.0399,0.963,0.381,0.792 : y_1 = 0.932, y_2 = 2.81 : 0.0 secs
+[mbo] 11: x=0.0805,0.756,0.36,0.102,0.122 : y_1 = 0.664, y_2 = 0.42 : 0.0 secs
+[mbo] 11: x=0.329,0.538,0.999,0.284,0.582 : y_1 = 0.806, y_2 = 2.1 : 0.0 secs
+[mbo] 11: x=0.936,0.287,0.947,0.925,0.844 : y_1 = 1.11, y_2 = 0.261 : 0.0 secs
+[mbo] 12: x=0.512,0.0415,0.00381,0.416,0.375 : y_1 = 1.12, y_2 = 0.179 : 0.0 secs
+[mbo] 12: x=0.197,0.00104,0.917,0.519,0.605 : y_1 = 2.98, y_2 = 0.287 : 0.0 secs
+[mbo] 12: x=0.928,0.46,0.27,0.997,0.439 : y_1 = 3.12, y_2 = 0.0216 : 0.0 secs
+[mbo] 12: x=0.515,0.413,0.000551,0.479,0.464 : y_1 = 1.03, y_2 = 0.892 : 0.0 secs
+[mbo] 12: x=0.145,0.367,0.00408,0.298,0.389 : y_1 = 0.708, y_2 = 0.765 : 0.0 secs
+[mbo] 13: x=0.317,0.964,0.961,0.88,0.269 : y_1 = 1.38, y_2 = 0.219 : 0.0 secs
+[mbo] 13: x=0.0483,0.709,0.684,0.947,0.0326 : y_1 = 0.567, y_2 = 2 : 0.0 secs
+[mbo] 13: x=0.31,0.966,0.854,0.86,0.646 : y_1 = 0.89, y_2 = 0.272 : 0.0 secs
+[mbo] 13: x=0.58,0.0772,0.517,0.963,0.856 : y_1 = 1.02, y_2 = 0.35 : 0.0 secs
+[mbo] 13: x=0.452,0.492,0.19,0.00916,0.904 : y_1 = 3.43, y_2 = 0.26 : 0.0 secs
+[mbo] 14: x=0.344,0.94,0.93,0.789,0.467 : y_1 = 0.826, y_2 = 0.232 : 0.0 secs
+[mbo] 14: x=0.634,0.957,0.997,0.998,0.853 : y_1 = 0.931, y_2 = 0.189 : 0.0 secs
+[mbo] 14: x=0.8,0.278,0.925,0.0415,0.597 : y_1 = 4.81, y_2 = 0.065 : 0.0 secs
+[mbo] 14: x=0.00335,0.954,0.909,0.939,0.161 : y_1 = 0.71, y_2 = 0.802 : 0.0 secs
+[mbo] 14: x=0.883,0.0329,0.328,0.879,0.848 : y_1 = 0.987, y_2 = 0.249 : 0.0 secs
+[mbo] 15: x=0.764,0.455,0.138,0.247,0.0229 : y_1 = 0.977, y_2 = 0.256 : 0.0 secs
+[mbo] 15: x=0.522,0.00466,0.405,0.808,0.225 : y_1 = 2.1, y_2 = 0.794 : 0.0 secs
+[mbo] 15: x=0.165,0.00859,0.0161,0.286,0.814 : y_1 = 1.13, y_2 = 0.338 : 0.0 secs
+[mbo] 15: x=0.75,0.652,0.419,0.133,0.144 : y_1 = 1.05, y_2 = 0.0618 : 0.0 secs
+[mbo] 15: x=0.0243,0.643,0.961,0.687,0.203 : y_1 = 0.541, y_2 = 1.06 : 0.0 secs
+[mbo] 16: x=0.542,0.00135,0.212,0.4,0.231 : y_1 = 2.45, y_2 = 0.254 : 0.0 secs
+[mbo] 16: x=0.0011,0.878,0.989,0.439,0.0734 : y_1 = 0.95, y_2 = 1.27 : 0.0 secs
+[mbo] 16: x=0.00524,0.288,0.919,0.245,0.0391 : y_1 = 1.03, y_2 = 3.64 : 0.0 secs
+[mbo] 16: x=0.53,0.104,0.00141,0.0604,0.337 : y_1 = 1.76, y_2 = 0.819 : 0.0 secs
+[mbo] 16: x=0.0562,1,0.922,0.3,0.955 : y_1 = 4.15, y_2 = 0.508 : 0.0 secs
+[mbo] 17: x=0.746,0.712,0.411,0.189,0.82 : y_1 = 3.63, y_2 = 0.0811 : 0.0 secs
+[mbo] 17: x=0.658,0.981,0.998,0.974,0.265 : y_1 = 1.32, y_2 = 0.141 : 0.0 secs
+[mbo] 17: x=0.0594,0.986,0.223,0.366,0.0423 : y_1 = 1.05, y_2 = 0.551 : 0.0 secs
+[mbo] 17: x=0.609,0.586,0.901,0.066,0.99 : y_1 = 0.922, y_2 = 3.54 : 0.0 secs
+[mbo] 17: x=0.483,0.964,0.0154,0.936,0.348 : y_1 = 0.866, y_2 = 5.98 : 0.0 secs
+[mbo] 18: x=0.111,0.676,0.0571,0.476,0.0583 : y_1 = 0.665, y_2 = 1.56 : 0.0 secs
+[mbo] 18: x=0.403,0.755,0.312,0.0619,0.0234 : y_1 = 0.936, y_2 = 0.226 : 0.0 secs
+[mbo] 18: x=0.0214,0.298,0.929,0.999,0.123 : y_1 = 0.606, y_2 = 3.1 : 0.0 secs
+[mbo] 18: x=0.894,0.0861,0.229,0.714,0.976 : y_1 = 1.17, y_2 = 0.0502 : 0.0 secs
+[mbo] 18: x=0.895,0.0795,0.942,0.726,0.906 : y_1 = 1.95, y_2 = 0.0574 : 0.0 secs
+[mbo] 19: x=0.975,0.587,0.999,0.955,0.745 : y_1 = 0.996, y_2 = 0.286 : 0.0 secs
+[mbo] 19: x=0.944,0.528,0.999,0.883,0.83 : y_1 = 1.1, y_2 = 0.0822 : 0.0 secs
+[mbo] 19: x=0.465,0.0567,0.605,0.179,0.508 : y_1 = 2.58, y_2 = 0.35 : 0.0 secs
+[mbo] 19: x=0.377,0.557,0.719,0.476,0.099 : y_1 = 0.828, y_2 = 0.772 : 0.0 secs
+[mbo] 19: x=0.843,0.131,0.0123,0.433,0.595 : y_1 = 0.976, y_2 = 0.186 : 0.0 secs
+[mbo] 20: x=0.877,0.0793,0.493,0.585,0.657 : y_1 = 1.32, y_2 = 0.0274 : 0.0 secs
+[mbo] 20: x=0.421,0.781,0.0998,0.0233,0.00135 : y_1 = 1.02, y_2 = 0.276 : 0.0 secs
+[mbo] 20: x=0.659,0.0245,0.998,0.964,0.72 : y_1 = 1.01, y_2 = 3.56 : 0.0 secs
+[mbo] 20: x=0.247,0.41,0.6,0.88,0.995 : y_1 = 0.759, y_2 = 0.278 : 0.0 secs
+[mbo] 20: x=0.705,0.973,0.912,0.412,0.0197 : y_1 = 1.12, y_2 = 0.0747 : 0.0 secs
+[mbo] 21: x=0.798,0.14,0.00591,0.00616,0.0582 : y_1 = 1.03, y_2 = 0.0741 : 0.0 secs
+[mbo] 21: x=0.438,0.174,0.00698,0.037,0.00312 : y_1 = 0.96, y_2 = 0.468 : 0.0 secs
+[mbo] 21: x=0.58,0.31,0.371,0.88,0.55 : y_1 = 1.95, y_2 = 0.103 : 0.0 secs
+[mbo] 21: x=0.217,0.991,0.336,0.878,0.976 : y_1 = 0.756, y_2 = 3.64 : 0.0 secs
+[mbo] 21: x=0.436,0.209,0.121,0.0267,0.00451 : y_1 = 0.868, y_2 = 0.44 : 0.0 secs
+[mbo] 22: x=0.319,0.802,0.975,0.909,0.565 : y_1 = 0.815, y_2 = 0.26 : 0.0 secs
+[mbo] 22: x=0.177,0.0141,0.124,0.293,0.0634 : y_1 = 1.85, y_2 = 0.293 : 0.0 secs
+[mbo] 22: x=0.108,0.927,0.121,0.113,0.0281 : y_1 = 0.646, y_2 = 1.41 : 0.0 secs
+[mbo] 22: x=0.279,0.491,0.923,0.928,0.995 : y_1 = 0.801, y_2 = 0.307 : 0.0 secs
+[mbo] 22: x=0.112,0.75,0.102,0.00729,0.225 : y_1 = 0.745, y_2 = 0.87 : 0.0 secs
+[mbo] 23: x=0.904,0.25,0.308,0.805,0.742 : y_1 = 1.43, y_2 = 0.022 : 0.0 secs
+[mbo] 23: x=0.241,0.112,0.464,0.84,0.983 : y_1 = 0.795, y_2 = 0.34 : 0.0 secs
+[mbo] 23: x=0.999,0.209,0.918,0.492,0.907 : y_1 = 1.64, y_2 = 2.72 : 0.0 secs
+[mbo] 23: x=0.0312,0.971,0.775,0.561,0.15 : y_1 = 0.526, y_2 = 0.507 : 0.0 secs
+[mbo] 23: x=0.545,0.0722,0.529,0.777,0.995 : y_1 = 1.15, y_2 = 0.229 : 0.0 secs
+[mbo] 24: x=0.721,0.886,0.666,0.331,0.382 : y_1 = 1.32, y_2 = 0.0652 : 0.0 secs
+[mbo] 24: x=0.0344,0.678,0.822,0.885,0.14 : y_1 = 0.528, y_2 = 1.46 : 0.0 secs
+[mbo] 24: x=0.123,0.165,0.0622,0.00327,0.164 : y_1 = 0.661, y_2 = 0.406 : 0.0 secs
+[mbo] 24: x=0.787,0.339,0.121,0.0829,0.00694 : y_1 = 1.01, y_2 = 0.0761 : 0.0 secs
+[mbo] 24: x=0.998,0.982,0.824,0.998,0.975 : y_1 = 1.93, y_2 = 0.144 : 0.0 secs
+[mbo] 25: x=0.423,0.242,0.238,0.389,0.166 : y_1 = 0.957, y_2 = 1.08 : 0.0 secs
+[mbo] 25: x=0.415,0.457,0.463,0.269,0.00222 : y_1 = 0.877, y_2 = 0.453 : 0.0 secs
+[mbo] 25: x=0.716,0.951,0.19,0.273,0.094 : y_1 = 1.84, y_2 = 0.0982 : 0.0 secs
+[mbo] 25: x=0.22,0.066,0.0927,0.686,0.614 : y_1 = 1.44, y_2 = 0.271 : 0.0 secs
+[mbo] 25: x=0.0772,0.169,0.4,0.21,0.00349 : y_1 = 0.599, y_2 = 1.59 : 0.0 secs
+[mbo] 26: x=0.252,0.414,0.875,0.978,0.295 : y_1 = 2.9, y_2 = 0.264 : 0.0 secs
+[mbo] 26: x=0.252,0.42,0.811,0.994,0.342 : y_1 = 2.56, y_2 = 0.275 : 0.0 secs
+[mbo] 26: x=0.961,0.598,0.801,0.194,0.977 : y_1 = 1.17, y_2 = 2.63 : 0.0 secs
+[mbo] 26: x=0.24,0.282,0.681,0.925,0.737 : y_1 = 1.07, y_2 = 0.277 : 0.0 secs
+[mbo] 26: x=0.0239,0.43,0.833,0.608,0.173 : y_1 = 0.525, y_2 = 1.81 : 0.0 secs
+[mbo] 27: x=0.691,0.849,0.768,0.991,0.395 : y_1 = 1.02, y_2 = 0.829 : 0.0 secs
+[mbo] 27: x=0.691,0.993,0.739,0.555,0.618 : y_1 = 1.45, y_2 = 0.0739 : 0.0 secs
+[mbo] 27: x=0.45,0.902,0.781,0.00805,0.678 : y_1 = 4.09, y_2 = 1.39 : 0.0 secs
+[mbo] 27: x=0.00064,0.997,0.81,0.838,0.997 : y_1 = 1.35, y_2 = 0.781 : 0.0 secs
+[mbo] 27: x=0.22,0.249,0.361,0.496,0.997 : y_1 = 0.763, y_2 = 0.473 : 0.0 secs
+[mbo] 28: x=0.583,0.284,0.722,0.915,0.964 : y_1 = 0.924, y_2 = 0.116 : 0.0 secs
+[mbo] 28: x=0.00132,0.915,0.962,0.991,0.403 : y_1 = 0.294, y_2 = 0.923 : 0.0 secs
+[mbo] 28: x=0.000251,0.997,0.711,0.803,0.438 : y_1 = 0.484, y_2 = 0.812 : 0.0 secs
+[mbo] 28: x=0.665,0.986,0.982,0.78,0.267 : y_1 = 1.16, y_2 = 0.0816 : 0.0 secs
+[mbo] 28: x=0.378,0.895,0.706,0.883,0.217 : y_1 = 0.854, y_2 = 1.13 : 0.0 secs
+[mbo] 29: x=0.136,0.153,0.859,0.000112,0.686 : y_1 = 4.35, y_2 = 0.337 : 0.0 secs
+[mbo] 29: x=0.883,0.0921,0.362,0.633,0.848 : y_1 = 0.989, y_2 = 0.0261 : 0.0 secs
+[mbo] 29: x=0.000156,0.577,0.94,0.786,0.473 : y_1 = 0.181, y_2 = 1.46 : 0.0 secs
+[mbo] 29: x=0.837,0.862,0.0113,0.289,0.619 : y_1 = 0.996, y_2 = 2.91 : 0.0 secs
+[mbo] 29: x=0.368,0.992,0.653,0.444,0.0507 : y_1 = 0.965, y_2 = 0.189 : 0.0 secs
+[mbo] 30: x=1,0.855,0.922,0.996,0.131 : y_1 = 1.57, y_2 = 0.215 : 0.0 secs
+[mbo] 30: x=0.00203,0.998,0.995,0.75,0.556 : y_1 = 0.314, y_2 = 0.715 : 0.0 secs
+[mbo] 30: x=0.328,0.756,0.97,0.904,0.969 : y_1 = 1.51, y_2 = 0.383 : 0.0 secs
+[mbo] 30: x=0.719,0.98,0.124,0.271,0.582 : y_1 = 2.98, y_2 = 0.107 : 0.0 secs
+[mbo] 30: x=3.95e-05,0.917,0.942,0.767,0.489 : y_1 = 0.137, y_2 = 0.885 : 0.0 secs
+[mbo] 31: x=0.0819,0.182,0.398,0.967,0.000527 : y_1 = 0.613, y_2 = 4.31 : 0.0 secs
+[mbo] 31: x=0.295,0.752,0.203,0.997,0.338 : y_1 = 4.04, y_2 = 0.217 : 0.0 secs
+[mbo] 31: x=0.0166,0.959,0.996,0.59,0.384 : y_1 = 0.48, y_2 = 0.583 : 0.0 secs
+[mbo] 31: x=0.785,0.14,0.0211,0.979,0.115 : y_1 = 0.971, y_2 = 4.03 : 0.0 secs
+[mbo] 31: x=0.932,0.492,0.85,0.952,0.79 : y_1 = 1.15, y_2 = 0.0156 : 0.0 secs
+[mbo] 32: x=0.0141,0.997,0.503,0.486,0.0972 : y_1 = 1.41, y_2 = 0.719 : 0.0 secs
+[mbo] 32: x=0.612,0.631,0.973,0.974,0.7 : y_1 = 1.15, y_2 = 0.0967 : 0.0 secs
+[mbo] 32: x=0.0903,0.976,0.513,0.952,0.0454 : y_1 = 0.834, y_2 = 4.16 : 0.0 secs
+[mbo] 32: x=0.392,0.0146,0.703,0.765,0.19 : y_1 = 0.974, y_2 = 3.95 : 0.0 secs
+[mbo] 32: x=0.474,0.314,0.000587,0.00139,0.061 : y_1 = 1.03, y_2 = 0.256 : 0.0 secs
+Result:
+List of 5
+ $ paretoset   :List of 11
+  .. [list output truncated]
+ $ pareto.front: num [1:11, 1:2] 0.733 0.903 0.826 0.815 0.526 ...
+  ..- attr(*, "dimnames")=List of 2
+ $ hv          : num 119
+ $ cd          : num [1:11] 0.299 0.369 0.242 0.134 0.359 ...
+ $ r2          : num 0.156
+NULL
+Writing result file: /home/schork/mlrMBO/bench/mco/mco_bench-files/jobs/12/812-result.RData
+########## Executing jid=823 ##########
+Timestamp: 2014-07-13 18:02:34
+Experiment: 
+  Problem: wfg1 
+  Problem parameters:  
+  Algorithm: parego 
+  Algorithm parameters:  
+  Replication: 3 
+  Seed: 473458308 
+  Problem seed: 671867871 
+Setting seed: 473458308
+Applying Algorithm parego ...
+Computing y column(s) for design. Not provided.
+[mbo] 0: x=0.697,0.533,0.33,0.606,0.569 : y_1 = 2.93, y_2 = 0.984 : 0.0 secs
+[mbo] 0: x=0.453,0.182,0.422,0.38,0.304 : y_1 = 2.88, y_2 = 0.96 : 0.0 secs
+[mbo] 0: x=0.266,0.402,0.261,0.341,0.74 : y_1 = 2.89, y_2 = 0.973 : 0.0 secs
+[mbo] 0: x=0.67,0.641,0.133,0.51,0.25 : y_1 = 2.9, y_2 = 0.984 : 0.0 secs
+[mbo] 0: x=0.284,0.769,0.575,0.205,0.22 : y_1 = 2.95, y_2 = 0.984 : 0.0 secs
+[mbo] 0: x=0.355,0.352,0.66,0.193,0.0159 : y_1 = 2.95, y_2 = 0.995 : 0.0 secs
+[mbo] 0: x=0.798,0.941,0.509,0.911,0.821 : y_1 = 2.97, y_2 = 0.996 : 0.0 secs
+[mbo] 0: x=0.709,0.496,0.168,0.629,0.513 : y_1 = 2.91, y_2 = 0.987 : 0.0 secs
+[mbo] 0: x=0.537,0.24,0.229,0.49,0.352 : y_1 = 2.84, y_2 = 0.936 : 0.0 secs
+[mbo] 0: x=0.449,0.916,0.873,0.691,0.773 : y_1 = 2.98, y_2 = 0.991 : 0.0 secs
+[mbo] 0: x=0.421,0.122,0.913,0.292,0.651 : y_1 = 2.92, y_2 = 0.981 : 0.0 secs
+[mbo] 0: x=0.312,0.439,0.635,0.72,0.546 : y_1 = 2.94, y_2 = 0.985 : 0.0 secs
+[mbo] 0: x=0.899,0.552,0.954,0.732,0.0773 : y_1 = 2.98, y_2 = 0.993 : 0.0 secs
+[mbo] 0: x=0.104,0.211,0.694,0.365,0.336 : y_1 = 2.87, y_2 = 0.94 : 0.0 secs
+[mbo] 0: x=0.851,0.515,0.46,0.539,0.781 : y_1 = 2.95, y_2 = 0.987 : 0.0 secs
+[mbo] 0: x=0.207,0.462,0.276,0.257,0.436 : y_1 = 2.9, y_2 = 0.975 : 0.0 secs
+[mbo] 0: x=0.939,0.0612,0.586,0.76,0.377 : y_1 = 2.89, y_2 = 0.971 : 0.0 secs
+[mbo] 0: x=0.385,0.584,0.0774,0.671,0.289 : y_1 = 2.88, y_2 = 0.996 : 0.0 secs
+[mbo] 0: x=0.829,0.277,0.733,0.0351,0.418 : y_1 = 2.94, y_2 = 0.976 : 0.0 secs
+[mbo] 0: x=0.501,0.706,0.701,0.799,0.116 : y_1 = 2.97, y_2 = 0.994 : 0.0 secs
+[mbo] 0: x=0.567,0.846,0.528,0.431,0.591 : y_1 = 2.94, y_2 = 0.973 : 0.0 secs
+[mbo] 0: x=0.184,0.687,0.397,0.159,0.966 : y_1 = 2.94, y_2 = 0.998 : 0.0 secs
+[mbo] 0: x=0.958,0.966,0.623,0.0737,0.637 : y_1 = 2.97, y_2 = 0.99 : 0.0 secs
+[mbo] 0: x=0.0574,0.6,0.934,0.55,0.873 : y_1 = 2.95, y_2 = 0.989 : 0.0 secs
+[mbo] 0: x=0.165,0.318,0.0573,0.595,0.71 : y_1 = 2.86, y_2 = 1.03 : 0.0 secs
+[mbo] 0: x=0.765,0.0938,0.203,0.237,0.691 : y_1 = 2.88, y_2 = 1 : 0.0 secs
+[mbo] 0: x=0.725,0.734,0.353,0.0752,0.176 : y_1 = 2.95, y_2 = 0.993 : 0.0 secs
+[mbo] 0: x=0.329,0.164,0.993,0.844,0.601 : y_1 = 2.94, y_2 = 0.991 : 0.0 secs
+[mbo] 0: x=0.806,0.257,0.824,0.315,0.877 : y_1 = 2.94, y_2 = 0.979 : 0.0 secs
+[mbo] 0: x=0.0996,0.129,0.439,0.897,0.271 : y_1 = 2.89, y_2 = 0.998 : 0.0 secs
+[mbo] 0: x=0.981,0.788,0.788,0.825,0.829 : y_1 = 2.98, y_2 = 0.995 : 0.0 secs
+[mbo] 0: x=0.914,0.661,0.189,0.947,0.165 : y_1 = 2.93, y_2 = 0.997 : 0.0 secs
+[mbo] 0: x=0.0254,0.812,0.112,0.957,0.48 : y_1 = 2.87, y_2 = 1.01 : 0.0 secs
+[mbo] 0: x=0.134,0.854,0.828,0.137,0.464 : y_1 = 2.95, y_2 = 0.978 : 0.0 secs
+[mbo] 0: x=0.231,0.00941,0.486,0.0242,0.995 : y_1 = 2.87, y_2 = 1.04 : 0.0 secs
+[mbo] 0: x=0.0155,0.982,0.774,0.858,0.0253 : y_1 = 2.95, y_2 = 1 : 0.0 secs
+[mbo] 0: x=0.482,0.0302,0.0206,0.408,0.0717 : y_1 = 2.78, y_2 = 1.11 : 0.0 secs
+[mbo] 0: x=0.584,0.379,0.324,0.976,0.949 : y_1 = 2.94, y_2 = 1 : 0.0 secs
+[mbo] 0: x=0.617,0.876,0.0452,0.118,0.904 : y_1 = 2.89, y_2 = 1.02 : 0.0 secs
+[mbo] 0: x=0.65,0.329,0.883,0.451,0.144 : y_1 = 2.95, y_2 = 0.98 : 0.0 secs
+[mbo] 1: x=0.344,0.207,0.13,0.501,0.255 : y_1 = 2.87, y_2 = 0.998 : 0.0 secs
+[mbo] 1: x=0.297,0.226,0.378,0.346,0.257 : y_1 = 2.88, y_2 = 0.957 : 0.0 secs
+[mbo] 1: x=0.124,0.278,0.102,0.313,0.352 : y_1 = 2.8, y_2 = 0.95 : 0.0 secs
+[mbo] 1: x=0.508,0.112,0.00432,0.463,0.426 : y_1 = 2.75, y_2 = 1.13 : 0.0 secs
+[mbo] 1: x=0.94,0.252,0.27,0.241,0.25 : y_1 = 2.91, y_2 = 0.984 : 0.0 secs
+[mbo] 2: x=0.0512,0.305,0.117,0.222,0.103 : y_1 = 2.87, y_2 = 1.02 : 0.0 secs
+[mbo] 2: x=0.51,0.165,3.89e-05,0.538,0.981 : y_1 = 2.66, y_2 = 1.44 : 0.0 secs
+[mbo] 2: x=0.556,0.236,0.159,0.429,0.0981 : y_1 = 2.89, y_2 = 0.995 : 0.0 secs
+[mbo] 2: x=0.0686,0.272,0.697,0.373,0.626 : y_1 = 2.9, y_2 = 0.969 : 0.0 secs
+[mbo] 2: x=0.303,0.306,0.1,0.166,0.353 : y_1 = 2.83, y_2 = 0.965 : 0.0 secs
+[mbo] 3: x=0.216,0.0864,0.00863,0.305,0.436 : y_1 = 2.75, y_2 = 1.12 : 0.0 secs
+[mbo] 3: x=0.00294,0.268,0.0241,0.618,0.414 : y_1 = 2.77, y_2 = 1.1 : 0.0 secs
+[mbo] 3: x=0.629,0.318,0.0929,0.587,0.416 : y_1 = 2.87, y_2 = 0.989 : 0.0 secs
+[mbo] 3: x=0.0444,0.273,0.287,0.208,0.55 : y_1 = 2.88, y_2 = 0.999 : 0.0 secs
+[mbo] 3: x=0.0789,0.107,0.00158,0.5,0.438 : y_1 = 2.71, y_2 = 1.24 : 0.0 secs
+[mbo] 4: x=0.627,0.652,0.986,0.231,0.249 : y_1 = 2.96, y_2 = 0.978 : 0.0 secs
+[mbo] 4: x=0.531,0.0688,0.00885,0.375,0.347 : y_1 = 2.72, y_2 = 1.07 : 0.0 secs
+[mbo] 4: x=0.713,0.286,0.608,0.407,0.36 : y_1 = 2.89, y_2 = 0.938 : 0.0 secs
+[mbo] 4: x=0.24,0.24,0.583,0.503,0.265 : y_1 = 2.91, y_2 = 0.978 : 0.0 secs
+[mbo] 4: x=0.138,0.121,0.0174,0.67,0.995 : y_1 = 2.81, y_2 = 1.11 : 0.0 secs
+[mbo] 5: x=0.481,0.11,0.000106,0.111,0.299 : y_1 = 2.66, y_2 = 1.38 : 0.0 secs
+[mbo] 5: x=0.0667,0.0443,0.0831,0.487,0.419 : y_1 = 2.8, y_2 = 1.05 : 0.0 secs
+[mbo] 5: x=0.816,0.22,0.18,0.479,0.137 : y_1 = 2.9, y_2 = 0.995 : 0.0 secs
+[mbo] 5: x=0.0473,0.211,6.47e-05,0.146,0.387 : y_1 = 2.63, y_2 = 1.43 : 0.0 secs
+[mbo] 5: x=0.983,0.878,0.792,0.901,0.508 : y_1 = 2.97, y_2 = 0.983 : 0.0 secs
+[mbo] 6: x=0.953,0.0484,0.467,0.583,0.082 : y_1 = 2.9, y_2 = 1 : 0.0 secs
+[mbo] 6: x=0.189,0.428,0.00877,0.35,0.348 : y_1 = 2.71, y_2 = 0.989 : 0.0 secs
+[mbo] 6: x=0.15,0.116,0.00104,0.695,0.381 : y_1 = 2.7, y_2 = 1.24 : 0.0 secs
+[mbo] 6: x=0.47,0.0693,0.000936,0.56,0.432 : y_1 = 2.7, y_2 = 1.25 : 0.0 secs
+[mbo] 6: x=0.26,0.407,0.994,0.228,0.455 : y_1 = 2.94, y_2 = 0.973 : 0.0 secs
+[mbo] 7: x=1,0.57,0.749,0.433,0.0738 : y_1 = 2.96, y_2 = 0.98 : 0.0 secs
+[mbo] 7: x=0.2,0.0334,0.000942,0.13,0.5 : y_1 = 2.69, y_2 = 1.32 : 0.0 secs
+[mbo] 7: x=0.66,0.478,0.0106,0.351,0.322 : y_1 = 2.76, y_2 = 0.992 : 0.0 secs
+[mbo] 7: x=0.268,0.77,0.0218,0.354,0.397 : y_1 = 2.8, y_2 = 0.977 : 0.0 secs
+[mbo] 7: x=0.447,0.0281,0.685,0.367,0.293 : y_1 = 2.86, y_2 = 0.966 : 0.0 secs
+[mbo] 8: x=0.298,0.0332,0.00489,0.386,0.348 : y_1 = 2.68, y_2 = 1.14 : 0.0 secs
+[mbo] 8: x=0.304,0.199,0.564,0.833,0.494 : y_1 = 2.92, y_2 = 0.987 : 0.0 secs
+[mbo] 8: x=0.251,0.1,0.102,0.29,0.619 : y_1 = 2.84, y_2 = 1.02 : 0.0 secs
+[mbo] 8: x=0.0549,0.0647,0.0052,0.375,0.353 : y_1 = 2.68, y_2 = 1.14 : 0.0 secs
+[mbo] 8: x=0.11,0.271,0.0163,0.366,0.382 : y_1 = 2.76, y_2 = 1.03 : 0.0 secs
+[mbo] 9: x=0.418,0.954,0.47,0.0495,0.99 : y_1 = 2.96, y_2 = 0.999 : 0.0 secs
+[mbo] 9: x=0.708,0.203,0.000543,0.463,0.954 : y_1 = 2.73, y_2 = 1.24 : 0.0 secs
+[mbo] 9: x=0.0284,0.761,0.000385,0.222,0.333 : y_1 = 2.69, y_2 = 1.25 : 0.0 secs
+[mbo] 9: x=0.29,0.493,0.00785,0.33,0.315 : y_1 = 2.78, y_2 = 1.05 : 0.0 secs
+[mbo] 9: x=0.203,0.81,0.0211,0.791,0.0668 : y_1 = 2.86, y_2 = 1.04 : 0.0 secs
+[mbo] 10: x=0.476,0.148,0.00869,0.362,0.684 : y_1 = 2.77, y_2 = 1.08 : 0.0 secs
+[mbo] 10: x=0.188,0.759,0.00164,0.217,0.298 : y_1 = 2.76, y_2 = 1.13 : 0.0 secs
+[mbo] 10: x=0.313,0.395,0.611,0.412,0.414 : y_1 = 2.91, y_2 = 0.958 : 0.0 secs
+[mbo] 10: x=0.373,0.228,0.302,0.49,0.495 : y_1 = 2.89, y_2 = 0.981 : 0.0 secs
+[mbo] 10: x=0.272,0.397,0.000974,0.355,0.442 : y_1 = 2.7, y_2 = 1.15 : 0.0 secs
+[mbo] 11: x=0.0661,0.397,0.000942,0.459,0.396 : y_1 = 2.71, y_2 = 1.2 : 0.0 secs
+[mbo] 11: x=0.905,0.574,0.647,0.286,0.191 : y_1 = 2.95, y_2 = 0.978 : 0.0 secs
+[mbo] 11: x=0.0156,0.688,0.00015,0.747,0.391 : y_1 = 2.67, y_2 = 1.34 : 0.0 secs
+[mbo] 11: x=0.4,0.874,0.427,0.0677,0.942 : y_1 = 2.96, y_2 = 0.998 : 0.0 secs
+[mbo] 11: x=0.0506,0.259,0.00902,0.352,0.471 : y_1 = 2.74, y_2 = 1.07 : 0.0 secs
+[mbo] 12: x=0.197,0.173,5.74e-05,0.439,0.989 : y_1 = 2.65, y_2 = 1.43 : 0.0 secs
+[mbo] 12: x=0.744,0.106,0.000244,0.175,0.972 : y_1 = 2.7, y_2 = 1.33 : 0.0 secs
+[mbo] 12: x=0.57,0.236,0.00338,0.365,0.416 : y_1 = 2.74, y_2 = 1.09 : 0.0 secs
+[mbo] 12: x=0.48,0.298,0.338,0.324,0.958 : y_1 = 2.91, y_2 = 0.983 : 0.0 secs
+[mbo] 12: x=0.715,0.558,0.0751,0.349,0.286 : y_1 = 2.84, y_2 = 0.952 : 0.0 secs
+[mbo] 13: x=0.856,0.629,0.694,0.493,0.486 : y_1 = 2.95, y_2 = 0.971 : 0.0 secs
+[mbo] 13: x=0.373,0.449,0.000871,0.498,0.355 : y_1 = 2.7, y_2 = 1.14 : 0.0 secs
+[mbo] 13: x=0.489,0.0936,0.0107,0.382,0.247 : y_1 = 2.77, y_2 = 1.09 : 0.0 secs
+[mbo] 13: x=0.185,0.581,0.00872,0.548,0.244 : y_1 = 2.81, y_2 = 1.07 : 0.0 secs
+[mbo] 13: x=0.204,0.238,1.12e-05,0.943,0.355 : y_1 = 2.58, y_2 = 1.48 : 0.0 secs
+[mbo] 14: x=0.546,0.574,0.465,0.87,0.35 : y_1 = 2.88, y_2 = 0.922 : 0.0 secs
+[mbo] 14: x=0.531,0.148,0.023,0.416,0.366 : y_1 = 2.78, y_2 = 1.02 : 0.0 secs
+[mbo] 14: x=0.696,0.287,0.103,0.49,0.187 : y_1 = 2.88, y_2 = 0.999 : 0.0 secs
+[mbo] 14: x=0.519,0.594,1.34e-05,0.476,0.328 : y_1 = 2.63, y_2 = 1.41 : 0.0 secs
+[mbo] 14: x=0.247,0.202,2.62e-05,0.728,0.873 : y_1 = 2.65, y_2 = 1.47 : 0.0 secs
+[mbo] 15: x=0.185,0.756,0.909,0.474,0.516 : y_1 = 2.95, y_2 = 0.972 : 0.0 secs
+[mbo] 15: x=0.0693,0.0933,6.14e-05,0.277,0.343 : y_1 = 2.59, y_2 = 1.44 : 0.0 secs
+[mbo] 15: x=0.15,0.424,0.000781,0.483,0.411 : y_1 = 2.72, y_2 = 1.2 : 0.0 secs
+[mbo] 15: x=0.526,0.15,0.422,0.759,0.706 : y_1 = 2.92, y_2 = 0.998 : 0.0 secs
+[mbo] 15: x=0.16,0.998,0.268,0.198,0.838 : y_1 = 2.93, y_2 = 0.995 : 0.0 secs
+[mbo] 16: x=0.177,0.695,7.92e-05,0.594,0.234 : y_1 = 2.69, y_2 = 1.33 : 0.0 secs
+[mbo] 16: x=0.0699,0.433,0.351,0.346,0.346 : y_1 = 2.84, y_2 = 0.924 : 0.0 secs
+[mbo] 16: x=0.38,0.435,0.229,0.826,0.351 : y_1 = 2.86, y_2 = 0.941 : 0.0 secs
+[mbo] 16: x=0.0916,0.729,0.86,0.0904,0.0348 : y_1 = 2.96, y_2 = 0.997 : 0.0 secs
+[mbo] 16: x=0.78,0.606,0.000628,0.787,0.624 : y_1 = 2.76, y_2 = 1.18 : 0.0 secs
+[mbo] 17: x=0.654,0.522,0.000778,0.762,0.616 : y_1 = 2.76, y_2 = 1.18 : 0.0 secs
+[mbo] 17: x=0.806,0.272,0.122,0.875,0.0908 : y_1 = 2.9, y_2 = 1.01 : 0.0 secs
+[mbo] 17: x=0.254,0.337,0.229,0.604,0.841 : y_1 = 2.91, y_2 = 1 : 0.0 secs
+[mbo] 17: x=0.376,0.219,0.569,0.609,0.581 : y_1 = 2.92, y_2 = 0.986 : 0.0 secs
+[mbo] 17: x=0.521,0.217,0.875,0.515,0.484 : y_1 = 2.93, y_2 = 0.974 : 0.0 secs
+[mbo] 18: x=0.0692,0.1,0.000167,0.433,0.27 : y_1 = 2.64, y_2 = 1.4 : 0.0 secs
+[mbo] 18: x=0.487,0.229,6.01e-06,0.402,0.623 : y_1 = 2.6, y_2 = 1.52 : 0.0 secs
+[mbo] 18: x=0.0949,0.346,0.781,0.643,0.832 : y_1 = 2.94, y_2 = 0.994 : 0.0 secs
+[mbo] 18: x=0.466,0.642,0.127,0.352,0.3 : y_1 = 2.85, y_2 = 0.94 : 0.0 secs
+[mbo] 18: x=0.382,0.0525,0.00199,0.382,0.576 : y_1 = 2.71, y_2 = 1.21 : 0.0 secs
+[mbo] 19: x=0.899,0.124,0.967,0.0515,0.662 : y_1 = 2.95, y_2 = 0.993 : 0.0 secs
+[mbo] 19: x=0.104,0.386,0.000836,0.135,0.553 : y_1 = 2.73, y_2 = 1.23 : 0.0 secs
+[mbo] 19: x=0.298,0.218,0.347,0.69,0.276 : y_1 = 2.9, y_2 = 0.988 : 0.0 secs
+[mbo] 19: x=0.524,0.626,4.23e-05,0.482,0.647 : y_1 = 2.68, y_2 = 1.35 : 0.0 secs
+[mbo] 19: x=0.0125,0.49,0.998,0.38,0.586 : y_1 = 2.9, y_2 = 0.968 : 0.0 secs
+[mbo] 20: x=0.0415,0.3,0.694,0.784,0.318 : y_1 = 2.9, y_2 = 0.978 : 0.0 secs
+[mbo] 20: x=0.394,0.00337,9.16e-05,0.142,0.745 : y_1 = 2.6, y_2 = 1.57 : 0.0 secs
+[mbo] 20: x=0.1,0.297,0.336,0.0841,0.75 : y_1 = 2.91, y_2 = 1 : 0.0 secs
+[mbo] 20: x=0.478,0.204,0.00158,0.366,0.265 : y_1 = 2.72, y_2 = 1.15 : 0.0 secs
+[mbo] 20: x=0.919,0.346,0.00908,0.292,0.365 : y_1 = 2.78, y_2 = 1.03 : 0.0 secs
+[mbo] 21: x=0.207,0.253,1.88e-06,0.524,0.217 : y_1 = 2.57, y_2 = 1.6 : 0.0 secs
+[mbo] 21: x=0.402,0.453,0.481,0.146,0.731 : y_1 = 2.94, y_2 = 0.993 : 0.0 secs
+[mbo] 21: x=0.554,0.369,0.00587,0.352,0.332 : y_1 = 2.74, y_2 = 1.03 : 0.0 secs
+[mbo] 21: x=0.204,0.264,4.2e-05,0.283,0.0845 : y_1 = 2.65, y_2 = 1.43 : 0.0 secs
+[mbo] 21: x=0.11,0.191,0.452,0.17,0.15 : y_1 = 2.91, y_2 = 1 : 0.0 secs
+[mbo] 22: x=0.844,0.717,0.804,0.28,0.603 : y_1 = 2.96, y_2 = 0.977 : 0.0 secs
+[mbo] 22: x=0.0991,0.755,0.193,0.793,0.539 : y_1 = 2.9, y_2 = 0.995 : 0.0 secs
+[mbo] 22: x=0.865,0.0697,0.0511,0.957,0.358 : y_1 = 2.81, y_2 = 1.01 : 0.0 secs
+[mbo] 22: x=0.204,0.174,3.5e-05,0.273,0.419 : y_1 = 2.62, y_2 = 1.44 : 0.0 secs
+[mbo] 22: x=0.652,0.0503,0.000923,0.239,0.284 : y_1 = 2.7, y_2 = 1.26 : 0.0 secs
+[mbo] 23: x=0.158,0.326,0.503,0.969,0.669 : y_1 = 2.93, y_2 = 0.998 : 0.0 secs
+[mbo] 23: x=0.389,0.316,0.673,0.474,0.406 : y_1 = 2.91, y_2 = 0.962 : 0.0 secs
+[mbo] 23: x=0.833,0.71,0.161,0.229,0.917 : y_1 = 2.92, y_2 = 0.995 : 0.0 secs
+[mbo] 23: x=0.526,0.28,6.41e-05,0.499,0.617 : y_1 = 2.67, y_2 = 1.37 : 0.0 secs
+[mbo] 23: x=0.686,0.37,0.00174,0.664,0.221 : y_1 = 2.77, y_2 = 1.15 : 0.0 secs
+[mbo] 24: x=0.114,0.802,9.43e-06,0.212,0.0906 : y_1 = 2.64, y_2 = 1.48 : 0.0 secs
+[mbo] 24: x=0.984,0.522,0.126,0.316,0.473 : y_1 = 2.89, y_2 = 0.972 : 0.0 secs
+[mbo] 24: x=0.222,0.279,0.000374,0.818,0.2 : y_1 = 2.72, y_2 = 1.28 : 0.0 secs
+[mbo] 24: x=0.752,0.0359,0.617,0.964,0.864 : y_1 = 2.91, y_2 = 1.01 : 0.0 secs
+[mbo] 24: x=0.863,0.441,0.202,0.866,0.208 : y_1 = 2.92, y_2 = 0.995 : 0.0 secs
+[mbo] 25: x=0.84,0.31,0.000461,0.578,0.667 : y_1 = 2.73, y_2 = 1.23 : 0.0 secs
+[mbo] 25: x=0.643,0.0794,8.99e-05,0.219,0.244 : y_1 = 2.66, y_2 = 1.4 : 0.0 secs
+[mbo] 25: x=0.175,0.101,0.0186,0.391,0.35 : y_1 = 2.69, y_2 = 0.985 : 0.0 secs
+[mbo] 25: x=0.811,0.133,0.369,0.138,0.89 : y_1 = 2.92, y_2 = 1 : 0.0 secs
+[mbo] 25: x=0.223,0.335,0.179,0.0588,0.434 : y_1 = 2.89, y_2 = 0.992 : 0.0 secs
+[mbo] 26: x=0.409,0.985,0.945,0.0403,0.926 : y_1 = 2.99, y_2 = 0.997 : 0.0 secs
+[mbo] 26: x=0.246,0.0268,0.00544,0.292,0.427 : y_1 = 2.72, y_2 = 1.19 : 0.0 secs
+[mbo] 26: x=0.737,0.904,0.344,0.739,0.526 : y_1 = 2.94, y_2 = 0.984 : 0.0 secs
+[mbo] 26: x=0.0399,0.173,0.715,0.0807,0.963 : y_1 = 2.92, y_2 = 1.01 : 0.0 secs
+[mbo] 26: x=0.269,0.104,2.99e-05,0.355,0.253 : y_1 = 2.59, y_2 = 1.45 : 0.0 secs
+[mbo] 27: x=0.537,0.582,0.000105,0.349,0.0972 : y_1 = 2.67, y_2 = 1.27 : 0.0 secs
+[mbo] 27: x=0.971,0.267,0.145,0.667,0.699 : y_1 = 2.9, y_2 = 1 : 0.0 secs
+[mbo] 27: x=0.0663,0.654,0.000131,0.741,0.517 : y_1 = 2.69, y_2 = 1.33 : 0.0 secs
+[mbo] 27: x=0.774,0.503,0.783,0.0613,0.367 : y_1 = 2.94, y_2 = 0.96 : 0.0 secs
+[mbo] 27: x=0.408,0.0408,0.000975,0.228,0.929 : y_1 = 2.71, y_2 = 1.3 : 0.0 secs
+[mbo] 28: x=0.419,0.712,0.994,0.411,0.167 : y_1 = 2.96, y_2 = 0.974 : 0.0 secs
+[mbo] 28: x=0.443,0.0309,2.05e-05,0.183,0.304 : y_1 = 2.59, y_2 = 1.54 : 0.0 secs
+[mbo] 28: x=0.138,0.82,0.405,0.563,0.177 : y_1 = 2.93, y_2 = 0.987 : 0.0 secs
+[mbo] 28: x=0.932,0.514,0.166,0.642,0.415 : y_1 = 2.9, y_2 = 0.976 : 0.0 secs
+[mbo] 28: x=0.35,0.129,0.000865,0.943,0.783 : y_1 = 2.74, y_2 = 1.26 : 0.0 secs
+[mbo] 29: x=0.936,0.125,0.343,0.286,0.0269 : y_1 = 2.91, y_2 = 0.994 : 0.0 secs
+[mbo] 29: x=0.965,0.434,0.497,0.768,0.576 : y_1 = 2.95, y_2 = 0.987 : 0.0 secs
+[mbo] 29: x=0.308,0.759,0.000141,0.36,0.321 : y_1 = 2.67, y_2 = 1.24 : 0.0 secs
+[mbo] 29: x=0.0302,0.277,0.00591,0.71,0.948 : y_1 = 2.78, y_2 = 1.16 : 0.0 secs
+[mbo] 29: x=0.272,0.105,4.99e-06,0.208,0.633 : y_1 = 2.59, y_2 = 1.59 : 0.0 secs
+[mbo] 30: x=0.348,0.381,0.00116,0.31,0.569 : y_1 = 2.74, y_2 = 1.17 : 0.0 secs
+[mbo] 30: x=0.263,0.842,0.397,0.969,0.156 : y_1 = 2.95, y_2 = 0.996 : 0.0 secs
+[mbo] 30: x=0.809,0.686,0.914,0.543,0.337 : y_1 = 2.94, y_2 = 0.955 : 0.0 secs
+[mbo] 30: x=0.171,0.583,3.75e-05,0.728,0.665 : y_1 = 2.67, y_2 = 1.4 : 0.0 secs
+[mbo] 30: x=0.148,0.608,0.655,0.641,0.372 : y_1 = 2.91, y_2 = 0.959 : 0.0 secs
+[mbo] 31: x=0.943,0.634,0.359,0.653,0.632 : y_1 = 2.94, y_2 = 0.987 : 0.0 secs
+[mbo] 31: x=0.372,0.104,0.103,0.35,0.459 : y_1 = 2.79, y_2 = 0.959 : 0.0 secs
+[mbo] 31: x=0.0333,0.134,0.00139,0.422,0.557 : y_1 = 2.7, y_2 = 1.26 : 0.0 secs
+[mbo] 31: x=0.16,0.975,0.625,0.0345,0.0234 : y_1 = 2.96, y_2 = 0.999 : 0.0 secs
+[mbo] 31: x=0.392,0.553,0.674,0.868,0.463 : y_1 = 2.95, y_2 = 0.98 : 0.0 secs
+[mbo] 32: x=0.0645,0.365,0.00345,0.395,0.88 : y_1 = 2.76, y_2 = 1.15 : 0.0 secs
+[mbo] 32: x=0.161,0.512,0.395,0.157,0.225 : y_1 = 2.92, y_2 = 0.99 : 0.0 secs
+[mbo] 32: x=0.596,0.579,0.00278,0.364,0.0992 : y_1 = 2.77, y_2 = 1.09 : 0.0 secs
+[mbo] 32: x=0.179,0.533,1.72e-05,0.483,0.333 : y_1 = 2.62, y_2 = 1.42 : 0.0 secs
+[mbo] 32: x=0.243,0.547,0.127,0.464,0.479 : y_1 = 2.88, y_2 = 0.984 : 0.0 secs
+Result:
+List of 5
+ $ paretoset   :List of 17
+  .. [list output truncated]
+ $ pareto.front: num [1:17, 1:2] 2.8 2.66 2.68 2.68 2.67 ...
+  ..- attr(*, "dimnames")=List of 2
+ $ hv          : num 84.9
+ $ cd          : num [1:17] 0.0794 0.0774 0.1676 0.1104 0.148 ...
+ $ r2          : num 0.0483
+NULL
+Writing result file: /home/schork/mlrMBO/bench/mco/mco_bench-files/jobs/23/823-result.RData
+########## Executing jid=953 ##########
+Timestamp: 2014-07-13 18:07:10
+Experiment: 
+  Problem: zdt6 
+  Problem parameters:  
+  Algorithm: parego 
+  Algorithm parameters:  
+  Replication: 3 
+  Seed: 473458438 
+  Problem seed: 840601224 
+Setting seed: 473458438
+Applying Algorithm parego ...
+Computing y column(s) for design. Not provided.
+[mbo] 0: x=0.521,0.516,0.369,0.754,0.458 : y_1 = 1, y_2 = 8.54 : 0.0 secs
+[mbo] 0: x=0.573,0.373,0.711,0.338,0.698 : y_1 = 0.91, y_2 = 8.58 : 0.0 secs
+[mbo] 0: x=0.259,0.608,0.618,0.584,0.373 : y_1 = 0.678, y_2 = 8.68 : 0.0 secs
+[mbo] 0: x=0.542,0.296,0.155,0.19,0.424 : y_1 = 0.985, y_2 = 7.34 : 0.0 secs
+[mbo] 0: x=0.0645,0.783,0.468,0.563,0.0568 : y_1 = 0.475, y_2 = 8.42 : 0.0 secs
+[mbo] 0: x=0.754,0.143,0.403,0.627,0.515 : y_1 = 0.952, y_2 = 8.14 : 0.0 secs
+[mbo] 0: x=0.482,0.247,0.857,0.425,0.483 : y_1 = 1, y_2 = 8.46 : 0.0 secs
+[mbo] 0: x=0.688,0.201,0.476,0.742,0.148 : y_1 = 1, y_2 = 8 : 0.0 secs
+[mbo] 0: x=0.323,0.419,0.393,0.355,0.656 : y_1 = 1, y_2 = 8.27 : 0.0 secs
+[mbo] 0: x=0.658,0.953,0.0585,0.705,0.222 : y_1 = 1, y_2 = 8.39 : 0.0 secs
+[mbo] 0: x=0.338,0.0986,0.437,0.793,0.836 : y_1 = 1, y_2 = 8.61 : 0.0 secs
+[mbo] 0: x=0.641,0.479,0.841,0.916,0.569 : y_1 = 0.999, y_2 = 9.13 : 0.0 secs
+[mbo] 0: x=0.89,0.378,0.533,0.213,0.269 : y_1 = 0.987, y_2 = 7.79 : 0.0 secs
+[mbo] 0: x=0.425,0.907,0.567,0.827,0.86 : y_1 = 0.83, y_2 = 9.41 : 0.0 secs
+[mbo] 0: x=0.232,0.541,0.926,0.65,0.43 : y_1 = 0.725, y_2 = 8.98 : 0.0 secs
+[mbo] 0: x=0.114,0.308,0.646,0.131,0.976 : y_1 = 0.784, y_2 = 8.55 : 0.0 secs
+[mbo] 0: x=0.947,0.723,0.651,0.0163,0.773 : y_1 = 0.992, y_2 = 8.61 : 0.0 secs
+[mbo] 0: x=0.738,0.874,0.307,0.38,0.619 : y_1 = 0.955, y_2 = 8.63 : 0.0 secs
+[mbo] 0: x=0.277,0.326,0.329,0.174,0.17 : y_1 = 0.855, y_2 = 7.26 : 0.0 secs
+[mbo] 0: x=0.78,0.928,0.754,0.426,0.911 : y_1 = 0.984, y_2 = 9.29 : 0.0 secs
+[mbo] 0: x=0.153,0.893,0.035,0.938,0.729 : y_1 = 1, y_2 = 8.97 : 0.0 secs
+[mbo] 0: x=0.869,0.063,0.906,0.502,0.299 : y_1 = 0.998, y_2 = 8.22 : 0.0 secs
+[mbo] 0: x=0.389,0.989,0.742,0.697,0.376 : y_1 = 0.912, y_2 = 9.15 : 0.0 secs
+[mbo] 0: x=0.589,0.556,0.107,0.464,0.00236 : y_1 = 0.908, y_2 = 7.45 : 0.0 secs
+[mbo] 0: x=0.604,0.467,0.525,0.601,0.71 : y_1 = 0.944, y_2 = 8.74 : 0.0 secs
+[mbo] 0: x=0.833,0.727,0.283,0.0404,0.195 : y_1 = 1, y_2 = 7.59 : 0.0 secs
+[mbo] 0: x=0.0838,0.184,0.894,0.229,0.536 : y_1 = 0.285, y_2 = 8.4 : 0.0 secs
+[mbo] 0: x=0.366,0.104,0.0975,0.5,0.63 : y_1 = 0.992, y_2 = 7.71 : 0.0 secs
+[mbo] 0: x=0.977,0.259,0.141,0.0558,0.883 : y_1 = 1, y_2 = 7.72 : 0.0 secs
+[mbo] 0: x=0.43,0.446,0.691,0.527,0.04 : y_1 = 0.851, y_2 = 8.18 : 0.0 secs
+[mbo] 0: x=0.0443,0.828,0.952,0.969,0.822 : y_1 = 0.861, y_2 = 9.67 : 0.0 secs
+[mbo] 0: x=0.909,0.633,0.599,0.893,0.322 : y_1 = 0.975, y_2 = 8.85 : 0.0 secs
+[mbo] 0: x=0.0139,0.751,0.224,0.122,0.23 : y_1 = 1, y_2 = 7.7 : 0.0 secs
+[mbo] 0: x=0.206,0.673,0.263,0.294,0.963 : y_1 = 0.957, y_2 = 8.64 : 0.0 secs
+[mbo] 0: x=0.701,0.174,0.811,0.26,0.936 : y_1 = 0.997, y_2 = 8.62 : 0.0 secs
+[mbo] 0: x=0.14,0.577,0.186,0.821,0.0875 : y_1 = 0.993, y_2 = 8.12 : 0.0 secs
+[mbo] 0: x=0.189,0.0272,0.977,0.982,0.581 : y_1 = 0.998, y_2 = 8.95 : 0.0 secs
+[mbo] 0: x=0.965,0.0148,0.235,0.323,0.114 : y_1 = 0.999, y_2 = 6.64 : 0.0 secs
+[mbo] 0: x=0.812,0.686,0.0017,0.854,0.799 : y_1 = 1, y_2 = 8.76 : 0.0 secs
+[mbo] 0: x=0.469,0.811,0.795,0.0795,0.33 : y_1 = 0.996, y_2 = 8.47 : 0.0 secs
+[mbo] 1: x=0.0744,0.689,0.886,0.000943,0.00136 : y_1 = 0.318, y_2 = 8.12 : 0.0 secs
+[mbo] 1: x=0.00179,0.224,0.00386,0.0179,0.00349 : y_1 = 1, y_2 = 5.31 : 0.0 secs
+[mbo] 1: x=0.628,0.0219,0.00791,0.0146,0.000355 : y_1 = 0.993, y_2 = 3.68 : 0.0 secs
+[mbo] 1: x=0.0756,0.455,0.448,0.217,0.0388 : y_1 = 0.307, y_2 = 7.59 : 0.0 secs
+[mbo] 1: x=0.0606,0.357,0.897,0.0911,0.491 : y_1 = 0.555, y_2 = 8.37 : 0.0 secs
+[mbo] 2: x=0.553,0.00306,0.00146,0.00192,0.179 : y_1 = 0.962, y_2 = 5 : 0.0 secs
+[mbo] 2: x=0.0759,0.226,0.103,0.0318,0.0425 : y_1 = 0.304, y_2 = 6.06 : 0.0 secs
+[mbo] 2: x=0.0743,0.799,0.699,0.189,0.563 : y_1 = 0.32, y_2 = 8.78 : 0.0 secs
+[mbo] 2: x=0.0802,0.567,0.656,0.234,0.493 : y_1 = 0.282, y_2 = 8.51 : 0.0 secs
+[mbo] 2: x=0.939,0.00029,0.0109,0.00482,0.00759 : y_1 = 0.987, y_2 = 3.22 : 0.0 secs
+[mbo] 3: x=0.0796,0.769,0.471,0.658,0.322 : y_1 = 0.283, y_2 = 8.76 : 0.0 secs
+[mbo] 3: x=0.338,0.0549,0.000513,0.493,0.00653 : y_1 = 1, y_2 = 6.34 : 0.0 secs
+[mbo] 3: x=0.0756,0.592,0.619,0.607,0.452 : y_1 = 0.306, y_2 = 8.8 : 0.0 secs
+[mbo] 3: x=0.0501,0.0233,0.121,0.00018,0.0196 : y_1 = 0.769, y_2 = 4.93 : 0.0 secs
+[mbo] 3: x=0.0732,0.275,0.0083,0.047,0.456 : y_1 = 0.332, y_2 = 6.98 : 0.0 secs
+[mbo] 4: x=0.978,0.0847,0.294,0.607,0.999 : y_1 = 1, y_2 = 8.44 : 0.0 secs
+[mbo] 4: x=0.392,0.0584,0.149,0.0236,0.011 : y_1 = 0.891, y_2 = 5.32 : 0.0 secs
+[mbo] 4: x=0.0763,0.511,0.272,0.165,0.0626 : y_1 = 0.301, y_2 = 7.37 : 0.0 secs
+[mbo] 4: x=0.751,0.00314,0.00408,0.00104,0.00477 : y_1 = 0.95, y_2 = 2.86 : 0.0 secs
+[mbo] 4: x=0.0667,0.603,0.0023,0.65,0.463 : y_1 = 0.433, y_2 = 8.26 : 0.0 secs
+[mbo] 5: x=0.845,0.0198,0.312,0.00176,0.000859 : y_1 = 1, y_2 = 5.67 : 0.0 secs
+[mbo] 5: x=0.000288,0.0083,0.24,0.977,0.147 : y_1 = 1, y_2 = 7.76 : 0.0 secs
+[mbo] 5: x=0.112,0.264,0.124,0.00948,0.195 : y_1 = 0.751, y_2 = 6.5 : 0.0 secs
+[mbo] 5: x=0.0777,0.217,0.0146,0.349,0.11 : y_1 = 0.292, y_2 = 6.79 : 0.0 secs
+[mbo] 5: x=0.0784,0.475,0.279,0.146,0.221 : y_1 = 0.288, y_2 = 7.54 : 0.0 secs
+[mbo] 6: x=0.0786,0.0583,0.77,0.153,0.832 : y_1 = 0.287, y_2 = 8.38 : 0.0 secs
+[mbo] 6: x=0.356,0.000383,0.514,0.00309,0.127 : y_1 = 0.999, y_2 = 6.55 : 0.0 secs
+[mbo] 6: x=0.182,0.252,0.000607,0.956,0.998 : y_1 = 1, y_2 = 8.64 : 0.0 secs
+[mbo] 6: x=0.0768,0.223,0.26,0.0578,0.154 : y_1 = 0.297, y_2 = 6.8 : 0.0 secs
+[mbo] 6: x=0.0907,0.0414,0.132,0.134,0.00589 : y_1 = 0.344, y_2 = 5.74 : 0.0 secs
+[mbo] 7: x=0.957,0.999,0.993,0.864,0.00907 : y_1 = 0.997, y_2 = 9.17 : 0.0 secs
+[mbo] 7: x=0.813,0.989,0.998,0.85,0.000126 : y_1 = 1, y_2 = 9.15 : 0.0 secs
+[mbo] 7: x=0.0921,0.335,0.49,0.243,0.0477 : y_1 = 0.363, y_2 = 7.52 : 0.0 secs
+[mbo] 7: x=0.0804,0.204,0.215,0.439,0.693 : y_1 = 0.282, y_2 = 8.09 : 0.0 secs
+[mbo] 7: x=0.0876,0.0957,0.0863,0.352,0.0509 : y_1 = 0.309, y_2 = 6.55 : 0.0 secs
+[mbo] 8: x=0.0874,0.0805,0.28,0.0462,0.104 : y_1 = 0.307, y_2 = 6.37 : 0.0 secs
+[mbo] 8: x=0.194,0.405,0.00195,0.00307,0.000108 : y_1 = 0.993, y_2 = 5.93 : 0.0 secs
+[mbo] 8: x=0.0866,0.0261,0.567,0.0668,0.0625 : y_1 = 0.3, y_2 = 6.85 : 0.0 secs
+[mbo] 8: x=0.857,0.0356,0.00118,0.769,0.00189 : y_1 = 1, y_2 = 6.89 : 0.0 secs
+[mbo] 8: x=0.0805,0.169,0.727,0.501,0.814 : y_1 = 0.281, y_2 = 8.75 : 0.0 secs
+[mbo] 9: x=0.0654,0.0186,0.943,0.997,0.000477 : y_1 = 0.457, y_2 = 8.5 : 0.0 secs
+[mbo] 9: x=0.0789,0.444,0.113,0.0738,0.577 : y_1 = 0.286, y_2 = 7.66 : 0.0 secs
+[mbo] 9: x=0.0811,0.177,0.244,0.567,0.355 : y_1 = 0.281, y_2 = 7.84 : 0.0 secs
+[mbo] 9: x=0.997,0.899,0.000586,0.129,0.0831 : y_1 = 1, y_2 = 7.4 : 0.0 secs
+[mbo] 9: x=0.255,0.969,0.995,0.921,0.904 : y_1 = 0.646, y_2 = 9.84 : 0.0 secs
+[mbo] 10: x=0.728,0.033,0.876,0.00124,0.00301 : y_1 = 0.968, y_2 = 7.09 : 0.0 secs
+[mbo] 10: x=0.982,0.984,0.999,0.00473,0.00406 : y_1 = 1, y_2 = 8.44 : 0.0 secs
+[mbo] 10: x=0.963,0.994,0.541,0.00181,0.000433 : y_1 = 0.999, y_2 = 7.96 : 0.0 secs
+[mbo] 10: x=0.08,0.704,0.437,0.664,0.127 : y_1 = 0.282, y_2 = 8.49 : 0.0 secs
+[mbo] 10: x=0.0702,0.114,0.398,0.84,0.0585 : y_1 = 0.373, y_2 = 7.92 : 0.0 secs
+[mbo] 11: x=0.0679,0.418,0.874,0.0682,0.404 : y_1 = 0.412, y_2 = 8.31 : 0.0 secs
+[mbo] 11: x=0.357,0.000457,0.0281,0.00038,0.236 : y_1 = 0.998, y_2 = 5.39 : 0.0 secs
+[mbo] 11: x=0.28,0.604,0.96,0.000711,0.00533 : y_1 = 0.881, y_2 = 8.03 : 0.0 secs
+[mbo] 11: x=0.643,0.0202,6.15e-05,0.000815,0.00151 : y_1 = 1, y_2 = 3.18 : 0.0 secs
+[mbo] 11: x=0.0859,0.283,0.0207,0.217,0.249 : y_1 = 0.296, y_2 = 6.95 : 0.0 secs
+[mbo] 12: x=0.948,0.0161,0.916,0.999,0.0898 : y_1 = 0.992, y_2 = 8.47 : 0.0 secs
+[mbo] 12: x=0.0829,0.151,0.466,0.332,0.0647 : y_1 = 0.282, y_2 = 7.37 : 0.0 secs
+[mbo] 12: x=0.259,0.0163,0.548,0.101,0.977 : y_1 = 0.677, y_2 = 8.15 : 0.0 secs
+[mbo] 12: x=0.0851,0.0943,0.524,0.118,0.41 : y_1 = 0.291, y_2 = 7.57 : 0.0 secs
+[mbo] 12: x=0.701,0.0602,0.00293,0.0385,0.965 : y_1 = 0.997, y_2 = 7.33 : 0.0 secs
+[mbo] 13: x=0.872,0.571,0.141,0.0873,0.995 : y_1 = 0.997, y_2 = 8.25 : 0.0 secs
+[mbo] 13: x=0.244,0.313,0.348,0.388,0.501 : y_1 = 0.639, y_2 = 8.05 : 0.0 secs
+[mbo] 13: x=0.0852,0.576,0.328,0.0196,0.169 : y_1 = 0.291, y_2 = 7.5 : 0.0 secs
+[mbo] 13: x=0.399,0.932,0.00253,0.0586,0.0179 : y_1 = 0.857, y_2 = 7.28 : 0.0 secs
+[mbo] 13: x=0.509,0.9,0.000523,0.247,0.995 : y_1 = 1, y_2 = 8.58 : 0.0 secs
+[mbo] 14: x=0.0853,0.461,0.805,0.235,0.356 : y_1 = 0.292, y_2 = 8.42 : 0.0 secs
+[mbo] 14: x=0.834,0.334,0.00216,0.00527,0.0177 : y_1 = 1, y_2 = 5.76 : 0.0 secs
+[mbo] 14: x=0.0815,0.166,0.15,0.079,0.522 : y_1 = 0.281, y_2 = 7.22 : 0.0 secs
+[mbo] 14: x=0.253,0.00432,0.031,0.757,0.821 : y_1 = 0.639, y_2 = 8.12 : 0.0 secs
+[mbo] 14: x=0.757,0.000902,0.668,0.883,0.0205 : y_1 = 0.954, y_2 = 8.01 : 0.0 secs
+[mbo] 15: x=0.739,0.00409,0.00106,0.00312,0.002 : y_1 = 0.955, y_2 = 2.73 : 0.0 secs
+[mbo] 15: x=0.501,0.106,0.402,0.00504,0.0387 : y_1 = 1, y_2 = 6.33 : 0.0 secs
+[mbo] 15: x=0.0841,0.26,0.229,0.0938,0.0123 : y_1 = 0.286, y_2 = 6.58 : 0.0 secs
+[mbo] 15: x=0.0861,0.502,0.354,0.443,0.202 : y_1 = 0.297, y_2 = 8.03 : 0.0 secs
+[mbo] 15: x=0.827,0.00163,0.00115,0.0563,0.0229 : y_1 = 1, y_2 = 4.18 : 0.0 secs
+[mbo] 16: x=0.0793,0.304,0.477,0.608,0.941 : y_1 = 0.284, y_2 = 8.85 : 0.0 secs
+[mbo] 16: x=0.664,0.678,0.0606,6.26e-05,0.15 : y_1 = 1, y_2 = 7.04 : 0.0 secs
+[mbo] 16: x=0.491,0.00957,0.0477,0.295,0.00271 : y_1 = 1, y_2 = 5.74 : 0.0 secs
+[mbo] 16: x=0.446,0.469,0.00305,0.26,0.00121 : y_1 = 0.935, y_2 = 6.76 : 0.0 secs
+[mbo] 16: x=0.0719,0.194,0.776,0.0211,0.0854 : y_1 = 0.348, y_2 = 7.47 : 0.0 secs
+[mbo] 17: x=0.246,0.879,0.193,0.933,1 : y_1 = 0.632, y_2 = 9.34 : 0.0 secs
+[mbo] 17: x=0.0899,0.15,0.145,0.0286,0.133 : y_1 = 0.334, y_2 = 6.22 : 0.0 secs
+[mbo] 17: x=0.0832,0.58,0.154,0.402,0.726 : y_1 = 0.283, y_2 = 8.42 : 0.0 secs
+[mbo] 17: x=0.000457,0.999,0.00623,0.996,0.0367 : y_1 = 1, y_2 = 8.49 : 0.0 secs
+[mbo] 17: x=0.29,0.964,0.00998,0.0186,0.0248 : y_1 = 0.954, y_2 = 7.27 : 0.0 secs
+[mbo] 18: x=0.568,0.00343,0.997,0.82,0.0199 : y_1 = 0.919, y_2 = 8.31 : 0.0 secs
+[mbo] 18: x=0.081,0.404,0.0975,0.192,0.772 : y_1 = 0.281, y_2 = 7.99 : 0.0 secs
+[mbo] 18: x=0.236,0.0142,0.0295,0.94,0.29 : y_1 = 0.687, y_2 = 7.7 : 0.0 secs
+[mbo] 18: x=0.091,0.108,0.309,0.38,0.136 : y_1 = 0.347, y_2 = 7.24 : 0.0 secs
+[mbo] 18: x=0.623,0.018,0.19,0.022,0.017 : y_1 = 0.987, y_2 = 5.31 : 0.0 secs
+[mbo] 19: x=0.0776,0.0524,0.348,0.419,0.221 : y_1 = 0.292, y_2 = 7.42 : 0.0 secs
+[mbo] 19: x=0.0794,0.18,0.217,0.00606,0.178 : y_1 = 0.284, y_2 = 6.54 : 0.0 secs
+[mbo] 19: x=0.991,0.437,0.0164,0.631,0.0236 : y_1 = 1, y_2 = 7.4 : 0.0 secs
+[mbo] 19: x=0.0751,0.135,0.0139,0.409,0.118 : y_1 = 0.312, y_2 = 6.76 : 0.0 secs
+[mbo] 19: x=0.56,0.998,0.999,0.366,0.00651 : y_1 = 0.942, y_2 = 8.8 : 0.0 secs
+[mbo] 20: x=0.0841,0.00126,0.0499,0.0222,0.091 : y_1 = 0.286, y_2 = 5.04 : 0.0 secs
+[mbo] 20: x=0.0802,0.144,0.533,0.117,0.261 : y_1 = 0.282, y_2 = 7.44 : 0.0 secs
+[mbo] 20: x=0.999,0.032,0.991,0.987,0.97 : y_1 = 1, y_2 = 9.26 : 0.0 secs
+[mbo] 20: x=0.0795,0.265,0.079,0.409,0.32 : y_1 = 0.284, y_2 = 7.47 : 0.0 secs
+[mbo] 20: x=0.999,0.0025,0.0502,0.998,0.208 : y_1 = 1, y_2 = 7.61 : 0.0 secs
+[mbo] 21: x=0.0836,0.0145,0.297,0.548,0.131 : y_1 = 0.284, y_2 = 7.34 : 0.0 secs
+[mbo] 21: x=0.0846,0.0371,0.806,0.51,0.159 : y_1 = 0.288, y_2 = 8.05 : 0.0 secs
+[mbo] 21: x=0.09,0.00518,0.401,0.724,0.0107 : y_1 = 0.335, y_2 = 7.56 : 0.0 secs
+[mbo] 21: x=0.615,0.0749,0.017,0.867,0.00208 : y_1 = 0.972, y_2 = 7.17 : 0.0 secs
+[mbo] 21: x=1,0.00396,0.902,0.0173,0.0197 : y_1 = 1, y_2 = 7.13 : 0.0 secs
+[mbo] 22: x=0.0787,0.857,0.237,0.0655,0.429 : y_1 = 0.287, y_2 = 8.13 : 0.0 secs
+[mbo] 22: x=0.36,0.984,7.24e-05,0.791,0.000422 : y_1 = 0.997, y_2 = 8.23 : 0.0 secs
+[mbo] 22: x=0.998,0.00788,0.00101,0.415,0.995 : y_1 = 1, y_2 = 7.82 : 0.0 secs
+[mbo] 22: x=0.0839,0.0154,0.351,0.752,0.286 : y_1 = 0.285, y_2 = 7.92 : 0.0 secs
+[mbo] 22: x=0.412,0.0106,0.969,0.202,0.604 : y_1 = 0.812, y_2 = 8.28 : 0.0 secs
+[mbo] 23: x=0.991,0.755,0.182,1,0.0001 : y_1 = 1, y_2 = 8.39 : 0.0 secs
+[mbo] 23: x=0.0825,0.00471,0.186,0.586,0.387 : y_1 = 0.282, y_2 = 7.6 : 0.0 secs
+[mbo] 23: x=0.999,0.447,0.998,0.082,0.0906 : y_1 = 1, y_2 = 8.05 : 0.0 secs
+[mbo] 23: x=0.428,0.0545,0.127,0.999,0.501 : y_1 = 0.844, y_2 = 8.16 : 0.0 secs
+[mbo] 23: x=0.0896,0.0481,0.423,0.492,0.423 : y_1 = 0.329, y_2 = 7.89 : 0.0 secs
+[mbo] 24: x=0.0832,0.365,0.696,0.0113,0.212 : y_1 = 0.283, y_2 = 7.76 : 0.0 secs
+[mbo] 24: x=0.0765,0.0233,0.141,0.0189,0.175 : y_1 = 0.3, y_2 = 5.91 : 0.0 secs
+[mbo] 24: x=0.909,0.000648,0.321,0.000389,0.873 : y_1 = 0.975, y_2 = 7.53 : 0.0 secs
+[mbo] 24: x=0.0717,0.215,0.116,0.883,0.728 : y_1 = 0.351, y_2 = 8.5 : 0.0 secs
+[mbo] 24: x=0.942,0.967,0.0534,0.792,0.931 : y_1 = 0.988, y_2 = 9.08 : 0.0 secs
+[mbo] 25: x=0.361,0.841,0.999,0.00158,0.992 : y_1 = 0.996, y_2 = 9.15 : 0.0 secs
+[mbo] 25: x=0.0776,0.228,0.468,0.0779,0.425 : y_1 = 0.292, y_2 = 7.65 : 0.0 secs
+[mbo] 25: x=0.0826,0.0449,0.155,0.087,0.63 : y_1 = 0.282, y_2 = 7.22 : 0.0 secs
+[mbo] 25: x=0.245,0.00623,0.544,0.976,0.732 : y_1 = 0.635, y_2 = 8.75 : 0.0 secs
+[mbo] 25: x=0.629,0.998,0.997,0.000951,0.997 : y_1 = 0.994, y_2 = 9.27 : 0.0 secs
+[mbo] 26: x=0.289,0.00523,0.807,0.692,0.0746 : y_1 = 0.948, y_2 = 8.02 : 0.0 secs
+[mbo] 26: x=0.737,0.00762,0.0293,0.135,0.0264 : y_1 = 0.956, y_2 = 5.07 : 0.0 secs
+[mbo] 26: x=0.0813,0.3,0.682,0.413,0.78 : y_1 = 0.281, y_2 = 8.72 : 0.0 secs
+[mbo] 26: x=0.999,0.212,0.218,0.000117,0.00541 : y_1 = 1, y_2 = 6.01 : 0.0 secs
+[mbo] 26: x=0.0805,0.773,0.19,0.108,0.256 : y_1 = 0.281, y_2 = 7.82 : 0.0 secs
+[mbo] 27: x=0.0826,0.518,0.0531,0.489,0.312 : y_1 = 0.282, y_2 = 7.88 : 0.0 secs
+[mbo] 27: x=0.084,0.397,0.348,0.368,0.0622 : y_1 = 0.286, y_2 = 7.61 : 0.0 secs
+[mbo] 27: x=0.71,0.0137,0.0167,0.998,0.995 : y_1 = 0.992, y_2 = 8.48 : 0.0 secs
+[mbo] 27: x=0.517,0.0125,0.378,0.000329,0.998 : y_1 = 1, y_2 = 7.78 : 0.0 secs
+[mbo] 27: x=0.116,0.0773,0.878,0.0448,0.0102 : y_1 = 0.812, y_2 = 7.29 : 0.0 secs
+[mbo] 28: x=0.0718,0.547,0.161,0.388,0.223 : y_1 = 0.35, y_2 = 7.8 : 0.0 secs
+[mbo] 28: x=0.416,0.297,0.0249,0.00278,0.605 : y_1 = 0.811, y_2 = 7.16 : 0.0 secs
+[mbo] 28: x=0.384,0.617,0.0176,0.00264,0.959 : y_1 = 0.939, y_2 = 8.05 : 0.0 secs
+[mbo] 28: x=0.249,0.17,0.459,0.795,0.0898 : y_1 = 0.631, y_2 = 8.01 : 0.0 secs
+[mbo] 28: x=0.776,0.0026,0.0478,0.00702,0.231 : y_1 = 0.979, y_2 = 5.5 : 0.0 secs
+[mbo] 29: x=1,0.0104,0.47,0.00201,0.0557 : y_1 = 1, y_2 = 6.29 : 0.0 secs
+[mbo] 29: x=0.0834,0.539,0.136,0.13,0.205 : y_1 = 0.284, y_2 = 7.37 : 0.0 secs
+[mbo] 29: x=0.573,0.882,0.0361,0.863,0.904 : y_1 = 0.909, y_2 = 9.06 : 0.0 secs
+[mbo] 29: x=0.623,0.996,0.551,0.00579,0.000998 : y_1 = 0.987, y_2 = 7.99 : 0.0 secs
+[mbo] 29: x=0.085,0.0708,0.00979,0.0804,0.016 : y_1 = 0.29, y_2 = 5.11 : 0.0 secs
+[mbo] 30: x=0.0813,0.637,0.777,0.7,0.423 : y_1 = 0.281, y_2 = 9.02 : 0.0 secs
+[mbo] 30: x=0.083,0.107,0.163,0.209,0.572 : y_1 = 0.283, y_2 = 7.43 : 0.0 secs
+[mbo] 30: x=0.897,0.258,0.999,0.538,0.996 : y_1 = 0.982, y_2 = 9.12 : 0.0 secs
+[mbo] 30: x=0.0787,0.452,0.0538,0.66,0.467 : y_1 = 0.287, y_2 = 8.18 : 0.0 secs
+[mbo] 30: x=0.741,0.455,0.557,0.0736,0.0359 : y_1 = 0.953, y_2 = 7.43 : 0.0 secs
+[mbo] 31: x=0.137,0.00142,0.248,0.172,0.0632 : y_1 = 0.986, y_2 = 6.16 : 0.0 secs
+[mbo] 31: x=0.243,0.785,0.792,0.0193,0.199 : y_1 = 0.642, y_2 = 8.32 : 0.0 secs
+[mbo] 31: x=0.902,0.0329,0.00748,0.00621,0.0104 : y_1 = 0.979, y_2 = 3.88 : 0.0 secs
+[mbo] 31: x=0.0907,0.358,0.635,0.799,0.0332 : y_1 = 0.343, y_2 = 8.38 : 0.0 secs
+[mbo] 31: x=0.0787,0.756,0.0422,0.146,0.7 : y_1 = 0.287, y_2 = 8.2 : 0.0 secs
+[mbo] 32: x=0.0768,0.316,0.588,0.134,0.307 : y_1 = 0.297, y_2 = 7.84 : 0.0 secs
+[mbo] 32: x=0.252,0.3,0.0419,0.0165,0.897 : y_1 = 0.637, y_2 = 7.68 : 0.0 secs
+[mbo] 32: x=0.0825,0.527,0.144,0.33,0.000473 : y_1 = 0.282, y_2 = 7.36 : 0.0 secs
+[mbo] 32: x=0.00645,0.998,0.995,0.0876,0.3 : y_1 = 1, y_2 = 8.79 : 0.0 secs
+[mbo] 32: x=0.611,0.204,0.994,0.000434,0.00328 : y_1 = 0.964, y_2 = 7.54 : 0.0 secs
+Result:
+List of 5
+ $ paretoset   :List of 6
+  .. [list output truncated]
+ $ pareto.front: num [1:6, 1:2] 0.769 0.95 0.281 0.955 0.284 ...
+  ..- attr(*, "dimnames")=List of 2
+ $ hv          : num 87.2
+ $ cd          : num [1:6] 2.84 2.39 Inf Inf 2.19 ...
+ $ r2          : num 0.256
+NULL
+Writing result file: /home/schork/mlrMBO/bench/mco/mco_bench-files/jobs/53/953-result.RData
+2014-07-13 18:09:58: All done.
+Setting work back to: /home/schork/mlrMBO/bench/mco
+Memory usage according to gc:
+         used (Mb) gc trigger (Mb) max used (Mb)
+Ncells 512392 27.4    1166886 62.4  1166886 62.4
+Vcells 785662  6.0    3248942 24.8  4061178 31.0
+> BatchJobs:::setOnSlave(FALSE)
+> 
+> proc.time()
+    user   system  elapsed 
+1931.796    3.340 1948.963 
