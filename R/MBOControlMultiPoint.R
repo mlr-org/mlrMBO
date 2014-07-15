@@ -22,6 +22,8 @@
 #'   This lie is used to update the model in order to propose the subsequent point.
 #'   The procedure is applied until the number of best points achieves \code{propose.points}.
 #'   Default is \code{lcb}.
+#' @param cl.lie [\code{function}]\cr
+#'   Function used by constant liar method for lying. Default is \code{min}.
 #' @param multicrit.objective [\code{character(1)}]\cr
 #'   Objectives which are optimized in multicrit approach.
 #'   Possible values are: \dQuote{mean.dist}, \dQuote{ei.dist}, \dQuote{mean.se}, \dQuote{mean.se.dist}.
@@ -61,6 +63,7 @@
 #' @export
 setMBOControlMultiPoint = function(control,
   method = "lcb",
+  cl.lie = min,
   multicrit.objective = "ei.dist",
   multicrit.dist = "nearest.better",
   multicrit.selection = "hypervolume",
@@ -71,6 +74,7 @@ setMBOControlMultiPoint = function(control,
   assertClass(control, "MBOControl")
 
   assertChoice(method, choices = getSupportedMultipointInfillOptFunctions())
+  assertFunction(cl.lie)
   assertChoice(multicrit.objective, choices = c("mean.dist", "ei.dist", "mean.se", "mean.se.dist"))
   assertChoice(multicrit.selection, choices = c("hypervolume", "crowdingdist", "first", "last"))
   assertChoice(multicrit.dist, choices = c("nearest.neighbor", "nearest.better"))
@@ -82,6 +86,7 @@ setMBOControlMultiPoint = function(control,
   assertNumber(multicrit.pm.p, na.ok = FALSE, lower = 0, upper = 1)
 
   control$multipoint.method = method
+  control$multipoint.cl.lie = cl.lie
   control$multipoint.multicrit.objective = multicrit.objective
   control$multipoint.multicrit.dist = multicrit.dist
   control$multipoint.multicrit.selection = multicrit.selection
@@ -93,4 +98,3 @@ setMBOControlMultiPoint = function(control,
 
   return(control)
 }
-
