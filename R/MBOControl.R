@@ -184,7 +184,8 @@ makeMBOControl = function(number.of.targets = 1L,
     resample.measures = resample.measures,
     on.learner.error = on.learner.error,
     show.learner.output = show.learner.output,
-    output.num.format = output.num.format
+    output.num.format = output.num.format,
+    multifid = FALSE
   )
 
   # set defaults for infill methods and other stuff
