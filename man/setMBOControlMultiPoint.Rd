@@ -20,18 +20,19 @@ Possible values are:
 \code{propose.points} times. Each lambda value for \dQuote{lcb} is drawn randomly from an
 exp(1)-distribution, so do not define \code{infill.opt.lcb.lambda}.
 The optimizer for each proposal is configured in the same way as for the single point case,
-i.e., by specifying \code{infill.opt} and related stuff.
+i. e., by specifying \code{infill.opt} and related stuff.
 \dQuote{multicrit}: Proposes points by evolutionary multicriteria optimization.
 The EA is a (mu+1) type of algorithm and runs for \code{multicrit.maxit} generations.
 The population size is set to \code{propose.points}.
 The selection criterion is \code{multicrit.selection}.
-\dQuote{cl}: Proposes points by constant liar strategie.
+\dQuote{cl}: Proposes points by constant liar strategy.
 Only meaningfull if \code{infill.crit == "lcb"}
-In the first step the kriging model is fitted based on the real data and the best point is calculated according to the regular EI-criterion.
+In the first step the kriging model is fitted based on the real data and the best point is calculated
+according to the regular EI-criterion.
 Then, the function value of the best point is simply guessed by the worst seen function evaluation.
 This lie is used to update the model in order to propose the subsequent point.
 The procedure is applied until the number of best points achieves \code{propose.points}.
-Default is \code{lcb}}
+Default is \code{lcb}.}
 
 \item{multicrit.objective}{[\code{character(1)}]\cr
 Objectives which are optimized in multicrit approach.
