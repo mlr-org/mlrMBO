@@ -1,6 +1,6 @@
 generateMBOMultiFidDesign = function(par.set, control) {
   budget = control$init.design.points
-  ps2 = parSetWithout(par.set, control$multifid.param)
+  ps2 = dropParams(par.set, control$multifid.param)
   k = length(control$multifid.lvls)
   b = ceiling(budget / k)
   ns = viapply(chunk(seq_len(budget), n.chunks = k), length)

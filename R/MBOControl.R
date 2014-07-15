@@ -34,8 +34,6 @@
 #'   Possible values are:
 #'   \dQuote{up}: Numeric vars are imputed with 2 * upper bound.
 #'   \dQuote{median}: Imputes NAs with median and add logical is.na variable.
-#' @param multiFid.control [\code{MBOmultiFidControl(1)}]\cr
-#'   Necessary if \code{infill.crit = "multiFid"}.
 #' @param final.method [\code{character(1)}]\cr
 #'   How should the final point be proposed. Possible values are:
 #'   \dQuote{best.true.y}: Return best point ever visited according to true value of target function.
@@ -107,7 +105,6 @@ makeMBOControl = function(number.of.targets = 1L,
   init.design.points = 20L, init.design.fun = maximinLHS, init.design.args = list(),
   iters = 10L, propose.points = 1L,
   feature.impute = "up",
-  multiFid.control = NULL,
   final.method = "best.true.y", final.evals = 0L,
   y.name = "y",
   impute.y.fun = NULL,
@@ -132,9 +129,6 @@ makeMBOControl = function(number.of.targets = 1L,
   propose.points = asInt(propose.points, lower = 1L)
 
   assertChoice(feature.impute, choices = c("up", "median"))
-
-  # if (infill.crit == "multiFid")
-  #   assertClass(multiFid.control, "MBOMultiFidControl")
 
   if (!is.null(impute.y.fun))
     assertFunction(impute.y.fun, args = c("x", "y", "opt.path"))
@@ -217,7 +211,7 @@ print.MBOControl = function(x, ...) {
   catf("Iterations                  : %i", x$iters)
   catf("Points proposed per iter:   : %i", x$propose.points)
   if (x$propose.points == 1) {
-  catf("Infill criterion            : %s", x$control$crit)
+  catf("Infill criterion            : %s", x$infill.crit)
   catf("Infill optimizer            : %s", x$infill.opt)
   catf("Infill optimizer restarts   : %i", x$infill.opt.restarts)
   } else {
