@@ -1,0 +1,74 @@
+#' @title Error handling for mlrMBO
+#'
+#' @description
+#' 
+#' There are multiple types of errors that can occur during one optimization
+#' process. mbo tries to handle most of them as smart as possible. In detail
+#' mbo offers 2 powerful mechanisms, that alow you handle most errors.
+#' 
+#' The first mechanism is imputation. There may be situations, in that your
+#' target function does not behave as nice as you want it to. We can think
+#' of 3 different misbehvaviours:
+#' \itemize{
+#'    \item{Your target function may stop with an error.}
+#'    \item{Your target function may return NAs or NaNs.}
+#'    \item{Your target function may never return anything.}}
+#' The third situation is somehow different to the first two, since it is hard to
+#' detect. We are only able to detect this situation, if you are parallizing
+#' your optimiziaton via  \code{\link[ParallelMap]} and using the BatchJob mode.
+#' In this case, you can specify a walltime and your function will generate
+#'  an Job-Expired-Error if it reaches the walltime. 
+#' These 3 behaviours have one in common - the optimizer does not get a valid
+#' information for the proposed point. Now the first thing you want to happen
+#' in this case is to get informed about the misbehaviour. So, the default
+#' for mbo is to stop in all 3 situation with an error. Now you should have a
+#' look at this error and decide what to do. Sometimes you just have to fix your
+#' target function or increase the walltime of your BatchJob.
+#' But some other time you want to continue the optimization, even if an error occurs. This
+#' may be, because some input params cause a special behaviour of your function
+#' that ends in an error or a returned NA, but you want your function to act like
+#' this. In this case you have the option to specify a function for imputation
+#' of bad values. This can be done by setting the \code{impute.y.fun} argument of
+#' \code{\link{makeMBOControl}}:
+#' 
+#' Function that gets triggered if your objective evaluation produced
+#'   a) an exception b) a return object of invalid type c) a numeric vector that
+#'   contains \code{NA}, \code{NaN}, \code{Inf}.
+#'   You now have a chance to handle this. You are expected to return a numeric vector
+#'   of the correct length with concrete values.
+#'   The optimization path will show some information whether y-values where imputed
+#'   and what the original, faulty object was.
+#'   \code{x} is the current x-value, \code{y} the current (invalid) y-object (or an error object)
+#'   and \code{opt.path} the current optimization path.
+#'   Default is \code{NULL} which means to stop if the objective function did not produce the desired
+#'   result.
+#'   
+#' Notice that the fitting of our surrogate model needs valid \code{y}-values,
+#' so you have to impute your NAs if you don't want to stopYou should also think
+#' about setting \code{suppress.eval.errors} to suppress all the wanted error messages.
+#' Be careful to not overlook unwanted errors, for this case all error messages are
+#'  logged in the optimization path.
+#' 
+#' 
+#' The second mechanism is a continue-mechanism, that allows you to continue
+#' your optimization after your system or the optimization process crashed for
+#' some reason. To make this possible, mbo has the option to save the current
+#' optimization state on the disc after each iteration. Using the \code{\link{mboContinue}
+#' function you can restart your optimization from the last saved state. We allow
+#' saving of the current optimization state only after full optimization iteration.
+#' So we are sorry, that process made during the latest iteration is lost. If your
+#' system crashes in iteration 9, you have to continue after iteration 8.
+#' 
+#' Saving of the current optimization state is enabled by default. To chance this,
+#' you must change the argument \code{save.on.disk.at} of \code{\link{makeMBOControl}}.
+#' Here you can specify, after which iteration you want the current state to be
+#' saved. Notice that 0 denotes saving the initial design and \code{iters} + 1
+#' denotes saving the final results. You will get a warning if you turn off the
+#' saving of the final result. It is not recommend to disable the final saving,
+#' make really sure your result is not lost if you do it anyway. Via the argument
+#' \code{save.file.path} you can specify the file you want to use to save your
+#' optimization. The default is to create a file \dQuote{mbo_run.RData} in your
+#' current working directory. The file is allway overwritten, since it is monotonically
+#' increasing with each iteration and you can allway subset the saved state to
+#' the iteration you want to have. To restart your crashed optimization you can use
+#' the \code{\link{mboContinue} function, it only requires the path of the saved state.
