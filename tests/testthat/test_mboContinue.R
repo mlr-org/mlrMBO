@@ -7,7 +7,7 @@ test_that("mboContinue", {
   or = NULL
   f = function(x) {
     i <<- i + 1
-    if (i > 6)
+    if (i > 11)
       if (rbinom(1, 1, 0.5))
         stop("foo")
     sum(x^2)
@@ -21,7 +21,7 @@ test_that("mboContinue", {
   # First test sombo
   learner = makeLearner("regr.rpart")
   save.file = tempfile(fileext = "RData")
-  ctrl = makeMBOControl(iters = 7, save.on.disk.at = 0:8,
+  ctrl = makeMBOControl(iters = 3, save.on.disk.at = 0:4,
     save.file.path = save.file, init.design.points = 10L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10)
   expect_error(or <- mbo(f, ps, learner = learner, control = ctrl, show.info = FALSE), "foo")
@@ -30,7 +30,7 @@ test_that("mboContinue", {
     if (!is.null(or))
       break
   }
-  expect_equal(getOptPathLength(or$opt.path), 17)
+  expect_equal(getOptPathLength(or$opt.path), 13)
   unlink(save.file)
 
   # now test parEGO
