@@ -5,6 +5,7 @@
 #' @param fun [\code{function}]\cr
 #'   R function which expects a numeric vector.
 #' @return Object of type MBOTrafoFunction.
+#' @seealso \link{trafos}
 #' @export
 makeTrafoFunction = function(name, fun) {
   fun = addClasses(fun, "MBOTrafoFunction")
@@ -12,13 +13,27 @@ makeTrafoFunction = function(name, fun) {
   return(fun)
 }
 
-# @export
+#' Transformation methods.
+#'
+#' \itemize{
+#' \item{\bold{logTrafo}}{\cr Natural logarithm.}
+#' \item{\bold{log10Trafo}}{\cr Logartihm to base 10.}
+#' \item{\bold{sqrtTrafo}}{\cr Square root.}
+#' }
+#' If negative values occur and the trafo function can handle only positive values,
+#' a shift of the form x - min(x) + 1 is performed prior to the transformation.
+#' @format None
+#' @name trafos
+#' @rdname trafos
+NULL
+
+#' @export
+#' @rdname trafos
 logTrafo = function() {
   makeTrafoFunction(
     name = "log",
     fun = function(x) {
       if (any(x < 0)) {
-        #FIXME what about this?
         warning("Negative function values. Shifting function to apply logarithm.")
         x = x - min(x) + 1
       }
@@ -27,13 +42,13 @@ logTrafo = function() {
   )
 }
 
-# @export
+#' @export
+#' @rdname trafos
 log10Trafo = function() {
   makeTrafoFunction(
     name = "log10",
     fun = function(x) {
       if (any(x < 0)) {
-        #FIXME what about this?
         warning("Negative function values. Shifting function to apply logarithm.")
         x = x - min(x) + 1
       }
@@ -42,7 +57,8 @@ log10Trafo = function() {
   )
 }
 
-# @export
+#' @export
+#' @rdname trafos
 sqrtTrafo = function() {
   makeTrafoFunction(
     name = "sqrt",

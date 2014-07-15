@@ -18,4 +18,7 @@ Object of type MBOTrafoFunction.
 \description{
 Create transformation function for MBOExampleRun.
 }
+\seealso{
+\link{trafos}
+}
 

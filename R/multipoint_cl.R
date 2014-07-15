@@ -1,13 +1,11 @@
-# FIXME use other function instead of min for lie
-# FIXME do we always want ei?
-# FIXME add unit test
 multipointInfillOptCL = function(model, control, par.set, opt.path, design, ...) {
   learner = model$learner
   y.name = control$y.name
+  # extract "liar", i. e., function used by cl method for lying
+  liar = control$multipoint.cl.lie
   # copy control
   control2 = control
   control2$propose.points = 1L
-  control2$infill.crit = "ei"
   newdes = data.frame()
   opt.path2 = opt.path
   #FIXME this is bad code
@@ -15,7 +13,7 @@ multipointInfillOptCL = function(model, control, par.set, opt.path, design, ...)
   opt.path2$env$path = opt.path$env$path
   opt.path2$env$dob = opt.path$env$dob
   opt.path2$env$eol = opt.path$env$eol
-  lie = min(getOptPathY(opt.path, y.name))
+  lie = liar(getOptPathY(opt.path, y.name))
   dob = max(getOptPathDOB(opt.path)) + 1
   crit.vals = data.frame()
   while (nrow(newdes) < control$propose.points) {

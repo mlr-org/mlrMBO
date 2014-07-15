@@ -44,8 +44,16 @@ checkStuff = function(fun, par.set, design, learner, control) {
     stopf("Optimizer '%s' can only be applied to numeric, integer, numericvector, integervector parameters!", control$infill.opt)
 
   # For now allow constant liar only in combinaton with kriging
-  if (control$multipoint.method == "cl" && learner$id != "regr.km")
-    stop("Constant liar can currently only be used with kriging.")
+  if (control$multipoint.method == "cl" && learner$predict.type != "se") {
+    stopf("For multipoint method constant liar (cl) predict.type of learner %s must be set to 'se'!%s",
+      learner$id,
+      ifelse(hasProperties(learner, "se"), "",
+        "\nBut this learner does not seem to support prediction of standard errors! You could use the mlr wrapper makeBaggingWrapper to bootstrap the standard error estimator."))
+  } 
+
+  if (control$multipoint.method == "cl" && control$infill.crit != "ei") {
+    stopf("Multipoint proposal using constant liar needs the infill criterion to 'ei' (expected improvement), but your selection is '%s'!", control$infill.crit)
+  }
 
   #  single objective
   if (control$number.of.targets == 1L) {
