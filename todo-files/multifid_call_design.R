@@ -49,7 +49,7 @@ control = setMBOControlInfill(control = control,
 control = setMBOControlMultiFid(control = control, 
                                 param = "dw.perc", 
                                 lvls = c(0.1, 0.3, 1))
-surrogat.model = makeLearner("regr.km", predict.type="se", nugget.estim=TRUE)
+surrogat.model = makeLearner("regr.km", predict.type="se", nugget.estim = TRUE, jitter = TRUE)
 result = mbo(fun = objfun, par.set = par.set, learner = surrogat.model, control = control, show.info = TRUE)
 pdf("multifid_steps.pdf", width=6, height=6)
 for (i in seq_along(result$plot.data)) {
@@ -75,7 +75,8 @@ opt.path = makeOptPathDF(par.set, control$y.name, control$minimize,
 mbo.design = mlrMBO:::generateMBODesign(design=mf.design, fun=objfun, par.set=par.set, opt.path=opt.path, control=control, show.info=TRUE, oldopts=oldopts, more.args=list())
 mf.model = train.MultiFidLearner(mf.learner, task=mlrMBO:::convertOptPathToTask(opt.path))
 predict(mf.model, task=mlrMBO:::convertOptPathToTask(opt.path))
-predict(mf.model, newdata=data.frame(sigma=2, dw.perc=0.3))
+predict(mf.model, newdata=data.frame(x=1, dw.perc=0.3))
+newdata = data.frame(x = 1, dw.perc=c(0.3,1,0.3,0.1))
 predict(mf.model$models[[3]], newdata=convertOptPathToDesign(opt.path)[,1,drop=F])
 
 ## Crtieria
@@ -111,7 +112,7 @@ calcModelCor = function(par.val, grid) {
   else
     max(cor(p1, p2, method="spearman"), 0)
 }
-corgrid = generateDesign(n=control$multifid.cor.grid.points, par.set=parSetWithout(par.set, control$multifid.param))
+corgrid = generateDesign(n=control$multifid.cor.grid.points, par.set=dropParams(par.set, control$multifid.param))
 
 model.sd = vnapply(control$multifid.lvls, calcModelSD)
 model.cor = vnapply(control$multifid.lvls, calcModelCor, grid=corgrid)
