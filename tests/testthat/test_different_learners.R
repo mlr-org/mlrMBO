@@ -30,7 +30,23 @@ test_that("mbo works with different learners", {
 
   testit = function(lrn) {
     lrn = makeLearner(lrn)
-    lrn = makeBaggingWrapper(lrn, bw.iters = 10L)
+    lrn = makeBaggingWrapper(lrn, bw.iters = 5L)
+    lrn = setPredictType(lrn, "se")
+    mbo(f, ps,learner = lrn, control = ctrl)
+  }
+
+  testit("regr.lm")
+  testit("regr.blackboost")
+  testit("regr.nnet")
+
+  # check with small initial design, not all levels are evaluated
+  # the problem comes with the bagging wrapper
+  ctrl = makeMBOControl(iters = 2, init.design.points = 10)
+  ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100)
+
+  testit = function(lrn) {
+    lrn = makeLearner(lrn)
+    lrn = makeBaggingWrapper(lrn, bw.iters = 5L)
     lrn = setPredictType(lrn, "se")
     mbo(f, ps,learner = lrn, control = ctrl)
   }
