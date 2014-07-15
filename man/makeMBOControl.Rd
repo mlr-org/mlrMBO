@@ -7,7 +7,7 @@
 makeMBOControl(number.of.targets = 1L, minimize = rep(TRUE,
   number.of.targets), noisy = FALSE, init.design.points = 20L,
   init.design.fun = maximinLHS, init.design.args = list(), iters = 10L,
-  propose.points = 1L, feature.impute = "up", multiFid.control = NULL,
+  propose.points = 1L, feature.impute = "up",
   final.method = "best.true.y", final.evals = 0L, y.name = "y",
   impute.y.fun = NULL, suppress.eval.errors = TRUE,
   save.on.disk.at = 0:(iters + 1), save.file.path = file.path(getwd(),
@@ -59,9 +59,6 @@ Method used for imputing features, which can / will be necessary for dependent p
 Possible values are:
 \dQuote{up}: Numeric vars are imputed with 2 * upper bound.
 \dQuote{median}: Imputes NAs with median and add logical is.na variable.}
-
-\item{multiFid.control}{[\code{MBOmultiFidControl(1)}]\cr
-Necessary if \code{infill.crit = "multiFid"}.}
 
 \item{final.method}{[\code{character(1)}]\cr
 How should the final point be proposed. Possible values are:
