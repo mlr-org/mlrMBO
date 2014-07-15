@@ -72,3 +72,4 @@
 #' increasing with each iteration and you can allway subset the saved state to
 #' the iteration you want to have. To restart your crashed optimization you can use
 #' the \code{\link{mboContinue} function, it only requires the path of the saved state.
+NULL
