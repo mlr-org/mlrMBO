@@ -1,8 +1,10 @@
 context("multipoint constant liar")
 
 test_that("multipoint constant liar", {
-  objfun = branin
-  ps = makeNumericParamSet(len = 2L, lower = 0, upper = 1)
+  objfun = function(x) {
+    y = sum(x^2)
+  }
+  ps = makeNumericParamSet(len = 1L, lower = -1, upper = 1)
   lrn = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
 
   ctrl = makeMBOControl(init.design.points = 30L, iters = 1L, propose.points = 5L)
@@ -10,6 +12,5 @@ test_that("multipoint constant liar", {
 
   res = mbo(makeMBOFunction(objfun), par.set = ps, learner = lrn, control = ctrl)
   expect_is(res, "MBOResult")
-  gap = res$y - 0.3979
-  #expect_true(gap < 0.2)
+  expect_true(res$y < 0.1)
 })
