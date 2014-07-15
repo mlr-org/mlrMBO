@@ -211,7 +211,7 @@ print.MBOControl = function(x, ...) {
   catf("Iterations                  : %i", x$iters)
   catf("Points proposed per iter:   : %i", x$propose.points)
   if (x$propose.points == 1) {
-  catf("Infill criterion            : %s", x$control$crit)
+  catf("Infill criterion            : %s", x$infill.crit)
   catf("Infill optimizer            : %s", x$infill.opt)
   catf("Infill optimizer restarts   : %i", x$infill.opt.restarts)
   } else {
