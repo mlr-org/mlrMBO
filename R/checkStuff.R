@@ -49,7 +49,7 @@ checkStuff = function(fun, par.set, design, learner, control) {
       learner$id,
       ifelse(hasProperties(learner, "se"), "",
         "\nBut this learner does not seem to support prediction of standard errors! You could use the mlr wrapper makeBaggingWrapper to bootstrap the standard error estimator."))
-  } 
+  }
 
   if (control$multipoint.method == "cl" && control$infill.crit != "ei") {
     stopf("Multipoint proposal using constant liar needs the infill criterion to 'ei' (expected improvement), but your selection is '%s'!", control$infill.crit)
@@ -72,9 +72,6 @@ checkStuff = function(fun, par.set, design, learner, control) {
       }
     }
   }
-
-  # if (!(inherits(learner, "regr.randomForest") || inherits(learner, "regr.rpart")) && hasRequires(par.set))
-  #   stop("Parameter sets with dependent parameters currently require the learner to be a randomForest or rpart.")
 
   # multifidelity stuff
   if (control$multifid) {
