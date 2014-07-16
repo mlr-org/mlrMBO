@@ -1,7 +1,6 @@
 #' @title Error handling for mlrMBO
 #'
 #' @description
-#' 
 #' There are multiple types of errors that can occur during one optimization
 #' process. mbo tries to handle most of them as smart as possible. In detail
 #' mbo offers 2 powerful mechanisms, that alow you handle most errors.
@@ -12,10 +11,11 @@
 #' \itemize{
 #'    \item{Your target function may stop with an error.}
 #'    \item{Your target function may return NAs or NaNs.}
-#'    \item{Your target function may never return anything.}}
+#'    \item{Your target function may never return anything.}
+#' }
 #' The third situation is somehow different to the first two, since it is hard to
 #' detect. We are only able to detect this situation, if you are parallizing
-#' your optimiziaton via  \code{\link[ParallelMap]} and using the BatchJob mode.
+#' your optimiziaton via \code{\link[ParallelMap]} and using the BatchJob mode.
 #' In this case, you can specify a walltime and your function will generate
 #'  an Job-Expired-Error if it reaches the walltime. 
 #' These 3 behaviours have one in common - the optimizer does not get a valid
@@ -53,7 +53,7 @@
 #' The second mechanism is a continue-mechanism, that allows you to continue
 #' your optimization after your system or the optimization process crashed for
 #' some reason. To make this possible, mbo has the option to save the current
-#' optimization state on the disc after each iteration. Using the \code{\link{mboContinue}
+#' optimization state on the disc after each iteration. Using the \code{\link{mboContinue}}
 #' function you can restart your optimization from the last saved state. We allow
 #' saving of the current optimization state only after full optimization iteration.
 #' So we are sorry, that process made during the latest iteration is lost. If your
@@ -71,5 +71,5 @@
 #' current working directory. The file is allway overwritten, since it is monotonically
 #' increasing with each iteration and you can allway subset the saved state to
 #' the iteration you want to have. To restart your crashed optimization you can use
-#' the \code{\link{mboContinue} function, it only requires the path of the saved state.
+#' the \code{\link{mboContinue}} function, it only requires the path of the saved state.
 NULL
