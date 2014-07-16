@@ -15,7 +15,7 @@
 #' }
 #' The third situation is somehow different to the first two, since it is hard to
 #' detect. We are only able to detect this situation, if you are parallizing
-#' your optimiziaton via \code{\link[ParallelMap]} and using the BatchJob mode.
+#' your optimiziaton via \code{\link[ParallelMap]{parallelMap}} and using the BatchJob mode.
 #' In this case, you can specify a walltime and your function will generate
 #'  an Job-Expired-Error if it reaches the walltime. 
 #' These 3 behaviours have one in common - the optimizer does not get a valid
@@ -72,4 +72,5 @@
 #' increasing with each iteration and you can allway subset the saved state to
 #' the iteration you want to have. To restart your crashed optimization you can use
 #' the \code{\link{mboContinue}} function, it only requires the path of the saved state.
+#' @name error_handling
 NULL
