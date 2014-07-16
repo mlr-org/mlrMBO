@@ -21,8 +21,6 @@ if(getRversion() >= "2.15.1")
 #   Default for the first plot is a heuristic to have the true function
 #   and \code{yhat(x) +- se.factor2 * se(x)} both in the plot. Note that this heuristic might
 #   change the \code{ylim} setting between plot iterations.
-# @param pause [\code{boolean}]\cr
-#   Set to \code{TRUE} if the function shall pause after each iteration.
 # @param point.size [\code{numeric(1)}]\cr
 #   Size of the points in the plots.
 # @param line.size [\code{numeric(1)}]\cr
@@ -39,9 +37,13 @@ if(getRversion() >= "2.15.1")
 #   Should the background be shaded by the density of the posterior distribution? Default ist \code{TRUE}.
 #   Only used if learner supports computation of standard error.
 # @param ... [\code{list}]\cr
-#   Further parameters.
+#   Not used.
 # @return [\code{list}] List of length \code{iters}. Each list element is a list of plots.
-autoplotExampleRun1d = function(x, iters, xlim, ylim, pause, se.factor, point.size, line.size, trafo, densregion = TRUE, ...) {
+autoplotExampleRun1d = function(x, iters,
+  xlim, ylim, 
+  pause, se.factor, 
+  point.size, line.size,
+  trafo, densregion = TRUE, ...) {
   # extract relevant data from MBOExampleRun
   par.set = x$par.set
   names.x = x$names.x
@@ -126,7 +128,6 @@ autoplotExampleRun1d = function(x, iters, xlim, ylim, pause, se.factor, point.si
           evals[[name.crit]] = opt.direction * infillCritMeanResponse(evals.x, model, control, par.set, opt.path[idx.past, ])
         }
       }
-
       # prepare drawing of standard error (confidence interval)
       if (se) {
         evals$se = -infillCritStandardError(evals.x, model, control, par.set, opt.path[idx.past, ])
