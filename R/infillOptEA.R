@@ -2,7 +2,6 @@
 # kind of mimics our multicrit approach, so we can
 # compare more honestly
 
-#FIXME allow rounding of integers
 infillOptEA = function(infill.crit, model, control, par.set, opt.path, design, ...) {
   requirePackages("emoa", why = "infillOptEA")
 
@@ -37,6 +36,12 @@ infillOptEA = function(infill.crit, model, control, par.set, opt.path, design, .
         child = crossover(t(X[parents, , drop = FALSE]))
         child1 = child[, sample(c(1, 2), 1)]
         child1 = mutate(child1)
+        if (hasInteger(par.set)) {
+          # convert to list of parameter values (already rounded internally by dfRowToList)
+          child1 = dfRowToList(as.data.frame(as.list(child1)), i = 1L, par.set = par.set)
+          # possibly the values are out of bounds
+          child1 = unlist(repairPoint(par.set, child1))
+        }
         # Add new individual:
         X[nrow(X) + 1, ] = child1
         child2 = setColNames(as.data.frame(as.list(child1)), repids)
