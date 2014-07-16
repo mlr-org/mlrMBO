@@ -17,10 +17,11 @@ makePlot = function (rho, lambda) {
     y2 = (const - lambda[1] * x * rho) / ((1 + rho) * lambda[2])
     pmin(y1, y2)
   }
-  const = max(0.2 * lambda[1], 0.2 * lambda[2]) + rho * 0.2 *0.5
+  x = 0.75 * lambda[2:1]
+  const = max(lambda * x) + rho * lambda * x
   lines(sequence, f(sequence, lambda, rho, const), col = "blue", lwd = 2)
   
 }
 
 
-makePlot(0.1, c(0.2, 0.8))
+makePlot(0.05, c(0.05, 0.95))
