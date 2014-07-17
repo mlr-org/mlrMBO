@@ -1,3 +1,15 @@
+source("bench/mco/DTLZ.R")
+library(ggplot2)
+library(BBmisc)
+library(ParamHelpers)
+library(checkmate)
+library(mco)
+library(emoa)
+library(gridExtra)
+library(devtools)
+load_all(".")
+
+
 exampleRunParEGO = function(fun, par.set, learner, control, show.info = TRUE,
   nsga2.args = list(), ...) {
 
@@ -50,31 +62,38 @@ exampleRunParEGO = function(fun, par.set, learner, control, show.info = TRUE,
 }
 
 
-autoplo = function(x, iters, pause = TRUE, y1lim = NULL, y2lim = NULL, points.per.dim, ...)  {
+autoplo = function(run, iters, pause = TRUE, y1lim = NULL, y2lim = NULL, points.per.dim, ...)  {
   points.per.dim = convertInteger(points.per.dim)
   assertCount(points.per.dim, na.ok = FALSE, positive = TRUE)
 
   # extract information from example run object
-  par.set = x$par.set
-  control = x$control
+  par.set = run$par.set
+  control = run$control
   names.y = control$y.name
   names.x = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
   proppoints = control$propose.points
-  mbo.res = x$mbo.res
+  rho = control$parego.rho
+  mbo.res = run$mbo.res
   opt.path = as.data.frame(mbo.res$opt.path)
   y = getOptPathY(mbo.res$opt.path)
-  yy = rbind(setRowNames(y, NULL), setRowNames(x$nsga2.paretofront, NULL))
+  yy = rbind(setRowNames(y, NULL), setRowNames(run$nsga2.paretofront, NULL))
+  x = as.data.frame(mbo.res$opt.path, include.y = FALSE, include.rest = FALSE)
+  xx = rbind(setRowNames(x, NULL), setRowNames(run$nsga2.paretoset, NULL))
   idx.nsga2front = (nrow(y)+1):nrow(yy)
+  # we need the range vor normalization. if no limits given, use range
+  # for plotting limits, too
+  y1range = range(yy[, 1L])
   if (is.null(y1lim))
-    y1lim = range(yy[,1L])
+    y1lim = y1range
+  y2range = range(yy[, 2L])
   if (is.null(y2lim))
-    y2lim = range(yy[,2L])
+    y2lim = y2range
   name.crit = control$infill.crit
   critfun = getInfillCritFunction(name.crit)
   xgrid = generateGridDesign(par.set = par.set, resolution = points.per.dim)
   # xgrid = generateGridDesign(par.set = par.set, resolution = 4)
   xgrid2 = xgrid
-  nsga2.paretoset = x$nsga2.paretoset
+  #nsga2.paretoset = x$nsga2.paretoset
   opt.direction = 1
   if (name.crit %in% c("ei"))
     opt.direction = -1
@@ -104,7 +123,7 @@ autoplo = function(x, iters, pause = TRUE, y1lim = NULL, y2lim = NULL, points.pe
       print(summary(xgrid2))
       idx = c(idx.init, idx.seq, idx.proposed, idx.nsga2front)
 
-      gg.points = data.frame(
+      gg.points.front = data.frame(
         y1 = yy[idx, 1L],
         y2 = yy[idx, 2L],
         type = as.factor(c(
@@ -114,23 +133,69 @@ autoplo = function(x, iters, pause = TRUE, y1lim = NULL, y2lim = NULL, points.pe
           rep("front", length(idx.nsga2front))
         ))
       )
+      
+      gg.points.set = data.frame(
+        x1 = xx[idx, 1L],
+        x2 = xx[idx, 2L],
+        type = as.factor(c(
+          rep("init", length(idx.init)),
+          rep("seq", length(idx.seq)),
+          rep("prop", length(idx.proposed)),
+          rep("front", length(idx.nsga2front))
+          ))
+      )
+      
+      # make dataframe for lines to show rho
+      m.seq = seq(y1lim[1], y1lim[2], length.out = 10000)
+      # slope and intercept defined by lambda - a bit ugly due to normalization
+      slope  = weights[1L] * (y2range[2L] - y2range[1L]) /
+        weights[2L] / (y1range[2L] - y1range[1L])
+      intercept = y2range[1L] - y1range[1L] * slope
+      # Function to get the values for the rho visualization
+      f = function(x, lambda, rho, const) {
+        x = (x - y1range[1L]) / (y1range[2L] - y1range[1L])
+        y.left = (const - lambda[1L] * x * (1 + rho)) / (rho * lambda[2L])
+         y.left = y.left * (y2range[2L] - y2range[1L]) + y2range[1L]
+        
+        y.right = (const - lambda[1L] * x * rho) / ((1 + rho) * lambda[2L])
+        y.right = y.right * (y2range[2L] - y2range[1L]) + y2range[1L]
+        pmin(y.left, y.right)
+      }
+      # FIXME: find a good way to set this constant. I tried a lot and i found
+      # nothing that worked really good. this is the best i got ... it works somehow,
+      # but is far from perfect.
+      tmp.x = sqrt(slope^2 / 4 + 1 - intercept) - slope / 2
+      tmp.y = tmp.x * slope + intercept
+      const = optimize(function(x) (f(tmp.x, weights, rho, x) - tmp.y)^2, interval = c(0, 10))$minimum
+      gg.line = data.frame(
+        y1 = m.seq,
+        y2 = f(m.seq, weights, rho, const),
+        type = rep("init", 100)
+        )
 
-      ply = ggplot(data = gg.points, aes_string(x = "y1", y = "y2",
-          colour = "type", shape = "type"))
-      ply = ply + geom_point(data = subset(gg.points, type == "front"),
-        size = 1.5, alpha = 0.3)
-      ply = ply + geom_point(data = subset(gg.points, type != "front"),
+      ply = ggplot(data = gg.points.front, aes(x = y1, y = y2,
+          colour = type, shape = type))
+      ply = ply + geom_point(data = subset(gg.points.front, type == "front"),
+        size = 2, alpha = 0.4)
+      ply = ply + geom_point(data = subset(gg.points.front, type != "front"),
         size = 4)
-      # # FIXME: weights / line is probably wrong here because y values are scaled to (0,1) in parego first?
-      ply = ply + geom_abline(intercept = 0, slope = weights[2L] / weights[1L])
+      ply = ply + geom_abline(intercept = intercept, slope = slope)
       ply = ply + xlab(names.y[1L])
       ply = ply + ylab(names.y[2L])
       ply = ply + xlim(y1lim) + ylim(y2lim)
-
-      plx = ggplot(data = xgrid2, aes_string(x = names.x[1L], y = names.x[2L]))
-      plx = plx + geom_tile(aes_string(fill = name.crit))
+      ply = ply + geom_text(data = NULL, x = 3/12 * y1lim[2L], y = 24/24 * y2lim[2L],
+        label = paste("lambda[1] == ", round(weights[1L], 2), sep = ""), parse = TRUE, col = "black", size = 5)
+      ply = ply + geom_text(data = NULL, x = 3/12 * y1lim[2L], y = 23/24 * y2lim[2L],
+        label = paste("lambda[2] == ", round(weights[2L], 2), sep = ""), parse = TRUE, col = "black", size = 5)
+      ply = ply + geom_line(data = gg.line, col = "blue", shape = 1)
+        
+      plx = ggplot()
+      plx = plx + geom_tile(data = xgrid2, aes_string(x = names.x[1L], y = names.x[2L], fill = name.crit))
       plx = plx + scale_fill_gradientn(colours = topo.colors(7))
-      plx = plx + geom_point(data = nsga2.paretoset, size = 3)
+      plx = plx +  geom_point(data = subset(gg.points.set, type == "front"),
+        aes(x = x1, y = x2, colour = type, shape = type), size = 2, alpha = 0.8)
+      plx = plx + geom_point(data = subset(gg.points.set, type != "front"),
+        aes(x = x1, y = x2, colour = type, shape = type), size = 4)
 
       title = sprintf("Iter %i", i)
       pl.all = grid.arrange(ply, plx, nrow = 1, main = title)
@@ -143,17 +208,18 @@ autoplo = function(x, iters, pause = TRUE, y1lim = NULL, y2lim = NULL, points.pe
 }
 
 
-load_all(".")
 
 f = zdt2
 ps = makeNumericParamSet(len = 2L, lower = 0, upper = 1)
 
+#set.seed(1)
+#ctrl = makeMBOControl(number.of.targets = 2L, init.design.points = 10L, iters = 10)
+#ctrl = setMBOControlInfill(ctrl, crit = "ei", opt.focussearch.points = 1000, opt.restarts = 5L)
+#ctrl = setMBOControlMultiCrit(ctrl)
+#run = exampleRunParEGO(makeMBOFunction(f), ps, control = ctrl)
 
-ctrl = makeMBOControl(number.of.targets = 2L, init.design.points = 10L, iters = 5)
-
-ctrl = setMBOControlInfill(ctrl, crit = "ei", opt.focussearch.points = 1000, opt.restarts = 5L)
-ctrl = setMBOControlMulticrit(ctrl)
-
-run = exampleRunParEGO(makeMBOFunction(f), ps, control = ctrl)
-
-autoplo(run, iters = 1:10, pause = T, resolution = ,points.per.dim = 50)
+for (i in 1:10) {
+  pdf(paste("bench/mco/slides/paregoAnimation", i, ".pdf", sep = ""), width = 9, height = 5.5)
+  autoplo(run, iters = i, pause = FALSE, points.per.dim = 50)
+  dev.off()
+}
