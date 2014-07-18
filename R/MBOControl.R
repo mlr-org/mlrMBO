@@ -204,18 +204,23 @@ makeMBOControl = function(number.of.targets = 1L,
 #'   Not used.
 #' @export
 print.MBOControl = function(x, ...) {
-  catf("Objective                   : %s",
+  catf("Objectives                  : %s",
     collapsef("%s = %s!", x$y.name, ifelse(x$minimize, "min", "max"), sep = "; "))
   catf("Function type               : %s",  ifelse(x$noisy, "noisy", "deterministic"))
   catf("Init. design                : %i points", x$init.design.points)
   catf("Iterations                  : %i", x$iters)
   catf("Points proposed per iter:   : %i", x$propose.points)
-  if (x$propose.points == 1) {
-  catf("Infill criterion            : %s", x$infill.crit)
-  catf("Infill optimizer            : %s", x$infill.opt)
-  catf("Infill optimizer restarts   : %i", x$infill.opt.restarts)
+  if (x$number.of.targets > 1L) {
+    catf("Multicrit Method            : %s", x$multicrit.method)
   } else {
-  catf("Multipoint method           : %s", x$control$multipoint.method)
+    if (x$propose.points == 1) {
+      catf("Infill criterion            : %s", x$infill.crit)
+      catf("Infill optimizer            : %s", x$infill.opt)
+      catf("Infill optimizer restarts   : %i", x$infill.opt.restarts)
+    } else {
+      catf("Multipoint method           : %s", x$control$multipoint.method)
+    }
+    catf("Final point by              : %s", x$final.method)
+    
   }
-  catf("Final point by              : %s", x$final.method)
 }
