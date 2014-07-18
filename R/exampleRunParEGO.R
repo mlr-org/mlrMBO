@@ -93,13 +93,13 @@ exampleRunParEGO = function(fun, par.set, learner, control, points.per.dim = 50,
     nsga2.paretofront = nsga2.paretofront,
     nsga2.paretoset = nsga2.paretoset,
     nsga2.hypervolume = nsga2.hypervolume,
-    mbo.res = res
+    mbo.res = res,
+    points.per.dim = points.per.dim
   )
 }
 
 
 
-#' @export
 print.ParEGOExampleRun = function(x, ...) {
   catf("ParEGOExampleRun")
   catf("Number of parameters        : %i", x$n.params)
