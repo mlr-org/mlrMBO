@@ -32,10 +32,6 @@ setMBOControlMultiCrit = function(control,
   parego.s, parego.rho = 0.05,
   parego.use.margin.points = rep(FALSE, control$number.of.targets),
   parego.sample.more.weights = 5L) {
-  
-  if (control$number.of.targets == 1L) {
-    stopf("Trying to set multi.crit options, but target function has only 1 crit.")
-  }
 
   assertClass(control, "MBOControl")
   assertChoice(method, choices = c("parego"))
@@ -62,15 +58,22 @@ setMBOControlMultiCrit = function(control,
   parego.sample.more.weights = asInt(parego.sample.more.weights)
   assertInt(parego.sample.more.weights, na.ok = FALSE, lower = 1)
   
+
   assertLogical(parego.use.margin.points, len = number.of.targets, any.missing = FALSE)
-  if (sum(parego.use.margin.points) > propose.points)
-    stopf("Can't use %s margin points when only proposing %s points each iteration.",
-      sum(parego.use.margin.points), propose.points)
-  
-  number.of.weights = choose(parego.s + control$number.of.targets - 1,
-    control$number.of.targets - 1)
-  if (parego.sample.more.weights * propose.points > number.of.weights)
-    stop("Trying to sample more weights than exists. Increase parego.s or decrease number of weights.")
+       
+  # some checks we ony want to do if we're really doing parego
+  if (control$number.of.targets != 1L) {
+    if (sum(parego.use.margin.points) > propose.points)
+      stopf("Can't use %s margin points when only proposing %s points each iteration.",
+        sum(parego.use.margin.points), propose.points)
+    
+    number.of.weights = choose(parego.s + control$number.of.targets - 1,
+      control$number.of.targets - 1)
+    if (parego.sample.more.weights * propose.points > number.of.weights)
+      stop("Trying to sample more weights than exists. Increase parego.s or decrease number of weights.")
+    
+    
+  }
   
   # extend control object
   control$multicrit.method = method
