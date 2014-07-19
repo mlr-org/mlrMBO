@@ -21,15 +21,37 @@ addProblem(reg, id = "bbob", dynamic = function(d, fid) {
 })
 
 
-addAlgorithm(reg, "gensa", fun = function(dynamic) {
+# addAlgorithm(reg, "gensa", fun = function(dynamic) {
+#   f = dynamic$objective
+#   par.set = dynamic$par.set
+#   start = sampleValue(par.set)$x
+#   ctrl = list(simple.function = FALSE, smooth = FALSE, max.call = BUDGET(dynamic$d))
+#   res = GenSA(par = start, fn = f, control = ctrl,
+#     lower = getLower(par.set), upper = getUpper(par.set))
+#   gap = res$value - global_minimum(f)$value
+#   list(x = res$par, y = res$value, gap = gap, count =  res$count, trace = res$trace.mat)
+# })
+
+# addAlgorithm(reg, "bfgs", fun = function(dynamic) {
+#   f = dynamic$objective
+#   par.set = dynamic$par.set
+#   start = sampleValue(par.set)$x
+#   ctrl = list()
+#   res = optim(par = start, fn = f, method = "L-BFGS-B", control = ctrl,
+#     lower = getLower(par.set), upper = getUpper(par.set))
+#   gap = res$value - global_minimum(f)$value
+#   list(x = res$par, y = res$value, gap = gap, count =  res$count)
+# })
+
+addAlgorithm(reg, "bfgs", fun = function(dynamic) {
   f = dynamic$objective
   par.set = dynamic$par.set
   start = sampleValue(par.set)$x
-  ctrl = list(simple.function = FALSE, smooth = FALSE, max.call = BUDGET(dynamic$d))
-  res = GenSA(par = start, fn = f, control = ctrl,
+  ctrl = list()
+  res = optim(par = start, fn = f, method = "L-BFGS-B", control = ctrl,
     lower = getLower(par.set), upper = getUpper(par.set))
   gap = res$value - global_minimum(f)$value
-  list(x = res$par, y = res$value, gap = gap, count =  res$count, trace = res$trace.mat)
+  list(x = res$par, y = res$value, gap = gap, count =  res$count)
 })
 
 addAlgorithm(reg, "mbo", fun = function(dynamic) {
