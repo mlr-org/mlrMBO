@@ -1,7 +1,38 @@
 if(getRversion() >= "2.15.1")
   utils::globalVariables(c("y", "type"))
 
-autoplotExampleRun2d = function(x, iters, pause = TRUE, densregion = TRUE, point.size, line.size, trafo = NULL, ...)  {
+# Function for plotting 2d numeric respectively mixed discrete/numeric functions.
+#
+# @param x [\code{function}]\cr
+#   Objective function.
+# @param iters [\code{integer}]\cr
+#   Selected iterations of \code{x} to display.
+#   Default is all iterations.
+# @param pause [\code{logical(1)}]\cr
+#   Pause after each iteration?
+#   Default is \code{TRUE}.
+# @param densregion [\code{logical(1)}]\cr
+#   Should the background be shaded by the density of the posterior distribution? Default ist \code{TRUE}.
+#   Only used if learner supports computation of standard error.
+# @param point.size [\code{numeric(1)}]\cr
+#   Size of the points in the plots.
+# @param line.size [\code{numeric(1)}]\cr
+#   Line width of the functions graphs plotted.
+# @param trafo [\code{list}]\cr
+#   List of transformation functions of type \code{\link[mlrMBO]{MBOTrafoFunction}} for
+#   the different plots.
+#   For 1D: The list elements should be named with "y" (applied to objective function and model) or "crit"
+#   (applied to the criterion). Only applied to plots with numeric parameters.
+#   For 2D: The list should contain at least one element "y", "yhat", "crit" or "se". This way one can
+#   specify different transformations for different plots. If a single function is provided, this function
+#    is used for all plots.
+# @param ... [\code{list}]\cr
+#   Not used.
+# @return [\code{list}] List of length \code{iters}. Each list element is a list of plots.
+autoplotExampleRun2d = function(x, iters, 
+  pause = TRUE, densregion = TRUE,
+  point.size, line.size,
+  trafo = NULL, ...)  {
 
   # extract information from example run object
   par.set = x$par.set
@@ -69,7 +100,6 @@ autoplotExampleRun2d = function(x, iters, pause = TRUE, densregion = TRUE, point
       pl = ggplot(data = data, aes_string(x = "x1", y = "x2", z = name.z))
       pl = pl + geom_tile(aes_string(fill = name.z))
       pl = pl + scale_fill_gradientn(colours = topo.colors(7))
-      # FIXME: stat_contour cannot compute contour lines for EI for small values
       if (name.z != "ei") {
         pl = pl + stat_contour(aes_string(fill = name.z), binwidth = 5)
       }
@@ -87,8 +117,7 @@ autoplotExampleRun2d = function(x, iters, pause = TRUE, densregion = TRUE, point
       pl = pl + ylab(NULL)
       pl = pl + theme(
         plot.title = element_text(size = 11, face = "bold"), # decrease font size and weight
-        plot.margin = unit(c(0.2,0.2,0.2,0.2), "cm")#, # adapt margins
-        #panel.background = element_blank()
+        plot.margin = unit(c(0.2,0.2,0.2,0.2), "cm") # adapt margins
       )
       return(pl)
     }

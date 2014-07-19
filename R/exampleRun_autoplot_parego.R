@@ -1,71 +1,35 @@
-source("bench/mco/DTLZ.R")
-library(ggplot2)
-library(BBmisc)
-library(ParamHelpers)
-library(checkmate)
-library(mco)
-library(emoa)
-library(gridExtra)
-library(devtools)
-load_all(".")
+#' Plot example run, either in 1D or 2D.
+#'
+#' FIXME: Describe Plot
+#' FIXME: This function is not well tested - not sure if we want to export it now
+#'
+#' @param run [\code{}]\cr
+#'   Objective function.
+#' @param iters [\code{integer}]\cr
+#'   Selected iterations of \code{x} to display.
+#'   Default is all iterations.
+#' @param pause [\code{logical(1)}]\cr
+#'   Pause after each iteration?
+#'   Default is \code{TRUE}.
+#' @param y1lim [\code{numeric(2)}]\cr
+#'   axis limits for the Plot
+#'   Default is range of y1-values evaluated in run object \code{y1}.
+#' @param y2lim [\code{numeric(2)}]\cr
+#'   axis limits for the Plot
+#'   Default is range of y2-values evaluated in run object \code{y2}.
+#' @param ... [any]\cr
+#'   Currently not used.
+#' @return [\code{list}]. List containing seperate ggplot plots for each iteration.
 
-
-exampleRunParEGO = function(fun, par.set, learner, control, show.info = TRUE,
-  nsga2.args = list(), ...) {
-
-  assertFunction(fun)
-  assertClass(control, "MBOControl")
-  assertClass(par.set, "ParamSet")
-  par.types = getParamTypes(par.set)
-
-  learner = checkLearner(learner, par.set, control, ...)
-
-  assertLogical(show.info, len = 1L, any.missing = FALSE)
-  ny = control$number.of.targets
-
-  if (ny >= 3L)
-    stopf("exampleRun can only be applied for functions with at most 2 objectives, but you have %iD", ny)
-
-  control$store.model.at = 1:control$iters
-  names.x = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
-  names.y = control$y.name
-
-  showInfo(show.info, "Running NSGA2 to approximate pareto front.")
-
-  args = list(fun, idim = getParamNr(par.set, devectorize = TRUE), odim = ny,
-    lower.bounds = getLower(par.set), upper.bounds = getUpper(par.set),
-    popsize = 60L, generations = 100L)
-  args = insert(args, nsga2.args)
-  nsga2.res = do.call(nsga2, args)
-  nsga2.paretoset = setColNames(as.data.frame(nsga2.res$par[nsga2.res$pareto.optimal, ]), names.x)
-  nsga2.paretofront = setColNames(as.data.frame(nsga2.res$value[nsga2.res$pareto.optimal, ]), names.y)
-
-  #show some info on console
-  showInfo(show.info, "Performing MBO on function.")
-  showInfo(show.info, "Initial design: %i. Sequential iterations: %i.", control$init.design.points, control$iters)
-  showInfo(show.info, "Learner: %s. Settings:\n%s", learner$id, mlr:::getHyperParsString(learner))
-
-  # run optimizer now
-  res = mbo(fun, par.set, learner = learner, control = control, show.info = show.info)
-
-  makeS3Obj(c("ParEGOExampleRun", "MBOExampleRun"),
-    par.set = par.set,
-    par.types = par.types,
-    names.x = names.x,
-    names.y = names.y,
-    learner = learner,
-    control = control,
-    nsga2.paretofront = nsga2.paretofront,
-    nsga2.paretoset = nsga2.paretoset,
-    mbo.res = res
-  )
-}
-
-
-autoplo = function(run, iters, pause = TRUE, y1lim = NULL, y2lim = NULL, points.per.dim, ...)  {
+autoplot.ParEGOExampleRun = function(run, iters, pause = TRUE, y1lim = NULL, y2lim = NULL, ...) {
+  
+  requirePackages("gridExtra", why = "autoplot.MBOExampleRun")
+  requirePackages("ggplot2", why = "autoplot.MBOExampleRun")
+  
+  points.per.dim = run$points.per.dim
   points.per.dim = convertInteger(points.per.dim)
   assertCount(points.per.dim, na.ok = FALSE, positive = TRUE)
-
+  
   # extract information from example run object
   par.set = run$par.set
   control = run$control
@@ -97,32 +61,32 @@ autoplo = function(run, iters, pause = TRUE, y1lim = NULL, y2lim = NULL, points.
   opt.direction = 1
   if (name.crit %in% c("ei"))
     opt.direction = -1
-
+  
   idx.init = which(opt.path$dob == 0)
-
+  
   # save sequence of opt plots here
   plot.sequence = list()
-
+  
   for (i in iters) {
     for (j in 1:proppoints) {
       catf("Iter %i; Point %i", i, j)
       model = mbo.res$models[[i]][[j]]
-
+      
       idx.seq = which(opt.path$dob > 0 & opt.path$dob < i)
       idx.proposed = which(opt.path$dob == i)
       idx.past = which(opt.path$dob < i)
       idx.pastpresent = which(opt.path$dob <= i)
       weights = as.numeric(opt.path[idx.proposed, c(".weight1", ".weight2")])
-
+      
       model.ok = !inherits(model, "FailureModel")
-
+      
       if (model.ok) {
         xgrid2[[name.crit]] = opt.direction *
           critfun(xgrid, model, control, par.set, opt.path[idx.past, ])
       }
       print(summary(xgrid2))
       idx = c(idx.init, idx.seq, idx.proposed, idx.nsga2front)
-
+      
       gg.points.front = data.frame(
         y1 = yy[idx, 1L],
         y2 = yy[idx, 2L],
@@ -142,7 +106,7 @@ autoplo = function(run, iters, pause = TRUE, y1lim = NULL, y2lim = NULL, points.
           rep("seq", length(idx.seq)),
           rep("prop", length(idx.proposed)),
           rep("front", length(idx.nsga2front))
-          ))
+        ))
       )
       
       # make dataframe for lines to show rho
@@ -155,7 +119,7 @@ autoplo = function(run, iters, pause = TRUE, y1lim = NULL, y2lim = NULL, points.
       f = function(x, lambda, rho, const) {
         x = (x - y1range[1L]) / (y1range[2L] - y1range[1L])
         y.left = (const - lambda[1L] * x * (1 + rho)) / (rho * lambda[2L])
-         y.left = y.left * (y2range[2L] - y2range[1L]) + y2range[1L]
+        y.left = y.left * (y2range[2L] - y2range[1L]) + y2range[1L]
         
         y.right = (const - lambda[1L] * x * rho) / ((1 + rho) * lambda[2L])
         y.right = y.right * (y2range[2L] - y2range[1L]) + y2range[1L]
@@ -171,10 +135,10 @@ autoplo = function(run, iters, pause = TRUE, y1lim = NULL, y2lim = NULL, points.
         y1 = m.seq,
         y2 = f(m.seq, weights, rho, const),
         type = rep("init", 100)
-        )
-
+      )
+      
       ply = ggplot(data = gg.points.front, aes(x = y1, y = y2,
-          colour = type, shape = type))
+        colour = type, shape = type))
       ply = ply + geom_point(data = subset(gg.points.front, type == "front"),
         size = 2, alpha = 0.4)
       ply = ply + geom_point(data = subset(gg.points.front, type != "front"),
@@ -188,7 +152,7 @@ autoplo = function(run, iters, pause = TRUE, y1lim = NULL, y2lim = NULL, points.
       ply = ply + geom_text(data = NULL, x = 3/12 * y1lim[2L], y = 23/24 * y2lim[2L],
         label = paste("lambda[2] == ", round(weights[2L], 2), sep = ""), parse = TRUE, col = "black", size = 5)
       ply = ply + geom_line(data = gg.line, col = "blue", shape = 1)
-        
+      
       plx = ggplot()
       plx = plx + geom_tile(data = xgrid2, aes_string(x = names.x[1L], y = names.x[2L], fill = name.crit))
       plx = plx + scale_fill_gradientn(colours = topo.colors(7))
@@ -196,7 +160,7 @@ autoplo = function(run, iters, pause = TRUE, y1lim = NULL, y2lim = NULL, points.
         aes(x = x1, y = x2, colour = type, shape = type), size = 2, alpha = 0.8)
       plx = plx + geom_point(data = subset(gg.points.set, type != "front"),
         aes(x = x1, y = x2, colour = type, shape = type), size = 4)
-
+      
       title = sprintf("Iter %i", i)
       pl.all = grid.arrange(ply, plx, nrow = 1, main = title)
       print(pl.all)
@@ -205,21 +169,4 @@ autoplo = function(run, iters, pause = TRUE, y1lim = NULL, y2lim = NULL, points.
     }
   }
   return(pl.all)
-}
-
-
-
-f = zdt2
-ps = makeNumericParamSet(len = 2L, lower = 0, upper = 1)
-
-#set.seed(1)
-#ctrl = makeMBOControl(number.of.targets = 2L, init.design.points = 10L, iters = 10)
-#ctrl = setMBOControlInfill(ctrl, crit = "ei", opt.focussearch.points = 1000, opt.restarts = 5L)
-#ctrl = setMBOControlMultiCrit(ctrl)
-#run = exampleRunParEGO(makeMBOFunction(f), ps, control = ctrl)
-
-for (i in 1:10) {
-  pdf(paste("bench/mco/slides/paregoAnimation", i, ".pdf", sep = ""), width = 9, height = 5.5)
-  autoplo(run, iters = i, pause = FALSE, points.per.dim = 50)
-  dev.off()
 }

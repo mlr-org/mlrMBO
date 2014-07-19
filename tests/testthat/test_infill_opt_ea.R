@@ -14,5 +14,17 @@ test_that("infillopt ea", {
 
   res = mbo(makeMBOFunction(objfun), ps, learner = lrn, control = ctrl)
   expect_true(res$y < 1e-1)
+
+  objfun = function(x) {
+  	x$num1^2 + x$int1
+  }
+
+  ps = makeParamSet(
+  	makeNumericParam("num1", lower = -1, upper = 1),
+  	makeIntegerParam("int1", lower = 0, upper = 2)
+  )
+
+  res = mbo(objfun, ps, learner = lrn, control = ctrl)
+  expect_true(res$y < 1e-1)
 })
 

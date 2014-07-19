@@ -86,7 +86,7 @@ evalTargetFun = function(fun, par.set, dobs, xs, opt.path, control, show.info, o
     addOptPathEl(opt.path, x = x, y = y2, dob = dob,
       error.message = errmsg, exec.time = ytime, extra = extras[[i]])
   }
-  
+
   # FIXME: See issue
   configureMlr(on.learner.error = control$on.learner.error,
     show.learner.output = control$show.learner.output)

@@ -1,0 +1,91 @@
+There is one row missing in mcoBenchResults.RData because there was an error 
+in one of the jobs:
+
+testfunction: wfg7
+algorithm: parego
+prop.points: 1
+
+seed: 473458618
+
+
+
+library(mlrMBO)
+
+make01 = function(x)
+  pmin(1, pmax(0, x))
+
+bParam = function(y, u, A, B, C){
+  v = A - (1 - 2 * u) * abs(floor(0.5 - u) + A);
+  make01(y^(B + (C - B)*v))
+}
+
+sLinear = function(y, A)
+  make01( abs(y - A) / abs(floor(A - y) + A) )
+
+concave1 = function(x)
+  make01(sin(x * pi / 2))
+
+concave2 = function(x)
+  make01(cos(x * pi / 2))
+
+rSum = function(y, w)
+  make01(sum(w * y) / sum(w))
+
+wfg7 = function(z, k=3){
+  n = length(z)
+  t1 = numeric(n)
+  tmp = sum(z[(k+1):n])
+  for(i in k:1){
+    t1[i] = bParam(z[i], tmp, 0.98/49.98, 0.02, 50)
+    tmp = tmp + z[i]
+  }   
+  t1[(k+1):n] = z[(k+1):n]
+  t2 = numeric(n)
+  t2[1:k] = t1[1:k]
+  t2[(k+1):n] = sLinear(t1[(k+1):n], 0.35)
+  t3 = numeric(2)
+  t3[1] = rSum(t2[1:k], rep(1, k))
+  t3[2] = rSum(t2[(k+1):n], rep(1, n-k))
+  x = numeric(2)
+  x[1] = max(t3[2], 1)*(t3[1] - 0.5) + 0.5
+  x[2] = t3[2]
+  f = numeric(2)
+  f[1] =  x[2] + 2 * concave1(x[1])
+  f[2] =  x[2] + 4 * concave2(x[1])
+  return(f)
+}
+
+FEVALS = 200L
+INIT_DESIGN_POINTS = 40L
+prop.points = 1L
+lower = 0
+upper = 1
+par.set = makeNumericParamSet("x", len = 5L, lower = lower, upper = upper)
+names.x = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
+ny = 2L
+
+learner = makeLearner("regr.km", predict.type = "se")
+iters = (FEVALS - INIT_DESIGN_POINTS) / prop.points
+
+ctrl = makeMBOControl(number.of.targets = ny, init.design.points = INIT_DESIGN_POINTS,
+  iters = iters, propose.points = prop.points,
+  save.on.disk.at = integer(0L))
+ctrl = setMBOControlInfill(ctrl, crit = "ei", opt.focussearch.points = 10000L, 
+  opt.restarts = 3L, opt.focussearch.maxit = 3L)
+ctrl = setMBOControlMultiCrit(ctrl)
+
+set.seed(473458618)
+
+mbo(makeMBOFunction(wfg7), par.set, learner = learner, control = ctrl, show.info = TRUE)
+
+
+# Warning in train(.learner$next.learner, .task) :
+#   Could not train learner regr.km: Error in optim(par = parinit, fn = fn, gr = gr, method = "L-BFGS-B", lower = lower,  : 
+#       nicht endlicher Wert von optim angegeben
+#     
+#     Warning in predict.WrappedModel(model, newdata = points) :
+#       Could not predict with learner regr.km.preproc: Error in UseMethod("predict") : 
+#       no applicable method for 'predict' applied to an object of class "character"
+#     
+#     Error in if (local.y < global.y) { : 
+#         missing value where TRUE/FALSE needed

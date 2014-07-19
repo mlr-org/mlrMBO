@@ -25,6 +25,7 @@ mboSingleObj = function(fun, par.set, design = NULL, learner, control, show.info
   # helper to get extras-list for opt.path logging
   getExtras = function(crit.vals, error.model, lambdas) {
     n = length(crit.vals)
+    crit.vals = unlist(crit.vals)
     exs = vector("list", n)
     for (i in 1:n) {
       ex = list(crit.vals[i], error.model = error.model)

@@ -32,7 +32,7 @@ mbo = function(fun, par.set, design = NULL, learner, control, show.info = TRUE, 
   # also: only do this for dep. params
   learner = makeImputeWrapper(learner, classes = list(
      numeric = imputeMedian(),
-     factor = imputeConstant("__miss__")
+     factor = imputeMode()
   ))
   checkStuff(fun, par.set, design, learner, control)
 
@@ -44,7 +44,7 @@ mbo = function(fun, par.set, design = NULL, learner, control, show.info = TRUE, 
 
   # Call the correct mbo function
   mbo.fun = determineMBOFun(control)
-  mbo.fun(fun = fun, par.set = par.set, design = design, 
+  mbo.fun(fun = fun, par.set = par.set, design = design,
     learner = learner, control = control,
     show.info = show.info, more.args = more.args)
 }
@@ -61,5 +61,5 @@ determineMBOFun = function(control) {
     if (control$multicrit.method == "parego") {
       return(mboParEGO)
     }
-  }  
+  }
 }

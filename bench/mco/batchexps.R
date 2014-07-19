@@ -71,16 +71,18 @@ addAlgorithm(reg, "nsga2", fun = function(static, generations) {
   list(pareto.set = pareto.set, pareto.front = pareto.front, hv = hv, cd = cd, r2 = r2)
 })
 
-addAlgorithm(reg, "parego", fun = function(static) {
+addAlgorithm(reg, "parego", fun = function(static, prop.points) {
   par.set = static$par.set
   names.x = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
 
   learner = makeLearner("regr.km", predict.type = "se")
+  iters = (FEVALS - INIT_DESIGN_POINTS) / prop.points
 
   ctrl = makeMBOControl(number.of.targets = static$ny, init.design.points = INIT_DESIGN_POINTS,
-    iters = ITERS, propose.points = PROP_POINTS,
+    iters = iters, propose.points = prop.points,
     save.on.disk.at = integer(0L))
-  ctrl = setMBOControlInfill(ctrl, crit = "ei", opt.focussearch.points = 100, opt.restarts = 1L)
+  ctrl = setMBOControlInfill(ctrl, crit = "ei", opt.focussearch.points = 10000L, 
+    opt.restarts = 3L, opt.focussearch.maxit = 3L)
   ctrl = setMBOControlMultiCrit(ctrl)
 
   res = mbo(makeMBOFunction(static$objective), static$par.set,
@@ -92,16 +94,18 @@ addAlgorithm(reg, "parego", fun = function(static) {
 })
 
 
-des = makeDesign("nsga2", exhaustive = list(
+des1 = makeDesign("nsga2", exhaustive = list(
   generations = c(GENERATIONS1, GENERATIONS2)
 ))
 
-addExperiments(reg, algo.design = des, repls = REPLS)
-addExperiments(reg, algo.design = "parego", repls = REPLS)
+des2 = makeDesign("parego", exhaustive = list(
+  prop.points = c(PROP_POINTS1, PROP_POINTS2)
+))
 
-# testJob(reg, 71, external = T)
+addExperiments(reg, algo.design = des1, repls = REPLS)
+addExperiments(reg, algo.design = des2, repls = REPLS)
+
 
 submitJobs(reg, ids = chunk(getJobIds(reg), n.chunks = 33, shuffle = TRUE),
   resources=list(walltime=8*3600, memory=2*1024),
   wait=function(retries) 1, max.retries=10)
-
