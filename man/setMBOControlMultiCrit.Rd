@@ -25,7 +25,7 @@ weight vectors. The defaults for (2, 3, 4, 5, 6) dimensions are (100000,
 Parameter of parego - factor for Tchebycheff function. Default 0.05 as
 suggested in parego paper.}
 
-\item{parego.sample.more.weights}{[\code{numeric(1)}]\cr
+\item{parego.sample.more.weights}{[\code{integer(1)}]\cr
 In each iteration \code{parego.sample.more.weights} * \code{propose.points}
 are sampled and the weights with maximum distance to each other are chosen.
 Default is 1, if only 1 point is proposed each iteration, otherwise 5.}

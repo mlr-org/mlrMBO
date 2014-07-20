@@ -12,6 +12,7 @@
   \item{opt.path [\code{\link[ParamHelpers]{OptPath}}]}{Optimization path.
     Includes all evaluated points and additional information.
     You can convert it via \code{as.data.frame}.}
+    FIXME: Finish doc here
   \item{resample.vals ???}{???}
   \item{models [List of \code{\link[mlr]{WrappedModel}}]}{List of saved regression models.}
 }
