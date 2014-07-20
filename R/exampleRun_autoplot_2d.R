@@ -1,5 +1,6 @@
-if(getRversion() >= "2.15.1")
-  utils::globalVariables(c("y", "type"))
+# work around "no visible binding for global variable" notes of R CMD check
+if (getRversion() >= "2.15.1")
+  utils::globalVariables(c("se.min", "se.max"))
 
 # Function for plotting 2d numeric respectively mixed discrete/numeric functions.
 #
@@ -29,7 +30,7 @@ if(getRversion() >= "2.15.1")
 # @param ... [\code{list}]\cr
 #   Not used.
 # @return [\code{list}] List of length \code{iters}. Each list element is a list of plots.
-autoplotExampleRun2d = function(x, iters, 
+autoplotExampleRun2d = function(x, iters,
   pause = TRUE, densregion = TRUE,
   point.size, line.size,
   trafo = NULL, ...)  {

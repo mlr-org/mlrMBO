@@ -4,7 +4,7 @@
 #' There are multiple types of errors that can occur during one optimization
 #' process. mbo tries to handle most of them as smart as possible. In detail
 #' mbo offers 2 powerful mechanisms, that alow you handle most errors.
-#' 
+#'
 #' The first mechanism is imputation. There may be situations, in that your
 #' target function does not behave as nice as you want it to. We can think
 #' of 3 different misbehvaviours:
@@ -15,9 +15,9 @@
 #' }
 #' The third situation is somehow different to the first two, since it is hard to
 #' detect. We are only able to detect this situation, if you are parallizing
-#' your optimiziaton via \code{\link[ParallelMap]{parallelMap}} and using the BatchJob mode.
+#' your optimiziaton via \code{\link[parallelMap]{parallelMap}} and using the BatchJob mode.
 #' In this case, you can specify a walltime and your function will generate
-#'  an Job-Expired-Error if it reaches the walltime. 
+#'  an Job-Expired-Error if it reaches the walltime.
 #' These 3 behaviours have one in common - the optimizer does not get a valid
 #' information for the proposed point. Now the first thing you want to happen
 #' in this case is to get informed about the misbehaviour. So, the default
@@ -30,7 +30,7 @@
 #' this. In this case you have the option to specify a function for imputation
 #' of bad values. This can be done by setting the \code{impute.y.fun} argument of
 #' \code{\link{makeMBOControl}}:
-#' 
+#'
 #' Function that gets triggered if your objective evaluation produced
 #'   a) an exception b) a return object of invalid type c) a numeric vector that
 #'   contains \code{NA}, \code{NaN}, \code{Inf}.
@@ -42,14 +42,14 @@
 #'   and \code{opt.path} the current optimization path.
 #'   Default is \code{NULL} which means to stop if the objective function did not produce the desired
 #'   result.
-#'   
+#'
 #' Notice that the fitting of our surrogate model needs valid \code{y}-values,
 #' so you have to impute your NAs if you don't want to stopYou should also think
 #' about setting \code{suppress.eval.errors} to suppress all the wanted error messages.
 #' Be careful to not overlook unwanted errors, for this case all error messages are
 #'  logged in the optimization path.
-#' 
-#' 
+#'
+#'
 #' The second mechanism is a continue-mechanism, that allows you to continue
 #' your optimization after your system or the optimization process crashed for
 #' some reason. To make this possible, mbo has the option to save the current
@@ -58,7 +58,7 @@
 #' saving of the current optimization state only after full optimization iteration.
 #' So we are sorry, that process made during the latest iteration is lost. If your
 #' system crashes in iteration 9, you have to continue after iteration 8.
-#' 
+#'
 #' Saving of the current optimization state is enabled by default. To chance this,
 #' you must change the argument \code{save.on.disk.at} of \code{\link{makeMBOControl}}.
 #' Here you can specify, after which iteration you want the current state to be

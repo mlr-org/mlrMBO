@@ -1,5 +1,5 @@
 # work around "no visible binding for global variable" notes of R CMD check
-if(getRversion() >= "2.15.1")
+if (getRversion() >= "2.15.1")
   utils::globalVariables(c("se.min", "se.max"))
 
 # Function for plotting 1d numeric respectively discrete functions.
@@ -40,8 +40,8 @@ if(getRversion() >= "2.15.1")
 #   Not used.
 # @return [\code{list}] List of length \code{iters}. Each list element is a list of plots.
 autoplotExampleRun1d = function(x, iters,
-  xlim, ylim, 
-  pause, se.factor, 
+  xlim, ylim,
+  pause, se.factor,
   point.size, line.size,
   trafo, densregion = TRUE, ...) {
   # extract relevant data from MBOExampleRun
