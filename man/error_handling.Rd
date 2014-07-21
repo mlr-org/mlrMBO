@@ -17,7 +17,7 @@ of 3 different misbehvaviours:
 }
 The third situation is somehow different to the first two, since it is hard to
 detect. We are only able to detect this situation, if you are parallizing
-your optimiziaton via \code{\link[ParallelMap]{parallelMap}} and using the BatchJob mode.
+your optimiziaton via \code{\link[parallelMap]{parallelMap}} and using the BatchJob mode.
 In this case, you can specify a walltime and your function will generate
  an Job-Expired-Error if it reaches the walltime.
 These 3 behaviours have one in common - the optimizer does not get a valid

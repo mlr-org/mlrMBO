@@ -22,14 +22,14 @@
 #' @return [\code{list}]. List containing seperate ggplot plots for each iteration.
 
 autoplot.ParEGOExampleRun = function(run, iters, pause = TRUE, y1lim = NULL, y2lim = NULL, ...) {
-  
+
   requirePackages("gridExtra", why = "autoplot.MBOExampleRun")
   requirePackages("ggplot2", why = "autoplot.MBOExampleRun")
-  
+
   points.per.dim = run$points.per.dim
   points.per.dim = convertInteger(points.per.dim)
   assertCount(points.per.dim, na.ok = FALSE, positive = TRUE)
-  
+
   # extract information from example run object
   par.set = run$par.set
   control = run$control
@@ -61,32 +61,32 @@ autoplot.ParEGOExampleRun = function(run, iters, pause = TRUE, y1lim = NULL, y2l
   opt.direction = 1
   if (name.crit %in% c("ei"))
     opt.direction = -1
-  
+
   idx.init = which(opt.path$dob == 0)
-  
+
   # save sequence of opt plots here
   plot.sequence = list()
-  
+
   for (i in iters) {
     for (j in 1:proppoints) {
       catf("Iter %i; Point %i", i, j)
       model = mbo.res$models[[i]][[j]]
-      
+
       idx.seq = which(opt.path$dob > 0 & opt.path$dob < i)
       idx.proposed = which(opt.path$dob == i)
       idx.past = which(opt.path$dob < i)
       idx.pastpresent = which(opt.path$dob <= i)
       weights = as.numeric(opt.path[idx.proposed, c(".weight1", ".weight2")])
-      
+
       model.ok = !inherits(model, "FailureModel")
-      
+
       if (model.ok) {
         xgrid2[[name.crit]] = opt.direction *
           critfun(xgrid, model, control, par.set, opt.path[idx.past, ])
       }
       print(summary(xgrid2))
       idx = c(idx.init, idx.seq, idx.proposed, idx.nsga2front)
-      
+
       gg.points.front = data.frame(
         y1 = yy[idx, 1L],
         y2 = yy[idx, 2L],
@@ -97,7 +97,7 @@ autoplot.ParEGOExampleRun = function(run, iters, pause = TRUE, y1lim = NULL, y2l
           rep("front", length(idx.nsga2front))
         ))
       )
-      
+
       gg.points.set = data.frame(
         x1 = xx[idx, 1L],
         x2 = xx[idx, 2L],
@@ -108,7 +108,7 @@ autoplot.ParEGOExampleRun = function(run, iters, pause = TRUE, y1lim = NULL, y2l
           rep("front", length(idx.nsga2front))
         ))
       )
-      
+
       # make dataframe for lines to show rho
       m.seq = seq(y1lim[1], y1lim[2], length.out = 10000)
       # slope and intercept defined by lambda - a bit ugly due to normalization
@@ -120,7 +120,7 @@ autoplot.ParEGOExampleRun = function(run, iters, pause = TRUE, y1lim = NULL, y2l
         x = (x - y1range[1L]) / (y1range[2L] - y1range[1L])
         y.left = (const - lambda[1L] * x * (1 + rho)) / (rho * lambda[2L])
         y.left = y.left * (y2range[2L] - y2range[1L]) + y2range[1L]
-        
+
         y.right = (const - lambda[1L] * x * rho) / ((1 + rho) * lambda[2L])
         y.right = y.right * (y2range[2L] - y2range[1L]) + y2range[1L]
         pmin(y.left, y.right)
@@ -136,9 +136,9 @@ autoplot.ParEGOExampleRun = function(run, iters, pause = TRUE, y1lim = NULL, y2l
         y2 = f(m.seq, weights, rho, const),
         type = rep("init", 100)
       )
-      
-      ply = ggplot(data = gg.points.front, aes(x = y1, y = y2,
-        colour = type, shape = type))
+
+      ply = ggplot(data = gg.points.front, aes_string(x = "y1", y = "y2",
+        colour = "type", shape = "type"))
       ply = ply + geom_point(data = subset(gg.points.front, type == "front"),
         size = 2, alpha = 0.4)
       ply = ply + geom_point(data = subset(gg.points.front, type != "front"),
@@ -152,15 +152,15 @@ autoplot.ParEGOExampleRun = function(run, iters, pause = TRUE, y1lim = NULL, y2l
       ply = ply + geom_text(data = NULL, x = 3/12 * y1lim[2L], y = 23/24 * y2lim[2L],
         label = paste("lambda[2] == ", round(weights[2L], 2), sep = ""), parse = TRUE, col = "black", size = 5)
       ply = ply + geom_line(data = gg.line, col = "blue", shape = 1)
-      
+
       plx = ggplot()
       plx = plx + geom_tile(data = xgrid2, aes_string(x = names.x[1L], y = names.x[2L], fill = name.crit))
       plx = plx + scale_fill_gradientn(colours = topo.colors(7))
       plx = plx +  geom_point(data = subset(gg.points.set, type == "front"),
-        aes(x = x1, y = x2, colour = type, shape = type), size = 2, alpha = 0.8)
+        aes_string(x = "x1", y = "x2", colour = "type", shape = "type"), size = 2, alpha = 0.8)
       plx = plx + geom_point(data = subset(gg.points.set, type != "front"),
-        aes(x = x1, y = x2, colour = type, shape = type), size = 4)
-      
+        aes_string(x = "x1", y = "x2", colour = "type", shape = "type"), size = 4)
+
       title = sprintf("Iter %i", i)
       pl.all = grid.arrange(ply, plx, nrow = 1, main = title)
       print(pl.all)

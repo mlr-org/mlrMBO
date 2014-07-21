@@ -1,7 +1,3 @@
-# work around "no visible binding for global variable" notes of R CMD check
-if (getRversion() >= "2.15.1")
-  utils::globalVariables(c("se.min", "se.max"))
-
 # Function for plotting 2d numeric respectively mixed discrete/numeric functions.
 #
 # @param x [\code{function}]\cr
@@ -104,7 +100,8 @@ autoplotExampleRun2d = function(x, iters,
       if (name.z != "ei") {
         pl = pl + stat_contour(aes_string(fill = name.z), binwidth = 5)
       }
-      pl = pl + geom_point(data = points, aes(x = x1, y = x2, z = y, colour = type, shape = type),
+      pl = pl + geom_point(data = points, aes_string(x = "x1", y = "x2", z = "y",
+          colour = "type", shape = "type"),
         size = point.size)
 
       title = name.z

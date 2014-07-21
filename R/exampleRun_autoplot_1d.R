@@ -1,7 +1,3 @@
-# work around "no visible binding for global variable" notes of R CMD check
-if (getRversion() >= "2.15.1")
-  utils::globalVariables(c("se.min", "se.max"))
-
 # Function for plotting 1d numeric respectively discrete functions.
 #
 # @param x [\code{function}]\cr
@@ -175,14 +171,16 @@ autoplotExampleRun1d = function(x, iters,
       # finally build the ggplot object(s)
       pl.fun = ggplot(data = gg.fun)
       pl.fun = pl.fun
-      pl.fun = pl.fun + geom_line(aes(x = x, y = y, linetype = type), size = line.size)
+      pl.fun = pl.fun + geom_line(aes_string(x = "x", y = "y", linetype = "type"), size = line.size)
 
       if (se & densregion) {
         gg.se = subset(gg.fun, type == "yhat")
-        pl.fun = pl.fun + geom_ribbon(data = gg.se, aes(x = x, ymin = se.min, ymax = se.max), alpha=0.2)
+        pl.fun = pl.fun + geom_ribbon(data = gg.se, aes_string(x = "x", ymin = "se.min", ymax = "se.max"),
+          alpha=0.2)
       }
 
-      pl.fun = pl.fun + geom_point(data = gg.points, aes(x = x, y = y, colour = type, shape = type), size = point.size)
+      pl.fun = pl.fun + geom_point(data = gg.points, aes_string(x = "x", y = "y", colour = "type",
+          shape = "type"), size = point.size)
       pl.fun = pl.fun + xlab(NULL)
 
       # if trafo for y is provided, indicate transformation on the y-axis
@@ -205,7 +203,7 @@ autoplotExampleRun1d = function(x, iters,
         plot.title = element_text(size=11, face="bold")
       )
 
-      pl.crit = ggplot(data = gg.crit, aes(x = x, y = y))
+      pl.crit = ggplot(data = gg.crit, aes_string(x = "x", y = "y"))
       pl.crit = pl.crit + geom_line(linetype = "dotted", colour = "black", size = line.size)
       pl.crit = pl.crit + geom_vline(xintercept = opt.path[idx.proposed, names.x], linetype = "dashed", colour="darkgray", size = line.size)
 
@@ -233,10 +231,10 @@ autoplotExampleRun1d = function(x, iters,
         gg.points$se.max = gg.points$y + se.factor * gg.points$se
       }
 
-      pl.fun = ggplot(data = gg.points, aes(x = x, y = y, colour = type, shape = type))
+      pl.fun = ggplot(data = gg.points, aes_string(x = "x", y = "y", colour = "type", shape = "type"))
       pl.fun = pl.fun + geom_point(size = point.size)
       if (se & densregion) {
-        pl.fun = pl.fun + geom_errorbar(aes(ymin = se.min, ymax = se.max), width = .1, alpha = .5)
+        pl.fun = pl.fun + geom_errorbar(aes_string(ymin = "se.min", ymax = "se.max"), width = .1, alpha = .5)
       }
       print(gg.points)
 

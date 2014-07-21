@@ -22,6 +22,7 @@ Suggests:
     emoa,
     ggplot2,
     gridExtra,
+    mco,
     soobench,
     testthat
 LazyData: yes
