@@ -21,6 +21,16 @@ hartman = function(x, d = 1){
   # x* = (0.114, 0.556, 0.852), f* = -3.8627
 }
 
+sasena = function(x) {
+  # Sasena (2002)
+  # Sasena, M.J. (2002), Flexibility and Efficiency Enhancements for Constrained Global Design Optimization with Kriging Approximations, Ph. D. dissertation, University of Michigan.
+  if(is.list(x))
+    x = unlist(x)
+  assertNumeric(x, len = 1, lower = 0, upper = 10)
+  res = -1 * sin(x) - exp(x/100) + 10
+  res
+}
+
 bakeFunction = function(fun, lvl.par = "dw.perc", ...){
   force(fun)
   force(lvl.par)
@@ -35,19 +45,28 @@ bakeFunction = function(fun, lvl.par = "dw.perc", ...){
 }
   
 rnormNoise = function(lvl.par.val, x, sd.fac = 0.1){
+  if(is.list(x))
+    x = unlist(x)
   rnorm(1, mean = (1 - lvl.par.val), sd = sd.fac * 1/lvl.par.val)
 }
 
-makeNoiseFunction = function(fun, noisefun = rnormNoise, ...){
+uppMove = function(lvl.par.val, x, fac = 1) {
+  if(is.list(x))
+    x = unlist(x)
+  lvl.par.val = (1-lvl.par.val) * fac
+  lvl.par.val + lvl.par.val/10 * (x - lvl.par.val * 10)^2
+}
+
+makeAddFunction = function(fun, addfun = rnormNoise, ...){
   force(fun)
-  force(noisefun)
+  force(addfun)
   pars = list(...)
   function(x, lvl.par = "dw.perc", ...){
     lvl.ind = which(names(x) == lvl.par)
     lvl.par.val = x[[lvl.ind]]
     x2 = x[-lvl.ind]
-    noise = do.call(noisefun, c(list(lvl.par.val = lvl.par.val, x = x2), pars))
-    fun(x = x, lvl.par = lvl.par, ...) + noise
+    add = do.call(addfun, c(list(lvl.par.val = lvl.par.val, x = x2), pars))
+    fun(x = x, lvl.par = lvl.par, ...) + add
   }
 }
 
@@ -71,10 +90,15 @@ makeShiftFunction = function(fun, shiftfun = linShift, ...) {
   }
 }
 
-# x = seq(0,2,by=0.05)
+x = seq(0,10,by=0.1)
+sp = makeAddFunction(fun=bakeFunction(sasena), addfun=uppMove)
+y1 = sapply(x, function(x.this) sp(list(x.this, dw.perc = 1)))
+y2 = sapply(x, function(x.this) sp(list(x.this, dw.perc = 0.7)))
+plot(x,y1, type="l")
+lines(x,y2, lty = 2)
 # hartNoise = makeNoiseFunction(bakeFunction(hartman), sd.fac = 0.005)
 # hartShift = makeShiftFunction(bakeFunction(hartman), direction = 1)
 # hartNS = makeShiftFunction(hartNoise, direction = 1)
 # y = sapply(x, function(x.this) hartNoise(list(x.this, dw.perc=0.6)))
 # y = sapply(x, function(x.this) hartNS(list(x.this, dw.perc=0.9)))
-# plot(x,y, type="l")
+
