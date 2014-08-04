@@ -7,7 +7,7 @@
 #' @return Object of type MBOTrafoFunction.
 #' @seealso \link{trafos}
 #' @export
-makeTrafoFunction = function(name, fun) {
+makeMBOTrafoFunction = function(name, fun) {
   fun = addClasses(fun, "MBOTrafoFunction")
   fun = setAttribute(fun, "name", name)
   return(fun)
@@ -30,7 +30,7 @@ NULL
 #' @export
 #' @rdname trafos
 logTrafo = function() {
-  makeTrafoFunction(
+  makeMBOTrafoFunction(
     name = "log",
     fun = function(x) {
       if (any(x < 0)) {
@@ -45,7 +45,7 @@ logTrafo = function() {
 #' @export
 #' @rdname trafos
 log10Trafo = function() {
-  makeTrafoFunction(
+  makeMBOTrafoFunction(
     name = "log10",
     fun = function(x) {
       if (any(x < 0)) {
@@ -60,7 +60,7 @@ log10Trafo = function() {
 #' @export
 #' @rdname trafos
 sqrtTrafo = function() {
-  makeTrafoFunction(
+  makeMBOTrafoFunction(
     name = "sqrt",
     fun = function(x) {
       sqrt(x)
