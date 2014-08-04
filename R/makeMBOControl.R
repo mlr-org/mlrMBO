@@ -60,6 +60,9 @@
 #'   and \code{opt.path} the current optimization path.
 #'   Default is \code{NULL} which means to stop if the objective function did not produce the desired
 #'   result.
+#' @param trafo.y.fun [\code{MBOTrafoFunction}]\cr
+#'   Sometimes it is favourable to transform the target function values before modelling. Provide a
+#'   MBO transformation function to do so.
 #' @param suppress.eval.errors [\code{logical(1)}]\cr
 #'   Should reporting of error messages during target function evaluations be suppressed?
 #'   Only used if \code{impute.errors} is \code{TRUE}.
@@ -108,6 +111,7 @@ makeMBOControl = function(number.of.targets = 1L,
   final.method = "best.true.y", final.evals = 0L,
   y.name = "y",
   impute.y.fun = NULL,
+  trafo.y.fun = NULL,
   suppress.eval.errors = TRUE,
   save.on.disk.at = 0:(iters+1),
   save.file.path = file.path(getwd(), "mlr_run.RData"),
@@ -132,6 +136,9 @@ makeMBOControl = function(number.of.targets = 1L,
 
   if (!is.null(impute.y.fun))
     assertFunction(impute.y.fun, args = c("x", "y", "opt.path"))
+
+  if (!is.null(trafo.y.fun))
+    assertClass(trafo.y.fun, "MBOTrafoFunction")
 
   assertFlag(suppress.eval.errors)
 
@@ -175,6 +182,7 @@ makeMBOControl = function(number.of.targets = 1L,
     final.evals = final.evals,
     y.name = y.name,
     impute.y.fun = impute.y.fun,
+    trafo.y.fun = trafo.y.fun,
     suppress.eval.errors = suppress.eval.errors,
     save.on.disk.at = save.on.disk.at,
     save.file.path = save.file.path,
@@ -204,23 +212,26 @@ makeMBOControl = function(number.of.targets = 1L,
 #'   Not used.
 #' @export
 print.MBOControl = function(x, ...) {
-  catf("Objectives                  : %s",
+  catf("Objectives                    : %s",
     collapsef("%s = %s!", x$y.name, ifelse(x$minimize, "min", "max"), sep = "; "))
-  catf("Function type               : %s",  ifelse(x$noisy, "noisy", "deterministic"))
-  catf("Init. design                : %i points", x$init.design.points)
-  catf("Iterations                  : %i", x$iters)
-  catf("Points proposed per iter:   : %i", x$propose.points)
+  catf("Function type                 : %s",  ifelse(x$noisy, "noisy", "deterministic"))
+  catf("Init. design                  : %i points", x$init.design.points)
+  catf("Iterations                    : %i", x$iters)
+  catf("Points proposed per iter      : %i", x$propose.points)
+  if (!is.null(x$trafo.y.fun)) {
+    catf("y transformed before modelling: %s", attr(x$trafo.y.fun, "name"))
+  }
+  catf("")
   if (x$number.of.targets > 1L) {
-    catf("Multicrit Method            : %s", x$multicrit.method)
+    catf("Multicrit Method              : %s", x$multicrit.method)
   } else {
     if (x$propose.points == 1) {
-      catf("Infill criterion            : %s", x$infill.crit)
-      catf("Infill optimizer            : %s", x$infill.opt)
-      catf("Infill optimizer restarts   : %i", x$infill.opt.restarts)
+      catf("Infill criterion              : %s", x$infill.crit)
+      catf("Infill optimizer              : %s", x$infill.opt)
+      catf("Infill optimizer restarts     : %i", x$infill.opt.restarts)
     } else {
-      catf("Multipoint method           : %s", x$control$multipoint.method)
+      catf("Multipoint method             : %s", x$control$multipoint.method)
     }
-    catf("Final point by              : %s", x$final.method)
-    
+    catf("Final point by                : %s", x$final.method)
   }
 }

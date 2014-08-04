@@ -9,7 +9,7 @@ makeMBOControl(number.of.targets = 1L, minimize = rep(TRUE,
   init.design.fun = maximinLHS, init.design.args = list(), iters = 10L,
   propose.points = 1L, feature.impute = "up",
   final.method = "best.true.y", final.evals = 0L, y.name = "y",
-  impute.y.fun = NULL, suppress.eval.errors = TRUE,
+  impute.y.fun = NULL, trafo.y.fun = NULL, suppress.eval.errors = TRUE,
   save.on.disk.at = 0:(iters + 1), save.file.path = file.path(getwd(),
   "mlr_run.RData"), store.model.at = iters, resample.at = integer(0),
   resample.desc = makeResampleDesc("CV", iter = 10),
@@ -89,6 +89,10 @@ and what the original, faulty object was.
 and \code{opt.path} the current optimization path.
 Default is \code{NULL} which means to stop if the objective function did not produce the desired
 result.}
+
+\item{trafo.y.fun}{[\code{MBOTrafoFunction}]\cr
+Sometimes it is favourable to transform the target function values before modelling. Provide a
+MBO transformation function to do so.}
 
 \item{suppress.eval.errors}{[\code{logical(1)}]\cr
 Should reporting of error messages during target function evaluations be suppressed?

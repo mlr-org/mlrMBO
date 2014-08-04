@@ -127,6 +127,17 @@ test_that("mbo works with rf", {
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100)
   or = mbo(f, ps, des = NULL, learner, ctrl, show.info = FALSE, more.args = list(shift = 0))
   expect_true(!is.na(or$y))
+
+  # check y transformation
+
+  ps = makeParamSet(
+    makeNumericParam("x1", lower = -1, upper = 1)
+  )
+
+  ctrl = makeMBOControl(iters = 5L, trafo.y.fun = trafoLog())
+  expect_error(mbo(f, ps, control = ctrl, show.info = FALSE, more.args = list(shift = -1)))
+  or = mbo(f, ps, show.info = FALSE, control = ctrl, more.args = list(shift = 0))
+  expect_true(!is.na(or$y))
 })
 
 # FIXME: we do we get so bad results with so many models for this case?
