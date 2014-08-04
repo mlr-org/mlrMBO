@@ -29,7 +29,7 @@ NULL
 
 #' @export
 #' @rdname trafos
-logTrafo = function() {
+trafoLog = function() {
   makeMBOTrafoFunction(
     name = "log",
     fun = function(x) {
@@ -44,7 +44,7 @@ logTrafo = function() {
 
 #' @export
 #' @rdname trafos
-log10Trafo = function() {
+trafoLog10 = function() {
   makeMBOTrafoFunction(
     name = "log10",
     fun = function(x) {
@@ -59,7 +59,7 @@ log10Trafo = function() {
 
 #' @export
 #' @rdname trafos
-sqrtTrafo = function() {
+trafoSqrt = function() {
   makeMBOTrafoFunction(
     name = "sqrt",
     fun = function(x) {
