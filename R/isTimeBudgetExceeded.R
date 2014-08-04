@@ -8,7 +8,7 @@
 #   Time budget in seconds.
 # @return [\code{logical(1)}]
 isTimeBudgetExceeded = function(start.time, time.budget) {
-  if (is.null(time.budget))
+  if (is.null(time.budget) || is.infinite(time.budget))
     return(FALSE)
   current.time = Sys.time()
   time.difference = as.numeric(difftime(current.time, start.time, units = "secs"))

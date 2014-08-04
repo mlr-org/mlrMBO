@@ -1,13 +1,13 @@
-
 #FIXME: how to choose best element. with noise? without?
-
 #FIXME: cmaes doesn't work when optimum in constraints
-
-
-# performns single objective mbo, then creates result S3 object
-
+# Performns single objective mbo, then creates result S3 object
 mboSingleObj = function(fun, par.set, design = NULL, learner, control, show.info = TRUE,
   more.args = list(), continue = NULL) {
+
+  # initialize stopping criteria stuff
+  start.time = Sys.time()
+  iters = control$iters
+  time.budget = control$time.budget
 
   # save currently set options
   oldopts = list(
@@ -74,9 +74,8 @@ mboSingleObj = function(fun, par.set, design = NULL, learner, control, show.info
 
   # if we are restarting from a save file, we possibly start in a higher iteration
   loop = max(getOptPathDOB(opt.path)) + 1L
-  start.time = Sys.time()
 
-  while (loop <= control$iters) {
+  while (!shouldTerminate(iters, loop, time.budget, start.time)) {
     # propose new points and evaluate target function
     prop = proposePoints(model, par.set, control, opt.path)
     prop.points = prop$prop.points
@@ -97,11 +96,12 @@ mboSingleObj = function(fun, par.set, design = NULL, learner, control, show.info
     saveStateOnDisk(loop, fun, learner, par.set, opt.path, control, show.info, more.args,
       models, resample.vals, NULL)
     loop = loop + 1L
+  }
 
-    if (isTimeBudgetExceeded(start.time, control$time.budget)) {
-      warningf("Stopping optimization because time budget (%i seconds) is exceeded.", control$time.budget)
-      break
-    }
+  if (isTimeBudgetExceeded(start.time, time.budget)) {
+    showInfo(show.info, "Terminating becauce of exceeded time budget.")
+  } else {
+    showInfo(show.info, "Terminating becauce of maximal iterations.")
   }
 
   design = getTaskData(rt, target.extra = TRUE)$data
