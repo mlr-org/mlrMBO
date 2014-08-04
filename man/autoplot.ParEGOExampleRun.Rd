@@ -8,29 +8,31 @@ autoplot.ParEGOExampleRun(run, iters, pause = TRUE, y1lim = NULL,
 }
 \arguments{
 \item{run}{[\code{}]\cr
-Objective function.}
+Object of type \code{ParEGOExampleRun}.}
 
 \item{iters}{[\code{integer}]\cr
 Selected iterations of \code{x} to display.
 Default is all iterations.}
 
 \item{pause}{[\code{logical(1)}]\cr
-Pause after each iteration?
+Pause after each iteration? In this case the plots are arranged in a grid making use
+of the gridExtra package.
 Default is \code{TRUE}.}
 
 \item{y1lim}{[\code{numeric(2)}]\cr
-axis limits for the Plot
+Axis limits for the first target value.
 Default is range of y1-values evaluated in run object \code{y1}.}
 
 \item{y2lim}{[\code{numeric(2)}]\cr
-axis limits for the Plot
+Axis limits for the second target value.
 Default is range of y2-values evaluated in run object \code{y2}.}
 
 \item{...}{[any]\cr
 Currently not used.}
 }
 \value{
-[\code{list}]. List containing seperate ggplot plots for each iteration.
+[\code{list}]. List of lists. For each iteration the sublist contains seperate ggplot
+  objects for the pareto set and the pareto front.
 }
 \description{
 FIXME: Describe Plot
