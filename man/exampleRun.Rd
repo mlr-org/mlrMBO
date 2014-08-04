@@ -57,7 +57,8 @@ useful for figuring out how stuff works and for teaching purposes.
 Currently only parameter spaces with numerical parameters are supported.
 For visualization, run \code{autoplot} on the resulting object.
 What is displayed is documented here: \code{\link{autoplot.MBOExampleRun}}.
-
+}
+\details{
 Please note the following things:
 - The true objective function (and later everything which is predicted from our surrogate model)
   is evaluated on a regular spaced grid. These evaluations are stored in the result object.

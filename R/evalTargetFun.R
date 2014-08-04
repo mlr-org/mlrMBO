@@ -1,15 +1,27 @@
 # Evaluates target fitness function on given set of points.
 #
-# xs = list of points
-# dobs = dobs values for xs, same len or 1 int
-# extras = extra values to be logged in the opt.path.
-#
-# - trafo xs
-# - evals all xs, measures time
-# - potentially imputes errors, NAs, NaNs, Infs
-#
-# returns numeric-vector (matrix for multicrit) of y-vals
-
+# @param fun [\code{function(x, ...)}}]\cr
+#   Fitness function to optimize.
+# @param par.set [\code{param.set}]\cr
+#   Parameter set.
+# @param dobs [\code{integer}]\cr
+#   Dob values (date of birth) for \code{xs}, same length or 1.
+# @param xs [\code{list}]\cr
+#   List of points.
+# @param opt.path [\code{\link[ParamHelpers]{optPath}}]\cr
+#   Optimization path.
+# @param control [\code{\link{MBOControl}}]\cr
+#   MBO control object.
+# @param show.info [\code{logical(1)}]\cr
+#   Show info or not?
+# @param oldopts [\code{list}]\cr
+#   Old options for mlr.
+# @param more.args [\code{list}]\cr
+#   Further parameters for target function.
+# @param extras [\code{list}]\cr
+#   List of extra information to be logged in \code{opt.path}.
+# @return [\code{numeric} | \code{matrix}] Numeric vector of y-vals or matrix 
+#   (for multi-criteria problems).
 evalTargetFun = function(fun, par.set, dobs, xs, opt.path, control, show.info, oldopts,
   more.args = list(), extras) {
 
