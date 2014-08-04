@@ -133,7 +133,11 @@ makeMBOControl = function(number.of.targets = 1L,
   assertFunction(init.design.fun)
   assertList(init.design.args)
 
-  iters = asInt(iters, lower = 0L)
+  if (is.null(iters) && is.null(time.budget))
+    stopf("You need to specify a maximal number of iteration, a time budget or both, but you provided neither.")
+
+  if (!is.null(iters))
+    iters = asInt(iters, lower = 0L)
   if (!is.null(time.budget))
     assertCount(time.budget, na.ok = FALSE, positive = TRUE)
 
