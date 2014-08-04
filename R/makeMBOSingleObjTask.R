@@ -1,8 +1,16 @@
-# Generates single obj task
+# Generates single objective task.
 #
 # - only uses x and y columns of optpath
 # - converts data types for regr model
 # - imputes features
+# 
+# @param par.set [\code{param.set}]\cr
+#   Parameter set.
+# @param opt.path [\code{\link[ParamHelpers]{optPath}}]\cr
+#   Optimization path.
+# @param control [\code{\link{MBOControl}}]\cr
+#   MBO control object.
+# @return [\code{\link[mlr]{SupervisedTask}}]
 makeMBOSingleObjTask = function(par.set, opt.path, control) {
   data = convertOptPathToDf(par.set, opt.path, control)
   data$dob = data$eol = NULL

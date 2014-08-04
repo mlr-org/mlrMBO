@@ -1,16 +1,20 @@
-# Generates a list of scalarized MBO multicrit tasks by sampling a unique weight
+# Generates a list of scalarized MBO multi-criteria tasks by sampling a unique weight
 # vector for each task.
 #
-# params: design, par.set and control as known. all.possible.weights is a
-# matrix with control$number.of.targets cols, each row sums up to one. The weight
+# @param par.set [\code{param.set}]\cr
+#   Parameter set.
+# @param opt.path [\code{\link[ParamHelpers]{optPath}}]\cr
+#   Optimization path.
+# @param control [\code{\link{MBOControl}}]\cr
+#   MBO control object.
+# @param all.possible.weights [\code{matrix}]\cr
+# Matrix with control$number.of.targets cols, each row sums up to one. The weight
 # vectors are sampled uniquely from this rows. Notice: The first control$number.of.target rows
 # have to be the margin rows, as generated in mboParego
-#
-# @return list of
+# @return [\code{list}] List with elements
 #   tasks: list of tasks
 #   weights: matrix of used weight vectors
 makeScalarTasks = function(par.set, opt.path, control, all.possible.weights) {
-
   n.points = control$propose.points
   # get data + normalize the targets to [0, 1] + drop them from data
   data = convertOptPathToDf(par.set, opt.path, control)

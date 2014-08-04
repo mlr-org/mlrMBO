@@ -1,10 +1,11 @@
-# random search, where we shrink the region of interest after restarts
+# Random search, where we shrink the region of interest after restarts
 # around the currently best point. only numeric / ints are currently "shrunken"
 # works for ALL parameter sets
-
+#
 #FIXME it would be nice to have a REASONABLE way to shrink categorical stuff too.
 #FIXME should we shrink if a local value is NA (dependent param)
-
+#
+# See infillOptCMAES.R for interface explanation.
 infillOptFocus = function(infill.crit, model, control, par.set, opt.path, design, ...) {
   global.y = Inf
 

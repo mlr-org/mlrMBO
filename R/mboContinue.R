@@ -1,6 +1,5 @@
-#' @title Continues an mbo run from a save-file.
+#' Continues an mbo run from a save-file.
 #'
-#' @description
 #' Useful if your optimization is likely to crash,
 #' so you can continue from a save point and will not lose too much information and runtime.
 #'

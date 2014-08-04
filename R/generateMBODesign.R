@@ -1,8 +1,27 @@
-# generates an initial design
+# Helper which generates an initial design (if none provided).
 #
-# - if no design is passed, create it. otherwise sanity-check it
-# - either do y-evals or log points to opt.path manually
-
+# If no design is passed, create it. otherwise sanity-check it.
+# Either do y-evals or log points to opt.path manually.
+#
+# @param design [\code{data.frame} | NULL]\cr
+#   Initial design as data frame. If none provided one is constructed.
+# @param fun [\code{function(x, ...)}]\cr
+#   Fitness function to minimize.
+# @param par.set [\code{param.set}]\cr
+#   Parameter set.
+# @param opt.path [\code{\link[ParamHelpers]{optPath}}]\cr
+#   Optimization path.
+# @param control [\code{\link{MBOControl}}]\cr
+#   MBO control object.
+# @param show.info [\code{logical(1)}]\cr
+#   Show info or not?
+# @param oldopts [\code{list}]\cr
+#   Old options for mlr.
+# @param more.args [\code{list}]\cr
+#   Further parameters for target function.
+# @param extras [\code{list}]\cr
+#   List of extra information to be logged in \code{opt.path}.
+# @return [\code{data.frame}]
 generateMBODesign = function(design, fun, par.set, opt.path, control, show.info, oldopts,
   more.args = list(), extras = NULL) {
 

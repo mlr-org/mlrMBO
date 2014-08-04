@@ -1,5 +1,5 @@
-#  Optimizes a multicrit optimization problem  with sequential model based
-#  optimization using the parEGO algorithm
+#  Optimizes a multi-criteria optimization problem with sequential model based
+#  optimization using the parEGO algorithm.
 #
 # @param fun [\code{function(x, ...)}]\cr
 #   Fitness functions to minimize. The first argument has to be a list of values.

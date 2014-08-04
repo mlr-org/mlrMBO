@@ -1,7 +1,7 @@
-# simple EA that uses operators from emoa functions
+# Simple EA that uses operators from emoa functions
 # kind of mimics our multicrit approach, so we can
-# compare more honestly
-
+# compare more honestly.
+# See infillOptCMAES.R for interface explanation.
 infillOptEA = function(infill.crit, model, control, par.set, opt.path, design, ...) {
   requirePackages("emoa", why = "infillOptEA")
 
@@ -64,6 +64,3 @@ infillOptEA = function(infill.crit, model, control, par.set, opt.path, design, .
     return(best.x)
   }
 }
-
-
-
