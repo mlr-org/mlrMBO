@@ -9,6 +9,7 @@
 getInfillCritFunction = function(infill.crit) {
   switch(infill.crit,
     mean = infillCritMeanResponse,
+    se = infillCritStandardError,
     ei = infillCritEI,
     # aei = infillCritAEI,
     lcb = infillCritLCB,
