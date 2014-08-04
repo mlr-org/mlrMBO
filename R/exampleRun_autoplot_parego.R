@@ -146,9 +146,9 @@ autoplot.ParEGOExampleRun = function(run, iters, pause = TRUE, y1lim = NULL, y2l
 
       pl.front = ggplot(data = gg.points.front, aes_string(x = "y1", y = "y2",
         colour = "type", shape = "type"))
-      pl.front = pl.front + geom_point(data = subset(gg.points.front, type == "front"),
+      pl.front = pl.front + geom_point(data = gg.points.front[which(gg.points.front$type == "front"), ],
         size = 2, alpha = 0.4)
-      pl.front = pl.front + geom_point(data = subset(gg.points.front, type != "front"),
+      pl.front = pl.front + geom_point(data = gg.points.front[which(gg.points.front$type != "front"), ],
         size = 4)
       pl.front = pl.front + geom_abline(intercept = intercept, slope = slope)
       pl.front = pl.front + xlab(y.name[1L])
@@ -164,9 +164,9 @@ autoplot.ParEGOExampleRun = function(run, iters, pause = TRUE, y1lim = NULL, y2l
       pl.set = ggplot()
       pl.set = pl.set + geom_tile(data = xgrid2, aes_string(x = x.name[1L], y = x.name[2L], fill = name.crit))
       pl.set = pl.set + scale_fill_gradientn(colours = topo.colors(7))
-      pl.set = pl.set +  geom_point(data = subset(gg.points.set, type == "front"),
+      pl.set = pl.set +  geom_point(data = gg.points.set[which(gg.points.set$type == "front"), ],
         aes_string(x = "x1", y = "x2", colour = "type", shape = "type"), size = 2, alpha = 0.8)
-      pl.set = pl.set + geom_point(data = subset(gg.points.set, type != "front"),
+      pl.set = pl.set + geom_point(data = gg.points.set[which(gg.points.set$type != "front"), ],
         aes_string(x = "x1", y = "x2", colour = "type", shape = "type"), size = 4)
 
       if (pause) {

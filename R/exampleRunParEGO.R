@@ -1,6 +1,5 @@
-#' @title Perform an parego run on a test function and and visualize what happens.
+#' Perform an parego run on a test function and and visualize what happens.
 #'
-#' @description
 #' Only available for 2D -> 2D examples,
 #' useful for figuring out how stuff works and for teaching purposes.
 #' Currently only parameter spaces with numerical parameters are supported.
@@ -66,6 +65,8 @@ exampleRunParEGO = function(fun, par.set, learner, control, points.per.dim = 50,
   args = list(fun, idim = getParamNr(par.set, devectorize = TRUE), odim = ny,
     lower.bounds = getLower(par.set), upper.bounds = getUpper(par.set),
     popsize = 60L, generations = 100L)
+
+  requirePackages("mco", why = "exampleRunParEGO")
   args = insert(args, nsga2.args)
   nsga2.res = do.call(nsga2, args)
   nsga2.paretoset = setColNames(as.data.frame(nsga2.res$par[nsga2.res$pareto.optimal, ]), names.x)

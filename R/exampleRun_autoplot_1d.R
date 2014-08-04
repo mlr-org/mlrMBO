@@ -174,9 +174,9 @@ autoplotExampleRun1d = function(x, iters,
       pl.fun = pl.fun + geom_line(aes_string(x = "x", y = "y", linetype = "type"), size = line.size)
 
       if (se & densregion) {
-        gg.se = subset(gg.fun, type == "yhat")
+        gg.se = gg.fun[which(gg.se$type == "yhat"), ]
         pl.fun = pl.fun + geom_ribbon(data = gg.se, aes_string(x = "x", ymin = "se.min", ymax = "se.max"),
-          alpha=0.2)
+          alpha = 0.2)
       }
 
       pl.fun = pl.fun + geom_point(data = gg.points, aes_string(x = "x", y = "y", colour = "type",
