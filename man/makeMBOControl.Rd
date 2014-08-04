@@ -7,7 +7,7 @@
 makeMBOControl(number.of.targets = 1L, minimize = rep(TRUE,
   number.of.targets), noisy = FALSE, init.design.points = 20L,
   init.design.fun = maximinLHS, init.design.args = list(), iters = 10L,
-  propose.points = 1L, feature.impute = "up",
+  time.budget = NULL, propose.points = 1L, feature.impute = "up",
   final.method = "best.true.y", final.evals = 0L, y.name = "y",
   impute.y.fun = NULL, trafo.y.fun = NULL, suppress.eval.errors = TRUE,
   save.on.disk.at = 0:(iters + 1), save.file.path = file.path(getwd(),
@@ -49,6 +49,10 @@ Default is empty list.}
 \item{iters}{[\code{integer(1)}]\cr
 Number of sequential optimization steps.
 Default is 10.}
+
+\item{time.budget}{[\code{integer(1)} | NULL]\cr
+Running time budget in seconds. Note that the actual mbo run can take more time since
+the condition is checked after each iteration.}
 
 \item{propose.points}{[\code{integer(1)}]\cr
 Number of proposed / really evaluated points each iteration.
