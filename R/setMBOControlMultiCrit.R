@@ -1,7 +1,6 @@
 #' Extends mbo control object with multi-criteria specific options.
 #'
-#' @param control [\code{MBOControl}]\cr
-#'   MBO control object.
+#' @template arg_control
 #' @param method [\code{character(1)}]\cr
 #'   Which multicrit method should be used? At the moment only parego is
 #'   supported, which is also the default.

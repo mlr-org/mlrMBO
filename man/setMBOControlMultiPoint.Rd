@@ -11,7 +11,7 @@ setMBOControlMultiPoint(control, method = "lcb", cl.lie = min,
 }
 \arguments{
 \item{control}{[\code{\link{MBOControl}}]\cr
-MBO control object.}
+Control object for mbo.}
 
 \item{method}{[\code{character(1)}]\cr
 Method used for proposal of multiple infill points, for parallel batch evaluation.

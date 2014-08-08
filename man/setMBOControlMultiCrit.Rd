@@ -8,8 +8,8 @@ setMBOControlMultiCrit(control, method = "parego", parego.s,
   control$number.of.targets), parego.sample.more.weights = 5L)
 }
 \arguments{
-\item{control}{[\code{MBOControl}]\cr
-MBO control object.}
+\item{control}{[\code{\link{MBOControl}}]\cr
+Control object for mbo.}
 
 \item{method}{[\code{character(1)}]\cr
 Which multicrit method should be used? At the moment only parego is

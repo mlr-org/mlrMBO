@@ -12,7 +12,7 @@ Fitness function to minimize. The first argument has to be a list of values.
 The function has to return a single numerical value.}
 
 \item{par.set}{[\code{\link[ParamHelpers]{ParamSet}}]\cr
-Collection of parameters and their constraints for optimization.}
+See \code{\link{mbo}}.}
 
 \item{design}{[\code{data.frame} | NULL]\cr
 Initial design as data frame.

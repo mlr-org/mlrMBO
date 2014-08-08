@@ -7,8 +7,8 @@ setMBOControlMultiFid(control, param, lvls, costs = NULL,
   cor.grid.points = 10L, force.last.level.evals = 10L)
 }
 \arguments{
-\item{control}{[\code{MBOControl}]\cr
-MBO control object.}
+\item{control}{[\code{\link{MBOControl}}]\cr
+Control object for mbo.}
 
 \item{param}{[\code{character(1)}]\cr
 The name of the parameter which increases the performance but also calculation costs.

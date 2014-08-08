@@ -8,8 +8,7 @@
 #'
 #' @param fun [\code{function}]\cr
 #'   Target function. See \code{\link{mbo}} for details.
-#' @param par.set [\code{\link[ParamHelpers]{ParamSet}}]\cr
-#'   See \code{\link{mbo}}.
+#' @template arg_parset
 #' @param learner [\code{\link[mlr]{Learner}}]\cr
 #'   See \code{\link{mbo}}.
 #'   Default is mlr learner \dQuote{regr.km}, which is kriging from package
@@ -23,9 +22,7 @@
 #'   Number of (regular spaced) locations at which to
 #'   sample the \code{fun} function per dimension.
 #'   Default is 50.
-#' @param show.info [\code{logical(1)}]\cr
-#'   Verbose output on console?
-#'   Default is \code{TRUE}.
+#' @template arg_showinfo
 #' @param nsga2.args [\code{list}]\cr
 #'   Further arguments passed to the nsga2 call.
 #'   Default is \code{list()}.

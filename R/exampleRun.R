@@ -20,8 +20,7 @@
 #' @param fun [\code{function}]\cr
 #'   Target function. See \code{\link{mbo}} for details. It is also possible to
 #'   provide a function from the \code{soobench} package.
-#' @param par.set [\code{\link[ParamHelpers]{ParamSet}}]\cr
-#'   See \code{\link{mbo}}.
+#' @template arg_parset
 #' @param global.opt [\code{numeric(1)}]\cr
 #'   Objective value of global optimum, if known.
 #'   \code{NA} means not known, which is the default.
@@ -44,9 +43,7 @@
 #' @param noisy.evals [\code{integer(1)}]\cr
 #'   Number of function evaluations per point if \code{fun} is noisy.
 #'   Default is 10.
-#' @param show.info [\code{logical(1)}]\cr
-#'   Verbose output on console?
-#'   Default is \code{TRUE}.
+#' @template arg_showinfo
 #' @param ... [any]\cr
 #'   Further arguments passed to the learner.
 #' @return [\code{MBOExampleRun}]

@@ -1,7 +1,6 @@
 #' Extends mbo control object with options for multipoint proposal.
 #'
-#' @param control [\code{\link{MBOControl}}]\cr
-#'   MBO control object.
+#' @template arg_control
 #' @param method [\code{character(1)}]\cr
 #'   Method used for proposal of multiple infill points, for parallel batch evaluation.
 #'   Possible values are:

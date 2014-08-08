@@ -1,7 +1,6 @@
 #' Extends mbo control object with infill criteria and infill optimizer options.
 #'
-#' @param control [\code{\link{MBOControl}}]\cr
-#'   MBO control object.
+#' @template arg_control
 #' @param crit [\code{character(1)}]\cr
 #'   How should infill points be rated. Possible parameter values are:
 #'   \dQuote{mean}: Mean response.

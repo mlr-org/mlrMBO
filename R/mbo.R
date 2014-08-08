@@ -3,8 +3,7 @@
 #' @param fun [\code{function(x, ...)}]\cr
 #'   Fitness function to minimize. The first argument has to be a list of values.
 #'   The function has to return a single numerical value.
-#' @param par.set [\code{\link[ParamHelpers]{ParamSet}}]\cr
-#'   Collection of parameters and their constraints for optimization.
+#' @template arg_parset
 #' @param design [\code{data.frame} | NULL]\cr
 #'   Initial design as data frame.
 #'   If the parameters have corresponding trafo functions,
@@ -12,11 +11,8 @@
 #'   If \code{NULL}, one is constructed from the settings in \code{control}.
 #' @param learner [\code{\link[mlr]{Learner}}]\cr
 #'   Regression learner to model \code{fun}.
-#' @param control [\code{\link{MBOControl}}]\cr
-#'   Control object for mbo.
-#' @param show.info [\code{logical(1)}]\cr
-#'   Verbose output on console?
-#'   Default is \code{TRUE}.
+#' @template arg_control
+#' @template arg_showinfo
 #' @param more.args [list]\cr
 #'   Further arguments passed to fitness function.
 #' @return [\code{\link{MBOSingleObjResult}} | \code{\link{MBOMultiObjResult}}]

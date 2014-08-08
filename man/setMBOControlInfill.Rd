@@ -12,7 +12,7 @@ setMBOControlInfill(control, crit = "mean", crit.lcb.lambda = 1,
 }
 \arguments{
 \item{control}{[\code{\link{MBOControl}}]\cr
-MBO control object.}
+Control object for mbo.}
 
 \item{crit}{[\code{character(1)}]\cr
 How should infill points be rated. Possible parameter values are:

@@ -2,8 +2,7 @@
 
 #' @title Extends mbo control object with multiFid-algorithm specific options.
 #'
-#' @param control [\code{MBOControl}]\cr
-#'   MBO control object.
+#' @template arg_control
 #' @param param [\code{character(1)}]\cr
 #'   The name of the parameter which increases the performance but also calculation costs.
 #'   Must be a discrete parameter.
