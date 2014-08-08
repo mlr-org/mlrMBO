@@ -152,7 +152,7 @@ autoplotExampleRun2d = function(x, iters,
       if (se) {
         grid.arrange(pl.fun, pl.mod, pl.crit, pl.se, nrow = 2, main = title)
       } else {
-        grid.arrange(pl.fun, pl.mod, pl.crit, nrow = 1)
+        grid.arrange(pl.fun, pl.mod, pl.crit, nrow = 1, main = title)
       }
       pause()
     }

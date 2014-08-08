@@ -29,4 +29,5 @@ run = exampleRun(obj.fun, par.set, global.opt = -1, learner = lrn,
   control = ctrl, points.per.dim = 100)
 
 print(run)
-res = autoplot(run, pause = FALSE, densregion = TRUE)
+
+res = autoplot(run, pause = TRUE, densregion = TRUE)

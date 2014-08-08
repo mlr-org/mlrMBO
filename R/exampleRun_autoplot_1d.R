@@ -20,7 +20,7 @@
 # @param point.size [\code{numeric(1)}]\cr
 #   Size of the points in the plots.
 # @param line.size [\code{numeric(1)}]\cr
-#   Line width of the functions graphs plotted.
+#   Line width of the functions aphs plotted.
 # @param trafo [\code{list}]\cr
 #   List of transformation functions of type \code{\link[mlrMBO]{MBOTrafoFunction}} for
 #   the different plots.
@@ -174,7 +174,7 @@ autoplotExampleRun1d = function(x, iters,
       pl.fun = pl.fun + geom_line(aes_string(x = "x", y = "y", linetype = "type"), size = line.size)
 
       if (se & densregion) {
-        gg.se = gg.fun[which(gg.se$type == "yhat"), ]
+        gg.se = gg.fun[which(gg.fun$type == "yhat"), ]
         pl.fun = pl.fun + geom_ribbon(data = gg.se, aes_string(x = "x", ymin = "se.min", ymax = "se.max"),
           alpha = 0.2)
       }
@@ -218,6 +218,10 @@ autoplotExampleRun1d = function(x, iters,
         "pl.fun" = pl.fun,
         "pl.crit" = pl.crit
       )
+
+      if (pause) {
+        do.call(grid.arrange, c(plot.sequence[[i]], nrow = 2))
+      }
     } else if (isDiscrete(par.set)) {
       if (!noisy) {
         stopf("Deterministic 1d function with a single factor parameter are not supported.")
@@ -256,6 +260,10 @@ autoplotExampleRun1d = function(x, iters,
       plot.sequence[[i]] = list(
         "pl.fun" = pl.fun
       )
+
+      if (pause) {
+        print(pl.fun)
+      }
     }
 
     if (pause) {
