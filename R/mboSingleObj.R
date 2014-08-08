@@ -75,7 +75,7 @@ mboSingleObj = function(fun, par.set, design = NULL, learner, control, show.info
   # if we are restarting from a save file, we possibly start in a higher iteration
   loop = max(getOptPathDOB(opt.path)) + 1L
 
-  while (!shouldTerminate(iters, loop, time.budget, start.time)) {
+  repeat {
     # propose new points and evaluate target function
     prop = proposePoints(model, par.set, control, opt.path)
     prop.points = prop$prop.points
@@ -96,12 +96,9 @@ mboSingleObj = function(fun, par.set, design = NULL, learner, control, show.info
     saveStateOnDisk(loop, fun, learner, par.set, opt.path, control, show.info, more.args,
       models, resample.vals, NULL)
     loop = loop + 1L
-  }
-
-  if (isTimeBudgetExceeded(start.time, time.budget)) {
-    showInfo(show.info, "Terminating becauce of exceeded time budget.")
-  } else {
-    showInfo(show.info, "Terminating becauce of maximal iterations.")
+    terminate = shouldTerminate(iters, loop, time.budget, start.time)
+    if (terminate >= 0)
+      break
   }
 
   design = getTaskData(rt, target.extra = TRUE)$data
@@ -127,6 +124,7 @@ mboSingleObj = function(fun, par.set, design = NULL, learner, control, show.info
     best.ind = final.index,
     opt.path = opt.path,
     resample = resample.vals,
+    convergence = terminate,
     models = models
   )
 

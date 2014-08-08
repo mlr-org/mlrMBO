@@ -18,5 +18,5 @@ test_that("stopping criteria works", {
 	or = mbo(makeMBOFunction(obj.fun), design = design, par.set = par.set, learner = learner, 
 		show.info = FALSE, control = ctrl)
 
-	expect_true(getOptPathLength(or$opt.path) < iters)
+	expect_equal(or$convergence, 1L)
 })

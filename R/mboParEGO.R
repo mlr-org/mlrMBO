@@ -9,6 +9,11 @@ mboParEGO = function(fun, par.set, design = NULL, learner, control, show.info = 
     slo = getOption("mlr.show.learner.output")
   )
 
+  # termination
+  start.time = Sys.time()
+  iters = control$iters
+  time.budget = control$time.budget
+
   # shortcut names
   ninit = if(is.null(design)) control$init.design.points else nrow(design)
   crit = control$infill.crit
@@ -57,7 +62,7 @@ mboParEGO = function(fun, par.set, design = NULL, learner, control, show.info = 
 
   # if we are restarting from a save file, we possibly start in a higher iteration
   loop = max(getOptPathDOB(opt.path)) + 1L
-  while (loop <= control$iters) {
+  repeat {
     # scalarize + train + propose
     scalar = makeScalarTasks(par.set, opt.path, control, all.possible.weights)
     new.mods = lapply(scalar$tasks, train, learner = learner)
@@ -76,6 +81,9 @@ mboParEGO = function(fun, par.set, design = NULL, learner, control, show.info = 
       fun, learner, show.info, oldopts, more.args, extras)
     saveStateOnDisk(loop, fun, learner, par.set, opt.path, control, show.info, more.args, models, NULL, NULL)
     loop = loop + 1L
+    terminate = shouldTerminate(iters, loop, time.budget, start.time)
+    if (terminate >= 0)
+      break
   }
 
   pareto.inds = getOptPathParetoFront(opt.path, index = TRUE)
@@ -88,6 +96,7 @@ mboParEGO = function(fun, par.set, design = NULL, learner, control, show.info = 
     pareto.set = lapply(pareto.inds, function(i) getOptPathEl(opt.path, i)$x),
     pareto.inds = pareto.inds,
     opt.path = opt.path,
+    convergence = terminate,
     models = models
   )
 
