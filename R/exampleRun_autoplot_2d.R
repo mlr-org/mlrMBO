@@ -99,39 +99,40 @@ autoplotExampleRun2d = function(x, iters,
       pl = pl + ylab(NULL)
       pl = pl + theme(
         plot.title = element_text(size = 11, face = "bold"), # decrease font size and weight
-        plot.margin = unit(c(0.2,0.2,0.2,0.2), "cm") # adapt margins
+        plot.margin = unit(c(0.2, 0.2, 0.2, 0.2), "cm") # adapt margins
       )
       return(pl)
     }
 
     # helper function for single plot
-    plotSingleFunNumericOnly = function(data, points, name.z, xlim, ylim, trafo = NULL) {
+    plotSingleFunNumericOnly = function(data, points, name.x1, name.x2, name.z, xlim, ylim, trafo = NULL) {
       if (!is.null(trafo)) {
         data[, name.z] = trafo(data[, name.z])
       }
-      pl = ggplot(data = data, aes_string(x = "x1", y = "x2", z = name.z))
+      pl = ggplot(data = data, aes_string(x = name.x1, y = name.x2, z = name.z))
       pl = pl + geom_tile(aes_string(fill = name.z))
       pl = pl + scale_fill_gradientn(colours = topo.colors(7))
+      # sometimes contour lines cannot be plotted for EI 
       if (name.z != "ei") {
         pl = pl + stat_contour(aes_string(fill = name.z), binwidth = 5)
       }
-      pl = pl + geom_point(data = points, aes_string(x = "x1", y = "x2", z = "y",
-          colour = "type", shape = "type"),
-        size = point.size)
+      # Keep in mind, that for the points the z value is always "name.y"
+      pl = pl + geom_point(data = points, aes_string(x = name.x1, y = name.x2, z = name.y,
+          colour = "type", shape = "type"), size = point.size)
 
-      pl = pl + scale_colour_manual(name = "type", values = c("#000000", "red","gray"))
+      pl = pl + scale_colour_manual(name = "type", values = c("#000000", "red", "gray"))
       pl = applyMBOTheme(pl, title = name.z, trafo = trafo)
       return(pl)
     }
 
-    plotSingleFunMixed = function(data, points, name.y, xlim, ylim, trafo = NULL) {
-      #FIXME: x2 is fixed here
-      data$x1 = as.factor(data$x1)
-      pl = ggplot(data = data, aes_string(x = "x2", y = name.y)) + geom_line()
+    # Keep in mind: name.x2 must be the name of the discrete/logical parameter by convention
+    plotSingleFunMixed = function(data, points, name.x1, name.x2, name.y, xlim, ylim, trafo = NULL) {
+      data[[name.x2]] = as.factor(data[[name.x2]])
+      pl = ggplot(data = data, aes_string(x = name.x1, y = name.y)) + geom_line()
       if (name.y %in% c("y")) {
-        pl = pl + geom_point(data = points, aes_string(x = "x2", y = name.y, colour = "type", shape = "type"), size = point.size) 
+        pl = pl + geom_point(data = points, aes_string(x = name.x1, y = name.y, colour = "type", shape = "type"), size = point.size) 
       }
-      pl = pl + facet_grid(reformulate("x1", "."))
+      pl = pl + facet_grid(reformulate(name.x2, "."))
       pl = applyMBOTheme(pl, title = name.y, trafo = trafo)
       return(pl)
     }
@@ -147,18 +148,26 @@ autoplotExampleRun2d = function(x, iters,
         rep("seq", length(idx.seq)),
         rep("prop", length(idx.proposed)
     ))))
+    names(gg.points) = c(name.x1, name.x2, name.y, "type")
 
     # build single plots
     plotSingleFun = plotSingleFunNumericOnly
-    if (hasDiscrete(par.set))
+    if (hasDiscrete(par.set)) {
       plotSingleFun = plotSingleFunMixed
+      # determine which parameter is discrete and which one is numerice
+      par.types = getParamTypes(par.set)
+      idx.discrete = which(par.types %in% c("logical", "discrete"))
+      idx.numeric = setdiff(c(1,2), idx.discrete)
+      name.x2 = names.x[idx.discrete]
+      name.x1 = names.x[idx.numeric]
+    }
     
-    pl.fun = plotSingleFun(gg.fun, gg.points, "y", trafo = trafo[["y"]])
-    pl.mod = plotSingleFun(gg.fun, gg.points, "yhat", trafo = trafo[["yhat"]])
-    pl.crit = plotSingleFun(gg.fun, gg.points, name.crit, trafo = trafo[["crit"]])
+    pl.fun = plotSingleFun(gg.fun, gg.points, name.x1, name.x2, name.y, trafo = trafo[["y"]])
+    pl.mod = plotSingleFun(gg.fun, gg.points, name.x1, name.x2, "yhat", trafo = trafo[["yhat"]])
+    pl.crit = plotSingleFun(gg.fun, gg.points, name.x1, name.x2, name.crit, trafo = trafo[["crit"]])
     pl.se = NA
     if (se) {
-      pl.se = plotSingleFun(gg.fun, gg.points, "se", trafo = trafo[["crit"]])
+      pl.se = plotSingleFun(gg.fun, gg.points, name.x1, name.x2, "se", trafo = trafo[["crit"]])
     }
     
     title = sprintf("Iter %i, x-axis: %s, y-axis: %s", i, name.x1, name.x2)
@@ -179,6 +188,5 @@ autoplotExampleRun2d = function(x, iters,
       pause()
     }
   }
-
   return(plot.sequence)
 }
