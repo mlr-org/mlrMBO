@@ -129,7 +129,7 @@ autoplotExampleRun2d = function(x, iters,
     plotSingleFunMixed = function(data, points, name.x1, name.x2, name.y, xlim, ylim, trafo = NULL) {
       data[[name.x2]] = as.factor(data[[name.x2]])
       pl = ggplot(data = data, aes_string(x = name.x1, y = name.y)) + geom_line()
-      if (name.y %in% c("y")) {
+      if (name.y %in% c(x$name.y)) {
         pl = pl + geom_point(data = points, aes_string(x = name.x1, y = name.y, colour = "type", shape = "type"), size = point.size) 
       }
       pl = pl + facet_grid(reformulate(name.x2, "."))
@@ -152,7 +152,7 @@ autoplotExampleRun2d = function(x, iters,
 
     # build single plots
     plotSingleFun = plotSingleFunNumericOnly
-    if (hasDiscrete(par.set)) {
+    if (hasDiscrete(par.set) || hasLogical(par.set)) {
       plotSingleFun = plotSingleFunMixed
       # determine which parameter is discrete and which one is numerice
       par.types = getParamTypes(par.set)
