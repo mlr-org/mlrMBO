@@ -134,7 +134,7 @@ autoplotExampleRun1d = function(x, iters,
       }
     }
 
-    if (isNumeric(par.set)) {
+    if (isNumeric(par.set, include.int = FALSE)) {
       # ggplot stuff
       n = nrow(evals)
 

@@ -69,6 +69,9 @@ autoplot.MBOExampleRun = function(object, iters, pause = TRUE, densregion = TRUE
   assertFlag(pause)
   assertFlag(densregion)
   assertNumber(se.factor, lower = 0)
+  assertNumber(point.size, lower = 1)
+  assertNumber(line.size, lower = 1)
+
   if (!missing(xlim))
     assertNumeric(xlim, len = 2L, any.missing = FALSE)
   if (!missing(ylim))
@@ -76,12 +79,19 @@ autoplot.MBOExampleRun = function(object, iters, pause = TRUE, densregion = TRUE
 
   n.params = object$n.params
   par.types = object$par.types
+  par.set = object$par.set
   trafo = buildTrafoList(n.params, trafo)
 
   if (n.params == 1) {
+    if (par.types %nin% c("numeric", "numericvector", "discrete", "discretevector")) {
+      stopf("For 1D function only plotting of numeric or discrete functions possible, but your function is '%s'.", par.types)
+    }
     autoplotExampleRun1d(object, iters = iters, xlim = xlim, ylim = ylim, se.factor = se.factor, pause = pause,
       point.size = point.size, line.size = line.size, trafo = trafo, densregion = densregion, ...)
   } else if (n.params == 2) {
+    if (!hasNumeric(par.set)) {
+      stopf("At least one parameter of the target function must be numeric!")
+    }
     autoplotExampleRun2d(object, iters = iters, xlim = xlim, ylim = ylim, pause = pause,
       point.size = point.size, line.size = line.size, trafo = trafo, ...)
   } else {
