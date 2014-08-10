@@ -215,17 +215,20 @@ evaluate = function(fun, par.set, n.params, par.types, noisy, noisy.evals, point
     if (all(par.types %in% c("numeric", "numericvector"))) {
       return(getEvalsFor2dNumeric(fun, par.set, noisy, noisy.evals, points.per.dim, names.x, name.y))
     } else {
+      idx.numeric = which(par.types != "discrete")
       lower = getLower(par.set)
       upper = getUpper(par.set)
       x2 = seq(lower, upper, length.out = points.per.dim)
+
       # get discrete parameter
-      idx = which(par.types == "discrete")
-      x1 = unlist(par.set$pars[[idx]]$values)
+      idx.discrete = which(par.types == "discrete")
+      x1 = unlist(par.set$pars[[idx.discrete]]$values)
 
       eval.x = expand.grid(x1, x2)
+      
       names(eval.x) = names.x
-      #print(head(eval.x))
       xs = dfRowsToList(eval.x, par.set)
+      #FIXME: params in eval.x must be in the same order as parameters in par.set!
       ys = parallelMap(function(x) {
         if(noisy) {
           # do replicates if noisy

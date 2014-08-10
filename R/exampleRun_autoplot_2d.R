@@ -89,8 +89,23 @@ autoplotExampleRun2d = function(x, iters,
 
     idx = c(idx.init, idx.seq, idx.proposed)
 
+    # helper which applies different theme settings to ggplot object
+    applyMBOTheme = function(pl, title, trafo = NULL) {
+      if (!is.null(trafo)) {
+        title = paste(title, " (", attr(trafo, "name"), "-transformed)", sep = "")
+      }
+      pl = pl + ggtitle(title)
+      pl = pl + xlab(NULL) # remove axis labels
+      pl = pl + ylab(NULL)
+      pl = pl + theme(
+        plot.title = element_text(size = 11, face = "bold"), # decrease font size and weight
+        plot.margin = unit(c(0.2,0.2,0.2,0.2), "cm") # adapt margins
+      )
+      return(pl)
+    }
+
     # helper function for single plot
-    plotSingleFun = function(data, points, name.z, xlim, ylim, trafo = NULL) {
+    plotSingleFunNumericOnly = function(data, points, name.z, xlim, ylim, trafo = NULL) {
       if (!is.null(trafo)) {
         data[, name.z] = trafo(data[, name.z])
       }
@@ -104,19 +119,20 @@ autoplotExampleRun2d = function(x, iters,
           colour = "type", shape = "type"),
         size = point.size)
 
-      title = name.z
-      if (!is.null(trafo)) {
-        title = paste(title, " (", attr(trafo, "name"), "-transformed)", sep = "")
-      }
-
-      pl = pl + ggtitle(title)
       pl = pl + scale_colour_manual(name = "type", values = c("#000000", "red","gray"))
-      pl = pl + xlab(NULL) # remove axis labels
-      pl = pl + ylab(NULL)
-      pl = pl + theme(
-        plot.title = element_text(size = 11, face = "bold"), # decrease font size and weight
-        plot.margin = unit(c(0.2,0.2,0.2,0.2), "cm") # adapt margins
-      )
+      pl = applyMBOTheme(pl, title = name.z, trafo = trafo)
+      return(pl)
+    }
+
+    plotSingleFunMixed = function(data, points, name.y, xlim, ylim, trafo = NULL) {
+      #FIXME: x2 is fixed here
+      data$x1 = as.factor(data$x1)
+      pl = ggplot(data = data, aes_string(x = "x2", y = name.y)) + geom_line()
+      if (name.y %in% c("y")) {
+        pl = pl + geom_point(data = points, aes_string(x = "x2", y = name.y, colour = "type", shape = "type"), size = point.size) 
+      }
+      pl = pl + facet_grid(reformulate("x1", "."))
+      pl = applyMBOTheme(pl, title = name.y, trafo = trafo)
       return(pl)
     }
 
@@ -133,20 +149,26 @@ autoplotExampleRun2d = function(x, iters,
     ))))
 
     # build single plots
+    plotSingleFun = plotSingleFunNumericOnly
+    if (hasDiscrete(par.set))
+      plotSingleFun = plotSingleFunMixed
+    
     pl.fun = plotSingleFun(gg.fun, gg.points, "y", trafo = trafo[["y"]])
     pl.mod = plotSingleFun(gg.fun, gg.points, "yhat", trafo = trafo[["yhat"]])
     pl.crit = plotSingleFun(gg.fun, gg.points, name.crit, trafo = trafo[["crit"]])
+    pl.se = NA
     if (se) {
-      pl.se = plotSingleFun(gg.fun, gg.points, "se", trafo = trafo[["se"]])
+      pl.se = plotSingleFun(gg.fun, gg.points, "se", trafo = trafo[["crit"]])
     }
-
+    
     title = sprintf("Iter %i, x-axis: %s, y-axis: %s", i, name.x1, name.x2)
 
     plot.sequence[[i]] = list(
-      "pl.fun" = pl.fun,
-      "pl.mod" = pl.mod,
-      "pl.crit" = pl.crit,
-      "pl.se" = if (exists("pl.se")) pl.se else NA)
+      pl.fun = pl.fun,
+      pl.mod = pl.mod,
+      pl.crit = pl.crit,
+      pl.se = pl.se
+    )
 
     if (pause) {
       if (se) {
