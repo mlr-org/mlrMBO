@@ -6,6 +6,8 @@ Authors@R: c(person("Bernd", "Bischl", email = "bernd_bischl@gmx.net", role =
     "jakob.bossek@tu-dortmund.de", role = "aut"), person("Daniel", "Horn",
     email = "daniel.horn@tu-dortmund.de", role = "aut"))
 License: BSD_3_clause + file LICENSE
+URL: https://github.com/berndbischl/mlrMBO
+BugReports: https://github.com/berndbischl/mlrMBO/issues
 Depends:
     ParamHelpers,
     mlr (>= 2.0),
