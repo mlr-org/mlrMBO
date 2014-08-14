@@ -41,8 +41,14 @@ evalTargetFun = function(fun, par.set, dobs, xs, opt.path, control, show.info, o
   wrapFun = function(x) {
     st = proc.time()
     y = do.call(fun, insert(list(x = x), more.args))
+    user.extras = list()
+    # here we extract additional stuff which the user wants to log in the opt path
+    if (hasAttributes(y, "extras")) {
+      user.extras = attr(y, "extras")
+      y = setAttribute(y, "extras", NULL)
+    }
     st = proc.time() - st
-    list(y = y, time = st[3])
+    list(y = y, time = st[3], user.extras = user.extras)
   }
 
   # do we have a valid y object?
@@ -61,9 +67,9 @@ evalTargetFun = function(fun, par.set, dobs, xs, opt.path, control, show.info, o
     r = res[[i]]; x = xs[[i]]; x.trafo = xs.trafo[[i]]; dob = dobs[i]
     # y is now either error object or return val
     if (is.error(r)) {
-      y = r; ytime = NA_real_; errmsg = r$message
+      y = r; ytime = NA_real_; errmsg = r$message; user.extras = list()
     } else {
-      y = r$y; ytime = r$time; errmsg = NA_character_
+      y = r$y; ytime = r$time; errmsg = NA_character_; user.extras = r$user.extras
     }
     y.valid = isYValid(y)
 
@@ -94,6 +100,10 @@ evalTargetFun = function(fun, par.set, dobs, xs, opt.path, control, show.info, o
       ytime,
       ifelse(y.valid, "", " (imputed)")
     )
+
+    # concatenate internal and user defined extras for logging in opt.path
+    extras[[i]] = insert(extras[[i]], user.extras)
+    
     # log to opt path - make sure to log the untrafo'd x-value!
     addOptPathEl(opt.path, x = x, y = y2, dob = dob,
       error.message = errmsg, exec.time = ytime, extra = extras[[i]])
