@@ -1,6 +1,10 @@
 Package: mlrMBO
 Title: mlr: Model-based optimization
-Description: mlr: Model-based optimization
+Description: A framework for the (sequential) model-based parameter
+    optimization. It offers methods to optimize numeric or discrete influence
+    parameters of non-linear black-box single- or multiobjective target
+    functions like an industrial simulator or a time-consuming algorithm using
+    cheap surrogate models.
 Authors@R: c(person("Bernd", "Bischl", email = "bernd_bischl@gmx.net", role =
     c("aut", "cre")), person("Jakob", "Bossek", email =
     "jakob.bossek@tu-dortmund.de", role = "aut"), person("Daniel", "Horn",
