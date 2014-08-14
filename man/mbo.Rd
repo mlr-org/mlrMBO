@@ -9,7 +9,11 @@ mbo(fun, par.set, design = NULL, learner, control, show.info = TRUE,
 \arguments{
 \item{fun}{[\code{function(x, ...)}]\cr
 Fitness function to minimize. The first argument has to be a list of values.
-The function has to return a single numerical value.}
+The function has to return a single numerical value.
+In fact it is possible to return even more information which will be stored
+in the optimization path. To achieve this, simply append the attribute \dQuote{'extras'}
+to the return value of the target function. This has to be a named list of scalar values.
+Each of this values will be stored additionally in the optimization path.}
 
 \item{par.set}{[\code{\link[ParamHelpers]{ParamSet}}]\cr
 See \code{\link{mbo}}.}
