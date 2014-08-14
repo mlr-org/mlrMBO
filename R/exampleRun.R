@@ -47,6 +47,7 @@
 #' @param ... [any]\cr
 #'   Further arguments passed to the learner.
 #' @return [\code{MBOExampleRun}]
+#' @export
 exampleRun = function(fun, par.set, global.opt = NA_real_, learner, control,
   points.per.dim = 50, noisy.evals = 10, show.info = TRUE, ...) {
 
@@ -61,6 +62,7 @@ exampleRun = function(fun, par.set, global.opt = NA_real_, learner, control,
   if (missing(global.opt) && is_soo_function(fun)) {
     global.opt = global_minimum(fun)$val
   }
+  print(global.opt)
   assertNumber(global.opt, na.ok = TRUE)
 
   par.types = getParamTypes(par.set)
