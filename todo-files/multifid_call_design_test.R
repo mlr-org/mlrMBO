@@ -8,6 +8,8 @@ library("checkmate")
 load_all(".")
 options(warn = 2)
 
+set.seed(1)
+
 source("todo-files/test_functions.R")
 
 par.set = makeParamSet(
@@ -20,7 +22,7 @@ objfun = makeAddFunction(fun=bakeFunction(sasena), addfun=uppMove)
 control = makeMBOControl(
   init.design.points = 20L, #distributed over the different levels, seems not to work for <5 each
   init.design.fun = maximinLHS,
-  iters = 10,
+  iters = 20,
   on.learner.error = "stop",
   show.learner.output = FALSE,
 )
