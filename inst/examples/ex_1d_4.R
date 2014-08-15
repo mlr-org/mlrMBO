@@ -20,21 +20,24 @@ obj.fun = function(x) {
   sin(x$x) + rnorm(1, 0, 0.1)
 }
 
-par.set = makeNumericParamSet(lower = 3, upper = 13, len = 1)
+par.set = makeNumericParamSet(lower = 3, upper = 13, len = 1L)
 
 ctrl = makeMBOControl(
-	init.design.points = 6,
-	iters = 5,
-	propose.points = 1,
-	final.method = "best.predicted",
-	final.evals = 10L
+  init.design.points = 6L,
+  iters = 5L,
+  propose.points = 1L,
+  final.method = "best.predicted",
+  final.evals = 10L
 )
-ctrl = setMBOControlInfill(ctrl, crit = "ei", opt = "focussearch", opt.focussearch.points = 500L)
 
-lrn = makeLearner("regr.km", predict.type = "se")
+lrn = makeLearner("regr.km", predict.type = "se", nugget.estim = TRUE)
+
+ctrl = setMBOControlInfill(ctrl, crit = "ei", opt = "focussearch",
+  opt.focussearch.points = 500L)
+
 
 run = exampleRun(obj.fun, par.set, global.opt = -1, learner = lrn,
-  control = ctrl, points.per.dim = 100, noisy.evals = 10L)
+  control = ctrl, points.per.dim = 100L, noisy.evals = 10L)
 
 print(run)
 
