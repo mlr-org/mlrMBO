@@ -90,12 +90,12 @@ makeShiftFunction = function(fun, shiftfun = linShift, ...) {
   }
 }
 
-x = seq(0,10,by=0.1)
-sp = makeAddFunction(fun=bakeFunction(sasena), addfun=uppMove)
-y1 = sapply(x, function(x.this) sp(list(x.this, dw.perc = 1)))
-y2 = sapply(x, function(x.this) sp(list(x.this, dw.perc = 0.7)))
-plot(x,y1, type="l")
-lines(x,y2, lty = 2)
+# x = seq(0,10,by=0.1)
+# sp = makeAddFunction(fun=bakeFunction(sasena), addfun=uppMove)
+# y1 = sapply(x, function(x.this) sp(list(x.this, dw.perc = 1)))
+# y2 = sapply(x, function(x.this) sp(list(x.this, dw.perc = 0.7)))
+# plot(x,y1, type="l")
+# lines(x,y2, lty = 2)
 # hartNoise = makeNoiseFunction(bakeFunction(hartman), sd.fac = 0.005)
 # hartShift = makeShiftFunction(bakeFunction(hartman), direction = 1)
 # hartNS = makeShiftFunction(hartNoise, direction = 1)
