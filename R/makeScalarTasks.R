@@ -24,12 +24,18 @@ makeScalarTasks = function(par.set, opt.path, control, all.possible.weights) {
     y = normalize(y, method = "range", margin = 2L)
   } else {
     front = paretoFilter(y)
-    y.max = apply(y, 2, max)
-    y.min = apply(y, 2, min)
-    front.max = apply(front, 2, max)
-    ranges = (y.max - y.min) / (front.max - y.min)
-    y = normalize(y, method = "range", margin = 2L)
-    y = y * matrix(ranges, nrow = nrow(y), ncol = ncol(y), byrow = TRUE)
+    if (nrow(front) != 1) {
+      y.max = apply(y, 2, max)
+      y.min = apply(y, 2, min)
+      front.max = apply(front, 2, max)
+      ranges = (y.max - y.min) / (front.max - y.min)
+      y = normalize(y, method = "range", margin = 2L)
+      y = y * matrix(ranges, nrow = nrow(y), ncol = ncol(y), byrow = TRUE)
+    }
+    else {
+      # FIXME What to do if the front consist only 1 point?
+      y = normalize(y, method = "range", margin = 2L)
+    }
   }
 
   # Propose points
