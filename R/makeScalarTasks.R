@@ -20,7 +20,17 @@ makeScalarTasks = function(par.set, opt.path, control, all.possible.weights) {
   data = convertOptPathToDf(par.set, opt.path, control)
   data = dropNamed(data, control$y.name)
   y = getOptPathY(opt.path)
-  y = normalize(y, method = "range", margin = 2L)
+  if (control$parego.normalize == "standard") {
+    y = normalize(y, method = "range", margin = 2L)
+  } else {
+    front = paretoFilter(y)
+    y.max = apply(y, 2, max)
+    y.min = apply(y, 2, min)
+    front.max = apply(front, 2, max)
+    ranges = (y.max - y.min) / (front.max - y.min)
+    y = normalize(y, method = "range", margin = 2L)
+    y = y * matrix(ranges, nrow = nrow(y), ncol = ncol(y), byrow = TRUE)
+  }
 
   # Propose points
   # If desired - create the margin weight vector

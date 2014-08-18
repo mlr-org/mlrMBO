@@ -22,6 +22,9 @@
 #'   the i.th target function, be drawn with probability 1? Number of TRUE entries
 #'   must be less or equal to \code{propose.points}
 #'   Default is not to do this.
+#' @param parego.normalize [\code{character}] \cr
+#'   Normalization to use. Either map the whole image space to [0, 1] (\code{standard}, the default)
+#'   or just the paretofront (\code{front}).
 #' @return [\code{\link{MBOControl}}].
 #' @note See the other setMBOControl... functions and \code{makeMBOControl} for referenced arguments.
 #' @seealso makeMBOControl
@@ -30,7 +33,8 @@ setMBOControlMultiCrit = function(control,
   method = "parego",
   parego.s, parego.rho = 0.05,
   parego.use.margin.points = rep(FALSE, control$number.of.targets),
-  parego.sample.more.weights = 5L) {
+  parego.sample.more.weights = 5L,
+  parego.normalize = "standard") {
 
   assertClass(control, "MBOControl")
   assertChoice(method, choices = c("parego"))
@@ -70,9 +74,9 @@ setMBOControlMultiCrit = function(control,
       control$number.of.targets - 1)
     if (parego.sample.more.weights * propose.points > number.of.weights)
       stop("Trying to sample more weights than exists. Increase parego.s or decrease number of weights.")
-    
-    
   }
+  
+  assertChoice(parego.normalize, choices = c("standard", "front"))
   
   # extend control object
   control$multicrit.method = method
@@ -80,7 +84,8 @@ setMBOControlMultiCrit = function(control,
   control$parego.rho = parego.rho
   control$parego.use.margin.points = parego.use.margin.points
   control$parego.sample.more.weights = parego.sample.more.weights
-
+  control$parego.normalize = parego.normalize
+  
   return(control)
 }
 
