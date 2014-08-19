@@ -27,8 +27,11 @@ test_that("exampleRun", {
 		lapply(plot.list, function(pl.sublist) {
 			expect_is(pl.sublist, "list")
 			lapply(pl.sublist, function(pl) {
-				expect_is(pl, "gg")
-				expect_is(pl, "ggplot")
+				# sometimes for example the 'se' plot is NA, if learner does not support standard error estimation
+				if (!is.na(pl)) {
+					expect_is(pl, "gg")
+					expect_is(pl, "ggplot")	
+				}
 			})
 		})
 	}

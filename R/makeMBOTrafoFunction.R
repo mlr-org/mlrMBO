@@ -24,7 +24,8 @@ makeMBOTrafoFunction = function(name, fun) {
 #' If negative values occur and the trafo function can handle only positive values,
 #' a shift of the form x - min(x) + 1 is performed prior to the transformation if the
 #' argument \code{handle.violations} is set to \dQuote{warn} which is the default
-#' value. 
+#' value.
+#' @template arg_handle_violations
 #' @format None
 #' @name trafos
 #' @rdname trafos
@@ -35,7 +36,6 @@ NULL
 #' @param base [\code{numeric(1)}]\cr
 #'   The base with respect to which logarithms are computed.
 #'   Default is \code{10}.
-#' @template arg_handle_violations
 trafoLog = function(base = 10, handle.violations = "warn") {
   assertNumber(base, na.ok = FALSE, lower = 2L)
   assertChoice(handle.violations, c("warn", "error"))
@@ -51,7 +51,6 @@ trafoLog = function(base = 10, handle.violations = "warn") {
 
 #' @export
 #' @rdname trafos
-#' @template arg_handle_violations
 trafoSqrt = function(handle.violations = "warn") {
   force(handle.violations)
   makeMBOTrafoFunction(
@@ -74,7 +73,7 @@ checkAndRepairNegativeValues = function(x, handle.violations) {
   if (any(x < 0)) {
     if (handle.violations == "error")
       stopf("Negative function values occured during transformation.")
-    warning("Negative function values. Shifting function to apply logarithm.")
+    warning("Negative function values. Shifting function.")
     return(x - min(x) + 1)
   }
   return(x)
