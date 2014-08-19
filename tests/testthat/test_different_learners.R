@@ -25,17 +25,26 @@ test_that("mbo works with different learners", {
   )
   f = function(x) sum(x$x) + as.numeric(x$z)
   # check with larger initial design so all factor levels are there
-  ctrl = makeMBOControl(iters = 2, init.design.points = 30)
+  ctrl = makeMBOControl(iters = 2, init.design.points = 50)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100)
 
-  testit = function(lrn) {
+  testit = function(lrn, se) {
     lrn = makeLearner(lrn)
+    if (se) {
+      lrn = makeBaggingWrapper(lrn, bw.iters = 10L)
+      lrn = setPredictType(lrn, "se")
+      ctrl$infill.crit = "ei"
+    }
     mbo(f, ps,learner = lrn, control = ctrl)
   }
 
-  testit("regr.lm")
-  testit("regr.blackboost")
-  testit("regr.nnet")
+  testit("regr.lm", se = FALSE)
+  testit("regr.blackboost", se = FALSE)
+  testit("regr.nnet", se = FALSE)
+
+  testit("regr.lm", se = TRUE)
+  testit("regr.blackboost", se = TRUE)
+  testit("regr.nnet", se = TRUE)
 
   # FIXME: I am unsure whether we have a chance to fix this,
   # # check with small initial design, not all levels are evaluated
