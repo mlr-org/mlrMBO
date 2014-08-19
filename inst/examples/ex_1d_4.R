@@ -27,7 +27,8 @@ ctrl = makeMBOControl(
   iters = 5L,
   propose.points = 1L,
   final.method = "best.predicted",
-  final.evals = 10L
+  final.evals = 10L,
+  noisy = TRUE
 )
 
 lrn = makeLearner("regr.km", predict.type = "se", nugget.estim = TRUE)
@@ -37,7 +38,7 @@ ctrl = setMBOControlInfill(ctrl, crit = "ei", opt = "focussearch",
 
 
 run = exampleRun(obj.fun, par.set, global.opt = -1, learner = lrn,
-  control = ctrl, points.per.dim = 100L, noisy.evals = 10L)
+  control = ctrl, points.per.dim = 200L, noisy.evals = 50L)
 
 print(run)
 
