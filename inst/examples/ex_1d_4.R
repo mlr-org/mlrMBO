@@ -14,10 +14,16 @@ load_all(".", reset = TRUE)
 
 configureMlr(show.learner.output = FALSE)
 
-set.seed(52)
+set.seed(1)
 
+# function with noise
 obj.fun = function(x) {
   sin(x$x) + rnorm(1, 0, 0.1)
+}
+
+# here in this example we know the true, deterministic function
+obj.fun.mean = function(x) {
+  sin(x$x)
 }
 
 par.set = makeNumericParamSet(lower = 3, upper = 13, len = 1L)
@@ -38,7 +44,7 @@ ctrl = setMBOControlInfill(ctrl, crit = "ei", opt = "focussearch",
 
 
 run = exampleRun(obj.fun, par.set, global.opt = -1, learner = lrn,
-  control = ctrl, points.per.dim = 200L, noisy.evals = 50L)
+  control = ctrl, points.per.dim = 200L, noisy.evals = 50L, fun.mean = obj.fun.mean)
 
 print(run)
 
