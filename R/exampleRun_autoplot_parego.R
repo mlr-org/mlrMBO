@@ -25,7 +25,7 @@
 autoplot.ParEGOExampleRun = function(run, iters, pause = TRUE, y1lim = NULL, y2lim = NULL, ...) {
   requirePackages(packs = c("ggplot2", "gridExtra"), why = "autoplot.MBOExampleRun")
 
-  points.per.dim = convertInteger(run$points.per.dim)
+  points.per.dim = asCount(run$points.per.dim)
   assertCount(points.per.dim, na.ok = FALSE, positive = TRUE)
 
   # extract information from example run object

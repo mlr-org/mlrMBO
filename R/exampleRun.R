@@ -75,9 +75,9 @@ exampleRun = function(fun, par.set, global.opt = NA_real_, learner, control,
   noisy = control$noisy
   learner = checkLearner(learner, par.set, control, ...)
 
-  points.per.dim = convertInteger(points.per.dim)
+  points.per.dim = asCount(points.per.dim)
   assertCount(points.per.dim, na.ok = FALSE, positive = TRUE)
-  noisy.evals = convertInteger(noisy.evals)
+  noisy.evals = asCount(noisy.evals)
   assertCount(noisy.evals, na.ok = FALSE, positive = TRUE)
   assertLogical(show.info, len = 1L, any.missing = FALSE)
   n.params = sum(getParamLengths(par.set))
