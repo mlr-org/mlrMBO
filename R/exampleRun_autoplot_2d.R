@@ -29,6 +29,7 @@
 autoplotExampleRun2d = function(x, iters,
   pause = TRUE, densregion = TRUE,
   point.size, line.size,
+  se.factor,
   trafo = NULL, ...)  {
 
   # extract information from example run object
@@ -126,9 +127,18 @@ autoplotExampleRun2d = function(x, iters,
     }
 
     # Keep in mind: name.x2 must be the name of the discrete/logical parameter by convention
-    plotSingleFunMixed = function(data, points, name.x1, name.x2, name.y, xlim, ylim, trafo = NULL) {
+    plotSingleFunMixed = function(data, points, name.x1, name.x2, name.y, xlim, ylim, trafo = NULL, marry.fun.and.mod = FALSE) {
       data[[name.x2]] = as.factor(data[[name.x2]])
-      pl = ggplot(data = data, aes_string(x = name.x1, y = name.y)) + geom_line()
+      pl = ggplot(data = data, aes_string(x = name.x1, y = name.y))
+      if (marry.fun.and.mod) {
+        pl = pl + geom_line(aes_string(linetype = "type"))
+      } else {
+        pl = pl + geom_line()
+      }
+      # draw standard error in y/yhat-plot 
+      if (se & densregion & name.y == "y") {
+        pl = pl + geom_ribbon(aes_string(x = name.x1, ymin = "se.min", ymax = "se.max"), alpha = 0.2)
+      }
       if (name.y %in% c(x$name.y)) {
         pl = pl + geom_point(data = points, aes_string(x = name.x1, y = name.y, colour = "type", shape = "type"), size = point.size) 
       }
@@ -154,7 +164,7 @@ autoplotExampleRun2d = function(x, iters,
     plotSingleFun = plotSingleFunNumericOnly
     if (hasDiscrete(par.set) || hasLogical(par.set)) {
       plotSingleFun = plotSingleFunMixed
-      # determine which parameter is discrete and which one is numerice
+      # determine which parameter is discrete and which one is numeric
       par.types = getParamTypes(par.set)
       idx.discrete = which(par.types %in% c("logical", "discrete"))
       idx.numeric = setdiff(c(1,2), idx.discrete)
@@ -162,13 +172,41 @@ autoplotExampleRun2d = function(x, iters,
       name.x1 = names.x[idx.numeric]
     }
     
-    pl.fun = plotSingleFun(gg.fun, gg.points, name.x1, name.x2, name.y, trafo = trafo[["y"]])
-    pl.mod = plotSingleFun(gg.fun, gg.points, name.x1, name.x2, "yhat", trafo = trafo[["yhat"]])
-    pl.crit = plotSingleFun(gg.fun, gg.points, name.x1, name.x2, name.crit, trafo = trafo[["crit"]])
-    pl.se = NA
-    if (se) {
-      pl.se = plotSingleFun(gg.fun, gg.points, name.x1, name.x2, "se", trafo = trafo[["crit"]])
+    pl.se = pl.mod = NA
+    
+    if (hasDiscrete(par.set) || hasLogical(par.set)) {
+      # in this case we display fun and model in one plot
+      n = nrow(evals)
+
+      # FIXME: the following ~ 15 lines is copy and paste stuff (see exampleRun_autplot_1d.R)
+      if (se) {
+        evals.x = evals[, names.x, drop = FALSE]
+        evals$se = -infillCritStandardError(evals.x, model, control, par.set, opt.path[idx.past, ])
+        evals$se.min = evals$yhat - se.factor * evals$se
+        evals$se.max = evals$yhat + se.factor * evals$se
+      }
+
+      # data frame with real fun and model fun evaluations      
+      gg.fun2 = data.frame(
+        x1 = rep(evals[, names.x[1]], 2),
+        x2 = rep(evals[, names.x[2]], 2),
+        y = c(evals[, name.y], evals[, "yhat"]),
+        crit = rep(evals[, name.crit], 2),
+        se.min = if (se) rep(evals[, "se.min"], 2) else NA,
+        se.max = if (se) rep(evals[, "se.max"], 2) else NA,
+        type = as.factor(rep(c(name.y, "yhat"), each = n))
+      )
+      names(gg.fun2) = c(names.x, name.y, name.crit, "se.min", "se.max", "type")
+      pl.fun = plotSingleFun(gg.fun2, gg.points, name.x1, name.x2, name.y, trafo = trafo[["y"]], marry.fun.and.mod = TRUE)
+
+    } else {
+      pl.fun = plotSingleFun(gg.fun, gg.points, name.x1, name.x2, name.y, trafo = trafo[["y"]])
+      pl.mod = plotSingleFun(gg.fun, gg.points, name.x1, name.x2, "yhat", trafo = trafo[["yhat"]])
+      if (se) {
+        pl.se = plotSingleFun(gg.fun, gg.points, name.x1, name.x2, "se", trafo = trafo[["crit"]])
+      }
     }
+    pl.crit = plotSingleFun(gg.fun, gg.points, name.x1, name.x2, name.crit, trafo = trafo[["crit"]])    
     
     title = sprintf("Iter %i, x-axis: %s, y-axis: %s", i, name.x1, name.x2)
 
@@ -179,11 +217,15 @@ autoplotExampleRun2d = function(x, iters,
       pl.se = pl.se
     )
 
-    if (pause) {
-      if (se) {
-        grid.arrange(pl.fun, pl.mod, pl.crit, pl.se, nrow = 2, main = title)
+    if (pause) {   
+      if (hasDiscrete(par.set) || hasLogical(par.set)) {
+        grid.arrange(pl.fun, pl.crit, nrow = 1, main = title)
       } else {
-        grid.arrange(pl.fun, pl.mod, pl.crit, nrow = 1, main = title)
+        if (se) {
+          grid.arrange(pl.fun, pl.mod, pl.crit, pl.se, nrow = 2, main = title)
+        } else {
+          grid.arrange(pl.fun, pl.mod, pl.crit, nrow = 1, main = title) 
+        }
       }
       pause()
     }

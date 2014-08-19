@@ -92,7 +92,7 @@ autoplot.MBOExampleRun = function(object, iters, pause = TRUE, densregion = TRUE
     if (!hasNumeric(par.set)) {
       stopf("At least one parameter of the target function must be numeric!")
     }
-    autoplotExampleRun2d(object, iters = iters, xlim = xlim, ylim = ylim, pause = pause,
+    autoplotExampleRun2d(object, iters = iters, xlim = xlim, ylim = ylim, se.factor = se.factor, pause = pause,
       point.size = point.size, line.size = line.size, trafo = trafo, ...)
   } else {
     stopf("Functions with greater than 3 parameters are not supported.")
