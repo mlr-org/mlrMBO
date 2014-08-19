@@ -11,19 +11,14 @@ trafoLog(base = 10, handle.violations = "warn")
 trafoSqrt(handle.violations = "warn")
 }
 \arguments{
+\item{handle.violations}{[\code{character(1)}]\cr
+What should be done, if negative values occur? Setting this option to
+\dQuote{warn}, which is the default, shifts the function. \dQuote{error}
+stops the process immediately.}
+
 \item{base}{[\code{numeric(1)}]\cr
 The base with respect to which logarithms are computed.
 Default is \code{10}.}
-
-\item{handle.violations}{[\code{character(1)}]\cr
-What should be done, if negative values occur? Setting this option to
-\dquote{warn}, which is the default, shifts the function. \dQuote{error}
-stops the process immediately.}
-
-\item{handle.violations}{[\code{character(1)}]\cr
-What should be done, if negative values occur? Setting this option to
-\dquote{warn}, which is the default, shifts the function. \dQuote{error}
-stops the process immediately.}
 }
 \description{
 \itemize{
