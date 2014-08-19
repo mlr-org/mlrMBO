@@ -44,14 +44,20 @@
 #'   Number of function evaluations per point if \code{fun} is noisy.
 #'   Default is 10.
 #' @template arg_showinfo
+#' @param fun.mean [\code{function}]\cr
+#'   True, unnoisy objective fun if \code{fun} is noisy. If not provided some features
+#'   will not be displayed (for example the gap between the best point so far and the global optimum).
 #' @param ... [any]\cr
 #'   Further arguments passed to the learner.
 #' @return [\code{MBOExampleRun}]
 #' @export
 exampleRun = function(fun, par.set, global.opt = NA_real_, learner, control,
-  points.per.dim = 50, noisy.evals = 10, show.info = TRUE, ...) {
+  points.per.dim = 50, noisy.evals = 10, show.info = TRUE, fun.mean = NULL, ...) {
 
   assertFunction(fun)
+  if (!is.null(fun.mean)) {
+    assertFunction(fun.mean)
+  }
   assertClass(control, "MBOControl")
 
   if (missing(par.set) && is_soo_function(fun)) {
@@ -118,8 +124,18 @@ exampleRun = function(fun, par.set, global.opt = NA_real_, learner, control,
   # run optimizer now
   res = mbo(fun, par.set, learner = learner, control = control, show.info = show.info)
 
+  # compute true y-values if deterministic function is known
+  y.true = NA
+  if (!is.null(fun.mean)) {
+    opt.path = as.data.frame(res$opt.path)
+    evals.x = opt.path[, names.x, drop = FALSE]
+    y.true = apply(evals.x, 1, function(x) fun.mean(as.list(x))) 
+  }
+
   makeS3Obj("MBOExampleRun",
+    fun.mean = fun.mean,
     par.set = par.set,
+    y.true = y.true,
     n.params = n.params,
     par.types = par.types,
     names.x = names.x,

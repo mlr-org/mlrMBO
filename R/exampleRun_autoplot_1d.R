@@ -180,9 +180,21 @@ autoplotExampleRun1d = function(x, iters,
       }
       pl.fun = pl.fun + scale_y_continuous(name = ylab)
 
+
+      if (noisy) {
+        if (!any(is.na(x$y.true))) {
+          source = data.frame(x$y.true)
+          names(source) = name.y
+          gap = calculateGap(source[idx.pastpresent, , drop = FALSE], global.opt, control)
+        } else {
+          gap = NA
+        }
+      } else {
+        gap = calculateGap(opt.path[idx.pastpresent, ], global.opt, control)
+      }
+
       pl.fun = pl.fun + ggtitle(
-        sprintf("Iter = %i, Gap = %.4e", i,
-        calculateGap(opt.path[idx.pastpresent,], global.opt, control))
+        sprintf("Iter = %i, Gap = %.4e", i, gap)
       )
 
       pl.fun = pl.fun + theme(
@@ -190,7 +202,7 @@ autoplotExampleRun1d = function(x, iters,
         legend.box = "horizontal",
         axis.text.x = element_blank(),
         panel.margin = unit(0, "lines"),
-        plot.title = element_text(size=11, face="bold")
+        plot.title = element_text(size = 11, face = "bold")
       )
 
       gg.crit = evals
