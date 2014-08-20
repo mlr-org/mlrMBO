@@ -14,7 +14,7 @@ load_all(".", reset=TRUE)
 
 configureMlr(show.learner.output=FALSE)
 
-obj.fun = branin_function()
+obj.fun = generate_branin_function()
 
 par.set = extractParamSetFromSooFunction(obj.fun)
 
@@ -31,5 +31,5 @@ lrn = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
 run = exampleRun(obj.fun, learner = lrn, control = ctrl, points.per.dim = 50)
 print(run)
 
-res = autoplot(run, pause = FALSE)
+res = autoplot(run, pause = TRUE)
 
