@@ -66,6 +66,8 @@ autoplotExampleRun2d = function(x, iters,
     catf("Iter %i", i)
     model = mbo.res$models[[i]]
 
+    evals.x = evals[, names.x, drop = FALSE]
+
     idx.seq = which(opt.path$dob > 0 & opt.path$dob < i)
     idx.proposed = which(opt.path$dob == i)
     idx.past = which(opt.path$dob < i)
@@ -74,17 +76,23 @@ autoplotExampleRun2d = function(x, iters,
     model.ok = !inherits(model, "FailureModel")
 
     if (model.ok) {
-      evals$yhat = infillCritMeanResponse(evals[, names.x, drop = FALSE],
-        model, control, par.set, opt.path[idx.past, ])
+      evals$yhat = infillCritMeanResponse(evals.x, model, control, par.set, opt.path[idx.past, ])
       if (se) {
-        evals$se = -infillCritStandardError(evals[, names.x, drop = FALSE],
+        evals$se = -infillCritStandardError(evals.x,
           model, control, par.set, opt.path[idx.past, ])
       }
-      #FIXME this does not work for multipoint proposal
-      # write unit tests for this AND MANY OTHER CASES to check this
       if (proppoints == 1L) {
-        evals[[name.crit]] = opt.direction * critfun(evals[, names.x, drop = FALSE],
+        evals[[name.crit]] = opt.direction * critfun(evals.x,
           model, control, par.set, opt.path[idx.past, ])
+      } else {
+        objective = control$multipoint.multicrit.objective
+        if (objective == "mean.dist") {
+          evals[[name.crit]] = opt.direction * infillCritMeanResponse(evals.x, model, control, par.set, opt.path[idx.past, ])
+        } else if (objective == "ei.dist") {
+          evals[[name.crit]] = opt.direction * infillCritEI(evals.x, model, control, par.set, opt.path[idx.past, ])
+        } else if (objective %in% c("mean.se", "mean.se.dist")) {
+          evals[[name.crit]] = opt.direction * infillCritMeanResponse(evals.x, model, control, par.set, opt.path[idx.past, ])
+        }
       }
     }
 
