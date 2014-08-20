@@ -125,11 +125,14 @@ mboMultiFid = function(fun, par.set, design = NULL, learner, control, show.info 
     messagef("Infill vals = %s", collapse(sprintf("%.3g", infill.vals), ", "))
     # we still technically minimize
     best.points = prop[[getMinIndex(infill.vals)]]$prop.points
-
-    plot.data[[loop]] = genPlotData(compound.model = compound.model, par.set = par.set,
-      control = control, fun = fun, opt.path = opt.path,
-      model.cor = model.cor, model.sd = model.sd, model.cost = model.cost, best.points = best.points)
-
+    
+    if (length(dropParams(par.set, control$multifid.param)$pars) == 1) {
+      plot.data[[loop]] = genPlotData(compound.model = compound.model, par.set = par.set,
+                                      control = control, fun = fun, opt.path = opt.path,
+                                      model.cor = model.cor, model.sd = model.sd, 
+                                      model.cost = model.cost, best.points = best.points)  
+    }
+    
     evalProposedPoints(loop = loop, prop.points = best.points, par.set = par.set,
       opt.path = opt.path, control = control, fun = fun, show.info = show.info,
       oldopts = oldopts, more.args = more.args, extras = NULL)
@@ -142,8 +145,12 @@ mboMultiFid = function(fun, par.set, design = NULL, learner, control, show.info 
     opt.path = opt.path, control = control)
   proposed = convertOptPathToDesign(opt.path, drop = TRUE)[proposed.index, ]
   proposed$y = NULL
+  proposed[[control$multifid.param]] = tail(control$multifid.lvls,1)
   proposed = convertDfCols(proposed, factors.as.char = TRUE)
   y.hat = predict(compound.model, newdata = proposed)$data$response
+  y = evalProposedPoints(loop = budget+1, prop.points = proposed, par.set = par.set, opt.path = opt.path, 
+                         control = control, fun = fun, show.info = show.info, oldopts = oldopts, 
+                         more.args = more.args, extras = NULL)
 
   # restore mlr configuration
   configureMlr(on.learner.error = oldopts[["ole"]], show.learner.output = oldopts[["slo"]])
@@ -152,6 +159,7 @@ mboMultiFid = function(fun, par.set, design = NULL, learner, control, show.info 
     opt.path = opt.path,
     model = compound.model,
     y.hat = y.hat,
+    y = y,
     proposed = proposed,
     plot.data = plot.data
   )
