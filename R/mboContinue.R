@@ -21,7 +21,7 @@ mboContinue = function(file) {
     stopf("Whatever the file contained you specified - it was not saved by mbo. Please specify a correct file.")
   
   # Restart mbo
-  continue = f[c("opt.path", "models", "resample.vals")]
+  continue = f[c("opt.path", "models", "resample.vals", "mbo.result")]
   
   # Restore the RNG-state
   .Random.seed = f$random.seed

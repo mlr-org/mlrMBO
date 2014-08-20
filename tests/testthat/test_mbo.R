@@ -134,7 +134,7 @@ test_that("mbo works with rf", {
     makeNumericParam("x1", lower = -1, upper = 1)
   )
 
-  ctrl = makeMBOControl(iters = 2L, trafo.y.fun = trafoLog())
+  ctrl = makeMBOControl(iters = 2L, trafo.y.fun = trafoLog(handle.violations = "error"))
   expect_error(mbo(f, ps, control = ctrl, show.info = FALSE, more.args = list(shift = -1)))
   or = mbo(f, ps, show.info = FALSE, control = ctrl, more.args = list(shift = 0))
   expect_true(!is.na(or$y))

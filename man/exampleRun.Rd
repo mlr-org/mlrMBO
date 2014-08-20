@@ -4,7 +4,8 @@
 \title{Perform an mbo run on a test function and and visualize what happens.}
 \usage{
 exampleRun(fun, par.set, global.opt = NA_real_, learner, control,
-  points.per.dim = 50, noisy.evals = 10, show.info = TRUE, ...)
+  points.per.dim = 50, noisy.evals = 10, show.info = TRUE,
+  fun.mean = NULL, ...)
 }
 \arguments{
 \item{fun}{[\code{function}]\cr
@@ -44,6 +45,10 @@ Default is 10.}
 \item{show.info}{[\code{logical(1)}]\cr
 Verbose output on console?
 Default is \code{TRUE}.}
+
+\item{fun.mean}{[\code{function}]\cr
+True, unnoisy objective fun if \code{fun} is noisy. If not provided some features
+will not be displayed (for example the gap between the best point so far and the global optimum).}
 
 \item{...}{[any]\cr
 Further arguments passed to the learner.}

@@ -25,7 +25,6 @@ test_that("mboContinue", {
   ctrl = makeMBOControl(iters = 3, save.on.disk.at = 0:4,
     save.file.path = save.file, init.design.points = 10L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10)
-  # or <- mbo(f, ps, learner = learner, control = ctrl, show.info = FALSE)
   expect_error(or <- mbo(f, ps, learner = learner, control = ctrl, show.info = FALSE), "foo")
   for (i in 1:20) {
     try(or <- mboContinue(save.file), silent = F)
@@ -51,7 +50,7 @@ test_that("mboContinue", {
   or = NULL
   try(or <- mbo(f, ps, learner = learner, control = ctrl, show.info = FALSE), silent = TRUE)
   for (i in 1:10) {
-    try(or <- mboContinue(save.file), silent = TRUE)
+    suppressWarnings(try(or <- mboContinue(save.file), silent = TRUE))
     if (!is.null(or))
       break
   }
@@ -70,7 +69,7 @@ test_that("mboContinue works when we at end", {
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10)
   or = mbo(makeMBOFunction(f), ps, learner = learner, control = ctrl, show.info = FALSE)
   expect_equal(getOptPathLength(or$opt.path), 11L)
-  or = mboContinue(save.file)
+  expect_warning({or = mboContinue(save.file)}, "No need to continue")
   expect_equal(getOptPathLength(or$opt.path), 11L)
 })
 

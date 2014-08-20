@@ -30,7 +30,8 @@ Suggests:
     gridExtra,
     mco,
     soobench,
-    testthat
+    testthat,
+    randomForest
 LazyData: yes
 ByteCompile: yes
 Version: 1.0

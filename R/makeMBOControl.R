@@ -75,7 +75,7 @@
 #'   on disk. Iteration 0 denotes the initial design. If the optimization
 #'   stops with an crucial error, it can be restarted with this file via the
 #'   function \code{\link{mboContinue}}.
-#'   Default is \code{0:iters+1}.
+#'   Default is \code{integer(0L)}, i. e., not to save.
 #' @param save.file.path [\code{character(1)}] \cr
 #'   If \code{save.on.disk.at} is used, this is the name of the file where the data
 #'   will be saved.
@@ -117,7 +117,7 @@ makeMBOControl = function(number.of.targets = 1L,
   impute.y.fun = NULL,
   trafo.y.fun = NULL,
   suppress.eval.errors = TRUE,
-  save.on.disk.at = 0:(iters+1),
+  save.on.disk.at = c(),
   save.file.path = file.path(getwd(), "mlr_run.RData"),
   store.model.at = iters,
   resample.at = integer(0), resample.desc = makeResampleDesc("CV", iter = 10), resample.measures = list(mse),
@@ -167,9 +167,11 @@ makeMBOControl = function(number.of.targets = 1L,
     y.name = paste("y", 1:number.of.targets, sep = "_")
   assertCharacter(y.name, len = number.of.targets, any.missing = FALSE)
 
-  save.on.disk.at = asInteger(save.on.disk.at, any.missing = FALSE, lower = 0, upper = iters + 1)
-  if (length(save.on.disk.at) > 0L)
+
+  if (length(save.on.disk.at) > 0) {
+    save.on.disk.at = asInteger(save.on.disk.at, any.missing = FALSE, lower = 0, upper = iters + 1)
     assertPathForOutput(save.file.path)
+  }
 
   if (length(save.on.disk.at) > 0L && (iters + 1) %nin% save.on.disk.at)
     warningf("You turned off the final saving of the optimization result at (iter + 1)! Do you really want this?")

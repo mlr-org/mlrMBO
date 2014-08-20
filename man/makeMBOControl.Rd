@@ -10,7 +10,7 @@ makeMBOControl(number.of.targets = 1L, minimize = rep(TRUE,
   time.budget = NULL, propose.points = 1L, feature.impute = "up",
   final.method = "best.true.y", final.evals = 0L, y.name = "y",
   impute.y.fun = NULL, trafo.y.fun = NULL, suppress.eval.errors = TRUE,
-  save.on.disk.at = 0:(iters + 1), save.file.path = file.path(getwd(),
+  save.on.disk.at = c(), save.file.path = file.path(getwd(),
   "mlr_run.RData"), store.model.at = iters, resample.at = integer(0),
   resample.desc = makeResampleDesc("CV", iter = 10),
   resample.measures = list(mse), on.learner.error = "warn",
@@ -108,7 +108,7 @@ Sequential optimization iteration when the actual state should be saved
 on disk. Iteration 0 denotes the initial design. If the optimization
 stops with an crucial error, it can be restarted with this file via the
 function \code{\link{mboContinue}}.
-Default is \code{0:iters+1}.}
+Default is \code{integer(0L)}, i. e., not to save.}
 
 \item{save.file.path}{[\code{character(1)}] \cr
 If \code{save.on.disk.at} is used, this is the name of the file where the data

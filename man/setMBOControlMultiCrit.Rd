@@ -5,7 +5,8 @@
 \usage{
 setMBOControlMultiCrit(control, method = "parego", parego.s,
   parego.rho = 0.05, parego.use.margin.points = rep(FALSE,
-  control$number.of.targets), parego.sample.more.weights = 5L)
+  control$number.of.targets), parego.sample.more.weights = 5L,
+  parego.normalize = "standard")
 }
 \arguments{
 \item{control}{[\code{\link{MBOControl}}]\cr
@@ -36,6 +37,10 @@ i.e. the weight vector with only 0 and a single 1 at the i.th position for
 the i.th target function, be drawn with probability 1? Number of TRUE entries
 must be less or equal to \code{propose.points}
 Default is not to do this.}
+
+\item{parego.normalize}{[\code{character}] \cr
+Normalization to use. Either map the whole image space to [0, 1] (\code{standard}, the default)
+or just the paretofront (\code{front}).}
 }
 \value{
 [\code{\link{MBOControl}}].
