@@ -64,7 +64,7 @@ infillCritMultiFid2 = function(points, model, control, par.set, design, model.co
   se = -infillCritStandardError(points = points, model = model, control = control, par.set = par.set, design = design)
   # FIXME: do we really have to adapt this? alpha2 should be 0 when?
   model.sd.vec = replaceByList(points[[control$multifid.param]], model.sd)
-  alpha2 = 1 - (sqrt(2) * model.sd.vec / sqrt(se^2 + model.sd.vec^2))
+  alpha2 = 1 - (model.sd.vec / sqrt(se^2 + model.sd.vec^2))
   alpha3 = replaceByList(points[[control$multifid.param]], model.cost)
   crit = ei.last * alpha1 * alpha2 * alpha3
   list(crit = crit, ei = ei.last, se = se, alpha1 = alpha1, alpha2 = alpha2, alpha3 = alpha3)
