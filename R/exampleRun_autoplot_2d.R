@@ -211,12 +211,41 @@ autoplotExampleRun2d = function(x, iters,
       pl.fun = plotSingleFun(gg.fun, gg.points, name.x1, name.x2, name.y, trafo = trafo[["y"]])
       pl.mod = plotSingleFun(gg.fun, gg.points, name.x1, name.x2, "yhat", trafo = trafo[["yhat"]])
       if (se) {
-        pl.se = plotSingleFun(gg.fun, gg.points, name.x1, name.x2, "se", trafo = trafo[["crit"]])
+        pl.se = plotSingleFun(gg.fun, gg.points, name.x1, name.x2, "se", trafo = trafo[["se"]])
       }
     }
     pl.crit = plotSingleFun(gg.fun, gg.points, name.x1, name.x2, name.crit, trafo = trafo[["crit"]])    
     
     title = sprintf("Iter %i, x-axis: %s, y-axis: %s", i, name.x1, name.x2)
+
+    # Helper for nice alignment of multiple ggplots.
+    # 
+    # @param plot.list [\code{list}]\cr
+    #   List of ggplot objects.
+    # @param title [\code{character(1)}]\cr
+    #   Main title printed above grid-arranged plots.
+    # @return Nothing. Plots are printed to the display as a side effect.
+    arrangeAndPrintPlots = function(plot.list, title) {
+      do.delete = which(is.na(plot.list))
+      if (length(do.delete) > 0) {
+        plot.list = plot.list[-do.delete]
+      }
+      #FIXME: why do I need the above three lines? Filter does not work.
+      #plot.list = Filter(plot.list, f = function(x) !is.na(x))
+      n.plots = length(plot.list)
+      n.row = if (n.plots <= 3) 1L else 2L
+      do.call("grid.arrange", c(plot.list, nrow = n.row, main = title))
+      pause()
+    }
+
+    # Removes not available plots in plot list.
+    # 
+    # @param plot.list [\code{list}]\cr
+    #   List of ggplot objects (NAs allowed).
+    # @return plot.list without NAs.
+    removeNAPlots = function(plot.list) {
+      Filter(plot.list, f = function(x) !is.na(x))
+    }
 
     plot.sequence[[i]] = list(
       pl.fun = pl.fun,
@@ -225,17 +254,9 @@ autoplotExampleRun2d = function(x, iters,
       pl.se = pl.se
     )
 
-    if (pause) {   
-      if (hasDiscrete(par.set) || hasLogical(par.set)) {
-        grid.arrange(pl.fun, pl.crit, nrow = 1, main = title)
-      } else {
-        if (se) {
-          grid.arrange(pl.fun, pl.mod, pl.crit, pl.se, nrow = 2, main = title)
-        } else {
-          grid.arrange(pl.fun, pl.mod, pl.crit, nrow = 1, main = title) 
-        }
-      }
-      pause()
+    if (pause) {
+      #FIXME: passing plot.sequence[[i]] fails here. Why?
+      arrangeAndPrintPlots(list(pl.fun, pl.mod, pl.crit, pl.se), title)
     }
   }
   return(plot.sequence)

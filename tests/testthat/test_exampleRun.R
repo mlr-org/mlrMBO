@@ -16,19 +16,20 @@ test_that("exampleRun", {
 		return(autoplot(run, pause = FALSE, show.info = FALSE))
 	}
 
+	### 1D NUMERIC
 	obj.fn = function(x) sum(x*x)
 	par.set = makeParamSet(
 		makeNumericParam("x", lower = -2, upper = 2)
 	)
 
-	checkPlotList = function(plot.list) {
+	checkPlotList = function(plot.list, len) {
 		expect_is(plot.list, "list")
-		expect_equal(length(plot.list), n.iters)
+		expect_equal(length(plot.list), len)
 		lapply(plot.list, function(pl.sublist) {
 			expect_is(pl.sublist, "list")
 			lapply(pl.sublist, function(pl) {
 				# sometimes for example the 'se' plot is NA, if learner does not support standard error estimation
-				if (!is.na(pl)) {
+				if (!any(is.na(pl))) {
 					expect_is(pl, "gg")
 					expect_is(pl, "ggplot")	
 				}
@@ -38,12 +39,14 @@ test_that("exampleRun", {
 
 	# without se
 	plot.list = doRun(obj.fn, par.set, "response", "mean")
-	checkPlotList(plot.list)
+	checkPlotList(plot.list, len = n.iters)
 
 	# with se
 	plot.list = doRun(obj.fn, par.set, "se", "ei")
-	checkPlotList(plot.list)
+	checkPlotList(plot.list, len = n.iters)
 
+
+	### 2d MIXED
 	obj.fn = function(x) {
 	  	if (x$foo == "a")
 	    	sum(x$x^2)
@@ -59,5 +62,27 @@ test_that("exampleRun", {
 	)
 
 	plot.list = doRun(obj.fn, par.set, "se", "ei", "regr.randomForest", has.simple.signature = FALSE)
-	checkPlotList(plot.list)
+	checkPlotList(plot.list, len = n.iters)
+
+	### 2D NUMERIC (MULTIPOINT)
+	obj.fun = function(x) {
+		sum(x^2)
+	}
+
+	par.set = makeNumericParamSet("x", len = 2L, lower = -5, upper = 5)
+
+	ctrl = makeMBOControl(init.design.points = 5, iters = n.iters, propose.points = 3)
+	ctrl = setMBOControlMultiPoint(ctrl, 
+  		method = "multicrit",
+  		multicrit.objective = "ei.dist",
+  		multicrit.dist = "nearest.neighbor",
+  		multicrit.maxit = 200
+	)
+
+	lrn = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
+
+	run = exampleRun(makeMBOFunction(obj.fun), par.set = par.set, learner = lrn, control = ctrl, points.per.dim = 50)
+	
+	plot.list = autoplot(run, pause = FALSE, show.info = FALSE)
+	checkPlotList(plot.list, len = n.iters)
 })
