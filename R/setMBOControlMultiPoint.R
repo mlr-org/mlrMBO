@@ -15,7 +15,7 @@
 #'   The selection criterion is \code{multicrit.selection}.
 #'   \dQuote{cl}: Proposes points by constant liar strategy.
 #'   Only meaningfull if \code{infill.crit == "lcb"}
-#'   In the first step the kriging model is fitted based on the real data and the best point is calculated 
+#'   In the first step the kriging model is fitted based on the real data and the best point is calculated
 #'   according to the regular EI-criterion.
 #'   Then, the function value of the best point is simply guessed by the worst seen function evaluation.
 #'   This lie is used to update the model in order to propose the subsequent point.
@@ -94,6 +94,9 @@ setMBOControlMultiPoint = function(control,
   control$multipoint.multicrit.sbx.p = multicrit.sbx.p
   control$multipoint.multicrit.pm.eta = multicrit.pm.eta
   control$multipoint.multicrit.pm.p = multicrit.pm.p
+
+  # FIXME: this is currently a hidden option, also see multipoint_lcb.R
+  control$lcb.min.dist = 1e-5
 
   return(control)
 }

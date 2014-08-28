@@ -15,6 +15,8 @@
 # @return [\code{data.frame}]. Proposed points that should be evaluated.
 
 # Use LCB single crit but sample multiple different lambdas
+# NOTE THAT WE MIGHT PRODUCE LESS POINS THERN REQUESTED IF SOME OF THEM ARE EXTREMELY CLOSE
+# FIXME: document this. also maybe improve?
 multipointInfillOptLCB = function(model, control, par.set, opt.path, design, ...) {
   # copy control and optimize multiple times with singlecrit lcb / different lambda
   control2 = control
@@ -22,36 +24,36 @@ multipointInfillOptLCB = function(model, control, par.set, opt.path, design, ...
   control2$infill.crit = "lcb"
   newdes = data.frame()
   lambdas = c()
-  crit.values = c()
-  catf("Starting LCB\n")
+  crit.vals = c()
+  iter = 1L
 
-  #FIXME could be done in parallel
-  while (nrow(newdes) < control$propose.points) {
+  #FIXME: could be done in parallel
+  while (iter <= control$propose.points) {
     # draw lambda from exp dist
     control2$infill.crit.lcb.lambda = rexp(1)
-    cat("calling single\n")
     newdes1 = proposePoints(model, par.set, control2, opt.path)
     prop.points = newdes1$prop.points
 
-    prop.points.crit.values = newdes1$prop.points.crit.values
     # as we might construct the same xs for similar lamba, we
     # require that a new point is not nearly the same as another proposed one
     if (nrow(newdes) > 0L) {
       # FIXME what do we here for factor vars, wrt dist?
-      dists = apply(newdes, 1, function(x) sum((x - prop.points[1, ])^2))
+      dists = apply(newdes, 1, function(x) min(abs(x - prop.points[1, ])))
     } else {
       dists = Inf
     }
-    #FIXME how do we set this min value?
-    if (min(dists) > 1e-5) {
+
+    # if LCB produced the "same" newdes-x-value twice, bad luck for it.
+    # in that case we return less points to eval
+
+    #FIXME: this min value is currently not exported in control
+    if (min(dists) > control$lcb.min.dist) {
       newdes = rbind(newdes, prop.points)
       lambdas = c(lambdas, control2$infill.crit.lcb.lambda)
-      crit.values = c(crit.values, prop.points.crit.values)
+      crit.vals = c(crit.vals, newdes1$crit.vals)
     }
+    iter = iter + 1L
   }
   newdes = setAttribute(newdes, "multipoint.lcb.lambdas", lambdas)
-  return(list(
-    prop.points = newdes,
-    prop.points.crit.values = crit.values
-  ))
+  list(prop.points = newdes, crit.vals = crit.vals)
 }

@@ -65,7 +65,6 @@ autoplotExampleRun2d = function(x, iters,
   for (i in iters) {
     catf("Iter %i", i)
     model = mbo.res$models[[i]]
-
     evals.x = evals[, names.x, drop = FALSE]
 
     idx.seq = which(opt.path$dob > 0 & opt.path$dob < i)
@@ -86,16 +85,19 @@ autoplotExampleRun2d = function(x, iters,
           model, control, par.set, opt.path[idx.past, ])
       } else {
         objective = control$multipoint.multicrit.objective
-        if (objective == "mean.dist") {
+        if (control$multipoint.method == "lcb") {
           evals[[name.crit]] = opt.direction * infillCritMeanResponse(evals.x, model, control, par.set, opt.path[idx.past, ])
-        } else if (objective == "ei.dist") {
-          evals[[name.crit]] = opt.direction * infillCritEI(evals.x, model, control, par.set, opt.path[idx.past, ])
-        } else if (objective %in% c("mean.se", "mean.se.dist")) {
-          evals[[name.crit]] = opt.direction * infillCritMeanResponse(evals.x, model, control, par.set, opt.path[idx.past, ])
+        } else {
+          if (objective == "mean.dist") {
+            evals[[name.crit]] = opt.direction * infillCritMeanResponse(evals.x, model, control, par.set, opt.path[idx.past, ])
+          } else if (objective == "ei.dist") {
+            evals[[name.crit]] = opt.direction * infillCritEI(evals.x, model, control, par.set, opt.path[idx.past, ])
+          } else if (objective %in% c("mean.se", "mean.se.dist")) {
+            evals[[name.crit]] = opt.direction * infillCritMeanResponse(evals.x, model, control, par.set, opt.path[idx.past, ])
+          }
         }
       }
     }
-
     idx = c(idx.init, idx.seq, idx.proposed)
 
     # helper which applies different theme settings to ggplot object
@@ -121,7 +123,7 @@ autoplotExampleRun2d = function(x, iters,
       pl = ggplot(data = data, aes_string(x = name.x1, y = name.x2, z = name.z))
       pl = pl + geom_tile(aes_string(fill = name.z))
       pl = pl + scale_fill_gradientn(colours = topo.colors(7))
-      # sometimes contour lines cannot be plotted for EI 
+      # sometimes contour lines cannot be plotted for EI
       if (name.z != "ei") {
         pl = pl + stat_contour(aes_string(fill = name.z), binwidth = 5)
       }
@@ -143,12 +145,12 @@ autoplotExampleRun2d = function(x, iters,
       } else {
         pl = pl + geom_line()
       }
-      # draw standard error in y/yhat-plot 
+      # draw standard error in y/yhat-plot
       if (se & densregion & name.y == "y") {
         pl = pl + geom_ribbon(aes_string(x = name.x1, ymin = "se.min", ymax = "se.max"), alpha = 0.2)
       }
       if (name.y %in% c(x$name.y)) {
-        pl = pl + geom_point(data = points, aes_string(x = name.x1, y = name.y, colour = "type", shape = "type"), size = point.size) 
+        pl = pl + geom_point(data = points, aes_string(x = name.x1, y = name.y, colour = "type", shape = "type"), size = point.size)
       }
       pl = pl + facet_grid(reformulate(name.x2, "."))
       pl = applyMBOTheme(pl, title = name.y, trafo = trafo)
@@ -167,7 +169,6 @@ autoplotExampleRun2d = function(x, iters,
         rep("prop", length(idx.proposed)
     ))))
     names(gg.points) = c(name.x1, name.x2, name.y, "type")
-
     # build single plots
     plotSingleFun = plotSingleFunNumericOnly
     if (hasDiscrete(par.set) || hasLogical(par.set)) {
@@ -179,9 +180,9 @@ autoplotExampleRun2d = function(x, iters,
       name.x2 = names.x[idx.discrete]
       name.x1 = names.x[idx.numeric]
     }
-    
+
     pl.se = pl.mod = NA
-    
+
     if (hasDiscrete(par.set) || hasLogical(par.set)) {
       # in this case we display fun and model in one plot
       n = nrow(evals)
@@ -194,7 +195,7 @@ autoplotExampleRun2d = function(x, iters,
         evals$se.max = evals$yhat + se.factor * evals$se
       }
 
-      # data frame with real fun and model fun evaluations      
+      # data frame with real fun and model fun evaluations
       gg.fun2 = data.frame(
         x1 = rep(evals[, names.x[1]], 2),
         x2 = rep(evals[, names.x[2]], 2),
@@ -214,12 +215,12 @@ autoplotExampleRun2d = function(x, iters,
         pl.se = plotSingleFun(gg.fun, gg.points, name.x1, name.x2, "se", trafo = trafo[["se"]])
       }
     }
-    pl.crit = plotSingleFun(gg.fun, gg.points, name.x1, name.x2, name.crit, trafo = trafo[["crit"]])    
-    
+    pl.crit = plotSingleFun(gg.fun, gg.points, name.x1, name.x2, name.crit, trafo = trafo[["crit"]])
+
     title = sprintf("Iter %i, x-axis: %s, y-axis: %s", i, name.x1, name.x2)
 
     # Helper for nice alignment of multiple ggplots.
-    # 
+    #
     # @param plot.list [\code{list}]\cr
     #   List of ggplot objects.
     # @param title [\code{character(1)}]\cr
@@ -239,7 +240,7 @@ autoplotExampleRun2d = function(x, iters,
     }
 
     # Removes not available plots in plot list.
-    # 
+    #
     # @param plot.list [\code{list}]\cr
     #   List of ggplot objects (NAs allowed).
     # @return plot.list without NAs.
