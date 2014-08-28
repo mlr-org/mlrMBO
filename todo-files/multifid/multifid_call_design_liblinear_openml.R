@@ -6,14 +6,16 @@ library("ParamHelpers")
 library("checkmate")
 library("LiblineaR")
 library("plyr")
+library("OpenML")
 
 load_all(".")
 options(warn = 2)
 
 set.seed(44137)
 
-task = load2("../2013-ml_big_data_tuning/datasets/a9a.RData")
-task = makeClassifTask(id="a9a", data=getTaskData(task), target=task$task.desc$target)
+task.openML = downloadOpenMLTask(id = 2328)
+openML.as.mlr = toMLR(task.openML)
+task = openML.as.mlr$mlr.task
 
 lrn1 = makeLearner("classif.LiblineaRBinary", type = 1)
 lrn1.par.set = makeParamSet(
@@ -24,10 +26,9 @@ lrn2.par.set = makeParamSet(
   makeNumericParam("dw.perc", lower=0, upper=1)
 )
 par.set = c(lrn1.par.set, lrn2.par.set)
-rdesc = makeResampleDesc(method = "Holdout", split=2/3)
-rinst = makeResampleInstance(desc = rdesc, task = task)
+rinst = openML.as.mlr$mlr.rin
 
-makeObjFun = function(lrn, task, rsm = rinst) {
+makeObjFun = function(lrn, task, rsm) {
   force(lrn)
   force(task)
   force(rsm)
@@ -39,7 +40,7 @@ makeObjFun = function(lrn, task, rsm = rinst) {
     return(y)
   }
 }
-objfun = makeObjFun(lrn2, task)
+objfun = makeObjFun(lrn2, task, rinst)
   
 control = makeMBOControl(
   init.design.points = 20L, #distributed over the different levels, seems not to work for <5 each
@@ -65,7 +66,7 @@ result = mbo(fun = objfun, par.set = par.set, learner = surrogat.model, control 
 ps.disc = makeParamSet(makeDiscreteParam("cost", values = 2^(-10:10)), 
                        makeDiscreteParam("dw.perc", values = 1))
 ctrl = makeTuneControlGrid()
-r = tuneParams(lrn2, task = task, resampling = rdesc, 
+r = tuneParams(lrn2, task = task, resampling = rinst, 
                par.set = ps.disc, control = ctrl)
 df = as.data.frame(r$opt.path)
 df = rename(df, c("mmce.test.mean"="value")); df$variable = "response"
@@ -75,7 +76,7 @@ add.g = list(geom_line(data = df, alpha = 0.5, lty = 2),
              scale_color_gradient(low = "green", high = "blue"))
 
 
-pdf("multifid_steps_liblinear.pdf", width=10, height=12)
+pdf("multifid_steps_liblinear_openml_cost.pdf", width=10, height=12)
 for (i in seq_along(result$plot.data)) {
   plot = genGgplot(result$plot.data[[i]], title = sprintf("Step %i", i), add.g = add.g)
   print(plot)

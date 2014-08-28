@@ -4,7 +4,7 @@ library("lhs")
 library(devtools)
 library("BBmisc")
 library("ParamHelpers")
-library("checkmate")
+
 load_all(".")
 options(warn = 2)
 
@@ -18,6 +18,8 @@ par.set = makeParamSet(
 )
 
 objfun = makeAddFunction(fun=bakeFunction(sasena), addfun=uppMove, fac = 1)
+objfun(x=list(x=1, dw.perc=0.1), lvl.par="dw.perc")
+objfun2 = function(x, lvl.par) {x$dw.perc = head(e.lvl) objfun(x)}
   
 control = makeMBOControl(
   init.design.points = 20L, #distributed over the different levels, seems not to work for <5 each

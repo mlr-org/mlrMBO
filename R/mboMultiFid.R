@@ -132,7 +132,11 @@ mboMultiFid = function(fun, par.set, design = NULL, learner, control, show.info 
                                       model.cor = model.cor, model.sd = model.sd, 
                                       model.cost = model.cost, best.points = best.points)  
     }
-    
+    if(!is.null(control$multifid.alpha2fix) && control$multifid.alpha2fix) {
+      tmp = data.frame(best.points[1,1], control$multifid.lvls[control$multifid.lvls <= best.points[[control$multifid.param]]])
+      colnames(tmp) = colnames(best.points)
+      best.points = tmp
+    }
     evalProposedPoints(loop = loop, prop.points = best.points, par.set = par.set,
       opt.path = opt.path, control = control, fun = fun, show.info = show.info,
       oldopts = oldopts, more.args = more.args, extras = NULL)
@@ -160,7 +164,7 @@ mboMultiFid = function(fun, par.set, design = NULL, learner, control, show.info 
     model = compound.model,
     y.hat = y.hat,
     y = y,
-    proposed = proposed,
+    x = as.list(proposed[, colnames(proposed) %nin% control$multifid.param, drop = FALSE]),
     plot.data = plot.data
   )
 }

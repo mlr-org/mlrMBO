@@ -6,16 +6,14 @@ library("ParamHelpers")
 library("checkmate")
 library("LiblineaR")
 library("plyr")
-library("OpenML")
 
 load_all(".")
 options(warn = 2)
 
 set.seed(44137)
 
-task.openML = downloadOpenMLTask(id = 2328)
-openML.as.mlr = toMLR(task.openML)
-task = openML.as.mlr$mlr.task
+task = load2("../2013-ml_big_data_tuning/datasets/a9a.RData")
+task = makeClassifTask(id="a9a", data=getTaskData(task), target=task$task.desc$target)
 
 lrn1 = makeLearner("classif.LiblineaRBinary", type = 1)
 lrn1.par.set = makeParamSet(
@@ -26,7 +24,8 @@ lrn2.par.set = makeParamSet(
   makeNumericParam("dw.perc", lower=0, upper=1)
 )
 par.set = c(lrn1.par.set, lrn2.par.set)
-rinst = openML.as.mlr$mlr.rin
+rdesc = makeResampleDesc(method = "Holdout", split=2/3)
+rinst = makeResampleInstance(desc = rdesc, task = task)
 
 makeObjFun = function(lrn, task, rsm = rinst) {
   force(lrn)
@@ -58,7 +57,8 @@ control = setMBOControlInfill(control = control,
 control = setMBOControlMultiFid(control = control, 
                                 param = "dw.perc", 
                                 lvls = c(0.1, 0.3, 0.5, 1),
-                                costs = function(cur, last) (last / cur)^1.5)
+                                costs = function(cur, last) (last / cur))
+control$multifid.alpha2fix = TRUE
 surrogat.model = makeLearner("regr.km", predict.type="se", nugget.estim = TRUE, jitter = TRUE)
 result = mbo(fun = objfun, par.set = par.set, learner = surrogat.model, control = control, show.info = TRUE)
 
@@ -66,7 +66,7 @@ result = mbo(fun = objfun, par.set = par.set, learner = surrogat.model, control 
 ps.disc = makeParamSet(makeDiscreteParam("cost", values = 2^(-10:10)), 
                        makeDiscreteParam("dw.perc", values = 1))
 ctrl = makeTuneControlGrid()
-r = tuneParams(lrn2, task = task, resampling = rinst, 
+r = tuneParams(lrn2, task = task, resampling = rdesc, 
                par.set = ps.disc, control = ctrl)
 df = as.data.frame(r$opt.path)
 df = rename(df, c("mmce.test.mean"="value")); df$variable = "response"
@@ -76,7 +76,7 @@ add.g = list(geom_line(data = df, alpha = 0.5, lty = 2),
              scale_color_gradient(low = "green", high = "blue"))
 
 
-pdf("multifid_steps_liblinear_openml_cost.pdf", width=10, height=12)
+pdf("multifid_steps_liblinear.pdf", width=10, height=12)
 for (i in seq_along(result$plot.data)) {
   plot = genGgplot(result$plot.data[[i]], title = sprintf("Step %i", i), add.g = add.g)
   print(plot)

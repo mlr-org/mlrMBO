@@ -1,3 +1,5 @@
+library("checkmate")
+
 hartman = function(x, d = 1){
   # Hartman 3 (Hartman 1973)
   # https://archive.org/stream/someexperimentsi00hart#page/10/mode/2up
