@@ -20,7 +20,7 @@
 #   Further parameters for target function.
 # @param extras [\code{list}]\cr
 #   List of extra information to be logged in \code{opt.path}.
-# @return [\code{numeric} | \code{matrix}] Numeric vector of y-vals or matrix 
+# @return [\code{numeric} | \code{matrix}] Numeric vector of y-vals or matrix
 #   (for multi-criteria problems).
 evalTargetFun = function(fun, par.set, dobs, xs, opt.path, control, show.info, oldopts,
   more.args = list(), extras) {
@@ -103,7 +103,7 @@ evalTargetFun = function(fun, par.set, dobs, xs, opt.path, control, show.info, o
 
     # concatenate internal and user defined extras for logging in opt.path
     extras[[i]] = insert(extras[[i]], user.extras)
-    
+
     # log to opt path - make sure to log the untrafo'd x-value!
     addOptPathEl(opt.path, x = x, y = y2, dob = dob,
       error.message = errmsg, exec.time = ytime, extra = extras[[i]])
