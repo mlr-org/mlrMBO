@@ -8,7 +8,7 @@ e.lrn = makeLearner("classif.LiblineaRBinary", type = 1)
 e.par.set = makeParamSet(
   makeNumericParam("cost", lower = -15, upper = 5, trafo = function(x) 2^x)
 )
-e.lvl = c(0.1, 0.3, 1)
+e.lvl = c(0.1, 0.3, 0.5, 0.7, 1)
 
 openML.ids = c(spambase = 273, bng = 2328)
 openML.res = lapply(openML.ids, openMLBenchmark, e.seed = e.seed, e.lrn = e.lrn, e.par.set = e.par.set, e.lvl = e.lvl, alpha2fix = TRUE)
