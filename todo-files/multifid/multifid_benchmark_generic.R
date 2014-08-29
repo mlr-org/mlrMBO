@@ -111,10 +111,11 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
   mbo4$opt.path$env$path[["dw.perc"]] = tail(e.lvl,1)
   mbo.res$grid = mbo4
   
-  # 9.0 Calculate thoretical Costs
+  # 9.0 Calculate thoretical Costs and level count
   for (idx in names(mbo.res)) {
     df = as.data.frame(mbo.res[[idx]]$opt.path)
     mbo.res[[idx]]$theoretical.costs = sum(sapply(df[["dw.perc"]], function(x) control.multifid$multifid.costs(x, tail(e.lvl, 1))))
+    mbo.res[[idx]]$level.count = table(factor(df[["dw.perc"]], levels = e.lvl))
   }
   
   # 9. Visualisation
@@ -181,6 +182,15 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
   ggsave(filename = paste0(e.name, "_res_compare_system_time.pdf"), plot = g1, width = 10, height = 5)
   g2 = g + geom_text(data = df, mapping = aes(x = x, y = y, label = theoretical.costs, color = method, angle = 70, hjust = -0.2))
   ggsave(filename = paste0(e.name, "_res_compare_theoretical_costs.pdf"), plot = g2, width = 10, height = 5)
+  
+  # 10 Create a table
+  mbo.res$bench.table = data.frame(
+    y = extractSubList(mbo.res, element = "y"),
+    x = unlist(extractSubList(mbo.res, element = "x")),
+    time = extractSubList(mbo.res,list("system.time",1)),
+    theoretical.costs = extractSubList(mbo.res, element = "theoretical.costs"),
+    lvl.counts = do.call(rbind, extractSubList(mbo.res, element = "level.count", simplify = FALSE))
+    )
   
   mbo.res  
 }
