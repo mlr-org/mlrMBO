@@ -57,8 +57,8 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
     objfun(x, ...)
   }
   mbo1.time = system.time( {mbo1 = mbo(fun = objfun.expansive, e.par.set, learner = surrogat.model, control = control.common, show.info = TRUE) })
-  sum(mbo1$opt.path$env$exec.time)
   mbo1$system.time = mbo1.time
+  mbo1$opt.path$env$path[["dw.perc"]] = tail(e.lvl,1)
   mbo.res$mbo_expansive = mbo1
   
   # 6. mbo cheapest experiment
@@ -73,8 +73,8 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
     objfun(x, ...)
   }
   mbo2.time = system.time( {mbo2 = mbo(fun = objfun.cheap, e.par.set, learner = surrogat.model, control = control.common, show.info = TRUE) })
-  sum(mbo2$opt.path$env$exec.time)
   mbo2$system.time = mbo2.time
+  mbo2$opt.path$env$path[["dw.perc"]] = head(e.lvl,1)
   mbo.res$mbo_cheap = mbo2
   
   # 7. multifid
@@ -85,14 +85,14 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
     control = control.multifid, 
     param = "dw.perc", 
     lvls = e.lvl,
-    costs = function(cur, last) (last / cur)^1.5
+    cor.grid.points = 100,
+    costs = function(cur, last) (last / cur)^1.2
   )
   mbo3.time = system.time({mbo3 = mbo(fun = objfun, par.set = par.set, learner = surrogat.model, control = control.multifid, show.info = TRUE)})
   mbo3$system.time = mbo3.time
   df = as.data.frame(mbo3$opt.path)
   df = df[df$dob > 0,]
   mbo3$perf.steps = table(df$dw.perc, cut(df$dob,3))
-  
   mbo.res$multifid = mbo3
   
   # 8. grid Search
@@ -108,8 +108,14 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
   #mbo4.time = system.time({mbo4 = tuneParams(e.lrn, task = e.task, resampling = e.rin, par.set = par.set.disc, control = ctrl.grid)})
   mbo4.time = system.time({mbo4 = mbo(fun = objfun.expansive, par.set = par.set.lower, design = grid.design, learner = surrogat.model, control = control.grid, show.info = TRUE)})
   mbo4$system.time = mbo4.time
+  mbo4$opt.path$env$path[["dw.perc"]] = tail(e.lvl,1)
   mbo.res$grid = mbo4
   
+  # 9.0 Calculate thoretical Costs
+  for (idx in names(mbo.res)) {
+    df = as.data.frame(mbo.res[[idx]]$opt.path)
+    mbo.res[[idx]]$theoretical.costs = sum(sapply(df[["dw.perc"]], function(x) control.multifid$multifid.costs(x, tail(e.lvl, 1))))
+  }
   
   # 9. Visualisation
   # preproc grid search
@@ -133,7 +139,7 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
   df.grid.2$dw.perc = 1
   add.g = list(
     geom_line(data = df.grid.2, alpha = 0.5, lty = 2),
-    scale_color_gradient2(low = "green", high = "red", mid="yellow", midpoint=median(e.lvl))
+    scale_color_gradient2(low = "green", high = "red", mid="blue", midpoint=mean(range(e.lvl)))
   )
   versions = list(
     all = NULL,
@@ -165,13 +171,16 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
     method = names(mbo.res),
     x = unlist(extractSubList(mbo.res,"x")),
     y = extractSubList(mbo.res,"y"),
-    time = extractSubList(mbo.res,list("system.time",1))
+    time = extractSubList(mbo.res,list("system.time",1)),
+    theoretical.costs = extractSubList(mbo.res, "theoretical.costs")
   )
   g = ggplot()
-  g = g + geom_line(data = df.grid.2, alpha = 0.5, mapping = aes(x = cost, y = value))
+  g = g + geom_line(data = df.grid.2, alpha = 0.5, mapping = aes_string(x = names(e.par.set$pars), y = "value"))
   g = g + geom_point(data = df, mapping = aes(x = x, y = y, color = method))
-  g = g + geom_text(data = df, mapping = aes(x = x, y = y, label = time, color = method, angle = 70, hjust = -0.2))
-  ggsave(filename = paste0(e.name, "_res_compare.pdf"), plot = g, width = 10, height = 5)
+  g1 = g + geom_text(data = df, mapping = aes(x = x, y = y, label = time, color = method, angle = 70, hjust = -0.2))
+  ggsave(filename = paste0(e.name, "_res_compare_system_time.pdf"), plot = g1, width = 10, height = 5)
+  g2 = g + geom_text(data = df, mapping = aes(x = x, y = y, label = theoretical.costs, color = method, angle = 70, hjust = -0.2))
+  ggsave(filename = paste0(e.name, "_res_compare_theoretical_costs.pdf"), plot = g2, width = 10, height = 5)
   
   mbo.res  
 }
