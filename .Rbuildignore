@@ -12,3 +12,4 @@ test_all.R
 test_src.R
 todo.txt
 
+^.editorconfig$
