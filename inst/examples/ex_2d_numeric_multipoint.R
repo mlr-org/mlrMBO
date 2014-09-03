@@ -1,8 +1,5 @@
 ##### optimizing branin in 2D with multipoint proposal #####
 
-library(methods)
-library(testthat)
-library(devtools)
 library(BBmisc)
 library(mlr)
 library(soobench)
@@ -10,16 +7,14 @@ library(ggplot2)
 library(grid)
 library(gridExtra)
 
-load_all(".", reset=TRUE)
-
 configureMlr(show.learner.output=FALSE)
 
-obj.fun = generate_branin_function()
+obj.fun = branin_function()
 
 par.set = extractParamSetFromSooFunction(obj.fun)
 
 ctrl = makeMBOControl(init.design.points = 10, iters = 10, propose.points = 5)
-ctrl = setMBOControlMultiPoint(ctrl, 
+ctrl = setMBOControlMultiPoint(ctrl,
   method = "multicrit",
   multicrit.objective = "ei.dist",
   multicrit.dist = "nearest.neighbor",
@@ -32,4 +27,3 @@ run = exampleRun(obj.fun, par.set = par.set, learner = lrn, control = ctrl, poin
 print(run)
 
 res = autoplot(run, pause = TRUE)
-

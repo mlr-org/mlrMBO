@@ -1,16 +1,10 @@
 ##### optimizing a simple noisy sin(x) with mbo / EI
 
-library(methods)
-library(testthat)
-library(devtools)
-library(BBmisc)
 library(mlr)
 library(soobench)
 library(ggplot2)
 library(grid)
 library(gridExtra)
-
-load_all(".", reset = TRUE)
 
 configureMlr(show.learner.output = FALSE)
 

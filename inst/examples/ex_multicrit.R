@@ -1,7 +1,3 @@
-library(methods)
-library(testthat)
-library(devtools)
-library(BBmisc)
 library(mlr)
 library(soobench)
 library(ggplot2)
@@ -37,5 +33,3 @@ run = exampleRunParEGO(f, ps, learner, ctrl, points.per.dim = 50,
 print(autoplot(run, pause = TRUE, iters = 1:iters))
 
 res = mbo(f, ps, learner = learner, control = ctrl, show.info = TRUE)
-
-

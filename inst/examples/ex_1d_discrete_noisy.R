@@ -1,17 +1,12 @@
 ##### optimizing 1D fun with 3 categorical level and
 ##### noisy outout with random forest
 
-library(methods)
-library(testthat)
-library(devtools)
 library(BBmisc)
 library(mlr)
 library(soobench)
 library(ggplot2)
 library(grid)
 library(gridExtra)
-
-load_all(".", reset=TRUE)
 
 configureMlr(show.learner.output=FALSE)
 
@@ -37,4 +32,3 @@ run = exampleRun(objfun, par.set = par.set, learner = lrn, control = ctrl, point
 print(run)
 
 res = autoplot(run, pause = TRUE, densregion = TRUE)
-
