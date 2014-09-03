@@ -21,7 +21,7 @@ test_that("mboContinue", {
 
   # First test sombo
   learner = makeLearner("regr.rpart")
-  save.file = tempfile(fileext = "RData")
+  save.file = tempfile(fileext = ".RData")
   ctrl = makeMBOControl(iters = 3, save.on.disk.at = 0:4,
     save.file.path = save.file, init.design.points = 10L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10)
@@ -35,6 +35,7 @@ test_that("mboContinue", {
   unlink(save.file)
 
   # now test parEGO
+  assign(".counter", 0L, envir = .GlobalEnv)
   f = function(x) {
     .counter <<- .counter + 1
     if (.counter  == 13L)
@@ -63,8 +64,8 @@ test_that("mboContinue works when we at end", {
   f = makeMBOFunction(f)
   ps = makeNumericParamSet(len = 2L, lower = -2, upper = 1)
   learner = makeLearner("regr.rpart")
-  save.file = tempfile(fileext = "RData")
-  ctrl = makeMBOControl(iters = 1, save.on.disk.at = 0:2,
+  save.file = tempfile(fileext = ".RData")
+  ctrl = makeMBOControl(iters = 1L, save.on.disk.at = 0:2,
     save.file.path = save.file, init.design.points = 10L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10)
   or = mbo(makeMBOFunction(f), ps, learner = learner, control = ctrl, show.info = FALSE)
