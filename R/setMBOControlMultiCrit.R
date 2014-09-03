@@ -34,14 +34,16 @@ setMBOControlMultiCrit = function(control,
   parego.s, parego.rho = 0.05,
   parego.use.margin.points = rep(FALSE, control$number.of.targets),
   parego.sample.more.weights = 5L,
-  parego.normalize = "standard") {
+  parego.normalize = "standard",
+  mspot.ref.point = c(11, 11)) {
 
   assertClass(control, "MBOControl")
-  assertChoice(method, choices = c("parego"))
+  assertChoice(method, choices = c("parego", "mspot"))
 
   number.of.targets = control$number.of.targets
   propose.points = control$propose.points
-
+  
+  # ParEGO:
   if (missing(parego.s))
     parego.s = switch(min(control$number.of.targets, 7L), 
       1L, 
@@ -78,6 +80,10 @@ setMBOControlMultiCrit = function(control,
   
   assertChoice(parego.normalize, choices = c("standard", "front"))
   
+  # mspot
+  assertNumeric(mspot.ref.point, any.missing = FALSE, finite = TRUE, len = control$number.of.targets)
+  
+  
   # extend control object
   control$multicrit.method = method
   control$parego.s = parego.s
@@ -85,6 +91,7 @@ setMBOControlMultiCrit = function(control,
   control$parego.use.margin.points = parego.use.margin.points
   control$parego.sample.more.weights = parego.sample.more.weights
   control$parego.normalize = parego.normalize
+  control$mspot.ref.point = mspot.ref.point
   
   return(control)
 }

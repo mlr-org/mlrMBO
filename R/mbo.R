@@ -61,5 +61,8 @@ determineMBOFun = function(control) {
     if (control$multicrit.method == "parego") {
       return(mboParEGO)
     }
+    if (control$multicrit.method == "mspot") {
+      return(mboMSPOT)
+    }
   }
 }
