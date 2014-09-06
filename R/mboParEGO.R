@@ -91,25 +91,11 @@ mboParEGO = function(fun, par.set, design = NULL, learner, control, show.info = 
   # restore mlr configuration
   configureMlr(on.learner.error = oldopts[["ole"]], show.learner.output = oldopts[["slo"]])
 
-  res = makeS3Obj(c("MBOMultiObjResult", "MBOResult"),
-    pareto.front = getOptPathY(opt.path)[pareto.inds, , drop = FALSE],
-    pareto.set = lapply(pareto.inds, function(i) getOptPathEl(opt.path, i)$x),
-    pareto.inds = pareto.inds,
-    opt.path = opt.path,
-    convergence = terminate,
-    models = models
-  )
+  res = makeMBOMultiCritResult(opt.path, terminate, models)
 
   # make sure to save final res on disk
-  saveStateOnDisk(loop, fun, learner, par.set, opt.path, control, show.info, more.args,
-    models, NULL, res)
+  saveStateOnDisk(loop, fun, learner, par.set, opt.path, control, show.info, more.args,  models, NULL, res)
 
   return(res)
-}
-
-#' @export
-print.MBOMultiObjResult = function(x, ...) {
-  print(x$pareto.front)
-  print(tail(as.data.frame(x$opt.path), 10))
 }
 
