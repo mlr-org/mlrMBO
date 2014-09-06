@@ -58,11 +58,10 @@ determineMBOFun = function(control) {
   if (control$number.of.targets == 1L) {
     return(mboSingleObj)
   } else {
-    if (control$multicrit.method == "parego") {
-      return(mboParEGO)
-    }
-    if (control$multicrit.method == "mspot") {
-      return(mboMSPOT)
-    }
+    switch(control$multicrit.method,
+      parego = mboParEGO,
+      mspot = mboMSPOT,
+      sms  = mboMultiCritSMS
+    )
   }
 }

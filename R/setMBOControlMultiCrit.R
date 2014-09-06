@@ -38,52 +38,52 @@ setMBOControlMultiCrit = function(control,
   mspot.ref.point = rep(11, control$number.of.targets)) {
 
   assertClass(control, "MBOControl")
-  assertChoice(method, choices = c("parego", "mspot"))
+  assertChoice(method, choices = c("parego", "mspot", "sms"))
 
   number.of.targets = control$number.of.targets
   propose.points = control$propose.points
-  
+
   # ParEGO:
   if (missing(parego.s))
-    parego.s = switch(min(control$number.of.targets, 7L), 
-      1L, 
-      100000L, 
-      450L, 
-      75L, 
-      37L, 
-      23L, 
+    parego.s = switch(min(control$number.of.targets, 7L),
+      1L,
+      100000L,
+      450L,
+      75L,
+      37L,
+      23L,
       10L)
   parego.s = asInt(parego.s)
   assertInt(parego.s, na.ok = FALSE, lower = 1)
-  
+
   assertNumber(parego.rho, na.ok = FALSE, lower = 0, upper = 1)
-  
+
   if (control$propose.points == 1L)
     parego.sample.more.weights = 1L
   parego.sample.more.weights = asInt(parego.sample.more.weights)
   assertInt(parego.sample.more.weights, na.ok = FALSE, lower = 1)
-  
+
 
   assertLogical(parego.use.margin.points, len = number.of.targets, any.missing = FALSE)
-       
+
   # some checks we ony want to do if we're really doing parego
   if (control$number.of.targets != 1L) {
     if (sum(parego.use.margin.points) > propose.points)
       stopf("Can't use %s margin points when only proposing %s points each iteration.",
         sum(parego.use.margin.points), propose.points)
-    
+
     number.of.weights = choose(parego.s + control$number.of.targets - 1,
       control$number.of.targets - 1)
     if (parego.sample.more.weights * propose.points > number.of.weights)
       stop("Trying to sample more weights than exists. Increase parego.s or decrease number of weights.")
   }
-  
+
   assertChoice(parego.normalize, choices = c("standard", "front"))
-  
+
   # mspot
   assertNumeric(mspot.ref.point, any.missing = FALSE, finite = TRUE, len = control$number.of.targets)
-  
-  
+
+
   # extend control object
   control$multicrit.method = method
   control$parego.s = parego.s
@@ -92,7 +92,7 @@ setMBOControlMultiCrit = function(control,
   control$parego.sample.more.weights = parego.sample.more.weights
   control$parego.normalize = parego.normalize
   control$mspot.ref.point = mspot.ref.point
-  
+
   return(control)
 }
 
