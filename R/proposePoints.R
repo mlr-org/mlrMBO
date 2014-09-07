@@ -13,12 +13,12 @@ proposePoints = function(model, par.set, control, opt.path, ...) {
   n = control$propose.points
   # generate a few random points if model failed
   if (isFailureModel(model)) {
-    error.model = getFailureModelMsg(model)
+    errors.model = getFailureModelMsg(model)
     prop.points = generateDesign(n, par.set, randomLHS)
     propose.points = convertDataFrameCols(prop.points, ints.as.num = TRUE, logicals.as.factor = TRUE)
     crit.vals = rep(NA_real_, n)
   } else {
-    error.model = NA_character_
+    errors.model = NA_character_
     #FIXME: shoule we impute features here or not?
     #DH: Must be Done in MLR now.
     design = convertOptPathToDf(par.set, opt.path, control)
@@ -39,5 +39,5 @@ proposePoints = function(model, par.set, control, opt.path, ...) {
       crit.vals = prop.design$crit.vals
     }
   }
-  return(list(prop.points = prop.points, crit.vals = crit.vals, error.model = error.model))
+  return(list(prop.points = prop.points, crit.vals = crit.vals, errors.model = errors.model))
 }

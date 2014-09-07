@@ -17,18 +17,18 @@ proposePointsSMS = function(models, par.set, control, opt.path, ...) {
   # generate a few random points if model failed
   # FIXME: What if only part of the models fail? Optimize the remaining? Random Points?
   if (any(sapply(models, isFailureModel))) {
-    error.model = getFailureModelMsg(model)
+    errors.model = getFailureModelMsg(model)
     prop.points = generateDesign(n, par.set, randomLHS)
     propose.points = convertDataFrameCols(prop.points, ints.as.num = TRUE, logicals.as.factor = TRUE)
     crit.vals = rep(NA_real_, n)
   } else {
-    error.model = NA_character_
+    errors.model = NA_character_
     design = convertOptPathToDf(par.set, opt.path, control)
     infill.crit.fun = infillCritSMS
     infill.opt.fun = getInfillOptFunction(control$infill.opt)
     prop.points = infill.opt.fun(infill.crit.fun, models, control, par.set, opt.path, design, ...)
     crit.vals = infill.crit.fun(prop.points, models, control, par.set, design, ...)
   }
-  return(list(prop.points = prop.points, crit.vals = crit.vals, error.model = error.model))
+  return(list(prop.points = prop.points, crit.vals = crit.vals, errors.model = errors.model))
 }
 

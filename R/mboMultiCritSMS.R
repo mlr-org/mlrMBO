@@ -18,24 +18,12 @@ mboMultiCritSMS = function(fun, par.set, design = NULL, learner, control, show.i
   ninit = if(is.null(design)) control$init.design.points else nrow(design)
   crit = control$infill.crit
 
-  # helper to get extras-list for opt.path logging
-  getExtras = function(crit.vals, error.model) {
-    n = length(crit.vals)
-    crit.vals = unlist(crit.vals)
-    exs = vector("list", n)
-    for (i in 1:n) {
-      ex = list(crit.vals[i], error.model = error.model)
-      names(ex)[1] = crit
-      exs[[i]] = ex
-    }
-    return(exs)
-  }
 
   # for normal start, we setup initial design, otherwise take stuff from continue object from disk
   if (is.null(continue)) {
     opt.path = makeMBOOptPath(par.set, control)
-    generateMBODesign(design, fun, par.set, opt.path, control, show.info, oldopts, more.args,
-      extras = getExtras(crit.vals = rep(NA_real_, ninit), error.model = NA_character_))
+    extras = getExtras(ninit, NULL, control)
+    generateMBODesign(design, fun, par.set, opt.path, control, show.info, oldopts, more.args, extras)
     models = namedList(control$store.model.at)
     saveStateOnDisk(0L, fun, learner, par.set, opt.path, control, show.info, more.args, models, NULL, NULL)
   } else {
@@ -60,9 +48,9 @@ mboMultiCritSMS = function(fun, par.set, design = NULL, learner, control, show.i
 
     # propose new points and evaluate target function
     prop = proposePointsSMS(y.models, par.set, control, opt.path)
-    extras = getExtras(prop$crit.vals, prop$error.model)
+    extras = getExtras(nrow(prop$prop.points), prop, control)
     evalProposedPoints(loop, prop$prop.points, par.set, opt.path, control,
-      fun, learner, show.info, oldopts, more.args, extras = extras)
+      fun, learner, show.info, oldopts, more.args, extras)
 
     saveStateOnDisk(loop, fun, learner, par.set, opt.path, control, show.info, more.args, models, resample.vals, NULL)
     loop = loop + 1L

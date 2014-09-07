@@ -14,12 +14,12 @@ proposePointsMSPOT = function(models, par.set, control, opt.path, ...) {
   # generate a few random points if model failed
   # FIXME: What if only part of the models fail? Optimize the remaining? Random Points?
   if (any(sapply(models, isFailureModel))) {
-    error.model = getFailureModelMsg(model)
+    errors.model = getFailureModelMsg(model)
     prop.points = generateDesign(n, par.set, randomLHS)
     propose.points = convertDataFrameCols(prop.points, ints.as.num = TRUE, logicals.as.factor = TRUE)
     crit.vals = rep(NA_real_, n)
   } else {
-    error.model = NA_character_
+    errors.model = NA_character_
     #FIXME: shoule we impute features here or not?
     #DH: Must be Done in MLR now.
     design = convertOptPathToDf(par.set, opt.path, control)
@@ -33,5 +33,5 @@ proposePointsMSPOT = function(models, par.set, control, opt.path, ...) {
     prop.points = candidates$points[propose.inds, ]
     crit.vals = candidates$crit.vals[propose.inds, ]
   }
-  return(list(prop.points = prop.points, crit.vals = crit.vals, error.model = error.model))
+  return(list(prop.points = prop.points, crit.vals = crit.vals, errors.model = errors.model))
 }

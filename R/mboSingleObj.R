@@ -22,28 +22,13 @@ mboSingleObj = function(fun, par.set, design = NULL, learner, control, show.info
   ninit = if(is.null(design)) control$init.design.points else nrow(design)
   fevals = control$final.evals
 
-  # helper to get extras-list for opt.path logging
-  getExtras = function(crit.vals, error.model, lambdas) {
-    n = length(crit.vals)
-    crit.vals = unlist(crit.vals)
-    exs = vector("list", n)
-    for (i in 1:n) {
-      ex = list(crit.vals[i], error.model = error.model)
-      names(ex)[1] = crit
-      if (islcb)
-        ex$multipoint.lcb.lambda = lambdas[i]
-      exs[[i]] = ex
-    }
-    return(exs)
-  }
-
   # for normal start, we setup initial design, otherwise take stuff from continue object from disk
   if (is.null(continue)) {
     # create opt.path
     opt.path = makeMBOOptPath(par.set, control)
     # generate initial design
-    generateMBODesign(design, fun, par.set, opt.path, control, show.info, oldopts, more.args,
-      extras = getExtras(crit.vals = rep(NA_real_, ninit), error.model = NA_character_, lambdas = rep(NA_real_, ninit)))
+    extras = getExtras(ninit, NULL, control)
+    generateMBODesign(design, fun, par.set, opt.path, control, show.info, oldopts, more.args, extras)
     models = namedList(control$store.model.at)
     resample.vals = namedList(control$resample.at)
   } else {
@@ -81,7 +66,7 @@ mboSingleObj = function(fun, par.set, design = NULL, learner, control, show.info
     prop.points = prop$prop.points
     crit.vals = prop$crit.vals
 
-    extras = getExtras(crit.vals, prop$error.model, attr(prop.points, "multipoint.lcb.lambdas"))
+    extras = getExtras(nrow(prop$prop.points), prop, control)
     evalProposedPoints(loop, prop.points, par.set, opt.path, control,
       fun, learner, show.info, oldopts, more.args, extras)
 
@@ -111,8 +96,8 @@ mboSingleObj = function(fun, par.set, design = NULL, learner, control, show.info
     showInfo(show.info, "Performing %i final evals", fevals)
     # do some final evaluations and compute mean of target fun values
     xs = replicate(fevals, best$x, simplify = FALSE)
-    ys = evalTargetFun(fun, par.set, loop, xs, opt.path, control, show.info, oldopts, more.args,
-      extras = getExtras(crit.vals = rep(NA_real_, fevals), error.model = NA_character_, lambdas = rep(NA_real_, fevals)))
+    extras = getExtras(fevals, NULL, control)
+    ys = evalTargetFun(fun, par.set, loop, xs, opt.path, control, show.info, oldopts, more.args, extras)
     best$y = mean(ys)
   }
   # restore mlr configuration

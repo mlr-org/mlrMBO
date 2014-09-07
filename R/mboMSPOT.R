@@ -16,28 +16,15 @@ mboMSPOT = function(fun, par.set, design = NULL, learner, control, show.info = T
   # shortcut names
   y.name = control$y.name
   crit = control$infill.crit
-  ninit = if(is.null(design)) control$init.design.points else nrow(design)
-
-  # helper to get extras-list for opt.path logging
-  getExtras = function(crit.vals, error.model, lambdas) {
-    n = length(crit.vals)
-    crit.vals = unlist(crit.vals)
-    exs = vector("list", n)
-    for (i in 1:n) {
-      ex = list(crit.vals[i], error.model = error.model)
-      names(ex)[1] = crit
-      exs[[i]] = ex
-    }
-    return(exs)
-  }
+  ninit = if (is.null(design)) control$init.design.points else nrow(design)
 
   # for normal start, we setup initial design, otherwise take stuff from continue object from disk
   if (is.null(continue)) {
     # create opt.path
     opt.path = makeMBOOptPath(par.set, control)
     # generate initial design
-    generateMBODesign(design, fun, par.set, opt.path, control, show.info, oldopts, more.args,
-      extras = getExtras(crit.vals = rep(NA_real_, ninit), error.model = NA_character_, lambdas = rep(NA_real_, ninit)))
+    extras = getExtras(ninit, NULL)
+    generateMBODesign(design, fun, par.set, opt.path, control, show.info, oldopts, more.args, extras)
     models = namedList(control$store.model.at)
     resample.vals = namedList(control$resample.at)
   } else {
@@ -70,11 +57,9 @@ mboMSPOT = function(fun, par.set, design = NULL, learner, control, show.info = T
 
     # propose new points and evaluate target function
     prop = proposePointsMSPOT(y.models, par.set, control, opt.path)
-    prop.points = prop$prop.points
-    crit.vals = prop$crit.vals
 
-    extras = getExtras(crit.vals, prop$error.model, attr(prop.points, "multipoint.lcb.lambdas"))
-    evalProposedPoints(loop, prop.points, par.set, opt.path, control,
+    extras = getExtras(prop)
+    evalProposedPoints(loop, prop$prop.points, par.set, opt.path, control,
       fun, learner, show.info, oldopts, more.args, extras)
 
     saveStateOnDisk(loop, fun, learner, par.set, opt.path, control, show.info, more.args, models, resample.vals, NULL)

@@ -15,21 +15,9 @@ mboParEGO = function(fun, par.set, design = NULL, learner, control, show.info = 
   time.budget = control$time.budget
 
   # shortcut names
-  ninit = if(is.null(design)) control$init.design.points else nrow(design)
+  ninit = if (is.null(design)) control$init.design.points else nrow(design)
   crit = control$infill.crit
 
-  # helper to get extras-list for opt.path logging
-  getExtras = function(crit.vals, error.model, weight.mat) {
-    n = length(crit.vals)
-    exs = vector("list", n)
-    for (i in 1:n) {
-      ex = list(crit.vals[i], error.model = error.model[i])
-      names(ex)[1] = crit
-      w = setNames(as.list(weight.mat[i, ]), paste0(".weight", 1:ncol(weight.mat)))
-      exs[[i]] = c(ex, w)
-    }
-    return(exs)
-  }
 
   # Calculate all possible weight vectors and save them
   all.possible.weights = combWithSum(control$parego.s, control$number.of.targets) / control$parego.s
@@ -41,9 +29,8 @@ mboParEGO = function(fun, par.set, design = NULL, learner, control, show.info = 
   # for normal start, we setup initial design, otherwise take stuff from continue object from disk
   if (is.null(continue)) {
     opt.path = makeMBOOptPath(par.set, control)
-    weight.mat = matrix(NA, nrow = ninit, ncol = control$number.of.targets)
-    generateMBODesign(design, fun, par.set, opt.path, control, show.info, oldopts, more.args,
-      extras = getExtras(rep(NA, ninit), error.model = NA_character_, weight.mat))
+    extras = getExtras(ninit, NULL, control)
+    generateMBODesign(design, fun, par.set, opt.path, control, show.info, oldopts, more.args, extras)
     models = namedList(control$store.model.at)
     saveStateOnDisk(0L, fun, learner, par.set, opt.path, control, show.info, more.args, models, NULL, NULL)
   } else {
@@ -71,12 +58,12 @@ mboParEGO = function(fun, par.set, design = NULL, learner, control, show.info = 
     props = lapply(new.mods, proposePoints, par.set = par.set,
       control = ctrl2, opt.path = opt.path)
     prop.points = do.call(rbind, extractSubList(props, "prop.points", simplify = FALSE))
-
-    extras = getExtras(
+    prop = list(
+      prop.points = prop.points,
       crit.vals = extractSubList(props, "crit.vals"),
-      error.model = extractSubList(props, "error.model"),
-      weight.mat = scalar$weights
+      errors.model = extractSubList(props, "errors.model")
     )
+    extras = getExtras(nrow(prop$prop.points), prop, control, scalar$weights)
     evalProposedPoints(loop, prop.points, par.set, opt.path, control,
       fun, learner, show.info, oldopts, more.args, extras)
     saveStateOnDisk(loop, fun, learner, par.set, opt.path, control, show.info, more.args, models, NULL, NULL)
