@@ -3,7 +3,7 @@ infillOptMultiCritRandom = function(infill.crit, models, control, par.set, opt.p
   requirePackages("emoa")
   
   # FIXME introduce owm params, don't use infill.opt.focussearch ones
-  newdesign = generateDesign(control$infill.opt.focussearch.points, par.set,
+  newdesign = generateDesign(control$infill.opt.multicrit.randomsearch.points, par.set,
     randomLHS)
   
   FUN.VALUE = rep(0, control$infill.opt.focussearch.points)
@@ -14,5 +14,19 @@ infillOptMultiCritRandom = function(infill.crit, models, control, par.set, opt.p
   return(list(
     points = recodeTypes(newdesign[front.inds, , drop = FALSE], par.set),
     crit.vals = ys[front.inds, , drop = FALSE])
+  )
+}
+
+# NSGA 2
+infillOptMultiCritNSGA2 = function(infill.crit, models, control, par.set, opt.path, design, ...) {
+  requirePackages("mco")
+  
+  res = nsga2(infill.crit, idim = getParamNr(par.set, devectorize = TRUE), odim = control$number.of.targets,
+    control$infill.opt.nsga2.popsize, control$infill.opt.nsga2.generations,
+    control$infill.opt.nsga2.cprob, control$infill.opt.nsga2.cdist,
+    control$infill.opt.nsga2.mprob, control$infill.opt.nsga2.mdist)
+  return(list(
+    points = res$par,
+    crit.vals = res$value)
   )
 }

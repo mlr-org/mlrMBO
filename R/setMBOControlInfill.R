@@ -68,6 +68,34 @@
 #'   For \code{opt.ea = "ea"}.
 #'   Number of children generated in each generation.
 #'   Default is 1.
+#' @param opt.multicrit.method [\code{character(1)}]\cr
+#'   How should infill.crit be optimized in multicrit case. Possible parameter values are:
+#'   \dQuote{random}: Random Search.
+#'   \dQuote{nsga2}: NSGA2.
+#' @param opt.multicrit.randomsearch.points [\code{numeric{1}}]\cr
+#'   For \code{opt.multicrit.method = "random"}.
+#'   Number of random search points for multicrit optimization.
+#'   Default is 50000.
+#' @param opt.nsga2.popsize [\code{numeric{1}}]\cr
+#'   For \code{opt.multicrit.method = "nsga2"}.
+#'   Population size of nsga2.
+#'   Default is 100.
+#' @param opt.nsga2.generations [\code{numeric{1}}]\cr
+#'   For \code{opt.multicrit.method = "nsga2"}.
+#'   Number of populations for of nsga2.
+#'   Default is 500.
+#' @param opt.nsga2.cprob [\code{numeric{1}}]\cr
+#'   For \code{opt.multicrit.method = "nsga2"}.
+#'   nsga2 param. Default is 0.7.
+#' @param opt.nsga2.cdist [\code{numeric{1}}]\cr
+#'   For \code{opt.multicrit.method = "nsga2"}.
+#'   nsga2 param. Default is 5.
+#' @param opt.nsga2.mprob [\code{numeric{1}}]\cr
+#'   For \code{opt.multicrit.method = "nsga2"}.
+#'   nsga2 param. Default is 0.2.
+#' @param opt.nsga2.mdist [\code{numeric{1}}]\cr
+#'   For \code{opt.multicrit.method = "nsga2"}.
+#'   nsga2 param. Default is 10.
 #' @return [\code{\link{MBOControl}}].
 #' @note See the other setMBOControl... functions and \code{makeMBOControl} for referenced arguments.
 #' @seealso makeMBOControl
@@ -80,7 +108,11 @@ setMBOControlInfill = function(control,
   opt.ea.maxit = 500L, opt.ea.mu = 10L,
   opt.ea.sbx.eta = 15, opt.ea.sbx.p = 0.5,
   opt.ea.pm.eta = 15, opt.ea.pm.p = 0.5,
-  opt.ea.lambda = 1L) {
+  opt.ea.lambda = 1L, opt.multicrit.method = "random",
+  opt.multicrit.randomsearch.points = 50000L,
+  opt.nsga2.popsize = 100L, opt.nsga2.generations = 500L,
+  opt.nsga2.cprob = 0.7, opt.nsga2.cdist  = 5,
+  opt.nsga2.mprob = 0.2, opt.nsga2.mdist = 10) {
 
   assertClass(control, "MBOControl")
 
@@ -105,7 +137,22 @@ setMBOControlInfill = function(control,
   assertNumber(opt.ea.pm.eta, na.ok = FALSE, lower = 0)
   assertNumber(opt.ea.pm.p, na.ok = FALSE, lower = 0, upper = 1)
   assertCount(opt.ea.lambda, na.ok = FALSE)
-
+  
+  assertChoice(opt.multicrit.method, choices = c("random", "nsga2"))
+  
+  opt.multicrit.randomsearch.points = asCount(opt.multicrit.randomsearch.points)
+  assertCount(opt.multicrit.randomsearch.points, na.ok = FALSE, positive = TRUE)
+  
+  opt.nsga2.popsize = asCount(opt.nsga2.popsize)
+  assertCount(opt.nsga2.popsize, na.ok = FALSE, positive = TRUE)
+  opt.nsga2.generations = asCount(opt.nsga2.generations)
+  assertCount(opt.nsga2.generations, na.ok = FALSE, positive = TRUE)
+  assertNumber(opt.nsga2.cprob, lower = 0, upper = 1, na.ok = FALSE)
+  assertNumber(opt.nsga2.cdist, lower = 1e-16, na.ok = FALSE, finite = TRUE)
+  assertNumber(opt.nsga2.mprob, lower = 0, upper = 1, na.ok = FALSE)
+  assertNumber(opt.nsga2.mdist, lower = 1e-16, na.ok = FALSE, finite  = TRUE)
+  
+  
   control$infill.crit = crit
   control$infill.crit.lcb.lambda = crit.lcb.lambda
   control$infill.opt = opt
@@ -120,7 +167,14 @@ setMBOControlInfill = function(control,
   control$infill.opt.ea.pm.eta = opt.ea.pm.eta
   control$infill.opt.ea.pm.p = opt.ea.pm.p
   control$infill.opt.ea.lambda = opt.ea.lambda
-
+  control$infill.opt.multicrit.randomsearch.points = opt.multicrit.randomsearch.points
+  control$infill.opt.nsga2.popsize = opt.nsga2.popsize
+  control$infill.opt.nsga2.generations = opt.nsga2.generations
+  control$infill.opt.nsga2.cprob = opt.nsga2.cprob
+  control$infill.opt.nsga2.cdist = opt.nsga2.cdist
+  control$infill.opt.nsga2.mprob = opt.nsga2.mprob
+  control$infill.opt.nsga2.mdist = opt.nsga2.mdist
+  
   return(control)
 }
 
