@@ -2,6 +2,7 @@
 
 S3method(print,MBOControl)
 S3method(print,MBOExampleRun)
+S3method(print,MBOExampleRunMultiCrit)
 S3method(print,MBOMultiObjResult)
 S3method(print,MBOResult)
 export(autoplot.MBOExampleRun)

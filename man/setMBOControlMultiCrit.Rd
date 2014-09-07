@@ -6,7 +6,8 @@
 setMBOControlMultiCrit(control, method = "parego", parego.s,
   parego.rho = 0.05, parego.use.margin.points = rep(FALSE,
   control$number.of.targets), parego.sample.more.weights = 5L,
-  parego.normalize = "standard")
+  parego.normalize = "standard", mspot.ref.point = rep(11,
+  control$number.of.targets))
 }
 \arguments{
 \item{control}{[\code{\link{MBOControl}}]\cr
