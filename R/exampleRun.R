@@ -82,9 +82,11 @@ exampleRun = function(fun, par.set, global.opt = NA_real_, learner, control,
   assertLogical(show.info, len = 1L, any.missing = FALSE)
   n.params = sum(getParamLengths(par.set))
 
-  if (n.params >= 3L) {
+  if (control$number.of.targets != 1L)
+    stopf("exampleRun can only be applied for single objective functions, but you have %i objectives! Use 'exampleRunMultiCrit'!",
+      control$number.of.targets)
+  if (n.params >= 3L)
     stopf("exampleRun can only be applied for functions with at most 2 dimensions, but you have %iD", n.params)
-  }
 
   control$store.model.at = 0:control$iters
   names.x = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
@@ -129,7 +131,7 @@ exampleRun = function(fun, par.set, global.opt = NA_real_, learner, control,
   if (!is.null(fun.mean)) {
     opt.path = as.data.frame(res$opt.path)
     evals.x = opt.path[, names.x, drop = FALSE]
-    y.true = apply(evals.x, 1, function(x) fun.mean(as.list(x))) 
+    y.true = apply(evals.x, 1, function(x) fun.mean(as.list(x)))
   }
 
   makeS3Obj("MBOExampleRun",
@@ -242,7 +244,7 @@ evaluate = function(fun, par.set, n.params, par.types, noisy, noisy.evals, point
       x1 = unlist(par.set$pars[[idx.discrete]]$values)
 
       eval.x = expand.grid(x1, x2)
-      
+
       names(eval.x) = names.x
       xs = dfRowsToList(eval.x, par.set)
       #FIXME: params in eval.x must be in the same order as parameters in par.set!
