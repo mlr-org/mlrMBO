@@ -45,6 +45,8 @@ mboMultiCritSMS = function(fun, par.set, design = NULL, learner, control, show.i
   repeat {
     rt = makeMBOMultiObjTasks(par.set, opt.path, control)
     y.models = lapply(rt, train, learner = learner)
+    if (loop %in% control$store.model.at)
+      models[[as.character(loop)]] = y.models
 
     # propose new points and evaluate target function
     prop = proposePointsSMS(y.models, par.set, control, opt.path)
