@@ -54,10 +54,12 @@ mboMSPOT = function(fun, par.set, design = NULL, learner, control, show.info = T
   repeat {
     rt = makeMBOMultiObjTasks(par.set, opt.path, control)
     y.models = lapply(rt, train, learner = learner)
+    if (loop %in% control$store.model.at)
+      models[[as.character(loop)]] = y.models
 
     # propose new points and evaluate target function
     prop = proposePoints(y.models, par.set, control, opt.path)
-    
+
     extras = getExtras(nrow(prop$prop.points), prop, control)
     evalProposedPoints(loop, prop$prop.points, par.set, opt.path, control,
       fun, learner, show.info, oldopts, more.args, extras)
