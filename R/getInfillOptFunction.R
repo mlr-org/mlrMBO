@@ -11,6 +11,7 @@ getInfillOptFunction = function(infill.opt) {
     cmaes = infillOptCMAES,
     focussearch = infillOptFocus,
     ea = infillOptEA,
+    nsga2 = infillOptMultiCritNSGA2,
     # default: try to match the fun which is given as string
     match.fun(infill.opt)
   )

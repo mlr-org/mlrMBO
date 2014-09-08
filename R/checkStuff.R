@@ -76,6 +76,9 @@ checkStuff = function(fun, par.set, design, learner, control) {
   # multicrit stuff
   if (control$multicrit.method == "sms" && control$infill.crit != "sms")
     stopf("For multicrit 'sms' infil.crit must be set to 'sms'!")
+  
+  if (control$multicrit.method == "mspot" && control$infill.opt != "nsga2")
+    stopf("For multicrit 'mspot' infil.opt must be set to 'nsga2'!")
 
   # multifidelity stuff
   if (control$multifid) {

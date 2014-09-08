@@ -1,28 +1,28 @@
+
+# FIXME: For the moment excluded - talk about it
 # Random Search for the multicrit optimization of all models
-infillOptMultiCritRandom = function(infill.crit, models, control, par.set, opt.path, design, ...) {
-  requirePackages("emoa")
-  
-  # FIXME introduce owm params, don't use infill.opt.focussearch ones
-  newdesign = generateDesign(control$infill.opt.multicrit.randomsearch.points, par.set,
-    randomLHS)
-  
-  FUN.VALUE = rep(0, control$infill.opt.multicrit.randomsearch.points)
-  ys = vapply(models, infill.crit, FUN.VALUE = FUN.VALUE, points = newdesign, control = control,
-    par.set = par.set, design = design, ...)
-  
-  front.inds = !is_dominated(t(ys))
-  return(list(
-    points = recodeTypes(newdesign[front.inds, , drop = FALSE], par.set),
-    crit.vals = ys[front.inds, , drop = FALSE])
-  )
-}
+#infillOptMultiCritRandom = function(infill.crit, models, control, par.set, opt.path, design, ...) {
+#  requirePackages("emoa")
+#  
+#  newdesign = generateDesign(control$infill.opt.multicrit.randomsearch.points, par.set,
+#    randomLHS)
+#  
+#  FUN.VALUE = rep(0, control$infill.opt.multicrit.randomsearch.points)
+#  ys = vapply(models, infill.crit, FUN.VALUE = FUN.VALUE, points = newdesign, control = control,
+#    par.set = par.set, design = design, ...)
+#  
+#  front.inds = !is_dominated(t(ys))
+#  return(list(
+#    points = recodeTypes(newdesign[front.inds, , drop = FALSE], par.set),
+#    crit.vals = ys[front.inds, , drop = FALSE])
+#  )
+#}
 
 # NSGA 2
 infillOptMultiCritNSGA2 = function(infill.crit, models, control, par.set, opt.path, design, ...) {
   requirePackages("mco")
   
   rep.pids = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
-  
   
   fun.tmp = function(x) {
     newdata = as.data.frame(t(x))
@@ -40,8 +40,23 @@ infillOptMultiCritNSGA2 = function(infill.crit, models, control, par.set, opt.pa
   points = as.data.frame(res$par)
   colnames(points) = rep.pids
   
-  return(list(
-    points = points,
-    crit.vals = res$value)
-  )
+  best.inds = selectBestHypervolumePoints(res$value, control, opt.path)
+  
+  return(points = points[best.inds, , drop = FALSE])
+}
+
+# gets a data.frame of candidate points and selects the control$prop.points best points
+# concerning hypervolume
+# returns the indices of the best points
+selectBestHypervolumePoints = function (crit.vals, control, opt.path) {
+  n = nrow(crit.vals)
+  front.old = t(getOptPathY(opt.path))
+  crit.vals = t(crit.vals)
+  # FIXME: This only works well for proposing 1 point! For proposing more points
+  # at the same time, we have to look at the common hv-contr of this points
+  # Idea: Do this greedy?
+  hvs = -1 * sapply(seq_col(crit.vals), function(i)
+    dominated_hypervolume(cbind(front.old, crit.vals[, i]), ref = control$multicrit.ref.point))
+  
+  order(hvs)[1:control$propose.points]
 }

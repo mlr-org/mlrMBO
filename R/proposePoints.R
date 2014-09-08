@@ -39,7 +39,16 @@ proposePoints = function(models, par.set, control, opt.path, ...) {
       infill.crit.fun = getInfillCritFunction(control$infill.crit)
       infill.opt.fun = getInfillOptFunction(control$infill.opt)
       prop.points = infill.opt.fun(infill.crit.fun, models, control, par.set, opt.path, design, ...)
-      crit.vals = infill.crit.fun(prop.points, models, control, par.set, design, ...)
+      # mspot is a bit special, we have multiple crit.vals
+      if (control$multicrit.method == "mspot") {
+        # FIXME clean up
+        crit.vals = vapply(models, infill.crit.fun, FUN.VALUE = rep(0, nrow(prop.points)),
+          points = prop.points, control = control, par.set = par.set, design = design, ...)
+        if (is.vector(crit.vals)) crit.vals = matrix(crit.vals, nrow = 1)
+      }
+      else {
+        crit.vals = infill.crit.fun(prop.points, models, control, par.set, design, ...)
+      }
     }
   }
   return(list(prop.points = prop.points, crit.vals = crit.vals, errors.model = errors.model))

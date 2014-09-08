@@ -20,6 +20,7 @@
 #'   \dQuote{cmaes}: Use CMAES to optimize infill criterion. If all CMAES runs fail, a random point is generated
 #'   instead and a warning informs about it.
 #'   \dQuote{ea}: Use an (mu+1) EA to optimize infill criterion.
+#'   \dQuote{nsga2}: NSGA2 for multi obj. optimizationen. Needed for mspot.
 #'   Default is \dQuote{focussearch}.
 #'   Alternatively, you may pass a function name as string.
 #' @param opt.restarts [\code{integer(1)}]\cr
@@ -68,10 +69,6 @@
 #'   For \code{opt.ea = "ea"}.
 #'   Number of children generated in each generation.
 #'   Default is 1.
-#' @param opt.multicrit.method [\code{character(1)}]\cr
-#'   How should infill.crit be optimized in multicrit case. Possible parameter values are:
-#'   \dQuote{random}: Random Search.
-#'   \dQuote{nsga2}: NSGA2.
 #' @param opt.multicrit.randomsearch.points [\code{numeric{1}}]\cr
 #'   For \code{opt.multicrit.method = "random"}.
 #'   Number of random search points for multicrit optimization.
@@ -108,8 +105,8 @@ setMBOControlInfill = function(control,
   opt.ea.maxit = 500L, opt.ea.mu = 10L,
   opt.ea.sbx.eta = 15, opt.ea.sbx.p = 0.5,
   opt.ea.pm.eta = 15, opt.ea.pm.p = 0.5,
-  opt.ea.lambda = 1L, opt.multicrit.method = "random",
-  opt.multicrit.randomsearch.points = 50000L,
+  opt.ea.lambda = 1L,
+  #opt.multicrit.randomsearch.points = 50000L,
   opt.nsga2.popsize = 100L, opt.nsga2.generations = 50L,
   opt.nsga2.cprob = 0.7, opt.nsga2.cdist  = 5,
   opt.nsga2.mprob = 0.2, opt.nsga2.mdist = 10) {
@@ -138,10 +135,9 @@ setMBOControlInfill = function(control,
   assertNumber(opt.ea.pm.p, na.ok = FALSE, lower = 0, upper = 1)
   assertCount(opt.ea.lambda, na.ok = FALSE)
   
-  assertChoice(opt.multicrit.method, choices = c("random", "nsga2"))
-  
-  opt.multicrit.randomsearch.points = asCount(opt.multicrit.randomsearch.points)
-  assertCount(opt.multicrit.randomsearch.points, na.ok = FALSE, positive = TRUE)
+  # FIXME: Don't use for now
+  #opt.multicrit.randomsearch.points = asCount(opt.multicrit.randomsearch.points)
+  #assertCount(opt.multicrit.randomsearch.points, na.ok = FALSE, positive = TRUE)
   
   opt.nsga2.popsize = asCount(opt.nsga2.popsize)
   assertCount(opt.nsga2.popsize, na.ok = FALSE, positive = TRUE)
@@ -167,8 +163,7 @@ setMBOControlInfill = function(control,
   control$infill.opt.ea.pm.eta = opt.ea.pm.eta
   control$infill.opt.ea.pm.p = opt.ea.pm.p
   control$infill.opt.ea.lambda = opt.ea.lambda
-  control$infill.opt.multicrit.method = opt.multicrit.method
-  control$infill.opt.multicrit.randomsearch.points = opt.multicrit.randomsearch.points
+  #control$infill.opt.multicrit.randomsearch.points = opt.multicrit.randomsearch.points
   control$infill.opt.nsga2.popsize = opt.nsga2.popsize
   control$infill.opt.nsga2.generations = opt.nsga2.generations
   control$infill.opt.nsga2.cprob = opt.nsga2.cprob

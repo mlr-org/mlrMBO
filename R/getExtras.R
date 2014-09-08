@@ -3,7 +3,8 @@
 getExtras = function(n, prop, control, weight.mat = NULL) {
   # this happens in init design
   if (is.null(prop)) {
-    prop = list(crit.vals = rep(NA_real_, n), errors.model = NA_character_)
+    prop = list(crit.vals = matrix(NA_real_, nrow = n, ncol = control$number.of.targets),
+      errors.model = NA_character_)
   }
   exs = vector("list", n)
   errs = prop$errors.model
@@ -11,8 +12,15 @@ getExtras = function(n, prop, control, weight.mat = NULL) {
   if (length(errs) == 1L)
     errs = rep(errs, n)
   for (i in 1:n) {
-    ex = list(prop$crit.vals[i], error.model = errs[i])
-    names(ex)[1] = control$infill.crit
+    # if we use mspot, store all crit.vals
+    if (control$multicrit.method == "mspot") {
+      ex = as.list(prop$crit.vals[i, ])
+      names(ex) = paste(control$infill.crit, control$y.name, sep = ".")
+      ex$error.model = errs[i]
+    } else {
+      ex = list(prop$crit.vals[i], error.model = errs[i])
+      names(ex)[1] = control$infill.crit
+    }
     # if we use parallel LCB, store lambdas
     if (control$propose.points > 1L && control$multipoint.method == "lcb") {
       ex$multipoint.lcb.lambdas = attr(prop, "multipoint.lcb.lambdas")

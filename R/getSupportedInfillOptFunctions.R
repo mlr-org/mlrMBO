@@ -3,5 +3,5 @@
 #' @return [\code{character}]
 #' @export
 getSupportedInfillOptFunctions = function() {
-  c("cmaes", "focussearch", "ea")
+  c("cmaes", "focussearch", "ea", "nsga2")
 }
