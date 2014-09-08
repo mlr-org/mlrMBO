@@ -6,7 +6,8 @@
 #
 # returns:
 # - prop.points [data.frame]: the proposed points, with n rows
-# - crit.vals [numeric(n)]: the crit values at the points
+# - crit.vals [matrix(n, k)]: the crit values at the n points
+#   for some methods, we have a cv for each objective. in this case k > 1, typically k = number.of.targets
 # - errors.model [character(1)]: NA if the model was Ok, the (first) error message if some model crashed
 
 proposePoints = function(models, par.set, control, opt.path, ...) {
@@ -41,16 +42,15 @@ proposePoints = function(models, par.set, control, opt.path, ...) {
       prop.points = infill.opt.fun(infill.crit.fun, models, control, par.set, opt.path, design, ...)
       # mspot is a bit special, we have multiple crit.vals
       if (control$multicrit.method == "mspot") {
-        # FIXME clean up
-        crit.vals = vapply(models, infill.crit.fun, FUN.VALUE = rep(0, nrow(prop.points)),
-          points = prop.points, control = control, par.set = par.set, design = design, ...)
-        if (is.vector(crit.vals)) crit.vals = matrix(crit.vals, nrow = 1)
-      }
-      else {
+        crit.vals = asMatrixCols(lapply(models, infill.crit.fun, points = prop.points,
+            control = control, par.set = par.set, design = design, ...))
+      } else {
         crit.vals = infill.crit.fun(prop.points, models, control, par.set, design, ...)
       }
     }
   }
+  if (!is.matrix(crit.vals))
+    crit.vals = matrix(crit.vals, ncol = 1L)
   return(list(prop.points = prop.points, crit.vals = crit.vals, errors.model = errors.model))
 }
 
