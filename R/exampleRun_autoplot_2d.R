@@ -250,8 +250,7 @@ autoplotExampleRun2d = function(x, iters,
     )
 
     if (pause) {
-      #FIXME: passing plot.sequence[[i]] fails here. Why?
-      arrangeAndPrintPlots(list(pl.fun, pl.mod, pl.crit, pl.se), title)
+      arrangeAndPrintPlots(plot.sequence[[i]], title)
     }
   }
   return(plot.sequence)
