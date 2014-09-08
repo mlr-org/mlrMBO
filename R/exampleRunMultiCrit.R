@@ -80,6 +80,32 @@ exampleRunMultiCrit= function(fun, par.set, learner, control, points.per.dim = 5
   res = mbo(fun, par.set, learner = learner, control = control, show.info = show.info)
   mbo.hypervolume = dominated_hypervolume(t(res$pareto.front), ref.point)
 
+  # if we have 1 model per obj, predict whole space and approx pareto front, so we can see effect of model
+  mbo.pred.grid.x = NULL
+  mbo.pred.grid.mean = NULL
+  mbo.pred.grid.lcb = NULL
+  if (control$multicrit.method %in% c("sms", "mspot")) {
+    mbo.pred.grid.x = generateGridDesign(par.set, resolution = points.per.dim)
+    mbo.pred.grid.mean = vector("list", control$iters)
+    for (iter in 1:control$iters) {
+      mods = res$models[[iter]]
+      ps = lapply(mods, predict, newdata = mbo.pred.grid.x)
+      y1 = extractSubList(ps, c("data", "response"), simplify = "cols")
+      y2 = setColNames(as.data.frame(y1), names.y)
+      y2$.is.dom = is_dominated(t(y1))
+      mbo.pred.grid.mean[[iter]] = y2
+      # if we have se estim, also calc LCB front
+      if (mods[[1]]$learner$predict.type == "se") {
+        z1 = extractSubList(ps, c("data", "se"), simplify = "cols")
+        z1 = y1 - z1
+        z2 = setColNames(as.data.frame(z1), names.y)
+        z2$.is.dom = is_dominated(t(z1))
+        mbo.pred.grid.lcb[[iter]] = z2
+      } else {
+        mbo.pred.grid.lcb = NULL
+      }
+    }
+  }
   makeS3Obj(c("MBOExampleRunMultiCrit"),
     par.set = par.set,
     n.params = n.params,
@@ -93,7 +119,10 @@ exampleRunMultiCrit= function(fun, par.set, learner, control, points.per.dim = 5
     nsga2.paretoset = nsga2.paretoset,
     nsga2.hypervolume = nsga2.hypervolume,
     mbo.res = res,
-    points.per.dim = points.per.dim
+    points.per.dim = points.per.dim,
+    mbo.pred.grid.x = mbo.pred.grid.x,
+    mbo.pred.grid.mean = mbo.pred.grid.mean,
+    mbo.pred.grid.lcb = mbo.pred.grid.lcb
   )
 }
 

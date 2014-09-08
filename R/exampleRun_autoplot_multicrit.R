@@ -115,12 +115,15 @@ autoplot.MBOExampleRunMultiCrit = function(object, iters, pause = TRUE, y1lim = 
     )
   }
 
-  createPlFront = function(gg.points.front) {
-    pl.front = ggplot(data = gg.points.front, aes_string(x = "y1", y = "y2",
-        colour = "type", shape = "type"))
-    pl.front = pl.front + geom_point(data = gg.points.front[which(gg.points.front$type == "front"), ],
+  createPlFront = function(gg.points.front, iter) {
+    pl.front = ggplot(data = gg.points.front, aes_string(x = "y1", y = "y2"))
+    pl.front = pl.front + geom_point(
+      mapping = aes_string(colour = "type", shape = "type"),
+      data = gg.points.front[which(gg.points.front$type == "front"), ],
       size = 2, alpha = 0.4)
-    pl.front = pl.front + geom_point(data = gg.points.front[which(gg.points.front$type != "front"), ],
+    pl.front = pl.front + geom_point(
+      mapping = aes_string(colour = "type", shape = "type"),
+      data = gg.points.front[which(gg.points.front$type != "front"), ],
       size = 4)
     if (isparego)
       pl.front = pl.front + geom_abline(intercept = intercept, slope = slope)
@@ -134,6 +137,18 @@ autoplot.MBOExampleRunMultiCrit = function(object, iters, pause = TRUE, y1lim = 
     #  label = paste("lambda[2] == ", round(weights[2L], 2), sep = ""), parse = TRUE, col = "black", size = 5)
     if (isparego)
       pl.front = pl.front + geom_line(data = gg.line, col = "blue", shape = 1)
+
+    # if we have model prediction per objective, paint approx front
+    addApproxMBOFront = function(dat, col, lty) {
+      if (!is.null(dat)) {
+        gg.mbo = dat[[iter]]
+        gg.mbo = setColNames(subset(gg.mbo, !gg.mbo$.is.dom)[, 1:2], c("y1", "y2"))
+        pl.front <<- pl.front + geom_line(data = gg.mbo, col = col, linetype = lty, alpha = 0.8)
+      }
+    }
+    addApproxMBOFront(object$mbo.pred.grid.mean, "brown", "solid")
+    addApproxMBOFront(object$mbo.pred.grid.lcb,  "brown", "dotted")
+
     return(pl.front)
   }
 
@@ -202,7 +217,7 @@ autoplot.MBOExampleRunMultiCrit = function(object, iters, pause = TRUE, y1lim = 
           )
         }
 
-        pl.front = createPlFront(gg.points.front)
+        pl.front = createPlFront(gg.points.front, i)
         pl.set = createPlSet(gg.points.set)
 
         if (pause) {
@@ -229,7 +244,7 @@ autoplot.MBOExampleRunMultiCrit = function(object, iters, pause = TRUE, y1lim = 
       gg.points.front = getGGPointsFront(yy, idx, idx.all)
       gg.points.set = getGGPointsSet(xx, idx, idx.all)
 
-      pl.front = createPlFront(gg.points.front)
+      pl.front = createPlFront(gg.points.front, i)
       pl.set = createPlSet(gg.points.set)
 
       if (pause) {
