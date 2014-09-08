@@ -12,16 +12,13 @@
 proposePoints = function(models, par.set, control, opt.path, ...) {
   n = control$propose.points
   m = control$number.of.targets
-  # restructure a bit, if we only got one model
-  if (inherits(models, "WrappedModel")) {
-    model = models
-    models = list(model)
-  }
+  # make sure models.list is always a LIST, model can be ONE model or list of, depends on case we are in
+  models.list = ensureVector(models, 1L, cl = "WrappedModel")
   # generate a few random points if ANY model failed
-  isfail = vlapply(models, isFailureModel)
+  isfail = vlapply(models.list, isFailureModel)
   if (any(isfail)) {
     # if error in any model, return first msg
-    errors.model = getFailureModelMsg(models[[which.first(isfail)]])
+    errors.model = getFailureModelMsg(models.list[[which.first(isfail)]])
     prop.points = generateDesign(n, par.set, randomLHS)
     propose.points = convertDataFrameCols(prop.points, ints.as.num = TRUE, logicals.as.factor = TRUE)
     crit.vals = rep(NA_real_, n)
@@ -31,20 +28,18 @@ proposePoints = function(models, par.set, control, opt.path, ...) {
     #DH: Must be Done in MLR now.
     design = convertOptPathToDf(par.set, opt.path, control)
 
-    # single crit, single point proposal
-    if (m == 1L && n == 1L) {
-      # get infill fun + optimizer, then run, do final crit eval for return object
-      infill.crit.fun = getInfillCritFunction(control$infill.crit)
-      infill.opt.fun = getInfillOptFunction(control$infill.opt)
-      prop.points = infill.opt.fun(infill.crit.fun, model, control, par.set, opt.path, design, ...)
-      crit.vals = infill.crit.fun(prop.points, model, control, par.set, design, ...)
-   # multi point proposal
-    } else {
+    # single crit, multipoint, a bit special case
+    if (m == 1L && n > 1L) {
       # get optimizer and run
       multipoint.infill.opt.fun = getMultipointInfillOptFunction(control$multipoint.method)
-      prop.design = multipoint.infill.opt.fun(model, control, par.set, opt.path, design, ...)
+      prop.design = multipoint.infill.opt.fun(models, control, par.set, opt.path, design, ...)
       prop.points = prop.design$prop.points
       crit.vals = prop.design$crit.vals
+    } else {
+      infill.crit.fun = getInfillCritFunction(control$infill.crit)
+      infill.opt.fun = getInfillOptFunction(control$infill.opt)
+      prop.points = infill.opt.fun(infill.crit.fun, models, control, par.set, opt.path, design, ...)
+      crit.vals = infill.crit.fun(prop.points, models, control, par.set, design, ...)
     }
   }
   return(list(prop.points = prop.points, crit.vals = crit.vals, errors.model = errors.model))

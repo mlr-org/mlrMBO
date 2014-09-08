@@ -32,7 +32,7 @@ checkStuff = function(fun, par.set, design, learner, control) {
     stop("mbo requires regression learner!")
 
   # general infill stuff (relavant for single objective and parEGO)
-  if (control$infill.crit %in% c("se", "ei", "aei", "lcb") && learner$predict.type != "se") {
+  if (control$infill.crit %in% c("se", "ei", "aei", "lcb", "sms") && learner$predict.type != "se") {
     stopf("For infill criterion '%s' predict.type of learner %s must be set to 'se'!%s",
       control$infill.crit, learner$id,
       ifelse(hasProperties(learner, "se"), "",
@@ -72,6 +72,10 @@ checkStuff = function(fun, par.set, design, learner, control) {
       }
     }
   }
+
+  # multicrit stuff
+  if (control$multicrit.method == "sms" && control$infill.crit != "sms")
+    stopf("For multicrit 'sms' infil.crit must be set to 'sms'!")
 
   # multifidelity stuff
   if (control$multifid) {

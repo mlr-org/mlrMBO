@@ -18,7 +18,6 @@ mboMultiCritSMS = function(fun, par.set, design = NULL, learner, control, show.i
   ninit = if(is.null(design)) control$init.design.points else nrow(design)
   crit = control$infill.crit
 
-
   # for normal start, we setup initial design, otherwise take stuff from continue object from disk
   if (is.null(continue)) {
     opt.path = makeMBOOptPath(par.set, control)
@@ -49,7 +48,7 @@ mboMultiCritSMS = function(fun, par.set, design = NULL, learner, control, show.i
       models[[as.character(loop)]] = y.models
 
     # propose new points and evaluate target function
-    prop = proposePointsSMS(y.models, par.set, control, opt.path)
+    prop = proposePoints(y.models, par.set, control, opt.path)
     extras = getExtras(nrow(prop$prop.points), prop, control)
     evalProposedPoints(loop, prop$prop.points, par.set, opt.path, control,
       fun, learner, show.info, oldopts, more.args, extras)

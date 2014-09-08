@@ -3,6 +3,6 @@
 #' @return [\code{character}]
 #' @export
 getSupportedInfillCritFunctions = function() {
-  c("mean", "se", "ei", "aei", "lcb", "multiFid")
+  c("mean", "se", "ei", "aei", "lcb", "sms", "multiFid")
 }
 

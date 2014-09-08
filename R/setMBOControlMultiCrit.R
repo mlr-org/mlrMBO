@@ -44,7 +44,7 @@ setMBOControlMultiCrit = function(control,
 
   number.of.targets = control$number.of.targets
   propose.points = control$propose.points
-  
+
   assertNumeric(ref.point, any.missing = FALSE, finite = TRUE, len = number.of.targets)
 
   # ParEGO:
