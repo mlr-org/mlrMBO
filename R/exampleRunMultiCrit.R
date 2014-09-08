@@ -52,7 +52,7 @@ exampleRunMultiCrit= function(fun, par.set, learner, control, points.per.dim = 5
   if (ny != 2L)
     stopf("exampleRunMultiCrit can only be applied for functions with 2 objectives, but you have %iD", ny)
   if (n.params != 2L)
-    stopf("exampleRunMultiCrit can only be applied for functions with 2 parameters, but you have %iD", ny)
+    stopf("exampleRunMultiCrit can only be applied for functions with 2 parameters, but you have %iD", n.params)
 
   control$store.model.at = 1:control$iters
   names.x = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)

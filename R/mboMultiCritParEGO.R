@@ -61,7 +61,7 @@ mboParEGO = function(fun, par.set, design = NULL, learner, control, show.info = 
     prop.points = do.call(rbind, extractSubList(props, "prop.points", simplify = FALSE))
     prop = list(
       prop.points = prop.points,
-      crit.vals = extractSubList(props, "crit.vals"),
+      crit.vals = matrix(extractSubList(props, "crit.vals"), ncol = 1),
       errors.model = extractSubList(props, "errors.model")
     )
     extras = getExtras(nrow(prop$prop.points), prop, control, scalar$weights)
