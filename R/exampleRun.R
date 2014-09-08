@@ -247,7 +247,6 @@ evaluate = function(fun, par.set, n.params, par.types, noisy, noisy.evals, point
 
       names(eval.x) = names.x
       xs = dfRowsToList(eval.x, par.set)
-      #FIXME: params in eval.x must be in the same order as parameters in par.set!
       ys = parallelMap(function(x) {
         if(noisy) {
           # do replicates if noisy
