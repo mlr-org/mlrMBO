@@ -8,7 +8,9 @@ setMBOControlInfill(control, crit = "mean", crit.lcb.lambda = 1,
   opt.focussearch.points = 10000L, opt.cmaes.control = list(),
   opt.ea.maxit = 500L, opt.ea.mu = 10L, opt.ea.sbx.eta = 15,
   opt.ea.sbx.p = 0.5, opt.ea.pm.eta = 15, opt.ea.pm.p = 0.5,
-  opt.ea.lambda = 1L)
+  opt.ea.lambda = 1L, opt.nsga2.popsize = 100L,
+  opt.nsga2.generations = 50L, opt.nsga2.cprob = 0.7, opt.nsga2.cdist = 5,
+  opt.nsga2.mprob = 0.2, opt.nsga2.mdist = 10)
 }
 \arguments{
 \item{control}{[\code{\link{MBOControl}}]\cr
@@ -35,6 +37,7 @@ focused on an especial promising region according to infill criterion.
 \dQuote{cmaes}: Use CMAES to optimize infill criterion. If all CMAES runs fail, a random point is generated
 instead and a warning informs about it.
 \dQuote{ea}: Use an (mu+1) EA to optimize infill criterion.
+\dQuote{nsga2}: NSGA2 for multi obj. optimizationen. Needed for mspot.
 Default is \dQuote{focussearch}.
 Alternatively, you may pass a function name as string.}
 
@@ -94,6 +97,37 @@ Default is 0.5.}
 For \code{opt.ea = "ea"}.
 Number of children generated in each generation.
 Default is 1.}
+
+\item{opt.multicrit.randomsearch.points}{[\code{numeric{1}}]\cr
+For \code{opt.multicrit.method = "random"}.
+Number of random search points for multicrit optimization.
+Default is 50000.}
+
+\item{opt.nsga2.popsize}{[\code{numeric{1}}]\cr
+For \code{opt.multicrit.method = "nsga2"}.
+Population size of nsga2.
+Default is 100.}
+
+\item{opt.nsga2.generations}{[\code{numeric{1}}]\cr
+For \code{opt.multicrit.method = "nsga2"}.
+Number of populations for of nsga2.
+Default is 50.}
+
+\item{opt.nsga2.cprob}{[\code{numeric{1}}]\cr
+For \code{opt.multicrit.method = "nsga2"}.
+nsga2 param. Default is 0.7.}
+
+\item{opt.nsga2.cdist}{[\code{numeric{1}}]\cr
+For \code{opt.multicrit.method = "nsga2"}.
+nsga2 param. Default is 5.}
+
+\item{opt.nsga2.mprob}{[\code{numeric{1}}]\cr
+For \code{opt.multicrit.method = "nsga2"}.
+nsga2 param. Default is 0.2.}
+
+\item{opt.nsga2.mdist}{[\code{numeric{1}}]\cr
+For \code{opt.multicrit.method = "nsga2"}.
+nsga2 param. Default is 10.}
 }
 \value{
 [\code{\link{MBOControl}}].

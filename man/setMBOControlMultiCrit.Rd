@@ -3,11 +3,10 @@
 \alias{setMBOControlMultiCrit}
 \title{Extends mbo control object with multi-criteria specific options.}
 \usage{
-setMBOControlMultiCrit(control, method = "parego", parego.s,
-  parego.rho = 0.05, parego.use.margin.points = rep(FALSE,
-  control$number.of.targets), parego.sample.more.weights = 5L,
-  parego.normalize = "standard", mspot.ref.point = rep(11,
-  control$number.of.targets))
+setMBOControlMultiCrit(control, method = "parego", ref.point = rep(11,
+  control$number.of.targets), parego.s, parego.rho = 0.05,
+  parego.use.margin.points = rep(FALSE, control$number.of.targets),
+  parego.sample.more.weights = 5L, parego.normalize = "standard")
 }
 \arguments{
 \item{control}{[\code{\link{MBOControl}}]\cr
@@ -16,6 +15,8 @@ Control object for mbo.}
 \item{method}{[\code{character(1)}]\cr
 Which multicrit method should be used? At the moment only parego is
 supported, which is also the default.}
+
+\item{ref.point[\code{numeric}]\cr}{Reference point for hypervolume calculation. Used for miscellaneous multicrit algos.}
 
 \item{parego.s}{[\code{integer(1)}]\cr
 Parameter of parego - controls the number of weighting vectors. The default
