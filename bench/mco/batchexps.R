@@ -17,7 +17,7 @@ reg = makeExperimentRegistry("mco_bench", packages = c(
     "emoa",
     "mlrMBO"
   ), src.files = c(
-    "defs.R", 
+    "defs.R",
     "WFG.R"
   )
 )
@@ -62,7 +62,7 @@ addAlgorithm(reg, "nsga2", fun = function(static, generations) {
   res = nsga2(static$objective, idim = getParamNr(par.set, devectorize = TRUE),
     odim = static$ny, lower.bounds = getLower(par.set), upper.bounds = getUpper(par.set),
     popsize = POPSIZE, generations = generations)
-  pareto.set = setColNames(as.data.frame(subset(res$par, res$pareto.optimal, drop = FALSE)), 
+  pareto.set = setColNames(as.data.frame(subset(res$par, res$pareto.optimal, drop = FALSE)),
     names.x)
   pareto.front = subset(res$value, res$pareto.optimal, drop = FALSE)
   hv = dominated_hypervolume(t(pareto.front), ref = static$ref)
@@ -81,7 +81,7 @@ addAlgorithm(reg, "parego", fun = function(static, prop.points) {
   ctrl = makeMBOControl(number.of.targets = static$ny, init.design.points = INIT_DESIGN_POINTS,
     iters = iters, propose.points = prop.points,
     save.on.disk.at = integer(0L))
-  ctrl = setMBOControlInfill(ctrl, crit = "ei", opt.focussearch.points = 10000L, 
+  ctrl = setMBOControlInfill(ctrl, crit = "ei", opt.focussearch.points = 10000L,
     opt.restarts = 3L, opt.focussearch.maxit = 3L)
   ctrl = setMBOControlMultiCrit(ctrl)
 
@@ -105,7 +105,8 @@ des2 = makeDesign("parego", exhaustive = list(
 addExperiments(reg, algo.design = des1, repls = REPLS)
 addExperiments(reg, algo.design = des2, repls = REPLS)
 
-
-submitJobs(reg, ids = chunk(getJobIds(reg), n.chunks = 33, shuffle = TRUE),
-  resources=list(walltime=8*3600, memory=2*1024),
-  wait=function(retries) 1, max.retries=10)
+j = findExperiments(reg, algo.pattern = "pare")
+testJob(reg, j[1], external = F)
+# submitJobs(reg, ids = chunk(getJobIds(reg), n.chunks = 33, shuffle = TRUE),
+  # resources=list(walltime=8*3600, memory=2*1024),
+  # wait=function(retries) 1, max.retries=10)
