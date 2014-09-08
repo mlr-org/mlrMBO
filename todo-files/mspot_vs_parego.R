@@ -19,6 +19,11 @@ or.mspot = mbo(f, ps, learner = learner, control = ctrl)
 ctrl = setMBOControlInfill(ctrl, crit = "ei", opt.multicrit.method = "nsga2", opt.nsga2.generations = 50L)
 or.mspot2 = mbo(f, ps, learner = learner, control = ctrl)
 
+ctrl$propose.points = 5L
+ctrl$iters = 4L
+or.mspot3 = mbo(f, ps, learner = learner, control = ctrl)
+
 plot(or.parego$pareto.front)
 points(or.mspot$pareto.front, pch = 3)
 points(or.mspot2$pareto.front, pch = 4)
+points(or.mspot3$pareto.front, pch = 5)

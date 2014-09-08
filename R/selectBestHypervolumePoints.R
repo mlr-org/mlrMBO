@@ -4,6 +4,8 @@
 selectBestHypervolumePoints = function (crit.vals, control, opt.path) {
   n = nrow(crit.vals)
   front.old = getOptPathY(opt.path)
+  # FIXME: This only works well for proposing 1 point! For proposing more points
+  # at the same time, we have to look at the common hv-contr of this points
   hypervolume.old = dominated_hypervolume(t(front.old), control$mspot.ref.point)
   hypervolume.new = sapply(1:n, function(i) dominated_hypervolume(t(rbind(front.old, crit.vals[i, ]))))
   
