@@ -48,7 +48,7 @@ exampleRunMultiCrit= function(fun, par.set, learner, control, points.per.dim = 5
   assertLogical(show.info, len = 1L, any.missing = FALSE)
   ny = control$number.of.targets
 
-  #FIXME: Only allow 2D -> 2D for the moment, since the plot function can only handle this case
+  # only allow 2D -> 2D for the moment, since the plot function can only handle this case
   if (ny != 2L)
     stopf("exampleRunMultiCrit can only be applied for functions with 2 objectives, but you have %iD", ny)
   if (n.params != 2L)
