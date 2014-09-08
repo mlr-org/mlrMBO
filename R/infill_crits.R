@@ -81,7 +81,10 @@ infillCritSMS = function(points, models, control, par.set, design) {
   # now calculate HV contribution for each lcb point for current design, these are out infill crit vals
   ys = t(ys)
   lcbs = t(lcbs)
-  hvs = sapply(seq_col(lcbs), function(i) hypervolume_indicator(lcbs[, i, drop = FALSE], o = ys))
+  # We do without substraction of dominated_hypervolume(lcbs), since this is const
+  # we want to maximize hv contribution ...
+  hvs = -1 * sapply(seq_col(lcbs), function(i)
+    dominated_hypervolume(cbind(ys, lcbs[, i]), ref = control$multicrit.ref.point))
   return(hvs)
 }
 
