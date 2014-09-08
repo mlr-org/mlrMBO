@@ -61,7 +61,6 @@ autoplotExampleRun2d = function(x, iters,
   plot.sequence = list()
 
   # FIXME: what to plot if not infillcrit that uses se?
-  # FIXME: how do we display noise? do we at all?
   for (i in iters) {
     catf("Iter %i", i)
     model = mbo.res$models[[i]]
@@ -227,12 +226,7 @@ autoplotExampleRun2d = function(x, iters,
     #   Main title printed above grid-arranged plots.
     # @return Nothing. Plots are printed to the display as a side effect.
     arrangeAndPrintPlots = function(plot.list, title) {
-      do.delete = which(is.na(plot.list))
-      if (length(do.delete) > 0) {
-        plot.list = plot.list[-do.delete]
-      }
-      #FIXME: why do I need the above three lines? Filter does not work.
-      #plot.list = Filter(plot.list, f = function(x) !is.na(x))
+      plot.list = Filter(Negate(isScalarNA), plot.list)
       n.plots = length(plot.list)
       n.row = if (n.plots <= 3) 1L else 2L
       do.call("grid.arrange", c(plot.list, nrow = n.row, main = title))
