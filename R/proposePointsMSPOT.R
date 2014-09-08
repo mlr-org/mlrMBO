@@ -25,10 +25,10 @@ proposePointsMSPOT = function(models, par.set, control, opt.path, ...) {
     design = convertOptPathToDf(par.set, opt.path, control)
     infill.crit.fun = getInfillCritFunction(control$infill.crit)
     # FIXME: Add more multicrit optimizer and copy the single-obj structure
-    if (control$opt.multicrit.method == "random") {
+    if (control$infill.opt.multicrit.method == "random") {
       infill.opt.fun = infillOptMultiCritRandom
     }
-    if (control$opt.multicrit.method == "nsga2") {
+    if (control$infill.opt.multicrit.method == "nsga2") {
       infill.opt.fun = infillOptMultiCritNSGA2
     }
     candidates = infill.opt.fun(infill.crit.fun, models, control, par.set, opt.path, design, ...)

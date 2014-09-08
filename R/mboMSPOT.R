@@ -23,7 +23,7 @@ mboMSPOT = function(fun, par.set, design = NULL, learner, control, show.info = T
     # create opt.path
     opt.path = makeMBOOptPath(par.set, control)
     # generate initial design
-    extras = getExtras(ninit, NULL)
+    extras = getExtras(ninit, NULL, control)
     generateMBODesign(design, fun, par.set, opt.path, control, show.info, oldopts, more.args, extras)
     models = namedList(control$store.model.at)
     resample.vals = namedList(control$resample.at)
@@ -57,8 +57,8 @@ mboMSPOT = function(fun, par.set, design = NULL, learner, control, show.info = T
 
     # propose new points and evaluate target function
     prop = proposePointsMSPOT(y.models, par.set, control, opt.path)
-
-    extras = getExtras(prop)
+    
+    extras = getExtras(nrow(prop$prop.points), prop, control)
     evalProposedPoints(loop, prop$prop.points, par.set, opt.path, control,
       fun, learner, show.info, oldopts, more.args, extras)
 

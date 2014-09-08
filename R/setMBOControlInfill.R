@@ -83,7 +83,7 @@
 #' @param opt.nsga2.generations [\code{numeric{1}}]\cr
 #'   For \code{opt.multicrit.method = "nsga2"}.
 #'   Number of populations for of nsga2.
-#'   Default is 500.
+#'   Default is 50.
 #' @param opt.nsga2.cprob [\code{numeric{1}}]\cr
 #'   For \code{opt.multicrit.method = "nsga2"}.
 #'   nsga2 param. Default is 0.7.
@@ -110,7 +110,7 @@ setMBOControlInfill = function(control,
   opt.ea.pm.eta = 15, opt.ea.pm.p = 0.5,
   opt.ea.lambda = 1L, opt.multicrit.method = "random",
   opt.multicrit.randomsearch.points = 50000L,
-  opt.nsga2.popsize = 100L, opt.nsga2.generations = 500L,
+  opt.nsga2.popsize = 100L, opt.nsga2.generations = 50L,
   opt.nsga2.cprob = 0.7, opt.nsga2.cdist  = 5,
   opt.nsga2.mprob = 0.2, opt.nsga2.mdist = 10) {
 
@@ -167,6 +167,7 @@ setMBOControlInfill = function(control,
   control$infill.opt.ea.pm.eta = opt.ea.pm.eta
   control$infill.opt.ea.pm.p = opt.ea.pm.p
   control$infill.opt.ea.lambda = opt.ea.lambda
+  control$infill.opt.multicrit.method = opt.multicrit.method
   control$infill.opt.multicrit.randomsearch.points = opt.multicrit.randomsearch.points
   control$infill.opt.nsga2.popsize = opt.nsga2.popsize
   control$infill.opt.nsga2.generations = opt.nsga2.generations
