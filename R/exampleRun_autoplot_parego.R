@@ -155,11 +155,11 @@ autoplot.MBOExampleRunMultiCrit = function(object, iters, pause = TRUE, y1lim = 
         model = mbo.res$models[[i]][[j]]
         idx = getIDX(opt.path, i)
         if (isparego)
-          weights = as.numeric(opt.path[idx.proposed, c(".weight1", ".weight2")])
+          weights = as.numeric(opt.path[idx$proposed, c(".weight1", ".weight2")])
         model.ok = !inherits(model, "FailureModel")
         if (model.ok) {
           xgrid2[[name.crit]] = opt.direction *
-          critfun(xgrid, model, control, par.set, opt.path[idx.past, ])
+          critfun(xgrid, model, control, par.set, opt.path[idx$past, ])
         }
         idx.all = c(idx.init, idx$seq, idx$proposed, idx.nsga2.paretofront)
 
@@ -219,7 +219,7 @@ autoplot.MBOExampleRunMultiCrit = function(object, iters, pause = TRUE, y1lim = 
       models.ok = !any(sapply(models, inherits, what = "FailureModel"))
       # if (models.ok) {
         # xgrid2[[name.crit]] = opt.direction *
-        # critfun(xgrid, model, control, par.set, opt.path[idx.past, ])
+        # critfun(xgrid, model, control, par.set, opt.path[idx$past, ])
       # }
       idx.all = c(idx.init, idx$seq, idx$proposed, idx.nsga2.paretofront)
 
