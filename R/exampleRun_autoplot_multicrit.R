@@ -139,8 +139,11 @@ autoplot.MBOExampleRunMultiCrit = function(object, iters, pause = TRUE, y1lim = 
 
   createPlSet = function(gg.points.set) {
     pl.set = ggplot()
-    pl.set = pl.set + geom_tile(data = xgrid2, aes_string(x = x.name[1L], y = x.name[2L], fill = name.crit))
-    pl.set = pl.set + scale_fill_gradientn(colours = topo.colors(7))
+    # only for parego, color background with scalar model / crit
+    if (control$multicrit.method == "parego") {
+      pl.set = pl.set + geom_tile(data = xgrid2, aes_string(x = x.name[1L], y = x.name[2L], fill = name.crit))
+      pl.set = pl.set + scale_fill_gradientn(colours = topo.colors(7))
+    }
     pl.set = pl.set +  geom_point(data = gg.points.set[which(gg.points.set$type == "front"), ],
       aes_string(x = "x1", y = "x2", colour = "type", shape = "type"), size = 2, alpha = 0.8)
     pl.set = pl.set + geom_point(data = gg.points.set[which(gg.points.set$type != "front"), ],
@@ -164,7 +167,7 @@ autoplot.MBOExampleRunMultiCrit = function(object, iters, pause = TRUE, y1lim = 
         idx.all = c(idx.init, idx$seq, idx$proposed, idx.nsga2.paretofront)
 
         gg.points.front = getGGPointsFront(yy, idx, idx.all)
-        gg.points.set = getGGPointsSet(yy, idx, idx.all)
+        gg.points.set = getGGPointsSet(xx, idx, idx.all)
 
         if (isparego) {
           # make dataframe for lines to show rho
@@ -224,18 +227,18 @@ autoplot.MBOExampleRunMultiCrit = function(object, iters, pause = TRUE, y1lim = 
       idx.all = c(idx.init, idx$seq, idx$proposed, idx.nsga2.paretofront)
 
       gg.points.front = getGGPointsFront(yy, idx, idx.all)
-      # gg.points.set = getGGPointsSet(yy, idx, idx.all)
+      gg.points.set = getGGPointsSet(xx, idx, idx.all)
 
       pl.front = createPlFront(gg.points.front)
-      # pl.set = createPlSet(gg.points.set)
+      pl.set = createPlSet(gg.points.set)
 
       if (pause) {
         title = sprintf("Iter %i", i)
-        pl.all = grid.arrange(pl.front, nrow = 1, main = title)
+        pl.all = grid.arrange(pl.front, pl.set = pl.set, nrow = 1, main = title)
         print(pl.all)
         pause()
       }
-      plot.sequence[[i]] = list(pl.front = pl.front)
+      plot.sequence[[i]] = list(pl.front = pl.front, pl.set = pl.set)
     }
   }
   return(plot.sequence)
