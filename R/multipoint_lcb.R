@@ -20,7 +20,7 @@
 multipointInfillOptLCB = function(model, control, par.set, opt.path, design, ...) {
   # copy control and optimize multiple times with singlecrit lcb / different lambda
   control2 = control
-  control2$propose.points = 1
+  control2$propose.points = 1L
   control2$infill.crit = "lcb"
   newdes = data.frame()
   lambdas = c()
@@ -37,7 +37,7 @@ multipointInfillOptLCB = function(model, control, par.set, opt.path, design, ...
     # as we might construct the same xs for similar lamba, we
     # require that a new point is not nearly the same as another proposed one
     if (nrow(newdes) > 0L) {
-      # FIXME what do we here for factor vars, wrt dist?
+      # FIXME: what do we here for factor vars, wrt dist?
       dists = apply(newdes, 1, function(x) min(abs(x - prop.points[1, ])))
     } else {
       dists = Inf

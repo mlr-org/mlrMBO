@@ -45,6 +45,7 @@ mboParEGO = function(fun, par.set, design = NULL, learner, control, show.info = 
   # new control for scalar soo iteration, always minimize and propose 1 point
   ctrl2 = control
   ctrl2$propose.points = 1L
+  ctrl2$number.of.targets = 1L
   ctrl2$minimize = TRUE
 
   # if we are restarting from a save file, we possibly start in a higher iteration

@@ -251,7 +251,7 @@ print.MBOControl = function(x, ...) {
       catf("Infill optimizer              : %s", x$infill.opt)
       catf("Infill optimizer restarts     : %i", x$infill.opt.restarts)
     } else {
-      catf("Multipoint method             : %s", x$control$multipoint.method)
+      catf("Multipoint method             : %s", x$multipoint.method)
     }
     catf("Final point by                : %s", x$final.method)
   }
