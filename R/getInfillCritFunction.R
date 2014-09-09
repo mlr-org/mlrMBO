@@ -18,6 +18,7 @@ getInfillCritFunction = function(infill.crit) {
     # mq  = infillCritMQ,
     # eipi  =  infillCritEIPI,
     sms = infillCritSMS,
+    eps = infillCritEpsilon,
     multiFid = infillCritMultiFid,
     match.fun(infill.crit)
   )

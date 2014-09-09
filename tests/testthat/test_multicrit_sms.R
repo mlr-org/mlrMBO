@@ -8,8 +8,12 @@ test_that("multicrit sms works", {
   # Test normal run
   learner = makeLearner("regr.km", nugget.estim = TRUE, predict.type = "se")
   ctrl = makeMBOControl(iters = 5, number.of.targets = 2L, init.design.points = 5L)
-  ctrl = setMBOControlInfill(ctrl, crit = "sms", opt.focussearch.points = 10)
+  ctrl = setMBOControlInfill(ctrl, crit = "eps", opt.focussearch.points = 10)
   ctrl = setMBOControlMultiCrit(ctrl, method = "sms")
+  or = mbo(f, ps, learner = learner, control = ctrl)
+  expect_true(!any(is.na(or$pareto.front)))
+  
+  ctrl = setMBOControlInfill(ctrl, crit = "eps", opt.focussearch.points = 10)
   or = mbo(f, ps, learner = learner, control = ctrl)
   expect_true(!any(is.na(or$pareto.front)))
 })

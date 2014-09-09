@@ -78,6 +78,7 @@ infillCritSMS = function(points, models, control, par.set, design) {
   ses = extractSubList(ps, c("data", "se"), simplify = "cols")
   lcbs = means - control$infill.crit.lcb.lambda * ses
   lcbs = lcbs %*% diag(maximize.mult)
+  # FIXME: assign penalty to all epsilon-dominated solutions is missing?
   # now calculate HV contribution for each lcb point for current design, these are out infill crit vals
   ys = t(ys)
   lcbs = t(lcbs)
@@ -88,3 +89,22 @@ infillCritSMS = function(points, models, control, par.set, design) {
   return(hvs)
 }
 
+# epsilon-EGO: LOWER CONFIDENCE BOUND of points, then epsilon indicator contribution of these wrt to design
+# (useful for deterministic and stochastic MCO)
+infillCritEpsilon = function(points, models, control, par.set, design) {
+  maximize.mult = ifelse(control$minimize, 1, -1)
+  ys = maximize.mult * design[, control$y.name]
+  # get lcb-value-matrix for new points (x -1 for max. objectives)
+  ps = lapply(models, predict, newdata = points)
+  means = extractSubList(ps, c("data", "response"), simplify = "cols")
+  ses = extractSubList(ps, c("data", "se"), simplify = "cols")
+  lcbs = means - control$infill.crit.lcb.lambda * ses
+  lcbs = lcbs %*% diag(maximize.mult)
+  # epsilon-indicator: "maximin-fitness"
+  epsInd = function (y) {
+    diffs = lcbs - matrix(y, ncol = length(y), nrow = nrow(lcbs), byrow = TRUE)
+    min(apply(diffs, 2, max))
+  }
+  epss = -1 * sapply(seq_row(lcbs), function(i) epsInd(lcbs[i, ]))
+  return(epss)
+}
