@@ -38,26 +38,26 @@ addMyProblem = function(id, objective, lower, upper) {
 }
 
 # test functions
-for (i in 1:1) {
+for (i in 1:6) {
   fname = sprintf("dtlz%i", i)
   addMyProblem(fname, get(fname), lower = 0, upper = 1)
 }
-# for (i in c(1:5, 7:9)) {
-#   fname = sprintf("lz%i", i)
-#   addMyProblem(fname, get(fname), lower = 0, upper = 1)
-# }
-# for (i in 4:7) {
-#   fname = sprintf("uf%i", i)
-#   addMyProblem(fname, get(fname), lower = 0, upper = 1)
-# }
-# for (i in 1:9) {
-#   fname = sprintf("wfg%i", i)
-#   addMyProblem(fname, get(fname), lower = 0, upper = 1)
-# }
-# for (i in c(1:4, 6)) {
-#   fname = sprintf("zdt%i", i)
-#   addMyProblem(fname, get(fname), lower = 0, upper = 1)
-# }
+for (i in c(1:5, 7:9)) {
+  fname = sprintf("lz%i", i)
+  addMyProblem(fname, get(fname), lower = 0, upper = 1)
+}
+for (i in 4:7) {
+  fname = sprintf("uf%i", i)
+  addMyProblem(fname, get(fname), lower = 0, upper = 1)
+}
+for (i in 1:9) {
+  fname = sprintf("wfg%i", i)
+  addMyProblem(fname, get(fname), lower = 0, upper = 1)
+}
+for (i in c(1:4, 6)) {
+  fname = sprintf("zdt%i", i)
+  addMyProblem(fname, get(fname), lower = 0, upper = 1)
+}
 
 
 runMBO = function(static, method, crit, opt, prop.points) {
@@ -120,7 +120,7 @@ des2 = makeDesign("parego", exhaustive = list(
 des3 = makeDesign("sms", exhaustive = list(
   prop.points = c(1L)
 ))
-des3 = makeDesign("mspot", exhaustive = list(
+des4 = makeDesign("mspot", exhaustive = list(
   prop.points = c(1L)
 ))
 
@@ -128,9 +128,9 @@ des3 = makeDesign("mspot", exhaustive = list(
 addExperiments(reg, algo.design = des1, repls = REPLS)
 addExperiments(reg, algo.design = des2, repls = REPLS)
 addExperiments(reg, algo.design = des3, repls = REPLS)
+addExperiments(reg, algo.design = des4, repls = REPLS)
 
-# j = findExperiments(reg, algo.pattern = "pare")
-# testJob(reg, j[1], external = F)
+batchExport(reg, runMBO)
 # submitJobs(reg, ids = chunk(getJobIds(reg), n.chunks = 33, shuffle = TRUE),
   # resources=list(walltime=8*3600, memory=2*1024),
   # wait=function(retries) 1, max.retries=10)
