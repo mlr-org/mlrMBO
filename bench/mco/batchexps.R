@@ -130,7 +130,7 @@ addExperiments(reg, algo.design = des2, repls = REPLS)
 addExperiments(reg, algo.design = des3, repls = REPLS)
 addExperiments(reg, algo.design = des4, repls = REPLS)
 
-batchExport(reg, runMBO)
+batchExport(reg, runMBO = runMBO)
 # submitJobs(reg, ids = chunk(getJobIds(reg), n.chunks = 33, shuffle = TRUE),
   # resources=list(walltime=8*3600, memory=2*1024),
   # wait=function(retries) 1, max.retries=10)
