@@ -2,7 +2,6 @@
 
 # NSGA 2
 infillOptMultiCritNSGA2 = function(infill.crit, models, control, par.set, opt.path, design, ...) {
-  requirePackages("mco")
 
   rep.pids = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
 

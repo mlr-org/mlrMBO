@@ -1,4 +1,4 @@
-context("parego")
+context("multicrit: parego")
 
 test_that("mbo parego works", {
   f = makeMBOFunction(function(x) x^2)

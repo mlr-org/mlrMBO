@@ -38,6 +38,9 @@ setMBOControlMultiCrit = function(control,
   parego.use.margin.points = rep(FALSE, control$number.of.targets),
   parego.sample.more.weights = 5L,
   parego.normalize = "standard") {
+  
+  requirePackages("mco", why = "multicrit optimization")
+  requirePackages("emoa", why = "multicrit optimization")
 
   assertClass(control, "MBOControl")
   assertChoice(method, choices = c("parego", "mspot", "sms"))
