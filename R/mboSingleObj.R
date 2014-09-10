@@ -62,7 +62,7 @@ mboSingleObj = function(fun, par.set, design = NULL, learner, control, show.info
 
   repeat {
     # propose new points and evaluate target function
-    prop = proposePoints(model, par.set, control, opt.path)
+    prop = proposePoints(model, par.set, control, opt.path, iter = loop)
     prop.points = prop$prop.points
     crit.vals = prop$crit.vals
 

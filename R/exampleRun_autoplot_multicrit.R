@@ -4,7 +4,7 @@
 #' @title Plot example run, either in 1D or 2D.
 #'
 #' @param object [\code{}]\cr
-#'   Object of type \code{ParEGOExampleRun}.
+#'   Object of type \code{MBOExampleRunMultiCrit}.
 #' @param iters [\code{integer}]\cr
 #'   Selected iterations of \code{x} to display.
 #'   Default is all iterations.
@@ -135,9 +135,12 @@ autoplot.MBOExampleRunMultiCrit = function(object, iters, pause = TRUE, y1lim = 
     #  label = paste("lambda[1] == ", round(weights[1L], 2), sep = ""), parse = TRUE, col = "black", size = 5)
     #pl.front = pl.front + geom_text(data = NULL, x = 3/12 * y1lim[2L], y = 23/24 * y2lim[2L],
     #  label = paste("lambda[2] == ", round(weights[2L], 2), sep = ""), parse = TRUE, col = "black", size = 5)
-    if (isparego)
+    if (isparego) {
+      pl.front = pl.front + annotate("text", label = expression(paste(lambda[1], round(weights[1L], 2),
+        lambda[2], round(weights[2L], 2)), sep = ""), x = y1lim[2], y = y2lim[1])
       pl.front = pl.front + geom_line(data = gg.line, col = "blue", shape = 1)
-
+    }
+      
     # if we have model prediction per objective, paint approx front
     addApproxMBOFront = function(dat, col, lty) {
       if (!is.null(dat)) {

@@ -10,7 +10,7 @@
 #   for some methods, we have a cv for each objective. in this case k > 1, typically k = number.of.targets
 # - errors.model [character(1)]: NA if the model was Ok, the (first) error message if some model crashed
 
-proposePoints = function(models, par.set, control, opt.path, ...) {
+proposePoints = function(models, par.set, control, opt.path, iter, ...) {
   n = control$propose.points
   m = control$number.of.targets
   # make sure models.list is always a LIST, model can be ONE model or list of, depends on case we are in
@@ -39,13 +39,13 @@ proposePoints = function(models, par.set, control, opt.path, ...) {
     } else {
       infill.crit.fun = getInfillCritFunction(control$infill.crit)
       infill.opt.fun = getInfillOptFunction(control$infill.opt)
-      prop.points = infill.opt.fun(infill.crit.fun, models, control, par.set, opt.path, design, ...)
+      prop.points = infill.opt.fun(infill.crit.fun, models, control, par.set, opt.path, design, iter, ...)
       # mspot is a bit special, we have multiple crit.vals
       if (control$multicrit.method == "mspot") {
         crit.vals = asMatrixCols(lapply(models, infill.crit.fun, points = prop.points,
-            control = control, par.set = par.set, design = design, ...))
+            control = control, par.set = par.set, design = design, iter = iter, ...))
       } else {
-        crit.vals = infill.crit.fun(prop.points, models, control, par.set, design, ...)
+        crit.vals = infill.crit.fun(prop.points, models, control, par.set, design, iter, ...)
       }
     }
   }

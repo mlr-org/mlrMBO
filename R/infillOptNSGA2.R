@@ -1,7 +1,7 @@
 
 
 # NSGA 2
-infillOptMultiCritNSGA2 = function(infill.crit, models, control, par.set, opt.path, design, ...) {
+infillOptMultiCritNSGA2 = function(infill.crit, models, control, par.set, opt.path, design, iter, ...) {
 
   rep.pids = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
 
@@ -9,7 +9,7 @@ infillOptMultiCritNSGA2 = function(infill.crit, models, control, par.set, opt.pa
     newdata = as.data.frame(t(x))
     colnames(newdata) = rep.pids
     vapply(models, infill.crit, FUN.VALUE = 0, points = newdata, control = control,
-      par.set = par.set, design = design, ...)
+      par.set = par.set, design = design, iter = iter, ...)
   }
 
   res = nsga2(fun.tmp, idim = getParamNr(par.set, devectorize = TRUE), odim = control$number.of.targets,

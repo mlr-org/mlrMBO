@@ -14,6 +14,8 @@
 #   Optimization path / archive.
 # @param design [\code{data.frame}]\cr
 #   Design of already visited points.
+# @param iter [\integer(1)]
+#   Current iteration
 # @param ... [\code{ANY}]\cr
 #   Additional arguments passed to \code{infill.crit}.
 # @return [\code{data.frame}]. One proposed point that should be evaluated.
@@ -23,7 +25,7 @@
 # cmaes with simple random restarts.
 # the first start is always at the best point of the current opt.path.
 # works only for numerics and integers, latter are simply rounded.
-infillOptCMAES = function(infill.crit, model, control, par.set, opt.path, design, ...) {
+infillOptCMAES = function(infill.crit, model, control, par.set, opt.path, design, iter, ...) {
   # extract lower and upper bound for params
   low = getLower(par.set)
   upp = getUpper(par.set)
@@ -35,7 +37,7 @@ infillOptCMAES = function(infill.crit, model, control, par.set, opt.path, design
   f = function(x) {
     newdata = as.data.frame(t(x))
     colnames(newdata) = rep.pids
-    infill.crit(newdata, model, control, par.set, design, ...)
+    infill.crit(newdata, model, control, par.set, design, iter, ...)
   }
 
   results = vector("list", control$infill.opt.restarts)

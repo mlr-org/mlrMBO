@@ -57,7 +57,7 @@ mboParEGO = function(fun, par.set, design = NULL, learner, control, show.info = 
     if (loop %in% control$store.model.at)
       models[[as.character(loop)]] = new.mods
     props = lapply(new.mods, proposePoints, par.set = par.set,
-      control = ctrl2, opt.path = opt.path)
+      control = ctrl2, opt.path = opt.path, iter = loop)
     prop.points = do.call(rbind, extractSubList(props, "prop.points", simplify = FALSE))
     prop = list(
       prop.points = prop.points,

@@ -6,7 +6,7 @@
 #FIXME should we shrink if a local value is NA (dependent param)
 #
 # See infillOptCMAES.R for interface explanation.
-infillOptFocus = function(infill.crit, model, control, par.set, opt.path, design, ...) {
+infillOptFocus = function(infill.crit, model, control, par.set, opt.path, design, iter, ...) {
   global.y = Inf
 
   # restart the whole crap some times
@@ -16,7 +16,7 @@ infillOptFocus = function(infill.crit, model, control, par.set, opt.path, design
       # predict on design where NAs were imputed, but return proposed points with NAs
       newdesign = generateDesign(control$infill.opt.focussearch.points, par.set,
         randomLHS)
-      y = infill.crit(newdesign, model, control, par.set, design, ...)
+      y = infill.crit(newdesign, model, control, par.set, design, iter, ...)
       # get current best value
       local.index = getMinIndex(y, ties.method = "random")
       local.y = y[local.index]

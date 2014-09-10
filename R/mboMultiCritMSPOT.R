@@ -58,7 +58,7 @@ mboMSPOT = function(fun, par.set, design = NULL, learner, control, show.info = T
       models[[as.character(loop)]] = y.models
 
     # propose new points and evaluate target function
-    prop = proposePoints(y.models, par.set, control, opt.path)
+    prop = proposePoints(y.models, par.set, control, opt.path, iter = loop)
 
     extras = getExtras(nrow(prop$prop.points), prop, control)
     evalProposedPoints(loop, prop$prop.points, par.set, opt.path, control,

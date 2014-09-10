@@ -17,23 +17,25 @@
 #   Parameter set.
 # @param design [\code{data.frame}]\cr
 #   Design of already visited points.
+# @param iter [\integer(1)]
+#   Current iteration
 # @return [\code{numeric}]. Criterion values at \code{points}.
 
 # MEAN RESPONSE OF MODEL
 # (useful for deterministic and noisy)
-infillCritMeanResponse = function(points, model, control, par.set, design) {
+infillCritMeanResponse = function(points, model, control, par.set, design, iter) {
   ifelse(control$minimize, 1, -1) * predict(model, newdata = points)$data$response
 }
 
 # MODEL UNCERTAINTY
 # (on its own not really useful for anything I suppose ...)
-infillCritStandardError = function(points, model, control, par.set, design) {
+infillCritStandardError = function(points, model, control, par.set, design, iter) {
   -predict(model, newdata = points)$data$se
 }
 
 # EXPECTED IMPROVEMENT
 # (useful for deterministic)
-infillCritEI = function(points, model, control, par.set, design) {
+infillCritEI = function(points, model, control, par.set, design, iter) {
   maximize.mult = ifelse(control$minimize, 1, -1)
   y = maximize.mult * design[, control$y.name]
   p = predict(model, newdata = points)$data
@@ -57,7 +59,7 @@ infillCritEI = function(points, model, control, par.set, design) {
 
 # LOWER CONFIDENCE BOUND
 # (useful for deterministic)
-infillCritLCB = function(points, model, control, par.set, design) {
+infillCritLCB = function(points, model, control, par.set, design, iter) {
   maximize.mult = ifelse(control$minimize, 1, -1)
   p = predict(model, newdata = points)$data
   lcb = maximize.mult * (p$response - control$infill.crit.lcb.lambda * p$se)
@@ -69,7 +71,7 @@ infillCritLCB = function(points, model, control, par.set, design) {
 
 # SMS-EGO: LOWER CONFIDENCE BOUND of points, then HV contribution of these wrt to design
 # (useful for deterministic and stochastic MCO)
-infillCritSMS = function(points, models, control, par.set, design) {
+infillCritSMS = function(points, models, control, par.set, design, iter) {
   maximize.mult = ifelse(control$minimize, 1, -1)
   ys = maximize.mult * design[, control$y.name]
   # get lcb-value-matrix for new points (x -1 for max. objectives)
@@ -89,7 +91,6 @@ infillCritSMS = function(points, models, control, par.set, design) {
   # epsilon for epsilon-dominace - set adaptively or use given constant value
   if (is.null(control$multicrit.sms.eps)) {
     # we need the current iteration. we don't have it here direct ...
-    iter = nrow(design) - control$init.design.points + 1
     c.val = 1 - 1 / 2^control$number.of.targets
     front = nondominated_points(t(design[, control$y.name]))
     # Stupid check because emoa can drop to a vector
@@ -116,7 +117,7 @@ infillCritSMS = function(points, models, control, par.set, design) {
 
 # epsilon-EGO: LOWER CONFIDENCE BOUND of points, then epsilon indicator contribution of these wrt to design
 # (useful for deterministic and stochastic MCO)
-infillCritEpsilon = function(points, models, control, par.set, design) {
+infillCritEpsilon = function(points, models, control, par.set, design, iter) {
   maximize.mult = ifelse(control$minimize, 1, -1)
   ys = maximize.mult * design[, control$y.name]
   # get lcb-value-matrix for new points (x -1 for max. objectives)
