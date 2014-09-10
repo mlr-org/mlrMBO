@@ -4,8 +4,21 @@
 #' @param method [\code{character(1)}]\cr
 #'   Which multicrit method should be used? At the moment only parego is
 #'   supported, which is also the default.
-#' @param ref.point[\code{numeric}]\cr
-#'   Reference point for hypervolume calculation. Used for miscellaneous multicrit algos.
+#' @param ref.point.method[\code{character(1)}] \cr
+#'   Method for the determination of the reference point used for sms-metric
+#'   Possible Values are:
+#'   \dQuote{all}: In each dimension: maximum of all points + \code{\link{ref.point.offset}}.
+#'   \dQuote{front}: In each dimension: maximum of all non-dominated points + \code{\link{ref.point.offset}}
+#'   \dQuote{const}: Constant value, see \code{\link{ref.point.val}}.
+#'   Default is \dQuote{all}.
+#' @param ref.point.offset[\code{numeric(1)}]\cr
+#'   See \code{\link{ref.point.method}}, default is \dQuote{1}.
+#' @param ref.point.val[\code{numeric}]\cr
+#'   Constant value of reference point for hypervolume calculation. Used if
+#'   \code{\link{ref.point.method}} = \dQuote{const}. Has to be specified in this case.
+#' @param sms.eps[\code{numeric}]\cr
+#'   Epsilon for epsilon-dominance for sms-ego. Default ist NULL, in this case
+#'   it is adaptively set.
 #' @param parego.s [\code{integer(1)}]\cr
 #'   Parameter of parego - controls the number of weighting vectors. The default
 #'   depends on \code{number.of.targets} and leads to 100000 different possible
@@ -32,8 +45,9 @@
 #' @seealso makeMBOControl
 #' @export
 setMBOControlMultiCrit = function(control,
-  method = "parego",
-  ref.point = rep(11, control$number.of.targets),
+  method = "parego", ref.point.method = "all", 
+  ref.point.offset = 1, ref.point.val = NULL,
+  sms.eps = NULL,
   parego.s, parego.rho = 0.05,
   parego.use.margin.points = rep(FALSE, control$number.of.targets),
   parego.sample.more.weights = 5L,
@@ -47,8 +61,22 @@ setMBOControlMultiCrit = function(control,
 
   number.of.targets = control$number.of.targets
   propose.points = control$propose.points
-
-  assertNumeric(ref.point, any.missing = FALSE, finite = TRUE, len = number.of.targets)
+  
+  # Reference Point
+  assertChoice(ref.point.method, choices = c("all", "front", "const"))
+  assertNumber(ref.point.offset, lower = 0, finite = TRUE)
+  if (ref.point.method == "const") {
+    if( is.null(ref.point.val)) {
+      stopf("Constant reference point has to be specified.")
+    } else {
+      assertNumeric(ref.point.val, any.missing = FALSE, finite = TRUE, len = number.of.targets)
+    }
+  }
+  
+  # SMS EGO
+  if (!is.null(sms.eps)) {
+    assertNumber(sms.eps, lower = 0, finite = TRUE)
+  }
 
   # ParEGO:
   if (missing(parego.s))
@@ -91,7 +119,10 @@ setMBOControlMultiCrit = function(control,
 
   # extend control object
   control$multicrit.method = method
-  control$multicrit.ref.point = ref.point
+  control$multicrit.ref.point.method = ref.point.method
+  control$multicrit.ref.point.offset = ref.point.offset
+  control$multicrit.ref.point.val = ref.point.val
+  control$sms.eps = sms.eps
   control$parego.s = parego.s
   control$parego.rho = parego.rho
   control$parego.use.margin.points = parego.use.margin.points

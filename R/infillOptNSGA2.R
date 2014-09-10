@@ -21,7 +21,7 @@ infillOptMultiCritNSGA2 = function(infill.crit, models, control, par.set, opt.pa
   points = as.data.frame(res$par)
   colnames(points) = rep.pids
 
-  best.inds = selectBestHypervolumePoints(res$value, control, opt.path)
+  best.inds = selectBestHypervolumePoints(res$value, control, opt.path, design)
 
   return(points = points[best.inds, , drop = FALSE])
 }
@@ -29,15 +29,16 @@ infillOptMultiCritNSGA2 = function(infill.crit, models, control, par.set, opt.pa
 # gets a data.frame of candidate points and selects the control$prop.points best points
 # concerning hypervolume
 # returns the indices of the best points
-selectBestHypervolumePoints = function (crit.vals, control, opt.path) {
+selectBestHypervolumePoints = function (crit.vals, control, opt.path, design) {
   n = nrow(crit.vals)
   front.old = t(getOptPathY(opt.path))
   crit.vals = t(crit.vals)
   # FIXME: This only works well for proposing 1 point! For proposing more points
   # at the same time, we have to look at the common hv-contr of this points
   # Idea: Do this greedy?
+  ref.point = getMulticritRefPoint(control, design)
   hvs = -1 * sapply(seq_col(crit.vals), function(i)
-    dominated_hypervolume(cbind(front.old, crit.vals[, i]), ref = control$multicrit.ref.point))
+    dominated_hypervolume(cbind(front.old, crit.vals[, i]), ref = ref.point))
 
   order(hvs)[1:control$propose.points]
 }

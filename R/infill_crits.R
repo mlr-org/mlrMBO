@@ -78,15 +78,40 @@ infillCritSMS = function(points, models, control, par.set, design) {
   ses = extractSubList(ps, c("data", "se"), simplify = "cols")
   lcbs = means - control$infill.crit.lcb.lambda * ses
   lcbs = lcbs %*% diag(maximize.mult)
-  # FIXME: assign penalty to all epsilon-dominated solutions is missing?
-  # now calculate HV contribution for each lcb point for current design, these are out infill crit vals
   ys = t(ys)
   lcbs = t(lcbs)
+  ref.point = getMulticritRefPoint(control, design)
   # We do without substraction of dominated_hypervolume(lcbs), since this is const
   # we want to maximize hv contribution ...
   hvs = -1 * sapply(seq_col(lcbs), function(i)
-    dominated_hypervolume(cbind(ys, lcbs[, i]), ref = control$multicrit.ref.point))
-  return(hvs)
+    dominated_hypervolume(cbind(ys, lcbs[, i]), ref = ref.point))
+  
+  # epsilon for epsilon-dominace - set adaptively or use given constant value
+  if (is.null(control$multicrit.sms.eps)) {
+    # we need the current iteration. we don't have it here direct ...
+    iter = nrow(design) - control$init.design.points + 1
+    c.val = 1 - 1 / 2^control$number.of.targets
+    front = nondominated_points(t(design[, control$y.name]))
+    # Stupid check because emoa can drop to a vector
+    if (is.vector(front))
+      front = matrix(front, ncol = 1)
+    eps = (max(front) - min(front)) / (ncol(front) + c.val * (control$iters - iter)) 
+  } else {
+    eps = controll$multicrit.sms.eps
+  }
+  
+  # Penalty term
+  penalty = function (lcb) {
+    f = function(lcb, y) {
+      if (all(y <= lcb + eps))
+        -1 + prod(1 + pmax(lcb - y, 0))
+      else
+        0
+    }
+    max(apply(ys, 2, f, lcb = lcb))
+  }
+  penalties = apply(lcbs, 2, penalty)
+  return(hvs + penalties)
 }
 
 # epsilon-EGO: LOWER CONFIDENCE BOUND of points, then epsilon indicator contribution of these wrt to design
