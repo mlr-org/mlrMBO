@@ -79,11 +79,11 @@ checkStuff = function(fun, par.set, design, learner, control) {
       stopf("For multicrit 'sms' infil.crit must be set to 'sms' or 'eps'!")
   } else {
     if (control$infill.crit %in% c("sms", "eps"))
-      stopf("For infil.crit in {'sms', 'eps'}, multicrit method 'sms' is needed!")
+      stopf("For infill.crit in {'sms', 'eps'}, multicrit method 'sms' is needed!")
   }
-  
-  
-  
+
+
+
   if (control$multicrit.method == "mspot" && control$infill.opt != "nsga2")
     stopf("For multicrit 'mspot' infil.opt must be set to 'nsga2'!")
 
