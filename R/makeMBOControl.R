@@ -245,6 +245,9 @@ print.MBOControl = function(x, ...) {
   catf("")
   if (x$number.of.targets > 1L) {
     catf("Multicrit Method              : %s", x$multicrit.method)
+    catf("Infill criterion              : %s", x$infill.crit)
+    catf("Infill optimizer              : %s", x$infill.opt)
+    catf("Infill optimizer restarts     : %i", x$infill.opt.restarts)
   } else {
     if (x$propose.points == 1) {
       catf("Infill criterion              : %s", x$infill.crit)
