@@ -8,7 +8,7 @@ autoplot.MBOExampleRunMultiCrit(object, iters, pause = TRUE, y1lim = NULL,
 }
 \arguments{
 \item{object}{[\code{}]\cr
-Object of type \code{ParEGOExampleRun}.}
+Object of type \code{MBOExampleRunMultiCrit}.}
 
 \item{iters}{[\code{integer}]\cr
 Selected iterations of \code{x} to display.

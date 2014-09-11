@@ -31,7 +31,7 @@ multipointInfillOptLCB = function(model, control, par.set, opt.path, design, ...
   while (iter <= control$propose.points) {
     # draw lambda from exp dist
     control2$infill.crit.lcb.lambda = rexp(1)
-    newdes1 = proposePoints(model, par.set, control2, opt.path)
+    newdes1 = proposePoints(list(model), par.set, control2, opt.path)
     prop.points = newdes1$prop.points
 
     # as we might construct the same xs for similar lamba, we

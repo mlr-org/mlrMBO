@@ -19,12 +19,6 @@ mboParEGO = function(fun, par.set, design = NULL, learner, control, show.info = 
   crit = control$infill.crit
 
 
-  # Calculate all possible weight vectors and save them
-  all.possible.weights = combWithSum(control$parego.s, control$number.of.targets) / control$parego.s
-  # rearrange them a bit - we want to have the margin weights on top of the matrix
-  # tricky: all margin weights have maximal variance
-  vars = apply(all.possible.weights, 1, var)
-  all.possible.weights = rbind(diag(control$number.of.targets), all.possible.weights[!vars == max(vars),])
 
   # for normal start, we setup initial design, otherwise take stuff from continue object from disk
   if (is.null(continue)) {
@@ -50,7 +44,7 @@ mboParEGO = function(fun, par.set, design = NULL, learner, control, show.info = 
 
   # if we are restarting from a save file, we possibly start in a higher iteration
   loop = max(getOptPathDOB(opt.path)) + 1L
-  repeat {
+ repeat {
     # scalarize + train + propose
     scalar = makeScalarTasks(par.set, opt.path, control, all.possible.weights)
     new.mods = lapply(scalar$tasks, train, learner = learner)

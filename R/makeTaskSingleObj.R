@@ -3,7 +3,7 @@
 # - only uses x and y columns of optpath
 # - converts data types for regr model
 # - imputes features
-# 
+#
 # @param par.set [\code{param.set}]\cr
 #   Parameter set.
 # @param opt.path [\code{\link[ParamHelpers]{optPath}}]\cr
@@ -11,16 +11,16 @@
 # @param control [\code{\link{MBOControl}}]\cr
 #   MBO control object.
 # @return [\code{\link[mlr]{SupervisedTask}}]
-makeMBOSingleObjTask = function(par.set, opt.path, control) {
+makeTaskSingleObj = function(par.set, opt.path, control) {
   data = convertOptPathToDf(par.set, opt.path, control)
   data$dob = data$eol = NULL
-  
-  # user selected to (log)-transform the y-column 
+
+  # user selected to (log)-transform the y-column
   trafo.y.fun = control$trafo.y.fun
   if (!is.null(trafo.y.fun)) {
-  	y.name = control$y.name
+    y.name = control$y.name
     # We stop the process if negative values occur
-  	data[[y.name]] = trafo.y.fun(data[[y.name]])
+    data[[y.name]] = trafo.y.fun(data[[y.name]])
   }
 
   makeRegrTask(target = control$y.name, data = data)

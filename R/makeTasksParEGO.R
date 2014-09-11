@@ -14,7 +14,7 @@
 # @return [\code{list}] List with elements
 #   tasks: list of tasks
 #   weights: matrix of used weight vectors
-makeScalarTasks = function(par.set, opt.path, control, all.possible.weights) {
+makeTasksParEGO = function(par.set, opt.path, control, all.possible.weights) {
   n.points = control$propose.points
   # get data + normalize the targets to [0, 1] + drop them from data
   data = convertOptPathToDf(par.set, opt.path, control)
@@ -38,11 +38,11 @@ makeScalarTasks = function(par.set, opt.path, control, all.possible.weights) {
     }
   }
 
-  # Propose points
-  # If desired - create the margin weight vector
+  # propose points
+  # if desired - create the margin weight vector
   margin.points = diag(control$number.of.targets)[control$parego.use.margin.points, , drop = FALSE]
 
-  # How many random weights should be used?
+  # how many random weights should be used?
   random.weights = n.points - sum(control$parego.use.margin.points)
   # if we used margin weights, we don't want to sample them!
   # be aware, that the margin weights are allways stored in the first rows.
@@ -51,7 +51,7 @@ makeScalarTasks = function(par.set, opt.path, control, all.possible.weights) {
   nb.sample = random.weights * control$parego.sample.more.weights
   # sample the lambda-vectors as rows from the matrix of all possible weights
   lambdas = all.possible.weights[sample(allowed.weight.inds, nb.sample), , drop = FALSE]
-  # Reject weights as long as we have too many. reject the ones with smallest dist
+  # reject weights as long as we have too many. reject the ones with smallest dist
   while (nrow(lambdas) > random.weights) {
     dists = as.matrix(dist(lambdas))
     dists[dists == 0] = Inf
@@ -60,7 +60,7 @@ makeScalarTasks = function(par.set, opt.path, control, all.possible.weights) {
   }
   lambdas = rbind(margin.points, lambdas)
 
-  # Create the scalarized regression Tasks
+  # create the scalarized regression tasks
   tasks = vector(mode = "list", length = n.points)
   for (loop in 1:n.points) {
     # make sure to minimize, then create scalarized response
@@ -69,6 +69,6 @@ makeScalarTasks = function(par.set, opt.path, control, all.possible.weights) {
     data$y.scalar = apply(y2, 1, max) + control$parego.rho * rowSums(y2)
     tasks[[loop]] = makeRegrTask(target = "y.scalar", data = data)
   }
-  
+
   return(list(tasks = tasks, weights = lambdas))
 }

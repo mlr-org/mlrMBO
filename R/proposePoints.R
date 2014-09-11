@@ -13,13 +13,11 @@
 proposePoints = function(models, par.set, control, opt.path, iter, ...) {
   n = control$propose.points
   m = control$number.of.targets
-  # make sure models.list is always a LIST, model can be ONE model or list of, depends on case we are in
-  models.list = ensureVector(models, 1L, cl = "WrappedModel")
   # generate a few random points if ANY model failed
-  isfail = vlapply(models.list, isFailureModel)
+  isfail = vlapply(models, isFailureModel)
   if (any(isfail)) {
     # if error in any model, return first msg
-    errors.model = getFailureModelMsg(models.list[[which.first(isfail)]])
+    errors.model = getFailureModelMsg(models[[which.first(isfail)]])
     prop.points = generateDesign(n, par.set, randomLHS)
     propose.points = convertDataFrameCols(prop.points, ints.as.num = TRUE, logicals.as.factor = TRUE)
     crit.vals = rep(NA_real_, n)
@@ -29,6 +27,9 @@ proposePoints = function(models, par.set, control, opt.path, iter, ...) {
     #DH: Must be Done in MLR now.
     design = convertOptPathToDf(par.set, opt.path, control)
 
+    # this is a bit dirty wrt the naming / interface...
+    if (m == 1L)
+      models = models[[1]]
     # single crit, multipoint, a bit special case
     if (m == 1L && n > 1L) {
       # get optimizer and run

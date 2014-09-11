@@ -54,14 +54,7 @@ mbo = function(fun, par.set, design = NULL, learner, control, show.info = TRUE, 
 determineMBOFun = function(control) {
   if (control$infill.crit == "multiFid") {
     return(mboMultiFid)
-  }
-  if (control$number.of.targets == 1L) {
-    return(mboSingleObj)
   } else {
-    switch(control$multicrit.method,
-      parego = mboParEGO,
-      mspot = mboMSPOT,
-      sms  = mboMultiCritSMS
-    )
+    return(mboTemplate)
   }
 }

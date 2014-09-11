@@ -3,10 +3,11 @@
 \alias{setMBOControlMultiCrit}
 \title{Extends mbo control object with multi-criteria specific options.}
 \usage{
-setMBOControlMultiCrit(control, method = "parego", ref.point = rep(11,
-  control$number.of.targets), parego.s, parego.rho = 0.05,
-  parego.use.margin.points = rep(FALSE, control$number.of.targets),
-  parego.sample.more.weights = 5L, parego.normalize = "standard")
+setMBOControlMultiCrit(control, method = "parego", ref.point.method = "all",
+  ref.point.offset = 1, ref.point.val = NULL, sms.eps = NULL, parego.s,
+  parego.rho = 0.05, parego.use.margin.points = rep(FALSE,
+  control$number.of.targets), parego.sample.more.weights = 5L,
+  parego.normalize = "standard")
 }
 \arguments{
 \item{control}{[\code{\link{MBOControl}}]\cr
@@ -16,7 +17,21 @@ Control object for mbo.}
 Which multicrit method should be used? At the moment only parego is
 supported, which is also the default.}
 
-\item{ref.point[\code{numeric}]\cr}{Reference point for hypervolume calculation. Used for miscellaneous multicrit algos.}
+\item{ref.point.method[\code{character(1)}]}{\cr
+Method for the determination of the reference point used for sms-metric
+Possible Values are:
+\dQuote{all}: In each dimension: maximum of all points + \code{\link{ref.point.offset}}.
+\dQuote{front}: In each dimension: maximum of all non-dominated points + \code{\link{ref.point.offset}}
+\dQuote{const}: Constant value, see \code{\link{ref.point.val}}.
+Default is \dQuote{all}.}
+
+\item{ref.point.offset[\code{numeric(1)}]\cr}{See \code{\link{ref.point.method}}, default is \dQuote{1}.}
+
+\item{ref.point.val[\code{numeric}]\cr}{Constant value of reference point for hypervolume calculation. Used if
+\code{\link{ref.point.method}} = \dQuote{const}. Has to be specified in this case.}
+
+\item{sms.eps[\code{numeric}]\cr}{Epsilon for epsilon-dominance for sms-ego. Default ist NULL, in this case
+it is adaptively set.}
 
 \item{parego.s}{[\code{integer(1)}]\cr
 Parameter of parego - controls the number of weighting vectors. The default
