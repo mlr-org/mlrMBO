@@ -21,6 +21,7 @@ Imports:
     checkmate (>= 1.1),
     parallelMap (>= 1.1),
     plyr,
+    soobench,
     reshape2
 Suggests:
     cmaes,
@@ -29,7 +30,6 @@ Suggests:
     ggplot2,
     gridExtra,
     mco,
-    soobench,
     testthat,
     randomForest
 LazyData: yes
