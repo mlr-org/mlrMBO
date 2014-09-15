@@ -43,7 +43,7 @@ GOMOP5D5M = function(x) {
 
 
 # ZDT - functions
-# 2D -> 5M
+# 5D -> 2M
 # functions zdt1(), zdt2() and zdt3() from mco package
 
 
