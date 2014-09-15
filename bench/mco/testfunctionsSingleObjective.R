@@ -35,16 +35,14 @@ shiftAndRotate = function(x, rotation.angle, shift) {
 
 ################################################################################
 
-
-
-
-
 # Branin test function
 # --------------------
 # Dimension: n = 2.
 # Domain: -5 <= x1 <= 10, 0 <= x2 <= 15.
 branin = function(x) {
-  y = branin_function()(x) - 0.397887
+  x[1] = 15 * x[1] - 5
+  x[2] = 15 * x[2]
+  y = branin_function()(x)
   return(y)
 }
 
@@ -52,10 +50,49 @@ branin = function(x) {
 #  ---------------------------------
 #  Dimension: n = 2
 #  Domain: -2 <= xi <= 2, i = 1, 2
-goldsteinprice = function(x) {
-  y = log(goldstein_price_function()(x)) - log(3)
-  return(f)
+goldsteinPrice = function(x) {
+  x[1] = 4 * x[1] - 2
+  x[2] = 4 * x[2] - 2
+  y = log(goldstein_price_function()(x))
+  return(y)
 }
+
+
+# 3-Hump Camel Function
+# --------------------
+# Dimension: n = 2
+# Domain: -2 <= xi <= 2, i = 1,2
+camel3 <- function(x) {
+  x1 <- 4 * x[1] - 2
+  x2 <- 4 * x[2] - 2
+  
+  term1 <- 2 * x1 ^ 2
+  term2 <- -1.05 * x1 ^ 4
+  term3 <- x1 ^ 6 / 6
+  term4 <- x1 * x2
+  term5 <- x2 ^ 2
+  
+  y <- term1 + term2 + term3 + term4 + term5
+  return(y)
+}
+
+
+# 6-Hump Camel Function
+# --------------------
+# Dimension: n = 2
+# Domain: -2 <= x1 <= 2, -1 <= x2 <= 1
+camel6 <- function(x) {
+  x1 <-  4 * x[1] - 2
+  x2 <- 2 * x[2] - 1
+  
+  term1 <- (4 - 2.1 * x1 ^ 2 + (x1 ^ 4) / 3) * x1 ^ 2
+  term2 <- x1 * x2
+  term3 <- (-4 + 4 * x2 ^ 2) * x2 ^ 2
+  
+  y <- term1 + term2 + term3
+  return(y)
+}
+
 
 
 # Hartman's Dim,q function family
@@ -79,7 +116,6 @@ hartman = function(x) {
     c(0.5886, 0.9991, 0.6650, 0.0381))
   C = c(1.0, 1.2, 3.0, 3.2)
   q = 4
-  offset = c(7.747, 4.806, 3.956, 3.727, 3.473, 3.323)
   
   y = 0
   for (i in 1:q) {
@@ -92,9 +128,9 @@ hartman = function(x) {
   }
   
   if (dim == 6) {
-    y = log(offset[dim]) - log(y)
+    y = - log(y)
   } else {
-    y = offset[dim] - y
+    y = - y
   }
   
   return(y)
@@ -102,47 +138,14 @@ hartman = function(x) {
 
 
 
-# 2nd objective of the multi-objective OKA2 test function
-# -------------------------------------------------------
-# Dimension: n = 3
-# Domain: -pi <= x1 <= pi, -5 <= xi <= 5 i = 2, 3
-
-OKA2Obj2 = function(x) {
-  y = 1 - 1/(4 * pi ^ 2) * (x[1] + pi)^2 + abs(x[2] - 5 * cos(x[1])) ^ (1/3) + abs(x[3] - 5 * sin(x[1])) ^ (1/3)
-  return(y)
-}
-
-
-# Single-objective testfunction based on the multi-objective OKA2 function
-# ------------------------------------------------------------------------
-# Dimension: n = 2
-# Domain: -5 <= xi <= 5, i = 1, 2
-OKA2Single = function(x) {
-  if (x[1] < 0 & x[2] <= 0) {
-    x1 = mean(c(-acos(x[1]/5), -pi - asin(x[2]/5)))
-  } 
-  if (x[1] >= 0 & x[2] < 0) {
-    x1 = mean(c(-acos(x[1]/5), asin(x[2]/5)))
-  }
-  if (x[1] > 0 & x[2] >= 0) {
-    x1 = mean(c(acos(x[1]/5), asin(x[2]/5)))
-  }
-  if (x[1] <= 0 & x[2] >= 0) {
-    x1 = mean(c(acos(x[1]/5), pi - asin(x[2]/5)))
-  }
-  y = 1 - 1/(4 * pi ^ 2) * (x1 + pi)^2 + abs(x[1] - 5 * cos(x1)) ^ (1/2) + abs(x[2] - 5 * sin(x1)) ^ (1/2)
-  return(y)
-}
-
-
-# Single-objective testfunction based on the multi-objective OKA2 function
-# ------------------------------------------------------------------------
-# Dimension: n = 2
-# Domain: -5 <= xi <= 5, i = 1, 2
-OKA2Single2 = function(x) {
+#  Rosenbrock test function
+#  ------------------------
+#  Dimension: scalable in n
+#  Domain: -5 <= xi <= 10, i = 1...n
+rosenbrock = function(x) {
+  x = 15 * x - 5
   dim = length(x)
-  x1 = 0.9 * pi - pi / 100 * sum((x - c(5 * cos(0.9 * pi), 5 * sin(0.9 * pi)))^2)
-  y = 1 - 1/(4 * pi ^ 2) * (x1 + pi)^2 + abs(x[1] - 5 * cos(x1)) ^ (1/2) + abs(x[2] - 5 * sin(x1)) ^ (1/2)
+  y = rosenbrock_function(dim)(x)
   return(y)
 }
 
@@ -150,9 +153,9 @@ OKA2Single2 = function(x) {
 # Shifted and rotated version of the Rastrigin test function
 # ----------------------------------------------------------
 # Dimension: scalable in n
-# Domain: -5.12 <= xi <= 5.12, i = 1...n
-
+# Domain: -0.5 <= xi <= 0.5, i = 1...n
 rastrigin = function(x) {
+  x = 1 * x - 0.5
   dim = length(x) 
   step = 5 / dim
   shift = seq(from = step, to = 10 - step, by = 2 * step) - 5
@@ -161,81 +164,44 @@ rastrigin = function(x) {
   return(y)
 }
 
-rastriginRelax = function(x) {
-  dim = length(x) 
-  step = 1/ (2 * dim)
-  shift = seq(from = step, to = 1 - step, by = 2 * step) - 0.5
-  x = shiftAndRotate(x, 22.5, shift)
-  y = rastrigin_function(dim)(x)
-  return(y)
-}
 
-#  Rosenbrock test function
-#  ------------------------
-#  Dimension: scalable in n
-#  Domain: -5 <= xi <= 10, i = 1...n
-
-rosenbrock = function(x) {
-  dim = length(x)
-  y = rosenbrock_function(dim)(x)
-  return(y)
-}
-
-# Sakata Test function
-# --------------------
-# One-dimensional test function from Sakata S, Ashida F, Zako M.:
-# On applying Kriging-based approximate optimization to inaccurate data.
-# Int'l. J. Comp. Meth. in Applied Mech. & Eng. 196 (2007), pp. 2055–2069
-# x in [0, 5]
-
-sakata = function(x) {
-  y = -x * sin(2*x) + 0.2 * x + 3.16172429148322
-  return(y)
-}
-
-
-#  Wagner test function
-#  ---------------------
-#  Dimension: n = 3
-#  Domain: -1 <= xi <= 1, i = 1,2,3
-wagner = function(x) {
-  y = 14.3388 + (10 * sin(10 * x[1]) + x[1] ^ 2) * (((sin(x[2]) / (x[2] ^ 2 + 1)) + 1) / (2 * x[3] ^ 2 + 1))
-  return(y)
-}
-
-
-# Shifted and rotated exponentially weighted sphere function
-# ----------------------------------------------------------
+# Zakharov Function
+# -----------------
 # Dimension: scalable in n
-# Domain: -5 <= xi <= 5, i = 1...n
-
-weightedSphere = function(x) {
+# Domain: -1 <= xi <= 1, i = 1...n
+zakharov <- function(x) {
+  x = 2 * x - 1
   dim = length(x)
-  shift = seq(from = -5, to = 5, length.out = dim)
-  x = shiftAndRotate(x, 22.5, shift)
-  y = 0
-  for (i in 1:dim) {
-    y = y + 2 ^ i * x[i] ^ 2
-  }
+  
+  ii <- c(1:dim)
+  sum1 <- sum(x ^ 2)
+  sum2 <- sum(0.5 * ii * x)
+  
+  y <- sum1 + sum2 ^ 2 + sum2 ^ 4
   return(y)
 }
 
 
-# % 2nd objective of the multi-objective ZDT4_Relax test function
-# % -------------------------------------------------------------
-#   % Dimension: scalable in n (usually 3)
-# % Domain: 0 <= x1 <= 1, -1 <= xi <= 1 i = 2...n
-ZDT4Obj2 = function(x) {
-  dim = length(x)
-  step = 1 / (dim - 1)
-  shift = seq(from = step, to = (2 - step), by = 2 * step) - 1
-  xRot = shiftAndRotate(x[2:dim], 22.5, shift)
-  sumInG = 0
-  for (i in 1:(dim - 1)) {
-    sumInG = sumInG + xRot[i]^2 - 10 * cos(4 * pi * xRot[i])
-  }
-  g = 1 + 10 * (dim - 1) + sumInG
-  y = g * (1 - sqrt(x[1] / g))
+# Powell Function
+# ---------------
+# Dimension: scalable in n
+# Domain: -1 <= xi <= 1, i = 1, ..., n
+
+powell <- function(x) {
+  x = 2 * x - 1
+  dim <- length(x)
+  
+  xa <- x[seq(1, dim - 3, 4)]
+  xb <- x[seq(2, dim - 2, 4)]
+  xc <- x[seq(3, dim - 1, 4)]
+  xd <- x[seq(4, dim, 4)]
+  
+  sumterm1 <- (xa + 10 * xb) ^ 2
+  sumterm2 <- 5 * (xc - xd) ^ 2
+  sumterm3 <- (xb - 2 * xc) ^ 4
+  sumterm4 <- 10 * (xa - xd) ^ 4
+  y <- sum(sumterm1 + sumterm2 + sumterm3 + sumterm4)
+
   return(y)
 }
 
