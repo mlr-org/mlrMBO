@@ -42,7 +42,7 @@ mboTemplate = function(fun, par.set, design = NULL, learner, control, show.info 
     resample.vals = continue$resample.vals
   }
 
-  tasks = makeTasks(par.set, opt.path, algo.init, control)
+  tasks = makeTasks(par.set, opt.path, algo.init, control = control)
   current.models = lapply(tasks, train, learner = learner)
 
   # if we are restarting from a save file, we possibly start in a higher iteration
@@ -69,7 +69,7 @@ mboTemplate = function(fun, par.set, design = NULL, learner, control, show.info 
       fun, learner, show.info, oldopts, more.args, extras)
 
     # train models
-    tasks = makeTasks(par.set, opt.path, control)
+    tasks = makeTasks(par.set, opt.path, control = control)
     current.models = lapply(tasks, train, learner = learner)
 
     # store models + resample + store on disk
