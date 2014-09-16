@@ -1,14 +1,10 @@
 ##### optimizing a simple noisy sin(x) with mbo / EI
 
-library(mlr)
-library(soobench)
+library(mlrMBO)
 library(ggplot2)
-library(grid)
-library(gridExtra)
-
+set.seed(1)
 configureMlr(show.learner.output = FALSE)
 
-set.seed(1)
 
 # function with noise
 obj.fun = function(x) {

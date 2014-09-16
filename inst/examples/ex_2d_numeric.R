@@ -1,12 +1,9 @@
 ##### optimizing branin in 2D with mbo / EI #####
 
-library(BBmisc)
-library(mlr)
-library(soobench)
+library(mlrMBO)
 library(ggplot2)
-library(grid)
-library(gridExtra)
-
+library(soobench)
+set.seed(1)
 configureMlr(show.learner.output = FALSE)
 
 set.seed(423)

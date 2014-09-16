@@ -1,13 +1,9 @@
 ##### optimizing 1D fun with 3 categorical level and
 ##### noisy outout with random forest
 
-library(BBmisc)
-library(mlr)
-library(soobench)
+library(mlrMBO)
 library(ggplot2)
-library(grid)
-library(gridExtra)
-
+set.seed(1)
 configureMlr(show.learner.output=FALSE)
 
 objfun = function(x) {

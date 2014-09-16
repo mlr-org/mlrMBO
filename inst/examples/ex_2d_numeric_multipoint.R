@@ -1,13 +1,10 @@
 ##### optimizing branin in 2D with multipoint proposal #####
 
-library(BBmisc)
-library(mlr)
-library(soobench)
+library(mlrMBO)
 library(ggplot2)
-library(grid)
-library(gridExtra)
-
-configureMlr(show.learner.output=FALSE)
+library(soobench)
+set.seed(2) # FIXME: does not work for seed == 1
+configureMlr(show.learner.output = FALSE)
 
 obj.fun = branin_function()
 

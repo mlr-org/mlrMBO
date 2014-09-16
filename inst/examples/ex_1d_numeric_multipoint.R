@@ -1,12 +1,8 @@
 ##### optimizing a simple sin(x) with multipoint proposal #####
 
-library(BBmisc)
-library(mlr)
-library(soobench)
+library(mlrMBO)
 library(ggplot2)
-library(grid)
-library(gridExtra)
-
+set.seed(1)
 configureMlr(show.learner.output = FALSE)
 
 obj.fun = function(x) {

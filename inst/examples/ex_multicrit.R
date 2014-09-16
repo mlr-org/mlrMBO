@@ -1,15 +1,8 @@
-library(mlr)
-library(soobench)
+
+library(mlrMBO)
 library(ggplot2)
-library(grid)
-library(gridExtra)
-library(emoa)
-
-load_all(".", reset = TRUE)
-
+set.seed(1)
 configureMlr(show.learner.output = FALSE)
-
-set.seed(423)
 
 # f = makeMBOFunction(function(x) {
   # c(x^2, (x - 2)^2)
