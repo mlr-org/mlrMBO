@@ -1,28 +1,31 @@
-# Propose infill points.
+# Propose infill points - simple dispatcher to real methods
 #
-# Works for single and multicrit, can propose 1 or multi-points
-# - gets infill crit and optimizer, depending on control
-# - then runs its
+# input:
+#   tasks [list]              : list of gnerated tasks
+#   models [list]             : list of models, fitted to tasks
 #
-# returns:
-# - prop.points [data.frame]: the proposed points, with n rows
-# - crit.vals [matrix(n, k)]: the crit values at the n points
-#   for some methods, we have a cv for each objective. in this case k > 1, typically k = number.of.targets
-# - errors.model [character(1)]: NA if the model was Ok, the (first) error message if some model crashed
+# output:
+#   prop.points [data.frame]  : the proposed points, 1 per row, with n rows
+#   crit.vals [matrix(n, k)]  : crit vals for proposed points. rows = points
+#                               for some methods, we have a cv for each objective.
+#                               in this case k > 1 and typically k = number.of.targets
+#   errors.models [character] : model errors, resulting in randomly proposed points.
+#                               length is one string PER PROPOSED POINT, not per element of <models>
+#                               NA if the model was Ok, or the (first) error message if some model crashed
 
-proposePoints = function(tasks, models, par.set, control, opt.path, iter, ...) {
+proposePoints = function(tasks, models, par.set, control, opt.path, iter) {
   n = control$propose.points
   m = control$number.of.targets
   if (m == 1L) {
     if (n == 1L) {
-      res = proposePointsByInfillOptimization(models, par.set, control, opt.path, iter, models.unlist = TRUE,...)
+      res = proposePointsByInfillOptimization(models[[1L]], par.set, control, opt.path, iter)
     } else {
       if (control$multipoint.method == "lcb")
-        res = proposePointsParallelLCB(models, par.set, control, opt.path, iter, ...)
+        res = proposePointsParallelLCB(models, par.set, control, opt.path, iter)
       else if (control$multipoint.method == "cl")
-        res = proposePointsConstantLiar(models, par.set, control, opt.path, iter, ...)
+        res = proposePointsConstantLiar(models, par.set, control, opt.path, iter)
       else if (control$multipoint.method == "multicrit") {
-        res = proposePointsMOIMBO(models, par.set, control, opt.path, iter, ...)
+        res = proposePointsMOIMBO(models, par.set, control, opt.path, iter)
         # FIXME: this is bad.
         res$errors.model = NA_character_
       }
@@ -31,7 +34,7 @@ proposePoints = function(tasks, models, par.set, control, opt.path, iter, ...) {
       if (control$multicrit.method == "parego") {
         res = proposePointsParEGO(models, par.set, control, opt.path, iter, attr(tasks, "weight.mat"))
       } else {
-        res = proposePointsByInfillOptimization(models, par.set, control, opt.path, iter, models.unlist = FALSE, ...)
+        res = proposePointsByInfillOptimization(models, par.set, control, opt.path, iter)
       }
   }
 

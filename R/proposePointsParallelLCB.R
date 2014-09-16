@@ -1,25 +1,17 @@
-
-# Use LCB single crit but sample multiple different lambdas
-# NOTE THAT WE MIGHT PRODUCE LESS POINS THERN REQUESTED IF SOME OF THEM ARE EXTREMELY CLOSE
-# FIXME: document this. also maybe improve?
-proposePointsParallelLCB = function(models, par.set, control, opt.path, iter, ...) {
-  # copy control and optimize multiple times with singlecrit lcb / different lambda
-  control2 = control; control2$propose.points = 1L; control2$infill.crit = "lcb"
-  # draw lambdas from exp dist
+proposePointsParallelLCB = function(models, par.set, control, opt.path, iter) {
+  # draw lambdas from exp dist + create 1 control for each for single crit with lambda-LCB
   lambdas = rexp(control$propose.points)
-  props = list()
+  controls = lapply(lambdas, function(lambda) {
+    ctrl = control;
+    ctrl$propose.points = 1L;
+    ctrl$infill.crit = "lcb"
+    ctrl$infill.crit.lcb.lambda = lambda
+    return(ctrl)
+  })
 
-  #FIXME: could be done in parallel
-  for (npoints in 1:control$propose.points) {
-    control2$infill.crit.lcb.lambda = lambdas[npoints]
-    props[[npoints]] = proposePointsByInfillOptimization(models, par.set, control2, opt.path, iter, models.unlist = TRUE, ...)
-  }
+  props = parallelMap(proposePointsByInfillOptimization, controls,
+    more.args = list(models = models[[1L]], par.set = par.set, opt.path = opt.path, iter = iter))
 
-  # newdes = setAttribute(newdes, "multipoint.lcb.lambdas", lambdas)
-  list(
-    prop.points = do.call(rbind, extractSubList(props, "prop.points", simplify = FALSE)),
-    crit.vals = do.call(rbind, extractSubList(props, "crit.vals", simplify = FALSE)),
-    errors.model = do.call(c, extractSubList(props, "errors.model", simplify = FALSE))
-  )
+  joinProposedPoints(props)
 }
 

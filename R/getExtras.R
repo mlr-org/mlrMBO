@@ -16,9 +16,9 @@ getExtras = function(n, prop, control) {
     if (control$multicrit.method == "mspot") {
       ex = as.list(prop$crit.vals[i, ])
       names(ex) = paste(control$infill.crit, control$y.name, sep = ".")
-      ex$errors.model = errs[i]
+      ex$error.model = errs[i]
     } else {
-      ex = list(prop$crit.vals[i, 1L], errors.model = errs[i])
+      ex = list(prop$crit.vals[i, 1L], error.model = errs[i])
       names(ex)[1] = control$infill.crit
     }
     # if we use parallel LCB, store lambdas
