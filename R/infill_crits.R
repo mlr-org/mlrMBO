@@ -44,15 +44,10 @@ infillCritEI = function(points, model, control, par.set, design, iter) {
   y.min = min(y)
   d = y.min - p.mu
   xcr = d / p.se
-  #FIXME: what is done in DiceOption::EI here for numerical reasons?
-  #if (kriging.sd/sqrt(model@covariance@sd2) < 1e-06) {
-  #  res = 0
-  #  xcr = xcr.prob = xcr.dens = NULL
-  #
   xcr.prob = pnorm(xcr)
   xcr.dens = dnorm(xcr)
   ei = d * xcr.prob + p.se * xcr.dens
-  # FIXME magic number
+  # FIXME: magic number
   # if se too low set 0 (numerical problems), negate due to minimization
   ifelse(p.se < 1e-6, 0, -ei)
 }
@@ -62,7 +57,7 @@ infillCritEI = function(points, model, control, par.set, design, iter) {
 infillCritLCB = function(points, model, control, par.set, design, iter) {
   maximize.mult = ifelse(control$minimize, 1, -1)
   p = predict(model, newdata = points)$data
-  lcb = maximize.mult * (p$response - control$infill.crit.lcb.lambda * p$se)
+  lcb = maximize.mult * p$response - control$infill.crit.lcb.lambda * p$se
   return(lcb)
 }
 
@@ -83,19 +78,14 @@ infillCritSMS = function(points, models, control, par.set, design, iter) {
   ys = t(ys)
   lcbs = t(lcbs)
   ref.point = getMultiCritRefPoint(control, design)
-  # We do without substraction of dominated_hypervolume(lcbs), since this is const
-  # we want to maximize hv contribution ...
+  # dont substract dominated_hypervolume(lcbs), since this is const, maximize hv contribution ...
   hvs = -1 * sapply(seq_col(lcbs), function(i)
-    dominated_hypervolume(cbind(ys, lcbs[, i]), ref = ref.point))
+    getDominatedHV(cbind(ys, lcbs[, i]), ref = ref.point))
 
   # epsilon for epsilon-dominace - set adaptively or use given constant value
   if (is.null(control$multicrit.sms.eps)) {
-    # we need the current iteration. we don't have it here direct ...
     c.val = 1 - 1 / 2^control$number.of.targets
-    front = nondominated_points(t(design[, control$y.name]))
-    # Stupid check because emoa can drop to a vector
-    if (is.vector(front))
-      front = matrix(front, ncol = 1)
+    front = getNonDominatedPoints(design[, control$y.name], control$minimize)
     eps = (max(front) - min(front)) / (ncol(front) + c.val * (control$iters - iter))
   } else {
     eps = control$multicrit.sms.eps
