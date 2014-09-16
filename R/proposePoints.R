@@ -26,8 +26,6 @@ proposePoints = function(tasks, models, par.set, control, opt.path, iter) {
         res = proposePointsConstantLiar(models, par.set, control, opt.path, iter)
       else if (control$multipoint.method == "multicrit") {
         res = proposePointsMOIMBO(models, par.set, control, opt.path, iter)
-        # FIXME: this is bad.
-        res$errors.model = NA_character_
       }
     }
   } else {

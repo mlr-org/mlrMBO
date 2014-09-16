@@ -8,7 +8,6 @@ distToNN = function(X, ...) {
   apply(d, 1, min)
 }
 
-
 # Calculate distance to nearest better neighbor for each point in a set
 # @param X [\code{matrix(n, d)}]\cr
 #   Matrix of n points of dimension d.
@@ -36,11 +35,6 @@ nds_1d_selection = function(values, n = 1, index = 1, ...) {
   return(tail(o, n))
 }
 
-
-
-#FIXME: maybe add a local opt. hybrid step to get better
-# into local opts
-
 # Implements our new infill criterion which optimizes EI and diversity in X space
 #
 # Currently only numerical paramaters are handled, for them pm_operator and
@@ -48,23 +42,15 @@ nds_1d_selection = function(values, n = 1, index = 1, ...) {
 #
 proposePointsMOIMBO = function(models, par.set, control, opt.path, iter, ...) {
   requirePackages("emoa", why = "multipointInfillOptMulticrit")
+  ch = checkFailedModels(models)
+  if (!ch$ok) {
+    return(ch$prop)
+  }
+
   n = control$propose.points
   objective = control$multipoint.multicrit.objective
   design = convertOptPathToDf(par.set, opt.path, control)
   model = models[[1L]]
-
-  # add points to archive
-  # FIXME dont always do this for speed
-  # note: as distance is always recalculated we always add mu+1 point
-  # and not 1 per generation
-#   addGenerationToPath = function(X, Y, gen) {
-#     lapply(1:nrow(X), function(i) {
-#       addOptPathEl(opt.path, list(x = as.numeric(X[i,])), as.numeric(Y[i,]), dob = gen)
-#     })
-#   }
-
-  #messagef("Trying to find %i good points.", n)
-  # vars: dim, mu, objectives, operators
 
   if (objective == "mean.dist") {
     y.dim = 2
@@ -92,7 +78,6 @@ proposePointsMOIMBO = function(models, par.set, control, opt.path, iter, ...) {
     nearest.neighbor = distToNN,
     nearest.better = distToNB
   )
-  #opt.path = makeOptPathDF(par.set = par.set, y.names = y.names, minimize = minimize)
 
   # Random inital population:
   X = generateDesign(mu, par.set, fun = randomLHS)
@@ -110,7 +95,6 @@ proposePointsMOIMBO = function(models, par.set, control, opt.path, iter, ...) {
   # use first Y criterion to for nearest better
   if (objective %in% c("mean.dist", "ei.dist", "mean.se.dist"))
     Y[, y.dim] = -mydist(as.matrix(X), Y[,1])
-  #addGenerationToPath(X, Y, gen = 0L)
 
   for (i in 1:control$multipoint.multicrit.maxit) {
     # Create new individual (mu + 1)
@@ -138,17 +122,9 @@ proposePointsMOIMBO = function(models, par.set, control, opt.path, iter, ...) {
     # use first Y criterion to for nearest better
     if (objective %in% c("mean.dist", "ei.dist", "mean.se.dist"))
       Y[, y.dim] = -mydist(as.matrix(X), Y[,1])
-    #addGenerationToPath(X, Y, gen = i)
 
     # get elements we want to remove from current pop as index vector
     to.kill = if (control$multipoint.multicrit.selection == "hypervolume") {
-      #col.mins = apply(Y, 2, min)
-      #col.maxs = apply(Y, 2, max)
-      # define ref point adaptively by max + 10% of range
-      # personal communication simon with m. emmerich
-      #ref = col.maxs + 0.1 * (col.maxs - col.mins)
-      #print(ref)
-      #nds_hv_selection(t(Y), ref = ref)
       nds_hv_selection(t(Y))
     } else if (control$multipoint.multicrit.selection == "crowdingdist") {
       nds_cd_selection(t(Y))
@@ -159,15 +135,9 @@ proposePointsMOIMBO = function(models, par.set, control, opt.path, iter, ...) {
     }
     X = X[-to.kill, ,drop = FALSE]
     Y = Y[-to.kill, ,drop = FALSE]
-
-    #FIXME really display all this crap? only on show.info
-    #messagef("Generation %i; best crit1 = %.2f, max dist = %s",
-    #  i, max(-Y[, 1]), max(-Y[, y.dim]))
   }
   rownames(X) = NULL
-  #list(X = X, Y = Y, opt.path = opt.path)
-  #FIXME: prop.points.crit.values sometimes is a matrix
-  return(list(prop.points = X, crit.vals = Y))
+  return(list(prop.points = X, crit.vals = Y, errors.model = NA_character_))
 }
 
 

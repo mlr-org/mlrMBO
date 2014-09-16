@@ -9,7 +9,7 @@ infillOptMultiCritNSGA2 = function(infill.crit, models, control, par.set, opt.pa
   fun.tmp = function(x) {
     newdata = as.data.frame(t(x))
     colnames(newdata) = rep.pids
-    vapply(1:m, FUN.VALUE = numeric(1), function(i) {
+    vnapply(1:m, function(i) {
       # we need to make sure mininimize in control is a scalar, so we can multiply it in infill crits...
       control2$minimize = control$minimize[i]
       infill.crit(points = newdata, model = models[[i]], control = control2,
