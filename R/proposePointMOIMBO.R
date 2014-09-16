@@ -42,15 +42,16 @@ nds_1d_selection = function(values, n = 1, index = 1, ...) {
 #
 proposePointsMOIMBO = function(models, par.set, control, opt.path, iter, ...) {
   requirePackages("emoa", why = "multipointInfillOptMulticrit")
-  ch = checkFailedModels(models)
-  if (!ch$ok) {
-    return(ch$prop)
-  }
 
   n = control$propose.points
   objective = control$multipoint.multicrit.objective
   design = convertOptPathToDf(par.set, opt.path, control)
   model = models[[1L]]
+
+  ch = checkFailedModels(models, n)
+  if (!ch$ok) {
+    return(ch$prop)
+  }
 
   if (objective == "mean.dist") {
     y.dim = 2
