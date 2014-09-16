@@ -31,8 +31,10 @@ proposePoints = function(tasks, models, par.set, control, opt.path, iter) {
   } else {
       if (control$multicrit.method == "parego") {
         res = proposePointsParEGO(models, par.set, control, opt.path, iter, attr(tasks, "weight.mat"))
-      } else {
+      } else if (control$multicrit.method == "mspot") {
         res = proposePointsByInfillOptimization(models, par.set, control, opt.path, iter)
+      } else if (control$multicrit.method == "sms") {
+        res = proposePointsSMS(models, par.set, control, opt.path, iter)
       }
   }
 
