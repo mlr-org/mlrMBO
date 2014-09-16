@@ -8,7 +8,8 @@ Description: A framework for the (sequential) model-based parameter
 Authors@R: c(person("Bernd", "Bischl", email = "bernd_bischl@gmx.net", role =
     c("aut", "cre")), person("Jakob", "Bossek", email =
     "jakob.bossek@tu-dortmund.de", role = "aut"), person("Daniel", "Horn",
-    email = "daniel.horn@tu-dortmund.de", role = "aut"))
+    email = "daniel.horn@tu-dortmund.de", role = "aut"), person("Michel",
+    "Lang", email = "michellang@gmail.com", role = "aut"))
 License: BSD_3_clause + file LICENSE
 URL: https://github.com/berndbischl/mlrMBO
 BugReports: https://github.com/berndbischl/mlrMBO/issues
