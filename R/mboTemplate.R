@@ -31,7 +31,7 @@ mboTemplate = function(fun, par.set, design = NULL, learner, control, show.info 
     extras = getExtras(ninit, NULL, control)
     generateMBODesign(design, fun, par.set, opt.path, control, show.info, oldopts, more.args, extras)
     stored.models = namedList(control$store.model.at)
-    resample.vals = namedList(control$resample.at)
+    resample.results = namedList(control$resample.at)
   } else {
     if (!is.null(continue$mbo.result)) {
       warningf("mboContinue: No need to continue, we were already finished. Simply returning stored result.")
@@ -39,7 +39,7 @@ mboTemplate = function(fun, par.set, design = NULL, learner, control, show.info 
     }
     opt.path = continue$opt.path
     stored.models = continue$stored.models
-    resample.vals = continue$resample.vals
+    resample.results = continue$resample.results
   }
 
   tasks = makeTasks(par.set, opt.path, algo.init, control = control)
@@ -48,16 +48,24 @@ mboTemplate = function(fun, par.set, design = NULL, learner, control, show.info 
   # if we are restarting from a save file, we possibly start in a higher iteration
   loop = max(getOptPathDOB(opt.path)) + 1L
 
+  # small helper for learner resampling
+  # if we have multiple tasks, return a list, otherwise singleton result
+  doResample = function(tasks) {
+    if (length(tasks) == 1L)
+      resample(learner, tasks[[1L]], control$resample.desc, measures = control$resample.measures)
+    else
+      lapply(tasks, resample, learner = learner, resampling = control$resample.desc,
+        measures = control$resample.measures)
+  }
+
   # save some stuff for iter 0, not necessary if we continue
   if (is.null(continue)) {
     if (0L %in% control$store.model.at)
       stored.models[["0"]] = if (length(current.models) == 1L) current.models[[1L]] else current.models
-    if (0L %in% control$resample.model.at) {
-      r = resample(learner, rt, control$resample.desc, measures = control$resample.measures)
-      resample.vals[["0"]] = r$aggr
-    }
+    if (0L %in% control$resample.model.at)
+      resample.results[["0"]] = doResample(tasks)
     saveStateOnDisk(0L, fun, learner, par.set, opt.path, control, show.info, more.args,
-      stored.models, resample.vals, NULL)
+      stored.models, resample.results, NULL)
   }
 
   repeat {
@@ -75,13 +83,10 @@ mboTemplate = function(fun, par.set, design = NULL, learner, control, show.info 
     # store models + resample + store on disk
     if (loop %in% control$store.model.at)
       stored.models[[as.character(loop)]] = if (length(current.models) == 1L) current.models[[1L]] else current.models
-    if (loop %in% control$resample.at) {
-      aggrs = lapply(tasks, resample, learner = learner, resampling = control$resample.desc,
-        measures = control$resample.measures)
-      resample.vals[[as.character(loop)]] = aggrs
-    }
+    if (loop %in% control$resample.at)
+      resample.results[[as.character(loop)]] = doResample(tasks)
     saveStateOnDisk(loop, fun, learner, par.set, opt.path, control, show.info, more.args, stored.models,
-      resample.vals, NULL)
+      resample.results, NULL)
 
     # increase loop counter and check if done
     loop = loop + 1L
@@ -103,12 +108,13 @@ mboTemplate = function(fun, par.set, design = NULL, learner, control, show.info 
       ys = evalTargetFun(fun, par.set, loop, xs, opt.path, control, show.info, oldopts, more.args, extras)
       best$y = mean(ys)
     }
-    res = makeMBOSingleObjResult(final.index, opt.path, resample.vals, terminate, stored.models)
+    res = makeMBOSingleObjResult(final.index, opt.path, resample.results, terminate, stored.models)
   } else {
     res = makeMBOMultiCritResult(opt.path, terminate, stored.models)
   }
   # make sure to save final res on disk
-  saveStateOnDisk(loop, fun, learner, par.set, opt.path, control, show.info, more.args, stored.models, NULL, res)
+  saveStateOnDisk(loop, fun, learner, par.set, opt.path, control, show.info, more.args, stored.models,
+    resample.results, res)
 
   return(res)
 }

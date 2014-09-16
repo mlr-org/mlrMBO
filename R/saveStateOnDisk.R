@@ -1,7 +1,7 @@
 # Check if current state should be saved on diks and do it if necessary.
 # loop ist the current mbo-loop
 saveStateOnDisk = function(loop, fun, learner, par.set, opt.path, control, show.info, more.args,
-  models, resample.vals, mbo.result) {
+  models, resample.results, mbo.result) {
   # if required save on disk
   if (loop %in% control$save.on.disk.at) {
     save2(file = control$save.file.path,
@@ -13,7 +13,7 @@ saveStateOnDisk = function(loop, fun, learner, par.set, opt.path, control, show.
       show.info = show.info,
       more.args = more.args,
       models = models,
-      resample.vals = resample.vals,
+      resample.results = resample.results,
       mbo.result = mbo.result,
       random.seed = .Random.seed
     )

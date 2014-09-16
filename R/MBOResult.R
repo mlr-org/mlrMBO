@@ -19,7 +19,7 @@
 #' @rdname MBOSingleObjResult
 NULL
 
-makeMBOSingleObjResult = function(final.index, opt.path, resample.vals, convergence, models) {
+makeMBOSingleObjResult = function(final.index, opt.path, resample.results, convergence, models) {
   best = getOptPathEl(opt.path, final.index)
   x = best$x
   y = best$y
@@ -29,7 +29,7 @@ makeMBOSingleObjResult = function(final.index, opt.path, resample.vals, converge
     y = as.numeric(best$y), # strip name
     best.ind = final.index,
     opt.path = opt.path,
-    resample.vals = resample.vals,
+    resample.results = resample.results,
     convergence = convergence,
     models = models
   )

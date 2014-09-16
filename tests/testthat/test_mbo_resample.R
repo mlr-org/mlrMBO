@@ -9,8 +9,8 @@ test_that("mbo works with resampling", {
   ctrl = makeMBOControl(iters = 5, resample.at = c(1, 3))
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10)
   or = mbo(f, ps, des = NULL, learner, ctrl)
-  x = or$resample
+  x = or$resample.results
   expect_true(is.list(x) && length(x) == 2)
-  expect_true(is.numeric(x[[1]]) && is.numeric(x[[2]]))
+  expect_true(is.numeric(x[[1]]$aggr) && is.numeric(x[[2]]$aggr))
   expect_equal(names(x), c("1", "3"))
 })
