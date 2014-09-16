@@ -87,7 +87,7 @@ infillCritSMS = function(points, models, control, par.set, design, iter) {
   # we want to maximize hv contribution ...
   hvs = -1 * sapply(seq_col(lcbs), function(i)
     dominated_hypervolume(cbind(ys, lcbs[, i]), ref = ref.point))
-  
+
   # epsilon for epsilon-dominace - set adaptively or use given constant value
   if (is.null(control$multicrit.sms.eps)) {
     # we need the current iteration. we don't have it here direct ...
@@ -96,11 +96,11 @@ infillCritSMS = function(points, models, control, par.set, design, iter) {
     # Stupid check because emoa can drop to a vector
     if (is.vector(front))
       front = matrix(front, ncol = 1)
-    eps = (max(front) - min(front)) / (ncol(front) + c.val * (control$iters - iter)) 
+    eps = (max(front) - min(front)) / (ncol(front) + c.val * (control$iters - iter))
   } else {
-    eps = controll$multicrit.sms.eps
+    eps = control$multicrit.sms.eps
   }
-  
+
   # Penalty term
   penalty = function (lcb) {
     f = function(lcb, y) {
@@ -114,6 +114,9 @@ infillCritSMS = function(points, models, control, par.set, design, iter) {
   penalties = apply(lcbs, 2, penalty)
   return(hvs + penalties)
 }
+
+
+#FIXME: unify code with crit above
 
 # epsilon-EGO: LOWER CONFIDENCE BOUND of points, then epsilon indicator contribution of these wrt to design
 # (useful for deterministic and stochastic MCO)

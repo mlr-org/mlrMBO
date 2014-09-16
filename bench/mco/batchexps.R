@@ -2,14 +2,10 @@ library(BatchExperiments)
 library(mco)
 library(emoa)
 library(devtools)
+library(soobench)
 
-source("DTLZ.R")
-source("LZ09.R")
-source("UF.R")
-source("WFG.R")
-source("ZDT.R")
-
-source("defs.R")
+source("bench/mco/testfunctionsMultiObjective.R")
+source("bench/mco/defs.R")
 
 unlink("mco_bench-files", recursive = TRUE)
 reg = makeExperimentRegistry("mco_bench", packages = c(
@@ -17,16 +13,17 @@ reg = makeExperimentRegistry("mco_bench", packages = c(
     "emoa",
     "mlrMBO"
   ), src.files = c(
-    "defs.R",
-    "WFG.R"
+    "bench/mco/defs.R",
+    "bench/mco/testfunctionsMultiObjective.R", 
+    "bench/mco/testfunctionsSingleObjective.R"
   )
 )
 
-addMyProblem = function(id, objective, lower, upper) {
-  addProblem(reg, id = id,, static = list(
+addMyProblem = function(id, objective, lower, upper, dim_x, dim_y) {
+  addProblem(reg, id = id, static = list(
       objective = objective,
-      par.set = makeNumericParamSet("x", len = DIM_X, lower = lower, upper = upper),
-      ny = DIM_Y,
+      par.set = makeNumericParamSet("x", len = dim_x, lower = lower, upper = upper),
+      ny = dim_y,
       ref = REFERENCE_POINT,
       makeResult = function(set, front, ref) {
         hv = dominated_hypervolume(t(front), ref = ref)
@@ -38,26 +35,18 @@ addMyProblem = function(id, objective, lower, upper) {
 }
 
 # test functions
-for (i in 1:6) {
-  fname = sprintf("dtlz%i", i)
-  addMyProblem(fname, get(fname), lower = 0, upper = 1)
-}
-for (i in c(1:5, 7:9)) {
-  fname = sprintf("lz%i", i)
-  addMyProblem(fname, get(fname), lower = 0, upper = 1)
-}
-for (i in 4:7) {
-  fname = sprintf("uf%i", i)
-  addMyProblem(fname, get(fname), lower = 0, upper = 1)
-}
-for (i in 1:9) {
-  fname = sprintf("wfg%i", i)
-  addMyProblem(fname, get(fname), lower = 0, upper = 1)
-}
-for (i in c(1:4, 6)) {
+addMyProblem("GOMOP2D2M", GOMOP2D2M, lower = 0, upper = 1, dim_x = 2L, dim_y = 2L)
+addMyProblem("GOMOP5D2M", GOMOP5D2M, lower = 0, upper = 1, dim_x = 5L, dim_y = 2L)
+addMyProblem("GOMOP2D5M", GOMOP2D5M, lower = 0, upper = 1, dim_x = 2L, dim_y = 5L)
+addMyProblem("GOMOP5D5M", GOMOP5D5M, lower = 0, upper = 1, dim_x = 5L, dim_y = 5L)
+for (i in c(1:3)) {
   fname = sprintf("zdt%i", i)
-  addMyProblem(fname, get(fname), lower = 0, upper = 1)
+  addMyProblem(fname, get(fname), lower = 0, upper = 1, dim_x = 5L, dim_y = 2L)
 }
+addMyProblem("dtlz1", dtlz1, lower = 0, upper = 1, dim_x = 5L, dim_y = 5L)
+addMyProblem("dtlz2_5D2M", dtlz2_5D2M, lower = 0, upper = 1, dim_x = 5L, dim_y = 2L)
+addMyProblem("dtlz2_5D5M", dtlz2_5D5M, lower = 0, upper = 1, dim_x = 5L, dim_y = 5L)
+
 
 
 runMBO = function(static, method, crit, opt, prop.points) {

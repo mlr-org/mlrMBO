@@ -1,13 +1,10 @@
 ##### optimizing a simple sin(x) with mbo / EI #####
 
-library(BBmisc)
-library(mlr)
-library(soobench)
+library(mlrMBO)
 library(ggplot2)
-library(grid)
-library(gridExtra)
-
 configureMlr(show.learner.output = FALSE)
+
+set.seed(1)
 
 obj.fun = function(x) {
   sin(x$x)

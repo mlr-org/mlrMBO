@@ -11,5 +11,9 @@ README.md
 test_all.R
 test_src.R
 todo.txt
-
+^bench
+^clement
+^doc
+^man-roxygen
+^multicrit_test.R
 ^.editorconfig$

@@ -4,16 +4,16 @@
 #' @param method [\code{character(1)}]\cr
 #'   Which multicrit method should be used? At the moment only parego is
 #'   supported, which is also the default.
-#' @param ref.point.method[\code{character(1)}] \cr
+#' @param ref.point.method [\code{character(1)}] \cr
 #'   Method for the determination of the reference point used for sms-metric
 #'   Possible Values are:
 #'   \dQuote{all}: In each dimension: maximum of all points + \code{\link{ref.point.offset}}.
 #'   \dQuote{front}: In each dimension: maximum of all non-dominated points + \code{\link{ref.point.offset}}
 #'   \dQuote{const}: Constant value, see \code{\link{ref.point.val}}.
 #'   Default is \dQuote{all}.
-#' @param ref.point.offset[\code{numeric(1)}]\cr
+#' @param ref.point.offset [\code{numeric(1)}]\cr
 #'   See \code{\link{ref.point.method}}, default is \dQuote{1}.
-#' @param ref.point.val[\code{numeric}]\cr
+#' @param ref.point.val [\code{numeric}]\cr
 #'   Constant value of reference point for hypervolume calculation. Used if
 #'   \code{\link{ref.point.method}} = \dQuote{const}. Has to be specified in this case.
 #' @param sms.eps[\code{numeric}]\cr
@@ -45,14 +45,14 @@
 #' @seealso makeMBOControl
 #' @export
 setMBOControlMultiCrit = function(control,
-  method = "parego", ref.point.method = "all", 
+  method = "parego", ref.point.method = "all",
   ref.point.offset = 1, ref.point.val = NULL,
   sms.eps = NULL,
   parego.s, parego.rho = 0.05,
   parego.use.margin.points = rep(FALSE, control$number.of.targets),
   parego.sample.more.weights = 5L,
   parego.normalize = "standard") {
-  
+
   requirePackages("mco", why = "multicrit optimization")
   requirePackages("emoa", why = "multicrit optimization")
 
@@ -61,7 +61,7 @@ setMBOControlMultiCrit = function(control,
 
   number.of.targets = control$number.of.targets
   propose.points = control$propose.points
-  
+
   # Reference Point
   assertChoice(ref.point.method, choices = c("all", "front", "const"))
   assertNumber(ref.point.offset, lower = 0, finite = TRUE)
@@ -72,7 +72,7 @@ setMBOControlMultiCrit = function(control,
       assertNumeric(ref.point.val, any.missing = FALSE, finite = TRUE, len = number.of.targets)
     }
   }
-  
+
   # SMS EGO
   if (!is.null(sms.eps)) {
     assertNumber(sms.eps, lower = 0, finite = TRUE)

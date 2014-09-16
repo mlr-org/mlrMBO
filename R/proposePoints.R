@@ -10,48 +10,34 @@
 #   for some methods, we have a cv for each objective. in this case k > 1, typically k = number.of.targets
 # - errors.model [character(1)]: NA if the model was Ok, the (first) error message if some model crashed
 
-proposePoints = function(models, par.set, control, opt.path, iter, ...) {
+proposePoints = function(tasks, models, par.set, control, opt.path, iter, ...) {
   n = control$propose.points
   m = control$number.of.targets
-  # make sure models.list is always a LIST, model can be ONE model or list of, depends on case we are in
-  models.list = ensureVector(models, 1L, cl = "WrappedModel")
-  # generate a few random points if ANY model failed
-  isfail = vlapply(models.list, isFailureModel)
-  if (any(isfail)) {
-    # if error in any model, return first msg
-    errors.model = getFailureModelMsg(models.list[[which.first(isfail)]])
-    prop.points = generateDesign(n, par.set, randomLHS)
-    propose.points = convertDataFrameCols(prop.points, ints.as.num = TRUE, logicals.as.factor = TRUE)
-    crit.vals = rep(NA_real_, n)
-  } else {
-    errors.model = NA_character_
-    #FIXME: shoule we impute features here or not?
-    #DH: Must be Done in MLR now.
-    design = convertOptPathToDf(par.set, opt.path, control)
-
-    # single crit, multipoint, a bit special case
-    if (m == 1L && n > 1L) {
-      # get optimizer and run
-      multipoint.infill.opt.fun = getMultipointInfillOptFunction(control$multipoint.method)
-      prop.design = multipoint.infill.opt.fun(models, control, par.set, opt.path, design, ...)
-      prop.points = prop.design$prop.points
-      crit.vals = prop.design$crit.vals
+  if (m == 1L) {
+    if (n == 1L) {
+      res = proposePointsByInfillOptimization(models, par.set, control, opt.path, iter, models.unlist = TRUE,...)
     } else {
-      infill.crit.fun = getInfillCritFunction(control$infill.crit)
-      infill.opt.fun = getInfillOptFunction(control$infill.opt)
-      prop.points = infill.opt.fun(infill.crit.fun, models, control, par.set, opt.path, design, iter, ...)
-      # mspot is a bit special, we have multiple crit.vals
-      if (control$multicrit.method == "mspot") {
-        crit.vals = asMatrixCols(lapply(models, infill.crit.fun, points = prop.points,
-            control = control, par.set = par.set, design = design, iter = iter, ...))
-      } else {
-        crit.vals = infill.crit.fun(prop.points, models, control, par.set, design, iter, ...)
+      if (control$multipoint.method == "lcb")
+        res = proposePointsParallelLCB(models, par.set, control, opt.path, iter, ...)
+      else if (control$multipoint.method == "cl")
+        res = proposePointsConstantLiar(models, par.set, control, opt.path, iter, ...)
+      else if (control$multipoint.method == "multicrit") {
+        res = proposePointsMOIMBO(models, par.set, control, opt.path, iter, ...)
+        # FIXME: this is bad.
+        res$errors.model = NA_character_
       }
     }
+  } else {
+      if (control$multicrit.method == "parego") {
+        res = proposePointsParEGO(models, par.set, control, opt.path, iter, attr(tasks, "weight.mat"))
+      } else {
+        res = proposePointsByInfillOptimization(models, par.set, control, opt.path, iter, models.unlist = FALSE, ...)
+      }
   }
-  if (!is.matrix(crit.vals))
-    crit.vals = matrix(crit.vals, ncol = 1L)
-  return(list(prop.points = prop.points, crit.vals = crit.vals, errors.model = errors.model))
+
+  if (!is.matrix(res$crit.vals))
+    res$crit.vals = matrix(res$crit.vals, ncol = 1L)
+  return(res)
 }
 
 

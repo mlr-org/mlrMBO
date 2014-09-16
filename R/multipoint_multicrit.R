@@ -28,7 +28,7 @@ distToNB = function(X, y) {
   })
 }
 
-nds_1d_selection = function(values, n=1, index=1, ...) {
+nds_1d_selection = function(values, n = 1, index = 1, ...) {
   # order according to non-dominated front, then break ties by objective value at index
   # if still tied, break randomly
   ranks = nds_rank(values)
@@ -46,10 +46,12 @@ nds_1d_selection = function(values, n=1, index=1, ...) {
 # Currently only numerical paramaters are handled, for them pm_operator and
 # sbx_operator from emoa are used in the EA.
 #
-multipointInfillOptMulticrit = function(model, control, par.set, opt.path, design, ...) {
-  requirePackages("emoa", why="multipointInfillOptMulticrit")
+proposePointsMOIMBO = function(models, par.set, control, opt.path, iter, ...) {
+  requirePackages("emoa", why = "multipointInfillOptMulticrit")
   n = control$propose.points
   objective = control$multipoint.multicrit.objective
+  design = convertOptPathToDf(par.set, opt.path, control)
+  model = models[[1L]]
 
   # add points to archive
   # FIXME dont always do this for speed
@@ -78,7 +80,7 @@ multipointInfillOptMulticrit = function(model, control, par.set, opt.path, desig
     y.names = c("mean", "se", "dist")
   }
 
-  repids = getParamIds(par.set, repeated=TRUE, with.nr = TRUE)
+  repids = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
   d = sum(getParamLengths(par.set))
   mu = n
   # FIXME: what are good defaults?
@@ -93,7 +95,7 @@ multipointInfillOptMulticrit = function(model, control, par.set, opt.path, desig
   #opt.path = makeOptPathDF(par.set = par.set, y.names = y.names, minimize = minimize)
 
   # Random inital population:
-  X = generateDesign(mu, par.set, fun=randomLHS)
+  X = generateDesign(mu, par.set, fun = randomLHS)
   Y = matrix(NA, mu, y.dim)
   # mbo infill crits are always minimized
   if (objective == "mean.dist") {
@@ -114,7 +116,7 @@ multipointInfillOptMulticrit = function(model, control, par.set, opt.path, desig
     # Create new individual (mu + 1)
     parents = sample(1:mu, 2)
     # get two kids from CX, sel. 1 randomly, mutate
-    child = crossover(t(X[parents, , drop=FALSE]))
+    child = crossover(t(X[parents, , drop = FALSE]))
     child1 = child[,sample(c(1, 2), 1)]
     child1 = mutate(child1)
     # Add new individual:
@@ -146,17 +148,17 @@ multipointInfillOptMulticrit = function(model, control, par.set, opt.path, desig
       # personal communication simon with m. emmerich
       #ref = col.maxs + 0.1 * (col.maxs - col.mins)
       #print(ref)
-      #nds_hv_selection(t(Y), ref=ref)
+      #nds_hv_selection(t(Y), ref = ref)
       nds_hv_selection(t(Y))
     } else if (control$multipoint.multicrit.selection == "crowdingdist") {
       nds_cd_selection(t(Y))
     } else if (control$multipoint.multicrit.selection == "first") {
-      nds_1d_selection(t(Y), index=1)
+      nds_1d_selection(t(Y), index = 1)
     } else if (control$multipoint.multicrit.selection == "last") {
-      nds_1d_selection(t(Y), index=y.dim)
+      nds_1d_selection(t(Y), index = y.dim)
     }
-    X = X[-to.kill, ,drop=FALSE]
-    Y = Y[-to.kill, ,drop=FALSE]
+    X = X[-to.kill, ,drop = FALSE]
+    Y = Y[-to.kill, ,drop = FALSE]
 
     #FIXME really display all this crap? only on show.info
     #messagef("Generation %i; best crit1 = %.2f, max dist = %s",

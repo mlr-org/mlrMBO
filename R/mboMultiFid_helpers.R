@@ -24,7 +24,7 @@ proposePoints.MultiFid = function(model, par.set, control, opt.path, model.cor, 
     this.par.set = par.set
     this.par.set$pars[[control$multifid.param]]$lower = v
     this.par.set$pars[[control$multifid.param]]$upper = v
-    proposePoints(model = model, par.set = this.par.set, control = control, opt.path = opt.path, model.cor = model.cor, model.cost = model.cost, model.sd = model.sd)
+    proposePoints(models = model, par.set = this.par.set, control = control, opt.path = opt.path, model.cor = model.cor, model.cost = model.cost, model.sd = model.sd)
   })
 }
 

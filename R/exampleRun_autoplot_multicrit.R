@@ -115,6 +115,16 @@ autoplot.MBOExampleRunMultiCrit = function(object, iters, pause = TRUE, y1lim = 
     )
   }
 
+  addApproxMBO = function(pl, gg.mbo, cols, isdom, col, lty) {
+    if (!is.null(gg.mbo)) {
+      gg.mbo = setColNames(gg.mbo[!isdom, 1:2], cols)
+      gg.mbo = sortByCol(gg.mbo, cols)
+      pl = pl + geom_line(aes_string(x = cols[1L], y = cols[2L]), gg.mbo,
+        col = col, linetype = lty, alpha = 0.8)
+    }
+    return(pl)
+  }
+
   createPlFront = function(gg.points.front, iter) {
     pl.front = ggplot(data = gg.points.front, aes_string(x = "y1", y = "y2"))
     pl.front = pl.front + geom_point(
@@ -140,22 +150,14 @@ autoplot.MBOExampleRunMultiCrit = function(object, iters, pause = TRUE, y1lim = 
         lambda[2], round(weights[2L], 2)), sep = ""), x = y1lim[2], y = y2lim[1])
       pl.front = pl.front + geom_line(data = gg.line, col = "blue", shape = 1)
     }
-      
-    # if we have model prediction per objective, paint approx front
-    addApproxMBOFront = function(dat, col, lty) {
-      if (!is.null(dat)) {
-        gg.mbo = dat[[iter]]
-        gg.mbo = setColNames(subset(gg.mbo, !gg.mbo$.is.dom)[, 1:2], c("y1", "y2"))
-        pl.front <<- pl.front + geom_line(data = gg.mbo, col = col, linetype = lty, alpha = 0.8)
-      }
-    }
-    addApproxMBOFront(object$mbo.pred.grid.mean, "brown", "solid")
-    addApproxMBOFront(object$mbo.pred.grid.lcb,  "brown", "dotted")
-
+    pl.front = addApproxMBO(pl.front, object$mbo.pred.grid.mean[[iter]], c("y1", "y2"),
+      object$mbo.pred.grid.mean[[iter]]$.is.dom, "brown", "solid")
+    pl.front = addApproxMBO(pl.front, object$mbo.pred.grid.lcb[[iter]], c("y1", "y2"),
+      object$mbo.pred.grid.lcb[[iter]]$.is.dom, "brown", "dotted")
     return(pl.front)
   }
 
-  createPlSet = function(gg.points.set) {
+  createPlSet = function(gg.points.set, iter) {
     pl.set = ggplot()
     # only for parego, color background with scalar model / crit
     if (control$multicrit.method == "parego") {
@@ -166,6 +168,11 @@ autoplot.MBOExampleRunMultiCrit = function(object, iters, pause = TRUE, y1lim = 
       aes_string(x = "x1", y = "x2", colour = "type", shape = "type"), size = 2, alpha = 0.8)
     pl.set = pl.set + geom_point(data = gg.points.set[which(gg.points.set$type != "front"), ],
       aes_string(x = "x1", y = "x2", colour = "type", shape = "type"), size = 4)
+    pl.set = addApproxMBO(pl.set, object$mbo.pred.grid.x, x.name,
+      object$mbo.pred.grid.mean[[iter]]$.is.dom, "brown", "solid")
+    pl.set = addApproxMBO(pl.set, object$mbo.pred.grid.x, x.name,
+      object$mbo.pred.grid.lcb[[iter]]$.is.dom, "brown", "dotted")
+    return(pl.set)
   }
 
   if (prop.multiple.points.in.seq) {
@@ -248,7 +255,7 @@ autoplot.MBOExampleRunMultiCrit = function(object, iters, pause = TRUE, y1lim = 
       gg.points.set = getGGPointsSet(xx, idx, idx.all)
 
       pl.front = createPlFront(gg.points.front, i)
-      pl.set = createPlSet(gg.points.set)
+      pl.set = createPlSet(gg.points.set, i)
 
       if (pause) {
         title = sprintf("Iter %i", i)
