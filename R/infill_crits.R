@@ -82,7 +82,7 @@ infillCritSMS = function(points, models, control, par.set, design, iter) {
   lcbs = lcbs %*% diag(maximize.mult)
   ys = t(ys)
   lcbs = t(lcbs)
-  ref.point = getMulticritRefPoint(control, design)
+  ref.point = getMultiCritRefPoint(control, design)
   # We do without substraction of dominated_hypervolume(lcbs), since this is const
   # we want to maximize hv contribution ...
   hvs = -1 * sapply(seq_col(lcbs), function(i)
