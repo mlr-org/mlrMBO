@@ -20,7 +20,7 @@ test_that("exampleRun", {
   obj.fn = function(x) sum(x*x)
   par.set = makeParamSet(
     makeNumericParam("x", lower = -2, upper = 2)
-    )
+  )
 
   checkPlotList = function(plot.list, len) {
     expect_is(plot.list, "list")
@@ -59,7 +59,7 @@ test_that("exampleRun", {
   par.set = makeParamSet(
     makeDiscreteParam("foo", values = letters[1:3]),
     makeNumericVectorParam("x", len = 1, lower = -2, upper = 3)
-    )
+  )
 
   plot.list = doRun(obj.fn, par.set, "se", "ei", "regr.randomForest", has.simple.signature = FALSE)
   checkPlotList(plot.list, len = n.iters)
