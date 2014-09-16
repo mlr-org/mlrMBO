@@ -1,4 +1,21 @@
-#' Optimizes a function with sequential model based optimization.
+#' @title Optimizes a function with sequential model based optimization.
+#'
+#' @description
+#' It is possible to parallelize the evaluation of the target function to speed up the computation.
+#' Internally the evaluation of the target function is realized with the R package parallelMap.
+#' See the mlrMBO tutorial and the Github project pages of parallelMap for instructions
+#' on how to set up parallelization.
+#' Currently the following operations are performed in parallel, if parallelization is switched on:
+#' \itemize{
+#' \item{Evaluation of the initial design.}
+#' \item{Evaluation of multiple proposed points in one iteration (if multiple are proposed).}
+#' \item{Model fitting / point proposal - in some cases where independent, expensive operations are performed.}
+#' }
+#' Details regarding the last bullet point above:
+#' \describe{
+#' \item{Singlecrit MBO with LCB multipoint}{Parallel optimization of LCBs for the lambda-values.}
+#' \item{Multicrit MBO with ParEGO}{Parallel optimization of scalarization functions.}
+#' }
 #'
 #' @param fun [\code{function(x, ...)}]\cr
 #'   Fitness function to minimize. The first argument has to be a list of values.
@@ -20,9 +37,6 @@
 #' @param more.args [list]\cr
 #'   Further arguments passed to fitness function.
 #' @return [\code{\link{MBOSingleObjResult}} | \code{\link{MBOMultiObjResult}}]
-#' @note It is possible to parallelize the evaluation of the target function to speed up the computation.
-#' Internally the evaluation of the target function is realized with the R package parallelMap. See the mlrMBO tutorial
-#' respectively the help pages of \code{\link[parallelMap]{parallelMap}} for instructions on how to set up parallization.
 #' @export
 mbo = function(fun, par.set, design = NULL, learner, control, show.info = TRUE, more.args = list()) {
   assertFlag(show.info)
