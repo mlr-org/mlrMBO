@@ -12,6 +12,8 @@ proposePointsParallelLCB = function(models, par.set, control, opt.path, iter) {
   props = parallelMap(proposePointsByInfillOptimization, controls,
     more.args = list(models = models[[1L]], par.set = par.set, opt.path = opt.path, iter = iter))
 
-  joinProposedPoints(props)
+  res = joinProposedPoints(props)
+  res$multipoint.lcb.lambdas = lambdas
+  return(res)
 }
 

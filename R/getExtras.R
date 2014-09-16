@@ -23,13 +23,16 @@ getExtras = function(n, prop, control) {
     }
     # if we use parallel LCB, store lambdas
     if (control$propose.points > 1L && control$multipoint.method == "lcb") {
-      ex$multipoint.lcb.lambdas = attr(prop, "multipoint.lcb.lambdas")
+      lams = prop$multipoint.lcb.lambdas
+      if (is.null(lams))
+        lams = rep(NA_real_, n)
+      ex$multipoint.lcb.lambda = lams[i]
     }
     # if we use parego, store weights
     if (control$number.of.targets > 1L && control$multicrit.method == "parego") {
       weight.mat = prop$weight.mat
       if (is.null(weight.mat))
-        weight.mat = matrix(NA, nrow = n, ncol = control$number.of.targets)
+        weight.mat = matrix(NA_real_, nrow = n, ncol = control$number.of.targets)
       w = setNames(as.list(weight.mat[i, ]), paste0(".weight", 1:ncol(weight.mat)))
       ex = c(ex, w)
     }
