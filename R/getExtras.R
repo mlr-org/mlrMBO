@@ -1,6 +1,6 @@
 # helper to get extras-list for opt.path logging
 
-getExtras = function(n, prop, control, weight.mat = NULL) {
+getExtras = function(n, prop, control) {
   # this happens in init design
   if (is.null(prop)) {
     k = ifelse(control$multicrit.method == "mspot", control$number.of.targets, 1L)
@@ -16,9 +16,9 @@ getExtras = function(n, prop, control, weight.mat = NULL) {
     if (control$multicrit.method == "mspot") {
       ex = as.list(prop$crit.vals[i, ])
       names(ex) = paste(control$infill.crit, control$y.name, sep = ".")
-      ex$error.model = errs[i]
+      ex$errors.model = errs[i]
     } else {
-      ex = list(prop$crit.vals[i, 1L], error.model = errs[i])
+      ex = list(prop$crit.vals[i, 1L], errors.model = errs[i])
       names(ex)[1] = control$infill.crit
     }
     # if we use parallel LCB, store lambdas
@@ -27,6 +27,7 @@ getExtras = function(n, prop, control, weight.mat = NULL) {
     }
     # if we use parego, store weights
     if (control$number.of.targets > 1L && control$multicrit.method == "parego") {
+      weight.mat = prop$weight.mat
       if (is.null(weight.mat))
         weight.mat = matrix(NA, nrow = n, ncol = control$number.of.targets)
       w = setNames(as.list(weight.mat[i, ]), paste0(".weight", 1:ncol(weight.mat)))

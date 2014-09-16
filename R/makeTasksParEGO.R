@@ -69,6 +69,6 @@ makeTasksParEGO = function(par.set, opt.path, control, all.possible.weights) {
     data$y.scalar = apply(y2, 1, max) + control$parego.rho * rowSums(y2)
     tasks[[loop]] = makeRegrTask(target = "y.scalar", data = data)
   }
-
-  return(list(tasks = tasks, weights = lambdas))
+  attr(tasks, "weight.mat") = lambdas
+  return(tasks)
 }

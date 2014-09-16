@@ -98,7 +98,7 @@ infillCritSMS = function(points, models, control, par.set, design, iter) {
       front = matrix(front, ncol = 1)
     eps = (max(front) - min(front)) / (ncol(front) + c.val * (control$iters - iter))
   } else {
-    eps = controll$multicrit.sms.eps
+    eps = control$multicrit.sms.eps
   }
 
   # Penalty term
