@@ -20,8 +20,8 @@ supported, which is also the default.}
 \item{ref.point.method}{[\code{character(1)}] \cr
 Method for the determination of the reference point used for sms-metric
 Possible Values are:
-\dQuote{all}: In each dimension: maximum of all points + \code{\link{ref.point.offset}}.
-\dQuote{front}: In each dimension: maximum of all non-dominated points + \code{\link{ref.point.offset}}
+\dQuote{all}: In each dimension: maximum of all points + \code{ref.point.offset}.
+\dQuote{front}: In each dimension: maximum of all non-dominated points + \code{ref.point.offset}
 \dQuote{const}: Constant value, see \code{ref.point.val}.
 Default is \dQuote{all}.}
 

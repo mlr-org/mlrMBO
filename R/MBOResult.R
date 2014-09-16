@@ -80,6 +80,7 @@ makeMBOMultiCritResult = function(opt.path, convergence, models) {
 
 #' @export
 print.MBOMultiObjResult = function(x, ...) {
+  op = x$opt.path
   print(x$pareto.front)
   catf("Optimization path")
   n1 = sum(op$env$dob == 0)

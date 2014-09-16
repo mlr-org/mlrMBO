@@ -123,11 +123,6 @@ nsga2 param. Default is 0.2.}
 \item{opt.nsga2.mdist}{[\code{numeric{1}}]\cr
 For \code{opt.multicrit.method = "nsga2"}.
 nsga2 param. Default is 10.}
-
-\item{opt.multicrit.randomsearch.points}{[\code{numeric{1}}]\cr
-For \code{opt.multicrit.method = "random"}.
-Number of random search points for multicrit optimization.
-Default is 50000.}
 }
 \value{
 [\code{\link{MBOControl}}].

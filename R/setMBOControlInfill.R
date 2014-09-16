@@ -69,10 +69,6 @@
 #'   For \code{opt.ea = "ea"}.
 #'   Number of children generated in each generation.
 #'   Default is 1.
-#' @param opt.multicrit.randomsearch.points [\code{numeric{1}}]\cr
-#'   For \code{opt.multicrit.method = "random"}.
-#'   Number of random search points for multicrit optimization.
-#'   Default is 50000.
 #' @param opt.nsga2.popsize [\code{numeric{1}}]\cr
 #'   For \code{opt.multicrit.method = "nsga2"}.
 #'   Population size of nsga2.
@@ -134,11 +130,11 @@ setMBOControlInfill = function(control,
   assertNumber(opt.ea.pm.eta, na.ok = FALSE, lower = 0)
   assertNumber(opt.ea.pm.p, na.ok = FALSE, lower = 0, upper = 1)
   assertCount(opt.ea.lambda, na.ok = FALSE)
-  
+
   # FIXME: Don't use for now
   #opt.multicrit.randomsearch.points = asCount(opt.multicrit.randomsearch.points)
   #assertCount(opt.multicrit.randomsearch.points, na.ok = FALSE, positive = TRUE)
-  
+
   opt.nsga2.popsize = asCount(opt.nsga2.popsize)
   assertCount(opt.nsga2.popsize, na.ok = FALSE, positive = TRUE)
   opt.nsga2.generations = asCount(opt.nsga2.generations)
@@ -147,8 +143,8 @@ setMBOControlInfill = function(control,
   assertNumber(opt.nsga2.cdist, lower = 1e-16, na.ok = FALSE, finite = TRUE)
   assertNumber(opt.nsga2.mprob, lower = 0, upper = 1, na.ok = FALSE)
   assertNumber(opt.nsga2.mdist, lower = 1e-16, na.ok = FALSE, finite  = TRUE)
-  
-  
+
+
   control$infill.crit = crit
   control$infill.crit.lcb.lambda = crit.lcb.lambda
   control$infill.opt = opt
@@ -170,7 +166,7 @@ setMBOControlInfill = function(control,
   control$infill.opt.nsga2.cdist = opt.nsga2.cdist
   control$infill.opt.nsga2.mprob = opt.nsga2.mprob
   control$infill.opt.nsga2.mdist = opt.nsga2.mdist
-  
+
   return(control)
 }
 
