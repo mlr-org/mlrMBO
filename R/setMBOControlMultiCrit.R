@@ -9,14 +9,14 @@
 #'   Possible Values are:
 #'   \dQuote{all}: In each dimension: maximum of all points + \code{\link{ref.point.offset}}.
 #'   \dQuote{front}: In each dimension: maximum of all non-dominated points + \code{\link{ref.point.offset}}
-#'   \dQuote{const}: Constant value, see \code{\link{ref.point.val}}.
+#'   \dQuote{const}: Constant value, see \code{ref.point.val}.
 #'   Default is \dQuote{all}.
 #' @param ref.point.offset [\code{numeric(1)}]\cr
-#'   See \code{\link{ref.point.method}}, default is \dQuote{1}.
+#'   See \code{ref.point.method}, default is 1.
 #' @param ref.point.val [\code{numeric}]\cr
 #'   Constant value of reference point for hypervolume calculation. Used if
-#'   \code{\link{ref.point.method}} = \dQuote{const}. Has to be specified in this case.
-#' @param sms.eps[\code{numeric}]\cr
+#'   \code{ref.point.method} = \dQuote{const}. Has to be specified in this case.
+#' @param sms.eps [\code{numeric}]\cr
 #'   Epsilon for epsilon-dominance for sms-ego. Default ist NULL, in this case
 #'   it is adaptively set.
 #' @param parego.s [\code{integer(1)}]\cr

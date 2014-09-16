@@ -49,12 +49,12 @@ Currently the following operations are performed in parallel, if parallelization
 \itemize{
 \item{Evaluation of the initial design.}
 \item{Evaluation of multiple proposed points in one iteration (if multiple are proposed).}
-\item{Model fitting of multiple models and optimization of multiple infill criteria.}
+\item{Model fitting / point proposal - in some cases where independent, expensive operations are performed.}
 }
-Details regarding the last point above:
+Details regarding the last bullet point above:
 \describe{
-\item{Singlecrit MBO with 1 point proposal}{No further parallelization.}
-\item{Singlecrit MBO with LCB multipointi}{Parallel optimization of LCBs for multiple lambda.}
+\item{Singlecrit MBO with LCB multipoint}{Parallel optimization of LCBs for the lambda-values.}
+\item{Multicrit MBO with ParEGO}{Parallel optimization of scalarization functions.}
 }
 }
 

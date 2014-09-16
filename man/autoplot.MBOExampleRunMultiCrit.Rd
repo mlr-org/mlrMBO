@@ -3,8 +3,8 @@
 \alias{autoplot.MBOExampleRunMultiCrit}
 \title{Plot example run, either in 1D or 2D.}
 \usage{
-\method{autoplot}{MBOExampleRunMultiCrit}(object, iters, pause = TRUE,
-  y1lim = NULL, y2lim = NULL, ...)
+autoplot.MBOExampleRunMultiCrit(object, iters, pause = TRUE, y1lim = NULL,
+  y2lim = NULL, ...)
 }
 \arguments{
 \item{object}{[\code{}]\cr
