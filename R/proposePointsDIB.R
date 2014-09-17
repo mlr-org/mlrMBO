@@ -1,6 +1,9 @@
 # FIXME:
 # a) check in general that maximization of y works. check in plot and also with other MCO methods
 
+#FIXME: make sure multipoint eps works. we could also mess with the dist function for more
+# varierety in multipoint mode?
+
 proposePointsDIB = function(models, par.set, control, opt.path, iter) {
   if (control$propose.points > 1L) {
     # draw lambdas from exp dist + create 1 control for each for single crit with lambda-LCB
