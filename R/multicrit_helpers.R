@@ -8,7 +8,7 @@ getDominatedHV = function(points, ref.point, minimize) {
 # returns logical index
 isDominated = function(points, minimize) {
   mults = ifelse(minimize, 1, -1)
-  points2 = t(points %*% diag(mults))
+  points2 = t(as.matrix(points) %*% diag(mults))
   is_dominated(points2)
 }
 

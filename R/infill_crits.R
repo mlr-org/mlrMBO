@@ -75,12 +75,10 @@ infillCritSMS = function(points, models, control, par.set, design, iter) {
   ses = extractSubList(ps, c("data", "se"), simplify = "cols")
   lcbs = means - control$infill.crit.lcb.lambda * ses
   lcbs = lcbs %*% diag(maximize.mult)
-  ys = t(ys)
-  lcbs = t(lcbs)
   ref.point = getMultiCritRefPoint(control, design)
   # dont substract dominated_hypervolume(lcbs), since this is const, maximize hv contribution ...
-  hvs = -1 * sapply(seq_col(lcbs), function(i)
-    getDominatedHV(cbind(ys, lcbs[, i]), ref = ref.point))
+  hvs = -1 * sapply(seq_row(lcbs), function(i)
+    getDominatedHV(rbind(ys, lcbs[i, ]), ref = ref.point, minimize = control$minimize))
 
   # epsilon for epsilon-dominace - set adaptively or use given constant value
   if (is.null(control$multicrit.sms.eps)) {
@@ -99,9 +97,9 @@ infillCritSMS = function(points, models, control, par.set, design, iter) {
       else
         0
     }
-    max(apply(ys, 2, f, lcb = lcb))
+    max(apply(ys, 1, f, lcb = lcb))
   }
-  penalties = apply(lcbs, 2, penalty)
+  penalties = apply(lcbs, 1, penalty)
   return(hvs + penalties)
 }
 
