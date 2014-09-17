@@ -60,7 +60,8 @@ evalTargetFun = function(fun, par.set, dobs, xs, opt.path, control, show.info, o
   configureMlr(on.learner.error = oldopts[["ole"]], show.learner.output = oldopts[["slo"]])
 
   # return error objects if we impute
-  res = parallelMap(wrapFun, xs.trafo, impute.error = if (is.null(imputeY)) NULL else identity)
+  res = parallelMap(wrapFun, xs.trafo, level = "feval",
+    impute.error = if (is.null(imputeY)) NULL else identity)
 
   # loop evals and to some post-processing
   for (i in 1:nevals) {
