@@ -1,11 +1,19 @@
+#FIXME: briefly explain multipoint proposal for all thre methods
+
 #' Extends mbo control object with multi-criteria specific options.
 #'
 #' @template arg_control
 #' @param method [\code{character(1)}]\cr
-#'   Which multicrit method should be used? At the moment only parego is
-#'   supported, which is also the default.
+#'   Which multicrit method should be used?
+#'   \dQuote{parego}: The ParEGO algorithm.
+#'   \dQuote{dib}: Direct indicator-based method. Subsumes SMS-EGO and epsilon-EGO.
+#'   \dQuote{mspot}: Directly optimizes multcrit problem where we substitute the true
+#'   objectives with model-based infill crits via an EMOA.
+#'   All methods can also propose multiple points in parallel.
+#'   Default is \dQuote{dib}.
 #' @param ref.point.method [\code{character(1)}] \cr
-#'   Method for the determination of the reference point used for sms-metric
+#'   Method for the determination of the reference point used for S-metric.
+#'   Currently used for \dQuote{mspot} and \dQuote{dib} with indicator \dQuote{sms}.
 #'   Possible Values are:
 #'   \dQuote{all}: In each dimension: maximum of all points + \code{ref.point.offset}.
 #'   \dQuote{front}: In each dimension: maximum of all non-dominated points + \code{ref.point.offset}
@@ -14,14 +22,11 @@
 #' @param ref.point.offset [\code{numeric(1)}]\cr
 #'   See \code{ref.point.method}, default is 1.
 #' @param ref.point.val [\code{numeric}]\cr
-#'   Constant value of reference point for hypervolume calculation. Used if
-#'   \code{ref.point.method} = \dQuote{const}. Has to be specified in this case.
-#' @param sms.eps [\code{numeric}]\cr
-#'   Epsilon for epsilon-dominance for sms-ego. Default ist NULL, in this case
-#'   it is adaptively set.
+#'   Constant value of reference point for hypervolume calculation.
+#'   Used if \code{ref.point.method = "const"}. Has to be specified in this case.
 #' @param parego.s [\code{integer(1)}]\cr
 #'   Parameter of parego - controls the number of weighting vectors. The default
-#'   depends on \code{number.of.targets} and leads to 100000 different possible
+#'   depends on \code{number.of.targets} and leads to ca. 100000 different possible
 #'   weight vectors. The defaults for (2, 3, 4, 5, 6) dimensions are (100000,
 #'   450, 75, 37, 23) and 10 for higher dimensions.
 #' @param parego.rho [\code{numeric(1)}]\cr
@@ -40,94 +45,98 @@
 #' @param parego.normalize [\code{character}] \cr
 #'   Normalization to use. Either map the whole image space to [0, 1] (\code{standard}, the default)
 #'   or just the paretofront (\code{front}).
+#' @param dib.indicator [\code{character(1)}]\cr
+#'   Either \dQuote{sms} (SMS-EGO like algorithm) or \dQuote{eps} (epsilon-EGO like algorithm).
+#'   Default is \dQuote{sms}.
+#' @param dib.sms.eps [\code{numeric(1)} | \code{NULL}]\cr
+#'   Epsilon for epsilon-dominance for \code{dib.indicator = "sms"}.
+#'   Default is \code{NULL}, in this case it is adaptively set.
 #' @return [\code{\link{MBOControl}}].
 #' @note See the other setMBOControl... functions and \code{makeMBOControl} for referenced arguments.
 #' @seealso makeMBOControl
 #' @export
 setMBOControlMultiCrit = function(control,
-  method = "parego", ref.point.method = "all",
-  ref.point.offset = 1, ref.point.val = NULL,
-  sms.eps = NULL,
-  parego.s, parego.rho = 0.05,
+  method = "dib",
+  ref.point.method = "all",
+  ref.point.offset = 1,
+  ref.point.val = NULL,
+  parego.s = NULL,
+  parego.rho = 0.05,
   parego.use.margin.points = rep(FALSE, control$number.of.targets),
   parego.sample.more.weights = 5L,
-  parego.normalize = "standard") {
-
-  requirePackages("mco", why = "multicrit optimization")
-  requirePackages("emoa", why = "multicrit optimization")
+  parego.normalize = "standard",
+  dib.indicator = "sms",
+  dib.sms.eps = NULL) {
 
   assertClass(control, "MBOControl")
-  assertChoice(method, choices = c("parego", "mspot", "sms"))
-
   number.of.targets = control$number.of.targets
   propose.points = control$propose.points
+  requirePackages(c("mco", "emoa"), why = "multicrit optimization")
+
+  assertChoice(method, choices = c("parego", "mspot", "dib"))
 
   # Reference Point
   assertChoice(ref.point.method, choices = c("all", "front", "const"))
   assertNumber(ref.point.offset, lower = 0, finite = TRUE)
   if (ref.point.method == "const") {
-    if( is.null(ref.point.val)) {
+    if( is.null(ref.point.val))
       stopf("Constant reference point has to be specified.")
-    } else {
+    else
       assertNumeric(ref.point.val, any.missing = FALSE, finite = TRUE, len = number.of.targets)
-    }
   }
 
-  # SMS EGO
-  if (!is.null(sms.eps)) {
-    assertNumber(sms.eps, lower = 0, finite = TRUE)
-  }
 
-  # ParEGO:
-  if (missing(parego.s))
-    parego.s = switch(min(control$number.of.targets, 7L),
-      1L,
-      100000L,
-      450L,
-      75L,
-      37L,
-      23L,
-      10L)
-  parego.s = asInt(parego.s)
-  assertInt(parego.s, na.ok = FALSE, lower = 1)
+  if (method == "parego") {
+    if (missing(parego.s))
+      parego.s = switch(min(number.of.targets, 7L),
+        1L,
+        100000L,
+        450L,
+        75L,
+        37L,
+        23L,
+        10L)
+    else
+      parego.s = asInt(parego.s, na.ok = FALSE, lower = 1)
 
-  assertNumber(parego.rho, na.ok = FALSE, lower = 0, upper = 1)
+    assertNumber(parego.rho, na.ok = FALSE, lower = 0)
 
-  if (control$propose.points == 1L)
-    parego.sample.more.weights = 1L
-  parego.sample.more.weights = asInt(parego.sample.more.weights)
-  assertInt(parego.sample.more.weights, na.ok = FALSE, lower = 1)
+    if (propose.points == 1L)
+      parego.sample.more.weights = 1L
+    parego.sample.more.weights = asInt(parego.sample.more.weights)
+    assertInt(parego.sample.more.weights, na.ok = FALSE, lower = 1)
 
-
-  assertLogical(parego.use.margin.points, len = number.of.targets, any.missing = FALSE)
-
-  # some checks we ony want to do if we're really doing parego
-  if (control$number.of.targets != 1L) {
+    assertLogical(parego.use.margin.points, len = number.of.targets, any.missing = FALSE)
     if (sum(parego.use.margin.points) > propose.points)
       stopf("Can't use %s margin points when only proposing %s points each iteration.",
         sum(parego.use.margin.points), propose.points)
 
-    number.of.weights = choose(parego.s + control$number.of.targets - 1,
-      control$number.of.targets - 1)
+    number.of.weights = choose(parego.s + number.of.targets - 1L, number.of.targets - 1L)
     if (parego.sample.more.weights * propose.points > number.of.weights)
       stop("Trying to sample more weights than exists. Increase parego.s or decrease number of weights.")
+
+    assertChoice(parego.normalize, choices = c("standard", "front"))
   }
 
-  assertChoice(parego.normalize, choices = c("standard", "front"))
-
-
+  # DIB
+  if (method == "dib") {
+    assertChoice(dib.indicator, c("sms", "eps"))
+    if (!is.null(dib.sms.eps))
+      assertNumber(dib.sms.eps, lower = 0, finite = TRUE)
+  }
 
   # extend control object
   control$multicrit.method = method
   control$multicrit.ref.point.method = ref.point.method
   control$multicrit.ref.point.offset = ref.point.offset
   control$multicrit.ref.point.val = ref.point.val
-  control$sms.eps = sms.eps
-  control$parego.s = parego.s
-  control$parego.rho = parego.rho
-  control$parego.use.margin.points = parego.use.margin.points
-  control$parego.sample.more.weights = parego.sample.more.weights
-  control$parego.normalize = parego.normalize
+  control$multicrit.parego.s = parego.s
+  control$multicrit.parego.rho = parego.rho
+  control$multicrit.parego.use.margin.points = parego.use.margin.points
+  control$multicrit.parego.sample.more.weights = parego.sample.more.weights
+  control$multicrit.parego.normalize = parego.normalize
+  control$multicrit.dib.indicator = dib.indicator
+  control$multicrit.dib.sms.eps = dib.sms.eps
 
   return(control)
 }

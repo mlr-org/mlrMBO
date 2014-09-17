@@ -41,7 +41,7 @@ autoplot.MBOExampleRunMultiCrit = function(object, iters, pause = TRUE, y1lim = 
   y.name = control$y.name
   x.name = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
   proppoints = control$propose.points
-  rho = control$parego.rho
+  rho = control$multicrit.parego.rho
   mbo.res = object$mbo.res
   nsga2.paretofront = object$nsga2.paretofront
   nsga2.paretoset = object$nsga2.paretoset

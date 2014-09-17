@@ -20,7 +20,7 @@ makeTasksParEGO = function(par.set, opt.path, control, all.possible.weights) {
   data = convertOptPathToDf(par.set, opt.path, control)
   data = dropNamed(data, control$y.name)
   y = getOptPathY(opt.path)
-  if (control$parego.normalize == "standard") {
+  if (control$multicrit.parego.normalize == "standard") {
     y = normalize(y, method = "range", margin = 2L)
   } else {
     front = paretoFilter(y)
@@ -40,15 +40,15 @@ makeTasksParEGO = function(par.set, opt.path, control, all.possible.weights) {
 
   # propose points
   # if desired - create the margin weight vector
-  margin.points = diag(control$number.of.targets)[control$parego.use.margin.points, , drop = FALSE]
+  margin.points = diag(control$number.of.targets)[control$multicrit.parego.use.margin.points, , drop = FALSE]
 
   # how many random weights should be used?
-  random.weights = n.points - sum(control$parego.use.margin.points)
+  random.weights = n.points - sum(control$multicrit.parego.use.margin.points)
   # if we used margin weights, we don't want to sample them!
   # be aware, that the margin weights are allways stored in the first rows.
-  allowed.weight.inds = setdiff(seq_row(all.possible.weights), which(control$parego.use.margin.points))
-  # sample control$parego.sample.more.weights times the number of weights
-  nb.sample = random.weights * control$parego.sample.more.weights
+  allowed.weight.inds = setdiff(seq_row(all.possible.weights), which(control$multicrit.parego.use.margin.points))
+  # sample control$multicrit.parego.sample.more.weights times the number of weights
+  nb.sample = random.weights * control$multicrit.parego.sample.more.weights
   # sample the lambda-vectors as rows from the matrix of all possible weights
   lambdas = all.possible.weights[sample(allowed.weight.inds, nb.sample), , drop = FALSE]
   # reject weights as long as we have too many. reject the ones with smallest dist
@@ -66,7 +66,7 @@ makeTasksParEGO = function(par.set, opt.path, control, all.possible.weights) {
     # make sure to minimize, then create scalarized response
     lambda = lambdas[loop, ] * ifelse(control$minimize, 1, -1)
     y2 = y %*% diag(lambda)
-    data$y.scalar = apply(y2, 1, max) + control$parego.rho * rowSums(y2)
+    data$y.scalar = apply(y2, 1, max) + control$multicrit.parego.rho * rowSums(y2)
     tasks[[loop]] = makeRegrTask(target = "y.scalar", data = data)
   }
   attr(tasks, "weight.mat") = lambdas

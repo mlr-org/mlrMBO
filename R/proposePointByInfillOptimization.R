@@ -1,6 +1,6 @@
 # directly call an optimizer on an infill crit and output 1 or more proposed points
 #
-# input: models               : EITHER a simgle model or a list of models, depending on the method
+# input: models               : EITHER a single model or a list of models, depending on the method
 #
 # output:
 #   prop.points [data.frame]  : the proposed points, 1 per row, with n rows

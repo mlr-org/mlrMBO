@@ -26,13 +26,12 @@ getWorstExtremePoint = function(points, minimize) {
 
 # determines the reference point for multicrit optimization
 # Returns reference-point, numeric vector of length number.of.targets
-getMultiCritRefPoint = function (control, design) {
-  mini = control$minimize
+getMultiCritRefPoint = function (ys, control, minimize = control$minimize) {
   switch(control$multicrit.ref.point.method,
     const = control$multicrit.ref.point.val,
-    all = getWorstExtremePoint(design[, control$y.name], mini) + control$multicrit.ref.point.offset,
+    all = getWorstExtremePoint(ys, minimize) + control$multicrit.ref.point.offset,
     front = {
-      front = getNonDominatedPoints(design[, control$y.name], mini)
+      front = getNonDominatedPoints(ys, minimize)
       getWorstExtremePoint(front, control$minimize) + control$multicrit.ref.point.offset
     }
   )

@@ -61,64 +61,62 @@ infillCritLCB = function(points, model, control, par.set, design, iter) {
 
 ######################  MCO criteria ###########################################################
 
-# SMS-EGO: LOWER CONFIDENCE BOUND of points, then HV contribution of these wrt to design
+# SMS-EGO / DIB (direct indicator based):
+# direct.sms LOWER CONFIDENCE BOUND of points, then HV contribution of these wrt to design
+# direct.eps: LOWER CONFIDENCE BOUND of points, then epsilon indicator contribution of these wrt to design
 # (useful for deterministic and stochastic MCO)
-infillCritSMS = function(points, models, control, par.set, design, iter) {
+infillCritDIB = function(points, models, control, par.set, design, iter) {
   maximize.mult = ifelse(control$minimize, 1, -1)
-  ys = maximize.mult * design[, control$y.name]
+  ys = design[, control$y.name] %*% diag(maximize.mult)
   # get lcb-value-matrix for new points (x -1 for max. objectives)
   ps = lapply(models, predict, newdata = points)
   means = extractSubList(ps, c("data", "response"), simplify = "cols")
   ses = extractSubList(ps, c("data", "se"), simplify = "cols")
-  lcbs = means - control$infill.crit.lcb.lambda * ses
-  lcbs = lcbs %*% diag(maximize.mult)
-  ref.point = getMultiCritRefPoint(control, design)
-  # dont substract dominated_hypervolume(lcbs), since this is const, maximize hv contribution ...
-  hvs = -1 * sapply(seq_row(lcbs), function(i)
-    getDominatedHV(rbind(ys, lcbs[i, ]), ref = ref.point, minimize = control$minimize))
+  lcbs = means %*% diag(maximize.mult) - control$infill.crit.lcb.lambda * ses
+  # from here on ys and lcbs are ALWAYS minimized
+  all.mini = rep(TRUE, control$number.of.targets)
+  ys.front = getNonDominatedPoints(ys, minimize = all.mini)
 
-  # epsilon for epsilon-dominace - set adaptively or use given constant value
-  if (is.null(control$multicrit.sms.eps)) {
-    c.val = 1 - 1 / 2^control$number.of.targets
-    front = getNonDominatedPoints(design[, control$y.name], control$minimize)
-    eps = (max(front) - min(front)) / (ncol(front) + c.val * (control$iters - iter))
-  } else {
-    eps = control$multicrit.sms.eps
-  }
-
-  # Penalty term
-  penalty = function (lcb) {
-    f = function(lcb, y) {
-      if (all(y <= lcb + eps))
-        -1 + prod(1 + pmax(lcb - y, 0))
-      else
-        0
+  if (control$multicrit.dib.indicator == "sms") {
+    ref.point = getMultiCritRefPoint(ys.front, control, minimize = all.mini)
+    # dont substract dominated_hypervolume(lcbs), since this is const, maximize hv contribution ...
+    hvs = -1 * sapply(seq_row(lcbs), function(i)
+      getDominatedHV(rbind(ys.front, lcbs[i, ]), ref = ref.point, minimize = all.mini))
+    # get epsilon for epsilon-dominace - set adaptively or use given constant value
+    if (is.null(control$dib.sms.eps)) {
+      c.val = 1 - 1 / 2^control$number.of.targets
+      eps = (max(ys.front) - min(ys.front)) /
+        (ncol(ys.front) + c.val * (control$iters - iter))
+    } else {
+      eps = control$multicrit.dib.sms.eps
     }
-    max(apply(ys, 1, f, lcb = lcb))
+    # penalty term
+    penalties = apply(lcbs, 1, function (lcb) {
+      f = function(lcb, y) {
+        if (all(y <= lcb + eps))
+          -1 + prod(1 + pmax(lcb - y, 0))
+        else
+          0
+      }
+      max(apply(ys.front, 1, f, lcb = lcb))
+    })
+    crit.vals = hvs + penalties
+  } else {
+    # direct.eps, epsilon-indicator: "maximin-fitness"
+    # we measure the (signed) L_inf distance between an lcb-point and its closest neighbor in ys.front
+    n.lcb = nrow(lcbs)
+    n.ys = nrow(ys.front)
+    # try to be fast: all L_inf dists between 1 lcb point and all ys, blockwise in rows
+    lcbs2 = lcbs[rep(1:n.lcb, each = n.ys), ]
+    ys2 = ys.front[rep(1:n.ys, n.lcbs), ]
+    # get L_inf dists
+    z = apply(ys2 - lcbs2, 1, max)
+    # put dists of 1 lcb point to all front points in one row + and get min dist to front set
+    z = matrix(z, nrow = n.lcb, ncol = n.ys, byrow = TRUE)
+    crit.vals = apply(z, 1, min)
   }
-  penalties = apply(lcbs, 1, penalty)
-  return(hvs + penalties)
+
+  return(crit.vals)
 }
 
 
-#FIXME: unify code with crit above
-
-# epsilon-EGO: LOWER CONFIDENCE BOUND of points, then epsilon indicator contribution of these wrt to design
-# (useful for deterministic and stochastic MCO)
-infillCritEpsilon = function(points, models, control, par.set, design, iter) {
-  maximize.mult = ifelse(control$minimize, 1, -1)
-  ys = maximize.mult * design[, control$y.name]
-  # get lcb-value-matrix for new points (x -1 for max. objectives)
-  ps = lapply(models, predict, newdata = points)
-  means = extractSubList(ps, c("data", "response"), simplify = "cols")
-  ses = extractSubList(ps, c("data", "se"), simplify = "cols")
-  lcbs = means - control$infill.crit.lcb.lambda * ses
-  lcbs = lcbs %*% diag(maximize.mult)
-  # epsilon-indicator: "maximin-fitness"
-  epsInd = function (y) {
-    diffs = lcbs - matrix(y, ncol = length(y), nrow = nrow(lcbs), byrow = TRUE)
-    min(apply(diffs, 2, max))
-  }
-  epss = -1 * sapply(seq_row(lcbs), function(i) epsInd(lcbs[i, ]))
-  return(epss)
-}
