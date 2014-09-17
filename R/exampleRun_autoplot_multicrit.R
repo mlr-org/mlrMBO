@@ -48,6 +48,7 @@ autoplot.MBOExampleRunMultiCrit = function(object, iters, pause = TRUE, y1lim = 
   opt.path = as.data.frame(mbo.res$opt.path)
   mbo.paretofront = getOptPathY(mbo.res$opt.path)
   isparego = control$multicrit.method == "parego"
+  issmspar = control$multicrit.method == "sms" && control$propose.points > 1L
   prop.multiple.points.in.seq = isparego
 
   # build essential data frames for target values ...
@@ -126,7 +127,15 @@ autoplot.MBOExampleRunMultiCrit = function(object, iters, pause = TRUE, y1lim = 
   }
 
   createPlFront = function(gg.points.front, iter) {
+    if (issmspar) {
+      rps = opt.path[idx$proposed, paste("refpoint", y.name, sep = ".")]
+      rps$type = "refpoint"
+      colnames(rps) = colnames(gg.points.front)
+      gg.points.front = rbind(gg.points.front, rps)
+    }
+
     pl.front = ggplot(data = gg.points.front, aes_string(x = "y1", y = "y2"))
+
     pl.front = pl.front + geom_point(
       mapping = aes_string(colour = "type", shape = "type"),
       data = gg.points.front[which(gg.points.front$type == "front"), ],
