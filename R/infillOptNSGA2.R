@@ -41,7 +41,8 @@ selectBestHypervolumePoints = function (crit.vals, control, opt.path, design) {
   # FIXME: This only works well for proposing 1 point! For proposing more points
   # at the same time, we have to look at the common hv-contr of this points
   # Idea: Do this greedy?
-  ref.point = getMultiCritRefPoint(control, design)
+  ref.point = getMultiCritRefPoint(design[, control$y.name], control)
+  # FIXME: use multicrit helper?
   hvs = -1 * sapply(seq_col(crit.vals), function(i)
     dominated_hypervolume(cbind(front.old, crit.vals[, i]), ref = ref.point))
 
