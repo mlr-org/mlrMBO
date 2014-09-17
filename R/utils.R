@@ -24,7 +24,7 @@ checkLearner = function(learner, par.set, control, ...) {
 loadPackages = function(control) {
   if (control$infill.opt == "cmaes")
     requirePackages("cmaes", "proposePoints")
-  if (control$multipoint.method == "multicrit")
+  if (control$number.of.targets == 1L && control$propose.points > 1L && control$multipoint.method == "multicrit")
     requirePackages("emoa", "proposePoints")
 }
 

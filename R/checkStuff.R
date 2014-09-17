@@ -43,18 +43,6 @@ checkStuff = function(fun, par.set, design, learner, control) {
   if (control$infill.opt %in% c("cmaes", "ea") && !isNumeric(par.set))
     stopf("Optimizer '%s' can only be applied to numeric, integer, numericvector, integervector parameters!", control$infill.opt)
 
-  # For now allow constant liar only in combinaton with kriging
-  if (control$multipoint.method == "cl" && learner$predict.type != "se") {
-    stopf("For multipoint method constant liar (cl) predict.type of learner %s must be set to 'se'!%s",
-      learner$id,
-      ifelse(hasProperties(learner, "se"), "",
-        "\nBut this learner does not seem to support prediction of standard errors! You could use the mlr wrapper makeBaggingWrapper to bootstrap the standard error estimator."))
-  }
-
-  if (control$multipoint.method == "cl" && control$infill.crit != "ei") {
-    stopf("Multipoint proposal using constant liar needs the infill criterion to 'ei' (expected improvement), but your selection is '%s'!", control$infill.crit)
-  }
-
   #  single objective
   if (control$number.of.targets == 1L) {
     if (control$propose.points == 1L) { # single point
@@ -70,22 +58,24 @@ checkStuff = function(fun, par.set, design, learner, control) {
           ifelse(hasProperties(learner, "se"), "",
             "\nBut this learner does not support prediction of standard errors!"))
       }
+      if (control$multipoint.method == "cl" && control$infill.crit != "ei") {
+        stopf("Multipoint proposal using constant liar needs the infill criterion to 'ei' (expected improvement), but your selection is '%s'!", control$infill.crit)
+      }
     }
   }
 
   # multicrit stuff
-  if (control$multicrit.method == "dib") {
-    if (control$infill.crit != "dib")
-      stopf("For multicrit 'dib' infil.crit must be set to 'dib'!")
-  } else {
-    if (control$infill.crit == "dib")
-      stopf("For infill.crit 'dib', multicrit method 'dib' is needed!")
+  if (control$number.of.targets > 1L) {
+    if (control$multicrit.method == "dib") {
+      if (control$infill.crit != "dib")
+        stopf("For multicrit 'dib' infil.crit must be set to 'dib'!")
+    } else {
+      if (control$infill.crit == "dib")
+        stopf("For infill.crit 'dib', multicrit method 'dib' is needed!")
+    }
+    if (control$multicrit.method == "mspot" && control$infill.opt != "nsga2")
+      stopf("For multicrit 'mspot' infil.opt must be set to 'nsga2'!")
   }
-
-
-
-  if (control$multicrit.method == "mspot" && control$infill.opt != "nsga2")
-    stopf("For multicrit 'mspot' infil.opt must be set to 'nsga2'!")
 
   # multifidelity stuff
   if (control$multifid) {

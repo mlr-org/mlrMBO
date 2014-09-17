@@ -219,9 +219,10 @@ makeMBOControl = function(number.of.targets = 1L,
 
   # set defaults for infill methods and other stuff
   control = setMBOControlInfill(control)
-  control = setMBOControlMultiPoint(control)
-  control = setMBOControlMultiCrit(control)
-
+  if (number.of.targets == 1L && propose.points > 1L)
+    control = setMBOControlMultiPoint(control)
+  if (number.of.targets > 1L)
+    control = setMBOControlMultiCrit(control)
   return(control)
 }
 

@@ -71,6 +71,8 @@ setMBOControlMultiCrit = function(control,
   assertClass(control, "MBOControl")
   number.of.targets = control$number.of.targets
   propose.points = control$propose.points
+  if (number.of.targets == 1L)
+    stop("You are setting multicrit options, but have only 1 objective!")
   requirePackages(c("mco", "emoa"), why = "multicrit optimization")
 
   assertChoice(method, choices = c("parego", "mspot", "dib"))
