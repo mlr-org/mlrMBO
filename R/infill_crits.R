@@ -2,24 +2,22 @@
 # Used to select update/infill points to increase (global) model accuracy.
 # CONVENTION: INFILL CRITERIA ARE ALWAYS MINIMIZED. SO A FEW BELOW ARE NEGATED VERSIONS!
 
-#FIXME think about which criterias are for determinitic, which are for noisy case
-# below is just guessed this...
-
 # Please stick to the following general interface.
 #
-# @param points [\code{data.frame}]\cr
-#   Points where to evaluate.
-# @param model [\code{\link{WrappedModel}}]\cr
-#   Model fitted on design.
-# @param control [\code{\link{MBOControl}}]\cr
+# @param points [data.frame]r
+#  n points where to evaluate.
+# @param models [WrappedModel or listy<WM>]\cr
+#   Model(s) fitted on design.
+# @param control [MBOControl]
 #   Control object.
-# @param par.set [\code{\link[ParamHelpers]{ParamSet}}]\cr
+# @param par.set [ParamSet]r
 #   Parameter set.
-# @param design [\code{data.frame}]\cr
+# @param design [data.frame]\cr
 #   Design of already visited points.
-# @param iter [\integer(1)]
+# @param iter [integer(1)]
 #   Current iteration
-# @return [\code{numeric}]. Criterion values at \code{points}.
+# @return [\code{numeric(n)}].
+#   Criterion values at points.
 
 # MEAN RESPONSE OF MODEL
 # (useful for deterministic and noisy)
@@ -34,7 +32,7 @@ infillCritStandardError = function(points, model, control, par.set, design, iter
 }
 
 # EXPECTED IMPROVEMENT
-# (useful for deterministic)
+# (useful for deterministic, for noisy only with reinterpolation)
 infillCritEI = function(points, model, control, par.set, design, iter) {
   maximize.mult = ifelse(control$minimize, 1, -1)
   y = maximize.mult * design[, control$y.name]
@@ -53,14 +51,13 @@ infillCritEI = function(points, model, control, par.set, design, iter) {
 }
 
 # LOWER CONFIDENCE BOUND
-# (useful for deterministic)
+# (useful for deterministic and also naively for noisy)
 infillCritLCB = function(points, model, control, par.set, design, iter) {
   maximize.mult = ifelse(control$minimize, 1, -1)
   p = predict(model, newdata = points)$data
   lcb = maximize.mult * p$response - control$infill.crit.lcb.lambda * p$se
   return(lcb)
 }
-
 
 ######################  MCO criteria ###########################################################
 

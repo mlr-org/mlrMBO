@@ -28,18 +28,19 @@
 #'   Further arguments passed to the nsga2 call.
 #'   Default is \code{list()}.
 #' @param ref.point [\code{numeric(2)}]\cr
-#'   Reference point to calculate the dominated hypervolume.
-#'   Default is \code{c(11, 11)}.
+#'   Reference point to calculate the dominated hypervolume for the fronts of nsga2 and mbo.
+#'   Default is \code{NULL}, which means max(y_i) + 1 of the nsga2 front.
 #' @param ... [any]\cr
 #'   Further arguments passed to the learner.
 #' @return [\code{MBOExampleRunMultiCrit}]
 exampleRunMultiCrit= function(fun, par.set, learner, control, points.per.dim = 50,
-  show.info = TRUE, nsga2.args = list(), ref.point = c(11, 11), ...) {
+  show.info = TRUE, nsga2.args = list(), ref.point = NULL, ...) {
 
   assertFunction(fun)
   assertClass(control, "MBOControl")
   assertClass(par.set, "ParamSet")
-  assertNumeric(ref.point, lower = 0, finite = TRUE, any.missing = FALSE, len = 2L)
+  if (!is.null(ref.point))
+    assertNumeric(ref.point, lower = 0, finite = TRUE, any.missing = FALSE, len = 2L)
   par.types = getParamTypes(par.set)
   n.params = sum(getParamLengths(par.set))
 
@@ -60,7 +61,15 @@ exampleRunMultiCrit= function(fun, par.set, learner, control, points.per.dim = 5
 
   showInfo(show.info, "Running NSGA2 to approximate pareto front.")
 
-  args = list(fun, idim = getParamNr(par.set, devectorize = TRUE), odim = ny,
+  # nsga2 interface does not allow maximization. fuck.
+  mults = ifelse(control$minimize, 1, -1)
+  if (!all(control$minimize)) {
+    fun2 = function(x) fun(x) * mults
+  } else {
+    fun2 = fun
+  }
+
+  args = list(fun2, idim = getParamNr(par.set, devectorize = TRUE), odim = ny,
     lower.bounds = getLower(par.set), upper.bounds = getUpper(par.set),
     popsize = 60L, generations = 100L)
 
@@ -68,17 +77,21 @@ exampleRunMultiCrit= function(fun, par.set, learner, control, points.per.dim = 5
   args = insert(args, nsga2.args)
   nsga2.res = do.call(nsga2, args)
   nsga2.paretoset = setColNames(as.data.frame(nsga2.res$par[nsga2.res$pareto.optimal, ]), names.x)
-  nsga2.paretofront = setColNames(as.data.frame(nsga2.res$value[nsga2.res$pareto.optimal, ]), names.y)
-  nsga2.hypervolume = dominated_hypervolume(t(nsga2.paretofront), ref.point)
+  nsga2.paretofront = nsga2.res$value[nsga2.res$pareto.optimal, ]
+  if (is.null(ref.point))
+    ref.point = apply(nsga2.paretofront, 2, max) * mults  + 1
+  # front: and back to orginal scale ...
+  nsga2.paretofront = nsga2.paretofront %*% diag(mults)
+  nsga2.paretofront = setColNames(as.data.frame(nsga2.paretofront), names.y)
+  nsga2.hypervolume = getDominatedHV(nsga2.paretofront, ref.point, control$minimize)
 
-  # show some info on console
   showInfo(show.info, "Performing MBO on function.")
   showInfo(show.info, "Initial design: %i. Sequential iterations: %i.", control$init.design.points, control$iters)
   showInfo(show.info, "Learner: %s. Settings:\n%s", learner$id, mlr:::getHyperParsString(learner))
 
   # run optimizer now
   res = mbo(fun, par.set, learner = learner, control = control, show.info = show.info)
-  mbo.hypervolume = dominated_hypervolume(t(res$pareto.front), ref.point)
+  mbo.hypervolume = getDominatedHV(res$pareto.front, ref.point, control$minimize)
 
   # if we have 1 model per obj, predict whole space and approx pareto front, so we can see effect of model
   mbo.pred.grid.x = NULL
@@ -92,14 +105,14 @@ exampleRunMultiCrit= function(fun, par.set, learner, control, points.per.dim = 5
       ps = lapply(mods, predict, newdata = mbo.pred.grid.x)
       y1 = extractSubList(ps, c("data", "response"), simplify = "cols")
       y2 = setColNames(as.data.frame(y1), names.y)
-      y2$.is.dom = is_dominated(t(y1))
+      y2$.is.dom = isDominated(y1, control$minimize)
       mbo.pred.grid.mean[[iter]] = y2
       # if we have se estim, also calc LCB front
       if (mods[[1]]$learner$predict.type == "se") {
         z1 = extractSubList(ps, c("data", "se"), simplify = "cols")
-        z1 = y1 - z1
+        z1 = y1 - z1 %*% diag(mults)
         z2 = setColNames(as.data.frame(z1), names.y)
-        z2$.is.dom = is_dominated(t(z1))
+        z2$.is.dom = isDominated(z1, control$minimize)
         mbo.pred.grid.lcb[[iter]] = z2
       } else {
         mbo.pred.grid.lcb = NULL
