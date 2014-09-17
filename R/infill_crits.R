@@ -68,7 +68,7 @@ infillCritLCB = function(points, model, control, par.set, design, iter) {
 infillCritDIB = function(points, models, control, par.set, design, iter) {
   # get ys and lcb-value-matrix for new points, minimize version
   maximize.mult = ifelse(control$minimize, 1, -1)
-  ys = design[, control$y.name] %*% diag(maximize.mult)
+  ys = as.matrix(design[, control$y.name]) %*% diag(maximize.mult)
   ps = lapply(models, predict, newdata = points)
   means = extractSubList(ps, c("data", "response"), simplify = "cols")
   ses = extractSubList(ps, c("data", "se"), simplify = "cols")
