@@ -7,17 +7,17 @@ infillOptMultiCritNSGA2 = function(infill.crit, models, control, par.set, opt.pa
   m = control$number.of.targets
   control2 = control
   fun.tmp = function(x) {
-    newdata = as.data.frame(t(x))
+    newdata = as.data.frame(x)
     colnames(newdata) = rep.pids
-    vnapply(1:m, function(i) {
+    asMatrixCols(lapply(1:m, function(i) {
       # we need to make sure mininimize in control is a scalar, so we can multiply it in infill crits...
       control2$minimize = control$minimize[i]
       infill.crit(points = newdata, model = models[[i]], control = control2,
         par.set = par.set, design = design, iter = iter, ...)
-    })
+    }))
   }
 
-  res = nsga2(fun.tmp, idim = getParamNr(par.set, devectorize = TRUE), odim = control$number.of.targets,
+  res = nsga2_vectorized(fun.tmp, idim = getParamNr(par.set, devectorize = TRUE), odim = control$number.of.targets,
     lower.bounds = getLower(par.set), upper.bounds = getUpper(par.set),
     popsize = control$infill.opt.nsga2.popsize, generations = control$infill.opt.nsga2.generations,
     cprob = control$infill.opt.nsga2.cprob, cdist = control$infill.opt.nsga2.cdist,
@@ -28,7 +28,7 @@ infillOptMultiCritNSGA2 = function(infill.crit, models, control, par.set, opt.pa
 
   best.inds = selectBestHypervolumePoints(res$value, control, opt.path, design)
 
-  return(points = points[best.inds, , drop = FALSE])
+  return(points = points[, , drop = FALSE])
 }
 
 # gets a data.frame of candidate points and selects the control$prop.points best points

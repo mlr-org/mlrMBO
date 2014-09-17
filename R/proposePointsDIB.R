@@ -10,7 +10,7 @@ proposePointsDIB = function(models, par.set, control, opt.path, iter) {
     z = createRandomLCBControls(control, "dib")
 
     # for sms: sample multiple refpoints between nadir and normal refpoint
-    if (control$multicrit.dib.indicator = "sms") {
+    if (control$multicrit.dib.indicator == "sms") {
       y = getOptPathY(opt.path)
       mults = ifelse(control$minimize, 1, -1)
       y2 = y %*% diag(mults)
