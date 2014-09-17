@@ -49,7 +49,6 @@ autoplot.MBOExampleRunMultiCrit = function(object, iters, pause = TRUE, y1lim = 
   mbo.paretofront = getOptPathY(mbo.res$opt.path)
   isparego = control$multicrit.method == "parego"
   issmspar = control$multicrit.method == "sms" && control$propose.points > 1L
-  prop.multiple.points.in.seq = isparego
 
   # build essential data frames for target values ...
   yy = rbind(mbo.paretofront, nsga2.paretofront)
@@ -184,15 +183,19 @@ autoplot.MBOExampleRunMultiCrit = function(object, iters, pause = TRUE, y1lim = 
     return(pl.set)
   }
 
-  if (prop.multiple.points.in.seq) {
+  if (isparego) {
     for (i in iters) {
       for (j in 1:proppoints) {
         plot.sequence[[i]] = list()
         catf("Iter %i; Point %i", i, j)
-        model = mbo.res$models[[i]][[j]]
+        # if we propose 1 point, parego stores a list of models,
+        # otherwise a list of model-list (1 per parallel proposal)
+        model = if (proppoints == 1L)
+          mbo.res$models[[i]]
+        else
+          mbo.res$models[[i]][[j]]
         idx = getIDX(opt.path, i)
-        if (isparego)
-          weights = as.numeric(opt.path[idx$proposed, c(".weight1", ".weight2")])
+        weights = as.numeric(opt.path[idx$proposed, c(".weight1", ".weight2")])
         model.ok = !inherits(model, "FailureModel")
         if (model.ok) {
           xgrid2[[name.crit]] = opt.direction *
@@ -203,38 +206,36 @@ autoplot.MBOExampleRunMultiCrit = function(object, iters, pause = TRUE, y1lim = 
         gg.points.front = getGGPointsFront(yy, idx, idx.all)
         gg.points.set = getGGPointsSet(xx, idx, idx.all)
 
-        if (isparego) {
-          # make dataframe for lines to show rho
-          m.seq = seq(y1lim[1], y1lim[2], length.out = 10000)
+        # make dataframe for lines to show rho
+        m.seq = seq(y1lim[1], y1lim[2], length.out = 10000)
 
-          # slope and intercept defined by lambda - a bit ugly due to normalization
-          slope  = weights[1L] * (y2range[2L] - y2range[1L]) /
-          weights[2L] / (y1range[2L] - y1range[1L])
-          intercept = y2range[1L] - y1range[1L] * slope
+        # slope and intercept defined by lambda - a bit ugly due to normalization
+        slope  = weights[1L] * (y2range[2L] - y2range[1L]) /
+        weights[2L] / (y1range[2L] - y1range[1L])
+        intercept = y2range[1L] - y1range[1L] * slope
 
-          # Function to get the values for the rho visualization
-          f = function(x, lambda, rho, const) {
-            x = (x - y1range[1L]) / (y1range[2L] - y1range[1L])
-            y.left = (const - lambda[1L] * x * (1 + rho)) / (rho * lambda[2L])
-            y.left = y.left * (y2range[2L] - y2range[1L]) + y2range[1L]
+        # Function to get the values for the rho visualization
+        f = function(x, lambda, rho, const) {
+          x = (x - y1range[1L]) / (y1range[2L] - y1range[1L])
+          y.left = (const - lambda[1L] * x * (1 + rho)) / (rho * lambda[2L])
+          y.left = y.left * (y2range[2L] - y2range[1L]) + y2range[1L]
 
-            y.right = (const - lambda[1L] * x * rho) / ((1 + rho) * lambda[2L])
-            y.right = y.right * (y2range[2L] - y2range[1L]) + y2range[1L]
-            pmin(y.left, y.right)
-          }
-
-          # FIXME: find a good way to set this constant. I tried a lot and i found
-          # nothing that worked really good. this is the best i got ... it works somehow,
-          # but is far from perfect.
-          tmp.x = sqrt(slope^2 / 4 + 1 - intercept) - slope / 2
-          tmp.y = tmp.x * slope + intercept
-          const = optimize(function(x) (f(tmp.x, weights, rho, x) - tmp.y)^2, interval = c(0, 10))$minimum
-          gg.line = data.frame(
-            y1 = m.seq,
-            y2 = f(m.seq, weights, rho, const),
-            type = rep("init", 100)
-          )
+          y.right = (const - lambda[1L] * x * rho) / ((1 + rho) * lambda[2L])
+          y.right = y.right * (y2range[2L] - y2range[1L]) + y2range[1L]
+          pmin(y.left, y.right)
         }
+
+        # FIXME: find a good way to set this constant. I tried a lot and i found
+        # nothing that worked really good. this is the best i got ... it works somehow,
+        # but is far from perfect.
+        tmp.x = sqrt(slope^2 / 4 + 1 - intercept) - slope / 2
+        tmp.y = tmp.x * slope + intercept
+        const = optimize(function(x) (f(tmp.x, weights, rho, x) - tmp.y)^2, interval = c(0, 10))$minimum
+        gg.line = data.frame(
+          y1 = m.seq,
+          y2 = f(m.seq, weights, rho, const),
+          type = rep("init", 100)
+        )
 
         pl.front = createPlFront(gg.points.front, i)
         pl.set = createPlSet(gg.points.set)
