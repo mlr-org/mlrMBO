@@ -69,7 +69,7 @@ test_that("impute y parego", {
   ctrl = makeMBOControl(init.design.points = 10L, iters = 5,
     number.of.targets = 2, impute.y.fun = function(x, y, opt.path) c(100, 100))
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10)
-  ctrl = setMBOControlMultiCrit(ctrl, parego.s = 100)
+  ctrl = setMBOControlMultiCrit(ctrl, method = "parego", parego.s = 100)
   or = mbo(f1, ps, learner = learner, control = ctrl)
   op = as.data.frame(or$opt.path)
   expect_equal(nrow(op), 10 + 5)

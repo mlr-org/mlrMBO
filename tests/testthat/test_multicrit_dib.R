@@ -27,8 +27,8 @@ test_that("multicrit dib works", {
   expect_true(!any(is.na(or$pareto.front)))
 
 
-  ctrl = setMBOControlMultiCrit(ctrl, method = "dib")
-  ctrl = setMBOControlInfill(ctrl, crit = "eps", opt.focussearch.points = 10)
+  ctrl = setMBOControlMultiCrit(ctrl, method = "dib", dib.indicator = "eps")
+  ctrl = setMBOControlInfill(ctrl, crit = "dib", opt.focussearch.points = 10)
   or = mbo(f, ps, learner = learner, control = ctrl)
   expect_true(!any(is.na(or$pareto.front)))
 })

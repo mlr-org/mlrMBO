@@ -9,7 +9,7 @@ test_that("mbo parego works", {
   learner = makeLearner("regr.km", nugget.estim = TRUE)
   ctrl = makeMBOControl(iters = 5, number.of.targets = 2L, init.design.points = 5L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10)
-  ctrl = setMBOControlMultiCrit(ctrl, parego.s = 100)
+  ctrl = setMBOControlMultiCrit(ctrl, method = "parego", parego.s = 100)
   or = mbo(f, ps, learner = learner, control = ctrl)
   expect_true(!any(is.na(or$pareto.front)))
 
@@ -23,13 +23,13 @@ test_that("mbo parego works", {
   # Test wrong dimension
   ctrl = makeMBOControl(iters = 5, number.of.targets = 3, init.design.points = 5L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10L)
-  ctrl = setMBOControlMultiCrit(ctrl, parego.s = 100)
+  ctrl = setMBOControlMultiCrit(ctrl, method = "parego", parego.s = 100)
   expect_error(mbo(f, ps, learner = learner, control = ctrl), "numeric of length 3")
 
   # Test multippoint
   ctrl = makeMBOControl(iters = 1, number.of.targets = 2, propose.points = 5L, init.design.points = 5L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10L)
-  ctrl = setMBOControlMultiCrit(ctrl, parego.s = 100)
+  ctrl = setMBOControlMultiCrit(ctrl, method = "parego", parego.s = 100)
   or = mbo(f, ps, learner = learner, control = ctrl)
   # check used weights
   w = as.data.frame(or$opt.path)[, c(".weight1", ".weight2")]
@@ -40,7 +40,7 @@ test_that("mbo parego works", {
   ctrl = makeMBOControl(iters = 5, minimize = c(TRUE, FALSE),
     number.of.targets = 2, propose.points = 5L, init.design.points = 5L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10L)
-  ctrl = setMBOControlMultiCrit(ctrl, parego.s = 100)
+  ctrl = setMBOControlMultiCrit(ctrl, method = "parego", parego.s = 100)
   or = mbo(f2, ps, learner = learner, control = ctrl)
   # make sure the pareto.front is a matrix
   # FIXME: make sure to properly test here. minimum and max reached
@@ -48,7 +48,7 @@ test_that("mbo parego works", {
   # Test margin points
   ctrl = makeMBOControl(iters = 5, number.of.targets = 2, propose.points = 2L, init.design.points = 5L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 5)
-  ctrl = setMBOControlMultiCrit(ctrl, parego.s = 100, parego.use.margin.points = c(TRUE, TRUE))
+  ctrl = setMBOControlMultiCrit(ctrl, method = "parego", parego.s = 100, parego.use.margin.points = c(TRUE, TRUE))
   or = mbo(f, ps, learner = learner, control = ctrl)
   w = as.data.frame(or$opt.path)[-(1:5), c(".weight1", ".weight2")]
   expect_true(all(w == 0 | w == 1))

@@ -109,7 +109,7 @@ infillCritDIB = function(points, models, control, par.set, design, iter) {
     n.ys = nrow(ys.front)
     # try to be fast: all L_inf dists between 1 lcb point and all ys, blockwise in rows
     lcbs2 = lcbs[rep(1:n.lcb, each = n.ys), ]
-    ys2 = ys.front[rep(1:n.ys, n.lcbs), ]
+    ys2 = ys.front[rep(1:n.ys, n.lcb), ]
     # get L_inf dists
     z = apply(ys2 - lcbs2, 1, max)
     # put dists of 1 lcb point to all front points in one row + and get min dist to front set
