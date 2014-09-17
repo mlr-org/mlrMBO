@@ -23,7 +23,7 @@ proposePointsByInfillOptimization = function(models, par.set, control, opt.path,
   infill.opt.fun = getInfillOptFunction(control$infill.opt)
   prop.points = infill.opt.fun(infill.crit.fun, models, control, par.set, opt.path, design, iter)
   # mspot is a bit special, we have multiple crit.val
-  if (control$multicrit.method == "mspot") {
+  if (control$number.of.targets > 1L && control$multicrit.method == "mspot") {
     crit.vals = asMatrixCols(lapply(models, infill.crit.fun, points = prop.points,
         control = control, par.set = par.set, design = design, iter = iter))
   } else {
