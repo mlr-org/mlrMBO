@@ -9,6 +9,18 @@
 
 #' @useDynLib mlrMBO do_nsga2_vectorized
 
+
+# Bernd Bischl:
+# This is currently a straight-forward copy from
+# http://cran.r-project.org/web/packages/mco/index.html
+# Version 1.0.12
+# I adapted the code in the following way:
+# - only touched "evaluate_pop" in C code
+# - the objective function is expected to do vectorized eval of the whole population
+#   to minimize overhead (we use this to eval via predict / infill crits)
+# - disabled constraint handling (dont need it now and was lazy)
+
+
 nsga2_vectorized <- function(fn, idim, odim, ...,
                   constraints=NULL, cdim=0,
                   lower.bounds=rep(-Inf, idim),
@@ -65,37 +77,3 @@ nsga2_vectorized <- function(fn, idim, odim, ...,
   return (res)
 }
 
-plot.nsga2 <- function(x, ...) {
-  v <- x$value
-  o <- x$pareto.optimal
-  d <- ncol(v)
-  col <- ifelse(o, "red", "blue")
-  pch <- ifelse(o, 4, 19)
-  if (d <= 2) {
-    plot(v, col=col, pch=pch, ...)
-    ov <- v[o,]
-    ov <- ov[order(ov[,1]),]
-    lines (ov, col="red", type="s")
-  } else if (d == 3) {
-    if (require(scatterplot3d)) {
-      scatterplot3d(v, color=ifelse(o, "red", "blue"))
-    } else {
-      pairs(v, col=col, pch=pch, ...)
-    }
-  } else {
-    pairs(v, col=col, pch=pch, ...)
-  }
-}
-
-plot.nsga2.collection <- function(x, ...) {
-  oask <- devAskNewPage(TRUE)
-  on.exit(devAskNewPage(oask))
-  sapply(x, plot)
-  return;
-}
-
-paretoSet.nsga2 <- function(x, ...)
-  x$par[x$pareto.optimal,]
-
-paretoFront.nsga2 <- function(x, ...)
-  x$value[x$pareto.optimal,,drop=FALSE]
