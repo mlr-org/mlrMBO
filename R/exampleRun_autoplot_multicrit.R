@@ -48,8 +48,8 @@ autoplot.MBOExampleRunMultiCrit = function(object, iters, pause = TRUE, y1lim = 
   opt.path = as.data.frame(mbo.res$opt.path)
   mbo.paretofront = getOptPathY(mbo.res$opt.path)
   isparego = control$multicrit.method == "parego"
-  issmspar = control$multicrit.method == "sms" && control$propose.points > 1L
-
+  issmspar = control$multicrit.method == "dib" && control$multicrit.dib.indicator == "sms" &&
+    control$propose.points > 1L
   # build essential data frames for target values ...
   yy = rbind(mbo.paretofront, nsga2.paretofront)
 

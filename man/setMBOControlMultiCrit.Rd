@@ -3,22 +3,29 @@
 \alias{setMBOControlMultiCrit}
 \title{Extends mbo control object with multi-criteria specific options.}
 \usage{
-setMBOControlMultiCrit(control, method = "parego", ref.point.method = "all",
-  ref.point.offset = 1, ref.point.val = NULL, sms.eps = NULL, parego.s,
+setMBOControlMultiCrit(control, method = "dib", ref.point.method = "all",
+  ref.point.offset = 1, ref.point.val = NULL, parego.s = NULL,
   parego.rho = 0.05, parego.use.margin.points = rep(FALSE,
   control$number.of.targets), parego.sample.more.weights = 5L,
-  parego.normalize = "standard")
+  parego.normalize = "standard", dib.indicator = "sms",
+  dib.sms.eps = NULL)
 }
 \arguments{
 \item{control}{[\code{\link{MBOControl}}]\cr
 Control object for mbo.}
 
 \item{method}{[\code{character(1)}]\cr
-Which multicrit method should be used? At the moment only parego is
-supported, which is also the default.}
+Which multicrit method should be used?
+\dQuote{parego}: The ParEGO algorithm.
+\dQuote{dib}: Direct indicator-based method. Subsumes SMS-EGO and epsilon-EGO.
+\dQuote{mspot}: Directly optimizes multcrit problem where we substitute the true
+objectives with model-based infill crits via an EMOA.
+All methods can also propose multiple points in parallel.
+Default is \dQuote{dib}.}
 
 \item{ref.point.method}{[\code{character(1)}] \cr
-Method for the determination of the reference point used for sms-metric
+Method for the determination of the reference point used for S-metric.
+Currently used for \dQuote{mspot} and \dQuote{dib} with indicator \dQuote{sms}.
 Possible Values are:
 \dQuote{all}: In each dimension: maximum of all points + \code{ref.point.offset}.
 \dQuote{front}: In each dimension: maximum of all non-dominated points + \code{ref.point.offset}
@@ -29,16 +36,12 @@ Default is \dQuote{all}.}
 See \code{ref.point.method}, default is 1.}
 
 \item{ref.point.val}{[\code{numeric}]\cr
-Constant value of reference point for hypervolume calculation. Used if
-\code{ref.point.method} = \dQuote{const}. Has to be specified in this case.}
-
-\item{sms.eps}{[\code{numeric}]\cr
-Epsilon for epsilon-dominance for sms-ego. Default ist NULL, in this case
-it is adaptively set.}
+Constant value of reference point for hypervolume calculation.
+Used if \code{ref.point.method = "const"}. Has to be specified in this case.}
 
 \item{parego.s}{[\code{integer(1)}]\cr
 Parameter of parego - controls the number of weighting vectors. The default
-depends on \code{number.of.targets} and leads to 100000 different possible
+depends on \code{number.of.targets} and leads to ca. 100000 different possible
 weight vectors. The defaults for (2, 3, 4, 5, 6) dimensions are (100000,
 450, 75, 37, 23) and 10 for higher dimensions.}
 
@@ -61,6 +64,14 @@ Default is 1, if only 1 point is proposed each iteration, otherwise 5.}
 \item{parego.normalize}{[\code{character}] \cr
 Normalization to use. Either map the whole image space to [0, 1] (\code{standard}, the default)
 or just the paretofront (\code{front}).}
+
+\item{dib.indicator}{[\code{character(1)}]\cr
+Either \dQuote{sms} (SMS-EGO like algorithm) or \dQuote{eps} (epsilon-EGO like algorithm).
+Default is \dQuote{sms}.}
+
+\item{dib.sms.eps}{[\code{numeric(1)} | \code{NULL}]\cr
+Epsilon for epsilon-dominance for \code{dib.indicator = "sms"}.
+Default is \code{NULL}, in this case it is adaptively set.}
 }
 \value{
 [\code{\link{MBOControl}}].

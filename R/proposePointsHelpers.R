@@ -9,7 +9,7 @@ joinProposedPoints = function(props) {
 }
 
 # generate a few random points if ANY model failed
-checkFailedModels = function(models, npoints) {
+checkFailedModels = function(models, par.set, npoints) {
   isfail = vlapply(models, isFailureModel)
   prop = NULL
   if (any(isfail)) {

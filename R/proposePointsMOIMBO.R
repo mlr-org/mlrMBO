@@ -48,7 +48,7 @@ proposePointsMOIMBO = function(models, par.set, control, opt.path, iter, ...) {
   design = convertOptPathToDf(par.set, opt.path, control)
   model = models[[1L]]
 
-  ch = checkFailedModels(models, n)
+  ch = checkFailedModels(models, par.set, n)
   if (!ch$ok) {
     return(ch$prop)
   }

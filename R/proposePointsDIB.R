@@ -1,10 +1,10 @@
 # FIXME:
 # a) check in general that maximization of y works. check in plot and also with other MCO methods
 
-proposePointsSMS = function(models, par.set, control, opt.path, iter) {
+proposePointsDIB = function(models, par.set, control, opt.path, iter) {
   if (control$propose.points > 1L) {
     # draw lambdas from exp dist + create 1 control for each for single crit with lambda-LCB
-    z = createRandomLCBControls(control, "sms")
+    z = createRandomLCBControls(control, "dib")
 
     # now sample multiple refpoints between nadir and normal refpoint
     y = getOptPathY(opt.path)

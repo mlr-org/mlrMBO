@@ -66,9 +66,9 @@ infillCritLCB = function(points, model, control, par.set, design, iter) {
 # direct.eps: LOWER CONFIDENCE BOUND of points, then epsilon indicator contribution of these wrt to design
 # (useful for deterministic and stochastic MCO)
 infillCritDIB = function(points, models, control, par.set, design, iter) {
+  # get ys and lcb-value-matrix for new points, minimize version
   maximize.mult = ifelse(control$minimize, 1, -1)
   ys = design[, control$y.name] %*% diag(maximize.mult)
-  # get lcb-value-matrix for new points (x -1 for max. objectives)
   ps = lapply(models, predict, newdata = points)
   means = extractSubList(ps, c("data", "response"), simplify = "cols")
   ses = extractSubList(ps, c("data", "se"), simplify = "cols")
@@ -81,7 +81,7 @@ infillCritDIB = function(points, models, control, par.set, design, iter) {
     ref.point = getMultiCritRefPoint(ys.front, control, minimize = all.mini)
     # dont substract dominated_hypervolume(lcbs), since this is const, maximize hv contribution ...
     hvs = -1 * sapply(seq_row(lcbs), function(i)
-      getDominatedHV(rbind(ys.front, lcbs[i, ]), ref = ref.point, minimize = all.mini))
+      getDominatedHV(rbind(ys.front, lcbs[i, ]), ref.point = ref.point, minimize = all.mini))
     # get epsilon for epsilon-dominace - set adaptively or use given constant value
     if (is.null(control$dib.sms.eps)) {
       c.val = 1 - 1 / 2^control$number.of.targets
@@ -91,6 +91,7 @@ infillCritDIB = function(points, models, control, par.set, design, iter) {
       eps = control$multicrit.dib.sms.eps
     }
     # penalty term
+    # FIXME: double apply, try to make this faster
     penalties = apply(lcbs, 1, function (lcb) {
       f = function(lcb, y) {
         if (all(y <= lcb + eps))

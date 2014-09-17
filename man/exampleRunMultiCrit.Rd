@@ -4,7 +4,7 @@
 \title{Perform an MBO run on a multi-criteria test function and and visualize what happens.}
 \usage{
 exampleRunMultiCrit(fun, par.set, learner, control, points.per.dim = 50,
-  show.info = TRUE, nsga2.args = list(), ref.point = c(11, 11), ...)
+  show.info = TRUE, nsga2.args = list(), ref.point = NULL, ...)
 }
 \arguments{
 \item{fun}{[\code{function}]\cr
@@ -38,8 +38,8 @@ Further arguments passed to the nsga2 call.
 Default is \code{list()}.}
 
 \item{ref.point}{[\code{numeric(2)}]\cr
-Reference point to calculate the dominated hypervolume.
-Default is \code{c(11, 11)}.}
+Reference point to calculate the dominated hypervolume for the fronts of nsga2 and mbo.
+Default is \code{NULL}, which means max(y_i) + 1 of the nsga2 front.}
 
 \item{...}{[any]\cr
 Further arguments passed to the learner.}

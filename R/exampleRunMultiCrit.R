@@ -97,7 +97,7 @@ exampleRunMultiCrit= function(fun, par.set, learner, control, points.per.dim = 5
   mbo.pred.grid.x = NULL
   mbo.pred.grid.mean = NULL
   mbo.pred.grid.lcb = NULL
-  if (control$multicrit.method %in% c("sms", "mspot")) {
+  if (control$multicrit.method %in% c("dib", "mspot")) {
     mbo.pred.grid.x = generateGridDesign(par.set, resolution = points.per.dim)
     mbo.pred.grid.mean = vector("list", control$iters)
     for (iter in 1:control$iters) {

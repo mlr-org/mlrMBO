@@ -24,7 +24,7 @@ getExtras = function(n, prop, control) {
     # if we use singlecrit parallel LCB or sms, store lambdas
     if (control$propose.points > 1L &&
       ((control$number.of.targets == 1L && control$multipoint.method == "lcb")  ||
-      (control$number.of.targets > 1L && control$multicrit.method == "sms"))) {
+      (control$number.of.targets > 1L && control$multicrit.method == "dib"))) {
 
       lams = prop$multipoint.lcb.lambdas
       if (is.null(lams))
@@ -40,7 +40,8 @@ getExtras = function(n, prop, control) {
       ex = c(ex, w)
     }
     # if we use parallel sms, store refpoints
-    if (control$number.of.targets > 1L && control$multicrit.method == "sms" && control$propose.points > 1L) {
+    if (control$number.of.targets > 1L && control$multicrit.method == "dib" &&
+      control$multicrit.dib.indicator == "sms" && control$propose.points > 1L) {
       rps = prop$multicrit.ref.points
       if (is.null(rps))
         rps = matrix(NA_real_, nrow = n, ncol = control$number.of.targets)
