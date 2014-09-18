@@ -28,7 +28,7 @@ infillOptMultiCritNSGA2 = function(infill.crit, models, control, par.set, opt.pa
 
   best.inds = selectBestHypervolumePoints(res$value, control, opt.path, design)
 
-  return(points = points[, , drop = FALSE])
+  return(points = points[best.inds, , drop = FALSE])
 }
 
 # gets a data.frame of candidate points and selects the control$prop.points best points

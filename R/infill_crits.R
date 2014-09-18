@@ -75,6 +75,8 @@ infillCritDIB = function(points, models, control, par.set, design, iter) {
   lcbs = means %*% diag(maximize.mult) - control$infill.crit.lcb.lambda * ses
   # from here on ys and lcbs are ALWAYS minimized
   all.mini = rep(TRUE, control$number.of.targets)
+  
+  
   ys.front = getNonDominatedPoints(ys, minimize = all.mini)
 
   if (control$multicrit.dib.indicator == "sms") {
@@ -114,7 +116,7 @@ infillCritDIB = function(points, models, control, par.set, design, iter) {
     z = apply(ys2 - lcbs2, 1, max)
     # put dists of 1 lcb point to all front points in one row + and get min dist to front set
     z = matrix(z, nrow = n.lcb, ncol = n.ys, byrow = TRUE)
-    crit.vals = apply(z, 1, min)
+    crit.vals = -1 * apply(z, 1, min)
   }
 
   return(crit.vals)
