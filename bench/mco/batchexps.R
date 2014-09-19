@@ -29,21 +29,21 @@ addMyProblem = function(id, objective, lower, upper, dim_x, dim_y) {
         hv = dominated_hypervolume(t(front), ref = ref)
         cd = crowding_distance(t(front))
         r2 = unary_r2_indicator(t(front), weights = WEIGHTS)
-        list(pareto.set = set, pareto.front = front, hv = hv, cd = cd, r2 = r2)
+        return(list(pareto.set = set, pareto.front = front, hv = hv, cd = cd, r2 = r2))
       }
   ))
 }
 
 # test functions
-addMyProblem("GOMOP2D2M", GOMOP2D2M, lower = 0, upper = 1, dim_x = 2L, dim_y = 2L)
-addMyProblem("GOMOP5D2M", GOMOP5D2M, lower = 0, upper = 1, dim_x = 5L, dim_y = 2L)
-addMyProblem("GOMOP2D5M", GOMOP2D5M, lower = 0, upper = 1, dim_x = 2L, dim_y = 5L)
-addMyProblem("GOMOP5D5M", GOMOP5D5M, lower = 0, upper = 1, dim_x = 5L, dim_y = 5L)
+addMyProblem("GOMOP_2D2M", GOMOP_2D2M, lower = 0, upper = 1, dim_x = 2L, dim_y = 2L)
+addMyProblem("GOMOP_5D2M", GOMOP_5D2M, lower = 0, upper = 1, dim_x = 5L, dim_y = 2L)
+addMyProblem("GOMOP_2D5M", GOMOP_2D5M, lower = 0, upper = 1, dim_x = 2L, dim_y = 5L)
+addMyProblem("GOMOP_5D5M", GOMOP_5D5M, lower = 0, upper = 1, dim_x = 5L, dim_y = 5L)
 for (i in c(1:3)) {
   fname = sprintf("zdt%i", i)
   addMyProblem(fname, get(fname), lower = 0, upper = 1, dim_x = 5L, dim_y = 2L)
 }
-addMyProblem("dtlz1", dtlz1, lower = 0, upper = 1, dim_x = 5L, dim_y = 5L)
+addMyProblem("dtlz1_5D5M", dtlz1_5D5M, lower = 0, upper = 1, dim_x = 5L, dim_y = 5L)
 addMyProblem("dtlz2_5D2M", dtlz2_5D2M, lower = 0, upper = 1, dim_x = 5L, dim_y = 2L)
 addMyProblem("dtlz2_5D5M", dtlz2_5D5M, lower = 0, upper = 1, dim_x = 5L, dim_y = 5L)
 

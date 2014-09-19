@@ -4,7 +4,7 @@ source("bench/mco/testfunctionsSingleObjective.R")
 
 
 # 2D -> 2M
-GOMOP2D2M = function(x) {
+GOMOP_2D2M = function(x) {
   y = numeric(2)
   y[1] = branin(x)
   y[2] = camel3(x)
@@ -12,7 +12,7 @@ GOMOP2D2M = function(x) {
 }
 
 # 5D -> 2M
-GOMOP5D2M = function(x) {
+GOMOP_5D2M = function(x) {
   y = numeric(2)
   y[1] = hartman(x)
   y[2] = rastrigin(x)
@@ -20,7 +20,7 @@ GOMOP5D2M = function(x) {
 }
 
 # 2D -> 5M
-GOMOP2D5M = function(x) {
+GOMOP_2D5M = function(x) {
   y = numeric(5)
   y[1] = branin(x)
   y[2] = hartman(x)
@@ -31,7 +31,7 @@ GOMOP2D5M = function(x) {
 }
 
 # 5D -> 5M
-GOMOP5D5M = function(x) {
+GOMOP_5D5M = function(x) {
   y = numeric(5)
   y[1] = hartman(x)
   y[2] = rosenbrock(x)
@@ -50,7 +50,7 @@ GOMOP5D5M = function(x) {
 # DTLZ - functions
 
 # dtlz1: 5D -> 5M
-dtlz1 = function(x) {
+dtlz1_5D5M = function(x) {
   stopifnot(length(x) >= 5)
   y = numeric(5)
   n = length(x)

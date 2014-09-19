@@ -75,6 +75,8 @@ infillCritDIB = function(points, models, control, par.set, design, iter) {
   lcbs = means %*% diag(maximize.mult) - control$infill.crit.lcb.lambda * ses
   # from here on ys and lcbs are ALWAYS minimized
   all.mini = rep(TRUE, control$number.of.targets)
+
+
   ys.front = getNonDominatedPoints(ys, minimize = all.mini)
 
   if (control$multicrit.dib.indicator == "sms") {
