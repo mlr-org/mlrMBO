@@ -13,6 +13,13 @@
 #'   Lambda parameter for lower confidence bound infill criterion.
 #'   Only used if \code{crit == "lcb"}, ignored otherwise.
 #'   Default is 1.
+#' @param filter.proposed.points [\code{logical(1)}]\cr
+#'   Sometimes proposed points are located very close to design points which can lead to unsatisfactory results
+#'   when using Kriging as the underlying model. This parameter activates or deactivates a heuristic to handle 
+#'   this issue. If \code{TRUE}, proposed points whose distance to the design points is lower than 
+#'   \code{filter.proposed.points.tol} are removed. Default is \code{FALSE}.
+#' @param filter.proposed.points.tol [\code{numeric(1)}]\cr
+#'   Tolerance value filtering of proposed points. See \code{filter.proposed.points}.
 #' @param opt [\code{character(1)}]\cr
 #'   How should SINGLE points be proposed by using the surrogate model. Possible values are:
 #'   \dQuote{focussearch}: In several iteration steps the parameter space is
@@ -95,6 +102,8 @@
 #' @export
 setMBOControlInfill = function(control,
   crit = "mean", crit.lcb.lambda = 1,
+  filter.proposed.points = FALSE,
+  filter.proposed.points.tol = 0.1,
   opt = "focussearch", opt.restarts = 1L,
   opt.focussearch.maxit = 5L, opt.focussearch.points = 10000L,
   opt.cmaes.control = list(),
@@ -111,6 +120,9 @@ setMBOControlInfill = function(control,
 
   assertChoice(crit, choices = getSupportedInfillCritFunctions())
   assertNumeric(crit.lcb.lambda, len = 1L, any.missing = FALSE, lower = 0)
+  assertFlag(filter.proposed.points)
+  assertNumber(filter.proposed.points.tol, na.ok = FALSE, lower = 0)
+
   assertChoice(opt, choices = getSupportedInfillOptFunctions())
   opt.restarts = asCount(opt.restarts)
   assertCount(opt.restarts, na.ok = FALSE)
@@ -147,6 +159,8 @@ setMBOControlInfill = function(control,
 
   control$infill.crit = crit
   control$infill.crit.lcb.lambda = crit.lcb.lambda
+  control$filter.proposed.points = filter.proposed.points
+  control$filter.proposed.points.tol = filter.proposed.points.tol
   control$infill.opt = opt
   control$infill.opt.restarts = opt.restarts
   control$infill.opt.focussearch.maxit = opt.focussearch.maxit
