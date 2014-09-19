@@ -149,6 +149,8 @@ setMBOControlInfill = function(control,
 
   opt.nsga2.popsize = asCount(opt.nsga2.popsize)
   assertCount(opt.nsga2.popsize, na.ok = FALSE, positive = TRUE)
+  if (opt.nsga2.popsize < control$propose.points)
+    stop("Population size of nsga2 must be greater or equal than propose.points.")
   opt.nsga2.generations = asCount(opt.nsga2.generations)
   assertCount(opt.nsga2.generations, na.ok = FALSE, positive = TRUE)
   assertNumber(opt.nsga2.cprob, lower = 0, upper = 1, na.ok = FALSE)
