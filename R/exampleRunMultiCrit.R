@@ -33,6 +33,7 @@
 #' @param ... [any]\cr
 #'   Further arguments passed to the learner.
 #' @return [\code{MBOExampleRunMultiCrit}]
+#' @export
 exampleRunMultiCrit= function(fun, par.set, learner, control, points.per.dim = 50,
   show.info = TRUE, nsga2.args = list(), ref.point = NULL, ...) {
 
