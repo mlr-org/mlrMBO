@@ -83,9 +83,9 @@ infillCritDIB = function(points, models, control, par.set, design, iter) {
     ref.point = getMultiCritRefPoint(ys.front, control, minimize = all.mini)
     # get epsilon for epsilon-dominace - set adaptively or use given constant value
     if (is.null(control$dib.sms.eps)) {
-      c.val = 1 - 1 / 2^control$number.of.targets
+      c.val = 1 - (1 / 2^control$number.of.targets)
       eps = (max(ys.front) - min(ys.front)) /
-        (ncol(ys.front) + c.val * (control$iters - iter))
+        (nrow(ys.front) + c.val * (control$iters - iter))
     } else {
       eps = control$multicrit.dib.sms.eps
     }

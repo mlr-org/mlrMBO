@@ -20,38 +20,48 @@ SEXP c_sms_indicator(SEXP s_lcbs, SEXP s_front, SEXP s_front2, SEXP s_eps, SEXP 
 
   size_t i, j, k;
   double penalty_front_point, penalty, d, hvtot;
-
-  /* calculate HV contribution to front for all lcb points */
-  hvtot = fpli_hv(front2, nrow_front2, ncol_front2 - 1, ref); /* HV of front, exclude last 0 col */
-  for (i=0; i < nrow_lcbs; i++) { /* iterate all lcb points */
-    for (k=0; k < ncol_front; k++) { /* loop all dimensions */
-      /* add lcb point to last COLUMN of front2 (it is transposed! must be for fpli_hv) */
-      front2[k + (ncol_front2 - 1) * nrow_front2] = lcbs[i + k * nrow_lcbs];
-    }
-    ret[i] = -(fpli_hv(front2, nrow_front2, ncol_front2, ref) - hvtot);
-  }
+  int real_greater;
 
   /* calculate penalties for all lcbs */
   for (i=0; i < nrow_lcbs; i++) { /* loop lcb points */
-    penalty = 0;
+    penalty = 0; /* TW diss: formula (7.2) */
     for (j=0; j < nrow_front; j++) { /* loop front points */
       penalty_front_point = 1; /* set to 1 (neutral element) for later multiply */
+      real_greater = 0;
       for (k=0; k < ncol_front; k++) { /* loop all dimensions */
         d = lcbs[i + k * nrow_lcbs] - front[j + k * nrow_front];
         if (d < -eps) {
-          /* violation! front-point does not eps-dominate lcb point, so no penalty for it*/
+          /* violation! front-point does not eps-dominate lcb-point, so no penalty for it*/
           penalty_front_point = 0;
           break;
-        } else {
-          penalty_front_point = penalty_front_point * (1 + MAX(d, 0));
         }
+        if (d > -eps)
+          real_greater = 1;
+        penalty_front_point = penalty_front_point * (1 + MAX(d, 0));
       }
-      if (penalty_front_point != 0) /* we had a penalty, add -1 */
+      if (penalty_front_point != 0 && real_greater) /* we had eps-dominance (hence penalty), add -1 */
+        /* we want to min thge penalty later, getting close to 0 is good */
         penalty_front_point = -1 + penalty_front_point;
+      else
+        penalty_front_point = 0;
       if (penalty_front_point > penalty) /* get max of penalties for all front points */
         penalty = penalty_front_point;
     }
-    ret[i] = ret[i] + penalty; /* add to HV return value from above */
+    ret[i] = penalty; /* set return value */
+  }
+
+  /* calculate HV contribution to front for all lcb points */
+  hvtot = fpli_hv(front2, nrow_front2, ncol_front2 - 1, ref); /* HV of front, exclude last 0 col */
+  for (i=0; i < nrow_lcbs; i++) { /* loop lcb points */
+    /* if no penalty for i-lcb, front epsdom lcb(i) was false, we then calculate HV contrib. */
+    if (ret[i] == 0) {
+      for (k=0; k < ncol_front; k++) { /* loop all dimensions */
+        /* add lcb point to last COLUMN of front2 (it is transposed! must be for fpli_hv) */
+        front2[k + (ncol_front2 - 1) * nrow_front2] = lcbs[i + k * nrow_lcbs];
+      }
+      /* big HV contrib is nice, but we minize later */
+      ret[i] = -(fpli_hv(front2, nrow_front2, ncol_front2, ref) - hvtot);
+    }
   }
 
   UNPROTECT(1); /* s_ret */
@@ -86,6 +96,5 @@ SEXP c_eps_indicator(SEXP s_lcbs, SEXP s_front) {
   UNPROTECT(1); /* s_ret */
   return(s_ret);
 }
-
 
 
