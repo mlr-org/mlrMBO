@@ -36,3 +36,15 @@ createRandomLCBControls = function(control, crit) {
   list(lambdas = lambdas, controls = controls)
 }
 
+# perform a deep copy of an opt.path object
+# so we can store (temporary) stuff in it, without changing the real opt.path
+# needed in CL and DIB multipoint
+deepCopyOptPath = function(op) {
+  op2 = op
+  op2$env = new.env()
+  op2$env$path = op$env$path
+  op2$env$dob = op$env$dob
+  op$env$eol = op$env$eol
+  return(op2)
+}
+

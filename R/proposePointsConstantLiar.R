@@ -5,12 +5,8 @@ proposePointsConstantLiar = function(models, par.set, control, opt.path, iter) {
   # copy control, and propose 1 point each
   control2 = control
   control2$propose.points = 1L
-  opt.path2 = opt.path
   # copy opt.path to store lies
-  opt.path2$env = new.env()
-  opt.path2$env$path = opt.path$env$path
-  opt.path2$env$dob = opt.path$env$dob
-  opt.path2$env$eol = opt.path$env$eol
+  opt.path2 = deepCopyOptPath(opt.path)
   lie = liar(getOptPathY(opt.path, control$y.name))
   dob = max(getOptPathDOB(opt.path)) + 1
   props = list()
@@ -18,6 +14,7 @@ proposePointsConstantLiar = function(models, par.set, control, opt.path, iter) {
     # propose point, add to opt.path2 with y = lie, then update model
     props[[i]] = proposePointsByInfillOptimization(model, par.set, control2, opt.path2)
     x = dfRowToList(props[[i]]$prop.points, par.set, 1)
+    print(x)
     addOptPathEl(opt.path2, x = x, y = lie, dob = dob)
     rt = makeTaskSingleObj(par.set, opt.path2, control)
     model = train(model$learner, rt)
