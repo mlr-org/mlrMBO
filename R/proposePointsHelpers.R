@@ -9,14 +9,18 @@ joinProposedPoints = function(props) {
 }
 
 # generate a few random points if ANY model failed
-checkFailedModels = function(models, par.set, npoints) {
+checkFailedModels = function(models, par.set, npoints, control) {
   isfail = vlapply(models, isFailureModel)
   prop = NULL
   if (any(isfail)) {
     # if error in any model, return first msg
     prop.points = generateDesign(npoints, par.set, randomLHS)
     prop$prop.points = convertDataFrameCols(prop.points, ints.as.num = TRUE, logicals.as.factor = TRUE)
-    prop$crit.vals = matrix(rep(NA_real_, npoints), ncol = 1L)
+    # mspot is the special kid, that needs multiple crit vals
+    if (control$number.of.targets > 1L && control$multicrit.method == "mspot")
+      prop$crit.vals = matrix(rep(NA_real_), nrow = npoints, ncol = control$number.of.targets)
+    else
+      prop$crit.vals = matrix(rep(NA_real_, npoints), ncol = 1L)
     prop$errors.model = getFailureModelMsg(models[[which.first(isfail)]])
   }
   return(list(ok = all(!isfail), prop = prop))
