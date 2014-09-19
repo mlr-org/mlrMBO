@@ -20,7 +20,6 @@ mboTemplate = function(fun, par.set, design = NULL, learner, control, show.info 
   y.name = control$y.name
   crit = control$infill.crit
   islcb = (control$propose.points > 1L && control$multipoint.method == "lcb")
-  ninit = if (is.null(design)) control$init.design.points else nrow(design)
   fevals = control$final.evals
 
   algo.init = mboAlgoInit(par.set, opt.path, control)
@@ -71,11 +70,13 @@ mboTemplate = function(fun, par.set, design = NULL, learner, control, show.info 
   repeat {
     # propose new points and evaluate target function
     prop = proposePoints(tasks, current.models, par.set, control, opt.path, iter = loop)
+    # drop proposed points, which are too close to design points
+    #prop = filterProposedPoints(prop, opt.path, par.set, control)
     crit.vals = prop$crit.vals
     extras = getExtras(nrow(prop$prop.points), prop, control)
     evalProposedPoints(loop, prop$prop.points, par.set, opt.path, control,
       fun, learner, show.info, oldopts, more.args, extras)
-
+    
     # train models
     tasks = makeTasks(par.set, opt.path, algo.init, control)
     current.models = lapply(tasks, train, learner = learner)
