@@ -24,6 +24,17 @@ getWorstExtremePoint = function(points, minimize) {
   apply(as.matrix(points) %*% diag(mults), 2L, min) * mults
 }
 
+# return the hypervolume contribution of each elemt (row) of xs (matrix with length
+# number.of.targets cols) with respect to the ys (matrix with number.of.target cols)
+# ref is the used reference point for hv calculation
+# return vector of hypervolume contributions
+getHypervolumeContributions = function(xs, ys, ref.point, minimize) {
+  hv.old = getDominatedHV(points = ys, ref.point = ref.point, minimize)
+  hv.new = apply(xs, 1, function(x)
+    getDominatedHV(rbind(ys, x), ref.point, minimize))
+  return(hv.new - hv.old)
+}
+
 # determines the reference point for multicrit optimization
 # Returns reference-point, numeric vector of length number.of.targets
 getMultiCritRefPoint = function (ys, control, minimize = control$minimize) {
