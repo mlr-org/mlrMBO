@@ -14,7 +14,7 @@ proposePointsByInfillOptimization = function(models, par.set, control, opt.path,
   n = control$propose.points
   # ensure we have a list
   models.list = if (inherits(models, "WrappedModel")) list(models) else models
-  ch = checkFailedModels(models.list, par.set, n)
+  ch = checkFailedModels(models.list, par.set, n, control = control)
   if (!ch$ok)
     return(ch$prop)
 
