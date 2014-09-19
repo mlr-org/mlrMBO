@@ -9,7 +9,7 @@ test_that("nsga2_vectorized", {
     upper.bounds = rep(1, 5), popsize = 12L, generations = 12L)
   # check if we reached the optimum. yes, this is kind of stochastic, but the
   # tests are very cautious
-  expect_true(all(apply(res$value, 2, min) < 1e-3))
+  expect_true(all(apply(res$value, 2, min) < 0.1))
   
   fun2 = function(x) {
     apply(x, 1, zdt1)

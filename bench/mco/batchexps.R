@@ -16,47 +16,51 @@ reg = makeExperimentRegistry("mco_bench", packages = c(
     "bench/mco/defs.R",
     "bench/mco/testfunctionsMultiObjective.R", 
     "bench/mco/testfunctionsSingleObjective.R"
-  )
+  ),
+  seed = 1
 )
 
-addMyProblem = function(id, objective, lower, upper, dim_x, dim_y) {
-  addProblem(reg, id = id, static = list(
+addMyProblem = function(id, objective, lower, upper, dim_x, dim_y, ref.point) {
+  addProblem(reg, id = id, seed = 1273, static = list(
       objective = objective,
       par.set = makeNumericParamSet("x", len = dim_x, lower = lower, upper = upper),
       ny = dim_y,
-      ref = REFERENCE_POINT,
+      ref = ref.point,
       makeResult = function(set, front, ref) {
         hv = dominated_hypervolume(t(front), ref = ref)
         cd = crowding_distance(t(front))
         r2 = unary_r2_indicator(t(front), weights = WEIGHTS)
         return(list(pareto.set = set, pareto.front = front, hv = hv, cd = cd, r2 = r2))
       }
-  ))
+  ), dynamic = function(static) {
+    design = generateDesign(n = INIT_DESIGN_POINTS, par.set = static$par.set)
+    list(design = design)
+  })
 }
 
 # test functions
-addMyProblem("GOMOP_2D2M", GOMOP_2D2M, lower = 0, upper = 1, dim_x = 2L, dim_y = 2L)
-addMyProblem("GOMOP_5D2M", GOMOP_5D2M, lower = 0, upper = 1, dim_x = 5L, dim_y = 2L)
-addMyProblem("GOMOP_2D5M", GOMOP_2D5M, lower = 0, upper = 1, dim_x = 2L, dim_y = 5L)
-addMyProblem("GOMOP_5D5M", GOMOP_5D5M, lower = 0, upper = 1, dim_x = 5L, dim_y = 5L)
+# FIXME: set ref.points
+addMyProblem("GOMOP_2D2M", GOMOP_2D2M, lower = 0, upper = 1, dim_x = 2L, dim_y = 2L, ref.point = rep(2.1, 2))
+addMyProblem("GOMOP_5D2M", GOMOP_5D2M, lower = 0, upper = 1, dim_x = 5L, dim_y = 2L, ref.point = rep(2.1, 2))
+addMyProblem("GOMOP_2D5M", GOMOP_2D5M, lower = 0, upper = 1, dim_x = 2L, dim_y = 5L, ref.point = rep(2.1, 5))
+addMyProblem("GOMOP_5D5M", GOMOP_5D5M, lower = 0, upper = 1, dim_x = 5L, dim_y = 5L, ref.point = rep(2.1, 5))
 for (i in c(1:3)) {
   fname = sprintf("zdt%i", i)
-  addMyProblem(fname, get(fname), lower = 0, upper = 1, dim_x = 5L, dim_y = 2L)
+  addMyProblem(fname, get(fname), lower = 0, upper = 1, dim_x = 5L, dim_y = 2L, ref.point = rep(11, 2))
 }
-addMyProblem("dtlz1_5D5M", dtlz1_5D5M, lower = 0, upper = 1, dim_x = 5L, dim_y = 5L)
-addMyProblem("dtlz2_5D2M", dtlz2_5D2M, lower = 0, upper = 1, dim_x = 5L, dim_y = 2L)
-addMyProblem("dtlz2_5D5M", dtlz2_5D5M, lower = 0, upper = 1, dim_x = 5L, dim_y = 5L)
+addMyProblem("dtlz1_5D5M", dtlz1_5D5M, lower = 0, upper = 1, dim_x = 5L, dim_y = 5L, ref.point = rep(11, 5))
+addMyProblem("dtlz2_5D2M", dtlz2_5D2M, lower = 0, upper = 1, dim_x = 5L, dim_y = 2L, ref.point = rep(11, 2))
+addMyProblem("dtlz2_5D5M", dtlz2_5D5M, lower = 0, upper = 1, dim_x = 5L, dim_y = 5L, ref.point = rep(11, 5))
 
 
 
-runMBO = function(static, method, crit, opt, prop.points) {
+runMBO = function(static, dynamic, method, crit, opt, prop.points, indicator = "sms") {
   par.set = static$par.set
   names.x = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
-
   learner = makeLearner("regr.km", predict.type = "se")
   iters = (FEVALS - INIT_DESIGN_POINTS) / prop.points
 
-  ctrl = makeMBOControl(number.of.targets = static$ny, init.design.points = INIT_DESIGN_POINTS,
+  ctrl = makeMBOControl(number.of.targets = static$ny,
     iters = iters, propose.points = prop.points,
     save.on.disk.at = integer(0L))
   ctrl = setMBOControlInfill(ctrl, crit = crit, opt = opt,
@@ -66,9 +70,9 @@ runMBO = function(static, method, crit, opt, prop.points) {
     opt.nsga2.generations = MSPOT_NSGA2_GENERATIONS,
     opt.nsga2.popsize = MSPOT_NSGA2_POPSIZE
   )
-  ctrl = setMBOControlMultiCrit(ctrl, method = method)
+  ctrl = setMBOControlMultiCrit(ctrl, method = method, dib.indicator = indicator)
 
-  res = mbo(makeMBOFunction(static$objective), static$par.set,
+  res = mbo(makeMBOFunction(static$objective), static$par.set, design = dynamic$design,
     learner = learner, control = ctrl, show.info = TRUE)
   static$makeResult(res$pareto.set, res$pareto.front, static$ref)
 }
@@ -87,16 +91,20 @@ addAlgorithm(reg, "nsga2", fun = function(static, generations) {
   static$makeResult(pareto.set, pareto.front, static$ref)
 })
 
-addAlgorithm(reg, "parego", fun = function(static, prop.points) {
-  runMBO(static, "parego", "ei", "focussearch", prop.points)
+addAlgorithm(reg, "parego", fun = function(static, dynamic, prop.points) {
+  runMBO(static, dynamic, "parego", "ei", "focussearch", prop.points)
 })
 
-addAlgorithm(reg, "sms", fun = function(static, prop.points) {
-  runMBO(static, "sms", "sms", "focussearch", prop.points)
+addAlgorithm(reg, "sms", fun = function(static, dynamic, prop.points) {
+  runMBO(static, dynamic, "dib", "dib", "focussearch", prop.points, indicator = "sms")
 })
 
-addAlgorithm(reg, "mspot", fun = function(static, prop.points) {
-  runMBO(static, "mspot", "ei", "nsga2", prop.points)
+addAlgorithm(reg, "eps", fun = function(static, dynamic, prop.points) {
+  runMBO(static, dynamic, "dib", "dib", "focussearch", prop.points, indicator = "eps")
+})
+
+addAlgorithm(reg, "mspot", fun = function(static, dynamic, prop.points) {
+  runMBO(static, dynamic, "mspot", "lcb", "nsga2", prop.points)
 })
 
 
@@ -109,8 +117,11 @@ des2 = makeDesign("parego", exhaustive = list(
 des3 = makeDesign("sms", exhaustive = list(
   prop.points = c(1L)
 ))
-des4 = makeDesign("mspot", exhaustive = list(
+des4 = makeDesign("eps", exhaustive = list(
   prop.points = c(1L)
+))
+des5 = makeDesign("mspot", exhaustive = list(
+  prop.points = c(1L, PARALLEL_PROP_POINTS)
 ))
 
 
@@ -118,8 +129,9 @@ addExperiments(reg, algo.design = des1, repls = REPLS)
 addExperiments(reg, algo.design = des2, repls = REPLS)
 addExperiments(reg, algo.design = des3, repls = REPLS)
 addExperiments(reg, algo.design = des4, repls = REPLS)
+addExperiments(reg, algo.design = des5, repls = REPLS)
 
 batchExport(reg, runMBO = runMBO)
-# submitJobs(reg, ids = chunk(getJobIds(reg), n.chunks = 33, shuffle = TRUE),
-  # resources=list(walltime=8*3600, memory=2*1024),
-  # wait=function(retries) 1, max.retries=10)
+ submitJobs(reg, ids = getJobIds(reg),#chunk(getJobIds(reg), n.chunks = 1L, shuffle = TRUE),
+   resources=list(walltime=8*3600, memory=2*1024),
+   wait=function(retries) 1, max.retries=10)
