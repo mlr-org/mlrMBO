@@ -14,7 +14,6 @@ proposePointsConstantLiar = function(models, par.set, control, opt.path, iter) {
     # propose point, add to opt.path2 with y = lie, then update model
     props[[i]] = proposePointsByInfillOptimization(model, par.set, control2, opt.path2)
     x = dfRowToList(props[[i]]$prop.points, par.set, 1)
-    print(x)
     addOptPathEl(opt.path2, x = x, y = lie, dob = dob)
     rt = makeTaskSingleObj(par.set, opt.path2, control)
     model = train(model$learner, rt)
