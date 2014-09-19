@@ -7,3 +7,5 @@ html
 bench/soo/soo_bench-files/
 bench/mco/mco_bench-files/
 bench/mlr/modelsel-files
+src/*.o
+src/*.so

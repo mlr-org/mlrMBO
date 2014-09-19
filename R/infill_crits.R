@@ -79,9 +79,6 @@ infillCritDIB = function(points, models, control, par.set, design, iter) {
 
   if (control$multicrit.dib.indicator == "sms") {
     ref.point = getMultiCritRefPoint(ys.front, control, minimize = all.mini)
-    # dont substract dominated_hypervolume(lcbs), since this is const, maximize hv contribution ...
-    hvs = -1 * sapply(seq_row(lcbs), function(i)
-      getDominatedHV(rbind(ys.front, lcbs[i, ]), ref.point = ref.point, minimize = all.mini))
     # get epsilon for epsilon-dominace - set adaptively or use given constant value
     if (is.null(control$dib.sms.eps)) {
       c.val = 1 - 1 / 2^control$number.of.targets
@@ -90,33 +87,13 @@ infillCritDIB = function(points, models, control, par.set, design, iter) {
     } else {
       eps = control$multicrit.dib.sms.eps
     }
-    # penalty term
-    # FIXME: double apply, try to make this faster
-    penalties = apply(lcbs, 1, function (lcb) {
-      f = function(lcb, y) {
-        if (all(y <= lcb + eps))
-          -1 + prod(1 + pmax(lcb - y, 0))
-        else
-          0
-      }
-      max(apply(ys.front, 1, f, lcb = lcb))
-    })
-    crit.vals = hvs + penalties
+    ys.front = as.matrix(ys.front)
+    # allocate mem for adding points to front for HV calculation in C
+    front2 = t(rbind(ys.front, 0))
+    crit.vals = .Call("c_sms_indicator", as.matrix(lcbs), ys.front, front2, eps, ref.point)
   } else {
-    # direct.eps, epsilon-indicator: "maximin-fitness"
-    # we measure the (signed) L_inf distance between an lcb-point and its closest neighbor in ys.front
-    n.lcb = nrow(lcbs)
-    n.ys = nrow(ys.front)
-    # try to be fast: all L_inf dists between 1 lcb point and all ys, blockwise in rows
-    lcbs2 = lcbs[rep(1:n.lcb, each = n.ys), ]
-    ys2 = ys.front[rep(1:n.ys, n.lcb), ]
-    # get L_inf dists
-    z = apply(ys2 - lcbs2, 1, max)
-    # put dists of 1 lcb point to all front points in one row + and get min dist to front set
-    z = matrix(z, nrow = n.lcb, ncol = n.ys, byrow = TRUE)
-    crit.vals = apply(z, 1, min)
+    crit.vals = .Call("c_eps_indicator", as.matrix(lcbs), as.matrix(ys.front))
   }
-
   return(crit.vals)
 }
 

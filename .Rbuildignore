@@ -16,4 +16,6 @@ todo.txt
 ^doc
 ^man-roxygen
 ^multicrit_test.R
+^src/*.o
+^src/*.so
 ^.editorconfig$
