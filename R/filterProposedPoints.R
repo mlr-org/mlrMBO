@@ -17,7 +17,7 @@ filterProposedPoints = function(prop, opt.path, par.set, control) {
   # prepare stuff
   prop.points = prop$prop.points
   n = nrow(prop.points)
-  tol = 0.2
+  tol = control$filter.proposed.points.tol
   design = convertOptPathToDf(par.set, opt.path, control)
   design[[control$y.name]] = NULL
 
