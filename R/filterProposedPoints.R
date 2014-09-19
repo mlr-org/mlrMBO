@@ -1,5 +1,5 @@
 # Implements a heuristic for proposed points. Points which are located too close to design
-# points or already accepted poroposed points are dropped.
+# points or already accepted proposed points are dropped and replaced by random points.
 # 
 # input:
 #   prop [list]               : list of proposed points
@@ -31,14 +31,10 @@ filterProposedPoints = function(prop, opt.path, par.set, control) {
   # check the proposed points
   for (i in 1:n) {
     prop.point = prop.points[i, ]
-    # print(apply(design, 1, function(des.point) {
-    #   euklideanDistance(prop.point, des.point)
-    # }))
     min.distance.to.design.point = min(apply(design, 1, function(des.point) {
       euklideanDistance(prop.point, des.point)
     }))
     if (min.distance.to.design.point < tol) {
-      catf("TOO close!")
       to.delete = c(to.delete, i)
     } else {
       design = rbind(design, prop.point)
