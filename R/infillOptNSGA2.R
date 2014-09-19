@@ -2,7 +2,8 @@
 
 # NSGA 2
 infillOptMultiCritNSGA2 = function(infill.crit, models, control, par.set, opt.path, design, iter, ...) {
-
+  
+  # build target function for vectorized nsga2 and run it
   rep.pids = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
   m = control$number.of.targets
   control2 = control
@@ -16,35 +17,38 @@ infillOptMultiCritNSGA2 = function(infill.crit, models, control, par.set, opt.pa
         par.set = par.set, design = design, iter = iter, ...)
     }))
   }
-
   res = nsga2_vectorized(fun.tmp, idim = getParamNr(par.set, devectorize = TRUE), odim = control$number.of.targets,
     lower.bounds = getLower(par.set), upper.bounds = getUpper(par.set),
     popsize = control$infill.opt.nsga2.popsize, generations = control$infill.opt.nsga2.generations,
     cprob = control$infill.opt.nsga2.cprob, cdist = control$infill.opt.nsga2.cdist,
     mprob = control$infill.opt.nsga2.mprob, mdist = control$infill.opt.nsga2.mdist, ...)
-
   points = as.data.frame(res$par)
   colnames(points) = rep.pids
-
-  best.inds = selectBestHypervolumePoints(res$value, control, opt.path, design)
-
-  return(points = points[best.inds, , drop = FALSE])
-}
-
-# gets a data.frame of candidate points and selects the control$prop.points best points
-# concerning hypervolume
-# returns the indices of the best points
-selectBestHypervolumePoints = function (crit.vals, control, opt.path, design) {
-  n = nrow(crit.vals)
-  front.old = t(getOptPathY(opt.path))
-  crit.vals = t(crit.vals)
-  # FIXME: This only works well for proposing 1 point! For proposing more points
-  # at the same time, we have to look at the common hv-contr of this points
-  # Idea: Do this greedy?
+  
+  # now we have nsga2.popsize candidate points and we have to select propose.points
+  # do this greedy - select the point with max. hv.contr, add it and select
+  # the best point wrt to the new front
+  candidate.points = res$par
+  candidate.vals = res$value
+  prop.points = matrix(nrow = 0, ncol = ncol(candidate.points))
+  prop.vals = matrix(nrow = 0, ncol = ncol(candidate.vals))
+  colnames(prop.vals) = control$y.name
+  ys = design[, control$y.name]
+  
   ref.point = getMultiCritRefPoint(design[, control$y.name], control)
-  # FIXME: use multicrit helper?
-  hvs = -1 * sapply(seq_col(crit.vals), function(i)
-    dominated_hypervolume(cbind(front.old, crit.vals[, i]), ref = ref.point))
-
-  order(hvs)[1:control$propose.points]
+  for (i in 1:control$propose.points) {
+    hv.contrs = getHypervolumeContributions(xs = candidate.vals,
+      ys = rbind(ys, prop.vals), ref.point = ref.point, minimize = control$minimize)
+    best.ind = which.max(hv.contrs)
+    # add best to prop.points/vals and remove from candidate.point/vals
+    prop.points = rbind(prop.points, candidate.points[best.ind, ])
+    candidate.points = candidate.points[-best.ind, ]
+    prop.vals = rbind(prop.vals, candidate.vals[best.ind, ])
+    candidate.vals = candidate.vals[-best.ind, ]
+  }
+  
+  # FIXME: cleanup - i'm reall unsure how to set the names of prop.points technically
+  prop.points = as.data.frame(prop.points)
+  colnames(prop.points) = names(design[, which(colnames(design) %nin% control$y.name)])
+  return(prop.points)
 }
