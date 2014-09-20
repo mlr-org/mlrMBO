@@ -13,7 +13,7 @@ SEXP c_sms_indicator(SEXP s_lcbs, SEXP s_front, SEXP s_front2, SEXP s_eps, SEXP 
   UNPACK_REAL_MATRIX_2(s_lcbs, lcbs, nrow_lcbs);
   UNPACK_REAL_MATRIX(s_front, front, nrow_front, ncol_front);
   UNPACK_REAL_MATRIX(s_front2, front2, nrow_front2, ncol_front2);
-  double eps = asReal(s_eps);
+  double* eps = REAL(s_eps);
   double* ref = REAL(s_ref);
   SEXP s_ret = PROTECT(allocVector(REALSXP, nrow_lcbs));
   double* ret = REAL(s_ret);
@@ -30,12 +30,12 @@ SEXP c_sms_indicator(SEXP s_lcbs, SEXP s_front, SEXP s_front2, SEXP s_eps, SEXP 
       real_greater = 0;
       for (k=0; k < ncol_front; k++) { /* loop all dimensions */
         d = lcbs[i + k * nrow_lcbs] - front[j + k * nrow_front];
-        if (d < -eps) {
+        if (d < -eps[k]) {
           /* violation! front-point does not eps-dominate lcb-point, so no penalty for it*/
           penalty_front_point = 0;
           break;
         }
-        if (d > -eps)
+        if (d > -eps[k])
           real_greater = 1;
         penalty_front_point = penalty_front_point * (1 + MAX(d, 0));
       }
