@@ -12,7 +12,10 @@ proposePointsDIB = function(models, par.set, control, opt.path, iter) {
         par.set = par.set, opt.path = opt.path, iter = iter)
   } else {
     # draw lambdas from exp dist + create 1 control for each for single crit with lambda-LCB
-    z = createRandomLCBControls(control, "dib")
+    #FIXME: it is unclear whether we want also randomly sample lambdas here too
+    # talked with TW and we agreed to not do this for now but only do the CL idea with adding points
+    # if we only use the const lambda, we also dont need it in optpath
+    z = createRandomLCBControls(control, "dib", user.lambda = TRUE)
     props = list()
     # copy opt.path so we can store already proposed points in it
     opt.path2 = deepCopyOptPath(opt.path)
