@@ -1,9 +1,11 @@
 library(ggplot2)
 load("bench//mco/mcoBenchResults.RData")
-res$algo2 = as.factor(ifelse(res$algo == "nsga2", paste(res$algo, res$generations), "parego"))
+res$algo2 = as.factor(ifelse(res$algo == "nsga2", paste(res$algo, res$generations),
+  paste(res$algo, res$prop.points)))
 
 # Calc means
 round(tapply(res$hv, list(res$algo2, res$prob), mean), 2)
+round(tapply(res$front.size, list(res$algo2, res$prob), mean), 2)
 round(tapply(res$r2, list(res$algo2, res$prob), mean), 2)
 round(tapply(res$cd.median, list(res$algo2, res$prob), mean), 2)
 

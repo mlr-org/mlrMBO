@@ -21,10 +21,9 @@ getExtras = function(n, prop, control) {
       ex = list(prop$crit.vals[i, 1L], error.model = errs[i])
       names(ex)[1] = control$infill.crit
     }
-    # if we use singlecrit parallel LCB or sms, store lambdas
+    # if we use singlecrit parallel LCB store lambdas
     if (control$propose.points > 1L &&
-      ((control$number.of.targets == 1L && control$multipoint.method == "lcb")  ||
-      (control$number.of.targets > 1L && control$multicrit.method == "dib"))) {
+        (control$number.of.targets == 1L && control$multipoint.method == "lcb")) {
 
       lams = prop$multipoint.lcb.lambdas
       if (is.null(lams))

@@ -32,7 +32,8 @@ proposePointsDIB = function(models, par.set, control, opt.path, iter) {
     }
     res = joinProposedPoints(props)
     # store extra info
-    res$multipoint.lcb.lambdas = z$lambdas
+    # DH: don't to this for now
+    #res$multipoint.lcb.lambdas = z$lambdas
   }
   return(res)
 }

@@ -6,6 +6,7 @@ library(soobench)
 
 source("bench/mco/testfunctionsMultiObjective.R")
 source("bench/mco/defs.R")
+source("bench/mco/testfunctionsSingleObjective.R")
 
 unlink("mco_bench-files", recursive = TRUE)
 reg = makeExperimentRegistry("mco_bench", packages = c(
@@ -26,9 +27,8 @@ addMyProblem = function(id, objective, lower, upper, dim_x, dim_y) {
       par.set = makeNumericParamSet("x", len = dim_x, lower = lower, upper = upper),
       nx = dim_x,
       ny = dim_y
-      }
   ), dynamic = function(static) {
-    design = generateDesign(n = INIT_DESIGN_POINTS * static$dim_x, par.set = static$par.set)
+    design = generateDesign(n = INIT_DESIGN_POINTS * static$nx, par.set = static$par.set)
     list(design = design)
   })
 }
@@ -46,8 +46,6 @@ addMyProblem("dtlz1_5D5M", dtlz1_5D5M, lower = 0, upper = 1, dim_x = 5L, dim_y =
 addMyProblem("dtlz2_5D2M", dtlz2_5D2M, lower = 0, upper = 1, dim_x = 5L, dim_y = 2L)
 addMyProblem("dtlz2_5D5M", dtlz2_5D5M, lower = 0, upper = 1, dim_x = 5L, dim_y = 5L)
 
-
-
 runMBO = function(static, dynamic, method, crit, opt, prop.points, indicator = "sms") {
   par.set = static$par.set
   names.x = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
@@ -58,6 +56,7 @@ runMBO = function(static, dynamic, method, crit, opt, prop.points, indicator = "
     iters = iters, propose.points = prop.points,
     save.on.disk.at = integer(0L))
   ctrl = setMBOControlInfill(ctrl, crit = crit, opt = opt,
+    crit.lcb.lambda = NULL, crit.lcb.PI = LCB_PI,
     opt.focussearch.points = FOCUSSEARCH_POINTS,
     opt.restarts = FOCUSSEARCH_RESTARTS,
     opt.focussearch.maxit = FOCUSSEARCH_MAXIT,
@@ -70,7 +69,6 @@ runMBO = function(static, dynamic, method, crit, opt, prop.points, indicator = "
     learner = learner, control = ctrl, show.info = TRUE)
   return(res$opt.path)
 }
-
 
 addAlgorithm(reg, "nsga2", fun = function(static, generations) {
   par.set = static$par.set
@@ -111,13 +109,12 @@ des2 = makeDesign("parego", exhaustive = list(
 ))
 des3 = makeDesign("dib", exhaustive = list(
   prop.points = PARALLEL_PROP_POINTS,
-  indicater = c("sms", "eps")
+  indicator = c("sms", "eps")
 ))
 des4 = makeDesign("mspot", exhaustive = list(
   prop.points = PARALLEL_PROP_POINTS,
   crit = c("mean", "lcb", "ei")
 ))
-
 
 addExperiments(reg, algo.design = des1, repls = REPLS)
 addExperiments(reg, algo.design = des2, repls = REPLS)
@@ -125,6 +122,6 @@ addExperiments(reg, algo.design = des3, repls = REPLS)
 addExperiments(reg, algo.design = des4, repls = REPLS)
 
 batchExport(reg, runMBO = runMBO)
- submitJobs(reg, ids = getJobIds(reg),#chunk(getJobIds(reg), n.chunks = 1L, shuffle = TRUE),
-   resources=list(walltime=8*3600, memory=2*1024),
+ submitJobs(reg, ids = chunk(getJobIds(reg), n.chunks = 35L, shuffle = TRUE),
+   resources=list(walltime=1*3600, memory=2*1024),
    wait=function(retries) 1, max.retries=10)
