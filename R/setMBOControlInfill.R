@@ -13,6 +13,10 @@
 #'   Lambda parameter for lower confidence bound infill criterion.
 #'   Only used if \code{crit == "lcb"}, ignored otherwise.
 #'   Default is 1.
+#' @param crit.lcb.PI [\code{numeric(1)}]\cr
+#'   PI value to determine the lambda parameter for lcb infill criterion.
+#'   Only used if \code{crit == "lcb"}, ignored otherwise.
+#'   Default is NULL. If specified, \code{crit.lcb.lambda == NULL} must hold.
 #' @param filter.proposed.points [\code{logical(1)}]\cr
 #'   Sometimes proposed points are located very close to design points which can lead to unsatisfactory results
 #'   when using Kriging as the underlying model. This parameter activates or deactivates a heuristic to handle 
@@ -101,7 +105,7 @@
 #' @seealso makeMBOControl
 #' @export
 setMBOControlInfill = function(control,
-  crit = "mean", crit.lcb.lambda = 1,
+  crit = "mean", crit.lcb.lambda = 1, crit.lcb.PI = NULL,
   filter.proposed.points = FALSE,
   filter.proposed.points.tol = 0.1,
   opt = "focussearch", opt.restarts = 1L,
@@ -119,7 +123,23 @@ setMBOControlInfill = function(control,
   assertClass(control, "MBOControl")
 
   assertChoice(crit, choices = getSupportedInfillCritFunctions())
-  assertNumeric(crit.lcb.lambda, len = 1L, any.missing = FALSE, lower = 0)
+  
+  # lambda value for lcv - either given, or set via given PI
+  # the other one must be NULL!
+
+  if (!is.null(crit.lcb.lambda) && !is.null(crit.lcb.PI)) {
+    stop("Please specify either lambda or PI for the lcb crit, not both!")
+  }
+  if (is.null(crit.lcb.PI)) {
+    assertNumeric(crit.lcb.lambda, len = 1L, any.missing = FALSE, lower = 0)
+  }
+  if (is.null(crit.lcb.lambda)) {
+    assertNumeric(crit.lcb.PI, len = 1L, any.missing = FALSE, lower = 0, upper = 1)
+    # This is the formula from TW diss for setting lambda. Note, that
+    # alpha = -lambda, so we need the negative values
+    crit.lcb.lambda = -qnorm(0.5 * crit.lcb.PI^(1 / control$number.of.targets))
+  }
+  
   assertFlag(filter.proposed.points)
   assertNumber(filter.proposed.points.tol, na.ok = FALSE, lower = 0)
 

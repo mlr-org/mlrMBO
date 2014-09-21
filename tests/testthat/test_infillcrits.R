@@ -47,6 +47,18 @@ test_that("infill crits", {
       }
     }
   }
+  
+  # check lambda and PI for lcb
+  ctrl = makeMBOControl(minimize = TRUE, init.design.points = 8L,
+    iters = niters, final.evals = 10L)
+  ctrl = setMBOControlInfill(ctrl, crit = "lcb", opt = "focussearch", opt.restarts = 1L,
+    opt.focussearch.points = 300L, crit.lcb.lambda = 2)
+  mbo(f, ps, NULL, makeLearner("regr.km", predict.type = "se"), ctrl, show.info = FALSE)
+  expect_error(setMBOControlInfill(ctrl, crit = "lcb", opt = "focussearch", opt.restarts = 1L,
+    opt.focussearch.points = 300L, crit.lcb.lambda = 2, crit.lcb.PI = 0.5))
+  ctrl = setMBOControlInfill(ctrl, crit = "lcb", opt = "focussearch", opt.restarts = 1L,
+    opt.focussearch.points = 300L, crit.lcb.lambda = NULL, crit.lcb.PI = 0.5)
+  mbo(f, ps, NULL, makeLearner("regr.km", predict.type = "se"), ctrl, show.info = FALSE)
 })
 
 
