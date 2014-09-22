@@ -87,7 +87,7 @@ addAlgorithm(reg, "randomSearch", fun = function(static, dynamic, budget) {
   design = rbind(as.matrix(dynamic$design), newdes)
   ys = t(apply(design, 1, static$objective))
   for (i in seq_row(design))
-    addOptPathEl(opt.path, x = list(x = design[i, ]), y = ys[i, ], dob = 1)
+    addOptPathEl(opt.path, x = list(x = design[i, ]), y = ys[i, ], dob = 0L)
   list(par.set = static$par.set, opt.path = opt.path)
 })
 
