@@ -91,7 +91,10 @@ SEXP c_eps_indicator(SEXP s_lcbs, SEXP s_front) {
       if (dist_2_points < dist_to_set) /* found a closer point? set it */
         dist_to_set = dist_2_points;
     }
-    ret[i] = dist_to_set; /* set dist to set as crit val for i-lcb point */
+    /* set dist to set as crit val for i-lcb point, but this distance should be
+     * maximized, so -1 as we minize later */
+    ret[i] = -dist_to_set;
+
   }
   UNPROTECT(1); /* s_ret */
   return(s_ret);
