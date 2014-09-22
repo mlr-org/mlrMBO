@@ -28,8 +28,9 @@ addMyProblem = function(id, objective, lower, upper, dimx, dimy, prob.seed) {
       dimx = dimx,
       dimy = dimy
   ), dynamic = function(static) {
-    design = generateDesign(n = INIT_DESIGN_POINTS * static$dimx, par.set = static$par.set)
-    list(design = design)
+    list(
+      design = generateDesign(n = INIT_DESIGN_POINTS(static$dimx), par.set = static$par.set)
+    )
   })
 }
 
@@ -49,7 +50,7 @@ runMBO = function(static, dynamic, method, crit, opt, prop.points, indicator = "
   par.set = static$par.set
   names.x = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
   learner = makeLearner("regr.km", predict.type = "se")
-  iters = MBO_ITERS(dimx, prop.points)
+  iters = MBO_ITERS(static$dimx, prop.points)
 
   ctrl = makeMBOControl(number.of.targets = static$dimy,
     iters = iters, propose.points = prop.points,
@@ -63,9 +64,9 @@ runMBO = function(static, dynamic, method, crit, opt, prop.points, indicator = "
     opt.nsga2.popsize = MSPOT_NSGA2_POPSIZE
   )
   ctrl = setMBOControlMultiCrit(ctrl, method = method,
-    ref.point = MULTICRIT_REFPOINT, ref.point.offset = MULTICRIT_REFPOINT_OFFSET,
+    ref.point.method = MULTICRIT_REFPOINT, ref.point.offset = MULTICRIT_REFPOINT_OFFSET,
     dib.indicator = indicator, dib.sms.eps = DIB_SMS_EPS,
-    parego.rho = PAREGO_RHO, parego.s = PAREGO_S, parego.sample.more.weights = PAREGO_SAMPLE_MORE_WEIGHTS
+    parego.rho = PAREGO_RHO, parego.sample.more.weights = PAREGO_SAMPLE_MORE_WEIGHTS
   )
 
   res = mbo(makeMBOFunction(static$objective), static$par.set, design = dynamic$design,
@@ -77,9 +78,9 @@ addAlgorithm(reg, "nsga2", fun = function(static, budget) {
   par.set = static$par.set
   names.x = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
   opt.path = makeOptPathDF(par.set, paste("y", 1:static$dimy, sep = "_"),
-    minimize = rep(TRUE, static$dimy))
+    minimize = rep(TRUE, static$dimy), include.error.message = TRUE, include.exec.time = TRUE)
 
-  gens = if (normal == "normal")
+  gens = if (budget == "normal")
     BASELINE_NSGA2_GENERATIONS1(static$dimx)
   else
     BASELINE_NSGA2_GENERATIONS2(static$dimx)
@@ -93,7 +94,7 @@ addAlgorithm(reg, "nsga2", fun = function(static, budget) {
     for (j in seq_row(r$par))
       addOptPathEl(opt.path, x = list(x = r$par[j, ]), y = r$value[j, ], dob = i)
   })
-  return(par.set = par.set, opt.path = opt.path, opt.res = res)
+  list(par.set = par.set, opt.path = opt.path, opt.res = res)
 })
 
 addAlgorithm(reg, "parego", fun = function(static, dynamic, prop.points) {
@@ -129,6 +130,7 @@ addExperiments(reg, algo.design = des3, repls = REPLS)
 addExperiments(reg, algo.design = des4, repls = REPLS)
 
 batchExport(reg, runMBO = runMBO)
- submitJobs(reg, ids = chunk(getJobIds(reg), n.chunks = 250L, shuffle = TRUE),
-   resources=list(walltime=1*3600, memory=2*1024),
-   wait=function(retries) 1, max.retries=10)
+
+# submitJobs(reg, ids = chunk(getJobIds(reg), n.chunks = 250L, shuffle = TRUE),
+ # resources = list(walltime = 1*3600, memory = 2*1024),
+ # wait = function(retries) 1, max.retries = 10)

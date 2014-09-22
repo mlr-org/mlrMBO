@@ -18,14 +18,13 @@ MULTICRIT_REFPOINT_OFFSET = 1 # mspot (all) + dib.sms
 # nsga2 baseline comparison
 BASELINE_NSGA2_POPSIZE = function(dimx) dimx * 4 # must be a multiple of 4, set like init design
 # the next lines assume that mco version >= 1.0??? is installed
-BASELINE_NSGA2_GENERATIONS1 = function(dimx) FEVALS(dimx) / BASELINE_NSGA2_POPSIZE - 1L
-BASELINE_NSGA2_GENERATIONS2 = function(dimx) 10 * FEVALS(dimx) / BASELINE_NSGA2_POPSIZE - 1L
+BASELINE_NSGA2_GENERATIONS1 = function(dimx) FEVALS(dimx) / BASELINE_NSGA2_POPSIZE(dimx) - 1L
+BASELINE_NSGA2_GENERATIONS2 = function(dimx) 10 * FEVALS(dimx) / BASELINE_NSGA2_POPSIZE(dimx) - 1L
 
 # parego
 PAREGO_RHO = 0.05
 PAREGO_SAMPLE_MORE_WEIGHTS = 5L
 PAREGO_CRIT = "ei"
-PAREGO_S = NULL # "adaptive"  s
 
 # mspot
 MSPOT_NSGA2_GENERATIONS = 90L
