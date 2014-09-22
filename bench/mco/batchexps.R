@@ -30,8 +30,7 @@ addMyProblem = function(id, objective, lower, upper, dimx, dimy, prob.seed) {
     id = id
   ), dynamic = function(static) {
     list(
-      design = generateDesign(n = INIT_DESIGN_POINTS(static$dimx, id = static$id),
-        par.set = static$par.set)
+      design = generateDesign(n = INIT_DESIGN_POINTS(static$dimx), par.set = static$par.set)
     )
   })
 }
@@ -51,9 +50,7 @@ addMyProblem("GOMOP2_2D3M", GOMOP2_2D3M, lower = 0, upper = 1, dimx = 2L, dimy =
 addMyProblem("GOMOP3_3D2M", GOMOP3_3D2M, lower = 0, upper = 1, dimx = 3L, dimy = 2L, prob.seed = 12)
 
 runMBO = function(static, dynamic, method, crit, opt, prop.points, indicator = "sms") {
-  par.set = static$par.set
-  names.x = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
-  learner = makeLearner("regr.km", predict.type = "se")
+  learner = makeLearner("regr.km", covtype = "powexp", predict.type = "se")
   iters = MBO_ITERS(static$dimx, prop.points)
 
   ctrl = makeMBOControl(number.of.targets = static$dimy,
@@ -75,58 +72,41 @@ runMBO = function(static, dynamic, method, crit, opt, prop.points, indicator = "
 
   res = mbo(makeMBOFunction(static$objective), static$par.set, design = dynamic$design,
     learner = learner, control = ctrl, show.info = TRUE)
-  list(par.set = par.set, opt.path = opt.path, opt.res = res, mbo.control = control)
+  list(par.set = static$par.set, opt.path = opt.path, opt.res = res, mbo.control = control)
 }
 
 addAlgorithm(reg, "randomSearch", fun = function(static, dynamic, budget) {
-  par.set = static$par.set
-  names.x = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
-  opt.path = makeOptPathDF(par.set, paste("y", 1:static$dimy, sep = "_"),
+  opt.path = makeOptPathDF(static$par.set, paste("y", 1:static$dimy, sep = "_"),
     minimize = rep(TRUE, static$dimy), include.error.message = TRUE, include.exec.time = TRUE)
-  
-  evals = if (budget == "normal")
-    BASELINE_RANDOMSEARCH_BUDGET1(static$dimx, id = static$id)
-  else
-    BASELINE_RANDOMSEARCH_BUDGET2(static$dimx, id = static$id)
-  
-  design = dynamic$design
-  ys = t(apply(design, 1, static$objective))
-  
-  # add initial design to opt.path
-  for (i in seq_row(design))
-    addOptPathEl(opt.path, x = list(x = design[i, ]), y = ys[i, ], dob = 0)
-  
-  # sequentially sample random points and add to opt.path
-  for (i in seq_len(evals)) {
-    pars = sampleValue(ps, discrete.names = FALSE, trafo = FALSE)
-    y = static$objectiv(pars)
-    addOptPathEl(opt.path, x = list(x = pars), y = y, dob = i)
-  }
 
-  list(par.set = par.set, opt.path = opt.path)
+  budget = if (budget == "normal") BASELINE_RANDOMSEARCH_BUDGET1 else BASELINE_RANDOMSEARCH_BUDGET2
+  # sample new points
+  newdes = sampleValues(static$par.set, budget(static$dimx), discrete.names = FALSE, trafo = FALSE)
+  newdes = extractSubList(newdes, "x", simplify = "rows")
+  # add to design + eval + add to opt.path
+  design = rbind(as.matrix(dynamic$design), newdes)
+  ys = t(apply(design, 1, static$objective))
+  for (i in seq_row(design))
+    addOptPathEl(opt.path, x = list(x = design[i, ]), y = ys[i, ], dob = 1)
+  list(par.set = static$par.set, opt.path = opt.path)
 })
 
 addAlgorithm(reg, "nsga2", fun = function(static, budget) {
-  par.set = static$par.set
-  names.x = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
-  opt.path = makeOptPathDF(par.set, paste("y", 1:static$dimy, sep = "_"),
+  opt.path = makeOptPathDF(static$par.set, paste("y", 1:static$dimy, sep = "_"),
     minimize = rep(TRUE, static$dimy), include.error.message = TRUE, include.exec.time = TRUE)
 
-  gens = if (budget == "normal")
-    BASELINE_NSGA2_GENERATIONS1(static$dimx)
-  else
-    BASELINE_NSGA2_GENERATIONS2(static$dimx)
+  gens = if (budget == "normal") BASELINE_NSGA2_GENERATIONS1 else BASELINE_NSGA2_GENERATIONS2
 
   res = nsga2(static$objective, idim = static$dimx,
-    odim = static$dimy, lower.bounds = getLower(par.set), upper.bounds = getUpper(par.set),
-    popsize = BASELINE_NSGA2_POPSIZE(static$dimx), generations = 1:gens)
+    odim = static$dimy, lower.bounds = getLower(static$par.set), upper.bounds = getUpper(static$par.set),
+    popsize = BASELINE_NSGA2_POPSIZE(static$dimx), generations = 1:gens(static$dimx))
   # add all elements to op.path
   lapply(seq_along(res), function(i) {
     r = res[[i]]
     for (j in seq_row(r$par))
       addOptPathEl(opt.path, x = list(x = r$par[j, ]), y = r$value[j, ], dob = i)
   })
-  list(par.set = par.set, opt.path = opt.path, opt.res = res)
+  list(par.set = static$par.set, opt.path = opt.path, opt.res = res)
 })
 
 addAlgorithm(reg, "parego", fun = function(static, dynamic, prop.points) {
@@ -165,6 +145,10 @@ addExperiments(reg, algo.design = des3, repls = REPLS)
 addExperiments(reg, algo.design = des4, repls = REPLS)
 
 batchExport(reg, runMBO = runMBO)
+
+j = findExperiments(reg, algo.pattern = "dib")
+
+z = testJob(reg, j[1], external = F)
 
 # submitJobs(reg, ids = chunk(getJobIds(reg), n.chunks = 250L, shuffle = TRUE),
  # resources = list(walltime = 1*3600, memory = 2*1024),
