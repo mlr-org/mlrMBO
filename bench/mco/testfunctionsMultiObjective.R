@@ -41,6 +41,22 @@ GOMOP_5D5M = function(x) {
   return(y)
 }
 
+# GOMOP from Wagner Diss
+
+GOMOP2_2D3M = function(x) {
+  y = numeric(3)
+  y[1] = branin(x)
+  y[2] = hartman(x)
+  y[3] = goldsteinPrice(x)
+  return(y)
+}
+
+GOMOP3_3D2M = function(x) {
+  y = numeric(2)
+  y[1] = hartman(x)
+  y[2] = rosenbrock(x)
+  return(y)
+}
 
 # ZDT - functions
 # 5D -> 2M

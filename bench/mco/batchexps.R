@@ -23,28 +23,32 @@ reg = makeExperimentRegistry("mco_bench", packages = c(
 
 addMyProblem = function(id, objective, lower, upper, dimx, dimy, prob.seed) {
   addProblem(reg, id = id, seed = prob.seed, static = list(
-      objective = objective,
-      par.set = makeNumericParamSet("x", len = dimx, lower = lower, upper = upper),
-      dimx = dimx,
-      dimy = dimy
+    objective = objective,
+    par.set = makeNumericParamSet("x", len = dimx, lower = lower, upper = upper),
+    dimx = dimx,
+    dimy = dimy,
+    id = id
   ), dynamic = function(static) {
     list(
-      design = generateDesign(n = INIT_DESIGN_POINTS(static$dimx), par.set = static$par.set)
+      design = generateDesign(n = INIT_DESIGN_POINTS(static$dimx, id = static$id),
+        par.set = static$par.set)
     )
   })
 }
 
 # test functions
-addMyProblem("GOMOP_2D2M", GOMOP_2D2M, lower = 0, upper = 1, dimx = 2L, dimy = 2L, prob.seed =  1)
-addMyProblem("GOMOP_5D2M", GOMOP_5D2M, lower = 0, upper = 1, dimx = 5L, dimy = 2L, prob.seed =  2)
-addMyProblem("GOMOP_2D5M", GOMOP_2D5M, lower = 0, upper = 1, dimx = 2L, dimy = 5L, prob.seed =  3)
-addMyProblem("GOMOP_5D5M", GOMOP_5D5M, lower = 0, upper = 1, dimx = 5L, dimy = 5L, prob.seed =  4)
-addMyProblem("zdt1_5D2M",  zdt1,       lower = 0, upper = 1, dimx = 5L, dimy = 2L, prob.seed =  5)
-addMyProblem("zdt2_5D2M",  zdt2,       lower = 0, upper = 1, dimx = 5L, dimy = 2L, prob.seed =  6)
-addMyProblem("zdt3_5D2M",  zdt3,       lower = 0, upper = 1, dimx = 5L, dimy = 2L, prob.seed =  7)
-addMyProblem("dtlz1_5D5M", dtlz1_5D5M, lower = 0, upper = 1, dimx = 5L, dimy = 5L, prob.seed =  8)
-addMyProblem("dtlz2_5D2M", dtlz2_5D2M, lower = 0, upper = 1, dimx = 5L, dimy = 2L, prob.seed =  9)
-addMyProblem("dtlz2_5D5M", dtlz2_5D5M, lower = 0, upper = 1, dimx = 5L, dimy = 5L, prob.seed = 10)
+addMyProblem("GOMOP_2D2M",  GOMOP_2D2M,  lower = 0, upper = 1, dimx = 2L, dimy = 2L, prob.seed =  1)
+addMyProblem("GOMOP_5D2M",  GOMOP_5D2M,  lower = 0, upper = 1, dimx = 5L, dimy = 2L, prob.seed =  2)
+addMyProblem("GOMOP_2D5M",  GOMOP_2D5M,  lower = 0, upper = 1, dimx = 2L, dimy = 5L, prob.seed =  3)
+addMyProblem("GOMOP_5D5M",  GOMOP_5D5M,  lower = 0, upper = 1, dimx = 5L, dimy = 5L, prob.seed =  4)
+addMyProblem("zdt1_5D2M",   zdt1,        lower = 0, upper = 1, dimx = 5L, dimy = 2L, prob.seed =  5)
+addMyProblem("zdt2_5D2M",   zdt2,        lower = 0, upper = 1, dimx = 5L, dimy = 2L, prob.seed =  6)
+addMyProblem("zdt3_5D2M",   zdt3,        lower = 0, upper = 1, dimx = 5L, dimy = 2L, prob.seed =  7)
+addMyProblem("dtlz1_5D5M",  dtlz1_5D5M,  lower = 0, upper = 1, dimx = 5L, dimy = 5L, prob.seed =  8)
+addMyProblem("dtlz2_5D2M",  dtlz2_5D2M,  lower = 0, upper = 1, dimx = 5L, dimy = 2L, prob.seed =  9)
+addMyProblem("dtlz2_5D5M",  dtlz2_5D5M,  lower = 0, upper = 1, dimx = 5L, dimy = 5L, prob.seed = 10)
+addMyProblem("GOMOP2_2D3M", GOMOP2_2D3M, lower = 0, upper = 1, dimx = 2L, dimy = 3L, prob.seed = 11)
+addMyProblem("GOMOP3_3D2M", GOMOP3_3D2M, lower = 0, upper = 1, dimx = 3L, dimy = 2L, prob.seed = 12)
 
 runMBO = function(static, dynamic, method, crit, opt, prop.points, indicator = "sms") {
   par.set = static$par.set
@@ -73,6 +77,34 @@ runMBO = function(static, dynamic, method, crit, opt, prop.points, indicator = "
     learner = learner, control = ctrl, show.info = TRUE)
   list(par.set = par.set, opt.path = opt.path, opt.res = res, mbo.control = control)
 }
+
+addAlgorithm(reg, "randomSearch", fun = function(static, dynamic, budget) {
+  par.set = static$par.set
+  names.x = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
+  opt.path = makeOptPathDF(par.set, paste("y", 1:static$dimy, sep = "_"),
+    minimize = rep(TRUE, static$dimy), include.error.message = TRUE, include.exec.time = TRUE)
+  
+  evals = if (budget == "normal")
+    BASELINE_RANDOMSEARCH_BUDGET1(static$dimx, id = static$id)
+  else
+    BASELINE_RANDOMSEARCH_BUDGET2(static$dimx, id = static$id)
+  
+  design = dynamic$design
+  ys = t(apply(design, 1, static$objective))
+  
+  # add initial design to opt.path
+  for (i in seq_row(design))
+    addOptPathEl(opt.path, x = list(x = design[i, ]), y = ys[i, ], dob = 0)
+  
+  # sequentially sample random points and add to opt.path
+  for (i in seq_len(evals)) {
+    pars = sampleValue(ps, discrete.names = FALSE, trafo = FALSE)
+    y = static$objectiv(pars)
+    addOptPathEl(opt.path, x = list(x = pars), y = y, dob = i)
+  }
+
+  list(par.set = par.set, opt.path = opt.path)
+})
 
 addAlgorithm(reg, "nsga2", fun = function(static, budget) {
   par.set = static$par.set
@@ -109,17 +141,20 @@ addAlgorithm(reg, "mspot", fun = function(static, dynamic, prop.points, crit) {
   runMBO(static, dynamic, "mspot", crit, "nsga2", prop.points)
 })
 
-des1 = makeDesign("nsga2", exhaustive = list(
+des1 = makeDesign("randomSearch", exhaustive = list(
   budget = c("normal", "10fold")
 ))
-des2 = makeDesign("parego", exhaustive = list(
+des2 = makeDesign("nsga2", exhaustive = list(
+  budget = c("normal", "10fold")
+))
+des3 = makeDesign("parego", exhaustive = list(
   prop.points = PARALLEL_PROP_POINTS
 ))
-des3 = makeDesign("dib", exhaustive = list(
+des4 = makeDesign("dib", exhaustive = list(
   prop.points = PARALLEL_PROP_POINTS,
   indicator = c("sms", "eps")
 ))
-des4 = makeDesign("mspot", exhaustive = list(
+des5 = makeDesign("mspot", exhaustive = list(
   prop.points = PARALLEL_PROP_POINTS,
   crit = c("mean", "lcb", "ei")
 ))

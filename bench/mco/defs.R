@@ -1,9 +1,14 @@
 # GENERAL
 FEVALS = function(dimx) 40 * dimx
 REPLS = 20L
-INIT_DESIGN_POINTS = function(dimx) 4 * dimx
+INIT_DESIGN_POINTS = function(dimx, id) {
+  if (id %in% c("GOMOP2_2D3M", "GOMOP3_3D2M"))
+    return(11 * dimx - 1)
+  return(4 * dimx)
+} 
 PARALLEL_PROP_POINTS = c(1L, 4L)
-MBO_ITERS = function(dimx, prop.points) (FEVALS(dimx) - INIT_DESIGN_POINTS(dimx)) / prop.points
+MBO_ITERS = function(dimx, prop.points, id)
+  (FEVALS(dimx) - INIT_DESIGN_POINTS(dimx, id)) / prop.points
 
 # FOCUSSEARCH
 FOCUSSEARCH_POINTS = 1000L
@@ -20,6 +25,10 @@ BASELINE_NSGA2_POPSIZE = function(dimx) dimx * 4 # must be a multiple of 4, set 
 # the next lines assume that mco version >= 1.0??? is installed
 BASELINE_NSGA2_GENERATIONS1 = function(dimx) FEVALS(dimx) / BASELINE_NSGA2_POPSIZE(dimx) - 1L
 BASELINE_NSGA2_GENERATIONS2 = function(dimx) 10 * FEVALS(dimx) / BASELINE_NSGA2_POPSIZE(dimx) - 1L
+
+# randomSearch baseline comparison
+BASELINE_RANDOMSEARCH_BUDGET1 = function(dimx) FEVALS(dimx) - INIT_DESIGN_POINTS(dimx, id)
+BASELINE_RANDOMSEARCH_BUDGET2 = function(dimx) 10 * FEVALS(dimx) - - INIT_DESIGN_POINTS(dimx, id)
 
 # parego
 PAREGO_RHO = 0.05
