@@ -15,44 +15,43 @@ reg = makeExperimentRegistry("mco_bench", packages = c(
     "mlrMBO"
   ), src.files = c(
     "bench/mco/defs.R",
-    "bench/mco/testfunctionsMultiObjective.R", 
+    "bench/mco/testfunctionsMultiObjective.R",
     "bench/mco/testfunctionsSingleObjective.R"
   ),
   seed = 1
 )
 
-addMyProblem = function(id, objective, lower, upper, dim_x, dim_y) {
-  addProblem(reg, id = id, seed = 1273, static = list(
+addMyProblem = function(id, objective, lower, upper, dimx, dimy, prob.seed) {
+  addProblem(reg, id = id, seed = prob.seed, static = list(
       objective = objective,
-      par.set = makeNumericParamSet("x", len = dim_x, lower = lower, upper = upper),
-      nx = dim_x,
-      ny = dim_y
+      par.set = makeNumericParamSet("x", len = dimx, lower = lower, upper = upper),
+      dimx = dimx,
+      dimy = dimy
   ), dynamic = function(static) {
-    design = generateDesign(n = INIT_DESIGN_POINTS * static$nx, par.set = static$par.set)
+    design = generateDesign(n = INIT_DESIGN_POINTS * static$dimx, par.set = static$par.set)
     list(design = design)
   })
 }
 
 # test functions
-addMyProblem("GOMOP_2D2M", GOMOP_2D2M, lower = 0, upper = 1, dim_x = 2L, dim_y = 2L)
-addMyProblem("GOMOP_5D2M", GOMOP_5D2M, lower = 0, upper = 1, dim_x = 5L, dim_y = 2L)
-addMyProblem("GOMOP_2D5M", GOMOP_2D5M, lower = 0, upper = 1, dim_x = 2L, dim_y = 5L)
-addMyProblem("GOMOP_5D5M", GOMOP_5D5M, lower = 0, upper = 1, dim_x = 5L, dim_y = 5L)
-for (i in 1:3) {
-  fname = sprintf("zdt%i", i)
-  addMyProblem(fname, get(fname), lower = 0, upper = 1, dim_x = 5L, dim_y = 2L)
-}
-addMyProblem("dtlz1_5D5M", dtlz1_5D5M, lower = 0, upper = 1, dim_x = 5L, dim_y = 5L)
-addMyProblem("dtlz2_5D2M", dtlz2_5D2M, lower = 0, upper = 1, dim_x = 5L, dim_y = 2L)
-addMyProblem("dtlz2_5D5M", dtlz2_5D5M, lower = 0, upper = 1, dim_x = 5L, dim_y = 5L)
+addMyProblem("GOMOP_2D2M", GOMOP_2D2M, lower = 0, upper = 1, dimx = 2L, dimy = 2L, prob.seed =  1)
+addMyProblem("GOMOP_5D2M", GOMOP_5D2M, lower = 0, upper = 1, dimx = 5L, dimy = 2L, prob.seed =  2)
+addMyProblem("GOMOP_2D5M", GOMOP_2D5M, lower = 0, upper = 1, dimx = 2L, dimy = 5L, prob.seed =  3)
+addMyProblem("GOMOP_5D5M", GOMOP_5D5M, lower = 0, upper = 1, dimx = 5L, dimy = 5L, prob.seed =  4)
+addMyProblem("zdt1_5D2M",  zdt1,       lower = 0, upper = 1, dimx = 5L, dimy = 2L, prob.seed =  5)
+addMyProblem("zdt2_5D2M",  zdt2,       lower = 0, upper = 1, dimx = 5L, dimy = 2L, prob.seed =  6)
+addMyProblem("zdt3_5D2M",  zdt3,       lower = 0, upper = 1, dimx = 5L, dimy = 2L, prob.seed =  7)
+addMyProblem("dtlz1_5D5M", dtlz1_5D5M, lower = 0, upper = 1, dimx = 5L, dimy = 5L, prob.seed =  8)
+addMyProblem("dtlz2_5D2M", dtlz2_5D2M, lower = 0, upper = 1, dimx = 5L, dimy = 2L, prob.seed =  9)
+addMyProblem("dtlz2_5D5M", dtlz2_5D5M, lower = 0, upper = 1, dimx = 5L, dimy = 5L, prob.seed = 10)
 
 runMBO = function(static, dynamic, method, crit, opt, prop.points, indicator = "sms") {
   par.set = static$par.set
   names.x = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
   learner = makeLearner("regr.km", predict.type = "se")
-  iters = (FEVALS - INIT_DESIGN_POINTS) / prop.points * static$nx
+  iters = MBO_ITERS(dimx, prop.points)
 
-  ctrl = makeMBOControl(number.of.targets = static$ny,
+  ctrl = makeMBOControl(number.of.targets = static$dimy,
     iters = iters, propose.points = prop.points,
     save.on.disk.at = integer(0L))
   ctrl = setMBOControlInfill(ctrl, crit = crit, opt = opt,
@@ -63,34 +62,42 @@ runMBO = function(static, dynamic, method, crit, opt, prop.points, indicator = "
     opt.nsga2.generations = MSPOT_NSGA2_GENERATIONS,
     opt.nsga2.popsize = MSPOT_NSGA2_POPSIZE
   )
-  ctrl = setMBOControlMultiCrit(ctrl, method = method, dib.indicator = indicator)
+  ctrl = setMBOControlMultiCrit(ctrl, method = method,
+    ref.point = MULTICRIT_REFPOINT, ref.point.offset = MULTICRIT_REFPOINT_OFFSET,
+    dib.indicator = indicator, dib.sms.eps = DIB_SMS_EPS,
+    parego.rho = PAREGO_RHO, parego.s = PAREGO_S, parego.sample.more.weights = PAREGO_SAMPLE_MORE_WEIGHTS
+  )
 
   res = mbo(makeMBOFunction(static$objective), static$par.set, design = dynamic$design,
     learner = learner, control = ctrl, show.info = TRUE)
-  return(res$opt.path)
+  list(par.set = par.set, opt.path = opt.path, opt.res = res, mbo.control = control)
 }
 
-addAlgorithm(reg, "nsga2", fun = function(static, generations) {
+addAlgorithm(reg, "nsga2", fun = function(static, budget) {
   par.set = static$par.set
   names.x = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
-  opt.path = makeOptPathDF(par.set, paste("y", 1:static$ny, sep = "_"),
-    minimize = rep(TRUE, static$ny))
-  
-  res = nsga2(static$objective, idim = static$nx,
-    odim = static$ny, lower.bounds = getLower(par.set), upper.bounds = getUpper(par.set),
-    popsize = BASELINE_NSGA2_POPSIZE * static$nx, generations = 1:generations)
+  opt.path = makeOptPathDF(par.set, paste("y", 1:static$dimy, sep = "_"),
+    minimize = rep(TRUE, static$dimy))
+
+  gens = if (normal == "normal")
+    BASELINE_NSGA2_GENERATIONS1(static$dimx)
+  else
+    BASELINE_NSGA2_GENERATIONS2(static$dimx)
+
+  res = nsga2(static$objective, idim = static$dimx,
+    odim = static$dimy, lower.bounds = getLower(par.set), upper.bounds = getUpper(par.set),
+    popsize = BASELINE_NSGA2_POPSIZE(static$dimx), generations = 1:gens)
   # add all elements to op.path
   lapply(seq_along(res), function(i) {
     r = res[[i]]
-    for (j in seq_row(r$par)) 
+    for (j in seq_row(r$par))
       addOptPathEl(opt.path, x = list(x = r$par[j, ]), y = r$value[j, ], dob = i)
   })
-  
-  return(opt.path)
+  return(par.set = par.set, opt.path = opt.path, opt.res = res)
 })
 
 addAlgorithm(reg, "parego", fun = function(static, dynamic, prop.points) {
-  runMBO(static, dynamic, "parego", "ei", "focussearch", prop.points)
+  runMBO(static, dynamic, "parego", PAREGO_CRIT, "focussearch", prop.points)
 })
 
 addAlgorithm(reg, "dib", fun = function(static, dynamic, prop.points, indicator) {
@@ -102,7 +109,7 @@ addAlgorithm(reg, "mspot", fun = function(static, dynamic, prop.points, crit) {
 })
 
 des1 = makeDesign("nsga2", exhaustive = list(
-  generations = c(BASELINE_NSGA2_GENERATIONS1, BASELINE_NSGA2_GENERATIONS2)
+  budget = c("normal", "10fold")
 ))
 des2 = makeDesign("parego", exhaustive = list(
   prop.points = PARALLEL_PROP_POINTS

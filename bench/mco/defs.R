@@ -1,47 +1,38 @@
 # GENERAL
-FEVALS = 40L # 40 * d
-REPLS = 10L # 10
-INIT_DESIGN_POINTS = 4L # 4 * d
-PARALLEL_PROP_POINTS = c(1L, 4L) # 1 und 4
-stopifnot((FEVALS - INIT_DESIGN_POINTS) %% PARALLEL_PROP_POINTS == 0)
+FEVALS = function(dimx) 40 * dimx
+REPLS = 20L
+INIT_DESIGN_POINTS = function(dimx) 4 * dimx
+PARALLEL_PROP_POINTS = c(1L, 4L)
+MBO_ITERS = function(dimx, prop.points) (FEVALS(dimx) - INIT_DESIGN_POINTS(dimx)) / prop.points
 
 # FOCUSSEARCH
-FOCUSSEARCH_POINTS = 1000L # 1000
-FOCUSSEARCH_MAXIT = 3L # 3
-FOCUSSEARCH_RESTARTS =  3L # 3
+FOCUSSEARCH_POINTS = 1000L
+FOCUSSEARCH_MAXIT = 3L
+FOCUSSEARCH_RESTARTS =  3L
 
-# Crit
-LCB_PI = 0.5
+# general algo stuff
+LCB_PI = 0.5    # mspot_lcb + dib (all)
+MULTICRIT_REFPOINT = "all" # mspot (all) + dib.sms
+MULTICRIT_REFPOINT_OFFSET = 1 # mspot (all) + dib.sms
 
 # nsga2 baseline comparison
-BASELINE_NSGA2_POPSIZE = 4 # must be a multiple of 4, # 4*d, pareto front von allem
-stopifnot(BASELINE_NSGA2_POPSIZE %% 4 == 0)
-stopifnot(FEVALS %% BASELINE_NSGA2_POPSIZE == 0)
-# subtract 2 for initial FEVALS of NSGA2?
-BASELINE_NSGA2_GENERATIONS1 = FEVALS / BASELINE_NSGA2_POPSIZE
-BASELINE_NSGA2_GENERATIONS2 = BASELINE_NSGA2_GENERATIONS1 * 10L
+BASELINE_NSGA2_POPSIZE = function(dimx) dimx * 4 # must be a multiple of 4, set like init design
+# the next lines assume that mco version >= 1.0??? is installed
+BASELINE_NSGA2_GENERATIONS1 = function(dimx) FEVALS(dimx) / BASELINE_NSGA2_POPSIZE - 1L
+BASELINE_NSGA2_GENERATIONS2 = function(dimx) 10 * FEVALS(dimx) / BASELINE_NSGA2_POPSIZE - 1L
 
 # parego
-stopifnot((FEVALS - INIT_DESIGN_POINTS) %% PARALLEL_PROP_POINTS == 0)
-# ITERS = (FEVALS - INIT_DESIGN_POINTS) / PROP_POINTS
+PAREGO_RHO = 0.05
+PAREGO_SAMPLE_MORE_WEIGHTS = 5L
+PAREGO_CRIT = "ei"
+PAREGO_S = NULL # "adaptive"  s
 
 # mspot
 MSPOT_NSGA2_GENERATIONS = 90L
 MSPOT_NSGA2_POPSIZE = 100L
 
+# dib:
+DIB_SMS_EPS = NULL # adaptive
 
-# parego 1p und mp: s-wert: viele, rho = 0.05, sample_more_weights, crit = "ei"
-
-# dib: sms: 1p: eps (adaptiv), lcb-lambda (tobias formel), refp (adaptiv), PI = 0.5
-# dib: sms: mp: eps (adaptiv), lcb-lambda (tobias formel), refp (adaptiv), PI = 0.5
-
-# dib: eps: 1p: lcb-lambda (tobias formel), PI = 0.5
-# dib: eps: mp: lcb-lambda (tobias formel), PI = 0.5
-
-# mspot
-# nsga2 params
-# mean, lcb, ei
-# lcb mit PI = 0.5
-# ref adaptiv
 
 
