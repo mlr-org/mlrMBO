@@ -21,10 +21,9 @@ getExtras = function(n, prop, control) {
       ex = list(prop$crit.vals[i, 1L], error.model = errs[i])
       names(ex)[1] = control$infill.crit
     }
-    # if we use singlecrit parallel LCB or sms, store lambdas
+    # if we use singlecrit parallel LCB store lambdas
     if (control$propose.points > 1L &&
-      ((control$number.of.targets == 1L && control$multipoint.method == "lcb")  ||
-      (control$number.of.targets > 1L && control$multicrit.method == "dib"))) {
+        (control$number.of.targets == 1L && control$multipoint.method == "lcb")) {
 
       lams = prop$multipoint.lcb.lambdas
       if (is.null(lams))
@@ -38,16 +37,6 @@ getExtras = function(n, prop, control) {
         weight.mat = matrix(NA_real_, nrow = n, ncol = control$number.of.targets)
       w = setNames(as.list(weight.mat[i, ]), paste0(".weight", 1:ncol(weight.mat)))
       ex = c(ex, w)
-    }
-    # if we use parallel sms, store refpoints
-    if (control$number.of.targets > 1L && control$multicrit.method == "dib" &&
-      control$multicrit.dib.indicator == "sms" && control$propose.points > 1L) {
-      rps = prop$multicrit.ref.points
-      if (is.null(rps))
-        rps = matrix(NA_real_, nrow = n, ncol = control$number.of.targets)
-      rp = as.list(rps[i, ])
-      names(rp) = paste("refpoint", control$y.name, sep = ".")
-      ex = c(ex, rp)
     }
     exs[[i]] = ex
   }

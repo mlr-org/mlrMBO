@@ -126,13 +126,6 @@ autoplot.MBOExampleRunMultiCrit = function(object, iters, pause = TRUE, y1lim = 
   }
 
   createPlFront = function(gg.points.front, iter) {
-    if (issmspar) {
-      rps = opt.path[idx$proposed, paste("refpoint", y.name, sep = ".")]
-      rps$type = "refpoint"
-      colnames(rps) = colnames(gg.points.front)
-      gg.points.front = rbind(gg.points.front, rps)
-    }
-
     pl.front = ggplot(data = gg.points.front, aes_string(x = "y1", y = "y2"))
 
     pl.front = pl.front + geom_point(

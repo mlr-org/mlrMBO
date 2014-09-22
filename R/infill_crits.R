@@ -76,7 +76,6 @@ infillCritDIB = function(points, models, control, par.set, design, iter) {
   # from here on ys and lcbs are ALWAYS minimized
   all.mini = rep(TRUE, control$number.of.targets)
 
-
   ys.front = getNonDominatedPoints(ys, minimize = all.mini)
 
   if (control$multicrit.dib.indicator == "sms") {
@@ -84,9 +83,12 @@ infillCritDIB = function(points, models, control, par.set, design, iter) {
     # get epsilon for epsilon-dominace - set adaptively or use given constant value
     if (is.null(control$dib.sms.eps)) {
       c.val = 1 - 1 / 2^control$number.of.targets
-      eps = (max(ys.front) - min(ys.front)) /
-        (ncol(ys.front) + c.val * (control$iters - iter))
+      eps = vnapply(seq_col(ys.front), function(i) {
+        (max(ys.front[,i]) - min(ys.front[,i])) /
+          (ncol(ys.front) + c.val * (control$iters - iter))
+      })
     } else {
+      # FIXME: user should be allowed to set a vector
       eps = control$multicrit.dib.sms.eps
     }
     ys.front = as.matrix(ys.front)
