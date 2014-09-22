@@ -4,7 +4,8 @@ getExtras = function(n, prop, control) {
   # this happens in init design
   if (is.null(prop)) {
     k = ifelse(control$number.of.targets > 1L && control$multicrit.method == "mspot", control$number.of.targets, 1L)
-    prop = list(crit.vals = matrix(NA_real_, nrow = n, ncol = k), errors.model = NA_character_)
+    prop = list(crit.vals = matrix(NA_real_, nrow = n, ncol = k), errors.model = NA_character_,
+      filter.replace = rep(NA, n))
   }
   exs = vector("list", n)
   errs = prop$errors.model
@@ -37,6 +38,10 @@ getExtras = function(n, prop, control) {
         weight.mat = matrix(NA_real_, nrow = n, ncol = control$number.of.targets)
       w = setNames(as.list(weight.mat[i, ]), paste0(".weight", 1:ncol(weight.mat)))
       ex = c(ex, w)
+    }
+    # if we filtered proposed points, store flag
+    if (control$filter.proposed.points) {
+      ex$filter.replace = prop$filter.replace[i]
     }
     exs[[i]] = ex
   }

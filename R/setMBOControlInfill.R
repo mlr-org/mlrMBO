@@ -18,12 +18,18 @@
 #'   Only used if \code{crit == "lcb"}, ignored otherwise.
 #'   Default is NULL. If specified, \code{crit.lcb.lambda == NULL} must hold.
 #' @param filter.proposed.points [\code{logical(1)}]\cr
-#'   Sometimes proposed points are located very close to design points which can lead to unsatisfactory results
-#'   when using Kriging as the underlying model. This parameter activates or deactivates a heuristic to handle 
-#'   this issue. If \code{TRUE}, proposed points whose distance to the design points is lower than 
-#'   \code{filter.proposed.points.tol} are removed. Default is \code{FALSE}.
+#'   Design points located too close to each other can lead to
+#'   numerical problems when using e.g. kriging as a surrogate model.
+#'   This parameter activates or deactivates a heuristic to handle this issue.
+#'   If \code{TRUE}, proposed points whose distance to design points or other current
+#'   candidate points is smaller than \code{filter.proposed.points.tol}, are replaced by random points.
+#'   If enabled, a logical column \dQuote{filter.replace} is added to the resulting \code{opt.path},
+#'   so you can see whether such a replacement happened.
+#'   Default is \code{FALSE}.
 #' @param filter.proposed.points.tol [\code{numeric(1)}]\cr
-#'   Tolerance value filtering of proposed points. See \code{filter.proposed.points}.
+#'   Tolerance value filtering of proposed points. We currently use a maximum metric
+#'   to calculate the distance between points.
+#'   Default is 0.0001.
 #' @param opt [\code{character(1)}]\cr
 #'   How should SINGLE points be proposed by using the surrogate model. Possible values are:
 #'   \dQuote{focussearch}: In several iteration steps the parameter space is
@@ -107,7 +113,7 @@
 setMBOControlInfill = function(control,
   crit = "mean", crit.lcb.lambda = 1, crit.lcb.PI = NULL,
   filter.proposed.points = FALSE,
-  filter.proposed.points.tol = 0.1,
+  filter.proposed.points.tol = 1e-4,
   opt = "focussearch", opt.restarts = 1L,
   opt.focussearch.maxit = 5L, opt.focussearch.points = 10000L,
   opt.cmaes.control = list(),
@@ -123,7 +129,7 @@ setMBOControlInfill = function(control,
   assertClass(control, "MBOControl")
 
   assertChoice(crit, choices = getSupportedInfillCritFunctions())
-  
+
   # lambda value for lcv - either given, or set via given PI
   # the other one must be NULL!
 
@@ -139,7 +145,7 @@ setMBOControlInfill = function(control,
     # alpha = -lambda, so we need the negative values
     crit.lcb.lambda = -qnorm(0.5 * crit.lcb.PI^(1 / control$number.of.targets))
   }
-  
+
   assertFlag(filter.proposed.points)
   assertNumber(filter.proposed.points.tol, na.ok = FALSE, lower = 0)
 
