@@ -56,7 +56,7 @@ runMBO = function(static, dynamic, method, crit, opt, prop.points, indicator = "
     iters = iters, propose.points = prop.points,
     save.on.disk.at = integer(0L))
   ctrl = setMBOControlInfill(ctrl, crit = crit, opt = opt,
-    crit.lcb.lambda = NULL, crit.lcb.PI = LCB_PI,
+    crit.lcb.lambda = NULL, crit.lcb.pi = LCB_PI,
     opt.focussearch.points = FOCUSSEARCH_POINTS,
     opt.restarts = FOCUSSEARCH_RESTARTS,
     opt.focussearch.maxit = FOCUSSEARCH_MAXIT,

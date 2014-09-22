@@ -13,10 +13,13 @@
 #'   Lambda parameter for lower confidence bound infill criterion.
 #'   Only used if \code{crit == "lcb"}, ignored otherwise.
 #'   Default is 1.
-#' @param crit.lcb.PI [\code{numeric(1)}]\cr
-#'   PI value to determine the lambda parameter for lcb infill criterion.
+# FIXME: does this only make sense for multicrit? or single crit too?
+#' @param crit.lcb.pi [\code{numeric(1)}]\cr
+#'   Probability-of-improvement value to determine the lambda parameter for lcb infill criterion.
+#'   It is an alternative to set the trade-off between \dQuote{mean} and \dQuote{se}.
 #'   Only used if \code{crit == "lcb"}, ignored otherwise.
-#'   Default is NULL. If specified, \code{crit.lcb.lambda == NULL} must hold.
+#'   If specified, \code{crit.lcb.lambda == NULL} must hold.
+#'   Default is \code{NULL}.
 #' @param filter.proposed.points [\code{logical(1)}]\cr
 #'   Design points located too close to each other can lead to
 #'   numerical problems when using e.g. kriging as a surrogate model.
@@ -111,7 +114,7 @@
 #' @seealso makeMBOControl
 #' @export
 setMBOControlInfill = function(control,
-  crit = "mean", crit.lcb.lambda = 1, crit.lcb.PI = NULL,
+  crit = "mean", crit.lcb.lambda = 1, crit.lcb.pi = NULL,
   filter.proposed.points = FALSE,
   filter.proposed.points.tol = 1e-4,
   opt = "focussearch", opt.restarts = 1L,
@@ -130,20 +133,16 @@ setMBOControlInfill = function(control,
 
   assertChoice(crit, choices = getSupportedInfillCritFunctions())
 
-  # lambda value for lcv - either given, or set via given PI
-  # the other one must be NULL!
-
-  if (!is.null(crit.lcb.lambda) && !is.null(crit.lcb.PI)) {
-    stop("Please specify either lambda or PI for the lcb crit, not both!")
-  }
-  if (is.null(crit.lcb.PI)) {
+  # lambda value for lcb - either given, or set via given pi, the other one must be NULL!
+  if (!is.null(crit.lcb.lambda) && !is.null(crit.lcb.pi))
+    stop("Please specify either 'crit.lcb.lambda' or 'crit.lcb.pi' for the lcb crit, not both!")
+  if (is.null(crit.lcb.pi))
     assertNumeric(crit.lcb.lambda, len = 1L, any.missing = FALSE, lower = 0)
-  }
   if (is.null(crit.lcb.lambda)) {
-    assertNumeric(crit.lcb.PI, len = 1L, any.missing = FALSE, lower = 0, upper = 1)
-    # This is the formula from TW diss for setting lambda. Note, that
-    # alpha = -lambda, so we need the negative values
-    crit.lcb.lambda = -qnorm(0.5 * crit.lcb.PI^(1 / control$number.of.targets))
+    assertNumeric(crit.lcb.pi, len = 1L, any.missing = FALSE, lower = 0, upper = 1)
+    # This is the formula from TW diss for setting lambda.
+    # Note, that alpha = -lambda, so we need the negative values
+    crit.lcb.lambda = -qnorm(0.5 * crit.lcb.pi^(1 / control$number.of.targets))
   }
 
   assertFlag(filter.proposed.points)
