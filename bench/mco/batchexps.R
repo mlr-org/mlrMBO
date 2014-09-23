@@ -111,8 +111,8 @@ addAlgorithm(reg, "nsga2", fun = function(static, budget) {
   list(par.set = static$par.set, opt.path = opt.path, opt.res = res)
 })
 
-addAlgorithm(reg, "parego", fun = function(static, dynamic, prop.points) {
-  runMBO(static, dynamic, "parego", PAREGO_CRIT, "focussearch", prop.points)
+addAlgorithm(reg, "parego", fun = function(static, dynamic, prop.points, crit) {
+  runMBO(static, dynamic, "parego", crit, "focussearch", prop.points)
 })
 
 addAlgorithm(reg, "dib", fun = function(static, dynamic, prop.points, indicator) {
