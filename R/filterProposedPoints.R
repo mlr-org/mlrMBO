@@ -8,8 +8,7 @@
 filterProposedPoints = function(prop, opt.path, par.set, control) {
   # prepare stuff
   n = nrow(prop$prop.points)
-  # FIXME: useGetOptPathX
-  design = as.data.frame(opt.path, include.x = TRUE, include.y = FALSE, include.rest = FALSE)
+  design = getOptPathX(opt.path)
   calcMaxMetric = function(x, y) max(abs(x - y))
   to.delete = rep(FALSE,  n)
 
@@ -24,14 +23,14 @@ filterProposedPoints = function(prop, opt.path, par.set, control) {
       design = rbind(design, pp)
   }
 
-  # for now replace removed design points with random points
+  # for now replace removed design points with random points,
+  #  we leave all other data in prop like it is, we have flag filter.replace
   n.replace = sum(to.delete)
   prop$filter.replace = to.delete
 
   if (n.replace > 0) {
     # FIXME: we might want to do something smarter here. how about augmenting the current design?
-    random.points = generateDesign(n.replace, par.set, randomLHS)
-    prop$prop.points[to.delete, ] = random.points
+    prop$prop.points[to.delete, ] = generateRandomDesign(n.replace, par.set)
   }
 
   return(prop)
