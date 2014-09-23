@@ -17,6 +17,8 @@ FOCUSSEARCH_RESTARTS =  3L
 LCB_PI = 0.5    # mspot_lcb + dib (all)
 MULTICRIT_REFPOINT = "all" # mspot (all) + dib.sms
 MULTICRIT_REFPOINT_OFFSET = 1 # mspot (all) + dib.sms
+FILTER_PROPOSED_POINTS = TRUE
+FILTER_PROPOSED_POINTS_TOL = 1e-4
 
 # nsga2 baseline comparison
 BASELINE_NSGA2_POPSIZE = function(dimx) dimx * 4 # must be a multiple of 4, set like init design

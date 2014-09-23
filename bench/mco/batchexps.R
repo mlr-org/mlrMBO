@@ -57,6 +57,8 @@ runMBO = function(static, dynamic, method, crit, opt, prop.points, indicator = "
     iters = iters, propose.points = prop.points,
     save.on.disk.at = integer(0L))
   ctrl = setMBOControlInfill(ctrl, crit = crit, opt = opt,
+    filter.proposed.points = FILTER_PROPOSED_POINTS,
+    filter.proposed.points.tol = FILTER_PROPOSED_POINTS_TOL,
     crit.lcb.lambda = NULL, crit.lcb.pi = LCB_PI,
     opt.focussearch.points = FOCUSSEARCH_POINTS,
     opt.restarts = FOCUSSEARCH_RESTARTS,
@@ -72,7 +74,7 @@ runMBO = function(static, dynamic, method, crit, opt, prop.points, indicator = "
 
   res = mbo(makeMBOFunction(static$objective), static$par.set, design = dynamic$design,
     learner = learner, control = ctrl, show.info = TRUE)
-  list(par.set = static$par.set, opt.path = opt.path, opt.res = res, mbo.control = control)
+  list(par.set = static$par.set, opt.path = res$opt.path, opt.res = res, mbo.control = ctrl)
 }
 
 addAlgorithm(reg, "randomSearch", fun = function(static, dynamic, budget) {
@@ -128,7 +130,8 @@ des2 = makeDesign("nsga2", exhaustive = list(
   budget = c("normal", "10fold")
 ))
 des3 = makeDesign("parego", exhaustive = list(
-  prop.points = PARALLEL_PROP_POINTS
+  prop.points = PARALLEL_PROP_POINTS,
+  crit = c("lcb", "ei")
 ))
 des4 = makeDesign("dib", exhaustive = list(
   prop.points = PARALLEL_PROP_POINTS,
@@ -143,10 +146,11 @@ addExperiments(reg, algo.design = des1, repls = REPLS)
 addExperiments(reg, algo.design = des2, repls = REPLS)
 addExperiments(reg, algo.design = des3, repls = REPLS)
 addExperiments(reg, algo.design = des4, repls = REPLS)
+addExperiments(reg, algo.design = des5, repls = REPLS)
 
 batchExport(reg, runMBO = runMBO)
 
-j = findExperiments(reg, algo.pattern = "dib")
+j = findExperiments(reg, algo.pattern = "parego")
 
 z = testJob(reg, j[1], external = F)
 
