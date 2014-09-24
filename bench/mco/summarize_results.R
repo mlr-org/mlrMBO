@@ -5,22 +5,28 @@ library(plyr)
 reg = loadRegistry("mco_bench-files", work.dir = ".")
 
 prob.ids = getProblemIds(reg)
-# parallelStartBatchJobs(bj.resources = list(memory = 4000))
-# parallelLibrary("BatchExperiments", "emoa", "ParamHelpers")
-# merged.fronts = parallelMap(function(pid, reg) {
-#   messagef("Merging front: %s", pid)
-#   ids = findExperiments(reg, prob.pattern = pid, match.substring = FALSE)
-#   xs = loadResults(reg, ids)
-#   fronts = lapply(xs, function(x) getOptPathParetoFront(x$opt.path))
-#   merged = do.call(rbind, fronts)
-#   t(nondominated_points(t(merged)))
-# }, prob.ids, use.names = TRUE, more.args = list(reg = reg))
-# parallelStop()
+# dont use randomSearch and nsga2 10 fold for now
+nsga2.10fold.ids = findExperiments(reg, algo.pattern = "nsga2", algo.pars = budget == "normal")
+rs.10fold.ids = findExperiments(reg, algo.pattern = "randomSearch", algo.pars = budget == "normal")
+prob.ids = setdiff(prob.ids, union(nsga2.10fold.ids, rs.10fold.ids))
+parallelStartBatchJobs(bj.resources = list(memory = 4000))
+parallelLibrary("BatchExperiments", "emoa", "ParamHelpers")
+merged.fronts = parallelMap(function(pid, reg) {
+  messagef("Merging front: %s", pid)
+  ids = findExperiments(reg, prob.pattern = pid, match.substring = FALSE)
+  xs = loadResults(reg, ids)
+  fronts = lapply(xs, function(x) getOptPathParetoFront(x$opt.path))
+  merged = do.call(rbind, fronts)
+  t(nondominated_points(t(merged)))
+}, prob.ids, use.names = TRUE, more.args = list(reg = reg))
+parallelStop()
 
 merged.fronts.min = sapply(merged.fronts, function(y) apply(y, 2, min), simplify = FALSE)
 merged.fronts.max = sapply(merged.fronts, function(y) apply(y, 2, max), simplify = FALSE)
 
-res = reduceResultsExperimentsParallel(reg, 1:500, njobs = 50L,
+ids = findExperiments(reg, prob.pattern = "2M")
+ids = c(ids, findExperiments(reg, prob.pattern = "dltz1"))
+res = reduceResultsExperimentsParallel(reg, ids, njobs = 50L,
   fun = function(job, res, merged.fronts, merged.fronts.min, merged.fronts.max) {
 
   library(ParamHelpers)
@@ -51,12 +57,12 @@ res = reduceResultsExperimentsParallel(reg, 1:500, njobs = 50L,
 
   list(
     front.size = n.front,
-    errmod = sumCounter(op$error.model),
+    errmod = sumCounter(is.na(op$error.model)),
     filter = sumCounter(op$filter.proposed),
     random = sumCounter(!is.na(op$error.model) | isTRUE(op$filter.proposed)),
     hv = hypervolume_indicator(t(p), t(refset), ref = ref),
     eps = epsilon_indicator(t(p), t(refset)),
-    r2 = r2_indicator(t(p), t(refset), ideal = ideal, nadir = nadir, lambda = 2L)
+    r2 = r2_indicator(t(p), t(refset), ideal = ideal, nadir = nadir, lambda = 250L)
   )
 }, merged.fronts = merged.fronts, merged.fronts.min = merged.fronts.min, merged.fronts.max = merged.fronts.max)
 
