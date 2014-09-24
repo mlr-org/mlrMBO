@@ -1,68 +1,66 @@
-library(plyr)
 library(BatchExperiments)
+library(plyr)
 
 reg = loadRegistry("mco_bench-files")
-two.object = c(findExperiments(reg, prob.pattern = "2M"),
-  findExperiments(reg, prob.pattern = "zdt"))
-five.object = findExperiments(reg, prob.pattern = "5M")
 
-makeGetterFun = function (f) {
-  function(job, res) {
-    p = getOptPathParetoFront(res)
-    mins = apply(p, 2, f)
-    mins = as.list(mins)
+prob.ids = getProblemIds(reg)
+merged.fronts = sapply(prob.ids, simplify = FALSE, function(pid) {
+  messagef("Merging front: %s", pid)
+  ids = findExperiments(reg, prob.pattern = pid, match.substring = FALSE)
+  xs = loadResults(reg, ids)
+  fronts = lapply(xs, function(x) getOptPathParetoFront(x$opt.path))
+  merged = do.call(rbind, fronts)
+  t(nondominated_points(t(merged)))
+})
+
+merged.fronts.min = sapply(merged.fronts, function(y) apply(y, 2, min), simplify = FALSE)
+merged.fronts.max = sapply(merged.fronts, function(y) apply(y, 2, max), simplify = FALSE)
+
+res = reduceResultsExperiments(reg, fun = function(job, res) {
+  op = as.data.frame(res$opt.path)
+  p = getOptPathParetoFront(res$opt.path)
+  dimy = ncol(p)
+  n.front = nrow(p)
+
+  # scale front + merged front. NB: apply transposes....
+  y.min = merged.fronts.min[[job$prob.id]]
+  y.max = merged.fronts.max[[job$prob.id]]
+  myscale = function(y) {
+    t(apply(y, 1, function(r) {
+      1 + (r - y.min) / (y.max - y.min)
+    }))
   }
-}
+  p = myscale(p)
+  refset = merged.fronts[[job$prob.id]]
+  refset = myscale(refset)
 
-getGlobalExtremum = function(y.extreme, ny, minimize = TRUE) {
-  y.names = paste("y", 1:ny, sep = "_")
-  if (minimize)
-    fun = min
-  else
-    fun = max
-  tapply(1:nrow(y.extreme), y.extreme$prob, function(inds) apply(y.extreme[inds, y.names], 2, fun))
-}
+  ref = rep(2.1, dimy)
+  ideal = rep(1, dimy)
+  nadir = rep(2, dimy)
 
-y.min.two = reduceResultsExperiments(reg, ids = two.object, fun = makeGetterFun(min))
-y.max.two = reduceResultsExperiments(reg, ids = two.object, fun = makeGetterFun(max))
-y.min.five = reduceResultsExperiments(reg, ids = five.object, fun = makeGetterFun(min))
-y.max.five = reduceResultsExperiments(reg, ids = five.object, fun = makeGetterFun(max))
+  sumCounter = function(counter)
+   if (job$algo.id %nin% c("randomSearch", "nsga2")) sum(counter) else 0
 
-y.min.two = getGlobalExtremum(y.min.two, 2)
-y.max.two = getGlobalExtremum(y.max.two, 2)
-y.min.five = getGlobalExtremum(y.min.five, 5)
-y.max.five = getGlobalExtremum(y.max.five, 5)
+  list(
+    front.size = n.front,
+    errmod = sumCounter(op$error.model),
+    filter = sumCounter(op$filter.proposed),
+    random = sumCounter(!is.na(op$error.model) | isTRUE(op$filter.proposed)),
+    hv = hypervolume_indicator(t(p), t(refset), ref = ref),
+    eps = epsilon_indicator(t(p), t(refset)),
+    r2 = r2_indicator(t(p), t(refset), ideal = ideal, nadir = nadir, lambda = 2L)
+  )
+})
 
-res = reduceResultsExperimentsParallel(reg, fun = function(job, res, y.min.two, y.max.two, y.min.five, y.max.five) {
-  library(ParamHelpers)
-  library(emoa)
-  op = as.data.frame(res)
-  # for NSGA2 drop the last 2 generations
-  #print(1:(max(getOptPathDOB(res)) - 2))
-  if (job$algo.id == "nsga2")
-    p = getOptPathParetoFront(res, dob = 1:(max(getOptPathDOB(res)) - 2))
-  else
-    p = getOptPathParetoFront(res)
-  if (ncol(p) == 2) {
-    y.min = matrix(rep(y.min.two[[job$prob.id]], nrow(p)), nrow = nrow(p), byrow = TRUE)
-    y.max = matrix(rep(y.max.two[[job$prob.id]], nrow(p)), nrow = nrow(p), byrow = TRUE)
-  } else {
-    y.min = matrix(rep(y.min.five[[job$prob.id]], nrow(p)), nrow = nrow(p), byrow = TRUE)
-    y.max = matrix(rep(y.max.five[[job$prob.id]], nrow(p)), nrow = nrow(p), byrow = TRUE)
-  }
-  p = (p - y.min) / (y.max - y.min)
-  list(hv = dominated_hypervolume(t(p), ref = rep(2.1, length(res$y.name))),
-    front.size = nrow(p), error.model = sum(!is.na(op$error.model)))
-}, y.min.two = y.min.two, y.max.two = y.max.two, y.min.five = y.min.five, y.max.five = y.max.five)
+aggr = ddply(res, getResultVars(res), summarise,
+  front.size = mean(front.size),
+  errmod = mean(errmod),
+  filter = mean(filter),
+  random = mean(random),
+  hv = mean(hv),
+  eps = mean(eps),
+  r2 = mean(r2)
+)
 
-aggr = ddply(res, getResultVars(res), summarise, hv = mean(hv), front.size = mean(front.size),
-  error.model = mean(error.model))
-
-testfuns = levels(aggr$prob)
-
-getTestFunResults = function(tf) {
-  res = subset(aggr, aggr$prob == tf)
-  sortByCol(res, "hv", asc = FALSE)
-}
-
+save2(file = "results.RData", res, aggr, merged.fronts, merged.fronts.min, merged.fronts.max)
 
