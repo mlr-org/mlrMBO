@@ -2,24 +2,29 @@ library(BatchExperiments)
 library(parallelMap)
 library(plyr)
 
-reg = loadRegistry("~/nobackup/mco_bench-files", work.dir = ".")
+reg = loadRegistry("mco_bench-files", work.dir = ".")
 
 prob.ids = getProblemIds(reg)
-parallelStartBatchJobs()
-merged.fronts = parallelMap(function(pid) {
-  messagef("Merging front: %s", pid)
-  ids = findExperiments(reg, prob.pattern = pid, match.substring = FALSE)
-  xs = loadResults(reg, ids)
-  fronts = lapply(xs, function(x) getOptPathParetoFront(x$opt.path))
-  merged = do.call(rbind, fronts)
-  t(nondominated_points(t(merged)))
-}, prob.ids)
-parallelStop()
+# parallelStartBatchJobs(bj.resources = list(memory = 4000))
+# parallelLibrary("BatchExperiments", "emoa", "ParamHelpers")
+# merged.fronts = parallelMap(function(pid, reg) {
+#   messagef("Merging front: %s", pid)
+#   ids = findExperiments(reg, prob.pattern = pid, match.substring = FALSE)
+#   xs = loadResults(reg, ids)
+#   fronts = lapply(xs, function(x) getOptPathParetoFront(x$opt.path))
+#   merged = do.call(rbind, fronts)
+#   t(nondominated_points(t(merged)))
+# }, prob.ids, use.names = TRUE, more.args = list(reg = reg))
+# parallelStop()
 
 merged.fronts.min = sapply(merged.fronts, function(y) apply(y, 2, min), simplify = FALSE)
 merged.fronts.max = sapply(merged.fronts, function(y) apply(y, 2, max), simplify = FALSE)
 
-res = reduceResultsExperiments(reg, fun = function(job, res) {
+res = reduceResultsExperimentsParallel(reg, 1:500, njobs = 50L,
+  fun = function(job, res, merged.fronts, merged.fronts.min, merged.fronts.max) {
+
+  library(ParamHelpers)
+  library(emoa)
   op = as.data.frame(res$opt.path)
   p = getOptPathParetoFront(res$opt.path)
   dimy = ncol(p)
@@ -53,7 +58,7 @@ res = reduceResultsExperiments(reg, fun = function(job, res) {
     eps = epsilon_indicator(t(p), t(refset)),
     r2 = r2_indicator(t(p), t(refset), ideal = ideal, nadir = nadir, lambda = 2L)
   )
-})
+}, merged.fronts = merged.fronts, merged.fronts.min = merged.fronts.min, merged.fronts.max = merged.fronts.max)
 
 aggr = ddply(res, getResultVars(res), summarise,
   front.size = mean(front.size),
