@@ -1,17 +1,20 @@
 library(BatchExperiments)
+library(parallelMap)
 library(plyr)
 
-reg = loadRegistry("mco_bench-files")
+reg = loadRegistry("~/nobackup/mco_bench-files", work.dir = ".")
 
 prob.ids = getProblemIds(reg)
-merged.fronts = sapply(prob.ids, simplify = FALSE, function(pid) {
+parallelStartBatchJobs()
+merged.fronts = parallelMap(function(pid) {
   messagef("Merging front: %s", pid)
   ids = findExperiments(reg, prob.pattern = pid, match.substring = FALSE)
   xs = loadResults(reg, ids)
   fronts = lapply(xs, function(x) getOptPathParetoFront(x$opt.path))
   merged = do.call(rbind, fronts)
   t(nondominated_points(t(merged)))
-})
+}, prob.ids)
+parallelStop()
 
 merged.fronts.min = sapply(merged.fronts, function(y) apply(y, 2, min), simplify = FALSE)
 merged.fronts.max = sapply(merged.fronts, function(y) apply(y, 2, max), simplify = FALSE)
