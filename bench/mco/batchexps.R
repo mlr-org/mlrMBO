@@ -50,7 +50,7 @@ addMyProblem("GOMOP2_2D3M", GOMOP2_2D3M, lower = 0, upper = 1, dimx = 2L, dimy =
 addMyProblem("GOMOP3_3D2M", GOMOP3_3D2M, lower = 0, upper = 1, dimx = 3L, dimy = 2L, prob.seed = 12)
 
 runMBO = function(static, dynamic, method, crit, opt, prop.points, indicator = "sms") {
-  learner = makeLearner("regr.km", covtype = "powexp", predict.type = "se")
+  learner = makeLearner("regr.km", covtype = "matern5_2", predict.type = "se")
   iters = MBO_ITERS(static$dimx, prop.points)
 
   ctrl = makeMBOControl(number.of.targets = static$dimy,
@@ -150,10 +150,8 @@ addExperiments(reg, algo.design = des5, repls = REPLS)
 
 batchExport(reg, runMBO = runMBO)
 
-j = findExperiments(reg, algo.pattern = "parego")
+j = findExperiments(reg, algo.pattern = "nsga2")
 
-z = testJob(reg, j[1], external = F)
-
-# submitJobs(reg, ids = chunk(getJobIds(reg), n.chunks = 250L, shuffle = TRUE),
- # resources = list(walltime = 1*3600, memory = 2*1024),
- # wait = function(retries) 1, max.retries = 10)
+submitJobs(reg, ids = j,
+  resources = list(walltime = 8 * 3600, memory = 2 * 1024),
+  wait = function(retries) 60, max.retries = 10)
