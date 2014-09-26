@@ -26,6 +26,20 @@ test = function(x, ys) {
   return(res)
 }
 
+# Tests all algos versus the ref.algo w.r.t. the given indicator
+makeTest = function(d, indicator, ref.algo) {
+  ref.test.res = lapply(levels(d$prob), function(level) {
+    tmp = subset(d, d$prob == level)
+    tmp.mat = matrix(tmp[, indicator], nrow = 20L)
+    ref.algo.ind = which(unique(tmp$algo2) == ref.algo)
+    test.res = test(tmp.mat[, ref.algo.ind], tmp.mat[, - ref.algo.ind, drop = FALSE])
+    names(test.res) = setdiff(unique(tmp$algo2), ref.algo)
+    return(test.res)
+  })
+  names(ref.test.res)  = levels(d$prob)
+  return( t(as.matrix(as.data.frame(ref.test.res))))
+}
+
 # res: The resultat of our experiment
 # expr: expression for subsetting the experiment
 # indicator used for comparision
@@ -43,43 +57,23 @@ compareGroup = function(res, expr, indicator, digits = NULL, ref.algo = NULL,
   
   # Test versus ref.algo if one is specified
   if (!is.null(ref.algo)) {
-    ref.test.res = t(sapply(levels(d$prob), function(level) {
-      tmp = subset(d, d$prob == level)
-      tmp.mat = matrix(tmp[, indicator], nrow = 20L)
-      ref.algo.ind = which(unique(tmp$algo2) == ref.algo)
-      test.res = test(tmp.mat[, ref.algo.ind], tmp.mat[, - ref.algo.ind, drop = FALSE])
-      names(test.res) = setdiff(unique(tmp$algo2), ref.algo)
-      return(test.res)
-    }))
-    if (nrow(ref.test.res) == 1) {
-      ref.test.res = t(ref.test.res)
-      colnames(ref.test.res) = setdiff(unique(d$algo2), ref.algo)
-    }
+    ref.test.res = makeTest(d, indicator, ref.algo)
   }
   
   # Test versus randomSearch and nsga2?
   if (include.baseline) {
     baseline.rs = subset(res, res$algo == "randomSearch" & res$budget == "normal")
-    rs.test.res = t(sapply(levels(d$prob), function(level) {
-      tmp = subset(d, d$prob == level)
-      tmp.mat = matrix(tmp[, indicator], nrow = 20L)
-      test.res = test(subset(baseline.rs, baseline.rs$prob == level)[, indicator], tmp.mat)
-      names(test.res) = unique(tmp$algo2)
-      return(test.res)
-    }))
+    baseline.rs$algo2 = "rs"
+    rs.test.res = makeTest(rbind(baseline.rs, d), indicator, "rs")
     
     baseline.nsga2 = subset(res, res$algo == "nsga2" & res$budget == "normal")
-    nsga2.test.res = t(sapply(levels(d$prob), function(level) {
-      tmp = subset(d, d$prob == level)
-      tmp.mat = matrix(tmp[, indicator], nrow = 20L)
-      test.res = test(subset(baseline.nsga2, baseline.nsga2$prob == level)[, indicator], tmp.mat)
-      names(test.res) = unique(tmp$algo2)
-      return(test.res)
-    }))
+    baseline.nsga2$algo2 = "nsga2"
+    nsga2.test.res = makeTest(rbind(baseline.nsga2, d), indicator, "nsga2")
   }
   
   # some conversions
-  d = dcast(d, d$prob ~ d$algo2, fun.aggregate = mean, value.var = "hv")
+  d = dcast(d, d$prob ~ d$algo2, fun.aggregate = mean, value.var = indicator)
+  d.full.precision = d[, -1]
   if (!is.null(digits))
     d[, -1] = round(d[,-1], digits)
   d = as.matrix(d)
@@ -94,33 +88,36 @@ compareGroup = function(res, expr, indicator, digits = NULL, ref.algo = NULL,
   # mark best algo for each row. bit tricky, since we have to calc the best
   # in d, but mark it in xtab
   for (i in seq_row(xtab)) {
-    best.ind = which.min(d[i, ])
-    xtab[i, best.ind] = paste("\\textbf{", xtab[i, best.ind], "}", sep= "")
+    best.ind = which.min(d.full.precision[i, ])
+    xtab[i, best.ind] = paste("\\mathbf{", xtab[i, best.ind], "}", sep= "")
   }
+  # start math modus for every cell
+  xtab[1:nr, 1:nc] = paste("$", xtab[1:nr, 1:nc], sep = "")
   # mark test versus ref.algo
   if (!is.null(ref.algo)) {
     ref.test.res = ref.test.res[, setdiff(colnames(xtab), ref.algo)]
     ref.algo.ind = which(colnames(xtab) == ref.algo)
     xtab[, -ref.algo.ind][ref.test.res == "better"] = 
-      paste(xtab[, -ref.algo.ind][ref.test.res == "better"], "$^{++}$", sep = "")
+      paste(xtab[, -ref.algo.ind][ref.test.res == "better"], "^{++}", sep = "")
     xtab[, -ref.algo.ind][ref.test.res == "not_worse"] = 
-      paste(xtab[, -ref.algo.ind][ref.test.res == "not_worse"], "$^{+}$", sep = "")
+      paste(xtab[, -ref.algo.ind][ref.test.res == "not_worse"], "^{+}", sep = "")
   }
   # mark test versus baseline algos and add baseline algos
   if (include.baseline) {
     rs.test.res = rs.test.res[, colnames(xtab)]
     nsga2.test.res = nsga2.test.res[, colnames(xtab)]
-    xtab[1:nr, 1:nc] = paste(xtab, " $_{", sep = "")
+    xtab[1:nr, 1:nc] = paste(xtab, "_{", sep = "")
     xtab[rs.test.res == "better"] = 
       paste(xtab[rs.test.res == "better"], "r", sep = "")
     xtab[nsga2.test.res == "better"] = 
       paste(xtab[nsga2.test.res == "better"], "n", sep = "")
-    xtab[1:nr, 1:nc] = paste(xtab, "}$", sep = "")
-    
-    b = subset(res, res$budget == "normal")
-    # join algo name and params
-    b$algo2 = paste(b$algo, b$budget, b$prop.points, b$indicator, b$crit, sep = "-")
-    b$algo2 = str_replace_all(b$algo2, "-NA", "")
+    xtab[1:nr, 1:nc] = paste(xtab, "}", sep = "")
+  }
+  # end math modus for every cell
+  xtab[1:nr, 1:nc] = paste(xtab[1:nr, 1:nc], "$", sep = "")
+  # add cols with baseline
+  if (include.baseline) {
+    b = rbind(baseline.rs, baseline.nsga2)
     b = dcast(b, b$prob ~ b$algo2, fun.aggregate = mean, value.var = indicator)
     if (!is.null(digits))
       b[, -1] = round(b[,-1], digits)
@@ -128,20 +125,23 @@ compareGroup = function(res, expr, indicator, digits = NULL, ref.algo = NULL,
     colnames(b) = c("", "nsga2", "rs")
     xtab=  cbind(xtab, b[, -1])    
   }
-  # caption:
+  # some layout polishing
   capt = "TODO"
   label = label
   rownames(xtab) = gsub("_", "-", rownames(xtab))
+  colnames(xtab) = substr(colnames(xtab), start = nchar(colnames(xtab) - 5))
   xtab = xtable(xtab, caption = capt, label = label)
   
   # output for the console   
   d = t(apply(d, 1, function(x) {
-   y = x[-1]
-   j = which.min(y) + 1
+   j = which.min(x)
    x[j] = paste("*", x[j])
    x
   }))
   d = as.data.frame(d)
+  if (include.baseline) {
+   d = cbind(d, b[, -1]) 
+  }
   
   return(list(d = as.data.frame(d), xtab = xtab))
 }
@@ -151,6 +151,7 @@ tab.parego = compareGroup(res = res, expr = res$algo == "parego", indicator = "r
   digits = 3, ref.algo = "parego-1-ei", include.baseline = TRUE, label = "parego.table")
 write(x = print(tab.parego$xtab, type = "latex",
   sanitize.text.function = function(x){x}), file= "tableParego.tex")
+tab.parego$d
 # 1) LCB ist ueberall besser, ausser auf einer funktion wo es egal ist
 # 2) Multipoint ist entweder besser, oder es ist es stueck nur schlecher / gleich
  
@@ -159,12 +160,14 @@ tab.sms = compareGroup(res = res, expr = res$algo == "dib" & res$indicator %in% 
   indicator = "hv", digits = 3, ref.algo = "dib-1-sms", include.baseline = TRUE, label = "sms.table")
 write(x = print(tab.sms$xtab, type = "latex",
   sanitize.text.function = function(x){x}), file= "tableSms.tex")
+tab.sms$d
 
 # DIB - eps Analyse
 tab.eps = compareGroup(res = res, expr = res$algo == "dib" & res$indicator %in% c(NA, "eps"),
   indicator = "eps", digits = 3, ref.algo = "dib-1-eps", include.baseline = TRUE, label = "eps.table")
 write(x = print(tab.eps$xtab, type = "latex",
   sanitize.text.function = function(x){x}), file= "tableEps.tex")
+tab.eps$d
 # 1) 1-point liegt sms klar vorne, ist aber nicht sehr viel
 # 2) Multipoint ist es nicht ganz klar (?), aber man wuerde wohl auch den SMS nehmen. eps ist teilweise auch ok,
 #    wird manchmal aber outperformed
@@ -174,3 +177,4 @@ tab.mspot = compareGroup(res = res, expr = res$algo == "mspot",
   indicator = "hv", digits = 3, ref.algo = "mspot-1-mean", include.baseline = TRUE, label = "mspot.table")
 write(x = print(tab.mspot$xtab, type = "latex",
   sanitize.text.function = function(x){x}), file= "tableMspot.tex")
+tab.mspot$d

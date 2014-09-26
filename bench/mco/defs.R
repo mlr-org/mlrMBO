@@ -28,7 +28,7 @@ BASELINE_NSGA2_GENERATIONS2 = function(dimx) 10 * FEVALS(dimx) / BASELINE_NSGA2_
 
 # randomSearch baseline comparison
 BASELINE_RANDOMSEARCH_BUDGET1 = function(dimx) FEVALS(dimx) - INIT_DESIGN_POINTS(dimx)
-BASELINE_RANDOMSEARCH_BUDGET2 = function(dimx) 10 * FEVALS(dimx) - - INIT_DESIGN_POINTS(dimx)
+BASELINE_RANDOMSEARCH_BUDGET2 = function(dimx) 10 * FEVALS(dimx) - INIT_DESIGN_POINTS(dimx)
 
 # parego
 PAREGO_RHO = 0.05

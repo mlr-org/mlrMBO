@@ -11,7 +11,7 @@ prob.ids = setdiff(getProblemIds(reg), "GOMOP_2D5M")
 job.ids = getJobIds(reg)
 #nsga2.10fold.ids = findExperiments(reg, algo.pattern = "nsga2", algo.pars = budget == "10fold")
 #rs.10fold.ids = findExperiments(reg, algo.pattern = "randomSearch", algo.pars = budget == "10fold")
-job.ids = setdiff(job.ids, union(nsga2.10fold.ids, rs.10fold.ids))
+#job.ids = setdiff(job.ids, union(nsga2.10fold.ids, rs.10fold.ids))
 job.ids = setdiff(job.ids, findExperiments(reg, prob.pattern = "GOMOP_2D5M"))
 
 parallelStartBatchJobs(bj.resources = list(memory = 4000))
