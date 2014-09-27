@@ -9,8 +9,12 @@ library(BBmisc)
 # Result is a factor for every test "better" "not_worse" "worse".
 # E.g. y[i] is better than x
 # Note: Smaller values are better in our case
-test = function(x, ys) {
+test = function(x, ys, maximize = FALSE) {
   # tests, if x - y < or > 0
+  if (maximize) {
+    x = x * -1
+    ys = ys * -1
+  }
   res = factor(levels = c("better", "not_worse", "worse"))
   for (i in seq_col(ys)) {
     diff = ys[, i] - x
@@ -25,12 +29,12 @@ test = function(x, ys) {
 }
 
 # Tests all algos versus the ref.algo w.r.t. the given indicator
-makeTest = function(d, indicator, ref.algo) {
+makeTest = function(d, indicator, ref.algo, maximize) {
   ref.test.res = lapply(levels(d$prob), function(level) {
     tmp = subset(d, d$prob == level)
     tmp.mat = matrix(tmp[, indicator], nrow = 20L)
     ref.algo.ind = which(unique(tmp$algo2) == ref.algo)
-    test.res = test(tmp.mat[, ref.algo.ind], tmp.mat[, - ref.algo.ind, drop = FALSE])
+    test.res = test(tmp.mat[, ref.algo.ind], tmp.mat[, - ref.algo.ind, drop = FALSE], maximize = maximize)
     names(test.res) = setdiff(unique(tmp$algo2), ref.algo)
     return(test.res)
   })
@@ -47,26 +51,28 @@ makeTest = function(d, indicator, ref.algo) {
 # label: label for the TeX-Table
 
 compareGroup = function(res, expr, indicator, digits = NULL, ref.algo = NULL,
-  include.baseline = FALSE, label) {
+  include.baseline = FALSE, label = NULL, col.sorting = NULL) {
   d = subset(res, expr)
   # join algo name and params
   d$algo2 = paste(d$algo, d$budget, d$prop.points, d$indicator, d$crit, sep = "-")
   d$algo2 = str_replace_all(d$algo2, "-NA", "")
   
+  maximize = indicator == "hv"
+  
   # Test versus ref.algo if one is specified
   if (!is.null(ref.algo)) {
-    ref.test.res = makeTest(d, indicator, ref.algo)
+    ref.test.res = makeTest(d, indicator, ref.algo, maximize = maximize)
   }
   
   # Test versus randomSearch and nsga2?
   if (include.baseline) {
     baseline.rs = subset(res, res$algo == "randomSearch" & res$budget == "normal")
     baseline.rs$algo2 = "rs"
-    rs.test.res = makeTest(rbind(baseline.rs, d), indicator, "rs")
+    rs.test.res = makeTest(rbind(baseline.rs, d), indicator, "rs", maximize = maximize)
     
     baseline.nsga2 = subset(res, res$algo == "nsga2" & res$budget == "normal")
     baseline.nsga2$algo2 = "nsga2"
-    nsga2.test.res = makeTest(rbind(baseline.nsga2, d), indicator, "nsga2")
+    nsga2.test.res = makeTest(rbind(baseline.nsga2, d), indicator, "nsga2", maximize = maximize)
   }
   
   # some conversions
@@ -86,7 +92,10 @@ compareGroup = function(res, expr, indicator, digits = NULL, ref.algo = NULL,
   # mark best algo for each row. bit tricky, since we have to calc the best
   # in d, but mark it in xtab
   for (i in seq_row(xtab)) {
-    best.ind = which.min(d.full.precision[i, ])
+    if (maximize)
+      best.ind = which.max(d.full.precision[i, ])
+    else
+      best.ind = which.min(d.full.precision[i, ])
     xtab[i, best.ind] = paste("\\mathbf{", xtab[i, best.ind], "}", sep= "")
   }
   # start math modus for every cell
@@ -132,12 +141,17 @@ compareGroup = function(res, expr, indicator, digits = NULL, ref.algo = NULL,
   nc = nchar(row.names)
   rownames(xtab) = paste(substr(row.names, 1, nc - 3), substr(row.names, nc - 1, nc - 1), sep = "")
   ncols = ncol(xtab)
-  align = gsub("", "|", collapse(c("l", rep("c", ncols)), sep = ""))
+  align = gsub("", "|", collapse(rep("l", ncols + 1), sep = ""))
+  if (!is.null(col.sorting))
+    xtab = xtab[, col.sorting]
   xtab = xtable(xtab, caption = capt, label = label, align = align)
   
   # output for the console   
   d = t(apply(d, 1, function(x) {
-   j = which.min(x)
+    if (maximize)
+      j = which.max(x)
+    else
+      j = which.min(x)
    x[j] = paste("*", x[j])
    x
   }))
@@ -145,6 +159,8 @@ compareGroup = function(res, expr, indicator, digits = NULL, ref.algo = NULL,
   if (include.baseline) {
    d = cbind(d, b[, -1]) 
   }
+  if (!is.null(col.sorting))
+    d = d[, col.sorting]
   
   return(list(d = as.data.frame(d), xtab = xtab))
 }
@@ -152,8 +168,6 @@ compareGroup = function(res, expr, indicator, digits = NULL, ref.algo = NULL,
 # ParEGO Analyse
 tab.parego = compareGroup(res = res, expr = res$algo == "parego", indicator = "r2",
   digits = 3, ref.algo = "parego-1-ei", include.baseline = TRUE, label = "parego.table")
-write(x = print(tab.parego$xtab, type = "latex",
-  sanitize.text.function = function(x){x}), file= "tableParego.tex")
 tab.parego$d
 # 1) LCB ist ueberall besser, ausser auf einer funktion wo es egal ist
 # 2) Multipoint ist entweder besser, oder es ist es stueck nur schlecher / gleich
@@ -161,23 +175,48 @@ tab.parego$d
 # DIB - sms Analyse
 tab.sms = compareGroup(res = res, expr = res$algo == "dib" & res$indicator %in% c(NA, "sms"),
   indicator = "hv", digits = 3, ref.algo = "dib-1-sms", include.baseline = TRUE, label = "sms.table")
-write(x = print(tab.sms$xtab, type = "latex",
-  sanitize.text.function = function(x){x}), file= "tableSms.tex")
 tab.sms$d
 
 # DIB - eps Analyse
 tab.eps = compareGroup(res = res, expr = res$algo == "dib" & res$indicator %in% c(NA, "eps"),
   indicator = "eps", digits = 3, ref.algo = "dib-1-eps", include.baseline = TRUE, label = "eps.table")
-write(x = print(tab.eps$xtab, type = "latex",
-  sanitize.text.function = function(x){x}), file= "tableEps.tex")
 tab.eps$d
 # 1) 1-point liegt sms klar vorne, ist aber nicht sehr viel
 # 2) Multipoint ist es nicht ganz klar (?), aber man wuerde wohl auch den SMS nehmen. eps ist teilweise auch ok,
 #    wird manchmal aber outperformed
 
 # MSPOT Analyse
-tab.mspot = compareGroup(res = res, expr = res$algo == "mspot",
-  indicator = "hv", digits = 3, ref.algo = "mspot-1-mean", include.baseline = TRUE, label = "mspot.table")
+tab.mspot = compareGroup(res = res, expr = res$algo == "mspot", indicator = "hv",
+  digits = 3, ref.algo = "mspot-1-mean", include.baseline = TRUE, label = "mspot.table",
+  col.sorting = c(3, 1, 2, 6, 4, 5))
+tab.mspot$d
+
+# best algo tables
+expr.single = res$prop.points == 1 & ((res$algo == "dib"& res$indicator == "sms") |
+    (res$algo == "parego" & res$crit == "lcb")) 
+expr.mult = res$prop.points == 4 & (res$algo == "dib" | (res$algo =="parego" & res$crit == "lcb") |
+    (res$algo == "mspot" & res$crit == "lcb"))
+
+all.cmp.eps = compareGroup(res = res, expr = expr.single | expr.mult, indicator = "eps", digits = 3,
+  col.sorting = c(1, 5, 2, 3, 4, 6))
+all.cmp.r2 = compareGroup(res = res, expr = expr.single | expr.mult, indicator = "r2", digits = 3,
+  col.sorting = c(1, 5, 2, 3, 4, 6))
+all.cmp.hv = compareGroup(res = res, expr = expr.single | expr.mult, indicator = "hv", digits = 3,
+  col.sorting = c(1, 5, 2, 3, 4, 6))
+
+# write tables on disk
+write(x = print(tab.parego$xtab, type = "latex",
+  sanitize.text.function = function(x){x}), file= "tableParego.tex")
 write(x = print(tab.mspot$xtab, type = "latex",
   sanitize.text.function = function(x){x}), file= "tableMspot.tex")
-tab.mspot$d
+write(x = print(tab.eps$xtab, type = "latex",
+  sanitize.text.function = function(x){x}), file= "tableEps.tex")
+write(x = print(tab.sms$xtab, type = "latex",
+  sanitize.text.function = function(x){x}), file= "tableSms.tex")
+write(x = print(all.cmp.eps$xtab, type = "latex",
+  sanitize.text.function = function(x){x}), file= "tableBestEps.tex")
+write(x = print(all.cmp.r2$xtab, type = "latex",
+  sanitize.text.function = function(x){x}), file= "tableBestR2.tex")
+write(x = print(all.cmp.hv$xtab, type = "latex",
+  sanitize.text.function = function(x){x}), file= "tableBestHv.tex")
+
