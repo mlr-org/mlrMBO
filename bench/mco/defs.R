@@ -25,6 +25,10 @@ BASELINE_NSGA2_POPSIZE = function(dimx) dimx * 4 # must be a multiple of 4, set 
 # the next lines assume that mco version >= 1.0??? is installed
 BASELINE_NSGA2_GENERATIONS1 = function(dimx) FEVALS(dimx) / BASELINE_NSGA2_POPSIZE(dimx) - 1L
 BASELINE_NSGA2_GENERATIONS2 = function(dimx) 10 * FEVALS(dimx) / BASELINE_NSGA2_POPSIZE(dimx) - 1L
+BASELINE_NSGA2_cprob = function(dimx) 1
+BASELINE_NSGA2_cdist = function(dimx) 15
+BASELINE_NSGA2_mprob = function(dimx) 1 / dimx
+BASELINE_NSGA2_mdist = function(dimx) 20
 
 # randomSearch baseline comparison
 BASELINE_RANDOMSEARCH_BUDGET1 = function(dimx) FEVALS(dimx) - INIT_DESIGN_POINTS(dimx)

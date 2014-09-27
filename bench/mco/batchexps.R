@@ -98,10 +98,13 @@ addAlgorithm(reg, "nsga2", fun = function(static, budget) {
     minimize = rep(TRUE, static$dimy), include.error.message = TRUE, include.exec.time = TRUE)
 
   gens = if (budget == "normal") BASELINE_NSGA2_GENERATIONS1 else BASELINE_NSGA2_GENERATIONS2
-
-  res = nsga2(static$objective, idim = static$dimx,
+  
+  dimx = static$dimx
+  res = nsga2(static$objective, idim = dimx,
     odim = static$dimy, lower.bounds = getLower(static$par.set), upper.bounds = getUpper(static$par.set),
-    popsize = BASELINE_NSGA2_POPSIZE(static$dimx), generations = 1:gens(static$dimx))
+    popsize = BASELINE_NSGA2_POPSIZE(dimx), generations = 1:gens(dimx),
+    cprob = BASELINE_NSGA2_cprob(dimx), cdist = BASELINE_NSGA2_cdist(dimx), 
+    mprob = BASELINE_NSGA2_mprob(dimx), mdist = BASELINE_NSGA2_mdist(dimx))
   # add all elements to op.path
   lapply(seq_along(res), function(i) {
     r = res[[i]]

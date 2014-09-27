@@ -5,8 +5,6 @@ library(reshape2)
 library(xtable)
 library(BBmisc)
 
-prob.ids = unique(aggr$prob.id)
-
 # Tests if x < y[, i] and x > y[, i] for all i. uses a paired wilcoxon test
 # Result is a factor for every test "better" "not_worse" "worse".
 # E.g. y[i] is better than x
@@ -123,14 +121,19 @@ compareGroup = function(res, expr, indicator, digits = NULL, ref.algo = NULL,
       b[, -1] = round(b[,-1], digits)
     b = as.matrix(b)
     colnames(b) = c("", "nsga2", "rs")
-    xtab=  cbind(xtab, b[, -1])    
+    # exclude for now
+    # xtab = cbind(xtab, b[, -1])    
   }
   # some layout polishing
   capt = "TODO"
   label = label
-  rownames(xtab) = gsub("_", "-", rownames(xtab))
-  colnames(xtab) = substr(colnames(xtab), start = nchar(colnames(xtab) - 5))
-  xtab = xtable(xtab, caption = capt, label = label)
+  rownames(xtab) = tolower(gsub("_", "-", rownames(xtab)))
+  row.names = rownames(xtab)
+  nc = nchar(row.names)
+  rownames(xtab) = paste(substr(row.names, 1, nc - 3), substr(row.names, nc - 1, nc - 1), sep = "")
+  ncols = ncol(xtab)
+  align = gsub("", "|", collapse(c("l", rep("c", ncols)), sep = ""))
+  xtab = xtable(xtab, caption = capt, label = label, align = align)
   
   # output for the console   
   d = t(apply(d, 1, function(x) {
