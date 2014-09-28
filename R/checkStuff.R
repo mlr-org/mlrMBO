@@ -13,6 +13,8 @@
 checkStuff = function(fun, par.set, design, learner, control) {
   assertFunction(fun)
   assertClass(par.set, "ParamSet")
+  if (!is.null(design))
+    assertClass(design, "data.frame")
   assertClass(control, "MBOControl")
   assertClass(learner, "Learner")
 

@@ -72,13 +72,13 @@ mboTemplate = function(fun, par.set, design = NULL, learner, control, show.info 
     prop = proposePoints(tasks, current.models, par.set, control, opt.path, iter = loop)
     # drop proposed points, which are too close to design points
     if (control$filter.proposed.points) {
-      prop = filterProposedPoints(prop, opt.path, par.set, control) 
+      prop = filterProposedPoints(prop, opt.path, par.set, control)
     }
     crit.vals = prop$crit.vals
     extras = getExtras(nrow(prop$prop.points), prop, control)
     evalProposedPoints(loop, prop$prop.points, par.set, opt.path, control,
       fun, learner, show.info, oldopts, more.args, extras)
-    
+
     # train models
     tasks = makeTasks(par.set, opt.path, algo.init, control)
     current.models = lapply(tasks, train, learner = learner)
