@@ -1,2 +1,8 @@
+.editorconfig
+.travis.yml
+
+^bench
+^makeR
+
 ^.*\.Rproj$
 ^\.Rproj\.user$
