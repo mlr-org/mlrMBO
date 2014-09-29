@@ -19,6 +19,7 @@ test_that("multipoint lcb", {
   expect_is(res, "MBOResult")
   expect_true(res$y < 0.1)
 
+  # FIXME: this test must be generalized
   # now check min dist, set to "inf" so we can only propse 1 new point, not 5
   ctrl = makeMBOControl(init.design.points = 30L, iters = 1L, propose.points = 5L)
   ctrl = setMBOControlInfill(ctrl, opt = "focussearch", opt.focussearch.points = 100L,
