@@ -33,6 +33,10 @@ checkStuff = function(fun, par.set, design, learner, control) {
   if (learner$type != "regr")
     stop("mbo requires regression learner!")
 
+  if (hasRequires(par.set) && !hasProperties(learner, "missings"))
+    stopf("The 'par.set' has dependent parameters, which will lead to missing values in X-space during modeling, but learner '%s' does not support handling of missing values (property 'missing')!", learner$id)
+
+
   # general infill stuff (relavant for single objective and parEGO)
   if (control$infill.crit %in% c("se", "ei", "aei", "lcb", "dib") && learner$predict.type != "se") {
     stopf("For infill criterion '%s' predict.type of learner %s must be set to 'se'!%s",

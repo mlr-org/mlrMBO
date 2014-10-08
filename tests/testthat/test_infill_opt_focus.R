@@ -39,6 +39,7 @@ test_that("dependent params, but no focussing", {
   )
 
   learner = makeLearner("regr.randomForest")
+  learner = makeImputeWrapper(learner, classes = list(numeric = imputeMedian(), factor = imputeMode()))
   ctrl = makeMBOControl(init.design.points = 20, iters = 2)
   ctrl = setMBOControlInfill(ctrl, opt = "focussearch", opt.restarts = 1, opt.focussearch.maxit = 1,
     opt.focussearch.points = 500)
@@ -84,6 +85,7 @@ test_that("complex param space, dependencies, focussing, restarts", {
   ctrl = setMBOControlInfill(ctrl, crit="ei", opt = "focussearch",
     opt.restarts = 2L, opt.focussearch.maxit = 2L, opt.focussearch.points = 100)
   learner = makeLearner("regr.randomForest", predict.type = "se")
+  learner = makeImputeWrapper(learner, classes = list(numeric = imputeMedian(), factor = imputeMode()))
 
   or = mbo(f, ps, learner=learner, control=ctrl, show.info=FALSE)
   expect_true(!is.na(or$y))

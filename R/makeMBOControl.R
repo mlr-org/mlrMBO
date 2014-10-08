@@ -32,11 +32,6 @@
 #' @param propose.points [\code{integer(1)}]\cr
 #'   Number of proposed / really evaluated points each iteration.
 #'   Default is 1.
-#' @param feature.impute [\code{character(1)}]\cr
-#'   Method used for imputing features, which can / will be necessary for dependent parameters.
-#'   Possible values are:
-#'   \dQuote{up}: Numeric vars are imputed with 2 * upper bound.
-#'   \dQuote{median}: Imputes NAs with median and add logical is.na variable.
 #' @param final.method [\code{character(1)}]\cr
 #'   How should the final point be proposed. Possible values are:
 #'   \dQuote{best.true.y}: Return best point ever visited according to true value of target function.
@@ -111,7 +106,6 @@ makeMBOControl = function(number.of.targets = 1L,
   init.design.points = 20L, init.design.fun = maximinLHS, init.design.args = list(),
   iters = 10L, time.budget = NULL,
   propose.points = 1L,
-  feature.impute = "up",
   final.method = "best.true.y", final.evals = 0L,
   y.name = "y",
   impute.y.fun = NULL,
@@ -149,8 +143,6 @@ makeMBOControl = function(number.of.targets = 1L,
   }
 
   propose.points = asInt(propose.points, lower = 1L)
-
-  assertChoice(feature.impute, choices = c("up", "median"))
 
   if (!is.null(impute.y.fun))
     assertFunction(impute.y.fun, args = c("x", "y", "opt.path"))
@@ -198,7 +190,6 @@ makeMBOControl = function(number.of.targets = 1L,
     iters = iters,
     time.budget = time.budget,
     propose.points = propose.points,
-    feature.impute = feature.impute,
     final.method = final.method,
     final.evals = final.evals,
     y.name = y.name,
