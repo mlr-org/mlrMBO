@@ -22,6 +22,7 @@
 #'   Currently not used.
 #' @return [\code{list}]. List of lists. For each iteration the sublist contains separate ggplot
 #'   objects for the pareto set and the pareto front.
+#' @export
 autoplot.MBOExampleRunMultiCrit = function(object, iters, pause = TRUE, y1lim = NULL, y2lim = NULL, ...) {
   requirePackages(packs = c("ggplot2", "gridExtra"), why = "autoplot.MBOExampleRun")
 
