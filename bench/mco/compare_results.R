@@ -51,7 +51,7 @@ makeTest = function(d, indicator, ref.algo, maximize) {
 # label: label for the TeX-Table
 
 compareGroup = function(res, expr, indicator, digits = NULL, ref.algo = NULL,
-  include.baseline = FALSE, label = NULL, col.sorting = NULL) {
+  include.baseline = FALSE, label = NULL, col.sorting = NULL, caption = NULL) {
   d = subset(res, expr)
   # join algo name and params
   d$algo2 = paste(d$algo, d$budget, d$prop.points, d$indicator, d$crit, sep = "-")
@@ -134,7 +134,6 @@ compareGroup = function(res, expr, indicator, digits = NULL, ref.algo = NULL,
     # xtab = cbind(xtab, b[, -1])    
   }
   # some layout polishing
-  capt = "TODO"
   label = label
   rownames(xtab) = tolower(gsub("_", "-", rownames(xtab)))
   row.names = rownames(xtab)
@@ -144,7 +143,7 @@ compareGroup = function(res, expr, indicator, digits = NULL, ref.algo = NULL,
   align = gsub("", "|", collapse(rep("l", ncols + 1), sep = ""))
   if (!is.null(col.sorting))
     xtab = xtab[, col.sorting]
-  xtab = xtable(xtab, caption = capt, label = label, align = align)
+  xtab = xtable(xtab, caption = caption, label = label, align = align)
   
   # output for the console   
   d = t(apply(d, 1, function(x) {
@@ -165,6 +164,8 @@ compareGroup = function(res, expr, indicator, digits = NULL, ref.algo = NULL,
   return(list(d = as.data.frame(d), xtab = xtab))
 }
 
+
+# Tables for our Paper
 # ParEGO Analyse
 tab.parego = compareGroup(res = res, expr = res$algo == "parego", indicator = "r2",
   digits = 3, ref.algo = "parego-1-ei", include.baseline = TRUE, label = "parego.table")
@@ -220,3 +221,35 @@ write(x = print(all.cmp.r2$xtab, type = "latex",
 write(x = print(all.cmp.hv$xtab, type = "latex",
   sanitize.text.function = function(x){x}), file= "tableBestHv.tex")
 
+# Tables for our web-page
+tab.hv.1 = compareGroup(res = res, expr = res$prop.points == 1L, indicator = "hv",
+  digits = 3, include.baseline = TRUE,
+  caption = "All results compared via unary hypervolume indicator.")
+tab.hv.4 = compareGroup(res = res, expr = res$prop.points == 4L, indicator = "hv",
+  digits = 3, include.baseline = TRUE,
+  caption = "All results compared via unary hypervolume indicator.")
+tab.r2.1 = compareGroup(res = res, expr = res$prop.points == 1L, indicator = "r2",
+  digits = 3, include.baseline = TRUE,
+  caption = "All results compared via unary hypervolume indicator.")
+tab.r2.4 = compareGroup(res = res, expr = res$prop.points == 4L, indicator = "r2",
+  digits = 3, include.baseline = TRUE,
+  caption = "All results compared via unary hypervolume indicator.")
+tab.eps.1 = compareGroup(res = res, expr = res$prop.points == 1L, indicator = "eps",
+  digits = 3, include.baseline = TRUE,
+  caption = "All results compared via unary hypervolume indicator.")
+tab.eps.4 = compareGroup(res = res, expr = res$prop.points == 4L, indicator = "eps",
+  digits = 3, include.baseline = TRUE,
+  caption = "All results compared via unary hypervolume indicator.")
+
+write(x = print(tab.hv.1$xtab, type = "latex",
+  sanitize.text.function = function(x){x}), file= "all_hv_single.tex")
+write(x = print(tab.hv.4$xtab, type = "latex",
+  sanitize.text.function = function(x){x}), file= "all_hv_multi.tex")
+write(x = print(tab.r2.1$xtab, type = "latex",
+  sanitize.text.function = function(x){x}), file= "all_r2_single.tex")
+write(x = print(tab.r2.4$xtab, type = "latex",
+  sanitize.text.function = function(x){x}), file= "all_r2_multi.tex")
+write(x = print(tab.eps.1$xtab, type = "latex",
+  sanitize.text.function = function(x){x}), file= "all_eps_single.tex")
+write(x = print(tab.eps.4$xtab, type = "latex",
+  sanitize.text.function = function(x){x}), file= "all_eps_multi.tex")
