@@ -19,7 +19,7 @@ test_that("exampleRunMulticrit", {
   }
   
   
-  fun1 = makeMBOFunction(zdt1)
+  fun1 = makeMBOFunction(mco::zdt1)
   par.set1 = makeNumericParamSet("x", lower = 0, upper = 1, len = 2L)
   
   p1 = doRun(fun1, par.set1, method = "parego", crit = "ei", prop.points = 1L)
