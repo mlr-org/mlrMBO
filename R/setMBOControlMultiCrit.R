@@ -53,6 +53,41 @@
 #'   Default is \code{NULL}, in this case it is adaptively set.
 #' @return [\code{\link{MBOControl}}].
 #' @note See the other setMBOControl... functions and \code{makeMBOControl} for referenced arguments.
+#'
+#' @references
+#' For more information on the implemented multi-criteria procedures the following 
+#' sources might be helpful:
+#' Knowles, J.: ParEGO: A hybrid algorithm with on-line landscape
+#' approximation for expensive multiobjective optimization problems. IEEE
+#' Transactions on Evolutionary Computation, 10 (2006) 1, pp. 50–66
+#'
+#' Wagner, T.; Emmerich, M.; Deutz, A.; Ponweiser, W.: On Expected-
+#' Improvement Criteria for Model-Based Multi-Objective Optimization.
+#' In: Proc. 11th Int’l. Conf. Parallel Problem Solving From Nature (PPSN
+#' XI) - Part I, Krakow, Poland, Schaefer, R.; Cotta, C.; Kolodziej, J.;
+#' Rudolph, G. (eds.), no. 6238 in Lecture Notes in Computer Science,
+#' Springer, Berlin, 2010, ISBN 978-3-642-15843-8, pp. 718–727, doi:10.
+#' 1007/978-3-642-15844-5 72
+#'
+#' Wagner, T.: Planning and Multi-Objective Optimization of Manufacturing
+#' Processes by Means of Empirical Surrogate Models.
+#' No. 71 in Schriftenreihe des ISF, Vulkan Verlag, Essen, 2013, ISBN
+#' 978-3-8027-8775-1
+#'
+#' Zaefferer, M.; Bartz-Beielstein, T.; Naujoks, B.; Wagner, T.;
+#' Emmerich, M.: A Case Study on Multi-Criteria Optimization of
+#' an Event Detection Software under Limited Budgets. In: Proc.
+#' 7th International. Conf. Evolutionary Multi-Criterion Optimization (EMO
+#' 2013), March 19-22, Sheffield, UK, R. Purshouse; P. J. Fleming;
+#' C. M. Fonseca; S. Greco; J. Shaw, eds., 2013, vol. 7811 of Lecture
+#' Notes in Computer Science, ISBN 978-3-642-37139-4, pp. 756{770,
+#' doi:10.1007/978-3-642-37140-0 56}
+#'
+#' Jeong, S.; Obayashi, S.: Efficient global optimization (EGO) for multiobjective
+#' problem and data mining. In: Proc. IEEE Congress on
+#' Evolutionary Computation (CEC 2005), Edinburgh, UK, Corne, D.;
+#' et al. (eds.), IEEE, 2005, ISBN 0-7803-9363-5, pp. 2138–2145
+#' 
 #' @seealso makeMBOControl
 #' @export
 setMBOControlMultiCrit = function(control,
