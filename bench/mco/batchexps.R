@@ -93,7 +93,7 @@ addAlgorithm(reg, "randomSearch", fun = function(static, dynamic, budget) {
   list(par.set = static$par.set, opt.path = opt.path)
 })
 
-addAlgorithm(reg, "nsga2", fun = function(static, budget) {
+addAlgorithm(reg, "nsga2", overwrite = TRUE, fun = function(static, budget) {
   opt.path = makeOptPathDF(static$par.set, paste("y", 1:static$dimy, sep = "_"),
     minimize = rep(TRUE, static$dimy), include.error.message = TRUE, include.exec.time = TRUE)
 
@@ -111,6 +111,22 @@ addAlgorithm(reg, "nsga2", fun = function(static, budget) {
     for (j in seq_row(r$par))
       addOptPathEl(opt.path, x = list(x = r$par[j, ]), y = r$value[j, ], dob = i)
   })
+  list(par.set = static$par.set, opt.path = opt.path, opt.res = res)
+})
+
+# Add NSGA2 with really high number of FEvals to calc the "exact" front
+addAlgorithm(reg, "exactFront", overwrite = TRUE, fun = function(static) {
+  opt.path = makeOptPathDF(static$par.set, paste("y", 1:static$dimy, sep = "_"),
+    minimize = rep(TRUE, static$dimy), include.error.message = TRUE, include.exec.time = TRUE)  
+  dimx = static$dimx
+  res = nsga2(static$objective, idim = dimx,
+    odim = static$dimy, lower.bounds = getLower(static$par.set), upper.bounds = getUpper(static$par.set),
+    popsize = EXACT_NSGA2_POPSIZE(dimx), generations =EXACT_NSGA2_GENERATIONS(dimx),
+    cprob = BASELINE_NSGA2_cprob(dimx), cdist = BASELINE_NSGA2_cdist(dimx), 
+    mprob = BASELINE_NSGA2_mprob(dimx), mdist = BASELINE_NSGA2_mdist(dimx))
+  # add all elements to op.path
+  for (j in seq_row(res$par))
+    addOptPathEl(opt.path, x = list(x = res$par[j, ]), y = res$value[j, ], dob = i)
   list(par.set = static$par.set, opt.path = opt.path, opt.res = res)
 })
 
@@ -144,6 +160,7 @@ des5 = makeDesign("mspot", exhaustive = list(
   prop.points = PARALLEL_PROP_POINTS,
   crit = c("mean", "lcb", "ei")
 ))
+des6 = makeDesign("exactFront")
 
 addExperiments(reg, algo.design = des1, repls = REPLS)
 addExperiments(reg, algo.design = des2, repls = REPLS)
