@@ -3,7 +3,7 @@
 \alias{mbo}
 \title{Optimizes a function with sequential model based optimization.}
 \usage{
-mbo(fun, par.set, design = NULL, learner, control, show.info = TRUE,
+mbo(fun, par.set, design = NULL, learner, control, show.info = NULL,
   more.args = list())
 }
 \arguments{

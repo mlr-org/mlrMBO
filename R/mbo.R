@@ -38,8 +38,12 @@
 #'   Further arguments passed to fitness function.
 #' @return [\code{\link{MBOSingleObjResult}} | \code{\link{MBOMultiObjResult}}]
 #' @export
-mbo = function(fun, par.set, design = NULL, learner, control, show.info = TRUE, more.args = list()) {
-  assertFlag(show.info)
+mbo = function(fun, par.set, design = NULL, learner, control, show.info = NULL, more.args = list()) {
+  if (is.null(show.info)) {
+    show.info = getOption("mlrMBO.show.info", TRUE)
+  } else {
+    assertFlag(show.info) 
+  }
 
   learner = checkLearner(learner, par.set, control)
   checkStuff(fun, par.set, design, learner, control)
