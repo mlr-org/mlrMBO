@@ -4,7 +4,7 @@
 \title{Perform an mbo run on a test function and and visualize what happens.}
 \usage{
 exampleRun(fun, par.set, global.opt = NA_real_, learner, control,
-  points.per.dim = 50, noisy.evals = 10, show.info = TRUE,
+  points.per.dim = 50, noisy.evals = 10, show.info = NULL,
   fun.mean = NULL, ...)
 }
 \arguments{

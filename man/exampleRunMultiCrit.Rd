@@ -4,7 +4,7 @@
 \title{Perform an MBO run on a multi-criteria test function and and visualize what happens.}
 \usage{
 exampleRunMultiCrit(fun, par.set, learner, control, points.per.dim = 50,
-  show.info = TRUE, nsga2.args = list(), ref.point = NULL, ...)
+  show.info = NULL, nsga2.args = list(), ref.point = NULL, ...)
 }
 \arguments{
 \item{fun}{[\code{function}]\cr

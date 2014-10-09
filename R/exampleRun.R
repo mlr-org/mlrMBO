@@ -52,7 +52,7 @@
 #' @return [\code{MBOExampleRun}]
 #' @export
 exampleRun = function(fun, par.set, global.opt = NA_real_, learner, control,
-  points.per.dim = 50, noisy.evals = 10, show.info = TRUE, fun.mean = NULL, ...) {
+  points.per.dim = 50, noisy.evals = 10, show.info = NULL, fun.mean = NULL, ...) {
 
   assertFunction(fun)
   if (!is.null(fun.mean)) {
@@ -79,6 +79,9 @@ exampleRun = function(fun, par.set, global.opt = NA_real_, learner, control,
   assertCount(points.per.dim, na.ok = FALSE, positive = TRUE)
   noisy.evals = asCount(noisy.evals)
   assertCount(noisy.evals, na.ok = FALSE, positive = TRUE)
+  if (is.null(show.info)) {
+    show.info = getOption("mlrMBO.show.info", TRUE)
+  }
   assertLogical(show.info, len = 1L, any.missing = FALSE)
   n.params = sum(getParamLengths(par.set))
 
