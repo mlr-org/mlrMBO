@@ -14,8 +14,8 @@ test_that("exampleRunMulticrit", {
     control = setMBOControlMultiCrit(control, method = method, dib.indicator = indicator)
     
     run = exampleRunMultiCrit(fun, par.set, learner, control, points.per.dim = 4L,
-      show.info = TRUE, nsga2.args = list(popsize = 12L, generations = 10L), ref.point = c(11, 11))
-    return(autoplot.MBOExampleRunMultiCrit(run, pause = FALSE, show.info = FALSE))
+      nsga2.args = list(popsize = 12L, generations = 10L), ref.point = c(11, 11))
+    return(autoplot.MBOExampleRunMultiCrit(run, pause = FALSE))
   }
   
   

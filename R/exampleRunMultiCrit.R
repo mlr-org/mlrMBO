@@ -35,7 +35,7 @@
 #' @return [\code{MBOExampleRunMultiCrit}]
 #' @export
 exampleRunMultiCrit= function(fun, par.set, learner, control, points.per.dim = 50,
-  show.info = TRUE, nsga2.args = list(), ref.point = NULL, ...) {
+  show.info = NULL, nsga2.args = list(), ref.point = NULL, ...) {
 
   assertFunction(fun)
   assertClass(control, "MBOControl")
@@ -47,6 +47,9 @@ exampleRunMultiCrit= function(fun, par.set, learner, control, points.per.dim = 5
 
   learner = checkLearner(learner, par.set, control, ...)
 
+  if (is.null(show.info)) {
+    show.info = getOption("mlrMBO.show.info", TRUE)
+  }
   assertLogical(show.info, len = 1L, any.missing = FALSE)
   ny = control$number.of.targets
 
