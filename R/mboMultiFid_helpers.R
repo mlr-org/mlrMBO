@@ -19,6 +19,7 @@ convertOptPathToDesign = function(opt.path, drop = TRUE) {
     d
 }
 
+# propose Points for each multifid level. return a list
 proposePointsMultiFid = function(model, par.set, control, opt.path, model.cor, model.cost, model.sd) {
   lapply(control$multifid.lvls, function(v) {
     this.par.set = par.set
@@ -34,6 +35,7 @@ convertOptPathToTask = function(opt.path, control, drop = TRUE) {
   makeRegrTask(id = "surrogate", data = d, target = "y")
 }
 
+# make a design with the exact same points for each multifid level.
 expandDesign = function(design, control, ns = NULL) {
   if (is.null(ns)){
     ns = rep(nrow(design), times = length(control$multifid.lvls))

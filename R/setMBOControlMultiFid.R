@@ -34,6 +34,7 @@ setMBOControlMultiFid = function(control, param, lvls, costs = NULL, cor.grid.po
   force.last.level.evals = asInt(force.last.level.evals, lower = 0L)
 
   # extend control object
+  # FIXME: This following line is maybe not needed anymore. proposePoints() might not work now for multiFid control objects. 
   control$multifid = TRUE
   control$multifid.param = param
   control$multifid.lvls = lvls
