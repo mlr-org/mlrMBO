@@ -56,8 +56,8 @@ mboMultiFid = function(fun, par.set, design = NULL, learner, control, show.info 
 
   times = mbo.design$times
 
-  mf.learner = makeMultiFidLearner(learner = learner, par.set = par.set, control = control)
-  compound.model = train.MultiFidLearner(obj = mf.learner, task = convertOptPathToTask(opt.path))
+  mf.learner = makeMultiFidWrapper(learner, control)
+  compound.model = train(mf.learner, task = convertOptPathToTask(opt.path))
 
   budget = control$iters
 
@@ -141,7 +141,8 @@ mboMultiFid = function(fun, par.set, design = NULL, learner, control, show.info 
       opt.path = opt.path, control = control, fun = fun, show.info = show.info,
       oldopts = oldopts, more.args = more.args, extras = NULL)
     #evals = evalTargetFun(fun = fun, par.set = par.set, dobs = loop, xs = xs, opt.path = opt.path, control = control, show.info = show.info, oldopts = oldopts, more.args = more.args, extras = NULL)
-    compound.model = update.MultiFidModel(compound.model, task = convertOptPathToTask(opt.path))
+    # compound.model = updateMultiFidModel(compound.model, task = convertOptPathToTask(opt.path))
+    compound.model = train(mf.learner, task = convertOptPathToTask(opt.path))
   }
 
   # return complete designs for all levels
