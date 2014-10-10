@@ -56,7 +56,7 @@ mboMultiFid = function(fun, par.set, design = NULL, learner, control, show.info 
 
   times = mbo.design$times
 
-  mf.learner = makeMultiFidLearner(surrogat.learner = learner, par.set = par.set, control = control)
+  mf.learner = makeMultiFidLearner(learner = learner, par.set = par.set, control = control)
   compound.model = train.MultiFidLearner(obj = mf.learner, task = convertOptPathToTask(opt.path))
 
   budget = control$iters
