@@ -1,6 +1,6 @@
-#' Plot example run, either in 1D or 2D.
+#' Renders plots for exampleRun objects, either in 1D or 2D.
 #'
-#' The plot will show the following elements per iteration:
+#' Each plot will show the following elements per iteration:
 #' - The true objective function (solid line).
 #' - The surrogate approximation, represented by its mean response.
 #' - Surrogate mean +- 1 standard deviation, from local uncertainty.
@@ -86,13 +86,13 @@ autoplot.MBOExampleRun = function(object, iters, pause = TRUE, densregion = TRUE
     if (par.types %nin% c("numeric", "numericvector", "discrete", "discretevector")) {
       stopf("For 1D function only plotting of numeric or discrete functions possible, but your function is '%s'.", par.types)
     }
-    autoplotExampleRun1d(object, iters = iters, xlim = xlim, ylim = ylim, se.factor = se.factor, pause = pause,
+    renderExampleRunPlots1d(object, iters = iters, xlim = xlim, ylim = ylim, se.factor = se.factor, pause = pause,
       point.size = point.size, line.size = line.size, trafo = trafo, densregion = densregion, ...)
   } else if (n.params == 2) {
     if (!hasNumeric(par.set)) {
       stopf("At least one parameter of the target function must be numeric!")
     }
-    autoplotExampleRun2d(object, iters = iters, xlim = xlim, ylim = ylim, se.factor = se.factor, pause = pause,
+    renderExampleRunPlots2d(object, iters = iters, xlim = xlim, ylim = ylim, se.factor = se.factor, pause = pause,
       point.size = point.size, line.size = line.size, trafo = trafo, ...)
   } else {
     stopf("Functions with greater than 3 parameters are not supported.")
@@ -137,3 +137,8 @@ buildTrafoList = function(n.params, input.trafo) {
   }
   return(trafo)
 }
+
+# renderExampleRunPlots = function(object, iters, pause = TRUE, densregion = TRUE,
+#   se.factor = 1, xlim, ylim, point.size = 3, line.size = 1, trafo = NULL, ...) {
+#   UseMethod("renderExampleRunPlots")
+# }
