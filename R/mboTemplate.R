@@ -90,7 +90,7 @@ mboTemplate = function(fun, par.set, design = NULL, learner, control, show.info 
 
     # store models + resample + store on disk
     if (loop %in% control$store.model.at)
-      stored.models[[as.character(loop)]] = if (length(tr$.models) == 1L) tr$models[[1L]] else tr$models
+      stored.models[[as.character(loop)]] = if (length(tr$models) == 1L) tr$models[[1L]] else tr$models
     if (loop %in% control$resample.at)
       resample.results[[as.character(loop)]] = doResample(tasks)
     saveStateOnDisk(loop, fun, learner, par.set, opt.path, control, show.info, more.args, stored.models,

@@ -181,7 +181,6 @@ autoplot.MBOExampleRunMultiCrit = function(object, iters, pause = TRUE, y1lim = 
     for (i in iters) {
       for (j in 1:proppoints) {
         plot.sequence[[i]] = list()
-        catf("Iter %i; Point %i", i, j)
         # if we propose 1 point, parego stores a list of models,
         # otherwise a list of model-list (1 per parallel proposal)
         model = if (proppoints == 1L)
@@ -245,7 +244,6 @@ autoplot.MBOExampleRunMultiCrit = function(object, iters, pause = TRUE, y1lim = 
     }
   } else {
     for (i in iters) {
-      catf("Iter %i", i)
       models = mbo.res$models[[i]]
       idx = getIDX(opt.path, i)
       models.ok = !any(sapply(models, inherits, what = "FailureModel"))
