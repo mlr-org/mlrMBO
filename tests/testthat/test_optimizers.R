@@ -3,7 +3,7 @@ context("infill optimizers")
 test_that("infill optimizers", {
   f = makeMBOFunction(function(x) sum(x^2))
   ps = makeParamSet(
-    makeNumericVectorParam("x", len = 2, lower = -10, upper = 10) 
+    makeNumericVectorParam("x", len = 2, lower = -10, upper = 10)
   )
   mycontrol = function(opt, restarts) {
     ctrl = makeMBOControl(init.design.points = 20, iters = 5)
@@ -15,14 +15,14 @@ test_that("infill optimizers", {
     expect_true(!is.na(or$y))
     expect_true(or$y < 1)
   }
-  
+
   learner = makeLearner("regr.km", nugget.estim = TRUE)
   ctrl = mycontrol("cmaes", 1)
-  or = mbo(f, ps, des = NULL, learner, ctrl, show.info = FALSE)
+  or = mbo(f, ps, des = NULL, learner, ctrl)
   mycheck(or)
   ctrl = mycontrol("cmaes", 2)
-  or = mbo(f, ps, des = NULL, learner, ctrl, show.info = FALSE)
+  or = mbo(f, ps, des = NULL, learner, ctrl)
   mycheck(or)
 })
-          
+
 

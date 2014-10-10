@@ -76,8 +76,7 @@ test_that("essential mutlifid works", {
     costs = function(cur, last) (last / cur)^0.5,
     cor.grid.points = 40L)
   surrogat.learner = makeLearner("regr.km", predict.type="se", nugget.estim = TRUE, jitter = TRUE)
-  result = mbo(fun = objfun, par.set = par.set, learner = surrogat.learner, control = control,
-    show.info = FALSE)
+  result = mbo(fun = objfun, par.set = par.set, learner = surrogat.learner, control = control)
   expect_true(inherits(result, "MultiFidResult"))
 })
 
