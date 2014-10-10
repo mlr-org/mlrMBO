@@ -22,19 +22,20 @@ Imports:
     checkmate (>= 1.1),
     parallelMap (>= 1.1),
     plyr,
+    reshape2,
     soobench,
-    reshape2
 Suggests:
     cmaes,
+    DiceKriging,
     DiceOptim,
     emoa,
     ggplot2,
     gridExtra,
     mco,
-    testthat,
+    party,
     randomForest,
     rpart,
-    DiceKriging
+    testthat,
 LazyData: yes
 ByteCompile: yes
 Version: 1.0
