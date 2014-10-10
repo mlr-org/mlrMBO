@@ -1,8 +1,3 @@
-updateMultiFidModel = function(mflearner, task) {
-  # FIXME: implement updating mechanism here later!
-  trainLearner.MultiFidLearner(learner, task)
-}
-
 makeMultiFidWrapper = function(learner, control) {
   learner = checkLearner(learner, type = "regr")
   assertClass(control, "MBOControl")
@@ -107,8 +102,8 @@ isFailureModel.MultiFidModel = function(model) {
 
 #' @export
 print.MultiFidModel = function(x, ...) {
-  s = capture.output(print.WrappedModel(x))
-  u = sprintf("Bagged Learner: %s", class(x$learner$next.learner)[1L])
+  s = capture.output(mlr:::print.WrappedModel(x))
+  u = sprintf("Multifid Learner: %s", class(x$learner$next.learner)[1L])
   s = append(s, u, 1L)
   lapply(s, catf)
 }

@@ -35,7 +35,7 @@ Suggests:
     party,
     randomForest,
     rpart,
-    testthat,
+    testthat
 LazyData: yes
 ByteCompile: yes
 Version: 1.0
