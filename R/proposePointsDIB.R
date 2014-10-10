@@ -33,6 +33,7 @@ proposePointsDIB = function(models, par.set, control, opt.path, iter) {
     res = joinProposedPoints(props)
     # store extra info
     # DH: don't to this for now
+    # FIXME: do we want to sample or adapt lamda here? decide
     #res$multipoint.lcb.lambdas = z$lambdas
   }
   return(res)
