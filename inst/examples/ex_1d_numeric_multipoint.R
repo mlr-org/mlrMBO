@@ -23,7 +23,7 @@ ctrl = setMBOControlMultiPoint(
 lrn = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
 
 run = exampleRun(obj.fun, par.set, global.opt = -1, learner = lrn,
-  control = ctrl, points.per.dim = 100)
+  control = ctrl, points.per.dim = 100, show.info = TRUE)
 
 print(run)
 
