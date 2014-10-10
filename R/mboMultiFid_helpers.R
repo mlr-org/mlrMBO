@@ -19,12 +19,13 @@ convertOptPathToDesign = function(opt.path, drop = TRUE) {
     d
 }
 
-proposePoints.MultiFid = function(model, par.set, control, opt.path, model.cor, model.cost, model.sd) {
+proposePointsMultiFid = function(model, par.set, control, opt.path, model.cor, model.cost, model.sd) {
   lapply(control$multifid.lvls, function(v) {
     this.par.set = par.set
     this.par.set$pars[[control$multifid.param]]$lower = v
     this.par.set$pars[[control$multifid.param]]$upper = v
-    proposePoints(models = model, par.set = this.par.set, control = control, opt.path = opt.path, model.cor = model.cor, model.cost = model.cost, model.sd = model.sd)
+    proposePointsByInfillOptimization(models = model, par.set = this.par.set, control = control, opt.path = opt.path,
+      model.cor = model.cor, model.cost = model.cost, model.sd = model.sd)
   })
 }
 
@@ -47,21 +48,21 @@ expandDesign = function(design, control, ns = NULL) {
 
 
 # return only crit vector
-infillCritMultiFid = function(points, model, control, par.set, design, model.cor, model.sd, model.cost, ...) {
-  infillCritMultiFid2(points, model, control, par.set, design, model.cor, model.sd, model.cost, ...)$crit
+infillCritMultiFid = function(points, model, control, par.set, design, iter, model.cor, model.sd, model.cost, ...) {
+  infillCritMultiFid2(points, model, control, par.set, design, iter, model.cor, model.sd, model.cost, ...)$crit
 }
 
 # return all crap so we can plot it later
-infillCritMultiFid2 = function(points, model, control, par.set, design, model.cor, model.sd, model.cost, ...) {
+infillCritMultiFid2 = function(points, model, control, par.set, design, iter, model.cor, model.sd, model.cost, ...) {
   lastPoints = function(x) {
     x[[control$multifid.param]] = tail(control$multifid.lvls,1)
     x
   }
   # note: mbo returns the negated EI (and SE), so have to later minimize the huang crit.
   # which is done by default by our optimizer anyway
-  ei.last = infillCritEI(points = lastPoints(points), model = model, control = control, par.set = par.set, design = lastPoints(design))
+  ei.last = infillCritEI(lastPoints(points), model, control, par.set, lastPoints(design), iter)
   alpha1 = replaceByList(points[[control$multifid.param]], model.cor)
-  se = -infillCritStandardError(points = points, model = model, control = control, par.set = par.set, design = design)
+  se = -infillCritStandardError(points, model, control, par.set, design, iter)
   # FIXME: do we really have to adapt this? alpha2 should be 0 when?
   model.sd.vec = replaceByList(points[[control$multifid.param]], model.sd)
   alpha2 = 1 - (model.sd.vec / sqrt(se^2 + model.sd.vec^2))

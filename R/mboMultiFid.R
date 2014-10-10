@@ -118,19 +118,19 @@ mboMultiFid = function(fun, par.set, design = NULL, learner, control, show.info 
     else
       avail.pars = control$multifid.lvls
 
-    prop = proposePoints.MultiFid(model = compound.model, par.set = par.set,
+    prop = proposePointsMultiFid(model = compound.model, par.set = par.set,
       control = control, opt.path = opt.path,
       model.cor = model.cor, model.cost = model.cost, model.sd = model.sd)
     infill.vals = extractSubList(prop, "crit.vals")
     messagef("Infill vals = %s", collapse(sprintf("%.3g", infill.vals), ", "))
     # we still technically minimize
     best.points = prop[[getMinIndex(infill.vals)]]$prop.points
-    
+
     if (length(dropParams(par.set, control$multifid.param)$pars) == 1) {
       plot.data[[loop]] = genPlotData(compound.model = compound.model, par.set = par.set,
                                       control = control, fun = fun, opt.path = opt.path,
-                                      model.cor = model.cor, model.sd = model.sd, 
-                                      model.cost = model.cost, best.points = best.points)  
+                                      model.cor = model.cor, model.sd = model.sd,
+                                      model.cost = model.cost, best.points = best.points)
     }
     if(!is.null(control$multifid.alpha2fix) && control$multifid.alpha2fix) {
       tmp = data.frame(best.points[1,1], control$multifid.lvls[control$multifid.lvls <= best.points[[control$multifid.param]]])
@@ -152,8 +152,8 @@ mboMultiFid = function(fun, par.set, design = NULL, learner, control, show.info 
   proposed[[control$multifid.param]] = tail(control$multifid.lvls,1)
   proposed = convertDfCols(proposed, factors.as.char = TRUE)
   y.hat = predict(compound.model, newdata = proposed)$data$response
-  y = evalProposedPoints(loop = budget+1, prop.points = proposed, par.set = par.set, opt.path = opt.path, 
-                         control = control, fun = fun, show.info = show.info, oldopts = oldopts, 
+  y = evalProposedPoints(loop = budget+1, prop.points = proposed, par.set = par.set, opt.path = opt.path,
+                         control = control, fun = fun, show.info = show.info, oldopts = oldopts,
                          more.args = more.args, extras = NULL)
 
   # restore mlr configuration
