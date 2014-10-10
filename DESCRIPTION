@@ -14,16 +14,16 @@ License: BSD_3_clause + file LICENSE
 URL: https://github.com/berndbischl/mlrMBO
 BugReports: https://github.com/berndbischl/mlrMBO/issues
 Depends:
-    ParamHelpers,
+    lhs,
     mlr (>= 2.0),
-    lhs
+    ParamHelpers (>= 1.4)
 Imports:
     BBmisc (>= 1.7),
-    checkmate (>= 1.1),
+    checkmate (>= 1.4),
     parallelMap (>= 1.1),
     plyr,
     reshape2,
-    soobench,
+    soobench
 Suggests:
     cmaes,
     DiceKriging,
