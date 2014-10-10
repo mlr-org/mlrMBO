@@ -19,7 +19,7 @@ The package has not been released on CRAN yet. Run the following command in R to
 [Further installation instructions](https://github.com/tudo-r/PackagesInfo/wiki/Installation-Information) are available are available at the site of tudo-r.
 
 ```splus
-devtools::install_github("mlrMBO", username="berndbischl")
+devtools::install_github("berndbischl/mlrMBO")
 ```
 
 # Mailinglist and Email-Service-Hook
