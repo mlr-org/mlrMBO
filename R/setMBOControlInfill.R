@@ -114,24 +114,25 @@
 #' @seealso makeMBOControl
 #' @export
 setMBOControlInfill = function(control,
-  crit = "mean", crit.lcb.lambda = 1, crit.lcb.pi = NULL,
-  filter.proposed.points = FALSE,
-  filter.proposed.points.tol = 1e-4,
-  opt = "focussearch", opt.restarts = 1L,
-  opt.focussearch.maxit = 5L, opt.focussearch.points = 10000L,
-  opt.cmaes.control = list(),
-  opt.ea.maxit = 500L, opt.ea.mu = 10L,
-  opt.ea.sbx.eta = 15, opt.ea.sbx.p = 0.5,
-  opt.ea.pm.eta = 15, opt.ea.pm.p = 0.5,
-  opt.ea.lambda = 1L,
+  crit = NULL, crit.lcb.lambda = 1, crit.lcb.pi = NULL,
+  filter.proposed.points = NULL,
+  filter.proposed.points.tol = NULL,
+  opt = "focussearch", opt.restarts = NULL,
+  opt.focussearch.maxit = NULL, opt.focussearch.points = NULL,
+  opt.cmaes.control = NULL,
+  opt.ea.maxit = NULL, opt.ea.mu = NULL,
+  opt.ea.sbx.eta = NULL, opt.ea.sbx.p = NULL,
+  opt.ea.pm.eta = NULL, opt.ea.pm.p = NULL,
+  opt.ea.lambda = NULL,
   #opt.multicrit.randomsearch.points = 50000L,
-  opt.nsga2.popsize = 100L, opt.nsga2.generations = 50L,
-  opt.nsga2.cprob = 0.7, opt.nsga2.cdist  = 5,
-  opt.nsga2.mprob = 0.2, opt.nsga2.mdist = 10) {
+  opt.nsga2.popsize = NULL, opt.nsga2.generations = NULL,
+  opt.nsga2.cprob = NULL, opt.nsga2.cdist = NULL,
+  opt.nsga2.mprob = NULL, opt.nsga2.mdist = NULL) {
 
   assertClass(control, "MBOControl")
 
-  assertChoice(crit, choices = getSupportedInfillCritFunctions())
+  control$infill.crit = coalesce(crit, control$infill.crit, "mean")
+  assertChoice(control$infill.crit, choices = getSupportedInfillCritFunctions())
 
   # lambda value for lcb - either given, or set via given pi, the other one must be NULL!
   if (!is.null(crit.lcb.lambda) && !is.null(crit.lcb.pi))
@@ -144,69 +145,81 @@ setMBOControlInfill = function(control,
     # Note, that alpha = -lambda, so we need the negative values
     crit.lcb.lambda = -qnorm(0.5 * crit.lcb.pi^(1 / control$number.of.targets))
   }
+  control$infill.crit.lcb.lambda = coalesce(crit.lcb.lambda, control$infill.crit.lcb.lambda, 1)
 
-  assertFlag(filter.proposed.points)
-  assertNumber(filter.proposed.points.tol, na.ok = FALSE, lower = 0)
+  control$filter.proposed.points = coalesce(filter.proposed.points, control$filter.proposed.points, FALSE)
+  assertFlag(control$filter.proposed.points)
 
-  assertChoice(opt, choices = getSupportedInfillOptFunctions())
-  opt.restarts = asCount(opt.restarts)
-  assertCount(opt.restarts, na.ok = FALSE)
+  control$filter.proposed.points.tol = coalesce(filter.proposed.points.tol, control$filter.proposed.points.tol, 1e-4)
+  assertNumber(control$filter.proposed.points.tol, na.ok = FALSE, lower = 0)
 
-  opt.focussearch.maxit = asCount(opt.focussearch.maxit)
-  assertCount(opt.focussearch.maxit, na.ok = FALSE, positive = TRUE)
-  opt.focussearch.points = asCount(opt.focussearch.points)
-  assertCount(opt.focussearch.points, na.ok = FALSE, positive = TRUE)
-  assertList(opt.cmaes.control)
+  control$infill.opt = coalesce(opt, control$infill.opt, "focussearch")
+  assertChoice(control$infill.opt, choices = getSupportedInfillOptFunctions())
 
-  opt.ea.maxit = asCount(opt.ea.maxit)
-  assertCount(opt.ea.maxit, na.ok = FALSE, positive = TRUE)
-  opt.ea.mu = asCount(opt.ea.mu)
-  assertCount(opt.ea.mu, na.ok = FALSE, positive = TRUE)
-  assertNumber(opt.ea.sbx.eta, na.ok = FALSE, lower = 0)
-  assertNumber(opt.ea.sbx.p, na.ok = FALSE, lower = 0, upper = 1)
-  assertNumber(opt.ea.pm.eta, na.ok = FALSE, lower = 0)
-  assertNumber(opt.ea.pm.p, na.ok = FALSE, lower = 0, upper = 1)
-  assertCount(opt.ea.lambda, na.ok = FALSE)
+  control$infill.opt.restarts = coalesce(opt.restarts, control$infill.opt.restarts, 1L)
+  control$infill.opt.restarts = asCount(control$infill.opt.restarts)
+  assertCount(control$infill.opt.restarts, na.ok = FALSE)
+
+  control$infill.opt.focussearch.maxit = coalesce(opt.focussearch.maxit, control$infill.opt.focussearch.maxit, 5L)
+  control$infill.opt.focussearch.maxit = asCount(control$infill.opt.focussearch.maxit)
+  assertCount(control$infill.opt.focussearch.maxit, na.ok = FALSE, positive = TRUE)
+
+  control$infill.opt.focussearch.points = coalesce(opt.focussearch.points, control$infill.opt.focussearch.points, 10000L)
+
+  control$infill.opt.focussearch.points = asCount(control$infill.opt.focussearch.points)
+  assertCount(control$infill.opt.focussearch.points, na.ok = FALSE, positive = TRUE)
+
+  control$infill.opt.cmaes.control = coalesce(opt.cmaes.control, control$infill.opt.cmaes.control, list())
+  assertList(control$infill.opt.cmaes.control)
+
+  control$infill.opt.ea.maxit = coalesce(opt.ea.maxit, control$infill.opt.ea.maxit, 500L)
+  control$infill.opt.ea.maxit = asCount(control$infill.opt.ea.maxit)
+  assertCount(control$infill.opt.ea.maxit, na.ok = FALSE, positive = TRUE)
+
+  control$infill.opt.ea.mu = coalesce(opt.ea.mu, control$infill.opt.ea.mu, 10L)
+  control$infill.opt.ea.mu = asCount(control$infill.opt.ea.mu)
+  assertCount(control$infill.opt.ea.mu, na.ok = FALSE, positive = TRUE)
+
+  control$infill.opt.ea.sbx.eta = coalesce(opt.ea.sbx.eta, control$infill.opt.ea.sbx.eta, 15)
+  assertNumber(control$infill.opt.ea.sbx.eta, na.ok = FALSE, lower = 0)
+
+  control$infill.opt.ea.sbx.p = coalesce(opt.ea.sbx.p, control$infill.opt.ea.sbx.p, 0.5)
+  assertNumber(control$infill.opt.ea.sbx.p, na.ok = FALSE, lower = 0, upper = 1)
+
+  control$infill.opt.ea.pm.eta = coalesce(opt.ea.pm.eta, control$infill.opt.ea.pm.eta, 15)
+  assertNumber(control$infill.opt.ea.pm.eta, na.ok = FALSE, lower = 0)
+
+  control$infill.opt.ea.pm.p = coalesce(opt.ea.pm.p, control$infill.opt.ea.pm.p, 0.5)
+  assertNumber(control$infill.opt.ea.pm.p, na.ok = FALSE, lower = 0, upper = 1)
+
+  control$infill.opt.ea.lambda = coalesce(opt.ea.lambda, control$infill.opt.ea.lambda, 1L)
+  assertCount(control$infill.opt.ea.lambda, na.ok = FALSE)
 
   # FIXME: Don't use for now
-  #opt.multicrit.randomsearch.points = asCount(opt.multicrit.randomsearch.points)
-  #assertCount(opt.multicrit.randomsearch.points, na.ok = FALSE, positive = TRUE)
-
-  opt.nsga2.popsize = asCount(opt.nsga2.popsize)
-  assertCount(opt.nsga2.popsize, na.ok = FALSE, positive = TRUE)
-  if (opt.nsga2.popsize < control$propose.points)
+  #control$infill.opt.multicrit.randomsearch.points = coalesce(opt.multicrit.randomsearch.points, control$infill.opt.multicrit.randomsearch.points)
+  #control$infill.opt.multicrit.randomsearch.points = asCount(control$infill.opt.multicrit.randomsearch.points)
+  #assertCount(control$infill.opt.multicrit.randomsearch.points, na.ok = FALSE, positive = TRUE)
+  
+  control$infill.opt.nsga2.popsize = coalesce(opt.nsga2.popsize, control$infill.opt.nsga2.popsize, 100L)
+  control$infill.opt.nsga2.popsize = asCount(control$infill.opt.nsga2.popsize)
+  assertCount(control$infill.opt.nsga2.popsize, na.ok = FALSE, positive = TRUE)
+  if (control$infill.opt.nsga2.popsize < control$propose.points)
     stop("Population size of nsga2 must be greater or equal than propose.points.")
-  opt.nsga2.generations = asCount(opt.nsga2.generations)
-  assertCount(opt.nsga2.generations, na.ok = FALSE, positive = TRUE)
-  assertNumber(opt.nsga2.cprob, lower = 0, upper = 1, na.ok = FALSE)
-  assertNumber(opt.nsga2.cdist, lower = 1e-16, na.ok = FALSE, finite = TRUE)
-  assertNumber(opt.nsga2.mprob, lower = 0, upper = 1, na.ok = FALSE)
-  assertNumber(opt.nsga2.mdist, lower = 1e-16, na.ok = FALSE, finite  = TRUE)
 
+  control$infill.opt.nsga2.generations = coalesce(opt.nsga2.generations, control$infill.opt.nsga2.generations, 50L)
+  control$infill.opt.nsga2.generations = asCount(control$infill.opt.nsga2.generations)
 
-  control$infill.crit = crit
-  control$infill.crit.lcb.lambda = crit.lcb.lambda
-  control$filter.proposed.points = filter.proposed.points
-  control$filter.proposed.points.tol = filter.proposed.points.tol
-  control$infill.opt = opt
-  control$infill.opt.restarts = opt.restarts
-  control$infill.opt.focussearch.maxit = opt.focussearch.maxit
-  control$infill.opt.focussearch.points = opt.focussearch.points
-  control$infill.opt.cmaes.control = opt.cmaes.control
-  control$infill.opt.ea.maxit = opt.ea.maxit
-  control$infill.opt.ea.mu = opt.ea.mu
-  control$infill.opt.ea.sbx.eta = opt.ea.sbx.eta
-  control$infill.opt.ea.sbx.p = opt.ea.sbx.p
-  control$infill.opt.ea.pm.eta = opt.ea.pm.eta
-  control$infill.opt.ea.pm.p = opt.ea.pm.p
-  control$infill.opt.ea.lambda = opt.ea.lambda
-  #control$infill.opt.multicrit.randomsearch.points = opt.multicrit.randomsearch.points
-  control$infill.opt.nsga2.popsize = opt.nsga2.popsize
-  control$infill.opt.nsga2.generations = opt.nsga2.generations
-  control$infill.opt.nsga2.cprob = opt.nsga2.cprob
-  control$infill.opt.nsga2.cdist = opt.nsga2.cdist
-  control$infill.opt.nsga2.mprob = opt.nsga2.mprob
-  control$infill.opt.nsga2.mdist = opt.nsga2.mdist
+  control$infill.opt.nsga2.cprob = coalesce(opt.nsga2.cprob, control$infill.opt.nsga2.cprob, 0.7)
+  assertNumber(control$infill.opt.nsga2.cprob, lower = 0, upper = 1, na.ok = FALSE)
+  
+  control$infill.opt.nsga2.cdist = coalesce(opt.nsga2.cdist, control$infill.opt.nsga2.cdist, 5)
+  assertNumber(control$infill.opt.nsga2.cdist, lower = 1e-16, na.ok = FALSE, finite = TRUE)
+  
+  control$infill.opt.nsga2.mprob = coalesce(opt.nsga2.mprob, control$infill.opt.nsga2.mprob, 0.2)
+  assertNumber(control$infill.opt.nsga2.mprob, lower = 0, upper = 1, na.ok = FALSE)
+  
+  control$infill.opt.nsga2.mdist = coalesce(opt.nsga2.mdist, control$infill.opt.nsga2.mdist, 10)
+  assertNumber(control$infill.opt.nsga2.mdist, lower = 1e-16, na.ok = FALSE, finite  = TRUE)
 
   return(control)
 }
