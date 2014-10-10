@@ -51,10 +51,10 @@ mboTemplate = function(fun, par.set, design = NULL, learner, control, show.info 
   # if we have multiple tasks, return a list, otherwise singleton result
   doResample = function(tasks) {
     if (length(tasks) == 1L)
-      resample(learner, tasks[[1L]], control$resample.desc, measures = control$resample.measures)
+      resample(learner, tasks[[1L]], control$resample.desc, measures = control$resample.measures, show.info = FALSE)
     else
       lapply(tasks, resample, learner = learner, resampling = control$resample.desc,
-        measures = control$resample.measures)
+        measures = control$resample.measures, show.info = FALSE)
   }
 
   # save some stuff for iter 0, not necessary if we continue

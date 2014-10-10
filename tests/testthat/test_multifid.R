@@ -61,7 +61,7 @@ test_that("essential mutlifid works", {
     init.design.fun = maximinLHS,
     iters = 3L,
     on.learner.error = "stop",
-    show.learner.output = TRUE,
+    show.learner.output = FALSE,
   )
   control = setMBOControlInfill(control = control,
     crit = "multiFid",
