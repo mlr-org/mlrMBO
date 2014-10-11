@@ -56,7 +56,9 @@ mboMultiFid = function(fun, par.set, design = NULL, learner, control, show.info 
 
   times = mbo.design$times
 
-  mf.learner = makeMultiFidWrapper(learner, control)
+  mf.base.learner = makeMultiFidWrapper(learner, control)
+  mf.learner = makeBaggingWrapper(mf.base.learner) #FIXME set params by multifid.control ?
+  mf.learner = setPredictType(mf.learner, predict.type = "se")
   compound.model = train(mf.learner, task = convertOptPathToTask(opt.path))
 
   budget = control$iters

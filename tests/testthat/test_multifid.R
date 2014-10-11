@@ -29,14 +29,15 @@ test_that("essential mutlifid works", {
     opt = "focussearch",
     opt.restarts = 1L,
     opt.focussearch.maxit = 1L,
-    opt.focussearch.points = 20L
+    opt.focussearch.points = 10L
   )
   control = setMBOControlMultiFid(control = control,
     param = "dw.perc",
     lvls = c(0.1, 0.5, 1),
     costs = function(cur, last) (last / cur)^0.5,
     cor.grid.points = 40L)
-  surrogat.learner = makeLearner("regr.km", predict.type="se", nugget.estim = TRUE, jitter = TRUE)
+  
+  surrogat.learner = makeLearner("regr.km", predict.type="response", nugget.estim = TRUE, jitter = TRUE)
   result = mbo(fun = objfun, par.set = par.set, learner = surrogat.learner, control = control)
   expect_true(inherits(result, "MultiFidResult"))
 })

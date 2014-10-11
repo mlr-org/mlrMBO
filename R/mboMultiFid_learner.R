@@ -1,9 +1,8 @@
 makeMultiFidWrapper = function(learner, control) {
   learner = checkLearner(learner, type = "regr")
   assertClass(control, "MBOControl")
-
-  if (learner$predict.type != "se")
-    stop("Predict type of the basic learner must be 'se'.")
+  #if (learner$predict.type != "se")
+  #  stop("Predict type of the basic learner must be 'se'.")
   id = paste(learner$id, "multifid", sep = ".")
   packs = learner$package
   w = mlr:::makeBaseWrapper(id, learner, packs, cl = "MultiFidWrapper")
@@ -68,10 +67,10 @@ predictLearner.MultiFidWrapper = function(.learner, .model, .newdata, ...) {
   preds = lapply(fid.lvls.avail, function(v) {
     this.data = subset(.newdata, fid.par.col == v)
     preds.each = lapply(models[fid.lvls <= v], mlr:::predict.WrappedModel, newdata = this.data)
-    se = extractSubList(preds.each, c("data", "se"), simplify = FALSE)
+    # se = extractSubList(preds.each, c("data", "se"), simplify = FALSE)
     response = extractSubList(preds.each, c("data", "response"), simplify = FALSE)
     pred = preds.each[[1]]
-    pred$data$se = Reduce('+', se)
+    # pred$data$se = Reduce('+', se)
     pred$data$response = Reduce('+', response)
     pred
   })
@@ -82,8 +81,8 @@ predictLearner.MultiFidWrapper = function(.learner, .model, .newdata, ...) {
   for (vs in fid.ns) {
     if (!is.null(split.inds[[vs]]))
       pred.data[split.inds[[vs]], ] = preds[[vs]]$data
-  }
-  as.matrix(pred.data)
+  }  
+  pred.data$response
 }
 
 
