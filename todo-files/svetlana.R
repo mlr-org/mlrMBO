@@ -5,13 +5,21 @@ library(BBmisc)
 library(mlr)
 library(soobench)
 library(mco)
+library(checkmate)
+library(ggplot2)
+library(gridExtra)
 
 load_all(".", reset=TRUE)
+
+source("todo-files/plotOptPath.R")
+source("todo-files/renderPCPPlot.R")
 
 set.seed(6)
 
 z =load2("~/Desktop/saveopt.RData")
 print(plotOptPath(z$opt.path, z$control))
+
+
 ps = z$par.set
 opdf = as.data.frame(z$opt.path)
 xy = as.data.frame(z$opt.path, include.rest = FALSE)
