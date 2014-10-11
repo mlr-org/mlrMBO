@@ -2,54 +2,15 @@ context("mutlifid")
 
 test_that("essential mutlifid works", {
 
-  # helper functions to generate a test case with multiple levels
-
-  sasena = function(x) {
-    # Sasena (2002)
-    # Sasena, M.J. (2002), Flexibility and Efficiency Enhancements for Constrained Global Design Optimization with Kriging Approximations, Ph. D. dissertation, University of Michigan.
-    if(is.list(x))
-      x = unlist(x)
+  objfun = function(x, fac = 0.5) {
+    lvl.par.val = x$dw.perc
+    x = x$x
     assertNumeric(x, len = 1, lower = 0, upper = 10)
     res = -1 * sin(x) - exp(x/100) + 10
-    res
-  }
-
-  uppMove = function(lvl.par.val, x, fac = 1) {
-    if (is.list(x))
-      x = unlist(x)
     lvl.par.val = (1-lvl.par.val) * fac
-    lvl.par.val + lvl.par.val/10 * (x - lvl.par.val * 10)^2
+    add = lvl.par.val + lvl.par.val/10 * (x - lvl.par.val * 10)^2
+    res + add
   }
-
-  makeAddFunction = function(fun, addfun = rnormNoise, ...) {
-    force(fun)
-    force(addfun)
-    pars = list(...)
-    function(x, lvl.par = "dw.perc", ...) {
-      lvl.ind = which(names(x) == lvl.par)
-      lvl.par.val = x[[lvl.ind]]
-      x2 = x[-lvl.ind]
-      add = do.call(addfun, c(list(lvl.par.val = lvl.par.val, x = x2), pars))
-      fun(x = x, lvl.par = lvl.par, ...) + add
-    }
-  }
-
-  bakeFunction = function(fun, lvl.par = "dw.perc", ...) {
-    force(fun)
-    force(lvl.par)
-    args = list(...)
-    function(lvl.par.val, x) {
-      lvl.ind = which(names(x) == lvl.par)
-      x2 = x[-lvl.ind]
-      if (is.list(x2))
-        unlist(x2)
-      do.call(fun, c(list(x2), args))
-    }
-  }
-
-  # generate the test case
-
-  objfun = makeAddFunction(fun=bakeFunction(sasena), addfun=uppMove, fac = 1)
 
   par.set = makeParamSet(
     makeNumericParam("x", lower = 0, upper = 10),
