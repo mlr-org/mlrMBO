@@ -1,8 +1,25 @@
-.editorconfig
+doc
+^makeR
+^clement
+todo-files
+tools
+
+.gitignore
 .travis.yml
 
-^bench
-^makeR
+^.*tar.gz$
+install_dependencies.R
+Makefile
+README.md
+test_all.R
+test_src.R
+todo.txt
+
+src/*.o
+src/*.so
 
 ^.*\.Rproj$
 ^\.Rproj\.user$
+
+^man-roxygen
+^.editorconfig$
