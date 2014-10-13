@@ -19,9 +19,9 @@ branches:
    - /-expt$/
 after_failure: 
   - pwd
-  - ls -al  
-  - cat 00install.log  
-notifications:
+  - ls -al mlrMBO.Rcheck 
+  - cat mlrMBO.Rcheck/examples_and_tests/tests_x64/run-all.Rout.fail
+lnotifications:
   email:
     on_success: change
     on_failure: change
