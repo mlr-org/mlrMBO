@@ -17,6 +17,10 @@ install:
 branches:
   except:
    - /-expt$/
+after_failure: 
+  - pwd
+  - ls -al  
+  - cat 00install.log  
 notifications:
   email:
     on_success: change

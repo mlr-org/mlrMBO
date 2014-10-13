@@ -1,5 +1,7 @@
-library(testthat)
-library(mlrMBO)
-library(checkmate)
+# library(testthat)
+# library(mlrMBO)
+# library(checkmate)
 
-test_check("mlrMBO")
+# test_check("mlrMBO")
+#
+stop(449)
