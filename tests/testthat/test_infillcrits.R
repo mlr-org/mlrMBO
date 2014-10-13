@@ -41,7 +41,7 @@ test_that("infill crits", {
         for (crit in crits) {
           ctrl = mycontrol(minimize, noisy, crit)
           f = if (!noisy) f1 else f2
-          or = mbo(f, ps, NULL, lrn, ctrl, show.info = FALSE)
+          or = mbo(f, ps, NULL, lrn, ctrl)
           mycheck(or, minimize)
         }
       }
@@ -53,12 +53,12 @@ test_that("infill crits", {
     iters = niters, final.evals = 10L)
   ctrl = setMBOControlInfill(ctrl, crit = "lcb", opt = "focussearch", opt.restarts = 1L,
     opt.focussearch.points = 300L, crit.lcb.lambda = 2)
-  mbo(f, ps, NULL, makeLearner("regr.km", predict.type = "se"), ctrl, show.info = FALSE)
+  mbo(f, ps, NULL, makeLearner("regr.km", predict.type = "se"), ctrl)
   expect_error(setMBOControlInfill(ctrl, crit = "lcb", opt = "focussearch", opt.restarts = 1L,
     opt.focussearch.points = 300L, crit.lcb.lambda = 2, crit.lcb.pi = 0.5))
   ctrl = setMBOControlInfill(ctrl, crit = "lcb", opt = "focussearch", opt.restarts = 1L,
     opt.focussearch.points = 300L, crit.lcb.lambda = NULL, crit.lcb.pi = 0.5)
-  mbo(f, ps, NULL, makeLearner("regr.km", predict.type = "se"), ctrl, show.info = FALSE)
+  mbo(f, ps, NULL, makeLearner("regr.km", predict.type = "se"), ctrl)
 })
 
 

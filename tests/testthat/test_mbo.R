@@ -13,7 +13,7 @@ test_that("mbo works with rf", {
   learner = makeLearner("regr.randomForest")
   ctrl = makeMBOControl(iters = 5, store.model.at = c(0,5))
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100)
-  or = mbo(f, ps, des, learner, ctrl, show.info = FALSE)
+  or = mbo(f, ps, des, learner, ctrl)
   expect_true(!is.na(or$y))
   expect_equal(or$y, f(or$x))
   expect_equal(getOptPathLength(or$opt.path), 15)
@@ -43,7 +43,7 @@ test_that("mbo works with rf", {
   )
   des = generateDesign(10, par.set = ps)
   des$y  = sapply(1:nrow(des), function(i) f(as.list(des[i,])))
-  or = mbo(f, ps, des, learner, ctrl, show.info = FALSE)
+  or = mbo(f, ps, des, learner, ctrl)
   expect_true(!is.na(or$y))
   expect_equal(getOptPathLength(or$opt.path), 15)
   df = as.data.frame(or$opt.path)
@@ -68,7 +68,7 @@ test_that("mbo works with rf", {
   learner = makeLearner("regr.randomForest")
   ctrl = makeMBOControl(iters = 5)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100)
-  or = mbo(f, ps, des, learner, ctrl, show.info = FALSE)
+  or = mbo(f, ps, des, learner, ctrl)
   expect_true(!is.na(or$y))
   expect_equal(getOptPathLength(or$opt.path), 15)
   df = as.data.frame(or$opt.path)
@@ -82,13 +82,13 @@ test_that("mbo works with rf", {
   # check best.predicted
   ctrl = makeMBOControl(iters = 5, final.method = "best.predicted")
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100)
-  or = mbo(f, ps, des, learner, ctrl, show.info = FALSE)
+  or = mbo(f, ps, des, learner, ctrl)
   expect_true(!is.na(or$y))
   expect_equal(getOptPathLength(or$opt.path), 15)
 
   ctrl = makeMBOControl(init.design.points = 10, iters = 5)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100)
-  or = mbo(f, ps, des = NULL, learner, ctrl, show.info = FALSE)
+  or = mbo(f, ps, des = NULL, learner, ctrl)
   expect_true(!is.na(or$y))
   expect_equal(getOptPathLength(or$opt.path), 15)
   expect_equal(names(or$x), names(ps$pars))
@@ -103,12 +103,12 @@ test_that("mbo works with rf", {
   learner = makeLearner("regr.randomForest")
   ctrl = makeMBOControl(init.design.points = 10, iters = 3)
   ctrl = setMBOControlInfill(ctrl, opt = "cmaes", opt.cmaes.control = list(maxit = 2))
-  or = mbo(f, ps, des = NULL, learner, ctrl, show.info = FALSE)
+  or = mbo(f, ps, des = NULL, learner, ctrl)
   expect_true(!is.na(or$y))
   expect_equal(getOptPathLength(or$opt.path), 10 + 3)
   ctrl = makeMBOControl(init.design.points = 10, iters = 3, final.method = "best.predicted")
   ctrl = setMBOControlInfill(ctrl, opt = "cmaes", opt.cmaes.control = list(maxit = 2))
-  or = mbo(f, ps, des = NULL, learner, ctrl, show.info = FALSE)
+  or = mbo(f, ps, des = NULL, learner, ctrl)
   expect_equal(getOptPathLength(or$opt.path), 10 + 3)
 
   # check more.args
@@ -125,7 +125,7 @@ test_that("mbo works with rf", {
   learner = makeLearner("regr.randomForest")
   ctrl = makeMBOControl(iters = 5)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100)
-  or = mbo(f, ps, des = NULL, learner, ctrl, show.info = FALSE, more.args = list(shift = 0))
+  or = mbo(f, ps, des = NULL, learner, ctrl, more.args = list(shift = 0))
   expect_true(!is.na(or$y))
 
   # check y transformation before modelling
@@ -135,11 +135,11 @@ test_that("mbo works with rf", {
   )
 
   ctrl = makeMBOControl(iters = 2L, trafo.y.fun = trafoLog(handle.violations = "error"))
-  expect_error(mbo(f, ps, control = ctrl, show.info = FALSE, more.args = list(shift = -1)))
-  or = mbo(f, ps, show.info = FALSE, control = ctrl, more.args = list(shift = 0))
+  expect_error(mbo(f, ps, control = ctrl, more.args = list(shift = -1)))
+  or = mbo(f, ps, control = ctrl, more.args = list(shift = 0))
   expect_true(!is.na(or$y))
   # negative function values not allowed when log-transforming y-values before modelling
-  expect_error(mbo(f, ps, show.info = FALSE, control = ctrl, more.args = list(shift = -1)))
+  expect_error(mbo(f, ps, control = ctrl, more.args = list(shift = -1)))
 })
 
 # FIXME: we do we get so bad results with so many models for this case?

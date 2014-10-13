@@ -26,7 +26,7 @@
 # @param ... [\code{list}]\cr
 #   Not used.
 # @return [\code{list}] List of length \code{iters}. Each list element is a list of plots.
-autoplotExampleRun2d = function(x, iters,
+renderExampleRunPlots2d = function(x, iters,
   pause = TRUE, densregion = TRUE,
   point.size, line.size,
   se.factor,

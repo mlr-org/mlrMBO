@@ -55,18 +55,18 @@
 #' @note See the other setMBOControl... functions and \code{makeMBOControl} for referenced arguments.
 #'
 #' @references
-#' For more information on the implemented multi-criteria procedures the following 
+#' For more information on the implemented multi-criteria procedures the following
 #' sources might be helpful:
 #' Knowles, J.: ParEGO: A hybrid algorithm with on-line landscape
 #' approximation for expensive multiobjective optimization problems. IEEE
-#' Transactions on Evolutionary Computation, 10 (2006) 1, pp. 50–66
+#' Transactions on Evolutionary Computation, 10 (2006) 1, pp. 50-66
 #'
 #' Wagner, T.; Emmerich, M.; Deutz, A.; Ponweiser, W.: On Expected-
 #' Improvement Criteria for Model-Based Multi-Objective Optimization.
-#' In: Proc. 11th Int’l. Conf. Parallel Problem Solving From Nature (PPSN
+#' In: Proc. 11th Int. Conf. Parallel Problem Solving From Nature (PPSN
 #' XI) - Part I, Krakow, Poland, Schaefer, R.; Cotta, C.; Kolodziej, J.;
 #' Rudolph, G. (eds.), no. 6238 in Lecture Notes in Computer Science,
-#' Springer, Berlin, 2010, ISBN 978-3-642-15843-8, pp. 718–727, doi:10.
+#' Springer, Berlin, 2010, ISBN 978-3-642-15843-8, pp. 718-727, doi:10.
 #' 1007/978-3-642-15844-5 72
 #'
 #' Wagner, T.: Planning and Multi-Objective Optimization of Manufacturing
@@ -86,8 +86,8 @@
 #' Jeong, S.; Obayashi, S.: Efficient global optimization (EGO) for multiobjective
 #' problem and data mining. In: Proc. IEEE Congress on
 #' Evolutionary Computation (CEC 2005), Edinburgh, UK, Corne, D.;
-#' et al. (eds.), IEEE, 2005, ISBN 0-7803-9363-5, pp. 2138–2145
-#' 
+#' et al. (eds.), IEEE, 2005, ISBN 0-7803-9363-5, pp. 2138-2145
+#'
 #' @seealso makeMBOControl
 #' @export
 setMBOControlMultiCrit = function(control,

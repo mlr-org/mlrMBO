@@ -3,16 +3,16 @@
 \alias{setMBOControlInfill}
 \title{Extends mbo control object with infill criteria and infill optimizer options.}
 \usage{
-setMBOControlInfill(control, crit = "mean", crit.lcb.lambda = 1,
-  crit.lcb.pi = NULL, filter.proposed.points = FALSE,
-  filter.proposed.points.tol = 1e-04, opt = "focussearch",
-  opt.restarts = 1L, opt.focussearch.maxit = 5L,
-  opt.focussearch.points = 10000L, opt.cmaes.control = list(),
-  opt.ea.maxit = 500L, opt.ea.mu = 10L, opt.ea.sbx.eta = 15,
-  opt.ea.sbx.p = 0.5, opt.ea.pm.eta = 15, opt.ea.pm.p = 0.5,
-  opt.ea.lambda = 1L, opt.nsga2.popsize = 100L,
-  opt.nsga2.generations = 50L, opt.nsga2.cprob = 0.7, opt.nsga2.cdist = 5,
-  opt.nsga2.mprob = 0.2, opt.nsga2.mdist = 10)
+setMBOControlInfill(control, crit = NULL, crit.lcb.lambda = 1,
+  crit.lcb.pi = NULL, filter.proposed.points = NULL,
+  filter.proposed.points.tol = NULL, opt = "focussearch",
+  opt.restarts = NULL, opt.focussearch.maxit = NULL,
+  opt.focussearch.points = NULL, opt.cmaes.control = NULL,
+  opt.ea.maxit = NULL, opt.ea.mu = NULL, opt.ea.sbx.eta = NULL,
+  opt.ea.sbx.p = NULL, opt.ea.pm.eta = NULL, opt.ea.pm.p = NULL,
+  opt.ea.lambda = NULL, opt.nsga2.popsize = NULL,
+  opt.nsga2.generations = NULL, opt.nsga2.cprob = NULL,
+  opt.nsga2.cdist = NULL, opt.nsga2.mprob = NULL, opt.nsga2.mdist = NULL)
 }
 \arguments{
 \item{control}{[\code{\link{MBOControl}}]\cr

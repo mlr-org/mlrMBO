@@ -23,11 +23,11 @@ test_that("impute y", {
   n.focus.points = 100L
   ctrl = makeMBOControl(iters = 20)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = n.focus.points)
-  expect_error(mbo(f1, ps, des = NULL, learner, ctrl, show.info = FALSE), "must be a numeric of length 1")
+  expect_error(mbo(f1, ps, des = NULL, learner, ctrl), "must be a numeric of length 1")
 
   ctrl = makeMBOControl(iters = 20, impute.y.fun = function(x, y, opt.path) 0)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = n.focus.points)
-  res = mbo(f1, ps, des = NULL, learner, ctrl, show.info = FALSE)
+  res = mbo(f1, ps, des = NULL, learner, ctrl)
 
   # Check for correct error messages
   na.inds = which(getOptPathY(res$opt.path) == 0)
@@ -40,10 +40,10 @@ test_that("impute y", {
 
   ctrl = makeMBOControl(iters = 50)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = n.focus.points)
-  expect_error(mbo(f2, ps, des = NULL, learner, ctrl, show.info = FALSE), "foo")
+  expect_error(mbo(f2, ps, des = NULL, learner, ctrl), "foo")
   ctrl = makeMBOControl(iters = 50, impute.y.fun = function(x, y, opt.path) 0)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = n.focus.points)
-  res = mbo(f2, ps, des = NULL, learner, ctrl, show.info = FALSE)
+  res = mbo(f2, ps, des = NULL, learner, ctrl)
   # Check for correct error messages
   na.inds = which(getOptPathY(res$opt.path) == 0)
   for (ind in 1:getOptPathLength(res$opt.path)) {

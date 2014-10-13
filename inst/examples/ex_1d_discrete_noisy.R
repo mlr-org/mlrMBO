@@ -23,7 +23,8 @@ ctrl = setMBOControlInfill(ctrl, crit = "ei", opt.focussearch.points = 100)
 
 lrn = makeLearner("regr.randomForest", predict.type = "se")
 
-run = exampleRun(objfun, par.set = par.set, learner = lrn, control = ctrl, points.per.dim = 50)
+run = exampleRun(objfun, par.set = par.set, learner = lrn, control = ctrl,
+	points.per.dim = 50, show.info = TRUE)
 
 print(run)
 

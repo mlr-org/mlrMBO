@@ -13,7 +13,7 @@ test_that("exampleRun", {
     if (has.simple.signature)
       obj.fn = makeMBOFunction(obj.fn)
     run = exampleRun(obj.fn, global.opt = 0L, par.set, learner, control = control)
-    return(autoplot(run, pause = FALSE, show.info = FALSE))
+    return(autoplot(run, pause = FALSE))
   }
 
   ### 1D NUMERIC
@@ -83,6 +83,6 @@ test_that("exampleRun", {
 
   run = exampleRun(makeMBOFunction(obj.fun), par.set = par.set, learner = lrn, control = ctrl, points.per.dim = 50)
 
-  plot.list = autoplot(run, pause = FALSE, show.info = FALSE)
+  plot.list = autoplot(run, pause = FALSE)
   checkPlotList(plot.list, len = n.iters)
 })

@@ -28,7 +28,7 @@ test_that("multipoint lcb", {
   ctrl$lcb.min.dist = 10000
 
   res = mbo(makeMBOFunction(objfun), par.set = ps, learner = lrn, control = ctrl)
-  expect_equal(getOptPathLength(res$opt.path), 31L)
+  expect_equal(getOptPathLength(res$opt.path), 35L)
 })
 
 

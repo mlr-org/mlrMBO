@@ -49,7 +49,7 @@ deepCopyOptPath = function(op) {
   op2$env = new.env()
   op2$env$path = op$env$path
   op2$env$dob = op$env$dob
-  op$env$eol = op$env$eol
+  op2$env$eol = op$env$eol
   return(op2)
 }
 

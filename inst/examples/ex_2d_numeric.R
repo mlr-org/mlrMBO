@@ -17,7 +17,8 @@ ctrl = setMBOControlInfill(ctrl, crit = "ei", opt = "focussearch", opt.focussear
 
 lrn = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
 
-run = exampleRun(obj.fun, par.set = par.set, learner = lrn, control = ctrl, points.per.dim = 50)
+run = exampleRun(obj.fun, par.set = par.set, learner = lrn, control = ctrl, 
+	points.per.dim = 50, show.info = TRUE)
 
 print(run)
 

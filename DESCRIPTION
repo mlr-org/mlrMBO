@@ -14,25 +14,33 @@ License: BSD_3_clause + file LICENSE
 URL: https://github.com/berndbischl/mlrMBO
 BugReports: https://github.com/berndbischl/mlrMBO/issues
 Depends:
-    ParamHelpers,
-    mlr (>= 2.0),
-    lhs
+    lhs,
+    mlr (>= 2.2),
+    ParamHelpers (>= 1.4)
 Imports:
     BBmisc (>= 1.7),
-    checkmate (>= 1.1),
+    checkmate (>= 1.4),
     parallelMap (>= 1.1),
     plyr,
-    soobench,
-    reshape2
+    reshape2,
+    soobench
 Suggests:
     cmaes,
+    DiceKriging,
     DiceOptim,
+    earth,
     emoa,
     ggplot2,
     gridExtra,
+    kernlab, 
+    kknn,
+    mboost, 
     mco,
-    testthat,
-    randomForest
+    nnet,
+    party,
+    randomForest,
+    rpart,
+    testthat
 LazyData: yes
 ByteCompile: yes
 Version: 1.0

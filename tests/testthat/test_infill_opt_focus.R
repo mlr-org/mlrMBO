@@ -21,7 +21,7 @@ test_that("simple random search, no dependencies, no focussing", {
   ctrl = makeMBOControl(init.design.points = 20, iters = 2)
   ctrl = setMBOControlInfill(ctrl, opt = "focussearch",
     opt.restarts = 1, opt.focussearch.maxit = 1, opt.focussearch.points = 30)
-  or = mbo(f, ps, learner=learner, control=ctrl, show.info=FALSE)
+  or = mbo(f, ps, learner = learner, control = ctrl)
   expect_true(!is.na(or$y))
 })
 
@@ -43,7 +43,7 @@ test_that("dependent params, but no focussing", {
   ctrl = makeMBOControl(init.design.points = 20, iters = 2)
   ctrl = setMBOControlInfill(ctrl, opt = "focussearch", opt.restarts = 1, opt.focussearch.maxit = 1,
     opt.focussearch.points = 500)
-  or = mbo(f, ps, learner = learner, control = ctrl, show.info = FALSE)
+  or = mbo(f, ps, learner = learner, control = ctrl)
   expect_true(all(is.na(as.data.frame(or$opt.path)[["error.model"]])))
   expect_true(!is.na(or$y))
 })
@@ -73,20 +73,20 @@ test_that("complex param space, dependencies, focussing, restarts", {
     makeNumericParam("realA", lower = 0, upper = 100, requires = quote(disc2 == "a")),
     makeIntegerParam("intA", lower = -100, upper = 100, requires = quote(disc2 == "a")),
     makeDiscreteParam("discA", values = c("m", "w"), requires = quote(disc2 == "a")),
-    makeNumericParam("realB", lower = -100, upper=100, requires = quote(disc2 == "b")),
+    makeNumericParam("realB", lower = -100, upper = 100, requires = quote(disc2 == "b")),
     makeDiscreteParam("discB", values = c("R", "NR"), requires = quote(disc2 == "b")),
     makeNumericParam("realBR", lower = 0, upper = 2*pi,
-      requires=quote(identical(discB, "R") && identical(disc2, "b"))),
+      requires = quote(identical(discB, "R") && identical(disc2, "b"))),
     makeNumericParam("realBNR", lower = 0, upper = 2*pi,
-      requires=quote(identical(discB, "NR") && identical(disc2, "b")))
+      requires = quote(identical(discB, "NR") && identical(disc2, "b")))
   )
 
   ctrl = makeMBOControl(init.design.points = 20, iters = 2)
-  ctrl = setMBOControlInfill(ctrl, crit="ei", opt = "focussearch",
+  ctrl = setMBOControlInfill(ctrl, crit = "ei", opt = "focussearch",
     opt.restarts = 2L, opt.focussearch.maxit = 2L, opt.focussearch.points = 100)
   learner = makeLearner("regr.randomForest", predict.type = "se")
   learner = makeImputeWrapper(learner, classes = list(numeric = imputeMedian(), factor = imputeMode()))
 
-  or = mbo(f, ps, learner=learner, control=ctrl, show.info=FALSE)
+  or = mbo(f, ps, learner = learner, control = ctrl)
   expect_true(!is.na(or$y))
 })

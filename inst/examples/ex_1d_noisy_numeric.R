@@ -34,7 +34,8 @@ ctrl = setMBOControlInfill(ctrl, crit = "ei", opt = "focussearch",
 
 
 run = exampleRun(obj.fun, par.set, global.opt = -1, learner = lrn,
-  control = ctrl, points.per.dim = 200L, noisy.evals = 50L, fun.mean = obj.fun.mean)
+  control = ctrl, points.per.dim = 200L, noisy.evals = 50L, fun.mean = obj.fun.mean,
+  show.info = TRUE)
 
 print(run)
 
