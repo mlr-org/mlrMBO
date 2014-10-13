@@ -224,32 +224,51 @@ write(x = print(all.cmp.hv$xtab, type = "latex",
 # Tables for our web-page
 tab.hv.1 = compareGroup(res = res, expr = res$prop.points == 1L, indicator = "hv",
   digits = 3, include.baseline = TRUE,
-  caption = "All results compared via unary hypervolume indicator.")
+  caption = "Singe-point results compared via unary hypervolume indicator.")
 tab.hv.4 = compareGroup(res = res, expr = res$prop.points == 4L, indicator = "hv",
   digits = 3, include.baseline = TRUE,
-  caption = "All results compared via unary hypervolume indicator.")
+  caption = "Multi-point results compared via unary hypervolume indicator.")
+tab.hv.base = compareGroup(res = res, expr = res$algo == "exactFront" | res$budget == "normal",
+  indicator = "hv", digits = 3, include.baseline = FALSE,
+  caption = "Baseline results compared via unary hypervolume indicator. NSGA2-ref is the mean result of 20 replications nsga2 with 400d population size and 1000 generations.")
+
 tab.r2.1 = compareGroup(res = res, expr = res$prop.points == 1L, indicator = "r2",
   digits = 3, include.baseline = TRUE,
-  caption = "All results compared via unary hypervolume indicator.")
+  caption = "Singe-point results compared via unary r2 indicator.")
 tab.r2.4 = compareGroup(res = res, expr = res$prop.points == 4L, indicator = "r2",
   digits = 3, include.baseline = TRUE,
-  caption = "All results compared via unary hypervolume indicator.")
+  caption = "Multi-point results compared via unary r2 indicator.")
+tab.r2.base = compareGroup(res = res, expr = res$algo == "exactFront" | res$budget == "normal",
+  indicator = "r2", digits = 3, include.baseline = FALSE,
+  caption = "Baseline results compared via unary r2 indicator. Exact front is the mean result of 20 replications nsga2 with 500d population size and 100 generations.")
+
 tab.eps.1 = compareGroup(res = res, expr = res$prop.points == 1L, indicator = "eps",
   digits = 3, include.baseline = TRUE,
-  caption = "All results compared via unary hypervolume indicator.")
+  caption = "Singe-point results compared via epsilon indicator.")
 tab.eps.4 = compareGroup(res = res, expr = res$prop.points == 4L, indicator = "eps",
   digits = 3, include.baseline = TRUE,
-  caption = "All results compared via unary hypervolume indicator.")
+  caption = "Multi-point results compared via epsilon indicator.")
+tab.eps.base = compareGroup(res = res, expr = res$algo == "exactFront" | res$budget == "normal",
+  indicator = "eps", digits = 3, include.baseline = FALSE,
+  caption = "Baseline results compared via epsilon indicator. Exact front is the mean result of 20 replications nsga2 with 500d population size and 100 generations.")
 
 write(x = print(tab.hv.1$xtab, type = "latex",
   sanitize.text.function = function(x){x}), file= "all_hv_single.tex")
 write(x = print(tab.hv.4$xtab, type = "latex",
   sanitize.text.function = function(x){x}), file= "all_hv_multi.tex")
+write(x = print(tab.hv.base$xtab, type = "latex",
+  sanitize.text.function = function(x){x}), file= "all_hv_base.tex")
+
 write(x = print(tab.r2.1$xtab, type = "latex",
   sanitize.text.function = function(x){x}), file= "all_r2_single.tex")
 write(x = print(tab.r2.4$xtab, type = "latex",
   sanitize.text.function = function(x){x}), file= "all_r2_multi.tex")
+write(x = print(tab.r2.base$xtab, type = "latex",
+  sanitize.text.function = function(x){x}), file= "all_r2_base.tex")
+
 write(x = print(tab.eps.1$xtab, type = "latex",
   sanitize.text.function = function(x){x}), file= "all_eps_single.tex")
 write(x = print(tab.eps.4$xtab, type = "latex",
   sanitize.text.function = function(x){x}), file= "all_eps_multi.tex")
+write(x = print(tab.eps.base$xtab, type = "latex",
+  sanitize.text.function = function(x){x}), file= "all_eps_base.tex")

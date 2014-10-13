@@ -93,7 +93,7 @@ addAlgorithm(reg, "randomSearch", fun = function(static, dynamic, budget) {
   list(par.set = static$par.set, opt.path = opt.path)
 })
 
-addAlgorithm(reg, "nsga2", overwrite = TRUE, fun = function(static, budget) {
+addAlgorithm(reg, "nsga2", fun = function(static, budget) {
   opt.path = makeOptPathDF(static$par.set, paste("y", 1:static$dimy, sep = "_"),
     minimize = rep(TRUE, static$dimy), include.error.message = TRUE, include.exec.time = TRUE)
 
@@ -115,7 +115,7 @@ addAlgorithm(reg, "nsga2", overwrite = TRUE, fun = function(static, budget) {
 })
 
 # Add NSGA2 with really high number of FEvals to calc the "exact" front
-addAlgorithm(reg, "exactFront", overwrite = TRUE, fun = function(static) {
+addAlgorithm(reg, "nsga2-ref", fun = function(static) {
   opt.path = makeOptPathDF(static$par.set, paste("y", 1:static$dimy, sep = "_"),
     minimize = rep(TRUE, static$dimy), include.error.message = TRUE, include.exec.time = TRUE)  
   dimx = static$dimx
@@ -126,7 +126,7 @@ addAlgorithm(reg, "exactFront", overwrite = TRUE, fun = function(static) {
     mprob = BASELINE_NSGA2_mprob(dimx), mdist = BASELINE_NSGA2_mdist(dimx))
   # add all elements to op.path
   for (j in seq_row(res$par))
-    addOptPathEl(opt.path, x = list(x = res$par[j, ]), y = res$value[j, ], dob = i)
+    addOptPathEl(opt.path, x = list(x = res$par[j, ]), y = res$value[j, ], dob = 0)
   list(par.set = static$par.set, opt.path = opt.path, opt.res = res)
 })
 
@@ -160,17 +160,18 @@ des5 = makeDesign("mspot", exhaustive = list(
   prop.points = PARALLEL_PROP_POINTS,
   crit = c("mean", "lcb", "ei")
 ))
-des6 = makeDesign("exactFront")
+des6 = makeDesign("nsga2-ref")
 
 addExperiments(reg, algo.design = des1, repls = REPLS)
 addExperiments(reg, algo.design = des2, repls = REPLS)
 addExperiments(reg, algo.design = des3, repls = REPLS)
 addExperiments(reg, algo.design = des4, repls = REPLS)
 addExperiments(reg, algo.design = des5, repls = REPLS)
+addExperiments(reg, algo.design = des6, repls = REPLS)
 
 batchExport(reg, runMBO = runMBO)
 
-j = findExperiments(reg, algo.pattern = "nsga2")
+j = findExperiments(reg, algo.pattern = "nsga2-ref")
 
 submitJobs(reg, ids = j,
   resources = list(walltime = 8 * 3600, memory = 2 * 1024),
