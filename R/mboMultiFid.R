@@ -135,6 +135,7 @@ mboMultiFid = function(fun, par.set, design = NULL, learner, control, show.info 
                                       model.cost = model.cost, best.points = best.points)
     }
     if(!is.null(control$multifid.alpha2fix) && control$multifid.alpha2fix) {
+      warning("Use of alpha2fix = TRUE shouldn't be neccesarry anymore!")
       tmp = data.frame(best.points[1,1], control$multifid.lvls[control$multifid.lvls <= best.points[[control$multifid.param]]])
       colnames(tmp) = colnames(best.points)
       best.points = tmp

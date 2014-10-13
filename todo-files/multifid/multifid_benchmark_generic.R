@@ -32,7 +32,8 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
   control.common$multifid.alpha2fix = alpha2fix
   
   if (is.null(surrogat.model)) {
-    surrogat.model = makeLearner("regr.km", predict.type="se", nugget.estim = TRUE, jitter = TRUE)
+    #surrogat.model = makeLearner("regr.km", predict.type="se", nugget.estim = TRUE, jitter = TRUE)
+    surrogat.model = makeLearner("regr.km", nugget.estim = TRUE, jitter = TRUE)
   }
   
   

@@ -10,8 +10,8 @@ e.par.set = makeParamSet(
 )
 e.lvl = c(0.1, 0.3, 0.5, 0.7, 1)
 
-openML.ids = c(spambase = 273, bng = 2328)
-openML.res = lapply(openML.ids, openMLBenchmark, e.seed = e.seed, e.lrn = e.lrn, e.par.set = e.par.set, e.lvl = e.lvl, alpha2fix = TRUE)
+# openML.ids = c(spambase = 273, bng = 2328)
+# openML.res = lapply(openML.ids, openMLBenchmark, e.seed = e.seed, e.lrn = e.lrn, e.par.set = e.par.set, e.lvl = e.lvl, alpha2fix = TRUE)
 
 e.par.set = makeParamSet(
   makeNumericParam("cost", lower = 0, upper = 10)
@@ -19,13 +19,13 @@ e.par.set = makeParamSet(
 sasenas = list(sasena10 = 1, sasena07 = 0.7, sasena05 = 0.5, sasena02 = 0.2)
 sasens.res = lapply(names(sasenas), function(sn) {
   objfun = makeAddFunction(fun=bakeFunction(sasena), addfun=uppMove, fac = sasenas[[sn]])
-  generalBenchmark(e.name = sn, objfun = objfun, e.seed = e.seed, e.par.set = e.par.set, e.lvl = e.lvl, alpha2fix = TRUE)
+  generalBenchmark(e.name = sn, objfun = objfun, e.seed = e.seed, e.par.set = e.par.set, e.lvl = e.lvl, alpha2fix = FALSE)
 })
 
 hartmans = list(hartman10 = 1, hartman07 = 0.7, hartman05 = 0.5, hartman02 = 0.2)
 hartmans.res = lapply(names(hartmans), function(sn) {
   objfun = makeShiftFunction(makeAddFunction(fun=bakeFunction(hartman), addfun=uppMove, fac = 0.2), direction = hartmans[[sn]])
-  generalBenchmark(e.name = sn, objfun = objfun, e.seed = e.seed, e.par.set = e.par.set, e.lvl = e.lvl, alpha2fix = TRUE)
+  generalBenchmark(e.name = sn, objfun = objfun, e.seed = e.seed, e.par.set = e.par.set, e.lvl = e.lvl, alpha2fix = FALSE)
 })
 
 save.image("multifid_compare.RData")
