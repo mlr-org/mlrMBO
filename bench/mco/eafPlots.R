@@ -73,6 +73,8 @@ plotEAF = function(opt.paths, xlim = NULL, ylim = NULL, ...) {
   args$maximise = !minimize
   args$xlim = xlim
   args$ylim = ylim
+  args$col = c("darkgrey", "darkgrey", "black", "darkgrey", "black", "black", "black", "darkgrey")
+  args$lty = c("dotdash", "twodash", "solid", "solid", "twodash", "dotdash", "dashed", "dashed")
   do.call(eafplot, args)
   return(data)
 }
@@ -87,13 +89,13 @@ job.info$algo2 = paste(job.info$algo, job.info$budget, job.info$prop.points,
 job.info$algo2 = str_replace_all(job.info$algo2, "-NA", "")
 pids = c("GOMOP3_3D2M", "GOMOP_2D2M", "GOMOP_5D2M", "dtlz2_5D2M", "zdt1_5D2M", "zdt2_5D2M", "zdt3_5D2M")
 
-aids.base = aids1 = c("nsga2-normal", "randomSearch-normal", "exactFront")
+aids.base = c("randomSearch-normal", "nsga2-normal", "nsga2-ref")
 aids1 = c(aids.base, "dib-1-sms", "dib-1-eps")
-aids2 = c(aids.base, "parego-1-ei", "parego-1-lcb")
-aids3 = c(aids.base, "mspot-1-mean", "mspot-1-ei", "mspot-1-lcb")
-aids4 = c(aids.base, "dib-4-sms","dib-4-eps")
-aids5 = c(aids.base, "parego-4-ei", "parego-4-lcb")
-aids6 = c(aids.base, "mspot-4-mean", "mspot-4-ei", "mspot-4-lcb")
+aids2 = c(aids.base, "dib-4-sms", "dib-4-eps")
+aids3 = c(aids.base, "parego-1-ei", "parego-1-lcb")
+aids4 = c(aids.base, "parego-4-ei", "parego-4-lcb")
+aids5 = c(aids.base, "mspot-1-mean", "mspot-1-lcb", "mspot-1-ei")
+aids6 = c(aids.base, "mspot-4-mean", "mspot-4-lcb", "mspot-4-ei")
 aids7 = c(aids.base, "dib-1-sms", "parego-4-lcb", "mspot-4-ei")
 
 

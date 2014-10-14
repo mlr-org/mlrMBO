@@ -1,94 +1,49 @@
-library(BatchExperiments)
-library(parallelMap)
+load("results_trends.RData")
 library(plyr)
-library(mlrMBO)
+library(stringr)
+library(ggplot2)
 
-reg = loadRegistry("mco_bench-files", work.dir = ".")
+makeTrendPlot = function(res, pid, indic, prop) {
 
-# exclude dtlz1_5D5M - results don't show anything
-prob.ids = setdiff(getProblemIds(reg), c("dtlz1_5D5M"))
-
-job.ids = getJobIds(reg)
-# exclude the rs, nsga2-10fold and dtlz2_5D5M
-nsga2.10fold.ids = findExperiments(reg, algo.pattern = "nsga2", algo.pars = budget == "10fold")
-rs.ids = findExperiments(reg, algo.pattern = "randomSearch")
-exactFront.ids = findExperiments(reg, algo.pattern = "exactFront")
-job.ids = setdiff(job.ids, union(nsga2.10fold.ids, union(rs.ids, exactFront.ids)))
-job.ids = setdiff(job.ids, findExperiments(reg, prob.pattern = "dtlz1_5D5M"))
-
-parallelStartBatchJobs(bj.resources = list(memory = 20000))
-parallelLibrary("BatchExperiments", "emoa", "ParamHelpers")
-merged.fronts = parallelMap(function(pid, reg, job.ids) {
-  messagef("Merging front: %s", pid)
-  ids = findExperiments(reg, ids = job.ids, prob.pattern = pid, match.substring = FALSE)
-  xs = loadResults(reg, ids)
-  fronts = lapply(xs, function(x) getOptPathParetoFront(x$opt.path))
-  merged = do.call(rbind, fronts)
-  list(merged.front = merged, ref.front = t(nondominated_points(t(merged))))
-}, prob.ids, use.names = TRUE, more.args = list(reg = reg, job.ids = job.ids))
-parallelStop()
-
-merged.fronts.min = sapply(merged.fronts, function(y) apply(y$merged.front, 2, min), simplify = FALSE)
-merged.fronts.max = sapply(merged.fronts, function(y) apply(y$merged.front, 2, max), simplify = FALSE)
-
-reduceFunction = function(job, res, merged.fronts, merged.fronts.min, merged.fronts.max, indic) {
-  library(ParamHelpers)
-  library(emoa)
-  op = as.data.frame(res$opt.path, include.x = FALSE, include.rest = FALSE)
-  dimy = ncol(op)
-  # scale merged front. NB: apply transposes....
-  y.min = merged.fronts.min[[job$prob.id]]
-  y.max = merged.fronts.max[[job$prob.id]]
-  myscale = function(y) {
-    t(apply(y, 1, function(r) {
-      1 + (r - y.min) / (y.max - y.min)
-    }))
-  }
-  refset = merged.fronts[[job$prob.id]]$ref.front
-  refset = myscale(refset)
-  ref = rep(2.1, dimy)
-  ideal = rep(1, dimy)
-  s = switch(dimy, 1L, 100000L, 450L, 75L, 37L)
-  weight.vectors = mlrMBO:::combWithSum(s, dimy) / s
+  res = res[[indic]]
+  # mean indicator contribution for each algo
+  res = subset(res, res$prob == pid)
+  res$algo2 = paste(res$algo, res$prop.points, res$indicator, res$crit, sep = "-")
+  res$algo2 = str_replace_all(res$algo2, "-NA", "")
+  res = ddply(res, "algo2", 
+    function(x) colMeans(x[, 7:(ncol(res)-2)]))
+  print(res)
+  # reshape format of dataset
+  reshaped = data.frame (
+    algo2 = rep(res$algo2, each = ncol(res) - 2),
+    dob = rep(1:(ncol(res) - 2), nrow(res)),
+    indic = as.vector(t(as.matrix(res[, -(1:2)])))
+  )
   
-  # calculate the indicators for every dob
-  dob = getOptPathDOB(res$opt.path)
-  r = lapply(unique(dob), function(i) {
-    p = myscale(getOptPathParetoFront(res$opt.path, dob = 1:i))
-    switch(indic,
-      hv = dominated_hypervolume(t(p), ref),
-      eps = epsilon_indicator(t(p), t(refset)),
-      r2 = unary_r2_indicator(t(p), t(weight.vectors), ideal = ideal))
-  })
-  names(r) = paste(indic, unique(dob), sep = "")
-  r
+  p =  ggplot(reshaped, aes(x = dob, y = indic, col = algo2))
+  p = p + geom_line(lwd = 1.25) + xlab("Iteration") + ylab(indic)
+  p = p + ggtitle(paste("Trend for ", indic, " indicator of ", prop, "-point algorithms on ", pid, sep = ""))
+  p
 }
 
-# we have to distinuish 2D and 5D as well as 1 prop.points and 4 prop.points, nsga2 is special, too
-ids.2d = intersect(job.ids, findExperiments(reg, prob.pattern = "2D"))
-ids.5d = intersect(job.ids, findExperiments(reg, prob.pattern = "5D"))
-ids.nsga2 = intersect(job.ids, findExperiments(reg, algo.pattern = "nsga2"))
-ids.mmbo = setdiff(job.ids, ids.nsga2)
-ids.single = intersect(ids.mmbo, findExperiments(reg, ids.mmbo, algo.pars = prop.points == 1L))
-ids.quad = intersect(ids.mmbo, findExperiments(reg, ids.mmbo, algo.pars = prop.points == 4L))
-
-reduceCaller = function(ids, indic)
-  reduceResultsExperimentsParallel(reg, ids, njobs = 25L,
-    fun = reduceFunction,
-    merged.fronts = merged.fronts, merged.fronts.min = merged.fronts.min,
-    merged.fronts.max = merged.fronts.max, indic = indic)
-
-res.nsga2 = list()
-res.2d.single = list()
-res.2d.quad = list()
-res.5d.single = list()
-res.5d.quad = list()
-for (indic in c("hv", "eps", "r2")) {
-  res.nsga2[[indic]] = reduceCaller(ids.nsga2, indic)
-  res.2d.single[[indic]] = reduceCaller(intersect(ids.2d, ids.single), indic)
-  res.2d.quad[[indic]] = reduceCaller(intersect(ids.2d, ids.quad), indic)
-  res.5d.single[[indic]] = reduceCaller(intersect(ids.5d, ids.single), indic)
-  res.5d.quad[[indic]] = reduceCaller(intersect(ids.5d, ids.quad), indic)
+pdf("indicator_trends.pdf")
+for (pid in c("GOMOP2_2D3M", "GOMOP_2D2M", "GOMOP_2D5M")) {
+  print(pid)
+  print(makeTrendPlot(res.2d.single, pid, "hv", prop = 1L))
+  print(makeTrendPlot(res.2d.quad,   pid, "hv", prop = 4L))
+  print(makeTrendPlot(res.2d.single, pid, "r2", prop = 1L))
+  print(makeTrendPlot(res.2d.quad,   pid, "r2", prop = 4L))
+  print(makeTrendPlot(res.2d.single, pid, "eps", prop = 1L))
+  print(makeTrendPlot(res.2d.quad,   pid, "eps", prop = 4L))
 }
-
-save2(file = "results_trends.RData", res.nsga2, res.2d.single, res.2d.quad, res.5d.single, res.5d.quad)
+for (pid in c("GOMOP_5D2M", "GOMOP_5D5M", "dtlz2_5D2M", "dtlz2_5D5M",
+  "zdt1_5D2M", "zdt2_5D2M", "zdt3_5D2M")) {
+  print(pid)
+  print(makeTrendPlot(res.5d.single, pid, "hv", prop = 1L))
+  print(makeTrendPlot(res.5d.quad,   pid, "hv", prop = 4L))
+  print(makeTrendPlot(res.5d.single, pid, "r2", prop = 1L))
+  print(makeTrendPlot(res.5d.quad,   pid, "r2", prop = 4L))
+  print(makeTrendPlot(res.5d.single, pid, "eps", prop = 1L))
+  print(makeTrendPlot(res.5d.quad,   pid, "eps", prop = 4L))
+}
+dev.off()

@@ -10,15 +10,15 @@ prob.ids = setdiff(getProblemIds(reg), c("dtlz1_5D5M"))
 
 job.ids = getJobIds(reg)
 # exclude the rs and nsga2 10-fold
-nsga2.10fold.ids = findExperiments(reg, algo.pattern = "nsga2", algo.pars = budget == "10fold")
+exactFront.ids = findExperiments(reg, algo.pattern = "nsga2-ref")
+nsga2.ids  = setdiff(findExperiments(reg, algo.pattern = "nsga2"), exactFront.ids)
+nsga2.10fold.ids = findExperiments(reg, ids = nsga2.ids, algo.pattern = "nsga2", algo.pars = budget == "10fold")
 rs.10fold.ids = findExperiments(reg, algo.pattern = "randomSearch", algo.pars = budget == "10fold")
-exactFront.ids = findExperiments(reg, algo.pattern = "exactFront")
 job.ids = setdiff(job.ids, union(nsga2.10fold.ids, rs.10fold.ids))
-#job.ids = setdiff(job.ids, findExperiments(reg, prob.pattern = "GOMOP_2D5M"))
 job.ids = setdiff(job.ids, findExperiments(reg, prob.pattern = "dtlz1_5D5M"))
 
-# we don't want to use the exactFront in the refFront due to computation limits
-parallelStartBatchJobs(bj.resources = list(memory = 20000))
+# we don't want to use the nsga2-ref in the refFront due to computation limits
+parallelStartBatchJobs(bj.resources = list(memory = 4000))
 parallelLibrary("BatchExperiments", "emoa", "ParamHelpers")
 merged.fronts = parallelMap(function(pid, reg, job.ids) {
   messagef("Merging front: %s", pid)
