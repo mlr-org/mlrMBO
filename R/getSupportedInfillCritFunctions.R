@@ -3,6 +3,8 @@
 #' @return [\code{character}]
 #' @export
 getSupportedInfillCritFunctions = function() {
-  c("mean", "se", "ei", "aei", "eqi","lcb", "dib", "multiFid")
+  # FIXME: DH: Noisy infill crits not supported atm!
+  #c("mean", "se", "ei", "aei", "eqi","lcb", "dib", "multiFid")
+  c("mean", "se", "ei","lcb", "dib", "multiFid")
 }
 
