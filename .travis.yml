@@ -18,10 +18,10 @@ branches:
   except:
    - /-expt$/
 after_failure: 
-  - pwd
-  - ls -al mlrMBO.Rcheck 
-  - cat mlrMBO.Rcheck/examples_and_tests/tests_x64/run-all.Rout.fail
-lnotifications:
+  - cat mlrMBO.Rcheck/00install.out
+  - cat mlrMBO.Rcheck/00check.log
+  - cat mlrMBO.Rcheck/tests/run-all.Rout.fail 
+notifications:
   email:
     on_success: change
     on_failure: change
