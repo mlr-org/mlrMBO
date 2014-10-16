@@ -10,6 +10,10 @@
 #'   \dQuote{lcb}: Lower confidence bound.
 #'   \dQuote{multiFid}: Multifidelity: Expected improvement on different levels of the perfomance parameter defined in the \code{MBOMultiFidControl}.
 #'   Alternatively, you may pass a function name as string.
+#' @param crit.eqi.beta [\code{numeric(1)}]\cr
+#'   Beta parameter for expected quantile improvement criterion.
+#'   Only used if \code{crit == "eqi"}, ignored otherwise.
+#'   Default is 0.75.
 #' @param crit.lcb.lambda [\code{numeric(1)}]\cr
 #'   Lambda parameter for lower confidence bound infill criterion.
 #'   Only used if \code{crit == "lcb"}, ignored otherwise.
@@ -115,7 +119,7 @@
 #' @seealso makeMBOControl
 #' @export
 setMBOControlInfill = function(control,
-  crit = NULL, crit.lcb.lambda = 1, crit.lcb.pi = NULL,
+  crit = NULL, crit.eqi.beta = 0.75, crit.lcb.lambda = 1, crit.lcb.pi = NULL,
   filter.proposed.points = NULL,
   filter.proposed.points.tol = NULL,
   opt = "focussearch", opt.restarts = NULL,
@@ -135,6 +139,9 @@ setMBOControlInfill = function(control,
   control$infill.crit = coalesce(crit, control$infill.crit, "mean")
   assertChoice(control$infill.crit, choices = getSupportedInfillCritFunctions())
 
+  control$infill.crit.eqi.beta = coalesce(crit.eqi.beta, control$infill.crit.eqi.beta, 0.75)
+  assertNumber(control$infill.crit.eqi.beta, na.ok = FALSE, lower = 0.5, upper = 1)
+  
   # lambda value for lcb - either given, or set via given pi, the other one must be NULL!
   if (!is.null(crit.lcb.lambda) && !is.null(crit.lcb.pi))
     stop("Please specify either 'crit.lcb.lambda' or 'crit.lcb.pi' for the lcb crit, not both!")

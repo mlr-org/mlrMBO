@@ -59,6 +59,13 @@ test_that("infill crits", {
   ctrl = setMBOControlInfill(ctrl, crit = "lcb", opt = "focussearch", opt.restarts = 1L,
     opt.focussearch.points = 300L, crit.lcb.lambda = NULL, crit.lcb.pi = 0.5)
   mbo(f, ps, NULL, makeLearner("regr.km", predict.type = "se"), ctrl)
+ 
+  # check beta for eqi
+  expect_error(setMBOControlInfill(ctrl, crit = "eqi", opt = "focussearch", opt.restarts = 1L,
+                                   opt.focussearch.points = 300L, crit.eqi.beta = 2))
+  ctrl = setMBOControlInfill(ctrl, crit = "eqi", opt = "focussearch", opt.restarts = 1L,
+                             opt.focussearch.points = 300L, crit.eqi.beta = 0.6)
+  mbo(f, ps, NULL, makeLearner("regr.km", predict.type = "se", nugget.estim = TRUE), ctrl)
 })
 
 
