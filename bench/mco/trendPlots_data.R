@@ -11,15 +11,15 @@ prob.ids = setdiff(getProblemIds(reg), c("dtlz1_5D5M"))
 job.ids = getJobIds(reg)
 # exclude the rs, nsga2-10fold and dtlz2_5D5M
 # it's a "bug/feature" in BatchExperiments - nsga2-ref ids are included above
-# so this is a bit annoying to code ...
+# so this is a bit annoying to code ... 
 exactFront.ids = findExperiments(reg, algo.pattern = "nsga2-ref")
-nsga2.ids  = setdiff(findExperiments(reg, algo.pattern = "nsga2"), exactFront.ids)
-nsga2.10fold.ids = findExperiments(reg, algo.pattern = "nsga2")
-rs.ids = findExperiments(reg, algo.pattern = "randomSearch")
+nsga2.10fold.ids = findExperiments(reg, algo.pattern = "nsga2",
+  algo.pars = budget == "10fold", match.substring = FALSE)
+rs.ids = findExperiments(reg, algo.pattern = "randomSearch", algo.pars = budget == "10fold")
 job.ids = setdiff(job.ids, union(nsga2.10fold.ids, union(rs.ids, exactFront.ids)))
 job.ids = setdiff(job.ids, findExperiments(reg, prob.pattern = "dtlz1_5D5M"))
 
-parallelStartBatchJobs(bj.resources = list(memory = 20000))
+parallelStartBatchJobs(bj.resources = list(memory = 4000))
 parallelLibrary("BatchExperiments", "emoa", "ParamHelpers")
 merged.fronts = parallelMap(function(pid, reg, job.ids) {
   messagef("Merging front: %s", pid)
@@ -34,11 +34,14 @@ parallelStop()
 merged.fronts.min = sapply(merged.fronts, function(y) apply(y$merged.front, 2, min), simplify = FALSE)
 merged.fronts.max = sapply(merged.fronts, function(y) apply(y$merged.front, 2, max), simplify = FALSE)
 
-reduceFunction = function(job, res, merged.fronts, merged.fronts.min, merged.fronts.max, indic) {
+reduceFunction = function(job, res, merged.fronts, merged.fronts.min, merged.fronts.max, indic, rs = FALSE) {
   library(ParamHelpers)
   library(emoa)
+  source("bench/mco/defs.R")
   op = as.data.frame(res$opt.path, include.x = FALSE, include.rest = FALSE)
   dimy = ncol(op)
+  print(names(res))
+  dimx = getParamLengths(res$par.set)
   # scale merged front. NB: apply transposes....
   y.min = merged.fronts.min[[job$prob.id]]
   y.max = merged.fronts.max[[job$prob.id]]
@@ -55,9 +58,16 @@ reduceFunction = function(job, res, merged.fronts, merged.fronts.min, merged.fro
   weight.vectors = mlrMBO:::combWithSum(s, dimy) / s
   
   # calculate the indicators for every dob
+  # set dob vector for rs manualy ... this was not done in the experiment ...
+  if(rs) {
+    dob.vec = c(rep(0, INIT_DESIGN_POINTS(dimx)),
+      1:(getOptPathLength(res$opt.path) - INIT_DESIGN_POINTS(dimx)))
+    setOptPathElDOB(res$opt.path, 1:getOptPathLength(res$opt.path), dob.vec)
+  }
+  
   dob = getOptPathDOB(res$opt.path)
   r = lapply(unique(dob), function(i) {
-    p = myscale(getOptPathParetoFront(res$opt.path, dob = 1:i))
+    p = myscale(getOptPathParetoFront(res$opt.path, dob = 0:i))
     switch(indic,
       hv = dominated_hypervolume(t(p), ref),
       eps = epsilon_indicator(t(p), t(refset)),
@@ -71,22 +81,25 @@ reduceFunction = function(job, res, merged.fronts, merged.fronts.min, merged.fro
 ids.2d = intersect(job.ids, findExperiments(reg, prob.pattern = "2D"))
 ids.5d = intersect(job.ids, findExperiments(reg, prob.pattern = "5D"))
 ids.nsga2 = intersect(job.ids, findExperiments(reg, algo.pattern = "nsga2"))
-ids.mmbo = setdiff(job.ids, ids.nsga2)
+ids.rs = intersect(job.ids, findExperiments(reg, algo.pattern = "randomSearch"))
+ids.mmbo = setdiff(job.ids, union(ids.nsga2, ids.rs))
 ids.single = intersect(ids.mmbo, findExperiments(reg, ids.mmbo, algo.pars = prop.points == 1L))
 ids.quad = intersect(ids.mmbo, findExperiments(reg, ids.mmbo, algo.pars = prop.points == 4L))
 
-reduceCaller = function(ids, indic)
+reduceCaller = function(ids, indic, rs = FALSE)
   reduceResultsExperimentsParallel(reg, ids, njobs = 25L,
     fun = reduceFunction,
     merged.fronts = merged.fronts, merged.fronts.min = merged.fronts.min,
-    merged.fronts.max = merged.fronts.max, indic = indic)
+    merged.fronts.max = merged.fronts.max, indic = indic, rs = rs)
 
+res.rs = list()
 res.nsga2 = list()
 res.2d.single = list()
 res.2d.quad = list()
 res.5d.single = list()
 res.5d.quad = list()
 for (indic in c("hv", "eps", "r2")) {
+  res.rs[[indic]] = reduceCaller(ids.rs, indic, rs = TRUE)
   res.nsga2[[indic]] = reduceCaller(ids.nsga2, indic)
   res.2d.single[[indic]] = reduceCaller(intersect(ids.2d, ids.single), indic)
   res.2d.quad[[indic]] = reduceCaller(intersect(ids.2d, ids.quad), indic)
@@ -94,4 +107,4 @@ for (indic in c("hv", "eps", "r2")) {
   res.5d.quad[[indic]] = reduceCaller(intersect(ids.5d, ids.quad), indic)
 }
 
-save2(file = "results_trends.RData", res.nsga2, res.2d.single, res.2d.quad, res.5d.single, res.5d.quad)
+save2(file = "results_trends.RData", res.nsga2, res.rs, res.2d.single, res.2d.quad, res.5d.single, res.5d.quad)
