@@ -4,7 +4,7 @@
 #' @export
 getSupportedInfillCritFunctions = function() {
   # FIXME: DH: Noisy infill crits not supported atm!
-  #c("mean", "se", "ei", "aei", "eqi","lcb", "dib", "multiFid")
-  c("mean", "se", "ei","lcb", "dib", "multiFid")
+  c("mean", "se", "ei", "aei", "eqi","lcb", "dib", "multiFid")
+  #c("mean", "se", "ei","lcb", "dib", "multiFid")
 }
 
