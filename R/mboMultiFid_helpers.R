@@ -1,11 +1,20 @@
 generateMBOMultiFidDesign = function(par.set, control) {
   budget = control$init.design.points
+  
+  # create the par.set which does not include the multiFid.lvl parameter (eg. "dw.perc")
   ps2 = dropParams(par.set, control$multifid.param)
+  
+  # k is the number of levels
   k = length(control$multifid.lvls)
-  b = ceiling(budget / k)
+  
+  # points to evaluate per level (spread budget over the levels)
   ns = viapply(chunk(seq_len(budget), n.chunks = k), length)
+  
+  # generate the points for the lowest level
   design = generateDesign(max(ns), ps2, fun = control$init.design.fun,
     fun.args = control$init.design.args, trafo = FALSE)
+  
+  # spread the points over all levels according to the budget per level
   expandDesign(design = design, control = control, ns = ns)
 }
 
@@ -66,7 +75,7 @@ infillCritMultiFid2 = function(points, model, control, par.set, design, iter, mo
   alpha1 = replaceByList(points[[control$multifid.param]], model.cor)
   se = -infillCritStandardError(points, model, control, par.set, design, iter)
   # FIXME: do we really have to adapt this? alpha2 should be 0 when?
-  model.sd.vec = replaceByList(points[[control$multifid.param]], model.sd)
+  model.sd.vec = replaceByList(points[[control$multifid.param]], model.sd) #FIXME: Make 100% sure
   alpha2 = 1 - (model.sd.vec / sqrt(se^2 + model.sd.vec^2))
   alpha3 = replaceByList(points[[control$multifid.param]], model.cost)
   crit = ei.last * alpha1 * alpha2 * alpha3

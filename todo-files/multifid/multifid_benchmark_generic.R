@@ -24,7 +24,9 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
       opt = "focussearch", 
       opt.restarts = 1L, 
       opt.focussearch.maxit = 1L, 
-      opt.focussearch.points = 100L
+      opt.focussearch.points = 100L,
+      filter.proposed.points = TRUE,
+      filter.proposed.points.tol = 0.5
     )
   } else {
     control.common = control
@@ -33,7 +35,7 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
   
   if (is.null(surrogat.model)) {
     #surrogat.model = makeLearner("regr.km", predict.type="se", nugget.estim = TRUE, jitter = TRUE)
-    surrogat.model = makeLearner("regr.km", nugget.estim = TRUE, jitter = TRUE)
+    surrogat.model = makeLearner("regr.km", nugget.estim = FALSE, jitter = TRUE)
   }
   
   # generate different objfuns in a list

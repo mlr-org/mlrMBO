@@ -15,16 +15,19 @@
 #'   Vektorized (?) cost function with the params \code{cur} and \code{last}.
 #' @param force.last.level.evals [\code{integer(1)}]
 #'   How many evaluations should be done on the last value of fid.param?
+#' @param eval.lower [\code{boolean(1)}]\cr
+#'   For each evaluation, evaluate the lower fidelity levels as well. Default is \code{FALSE}.
 #' @return [\code{\link{MBOControl}}].
 #' @note See the other setMBOControl... functions and \code{makeMBOControl} for referenced arguments.
 #' @seealso makeMBOControl
 #' @export
 setMBOControlMultiFid = function(control, param, lvls, costs = NULL, cor.grid.points = 10L,
-  force.last.level.evals = 10L) {
+  force.last.level.evals = 10L, eval.lower = FALSE, show.info = FALSE) {
 
   assertClass(control, "MBOControl")
   assertString(param)
   assertNumeric(lvls)
+  assertLogical(eval.lower)
   if (!is.null(costs)){
     assertFunction(costs, args = c("cur", "last"), ordered = TRUE)
   } else {
@@ -41,6 +44,8 @@ setMBOControlMultiFid = function(control, param, lvls, costs = NULL, cor.grid.po
   control$multifid.costs = costs
   control$multifid.cor.grid.points = cor.grid.points
   control$multifid.force.last.level.evals = force.last.level.evals
+  control$multifid.eval.lower = eval.lower
+  control$multifid.show.info = show.info
 
   return(control)
 }
