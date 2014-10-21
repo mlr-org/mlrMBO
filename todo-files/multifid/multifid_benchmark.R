@@ -13,7 +13,7 @@ source("todo-files/multifid/multifid_benchmark_generic.R")
 openMLBenchmark = function (task.id, e.seed, e.lrn, e.par.set, e.lvl, ...) {
   task.openML = downloadOpenMLTask(id = task.id)
   e.name = paste0(task.openML$data.desc$name,"_",task.openML$id)
-  openML.as.mlr = toMLR(task.openML)
+  openML.as.mlr = toMlr(task.openML)
   e.task = openML.as.mlr$mlr.task
   e.rin = openML.as.mlr$mlr.rin
   dataBenchmark(e.name, e.task, e.rin, e.seed, e.lrn, e.par.set, e.lvl, ...)

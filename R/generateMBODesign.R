@@ -21,7 +21,7 @@
 #   Further parameters for target function.
 # @param extras [\code{list}]\cr
 #   List of extra information to be logged in \code{opt.path}.
-# @return [\code{data.frame}]
+# @return [\code{NULL}]
 generateMBODesign = function(design, fun, par.set, opt.path, control, show.info, oldopts,
   more.args = list(), extras = NULL) {
 

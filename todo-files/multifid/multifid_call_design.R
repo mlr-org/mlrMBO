@@ -49,7 +49,7 @@ control = setMBOControlInfill(control = control,
 control = setMBOControlMultiFid(control = control, 
                                 param = "dw.perc", 
                                 lvls = c(0.1, 0.3, 1))
-surrogat.model = makeLearner("regr.km", predict.type="se", nugget.estim = TRUE, jitter = TRUE)
+surrogat.model = makeLearner("regr.km", nugget.estim = TRUE, jitter = TRUE)
 result = mbo(fun = objfun, par.set = par.set, learner = surrogat.model, control = control, show.info = TRUE)
 pdf("multifid_steps.pdf", width=6, height=6)
 for (i in seq_along(result$plot.data)) {
@@ -63,6 +63,10 @@ result$y.hat
 
 stop()
 ### DEBUG: ####
+show.info = TRUE
+more.args = list()
+fun = objfun
+learner = surrogat.model
 mf.learner = makeMultiFidLearner(surrogat.learner=surrogat.model, par.set=par.set, control=control)
 mf.design = mlrMBO:::generateMBOMultiFidDesign(par.set=par.set, control=control)
 oldopts = list(
