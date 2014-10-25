@@ -3,12 +3,11 @@
 \alias{setMBOControlMultiCrit}
 \title{Extends mbo control object with multi-criteria specific options.}
 \usage{
-setMBOControlMultiCrit(control, method = "dib", ref.point.method = "all",
-  ref.point.offset = 1, ref.point.val = NULL, parego.s = NULL,
-  parego.rho = 0.05, parego.use.margin.points = rep(FALSE,
-  control$number.of.targets), parego.sample.more.weights = 5L,
-  parego.normalize = "standard", dib.indicator = "sms",
-  dib.sms.eps = NULL)
+setMBOControlMultiCrit(control, method = NULL, ref.point.method = NULL,
+  ref.point.offset = NULL, ref.point.val = NULL, parego.s = NULL,
+  parego.rho = NULL, parego.use.margin.points = NULL,
+  parego.sample.more.weights = NULL, parego.normalize = NULL,
+  dib.indicator = NULL, dib.sms.eps = NULL)
 }
 \arguments{
 \item{control}{[\code{\link{MBOControl}}]\cr

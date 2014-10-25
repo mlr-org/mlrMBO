@@ -21,31 +21,40 @@
 #' @note See the other setMBOControl... functions and \code{makeMBOControl} for referenced arguments.
 #' @seealso makeMBOControl
 #' @export
-setMBOControlMultiFid = function(control, param, lvls, costs = NULL, cor.grid.points = 10L,
-  force.last.level.evals = 10L, eval.lower = FALSE, show.info = FALSE) {
+setMBOControlMultiFid = function(control, param, lvls, costs = NULL, cor.grid.points = NULL,
+  force.last.level.evals = NULL, eval.lower = NULL, show.info = NULL) {
 
   assertClass(control, "MBOControl")
-  assertString(param)
-  assertNumeric(lvls)
-  assertLogical(eval.lower)
+  control$multifid.param = coalesce(param, control$multifid.param)
+  assertString(control$multifid.param)
+
+  control$multifid.lvls = coalesce(lvls, control$multifid.lvls)
+  assertNumeric(control$multifid.lvls)
+
+  control$multifid.eval.lower = coalesce(eval.lower, control$multifid.eval.lower, FALSE)
+  assertLogical(control$multifid.eval.lower)
+
+  control$multifid = TRUE
+
   if (!is.null(costs)){
     assertFunction(costs, args = c("cur", "last"), ordered = TRUE)
   } else {
     costs = function(cur, last) (last / cur)^2
   }
-  cor.grid.point = asInt(cor.grid.points, lower = 2L)
-  force.last.level.evals = asInt(force.last.level.evals, lower = 0L)
-
-  # extend control object
-  # FIXME: This following line is maybe not needed anymore. proposePoints() might not work now for multiFid control objects. 
-  control$multifid = TRUE
-  control$multifid.param = param
-  control$multifid.lvls = lvls
   control$multifid.costs = costs
-  control$multifid.cor.grid.points = cor.grid.points
-  control$multifid.force.last.level.evals = force.last.level.evals
-  control$multifid.eval.lower = eval.lower
-  control$multifid.show.info = show.info
+
+  if (!is.null(cor.grid.points)) {
+    cor.grid.point = asInt(cor.grid.points, lower = 2L) 
+  }
+  control$multifid.cor.grid.points = coalesce(cor.grid.points, control$multifid.cor.grid.points, 10L)
+
+  if (!is.null(force.last.level.evals)) {
+    force.last.level.evals = asInt(force.last.level.evals, lower = 0L)
+  }
+  control$multifid.force.last.level.evals = coalesce(force.last.level.evals, control$multifid.force.last.level.evals, 10L)
+
+  # FIXME: This following line is maybe not needed anymore. proposePoints() might not work now for multiFid control objects. 
+  control$multifid.show.info = coalesce(show.info, control$multifid.show.info, FALSE)
 
   return(control)
 }

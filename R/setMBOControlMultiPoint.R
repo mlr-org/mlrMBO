@@ -61,39 +61,56 @@
 #' @seealso makeMBOControl
 #' @export
 setMBOControlMultiPoint = function(control,
-  method = "lcb",
-  cl.lie = min,
-  multicrit.objective = "ei.dist",
-  multicrit.dist = "nearest.better",
-  multicrit.selection = "hypervolume",
-  multicrit.maxit = 100L,
-  multicrit.sbx.eta = 15, multicrit.sbx.p = 1,
-  multicrit.pm.eta = 15, multicrit.pm.p = 1) {
+  method = NULL,
+  cl.lie = NULL,
+  multicrit.objective = NULL,
+  multicrit.dist = NULL,
+  multicrit.selection = NULL,
+  multicrit.maxit = NULL,
+  multicrit.sbx.eta = NULL, multicrit.sbx.p = NULL,
+  multicrit.pm.eta = NULL, multicrit.pm.p = NULL) {
 
   assertClass(control, "MBOControl")
 
-  assertChoice(method, choices = getSupportedMultipointInfillOptFunctions())
-  assertFunction(cl.lie)
-  assertChoice(multicrit.objective, choices = c("mean.dist", "ei.dist", "mean.se", "mean.se.dist"))
-  assertChoice(multicrit.selection, choices = c("hypervolume", "crowdingdist", "first", "last"))
-  assertChoice(multicrit.dist, choices = c("nearest.neighbor", "nearest.better"))
-  multicrit.maxit = asCount(multicrit.maxit)
-  assertCount(multicrit.maxit, na.ok = FALSE, positive = TRUE)
-  assertNumber(multicrit.sbx.eta, na.ok = FALSE, lower = 0)
-  assertNumber(multicrit.sbx.p, na.ok = FALSE, lower = 0, upper = 1)
-  assertNumber(multicrit.pm.eta, na.ok = FALSE, lower = 0)
-  assertNumber(multicrit.pm.p, na.ok = FALSE, lower = 0, upper = 1)
+  control$multipoint.method = coalesce(method, control$multipoint.method, "lcb")
+  assertChoice(control$multipoint.method, choices = getSupportedMultipointInfillOptFunctions())
 
-  control$multipoint.method = method
-  control$multipoint.cl.lie = cl.lie
-  control$multipoint.multicrit.objective = multicrit.objective
-  control$multipoint.multicrit.dist = multicrit.dist
-  control$multipoint.multicrit.selection = multicrit.selection
-  control$multipoint.multicrit.maxit = multicrit.maxit
-  control$multipoint.multicrit.sbx.eta = multicrit.sbx.eta
-  control$multipoint.multicrit.sbx.p = multicrit.sbx.p
-  control$multipoint.multicrit.pm.eta = multicrit.pm.eta
-  control$multipoint.multicrit.pm.p = multicrit.pm.p
+  # Workaround since coalesce cannot hande functions
+  control$multipoint.cl.lie = if (!is.null(cl.lie)) {
+    cl.lie
+  } else if (!is.null(control$multipoint.cl.lie)) {
+    control$multipoint.cl.lie
+  } else {
+    min
+  }
+  assertFunction(control$multipoint.cl.lie)
+
+  control$multipoint.multicrit.objective = coalesce(multicrit.objective, control$multipoint.multicrit.objective, "ei.dist")
+  assertChoice(control$multipoint.multicrit.objective, choices = c("mean.dist", "ei.dist", "mean.se", "mean.se.dist"))
+
+  control$multipoint.multicrit.dist = coalesce(multicrit.dist, control$multipoint.multicrit.dist, "nearest.better")
+  assertChoice(control$multipoint.multicrit.dist, choices = c("nearest.neighbor", "nearest.better"))
+
+  control$multipoint.multicrit.selection = coalesce(multicrit.selection, control$multipoint.multicrit.selection, "hypervolume")
+  assertChoice(control$multipoint.multicrit.selection, choices = c("hypervolume", "crowdingdist", "first", "last"))
+
+  if (!is.null(multicrit.maxit)) {
+    multicrit.maxit = asCount(multicrit.maxit) 
+  }
+  control$multipoint.multicrit.maxit = coalesce(multicrit.maxit, control$multipoint.multicrit.maxit, 100L)
+  assertCount(control$multipoint.multicrit.maxit, na.ok = FALSE, positive = TRUE)
+
+  control$multipoint.multicrit.sbx.eta = coalesce(multicrit.sbx.eta, control$multipoint.multicrit.sbx.eta, 15)
+  assertNumber(control$multipoint.multicrit.sbx.eta, na.ok = FALSE, lower = 0)
+ 
+  control$multipoint.multicrit.sbx.p = coalesce(multicrit.sbx.p, control$multipoint.multicrit.sbx.p, 1)
+  assertNumber(control$multipoint.multicrit.sbx.p, na.ok = FALSE, lower = 0, upper = 1)
+ 
+  control$multipoint.multicrit.pm.eta = coalesce(multicrit.pm.eta, control$multipoint.multicrit.pm.eta, 15)
+  assertNumber(control$multipoint.multicrit.pm.eta, na.ok = FALSE, lower = 0)
+
+  control$multipoint.multicrit.pm.p = coalesce(multicrit.pm.p, control$multipoint.multicrit.pm.p, 1)
+  assertNumber(control$multipoint.multicrit.pm.p, na.ok = FALSE, lower = 0, upper = 1)
 
   # FIXME: this is currently a hidden option, also see multipoint_lcb.R
   control$lcb.min.dist = 1e-5
