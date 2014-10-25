@@ -151,7 +151,7 @@ infillCritEQI = function(points, model, control, par.set, design, iter) {
   tau = sqrt(pure.noise.var)
 
   mq = p.mu + qnorm(control$infill.crit.eqi.beta) * sqrt((tau * p.se^2) / (tau + p.se^2))
-  sq = p.se^2/sqrt(pure.noise.var + p.se^2)
+  sq = p.se^2 / sqrt(pure.noise.var + p.se^2)
   d = q.min - mq 
   xcr = d / sq
   xcr.prob = pnorm(xcr)
