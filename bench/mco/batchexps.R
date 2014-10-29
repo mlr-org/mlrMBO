@@ -126,7 +126,7 @@ addAlgorithm(reg, "exactFront", overwrite = TRUE, fun = function(static) {
     mprob = BASELINE_NSGA2_mprob(dimx), mdist = BASELINE_NSGA2_mdist(dimx))
   # add all elements to op.path
   for (j in seq_row(res$par))
-    addOptPathEl(opt.path, x = list(x = res$par[j, ]), y = res$value[j, ], dob = i)
+    addOptPathEl(opt.path, x = list(x = res$par[j, ]), y = res$value[j, ], dob = 0)
   list(par.set = static$par.set, opt.path = opt.path, opt.res = res)
 })
 
@@ -167,6 +167,7 @@ addExperiments(reg, algo.design = des2, repls = REPLS)
 addExperiments(reg, algo.design = des3, repls = REPLS)
 addExperiments(reg, algo.design = des4, repls = REPLS)
 addExperiments(reg, algo.design = des5, repls = REPLS)
+addExperiments(reg, algo.design = des6, repls = REPLS)
 
 batchExport(reg, runMBO = runMBO)
 
