@@ -3,9 +3,9 @@
 \alias{autoplot.MBOExampleRun}
 \title{Renders plots for exampleRun objects, either in 1D or 2D.}
 \usage{
-autoplot.MBOExampleRun(object, iters, pause = TRUE, densregion = TRUE,
-  se.factor = 1, xlim, ylim, point.size = 3, line.size = 1,
-  trafo = NULL, ...)
+\method{autoplot}{MBOExampleRun}(object, iters, pause = TRUE,
+  densregion = TRUE, se.factor = 1, xlim, ylim, point.size = 3,
+  line.size = 1, trafo = NULL, ...)
 }
 \arguments{
 \item{object}{[\code{function}]\cr
