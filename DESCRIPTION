@@ -20,26 +20,26 @@ Depends:
 Imports:
     BBmisc (>= 1.7),
     checkmate (>= 1.4),
+    ggplot2,
+    gridExtra,
     parallelMap (>= 1.1),
     plyr,
-    reshape2,
-    soobench
+    reshape2
 Suggests:
     cmaes,
     DiceKriging,
     DiceOptim,
     earth,
     emoa,
-    ggplot2,
-    gridExtra,
-    kernlab, 
+    kernlab,
     kknn,
-    mboost, 
+    mboost,
     mco,
     nnet,
     party,
     randomForest,
     rpart,
+    soobench,
     testthat
 LazyData: yes
 ByteCompile: yes

@@ -1,16 +1,14 @@
 
-renderPCPPlot = function(data, xnames, alpha) {
+renderPCPPlot = function(data, xnames, alpha, scale = "globalminmax") {
   requirePackages("GGally")
 
   # ggdata = data[, colnames, drop = FALSE]
   columns = match(xnames, colnames(data))
-  args = list(columns = columns)
+  args = list(columns = columns, scale = scale)
   if (alpha) {
-    data$.alpha = normalize(data$dob, "scale", range = c(0, 1))
-    print(data$.alpha)
+    data$.alpha = normalize(data$dob, "range", range = c(0, 1))
     args$alphaLines = ".alpha"
   }
   args$data = data
-  p = do.call(ggparcoord, args)
-  p = p + geom_line()
+  do.call(ggparcoord, args)
 }

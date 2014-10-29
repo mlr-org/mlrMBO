@@ -2,7 +2,7 @@
 
 # NSGA 2
 infillOptMultiCritNSGA2 = function(infill.crit, models, control, par.set, opt.path, design, iter, ...) {
-  
+
   # build target function for vectorized nsga2 and run it
   rep.pids = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
   m = control$number.of.targets
@@ -17,14 +17,14 @@ infillOptMultiCritNSGA2 = function(infill.crit, models, control, par.set, opt.pa
         par.set = par.set, design = design, iter = iter, ...)
     }))
   }
-  res = nsga2_vectorized(fun.tmp, idim = getParamNr(par.set, devectorize = TRUE), odim = control$number.of.targets,
-    lower.bounds = getLower(par.set), upper.bounds = getUpper(par.set),
+  res = nsga2(fun.tmp, idim = getParamNr(par.set, devectorize = TRUE), odim = control$number.of.targets,
+    lower.bounds = getLower(par.set), upper.bounds = getUpper(par.set), vectorized = TRUE,
     popsize = control$infill.opt.nsga2.popsize, generations = control$infill.opt.nsga2.generations,
     cprob = control$infill.opt.nsga2.cprob, cdist = control$infill.opt.nsga2.cdist,
     mprob = control$infill.opt.nsga2.mprob, mdist = control$infill.opt.nsga2.mdist, ...)
   points = as.data.frame(res$par)
   colnames(points) = rep.pids
-  
+
   # now we have nsga2.popsize candidate points and we have to select propose.points
   # do this greedy - select the point with max. hv.contr, add it and select
   # the best point wrt to the new front
@@ -34,7 +34,7 @@ infillOptMultiCritNSGA2 = function(infill.crit, models, control, par.set, opt.pa
   prop.vals = matrix(nrow = 0, ncol = ncol(candidate.vals))
   colnames(prop.vals) = control$y.name
   ys = design[, control$y.name]
-  
+
   ref.point = getMultiCritRefPoint(design[, control$y.name], control)
   for (i in 1:control$propose.points) {
     hv.contrs = getHypervolumeContributions(xs = candidate.vals,
@@ -46,7 +46,7 @@ infillOptMultiCritNSGA2 = function(infill.crit, models, control, par.set, opt.pa
     prop.vals = rbind(prop.vals, candidate.vals[best.ind, ])
     candidate.vals = candidate.vals[-best.ind, ]
   }
-  
+
   # FIXME: cleanup - i'm reall unsure how to set the names of prop.points technically
   prop.points = as.data.frame(prop.points)
   colnames(prop.points) = names(design[, which(colnames(design) %nin% control$y.name)])

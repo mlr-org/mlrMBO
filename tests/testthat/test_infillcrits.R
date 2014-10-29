@@ -5,7 +5,9 @@ test_that("infill crits", {
   f2 = makeMBOFunction(function(x) sum(x^2) + rnorm(1, 0, 0.03))
   ps = makeNumericParamSet(len = 2L, lower = -10, upper = 10)
 
-  ninit = 20L; niters = 3L
+  ninit = 20L
+  niters = 3L
+
   mycontrol = function(minimize, noisy, crit) {
     ctrl = makeMBOControl(minimize = minimize, noisy = noisy, init.design.points = ninit,
       iters = niters, final.evals = 10L)
@@ -32,9 +34,9 @@ test_that("infill crits", {
   # at some point we will always eval the same point.
   # kriging will then produce numerical errors, but the real problem is that
   # we have converged and just waste time. we need to detect this somehow, or cope with it
-  for (noisy in c(TRUE,FALSE)) {
+  for (noisy in c(TRUE, FALSE)) {
     for (minimize in c(TRUE, FALSE)) {
-      crits = if (!noisy) c("mean", "ei") else c("aei","eqi")
+      crits = if (!noisy) c("mean", "ei") else c("aei", "eqi")
       for (lrn in learners) {
         if (inherits(lrn, "regr.km"))
           lrn = setHyperPars(lrn, nugget.estim = noisy)
@@ -58,14 +60,16 @@ test_that("infill crits", {
     opt.focussearch.points = 300L, crit.lcb.lambda = 2, crit.lcb.pi = 0.5))
   ctrl = setMBOControlInfill(ctrl, crit = "lcb", opt = "focussearch", opt.restarts = 1L,
     opt.focussearch.points = 300L, crit.lcb.lambda = NULL, crit.lcb.pi = 0.5)
-  mbo(f, ps, NULL, makeLearner("regr.km", predict.type = "se"), ctrl)
- 
+  or = mbo(f, ps, NULL, makeLearner("regr.km", predict.type = "se"), ctrl)
+  expect_true(or$y < 50)
+
   # check beta for eqi
   expect_error(setMBOControlInfill(ctrl, crit = "eqi", opt = "focussearch", opt.restarts = 1L,
                                    opt.focussearch.points = 300L, crit.eqi.beta = 2))
   ctrl = setMBOControlInfill(ctrl, crit = "eqi", opt = "focussearch", opt.restarts = 1L,
                              opt.focussearch.points = 300L, crit.eqi.beta = 0.6)
-  mbo(f, ps, NULL, makeLearner("regr.km", predict.type = "se", nugget.estim = TRUE), ctrl)
+  or = mbo(f, ps, NULL, makeLearner("regr.km", predict.type = "se", nugget.estim = TRUE), ctrl)
+  expect_true(or$y < 50)
 })
 
 
