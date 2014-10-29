@@ -40,16 +40,17 @@ proposePointsMultiFid = function(model, par.set, control, opt.path, model.cor, m
   })
 }
 
-convertOptPathToTask = function(opt.path, control, drop = TRUE, blocking = TRUE) {
-  d = convertOptPathToDesign(opt.path)
-  id.vars = setdiff(colnames(d), control$multifid.param)
-  d.blocking = unique(d[, id.vars, with=FALSE])
-  d.blocking$blocking = factor(seq_row(data.session.DT))
-  d.blocking = merge(d, d.blocking)
-  if (blocking)
+convertOptPathToTask = function(opt.path, control = NULL, drop = TRUE, blocking = TRUE) {
+  d = convertOptPathToDesign(opt.path, drop = drop)
+  if (!is.null(control) && !is.null(control$multifid.param) && blocking) {
+    id.vars = setdiff(colnames(d), control$multifid.param)
+    d.blocking = unique(d[, id.vars])
+    d.blocking$blocking = factor(seq_row(d.blocking))
+    d.blocking = merge(d, d.blocking)
     makeRegrTask(id = "surrogate", data = d, target = "y", blocking = d.blocking$blocking)
-  else
+  } else {
     makeRegrTask(id = "surrogate", data = d, target = "y")
+  }
 }
 
 # make a design (data.frame) with the exact same points for each multifid level.

@@ -62,7 +62,7 @@ mboMultiFid = function(fun, par.set, design = NULL, learner, control, show.info 
   mf.learner = setPredictType(mf.learner, predict.type = "se")
   
   # train the initial design with the computed y values on the learner
-  compound.model = train(mf.learner, task = convertOptPathToTask(opt.path))
+  compound.model = train(mf.learner, task = convertOptPathToTask(opt.path, control = control))
 
   budget = control$iters
 
@@ -157,7 +157,7 @@ mboMultiFid = function(fun, par.set, design = NULL, learner, control, show.info 
     # compound.model = updateMultiFidModel(compound.model, task = convertOptPathToTask(opt.path))
     
     # train the model with all the so far evaluated points
-    compound.model = train(mf.learner, task = convertOptPathToTask(opt.path))
+    compound.model = train(mf.learner, task = convertOptPathToTask(opt.path, control = control))
   }
 
   # return complete designs for all levels
