@@ -32,6 +32,8 @@ Suggests:
     DiceOptim,
     earth,
     emoa,
+    ggplot2,
+    gridExtra,
     kernlab,
     kknn,
     mboost,

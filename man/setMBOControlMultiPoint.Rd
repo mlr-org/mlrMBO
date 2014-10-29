@@ -3,11 +3,11 @@
 \alias{setMBOControlMultiPoint}
 \title{Extends mbo control object with options for multipoint proposal.}
 \usage{
-setMBOControlMultiPoint(control, method = "lcb", cl.lie = min,
-  multicrit.objective = "ei.dist", multicrit.dist = "nearest.better",
-  multicrit.selection = "hypervolume", multicrit.maxit = 100L,
-  multicrit.sbx.eta = 15, multicrit.sbx.p = 1, multicrit.pm.eta = 15,
-  multicrit.pm.p = 1)
+setMBOControlMultiPoint(control, method = NULL, cl.lie = NULL,
+  multicrit.objective = NULL, multicrit.dist = NULL,
+  multicrit.selection = NULL, multicrit.maxit = NULL,
+  multicrit.sbx.eta = NULL, multicrit.sbx.p = NULL,
+  multicrit.pm.eta = NULL, multicrit.pm.p = NULL)
 }
 \arguments{
 \item{control}{[\code{\link{MBOControl}}]\cr

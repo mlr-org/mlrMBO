@@ -4,7 +4,8 @@
 \title{Extends mbo control object with multiFid-algorithm specific options.}
 \usage{
 setMBOControlMultiFid(control, param, lvls, costs = NULL,
-  cor.grid.points = 10L, force.last.level.evals = 10L)
+  cor.grid.points = NULL, force.last.level.evals = NULL,
+  eval.lower = NULL, show.info = NULL)
 }
 \arguments{
 \item{control}{[\code{\link{MBOControl}}]\cr
@@ -26,6 +27,9 @@ the \code{param}.}
 
 \item{force.last.level.evals}{[\code{integer(1)}]
 How many evaluations should be done on the last value of fid.param?}
+
+\item{eval.lower}{[\code{boolean(1)}]\cr
+For each evaluation, evaluate the lower fidelity levels as well. Default is \code{FALSE}.}
 }
 \value{
 [\code{\link{MBOControl}}].

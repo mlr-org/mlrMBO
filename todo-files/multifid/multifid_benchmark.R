@@ -13,13 +13,13 @@ source("todo-files/multifid/multifid_benchmark_generic.R")
 openMLBenchmark = function (task.id, e.seed, e.lrn, e.par.set, e.lvl, ...) {
   task.openML = downloadOpenMLTask(id = task.id)
   e.name = paste0(task.openML$data.desc$name,"_",task.openML$id)
-  openML.as.mlr = toMLR(task.openML)
+  openML.as.mlr = toMlr(task.openML)
   e.task = openML.as.mlr$mlr.task
   e.rin = openML.as.mlr$mlr.rin
   dataBenchmark(e.name, e.task, e.rin, e.seed, e.lrn, e.par.set, e.lvl, ...)
 }
 
-dataBenchmark = function (e.name, e.task, e.rin, e.seed, e.lrn, e.par.set, e.lvl, control = NULL, surrogat.model = NULL, alpha2fix = FALSE) {
+dataBenchmark = function (e.name, e.task, e.rin, e.seed, e.lrn, e.par.set, e.lvl, control = NULL, surrogat.model = NULL, alpha2fix = FALSE, grid.all = FALSE) {
   lrn = makeDownsampleWrapper(learner = e.lrn, dw.stratify = TRUE, dw.perc = 1)
   
   makeObjFun = function(lrn, task, rsm) {
@@ -37,7 +37,7 @@ dataBenchmark = function (e.name, e.task, e.rin, e.seed, e.lrn, e.par.set, e.lvl
   
   objfun = makeObjFun(lrn, e.task, e.rin)
   
-  generalBenchmark(e.name = e.name, objfun = objfun, e.seed = e.seed, e.par.set = e.par.set, e.lvl = e.lvl, surrogat.model = surrogat.model, control = surrogat.model, alpha2fix = alpha2fix)
+  generalBenchmark(e.name = e.name, objfun = objfun, e.seed = e.seed, e.par.set = e.par.set, e.lvl = e.lvl, surrogat.model = surrogat.model, control = surrogat.model, alpha2fix = alpha2fix, grid.all = grid.all)
 }
   
 

@@ -3,8 +3,8 @@
 \alias{setMBOControlInfill}
 \title{Extends mbo control object with infill criteria and infill optimizer options.}
 \usage{
-setMBOControlInfill(control, crit = NULL, crit.lcb.lambda = 1,
-  crit.lcb.pi = NULL, filter.proposed.points = NULL,
+setMBOControlInfill(control, crit = NULL, crit.eqi.beta = 0.75,
+  crit.lcb.lambda = 1, crit.lcb.pi = NULL, filter.proposed.points = NULL,
   filter.proposed.points.tol = NULL, opt = "focussearch",
   opt.restarts = NULL, opt.focussearch.maxit = NULL,
   opt.focussearch.points = NULL, opt.cmaes.control = NULL,
@@ -23,9 +23,15 @@ How should infill points be rated. Possible parameter values are:
 \dQuote{mean}: Mean response.
 \dQuote{ei}: Expected improvement.
 \dQuote{aei}: Augmented expected improvement.
+\dQuote{eqi}: Expected quantile improvement.
 \dQuote{lcb}: Lower confidence bound.
 \dQuote{multiFid}: Multifidelity: Expected improvement on different levels of the perfomance parameter defined in the \code{MBOMultiFidControl}.
 Alternatively, you may pass a function name as string.}
+
+\item{crit.eqi.beta}{[\code{numeric(1)}]\cr
+Beta parameter for expected quantile improvement criterion.
+Only used if \code{crit == "eqi"}, ignored otherwise.
+Default is 0.75.}
 
 \item{crit.lcb.lambda}{[\code{numeric(1)}]\cr
 Lambda parameter for lower confidence bound infill criterion.
