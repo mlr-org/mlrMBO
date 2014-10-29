@@ -1,10 +1,16 @@
 genPlotData = function(compound.model, opt.path, control, fun, res = 100, model.cor, model.sd, model.cost, par.set, best.points) {
   requirePackages(packs=c("ggplot2", "reshape2"), why="generate MultiFid Plot")
+  # par set without the multifid lvl param
   par.set.lower = dropParams(par.set, control$multifid.param)
+  # generate a grid design for without respect to the multifid level
   grid.design = generateGridDesign(par.set = par.set.lower, resolution = res)
+  # expand the design to the same points on each multifid level
   grid.design = expandDesign(design = grid.design, control = control)
+  # get the points we already have evaluated during the algorithm
   old.points = convertOptPathToDesign(opt.path)
-  grid.design = rbind(grid.design, old.points[,colnames(grid.design)]) #so plot lines also have the exact points
+  # combine the grid and the already calculated points so plot lines also have the exact points
+  grid.design = rbind(grid.design, old.points[,colnames(grid.design)])
+  # predict all the y values by the model
   p = predict(compound.model, newdata = grid.design)
   z = infillCritMultiFid2(points = grid.design, model = compound.model, control = control, par.set = par.set, design = old.points , model.cor = model.cor, model.sd = model.sd, model.cost = model.cost)
   z.df = do.call(cbind.data.frame, z)

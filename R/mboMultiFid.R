@@ -123,7 +123,7 @@ mboMultiFid = function(fun, par.set, design = NULL, learner, control, show.info 
     # to ensure that we update that model and see what happens here
     control.mod = control
     if (loop %% control$multifid.force.last.level.evals == 0)
-      control.mod$multifid.lvls = tail(control.mod$multifid.lvls$multifid.lvls, 1L)
+      control.mod$multifid.lvls = tail(control.mod$multifid.lvls, 1L)
     
     # return a list, Get a proposed point for each level
     prop = proposePointsMultiFid(model = compound.model, par.set = par.set,
@@ -135,22 +135,28 @@ mboMultiFid = function(fun, par.set, design = NULL, learner, control, show.info 
     # get one x point (see as par vector) and the level parameter
     best.points = prop[[getMinIndex(infill.vals)]]$prop.points
 
+    # only generate plot data, if we are in a 1D case
     if (length(dropParams(par.set, control$multifid.param)$pars) == 1) {
       plot.data[[loop]] = genPlotData(compound.model = compound.model, par.set = par.set,
                                       control = control, fun = fun, opt.path = opt.path,
                                       model.cor = model.cor, model.sd = model.sd,
                                       model.cost = model.cost, best.points = best.points)
     }
+    
+    # should we always also update the models of the lower levels. Fixes some theoretical problems.
     if(control$multifid.eval.lower) {
       tmp = data.frame(best.points[1,1], control$multifid.lvls[control$multifid.lvls <= best.points[,control$multifid.param]])
       colnames(tmp) = colnames(best.points)
       best.points = tmp
     }
+    # evaluate the new points (and thus add them to the opt path)
     evalProposedPoints(loop = loop, prop.points = best.points, par.set = par.set,
       opt.path = opt.path, control = control, fun = fun, show.info = show.info,
       oldopts = oldopts, more.args = more.args, extras = NULL)
     #evals = evalTargetFun(fun = fun, par.set = par.set, dobs = loop, xs = xs, opt.path = opt.path, control = control, show.info = show.info, oldopts = oldopts, more.args = more.args, extras = NULL)
     # compound.model = updateMultiFidModel(compound.model, task = convertOptPathToTask(opt.path))
+    
+    # train the model with all the so far evaluated points
     compound.model = train(mf.learner, task = convertOptPathToTask(opt.path))
   }
 

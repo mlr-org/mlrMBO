@@ -1,3 +1,4 @@
+# generates a design on the lowest level and spreads it to the upper levels according to the budget
 generateMBOMultiFidDesign = function(par.set, control) {
   budget = control$init.design.points
   
@@ -39,12 +40,19 @@ proposePointsMultiFid = function(model, par.set, control, opt.path, model.cor, m
   })
 }
 
-convertOptPathToTask = function(opt.path, control, drop = TRUE) {
+convertOptPathToTask = function(opt.path, control, drop = TRUE, blocking = TRUE) {
   d = convertOptPathToDesign(opt.path)
-  makeRegrTask(id = "surrogate", data = d, target = "y")
+  id.vars = setdiff(colnames(d), control$multifid.param)
+  d.blocking = unique(d[, id.vars, with=FALSE])
+  d.blocking$blocking = factor(seq_row(data.session.DT))
+  d.blocking = merge(d, d.blocking)
+  if (blocking)
+    makeRegrTask(id = "surrogate", data = d, target = "y", blocking = d.blocking$blocking)
+  else
+    makeRegrTask(id = "surrogate", data = d, target = "y")
 }
 
-# make a design with the exact same points for each multifid level.
+# make a design (data.frame) with the exact same points for each multifid level.
 expandDesign = function(design, control, ns = NULL) {
   if (is.null(ns)){
     ns = rep(nrow(design), times = length(control$multifid.lvls))
@@ -66,22 +74,23 @@ infillCritMultiFid = function(points, model, control, par.set, design, iter, mod
 # return all crap so we can plot it later
 infillCritMultiFid2 = function(points, model, control, par.set, design, iter, model.cor, model.sd, model.cost, ...) {
   lastPoints = function(x) {
-    x[[control$multifid.param]] = tail(control$multifid.lvls,1)
+    x[,control$multifid.param] = tail(control$multifid.lvls,1)
     x
   }
   # note: mbo returns the negated EI (and SE), so have to later minimize the huang crit.
   # which is done by default by our optimizer anyway
   ei.last = infillCritEI(lastPoints(points), model, control, par.set, lastPoints(design), iter)
-  alpha1 = replaceByList(points[[control$multifid.param]], model.cor)
+  alpha1 = replaceByList(points[,control$multifid.param], model.cor)
   se = -infillCritStandardError(points, model, control, par.set, design, iter)
   # FIXME: do we really have to adapt this? alpha2 should be 0 when?
   model.sd.vec = replaceByList(points[[control$multifid.param]], model.sd) #FIXME: Make 100% sure
   alpha2 = 1 - (model.sd.vec / sqrt(se^2 + model.sd.vec^2))
   alpha3 = replaceByList(points[[control$multifid.param]], model.cost)
   crit = ei.last * alpha1 * alpha2 * alpha3
-  list(crit = crit, ei = ei.last, se = se, alpha1 = alpha1, alpha2 = alpha2, alpha3 = alpha3)
+  list(crit = crit, ei = ei.last, se = se, alpha1 = alpha1, alpha2 = alpha2, alpha3 = alpha3, sd = model.sd.vec)
 }
 
+# replaces the values a,b,c in x by the values r,s,t from the rep.list = list(a=r,b=s,c=t) with replications in x allowed
 replaceByList = function(x, rep.list) {
   x = as.character(x)
   res = rep(rep.list[[1]], times = length(x)) #res gets the right type
