@@ -1,6 +1,6 @@
 # helper to get extras-list for opt.path logging
 
-getExtras = function(n, prop, control) {
+getExtras = function(n, prop, train.time, control) {
   # this happens in init design
   if (is.null(prop)) {
     k = ifelse(control$number.of.targets > 1L && control$multicrit.method == "mspot", control$number.of.targets, 1L)
@@ -43,6 +43,7 @@ getExtras = function(n, prop, control) {
     if (control$filter.proposed.points) {
       ex$filter.replace = prop$filter.replace[i]
     }
+    ex$train.time = if (i == 1) train.time else NA_real_
     exs[[i]] = ex
   }
   return(exs)

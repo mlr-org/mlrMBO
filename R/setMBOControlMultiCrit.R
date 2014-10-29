@@ -55,18 +55,18 @@
 #' @note See the other setMBOControl... functions and \code{makeMBOControl} for referenced arguments.
 #'
 #' @references
-#' For more information on the implemented multi-criteria procedures the following 
+#' For more information on the implemented multi-criteria procedures the following
 #' sources might be helpful:
 #' Knowles, J.: ParEGO: A hybrid algorithm with on-line landscape
 #' approximation for expensive multiobjective optimization problems. IEEE
-#' Transactions on Evolutionary Computation, 10 (2006) 1, pp. 50–66
+#' Transactions on Evolutionary Computation, 10 (2006) 1, pp. 50-66
 #'
 #' Wagner, T.; Emmerich, M.; Deutz, A.; Ponweiser, W.: On Expected-
 #' Improvement Criteria for Model-Based Multi-Objective Optimization.
-#' In: Proc. 11th Int’l. Conf. Parallel Problem Solving From Nature (PPSN
+#' In: Proc. 11th Int. Conf. Parallel Problem Solving From Nature (PPSN
 #' XI) - Part I, Krakow, Poland, Schaefer, R.; Cotta, C.; Kolodziej, J.;
 #' Rudolph, G. (eds.), no. 6238 in Lecture Notes in Computer Science,
-#' Springer, Berlin, 2010, ISBN 978-3-642-15843-8, pp. 718–727, doi:10.
+#' Springer, Berlin, 2010, ISBN 978-3-642-15843-8, pp. 718-727, doi:10.
 #' 1007/978-3-642-15844-5 72
 #'
 #' Wagner, T.: Planning and Multi-Objective Optimization of Manufacturing
@@ -86,21 +86,21 @@
 #' Jeong, S.; Obayashi, S.: Efficient global optimization (EGO) for multiobjective
 #' problem and data mining. In: Proc. IEEE Congress on
 #' Evolutionary Computation (CEC 2005), Edinburgh, UK, Corne, D.;
-#' et al. (eds.), IEEE, 2005, ISBN 0-7803-9363-5, pp. 2138–2145
-#' 
+#' et al. (eds.), IEEE, 2005, ISBN 0-7803-9363-5, pp. 2138-2145
+#'
 #' @seealso makeMBOControl
 #' @export
 setMBOControlMultiCrit = function(control,
-  method = "dib",
-  ref.point.method = "all",
-  ref.point.offset = 1,
+  method = NULL,
+  ref.point.method = NULL,
+  ref.point.offset = NULL,
   ref.point.val = NULL,
   parego.s = NULL,
-  parego.rho = 0.05,
-  parego.use.margin.points = rep(FALSE, control$number.of.targets),
-  parego.sample.more.weights = 5L,
-  parego.normalize = "standard",
-  dib.indicator = "sms",
+  parego.rho = NULL,
+  parego.use.margin.points = NULL,
+  parego.sample.more.weights = NULL,
+  parego.normalize = NULL,
+  dib.indicator = NULL,
   dib.sms.eps = NULL) {
 
   assertClass(control, "MBOControl")
@@ -110,21 +110,26 @@ setMBOControlMultiCrit = function(control,
     stop("You are setting multicrit options, but have only 1 objective!")
   requirePackages(c("mco", "emoa"), why = "multicrit optimization")
 
-  assertChoice(method, choices = c("parego", "mspot", "dib"))
+  control$multicrit.method = coalesce(method, control$multicrit.method, "dib")
+  assertChoice(control$multicrit.method, choices = c("parego", "mspot", "dib"))
 
   # Reference Point
-  assertChoice(ref.point.method, choices = c("all", "front", "const"))
-  assertNumber(ref.point.offset, lower = 0, finite = TRUE)
-  if (ref.point.method == "const") {
-    if( is.null(ref.point.val))
+  control$multicrit.ref.point.method = coalesce(ref.point.method, control$multicrit.ref.point.method, "all")
+  assertChoice(control$multicrit.ref.point.method, choices = c("all", "front", "const"))
+
+  control$multicrit.ref.point.offset = coalesce(ref.point.offset, control$multicrit.ref.point.offset, 1)
+  assertNumber(control$multicrit.ref.point.offset, lower = 0, finite = TRUE)
+
+  if (control$multicrit.ref.point.method == "const") {
+    if (is.null(ref.point.val) & is.null(control$multicrit.ref.point.val))
       stopf("Constant reference point has to be specified.")
     else
-      assertNumeric(ref.point.val, any.missing = FALSE, finite = TRUE, len = number.of.targets)
+      control$multicrit.ref.point.val = coalesce(ref.point.val, control$multicrit.ref.point.val)
+      assertNumeric(control$multicrit.ref.point.val, any.missing = FALSE, finite = TRUE, len = number.of.targets)
   }
 
-
-  if (method == "parego") {
-    if (missing(parego.s))
+  if (control$multicrit.method == "parego") {
+    if (missing(parego.s)) {
       parego.s = switch(min(number.of.targets, 7L),
         1L,
         100000L,
@@ -133,47 +138,47 @@ setMBOControlMultiCrit = function(control,
         37L,
         23L,
         10L)
-    else
+    } else {
       parego.s = asInt(parego.s, na.ok = FALSE, lower = 1)
+    }
+    control$multicrit.parego.s = coalesce(parego.s, control$multicrit.parego.s)
 
-    assertNumber(parego.rho, na.ok = FALSE, lower = 0)
+    control$multicrit.parego.rho = coalesce(parego.rho, control$multicrit.parego.rho, 0.05)
+    assertNumber(control$multicrit.parego.rho, na.ok = FALSE, lower = 0)
 
-    if (propose.points == 1L)
+    if (propose.points == 1L) {
       parego.sample.more.weights = 1L
-    parego.sample.more.weights = asInt(parego.sample.more.weights)
-    assertInt(parego.sample.more.weights, na.ok = FALSE, lower = 1)
+    } else if (!is.null(parego.sample.more.weights)) {
+      parego.sample.more.weights = asInt(parego.sample.more.weights)
+    }
+    control$multicrit.parego.sample.more.weights = coalesce(parego.sample.more.weights, control$multicrit.parego.sample.more.weights, 5L)
+    assertInt(control$multicrit.parego.sample.more.weights, na.ok = FALSE, lower = 1)
 
-    assertLogical(parego.use.margin.points, len = number.of.targets, any.missing = FALSE)
-    if (sum(parego.use.margin.points) > propose.points)
+    control$multicrit.parego.use.margin.points = coalesce(parego.use.margin.points, control$multicrit.parego.use.margin.points, rep(FALSE, control$number.of.targets))
+    assertLogical(control$multicrit.parego.use.margin.points, len = number.of.targets, any.missing = FALSE)
+
+    if (sum(control$multicrit.parego.use.margin.points) > propose.points)
       stopf("Can't use %s margin points when only proposing %s points each iteration.",
-        sum(parego.use.margin.points), propose.points)
+        sum(control$multicrit.parego.use.margin.points), propose.points)
 
     number.of.weights = choose(parego.s + number.of.targets - 1L, number.of.targets - 1L)
-    if (parego.sample.more.weights * propose.points > number.of.weights)
+    if (control$multicrit.parego.sample.more.weights * propose.points > number.of.weights)
       stop("Trying to sample more weights than exists. Increase parego.s or decrease number of weights.")
 
-    assertChoice(parego.normalize, choices = c("standard", "front"))
+    control$multicrit.parego.normalize = coalesce(parego.normalize, control$multicrit.parego.normalize, "standard")
+    assertChoice(control$multicrit.parego.normalize, choices = c("standard", "front"))
   }
 
   # DIB
-  if (method == "dib") {
-    assertChoice(dib.indicator, c("sms", "eps"))
-    if (!is.null(dib.sms.eps))
-      assertNumber(dib.sms.eps, lower = 0, finite = TRUE)
-  }
+  if (control$multicrit.method == "dib") {
+    control$multicrit.dib.indicator = coalesce(dib.indicator, control$multicrit.dib.indicator, "sms")
+    assertChoice(control$multicrit.dib.indicator, c("sms", "eps"))
 
-  # extend control object
-  control$multicrit.method = method
-  control$multicrit.ref.point.method = ref.point.method
-  control$multicrit.ref.point.offset = ref.point.offset
-  control$multicrit.ref.point.val = ref.point.val
-  control$multicrit.parego.s = parego.s
-  control$multicrit.parego.rho = parego.rho
-  control$multicrit.parego.use.margin.points = parego.use.margin.points
-  control$multicrit.parego.sample.more.weights = parego.sample.more.weights
-  control$multicrit.parego.normalize = parego.normalize
-  control$multicrit.dib.indicator = dib.indicator
-  control$multicrit.dib.sms.eps = dib.sms.eps
+    if (!is.null(dib.sms.eps)) {
+      assertNumber(dib.sms.eps, lower = 0, finite = TRUE)
+      control$multicrit.dib.sms.eps = dib.sms.eps
+    }
+  }
 
   return(control)
 }

@@ -50,22 +50,27 @@ mboMultiFid = function(fun, par.set, design = NULL, learner, control, show.info 
     # FIXME HOW TO DECIDE?
     include.error.message = FALSE,
     include.exec.time = TRUE)
-
-  mbo.design = generateMBODesign(design = design, fun = fun, par.set = par.set, opt.path = opt.path,
+  
+  # compute y values for the initial design
+  generateMBODesign(design = design, fun = fun, par.set = par.set, opt.path = opt.path,
     control = control, show.info = show.info, oldopts = oldopts, more.args = more.args)
 
-  times = mbo.design$times
-
-  mf.learner = makeMultiFidLearner(surrogat.learner = learner, par.set = par.set, control = control)
-  compound.model = train.MultiFidLearner(obj = mf.learner, task = convertOptPathToTask(opt.path))
+  # generate the MultiFid learner which can also predict se and has the stacking method implemented
+  mf.base.learner = makeMultiFidWrapper(learner, control)
+  # FIXME this approach brings alot of trouble. see txt file
+  mf.learner = makeBaggingWrapper(mf.base.learner) #FIXME set params by multifid.control ?
+  mf.learner = setPredictType(mf.learner, predict.type = "se")
+  
+  # train the initial design with the computed y values on the learner
+  compound.model = train(mf.learner, task = convertOptPathToTask(opt.path))
 
   budget = control$iters
 
   # local needed functions
 
-  #subsets a data.frame to a given value of the fid.param
+  # subsets a data.frame to a given value of the fid.param
   subsetOnPar = function(data, par.val){
-    data = subset(data, data[[control$multifid.param]] == par.val)
+    data = subset(data, data[,control$multifid.param] == par.val)
   }
 
   # calculate cost relation between model w/ par.val and last model
@@ -93,15 +98,18 @@ mboMultiFid = function(fun, par.set, design = NULL, learner, control, show.info 
       max(cor(p1, p2, method = "spearman"), 0)
   }
 
+  # generate the x values we want to use to calculate the correlation between the surrogat models
   corgrid = generateDesign(n = control$multifid.cor.grid.points,
     par.set = dropParams(par.set, control$multifid.param))
 
   plot.data = list()
 
+  # multifid main iteration
   for (loop in seq_len(budget)) {
     showInfo(show.info, "loop = %i", loop)
 
     # evaluate stuff we need for MEI
+    # all values for each multifid level.
     model.sd = vnapply(control$multifid.lvls, calcModelSD)
     names(model.sd) = control$multifid.lvls
     model.cor = vnapply(control$multifid.lvls, calcModelCor, grid = corgrid)
@@ -113,27 +121,28 @@ mboMultiFid = function(fun, par.set, design = NULL, learner, control, show.info 
 
     # every couple of levels we only optimize the last one
     # to ensure that we update that model and see what happens here
+    control.mod = control
     if (loop %% control$multifid.force.last.level.evals == 0)
-      avail.pars = tail(control$multifid.lvls, 1L)
-    else
-      avail.pars = control$multifid.lvls
-
-    prop = proposePoints.MultiFid(model = compound.model, par.set = par.set,
-      control = control, opt.path = opt.path,
+      control.mod$multifid.lvls = tail(control.mod$multifid.lvls$multifid.lvls, 1L)
+    
+    # return a list, Get a proposed point for each level
+    prop = proposePointsMultiFid(model = compound.model, par.set = par.set,
+      control = control.mod, opt.path = opt.path,
       model.cor = model.cor, model.cost = model.cost, model.sd = model.sd)
+    # find the level where the crit val / infill vals is smallest
     infill.vals = extractSubList(prop, "crit.vals")
     messagef("Infill vals = %s", collapse(sprintf("%.3g", infill.vals), ", "))
-    # we still technically minimize
+    # get one x point (see as par vector) and the level parameter
     best.points = prop[[getMinIndex(infill.vals)]]$prop.points
-    
+
     if (length(dropParams(par.set, control$multifid.param)$pars) == 1) {
       plot.data[[loop]] = genPlotData(compound.model = compound.model, par.set = par.set,
                                       control = control, fun = fun, opt.path = opt.path,
-                                      model.cor = model.cor, model.sd = model.sd, 
-                                      model.cost = model.cost, best.points = best.points)  
+                                      model.cor = model.cor, model.sd = model.sd,
+                                      model.cost = model.cost, best.points = best.points)
     }
-    if(!is.null(control$multifid.alpha2fix) && control$multifid.alpha2fix) {
-      tmp = data.frame(best.points[1,1], control$multifid.lvls[control$multifid.lvls <= best.points[[control$multifid.param]]])
+    if(control$multifid.eval.lower) {
+      tmp = data.frame(best.points[1,1], control$multifid.lvls[control$multifid.lvls <= best.points[,control$multifid.param]])
       colnames(tmp) = colnames(best.points)
       best.points = tmp
     }
@@ -141,7 +150,8 @@ mboMultiFid = function(fun, par.set, design = NULL, learner, control, show.info 
       opt.path = opt.path, control = control, fun = fun, show.info = show.info,
       oldopts = oldopts, more.args = more.args, extras = NULL)
     #evals = evalTargetFun(fun = fun, par.set = par.set, dobs = loop, xs = xs, opt.path = opt.path, control = control, show.info = show.info, oldopts = oldopts, more.args = more.args, extras = NULL)
-    compound.model = update.MultiFidModel(compound.model, task = convertOptPathToTask(opt.path))
+    # compound.model = updateMultiFidModel(compound.model, task = convertOptPathToTask(opt.path))
+    compound.model = train(mf.learner, task = convertOptPathToTask(opt.path))
   }
 
   # return complete designs for all levels
@@ -149,11 +159,11 @@ mboMultiFid = function(fun, par.set, design = NULL, learner, control, show.info 
     opt.path = opt.path, control = control)
   proposed = convertOptPathToDesign(opt.path, drop = TRUE)[proposed.index, ]
   proposed$y = NULL
-  proposed[[control$multifid.param]] = tail(control$multifid.lvls,1)
+  proposed[,control$multifid.param] = tail(control$multifid.lvls,1)
   proposed = convertDfCols(proposed, factors.as.char = TRUE)
   y.hat = predict(compound.model, newdata = proposed)$data$response
-  y = evalProposedPoints(loop = budget+1, prop.points = proposed, par.set = par.set, opt.path = opt.path, 
-                         control = control, fun = fun, show.info = show.info, oldopts = oldopts, 
+  y = evalProposedPoints(loop = budget+1, prop.points = proposed, par.set = par.set, opt.path = opt.path,
+                         control = control, fun = fun, show.info = show.info, oldopts = oldopts,
                          more.args = more.args, extras = NULL)
 
   # restore mlr configuration

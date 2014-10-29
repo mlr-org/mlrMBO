@@ -20,7 +20,7 @@ test_that("user can log extra stuff to optimization path via the 'extras' attrib
   control = setMBOControlInfill(control, crit = "ei", opt = "focussearch")
 
   # run mbo and convert opt path to data frame
-  result = mbo(obj.fn, par.set, learner = learner, control = control, show.info = FALSE)
+  result = mbo(obj.fn, par.set, learner = learner, control = control)
   opt.path = as.data.frame(result$opt.path)
 
   # check that user extras are in fact logged

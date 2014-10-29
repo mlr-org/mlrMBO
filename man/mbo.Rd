@@ -3,8 +3,8 @@
 \alias{mbo}
 \title{Optimizes a function with sequential model based optimization.}
 \usage{
-mbo(fun, par.set, design = NULL, learner, control, show.info = NULL,
-  more.args = list())
+mbo(fun, par.set, design = NULL, learner, control,
+  show.info = getOption("mlrMBO.show.info", TRUE), more.args = list())
 }
 \arguments{
 \item{fun}{[\code{function(x, ...)}]\cr

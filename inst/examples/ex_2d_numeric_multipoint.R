@@ -20,7 +20,9 @@ ctrl = setMBOControlMultiPoint(ctrl,
 
 lrn = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
 
-run = exampleRun(obj.fun, par.set = par.set, learner = lrn, control = ctrl, points.per.dim = 50)
+run = exampleRun(obj.fun, par.set = par.set, learner = lrn, control = ctrl,
+	points.per.dim = 50, show.info = TRUE)
+
 print(run)
 
 res = autoplot(run, pause = TRUE)

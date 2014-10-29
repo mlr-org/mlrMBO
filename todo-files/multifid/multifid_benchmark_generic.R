@@ -9,7 +9,7 @@ library("plyr")
 
 load_all()
 
-generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.model = NULL, control = NULL, alpha2fix = FALSE) {
+generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.model = NULL, control = NULL, alpha2fix = FALSE, grid.all = TRUE) {
   if (is.null(control)) {
     # 4. common parameters
     control.common = makeMBOControl(
@@ -24,7 +24,9 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
       opt = "focussearch", 
       opt.restarts = 1L, 
       opt.focussearch.maxit = 1L, 
-      opt.focussearch.points = 300L
+      opt.focussearch.points = 100L,
+      filter.proposed.points = TRUE,
+      filter.proposed.points.tol = 0.5
     )
   } else {
     control.common = control
@@ -32,8 +34,24 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
   control.common$multifid.alpha2fix = alpha2fix
   
   if (is.null(surrogat.model)) {
-    surrogat.model = makeLearner("regr.km", predict.type="se", nugget.estim = TRUE, jitter = TRUE)
+    #surrogat.model = makeLearner("regr.km", predict.type="se", nugget.estim = TRUE, jitter = TRUE)
+    surrogat.model = makeLearner("regr.km", nugget.estim = FALSE, jitter = TRUE)
   }
+  
+  # generate different objfuns in a list
+  objfuns = lapply(e.lvl, function(lvl) {
+    force(lvl)
+    function(x, ...) {
+      dots = list(...)
+      if(!is.null(dots$lvl.par))
+        lvl.par = lvl.par
+      else
+        lvl.par = "dw.perc"
+      x[[lvl.par]] = lvl
+      objfun(x, ...)
+    }
+  })
+  names(objfuns) = e.lvl
   
   
   # 4.1 Wrapper + Obj Func
@@ -47,32 +65,15 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
   
   # 5. mbo Full experiment
   set.seed(e.seed)
-  objfun.expansive = function(x, ...) {
-    dots = list(...)
-    if(!is.null(dots$lvl.par))
-      lvl.par = lvl.par
-    else
-      lvl.par = "dw.perc"
-    x[[lvl.par]] = tail(e.lvl,1)
-    objfun(x, ...)
-  }
-  mbo1.time = system.time( {mbo1 = mbo(fun = objfun.expansive, e.par.set, learner = surrogat.model, control = control.common, show.info = TRUE) })
+  mbo1.time = system.time( {mbo1 = mbo(fun = getLast(objfuns), e.par.set, learner = surrogat.model, control = control.common, show.info = TRUE) })
   mbo1$system.time = mbo1.time
   mbo1$opt.path$env$path[["dw.perc"]] = tail(e.lvl,1)
   mbo.res$mbo_expansive = mbo1
   
   # 6. mbo cheapest experiment
   set.seed(e.seed)
-  objfun.cheap = function(x, ...) {
-    dots = list(...)
-    if(!is.null(dots$lvl.par))
-      lvl.par = lvl.par
-    else
-      lvl.par = "dw.perc"
-    x[[lvl.par]] = head(e.lvl,1)
-    objfun(x, ...)
-  }
-  mbo2.time = system.time( {mbo2 = mbo(fun = objfun.cheap, e.par.set, learner = surrogat.model, control = control.common, show.info = TRUE) })
+
+  mbo2.time = system.time( {mbo2 = mbo(fun = getFirst(objfuns), e.par.set, learner = surrogat.model, control = control.common, show.info = TRUE) })
   mbo2$system.time = mbo2.time
   mbo2$opt.path$env$path[["dw.perc"]] = head(e.lvl,1)
   mbo.res$mbo_cheap = mbo2
@@ -85,7 +86,7 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
     control = control.multifid, 
     param = "dw.perc", 
     lvls = e.lvl,
-    cor.grid.points = 100,
+    cor.grid.points = 20L,
     costs = function(cur, last) (last / cur)^1.2
   )
   mbo3.time = system.time({mbo3 = mbo(fun = objfun, par.set = par.set, learner = surrogat.model, control = control.multifid, show.info = TRUE)})
@@ -96,20 +97,27 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
   mbo.res$multifid = mbo3
   
   # 8. grid Search
-  set.seed(e.seed)
-  #source("../ParamHelpers/todo-files/discretizeParam.R")
-  #par.set.disc = lapply(e.par.set$pars, discretizeParam, length.out = control.common$init.design.points + control.common$iters, trafo = TRUE)
-  #par.set.disc = makeParamSet(params = par.set.disc)
-  par.set.lower = dropParams(par.set, "dw.perc")
-  grid.design = generateGridDesign(par.set = par.set.lower, resolution = control.common$init.design.points + control.common$iters)
-  control.grid = makeMBOControl(iters = 1)
-  control.grid$iters = 0
-  #grid.design[,"dw.perc"] = tail(e.lvl, 1)
-  #mbo4.time = system.time({mbo4 = tuneParams(e.lrn, task = e.task, resampling = e.rin, par.set = par.set.disc, control = ctrl.grid)})
-  mbo4.time = system.time({mbo4 = mbo(fun = objfun.expansive, par.set = par.set.lower, design = grid.design, learner = surrogat.model, control = control.grid, show.info = TRUE)})
-  mbo4$system.time = mbo4.time
-  mbo4$opt.path$env$path[["dw.perc"]] = tail(e.lvl,1)
-  mbo.res$grid = mbo4
+  if (grid.all) {
+    grid.lvls = e.lvl
+  } else {
+    grid.lvls = tail(e.lvl, 1)
+  }
+  grid.res = lapply(grid.lvls, function(lvl) {
+    set.seed(e.seed)
+    par.set.lower = dropParams(par.set, "dw.perc")
+    grid.design = generateGridDesign(par.set = par.set.lower, resolution = control.common$init.design.points + control.common$iters)
+    control.grid = makeMBOControl(iters = 1)
+    control.grid$iters = 0
+    mbo4.time = system.time({mbo4 = mbo(fun = objfuns[[as.character(lvl)]], par.set = par.set.lower, design = grid.design, learner = surrogat.model, control = control.grid, show.info = TRUE)})
+    mbo4$system.time = mbo4.time
+    mbo4$opt.path$env$path[["dw.perc"]] = tail(e.lvl,1)
+    mbo4
+    #mbo.res$grid = mbo4
+  })
+  names(grid.res) = paste("grid", grid.lvls, sep = ".")
+  
+  mbo.res = c(mbo.res, grid.res)
+  
   
   # 9.0 Calculate thoretical Costs and level count
   for (idx in names(mbo.res)) {
@@ -120,7 +128,7 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
   
   # 9. Visualisation
   # preproc grid search
-  df.grid = as.data.frame(mbo4$opt.path)
+  df.grid = as.data.frame(getLast(grid.res)$opt.path)
   
   # 9.1 mbo Full + mbo Cheam + grid
   df.grid.1 = rename(df.grid, c("y"="y"))

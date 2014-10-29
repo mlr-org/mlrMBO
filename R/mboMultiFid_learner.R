@@ -1,36 +1,36 @@
-makeMultiFidLearner = function(surrogat.learner, par.set, control) {
-  lrn.list = replicate(length(control$multifid.lvls), surrogat.learner, simplify = FALSE)
-  names(lrn.list) = control$multifid.lvls
-  makeS3Obj(c("MultiFidLearner", "Learner"),
-    learners = lrn.list,
-    fid.param = par.set$pars[[control$multifid.param]],
-    fid.lvls = control$multifid.lvls
-  )
+makeMultiFidWrapper = function(learner, control) {
+  learner = checkLearner(learner, type = "regr")
+  assertClass(control, "MBOControl")
+  #if (learner$predict.type != "se")
+  #  stop("Predict type of the basic learner must be 'se'.")
+  id = paste(learner$id, "multifid", sep = ".")
+  packs = learner$package
+  w = mlr:::makeBaseWrapper(id, learner, packs, cl = "MultiFidWrapper")
+  w$mbo.control = control
+  return(w)
 }
 
-# trains the learners inside of MultiFidLearner with on task data and
-# returns ????  a list splits automaticaly ??
-train.MultiFidLearner = function(obj, task, subset) {
+#' @export
+trainLearner.MultiFidWrapper = function(.learner, .task, .subset, .weights = NULL, ...) {
   # some shortcuts
-  learner = obj
-  fid.par = learner$fid.param
-  fid.lvls = learner$fid.lvls
+  control = .learner$mbo.control
+  fid.par = control$multifid.param
+  fid.lvls = control$multifid.lvls
   fid.ns = as.character(fid.lvls)
-  data = getTaskData(task)
+  data = getTaskData(.task)
   cns = colnames(data)
-
-  if (!all(fid.lvls %in% data[[fid.par$id]]))
+  if (!all(fid.lvls %in% data[[fid.par]]))
     stopf("MultiFid model has to be initialized on all values of '%s'", collapse(fid.lvls))
   models = namedList(fid.ns, NULL) #init named empty model list
   v.prev = NULL
   for (v in fid.lvls) {
-    r.inds = which(data[[fid.par$id]] == v)
-    c.names = setdiff(cns, fid.par$id)
-    sub.task = subsetTask(task, subset = r.inds, features = c.names)
+    r.inds = which(data[[fid.par]] == v)
+    c.names = setdiff(cns, fid.par)
+    sub.task = subsetTask(.task, subset = r.inds, features = c.names)
     if (is.null(v.prev)) {
-      #train base model for first perf.val
+      #train base <F10>model for first perf.val
       models[[as.character(v)]] =
-        train(learner = learner$learners[[as.character(v)]], task = sub.task)
+        train(learner = .learner$next.learner, task = sub.task)
     } else {
       #train deltas
       #calculcate surrogate values of one level below (usage of predict.MultiFid would be awsome here)
@@ -41,46 +41,36 @@ train.MultiFidLearner = function(obj, task, subset) {
       sub.task = mlr:::changeData(task = sub.task, data = traindata)
       #FIXME: in case we have nearly a perfect constant shift between levels, kriging of course crashes here....
       models[[as.character(v)]] =
-        train(learner = learner$learners[[as.character(v)]], task = sub.task)
+        train(learner = .learner$next.learner, task = sub.task)
     }
     v.prev = v
   }
-  #FIXME: maybe use makeWrappedModel
-  makeS3Obj(c("MultiFidModel","WrappedModel"), learner = learner, models = models, task.desc = task$task.desc)
+  mlr:::makeChainModel(next.model = models, cl = "MultiFidModel")
 }
 
-update.MultiFidModel = function(obj, task) {
-  # FIXME: implement updating mechanism here later!
-  learner = obj$learner
-  train.MultiFidLearner(learner, task)
-}
-
-predict.MultiFidModel = function(model, task, newdata, subset = NULL) {
+#' @export
+predictLearner.MultiFidWrapper = function(.learner, .model, .newdata, ...) {
   # some shortcuts
-  fid.par = model$learner$fid.param
-  fid.lvls = model$learner$fid.lvls
+  models = .model$learner.model$next.model
+  fid.par = .learner$mbo.control$multifid.param
+  fid.lvls = .learner$mbo.control$multifid.lvls
   fid.ns = as.character(fid.lvls)
 
   # we calculate a lot of unneccessary things here (for now)
   # we ignore the given perf.val in (newdata, task) and calcuate it for all
-  if (missing(newdata)) {
-    newdata = getTaskData(task, subset = subset)
-  } else if (!is.null(subset)) {
-    newdata = newdata[subset, , drop = FALSE]
-  }
-  fid.par.col = newdata[[fid.par$id]]
+  fid.par.col = .newdata[[fid.par]]
   fid.lvls.avail = sort(unique(fid.par.col))
   assertSubset(fid.lvls.avail, fid.lvls)
-  newdata = newdata[,  setdiff(colnames(newdata) , fid.par$id), drop = FALSE] #remove column with fid.par
-  split.inds = split(seq_row(newdata), fid.par.col)
+  .newdata = .newdata[,  setdiff(colnames(.newdata) , fid.par), drop = FALSE] #remove column with fid.par
+  split.inds = split(seq_row(.newdata), fid.par.col)
 
   preds = lapply(fid.lvls.avail, function(v) {
-    this.data = subset(newdata, fid.par.col == v)
-    preds.each = lapply(model$models[fid.lvls <= v], mlr:::predict.WrappedModel, newdata = this.data)
-    se = extractSubList(preds.each, c("data", "se"), simplify = FALSE)
+    this.data = subset(.newdata, fid.par.col == v)
+    preds.each = lapply(models[fid.lvls <= v], mlr:::predict.WrappedModel, newdata = this.data)
+    # se = extractSubList(preds.each, c("data", "se"), simplify = FALSE)
     response = extractSubList(preds.each, c("data", "response"), simplify = FALSE)
     pred = preds.each[[1]]
-    pred$data$se = Reduce('+', se)
+    # pred$data$se = Reduce('+', se)
     pred$data$response = Reduce('+', response)
     pred
   })
@@ -91,11 +81,30 @@ predict.MultiFidModel = function(model, task, newdata, subset = NULL) {
   for (vs in fid.ns) {
     if (!is.null(split.inds[[vs]]))
       pred.data[split.inds[[vs]], ] = preds[[vs]]$data
-  }
-  #FIXME: maybe use makePrediction
-  pred = preds[[1]]
-  pred$data = pred.data
-  pred$task.desc$size = sum(extractSubList(preds, c("task.desc","size")))
-
-  pred
+  }  
+  pred.data$response
 }
+
+
+#' @export
+makeWrappedModel.MultiFidWrapper = function(learner, learner.model, task.desc, subset, features, factor.levels, time) {
+  x = NextMethod()
+  addClasses(x, "MultiFidModel")
+}
+
+#' @export
+isFailureModel.MultiFidModel = function(model) {
+  mods = model$learner.model$next.model
+  isit = vlapply(mods, isFailureModel)
+  return(any(isit))
+}
+
+#' @export
+print.MultiFidModel = function(x, ...) {
+  s = capture.output(mlr:::print.WrappedModel(x))
+  u = sprintf("Multifid Learner: %s", class(x$learner$next.learner)[1L])
+  s = append(s, u, 1L)
+  lapply(s, catf)
+}
+
+

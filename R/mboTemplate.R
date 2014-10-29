@@ -27,7 +27,7 @@ mboTemplate = function(fun, par.set, design = NULL, learner, control, show.info 
   # for normal start, we setup initial design, otherwise take stuff from continue object from disk
   if (is.null(continue)) {
     opt.path = makeMBOOptPath(par.set, control)
-    extras = getExtras(ninit, NULL, control)
+    extras = getExtras(ninit, NULL, NA_real_, control)
     generateMBODesign(design, fun, par.set, opt.path, control, show.info, oldopts, more.args, extras)
     stored.models = namedList(control$store.model.at)
     resample.results = namedList(control$resample.at)
@@ -42,7 +42,7 @@ mboTemplate = function(fun, par.set, design = NULL, learner, control, show.info 
   }
 
   tasks = makeTasks(par.set, opt.path, algo.init, control = control)
-  current.models = lapply(tasks, train, learner = learner)
+  tr = trainModels(learner, tasks, control)
 
   # if we are restarting from a save file, we possibly start in a higher iteration
   loop = max(getOptPathDOB(opt.path)) + 1L
@@ -51,16 +51,16 @@ mboTemplate = function(fun, par.set, design = NULL, learner, control, show.info 
   # if we have multiple tasks, return a list, otherwise singleton result
   doResample = function(tasks) {
     if (length(tasks) == 1L)
-      resample(learner, tasks[[1L]], control$resample.desc, measures = control$resample.measures)
+      resample(learner, tasks[[1L]], control$resample.desc, measures = control$resample.measures, show.info = FALSE)
     else
       lapply(tasks, resample, learner = learner, resampling = control$resample.desc,
-        measures = control$resample.measures)
+        measures = control$resample.measures, show.info = FALSE)
   }
 
   # save some stuff for iter 0, not necessary if we continue
   if (is.null(continue)) {
     if (0L %in% control$store.model.at)
-      stored.models[["0"]] = if (length(current.models) == 1L) current.models[[1L]] else current.models
+      stored.models[["0"]] = if (length(tr$models) == 1L) tr$models[[1L]] else tr$models
     if (0L %in% control$resample.model.at)
       resample.results[["0"]] = doResample(tasks)
     saveStateOnDisk(0L, fun, learner, par.set, opt.path, control, show.info, more.args,
@@ -69,23 +69,28 @@ mboTemplate = function(fun, par.set, design = NULL, learner, control, show.info 
 
   repeat {
     # propose new points and evaluate target function
-    prop = proposePoints(tasks, current.models, par.set, control, opt.path, iter = loop)
+    prop = proposePoints(tasks, tr$models, par.set, control, opt.path, iter = loop)
     # drop proposed points, which are too close to design points
     if (control$filter.proposed.points) {
       prop = filterProposedPoints(prop, opt.path, par.set, control)
     }
     crit.vals = prop$crit.vals
-    extras = getExtras(nrow(prop$prop.points), prop, control)
+    extras = getExtras(nrow(prop$prop.points), prop, tr$train.time, control)
     evalProposedPoints(loop, prop$prop.points, par.set, opt.path, control,
       fun, learner, show.info, oldopts, more.args, extras)
 
+    #FIXME: why do we do the expansive operation of training here, if we might break at the end?
+    # dont we waste useless time for the final iter?
+    # ok we might use the model for choosing the final point....
+    # but what if not?
+
     # train models
     tasks = makeTasks(par.set, opt.path, algo.init, control)
-    current.models = lapply(tasks, train, learner = learner)
+    tr = trainModels(learner, tasks, control)
 
     # store models + resample + store on disk
     if (loop %in% control$store.model.at)
-      stored.models[[as.character(loop)]] = if (length(current.models) == 1L) current.models[[1L]] else current.models
+      stored.models[[as.character(loop)]] = if (length(tr$models) == 1L) tr$models[[1L]] else tr$models
     if (loop %in% control$resample.at)
       resample.results[[as.character(loop)]] = doResample(tasks)
     saveStateOnDisk(loop, fun, learner, par.set, opt.path, control, show.info, more.args, stored.models,
@@ -101,13 +106,13 @@ mboTemplate = function(fun, par.set, design = NULL, learner, control, show.info 
   configureMlr(on.learner.error = oldopts[["ole"]], show.learner.output = oldopts[["slo"]])
 
   if (control$number.of.targets == 1L) {
-    final.index = chooseFinalPoint(fun, par.set, current.models[[1L]], opt.path, y.name, control)
+    final.index = chooseFinalPoint(fun, par.set, tr$models[[1L]], opt.path, y.name, control)
     if (fevals > 0L) {
       # do some final evaluations and compute mean of target fun values
       showInfo(show.info, "Performing %i final evals", fevals)
       best = getOptPathEl(opt.path, final.index)
       xs = replicate(fevals, best$x, simplify = FALSE)
-      extras = getExtras(fevals, NULL, control)
+      extras = getExtras(fevals, NULL, NA_real_, control)
       ys = evalTargetFun(fun, par.set, loop, xs, opt.path, control, show.info, oldopts, more.args, extras)
       best$y = mean(ys)
     }
