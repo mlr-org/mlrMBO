@@ -1,5 +1,5 @@
 Package: mlrMBO
-Title: mlr: Model-based optimization
+Title: Model-Based Optimization for mlr
 Description: A framework for the (sequential) model-based parameter
     optimization. It offers methods to optimize numeric or discrete influence
     parameters of non-linear black-box single- or multiobjective target
