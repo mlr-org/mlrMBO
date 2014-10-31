@@ -6,7 +6,7 @@ proposePointsParEGO = function(models, par.set, control, opt.path, iter, weight.
   # scalar tasks are always constructed so they minimized
   control2$minimize = TRUE
   props = list()
-  props = parallelMap(proposePointsByInfillOptimization, models, level = "propose.points",
+  props = parallelMap(proposePointsByInfillOptimization, models, level = "mlrMBO.propose.points",
     more.args = list(par.set = par.set, control = control2, opt.path = opt.path, iter = iter))
 
   res = joinProposedPoints(props)
