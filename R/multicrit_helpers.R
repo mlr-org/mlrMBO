@@ -57,6 +57,31 @@ evalCritFunForMultiCritModels = function(infill.crit.fun, points, models, contro
       control2$minimize = control$minimize[i]
       infill.crit.fun(points, models[[i]], control2, par.set, design, iter)
   }))
-  return(crit.vals)
+  
+  # FIXME: This is the second time we have to calc this, we also to it
+  # in infillOptNSGA2. could we avoid this?
+  
+  # We also want to have the hypervolume contribution for every new point
+  # But we use a different infill.crit for candidate selection
+  # So, calc the second infill.crit, two
+  hv.contr.crit = getInfillCritFunction(control$mspot.select.crit)
+  candidate.vals = asMatrixCols(lapply(seq_along(models), function(i) {
+    # we need to make sure mininimize in control is a scalar, so we can multiply it in infill crits...
+    control2$minimize = control$minimize[i]
+    hv.contr.crit(points, models[[i]], control2, par.set, design, iter)
+  }))
+  
+  # Now, calc the hv contribution
+  ys = design[, control$y.name]
+  ref.point = getMultiCritRefPoint(design[, control$y.name], control)
+  hv.contr = numeric(nrow(points))
+  for (i in seq_row(crit.vals)) {
+    hv.contr[i] = getHypervolumeContributions(xs = candidate.vals[i, , drop = FALSE],
+      ys = ys, ref.point = ref.point, minimize = control$minimize)
+    # add point to ys, since next hv.contr. is with reference to larger front
+    ys = rbind(ys, candidate.vals[i, ])
+  }
+  
+  return(cbind(crit.vals, hv.contr))
 }
 

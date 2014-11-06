@@ -18,7 +18,7 @@ checkFailedModels = function(models, par.set, npoints, control) {
     prop$prop.points = convertDataFrameCols(prop.points, ints.as.num = TRUE, logicals.as.factor = TRUE)
     # mspot is the special kid, that needs multiple crit vals
     if (control$number.of.targets > 1L && control$multicrit.method == "mspot")
-      prop$crit.vals = matrix(rep(NA_real_), nrow = npoints, ncol = control$number.of.targets)
+      prop$crit.vals = matrix(rep(NA_real_), nrow = npoints, ncol = control$number.of.targets + 1)
     else
       prop$crit.vals = matrix(rep(NA_real_, npoints), ncol = 1L)
     prop$errors.model = getFailureModelMsg(models[[which.first(isfail)]])

@@ -3,7 +3,7 @@
 getExtras = function(n, prop, train.time, control) {
   # this happens in init design
   if (is.null(prop)) {
-    k = ifelse(control$number.of.targets > 1L && control$multicrit.method == "mspot", control$number.of.targets, 1L)
+    k = ifelse(control$number.of.targets > 1L && control$multicrit.method == "mspot", control$number.of.targets + 1, 1L)
     prop = list(crit.vals = matrix(NA_real_, nrow = n, ncol = k), errors.model = NA_character_,
       filter.replace = rep(NA, n))
   }
@@ -16,7 +16,7 @@ getExtras = function(n, prop, train.time, control) {
     # if we use mspot, store all crit.vals
     if (control$number.of.targets > 1L && control$multicrit.method == "mspot") {
       ex = as.list(prop$crit.vals[i, ])
-      names(ex) = paste(control$infill.crit, control$y.name, sep = ".")
+      names(ex) = c(paste(control$infill.crit, control$y.name, sep = "."), "hv.contr")
       ex$error.model = errs[i]
     } else {
       ex = list(prop$crit.vals[i, 1L], error.model = errs[i])

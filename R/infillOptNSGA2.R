@@ -1,6 +1,7 @@
-
-
-# NSGA 2
+# Multicrit optimization of multiple infill.crits - one crit per target
+# NSGA2 is used to create set of candidate soluation
+# Greedy cypervolume contribution selection is used to select prop.point from
+# from candidate points
 infillOptMultiCritNSGA2 = function(infill.crit, models, control, par.set, opt.path, design, iter, ...) {
 
   # build target function for vectorized nsga2 and run it
@@ -10,7 +11,7 @@ infillOptMultiCritNSGA2 = function(infill.crit, models, control, par.set, opt.pa
   fun.tmp = function(x) {
     newdata = as.data.frame(x)
     colnames(newdata) = rep.pids
-    asMatrixCols(lapply(1:m, function(i) {
+    asMatrixRows(lapply(1:m, function(i) {
       # we need to make sure mininimize in control is a scalar, so we can multiply it in infill crits...
       control2$minimize = control$minimize[i]
       infill.crit(points = newdata, model = models[[i]], control = control2,
@@ -29,7 +30,18 @@ infillOptMultiCritNSGA2 = function(infill.crit, models, control, par.set, opt.pa
   # do this greedy - select the point with max. hv.contr, add it and select
   # the best point wrt to the new front
   candidate.points = res$par
-  candidate.vals = res$value
+  # Use the mean/lcb response of the model to calculate the hv.contr, not the nsga2-val
+  hv.contr.crit = getInfillCritFunction(control$mspot.select.crit)
+  candidate.vals = asMatrixCols(lapply(1:m, function(i) {
+    # we need to make sure mininimize in control is a scalar, so we can multiply it in infill crits...
+    control2$minimize = control$minimize[i]
+    
+    newdata = as.data.frame(res$par)
+    colnames(newdata) = rep.pids
+    hv.contr.crit(points = newdata, model = models[[i]], control = control2,
+      par.set = par.set, design = design, iter = iter, ...)
+  }))
+  
   prop.points = matrix(nrow = 0, ncol = ncol(candidate.points))
   prop.vals = matrix(nrow = 0, ncol = ncol(candidate.vals))
   colnames(prop.vals) = control$y.name
