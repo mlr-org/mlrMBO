@@ -59,6 +59,67 @@ infillCritLCB = function(points, model, control, par.set, design, iter) {
   return(lcb)
 }
 
+######################  Noisy criteria ###########################################################
+
+# AUGMENTED EXPECTED IMPROVEMENT
+# (useful for noisy functions)
+infillCritAEI = function(points, model, control, par.set, design, iter) {
+  maximize.mult = ifelse(control$minimize, 1, -1)
+  p = predict(model, newdata = points)$data
+  p.mu = maximize.mult * p$response
+  p.se = p$se
+  
+  ebs = getEffectiveBestPoint(design = design, model = model, par.set = par.set, control = control)
+  # calculate EI with plugin, plugin val is mean response at ebs solution
+  d = ebs$mu - p.mu
+  xcr = d / p.se
+  xcr.prob = pnorm(xcr)
+  xcr.dens = dnorm(xcr)
+  
+  # noise estimation
+  pure.noise.var = if (inherits(model$learner, "regr.km"))
+    pure.noise.var = model$learner.model@covariance@nugget
+  else
+    estimateResidualVariance(model, data = design, target = control$y.name)
+  
+  tau = sqrt(pure.noise.var)
+  aei = ifelse(p.se < 1e-06, 0,
+    (d * xcr.prob + p.se * xcr.dens) * (1 - tau / sqrt(tau^2 + p.se^2)))
+  return(-aei)
+}
+
+# EXPECTED QUANTILE IMPROVEMENT
+# (useful for noisy functions)
+infillCritEQI = function(points, model, control, par.set, design, iter) {
+  maximize.mult = ifelse(control$minimize, 1, -1)
+  # compute q.min
+  design_x = design[, (colnames(design) %nin% control$y.name)]
+  p.current.model = predict(object = model, newdata = design_x)$data
+  q.min = min(maximize.mult * p.current.model$response + qnorm(control$infill.crit.eqi.beta) * p.current.model$se)
+  
+  p = predict(object = model, newdata = points)$data
+  p.mu = maximize.mult * p$response
+  p.se = p$se
+  
+  pure.noise.var = if (inherits(model$learner, "regr.km")) {
+    pure.noise.var = model$learner.model@covariance@nugget
+  } else {
+    estimateResidualVariance(model, data = design, target = control$y.name)
+  }
+  tau = sqrt(pure.noise.var)
+  
+  mq = p.mu + qnorm(control$infill.crit.eqi.beta) * sqrt((tau * p.se^2) / (tau + p.se^2))
+  sq = p.se^2 / sqrt(pure.noise.var + p.se^2)
+  d = q.min - mq
+  xcr = d / sq
+  xcr.prob = pnorm(xcr)
+  xcr.dens = dnorm(xcr)
+  
+  eqi = ifelse(p.se < 1e-06, 0, (sq * (xcr * xcr.prob + xcr.dens)))
+  return(-eqi)
+}
+
+
 ######################  MCO criteria ###########################################################
 
 # SMS-EGO / DIB (direct indicator based):
@@ -102,63 +163,5 @@ infillCritDIB = function(points, models, control, par.set, design, iter) {
 }
 
 
-# AUGMENTED EXPECTED IMPROVEMENT
-# (useful for noisy functions)
-infillCritAEI = function(points, model, control, par.set, design, iter) {
-  maximize.mult = ifelse(control$minimize, 1, -1)
-  p = predict(model, newdata = points)$data
-  p.mu = maximize.mult * p$response
-  p.se = p$se
-
-  ebs = getEffectiveBestPoint(design = design, model = model, par.set = par.set, control = control)
-  # calculate EI with plugin, plugin val is mean response at ebs solution
-  d = ebs$mu - p.mu
-  xcr = d / p.se
-  xcr.prob = pnorm(xcr)
-  xcr.dens = dnorm(xcr)
-
-  # noise estimation
-  pure.noise.var = if (inherits(model$learner, "regr.km"))
-    pure.noise.var = model$learner.model@covariance@nugget
-  else
-    estimateResidualVariance(model, data = design, target = control$y.name)
-
-  tau = sqrt(pure.noise.var)
-  aei = ifelse(p.se < 1e-06, 0,
-               (d * xcr.prob + p.se * xcr.dens) * (1 - tau / sqrt(tau^2 + p.se^2)))
-  return(-aei)
-}
-
-
-# EXPECTED QUANTILE IMPROVEMENT
-# (useful for noisy functions)
-infillCritEQI = function(points, model, control, par.set, design, iter) {
-  maximize.mult = ifelse(control$minimize, 1, -1)
-  # compute q.min
-  design_x = design[, (colnames(design) %nin% control$y.name)]
-  p.current.model = predict(object = model, newdata = design_x)$data
-  q.min = min(maximize.mult * p.current.model$response + qnorm(control$infill.crit.eqi.beta) * p.current.model$se)
-
-  p = predict(object = model, newdata = points)$data
-  p.mu = maximize.mult * p$response
-  p.se = p$se
-
-  pure.noise.var = if (inherits(model$learner, "regr.km")) {
-    pure.noise.var = model$learner.model@covariance@nugget
-  } else {
-    estimateResidualVariance(model, data = design, target = control$y.name)
-  }
-  tau = sqrt(pure.noise.var)
-
-  mq = p.mu + qnorm(control$infill.crit.eqi.beta) * sqrt((tau * p.se^2) / (tau + p.se^2))
-  sq = p.se^2 / sqrt(pure.noise.var + p.se^2)
-  d = q.min - mq
-  xcr = d / sq
-  xcr.prob = pnorm(xcr)
-  xcr.dens = dnorm(xcr)
-
-  eqi = ifelse(p.se < 1e-06, 0, (sq * (xcr * xcr.prob + xcr.dens)))
-  return(-eqi)
-}
 
 
