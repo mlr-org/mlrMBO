@@ -1,4 +1,10 @@
-
+# Notes:
+# * Levels should be sticked to the task or learner or whatever, not be a feature in the task
+# * Be super careful with subsetting! Especially because we cannot rely on subsetTask alone,
+#   we need to take care of level subsetting ourselves.
+# * Levels are numeric. This is bad. Sees FIXMEs below.
+# * Best would be to have a MultiFidTask which inherits from a RegrTask?
+#   Would be so much easier if we had already the new mlr tasks!
 if (FALSE) {
   library(devtools)
   library(checkmate)
