@@ -37,10 +37,8 @@
 # FIXME EGO nach ego
 mboMultiFid = function(fun, par.set, design = NULL, learner, control, show.info = TRUE, more.args = list()) {
   # FIXME: check in generateMBODesign?
-  assertDataFrame(design)
   assertFunction(fun, args = c("x"))
   assertClass(par.set, "ParamSet")
-  assertClass(opt.path, "OptPath")
   assertClass(learner, "RLearner")
   assertClass(control, "MBOControl")
   assertFlag(show.info)
