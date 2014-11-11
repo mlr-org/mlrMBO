@@ -8,7 +8,13 @@ library("plyr")
 
 load_all()
 
-generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.model = NULL, control = NULL, grid.all = TRUE) {
+generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.model = NULL, control = NULL, grid.all = TRUE, e.string = NULL) {
+  # store plots in subdirectory
+  if(!is.null(e.string)) {
+    dir.create(paste0("plots/", e.string))
+    e.name = paste0(e.string, "/", e.name)
+  }
+  # initialize control if not sets
   if (is.null(control)) {
     # 4. common parameters
     control.common = makeMBOControl(
@@ -23,7 +29,7 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
       opt = "focussearch", 
       opt.restarts = 1L, 
       opt.focussearch.maxit = 1L, 
-      opt.focussearch.points = 50L,
+      opt.focussearch.points = 100L,
       filter.proposed.points = TRUE,
       filter.proposed.points.tol = 0.001
     )
