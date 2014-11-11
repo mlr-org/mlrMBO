@@ -7,8 +7,9 @@
 #'   Is the target function noisy?
 #'   Default is \code{FALSE}.
 #' @param number.of.targets [\code{integer(1)}]\cr
-#'   How many target functions does the function have? Greater than one for
-#'   multicriteria optimization, default ist 1.
+#'   How many objectives are to be optimized? \code{number.of.targets = 1} implies normal single
+#'   criteria optimization, \code{number.of.targets > 1} implies multicriteria optimization.
+#'   Default is 1.
 #' @param init.design.points [\code{integer(1)}]\cr
 #'   Number of points in inital design.
 #'   Only used if no design is given in \code{mbo} function.
