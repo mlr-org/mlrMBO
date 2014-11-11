@@ -2,9 +2,9 @@
 #  optimization using the parEGO algorithm.
 #
 # @param fun [\code{function(x, ...)}]\cr
-#   Fitness functions to minimize. The first argument has to be a list of values.
-#   The function has to return a numerical vector of the length defined via the
-#   parameter number.of.targets in \code{control}.
+#   Fitness functions to minimize. The first argument \code{x} has to be a list of values.
+#   The function must return a numerical vector of the length defined via the
+#   parameter \code{number.of.targets} in \code{control}.
 # @param par.set [\code{\link[ParamHelpers]{ParamSet}}]\cr
 #   Collection of parameters and their constraints for optimization.
 # @param design [\code{data.frame} | NULL]\cr
@@ -14,7 +14,7 @@
 #     the design must not be transformed before it is passed!
 #   - A opt.path object:
 #     The design and all saved infos will be extracted from this
-#   - \code{NULL}:
+#   - \code{NULL} (default):
 #     The design is constructed from the settings in \code{control}.
 # @param learner [\code{\link[mlr]{Learner}}]\cr
 #   Regression learner to model \code{fun}.
@@ -26,7 +26,9 @@
 # @param more.args [any]\cr
 #   Further arguments passed to fitness function.
 # @param fid.param [\code{character(1)}]\cr
-#   Necessary if \code{infill.crit = "multiFid"}. The name of the parameter which increases the performance but also calculation costs. Has to belong to a discrete Parameter.
+#   Necessary if \code{infill.crit = "multiFid"}.
+#   The name of the parameter which increases the performance but also calculation costs.
+#   Has to belong to a discrete Parameter.
 # @param cor.grid.points [\code{integer(1)}]\cr
 #   Numbers of points used to calculate the correlation between the different levels of the \code{multiFid.fid.param}.
 # @return [\code{list}]:
@@ -34,11 +36,20 @@
 #   \item{opt.path [\code{\link[ParamHelpers]{OptPath}}]}{Optimization path.}
 # FIXME EGO nach ego
 mboMultiFid = function(fun, par.set, design = NULL, learner, control, show.info = TRUE, more.args = list()) {
+  # FIXME: check in generateMBODesign?
+  assertFunction(fun, args = c("x"))
+  assertClass(par.set, "ParamSet")
+  assertClass(learner, "RLearner")
+  assertClass(control, "MBOControl")
+  assertFlag(show.info)
+  assertList(more.args, names = "named")
+
   # save currently set options
   oldopts = list(
     ole = getOption("mlr.on.learner.error"),
     slo = getOption("mlr.show.learner.output")
   )
+  on.exit(configureMlr(on.learner.error = oldopts[["ole"]], show.learner.output = oldopts[["slo"]]))
 
   # generate initial design
   # FIXME mbo.design
@@ -50,7 +61,7 @@ mboMultiFid = function(fun, par.set, design = NULL, learner, control, show.info 
     # FIXME HOW TO DECIDE?
     include.error.message = FALSE,
     include.exec.time = TRUE)
-  
+
   # compute y values for the initial design
   generateMBODesign(design = design, fun = fun, par.set = par.set, opt.path = opt.path,
     control = control, show.info = show.info, oldopts = oldopts, more.args = more.args)
@@ -61,7 +72,7 @@ mboMultiFid = function(fun, par.set, design = NULL, learner, control, show.info 
   # mf.learner = makeBaggingWrapper(mf.base.learner) #FIXME set params by multifid.control ?
   mf.learner = makeMultiFidBaggingWrapper(mf.base.learner) #FIXME set params by multifid.control ?
   mf.learner = setPredictType(mf.learner, predict.type = "se")
-  
+
   # train the initial design with the computed y values on the learner
   compound.model = train(mf.learner, task = convertOptPathToTask(opt.path, control = control))
 
@@ -71,12 +82,13 @@ mboMultiFid = function(fun, par.set, design = NULL, learner, control, show.info 
 
   # subsets a data.frame to a given value of the fid.param
   subsetOnPar = function(data, par.val){
+    # FIXME: do not use subset! ever!
     data = subset(data, data[,control$multifid.param] == par.val)
   }
 
   # calculate cost relation between model w/ par.val and last model
   calcModelCost = function(par.val) {
-    control$multifid.costs(par.val, tail(control$multifid.lvls, 1))
+    control$multifid.costs(par.val, tail(control$multifid.lvls, 1L))
   }
 
   # estimate process noise tau of real process belonging to par.val, we use residual sd here
@@ -89,7 +101,7 @@ mboMultiFid = function(fun, par.set, design = NULL, learner, control, show.info 
   # calculate GLOBAL correlation between model w/ par.val and last model. currently rank correlation.
   calcModelCor = function(par.val, grid) {
     grid1 = grid; grid1[[control$multifid.param]] = par.val
-    grid2 = grid; grid2[[control$multifid.param]] = tail(control$multifid.lvls, 1)
+    grid2 = grid; grid2[[control$multifid.param]] = tail(control$multifid.lvls, 1L)
     p1 = predict(compound.model, newdata = grid1)$data$response
     p2 = predict(compound.model, newdata = grid2)$data$response
     # check whether vectors are constant, cor = NA then
@@ -103,7 +115,7 @@ mboMultiFid = function(fun, par.set, design = NULL, learner, control, show.info 
   corgrid = generateDesign(n = control$multifid.cor.grid.points,
     par.set = dropParams(par.set, control$multifid.param))
 
-  plot.data = list()
+  plot.data = vector("list", length(budget))
 
   # multifid main iteration
   for (loop in seq_len(budget)) {
@@ -112,11 +124,9 @@ mboMultiFid = function(fun, par.set, design = NULL, learner, control, show.info 
     # evaluate stuff we need for MEI
     # all values for each multifid level.
     model.sd = vnapply(control$multifid.lvls, calcModelSD)
-    names(model.sd) = control$multifid.lvls
     model.cor = vnapply(control$multifid.lvls, calcModelCor, grid = corgrid)
-    names(model.cor) = control$multifid.lvls
     model.cost = vnapply(control$multifid.lvls, calcModelCost)
-    names(model.cost) = control$multifid.lvls
+    names(model.sd) = names(model.cor) = names(model.cost) = control$multifid.lvls
     showInfo(show.info, "Estimated cor to last model = %s", collapse(sprintf("%.3g", model.cor), ", "))
     showInfo(show.info, "Estimated residual var = %s", collapse(sprintf("%.3g", model.sd), ", "))
 
@@ -125,7 +135,7 @@ mboMultiFid = function(fun, par.set, design = NULL, learner, control, show.info 
     control.mod = control
     if (loop %% control$multifid.force.last.level.evals == 0)
       control.mod$multifid.lvls = tail(control.mod$multifid.lvls, 1L)
-    
+
     # return a list, Get a proposed point for each level
     prop = proposePointsMultiFid(model = compound.model, par.set = par.set,
       control = control.mod, opt.path = opt.path,
@@ -139,11 +149,11 @@ mboMultiFid = function(fun, par.set, design = NULL, learner, control, show.info 
     # only generate plot data, if we are in a 1D case
     if (length(dropParams(par.set, control$multifid.param)$pars) == 1) {
       plot.data[[loop]] = genPlotData(compound.model = compound.model, par.set = par.set,
-                                      control = control, fun = fun, opt.path = opt.path,
-                                      model.cor = model.cor, model.sd = model.sd,
-                                      model.cost = model.cost, best.points = best.points)
+        control = control, fun = fun, opt.path = opt.path,
+        model.cor = model.cor, model.sd = model.sd,
+        model.cost = model.cost, best.points = best.points)
     }
-    
+
     # should we always also update the models of the lower levels. Fixes some theoretical problems.
     if(control$multifid.eval.lower) {
       tmp = data.frame(best.points[1,1], control$multifid.lvls[control$multifid.lvls <= best.points[,control$multifid.param]])
@@ -156,7 +166,7 @@ mboMultiFid = function(fun, par.set, design = NULL, learner, control, show.info 
       oldopts = oldopts, more.args = more.args, extras = NULL)
     #evals = evalTargetFun(fun = fun, par.set = par.set, dobs = loop, xs = xs, opt.path = opt.path, control = control, show.info = show.info, oldopts = oldopts, more.args = more.args, extras = NULL)
     # compound.model = updateMultiFidModel(compound.model, task = convertOptPathToTask(opt.path))
-    
+
     # train the model with all the so far evaluated points
     compound.model = train(mf.learner, task = convertOptPathToTask(opt.path, control = control))
   }
@@ -166,15 +176,11 @@ mboMultiFid = function(fun, par.set, design = NULL, learner, control, show.info 
     opt.path = opt.path, control = control)
   proposed = convertOptPathToDesign(opt.path, drop = TRUE)[proposed.index, ]
   proposed$y = NULL
-  proposed[,control$multifid.param] = tail(control$multifid.lvls,1)
+  proposed[, control$multifid.param] = tail(control$multifid.lvls, 1)
   proposed = convertDfCols(proposed, factors.as.char = TRUE)
   y.hat = predict(compound.model, newdata = proposed)$data$response
   y = evalProposedPoints(loop = budget+1, prop.points = proposed, par.set = par.set, opt.path = opt.path,
-                         control = control, fun = fun, show.info = show.info, oldopts = oldopts,
-                         more.args = more.args, extras = NULL)
-
-  # restore mlr configuration
-  configureMlr(on.learner.error = oldopts[["ole"]], show.learner.output = oldopts[["slo"]])
+    control = control, fun = fun, show.info = show.info, oldopts = oldopts, more.args = more.args, extras = NULL)
 
   makeS3Obj("MultiFidResult",
     opt.path = opt.path,

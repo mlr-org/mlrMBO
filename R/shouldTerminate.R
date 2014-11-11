@@ -1,5 +1,5 @@
 # Helper which checks stopping criteria.
-# 
+#
 # @param max.iters [\code{integer(1)} | NULL]\cr
 #   Maximal number of iterations.
 # @param iter [\code{integer(1)}]\cr
@@ -12,8 +12,8 @@
 #   maximum number of iterations is reached and 1 if time budget is exceeded.
 shouldTerminate = function(max.iters, iter, time.budget, start.time) {
   if (iter > max.iters)
-  	return(0L)
+    return(0L)
   if (isTimeBudgetExceeded(start.time, time.budget))
-  	return(1L)
+    return(1L)
   return(-1L)
 }

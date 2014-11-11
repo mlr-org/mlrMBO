@@ -1,20 +1,20 @@
 # generates a design on the lowest level and spreads it to the upper levels according to the budget
 generateMBOMultiFidDesign = function(par.set, control) {
   budget = control$init.design.points
-  
+
   # create the par.set which does not include the multiFid.lvl parameter (eg. "dw.perc")
   ps2 = dropParams(par.set, control$multifid.param)
-  
+
   # k is the number of levels
   k = length(control$multifid.lvls)
-  
+
   # points to evaluate per level (spread budget over the levels)
   ns = viapply(chunk(seq_len(budget), n.chunks = k), length)
-  
+
   # generate the points for the lowest level
   design = generateDesign(max(ns), ps2, fun = control$init.design.fun,
     fun.args = control$init.design.args, trafo = FALSE)
-  
+
   # spread the points over all levels according to the budget per level
   expandDesign(design = design, control = control, ns = ns)
 }
@@ -43,7 +43,7 @@ proposePointsMultiFid = function(model, par.set, control, opt.path, model.cor, m
 convertOptPathToTask = function(opt.path, control = NULL, drop = TRUE, blocking = TRUE) {
   d = convertOptPathToDesign(opt.path, drop = drop)
   if (!is.null(control) && !is.null(control$multifid.param) && blocking) {
-    id.vars = setdiff(colnames(d), c("y",control$multifid.param))
+    id.vars = setdiff(colnames(d), c("y", control$multifid.param))
     d.blocking = unique(d[, id.vars, drop = FALSE])
     d.blocking$blocking = factor(seq_row(d.blocking))
     d.blocking = merge(d, d.blocking)
@@ -55,9 +55,8 @@ convertOptPathToTask = function(opt.path, control = NULL, drop = TRUE, blocking 
 
 # make a design (data.frame) with the exact same points for each multifid level.
 expandDesign = function(design, control, ns = NULL) {
-  if (is.null(ns)){
+  if (is.null(ns))
     ns = rep(nrow(design), times = length(control$multifid.lvls))
-  }
   designs = lapply(seq_along(ns), function(i) {
     des = design[seq_len(ns[i]),, drop = FALSE]
     des[[control$multifid.param]] = control$multifid.lvls[i]
@@ -75,13 +74,13 @@ infillCritMultiFid = function(points, model, control, par.set, design, iter, mod
 # return all crap so we can plot it later
 infillCritMultiFid2 = function(points, model, control, par.set, design, iter, model.cor, model.sd, model.cost, ...) {
   lastPoints = function(x) {
-    x[,control$multifid.param] = tail(control$multifid.lvls,1)
+    x[, control$multifid.param] = tail(control$multifid.lvls, 1)
     x
   }
   # note: mbo returns the negated EI (and SE), so have to later minimize the huang crit.
   # which is done by default by our optimizer anyway
   ei.last = infillCritEI(lastPoints(points), model, control, par.set, lastPoints(design), iter)
-  alpha1 = replaceByList(points[,control$multifid.param], model.cor)
+  alpha1 = replaceByList(points[, control$multifid.param], model.cor)
   se = -infillCritStandardError(points, model, control, par.set, design, iter)
   # FIXME: do we really have to adapt this? alpha2 should be 0 when?
   model.sd.vec = replaceByList(points[[control$multifid.param]], model.sd) #FIXME: Make 100% sure
