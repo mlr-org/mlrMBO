@@ -1,5 +1,5 @@
 # Helper which checks if time budget is exceeded.
-# 
+#
 # Returns logical value.
 #
 # @param start.time [\code{POSIXct}]

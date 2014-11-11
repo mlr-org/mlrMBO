@@ -3,9 +3,11 @@ makeMultiFidWrapper = function(learner, control) {
   assertClass(control, "MBOControl")
   #if (learner$predict.type != "se")
   #  stop("Predict type of the basic learner must be 'se'.")
-  id = paste(learner$id, "multifid", sep = ".")
-  packs = learner$package
-  w = mlr:::makeBaseWrapper(id, learner, packs, cl = "MultiFidWrapper")
+  w = mlr:::makeBaseWrapper(
+    id = sprintf("%s.multifid", learner$id),
+    next.learner = learner,
+    package = learner$package,
+    cl = "MultiFidWrapper")
   w$mbo.control = control
   return(w)
 }
@@ -21,7 +23,7 @@ trainLearner.MultiFidWrapper = function(.learner, .task, .subset, .weights = NUL
   cns = colnames(data)
   if (!all(fid.lvls %in% data[[fid.par]]))
     stopf("MultiFid model has to be initialized on all values of '%s'", collapse(fid.lvls))
-  models = namedList(fid.ns, NULL) #init named empty model list
+  models = namedList(fid.ns, NULL) # init named empty model list
   v.prev = NULL
   for (v in fid.lvls) {
     r.inds = which(data[[fid.par]] == v)
@@ -61,7 +63,7 @@ predictLearner.MultiFidWrapper = function(.learner, .model, .newdata, ...) {
   fid.par.col = .newdata[[fid.par]]
   fid.lvls.avail = sort(unique(fid.par.col))
   assertSubset(fid.lvls.avail, fid.lvls)
-  .newdata = .newdata[,  setdiff(colnames(.newdata) , fid.par), drop = FALSE] #remove column with fid.par
+  .newdata = .newdata[,  setdiff(colnames(.newdata) , fid.par), drop = FALSE] # remove column with fid.par
   split.inds = split(seq_row(.newdata), fid.par.col)
 
   preds = lapply(fid.lvls.avail, function(v) {
@@ -81,7 +83,7 @@ predictLearner.MultiFidWrapper = function(.learner, .model, .newdata, ...) {
   for (vs in fid.ns) {
     if (!is.null(split.inds[[vs]]))
       pred.data[split.inds[[vs]], ] = preds[[vs]]$data
-  }  
+  }
   pred.data$response
 }
 
@@ -95,8 +97,7 @@ makeWrappedModel.MultiFidWrapper = function(learner, learner.model, task.desc, s
 #' @export
 isFailureModel.MultiFidModel = function(model) {
   mods = model$learner.model$next.model
-  isit = vlapply(mods, isFailureModel)
-  return(any(isit))
+  any(vlapply(mods, isFailureModel))
 }
 
 #' @export
@@ -106,5 +107,3 @@ print.MultiFidModel = function(x, ...) {
   s = append(s, u, 1L)
   lapply(s, catf)
 }
-
-
