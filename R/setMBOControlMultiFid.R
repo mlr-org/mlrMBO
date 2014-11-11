@@ -5,14 +5,13 @@
 #' @template arg_control
 #' @param param [\code{character(1)}]\cr
 #'   The name of the parameter which increases the performance but also calculation costs.
-#'   Must be a discrete parameter.
 #' @param lvls [\code{numeric}]\cr
-#'   The values of the param the learner should be trained with.
+#'   The values of the param the learner should be trained with, in ascending order.
 #' @param cor.grid.points [\code{integer(1)}]\cr
 #'   Numbers of points used to calculate the correlation between the different levels of
 #'   the \code{param}.
 #' @param costs [\code{function}]\cr
-#'   Vektorized (?) cost function with the params \code{cur} and \code{last}.
+#'   Vectorized (?) cost function with the params \code{cur} and \code{last}.
 #' @param force.last.level.evals [\code{integer(1)}]
 #'   How many evaluations should be done on the last value of fid.param?
 #' @param eval.lower [\code{boolean(1)}]\cr
@@ -29,7 +28,9 @@ setMBOControlMultiFid = function(control, param, lvls, costs = NULL, cor.grid.po
   assertString(control$multifid.param)
 
   control$multifid.lvls = coalesce(lvls, control$multifid.lvls)
-  assertNumeric(control$multifid.lvls)
+  assertNumeric(control$multifid.lvls, lower = 0, upper = 1, min.len = 2L, any.missing = FALSE)
+  if (is.unsorted(control$multifid.lvls))
+    stop("MultiFid levels must be sorted!")
 
   control$multifid.eval.lower = coalesce(eval.lower, control$multifid.eval.lower, FALSE)
   assertLogical(control$multifid.eval.lower)
@@ -43,19 +44,16 @@ setMBOControlMultiFid = function(control, param, lvls, costs = NULL, cor.grid.po
   }
   control$multifid.costs = costs
 
-  if (!is.null(cor.grid.points)) {
-    cor.grid.point = asInt(cor.grid.points, lower = 2L) 
-  }
+  if (!is.null(cor.grid.points))
+    cor.grid.point = asInt(cor.grid.points, lower = 2L)
   control$multifid.cor.grid.points = coalesce(cor.grid.points, control$multifid.cor.grid.points, 10L)
 
-  if (!is.null(force.last.level.evals)) {
+  if (!is.null(force.last.level.evals))
     force.last.level.evals = asInt(force.last.level.evals, lower = 0L)
-  }
   control$multifid.force.last.level.evals = coalesce(force.last.level.evals, control$multifid.force.last.level.evals, 10L)
 
-  # FIXME: This following line is maybe not needed anymore. proposePoints() might not work now for multiFid control objects. 
+  # FIXME: This following line is maybe not needed anymore. proposePoints() might not work now for multiFid control objects.
   control$multifid.show.info = coalesce(show.info, control$multifid.show.info, FALSE)
 
   return(control)
 }
-
