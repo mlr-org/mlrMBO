@@ -1,20 +1,13 @@
 # generates a design on the lowest level and spreads it to the upper levels according to the budget
 generateMBOMultiFidDesign = function(par.set, control) {
   budget = control$init.design.points
-
-  # create the par.set which does not include the multiFid.lvl parameter (eg. "dw.perc")
   ps2 = dropParams(par.set, control$multifid.param)
-
-  # k is the number of levels
   k = length(control$multifid.lvls)
-
   # points to evaluate per level (spread budget over the levels)
   ns = viapply(chunk(seq_len(budget), n.chunks = k), length)
-
   # generate the points for the lowest level
   design = generateDesign(max(ns), ps2, fun = control$init.design.fun,
     fun.args = control$init.design.args, trafo = FALSE)
-
   # spread the points over all levels according to the budget per level
   expandDesign(design = design, control = control, ns = ns)
 }
@@ -64,7 +57,6 @@ expandDesign = function(design, control, ns = NULL) {
   })
   do.call(rbind.data.frame, designs)
 }
-
 
 # return only crit vector
 infillCritMultiFid = function(points, model, control, par.set, design, iter, model.cor, model.sd, model.cost, ...) {

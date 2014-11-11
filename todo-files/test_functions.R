@@ -64,6 +64,7 @@ yshift = function(lv, x, fac = 1) {
   lv + lv/10 * (x - lv * 10)^2
 }
 
+#FIXME ????
 # adds a y-shift to a testfunction
 xshift = function(lv, x, direction = 2) {
   x - ((1-lv) * direction)
@@ -72,6 +73,7 @@ xshift = function(lv, x, direction = 2) {
 ##### PLOT A FUNCTION FAMILY #####
 # pass: fun(lv, x), vector of lv-values to define family, [x1, x2} interval to plot
 plotTestfunFamily = function(f, lvs, x1, x2) {
+  requirePackages("ggplot2", why = "plotTestfunFamily")
   xseq = seq(x1, x2, length.out = 100)
   # dataframe for each lv
   data = lapply(lvs, function(lv) {
