@@ -43,8 +43,8 @@ proposePointsMultiFid = function(model, par.set, control, opt.path, model.cor, m
 convertOptPathToTask = function(opt.path, control = NULL, drop = TRUE, blocking = TRUE) {
   d = convertOptPathToDesign(opt.path, drop = drop)
   if (!is.null(control) && !is.null(control$multifid.param) && blocking) {
-    id.vars = setdiff(colnames(d), control$multifid.param)
-    d.blocking = unique(d[, id.vars])
+    id.vars = setdiff(colnames(d), c("y",control$multifid.param))
+    d.blocking = unique(d[, id.vars, drop = FALSE])
     d.blocking$blocking = factor(seq_row(d.blocking))
     d.blocking = merge(d, d.blocking)
     makeRegrTask(id = "surrogate", data = d, target = "y", blocking = d.blocking$blocking)

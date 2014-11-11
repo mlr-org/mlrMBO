@@ -58,7 +58,8 @@ mboMultiFid = function(fun, par.set, design = NULL, learner, control, show.info 
   # generate the MultiFid learner which can also predict se and has the stacking method implemented
   mf.base.learner = makeMultiFidWrapper(learner, control)
   # FIXME this approach brings alot of trouble. see txt file
-  mf.learner = makeBaggingWrapper(mf.base.learner) #FIXME set params by multifid.control ?
+  # mf.learner = makeBaggingWrapper(mf.base.learner) #FIXME set params by multifid.control ?
+  mf.learner = makeMultiFidBaggingWrapper(mf.base.learner) #FIXME set params by multifid.control ?
   mf.learner = setPredictType(mf.learner, predict.type = "se")
   
   # train the initial design with the computed y values on the learner
