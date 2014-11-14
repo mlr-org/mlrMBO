@@ -52,7 +52,6 @@ trainLearner.MultiFidWrapper = function(.learner, .task, .subset, .weights = NUL
 
 #' @export
 predictLearner.MultiFidWrapper = function(.learner, .model, .newdata, ...) {
-  # some shortcuts
   models = .model$learner.model$next.model
   control = .learner$mbo.control   # control object
   fid.par = control$multifid.param # name of column in task, e.g. ".fidelity.lvl"
@@ -69,7 +68,7 @@ predictLearner.MultiFidWrapper = function(.learner, .model, .newdata, ...) {
     response = extractSubList(response, c("data", "response"), simplify = FALSE)
     Reduce("+", response)
   })
-  unlist(responses)[split.inds]
+  unlist(responses, use.names = FALSE)[split.inds]
 }
 
 
