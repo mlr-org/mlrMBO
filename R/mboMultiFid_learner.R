@@ -63,7 +63,10 @@ predictLearner.MultiFidWrapper = function(.learner, .model, .newdata, ...) {
   split.inds = unlist(split(seq_along(lvls), lvls), use.names = FALSE)
 
   responses = lapply(seq_along(fid.lvls), function(i) {
-    sub.data = .newdata[lvls == i, cn, drop = FALSE]
+    rows = which(lvls == i)
+    if (length(rows) == 0L)
+      return(numeric(0L))
+    sub.data = .newdata[rows, cn, drop = FALSE]
     response = lapply(head(models, i), mlr:::predict.WrappedModel, newdata = sub.data)
     response = extractSubList(response, c("data", "response"), simplify = FALSE)
     Reduce("+", response)
