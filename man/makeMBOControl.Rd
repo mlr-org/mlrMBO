@@ -18,8 +18,9 @@ makeMBOControl(number.of.targets = 1L, minimize = rep(TRUE,
 }
 \arguments{
 \item{number.of.targets}{[\code{integer(1)}]\cr
-How many target functions does the function have? Greater than one for
-multicriteria optimization, default ist 1.}
+How many objectives are to be optimized? \code{number.of.targets = 1} implies normal single
+criteria optimization, \code{number.of.targets > 1} implies multicriteria optimization.
+Default is 1.}
 
 \item{minimize}{[\code{logical}]\cr
 Should target functions be minimized? One value par target function.
