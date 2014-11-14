@@ -7,7 +7,7 @@ setMBOControlMultiCrit(control, method = NULL, ref.point.method = NULL,
   ref.point.offset = NULL, ref.point.val = NULL, parego.s = NULL,
   parego.rho = NULL, parego.use.margin.points = NULL,
   parego.sample.more.weights = NULL, parego.normalize = NULL,
-  dib.indicator = NULL, dib.sms.eps = NULL)
+  dib.indicator = NULL, dib.sms.eps = NULL, mspot.select.crit = NULL)
 }
 \arguments{
 \item{control}{[\code{\link{MBOControl}}]\cr
@@ -71,6 +71,12 @@ Default is \dQuote{sms}.}
 \item{dib.sms.eps}{[\code{numeric(1)} | \code{NULL}]\cr
 Epsilon for epsilon-dominance for \code{dib.indicator = "sms"}.
 Default is \code{NULL}, in this case it is adaptively set.}
+
+\item{mspot.select.crit}{[\code{character(1)}]\cr
+Which infill.crit to use in the candidate selection. After the NSGA2
+proposed a set of candidates, \dQuote{propose.points} are selected via
+the hypervoume contribution of this infill.crit.
+Possible values are \dQuote{mean} and \dQuote{lcb}, default ist \dQuote{mean}}
 }
 \value{
 [\code{\link{MBOControl}}].

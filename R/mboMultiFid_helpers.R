@@ -1,15 +1,35 @@
-# generates a design on the lowest level and spreads it to the upper levels according to the budget
+# generates initial design for multifid
+# currently we do: equal nr of points for each level, generate the same X points for each level
 generateMBOMultiFidDesign = function(par.set, control) {
-  budget = control$init.design.points
-  ps2 = dropParams(par.set, control$multifid.param)
+  n = control$init.design.points
   k = length(control$multifid.lvls)
-  # points to evaluate per level (spread budget over the levels)
-  ns = viapply(chunk(seq_len(budget), n.chunks = k), length)
+  ps2 = dropParams(par.set, control$multifid.param)
+  npoints.per.lvl = viapply(chunk(1:n, n.chunks = k), length)
   # generate the points for the lowest level
   design = generateDesign(max(ns), ps2, fun = control$init.design.fun,
     fun.args = control$init.design.args, trafo = FALSE)
-  # spread the points over all levels according to the budget per level
   expandDesign(design = design, control = control, ns = ns)
+}
+
+# make a design (data.frame) with the exact same points for each multifid level.
+# if the requested number of points is a bit lower than design, we randomly drop some rows
+expandDesign = function(design, control, npoints.per.lvl = NULL) {
+  n = nrow(design)
+  k = length(control$multifid.lvls)
+  # default is to replicate the design for all levels
+  if (is.null(npoints.per.lvl))
+    npoints.per.lvl = rep(n, times = k)
+  all.inds = 1:n
+  designs = lapply(1:k, function(i) {
+    nppl = npoints.per.lvl[i]
+    # do we need to drop some rows of design? lets also keep the order of all.inds
+    inds = if (nnpl < n)
+      set.diff(all.inds, sample(all.inds, n - nnpl))
+    else
+      all.inds
+    cbind(design[inds, ], .multifid.level = i)
+  })
+  do.call(rbind.data.frame, designs)
 }
 
 # convert opt path to a data.frame, maybe drop technical columns so we only have features and y
@@ -46,17 +66,6 @@ convertOptPathToTask = function(opt.path, control = NULL, drop = TRUE, blocking 
   }
 }
 
-# make a design (data.frame) with the exact same points for each multifid level.
-expandDesign = function(design, control, ns = NULL) {
-  if (is.null(ns))
-    ns = rep(nrow(design), times = length(control$multifid.lvls))
-  designs = lapply(seq_along(ns), function(i) {
-    des = design[seq_len(ns[i]),, drop = FALSE]
-    des[[control$multifid.param]] = control$multifid.lvls[i]
-    des
-  })
-  do.call(rbind.data.frame, designs)
-}
 
 # return only crit vector
 infillCritMultiFid = function(points, model, control, par.set, design, iter, model.cor, model.sd, model.cost, ...) {

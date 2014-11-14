@@ -12,14 +12,13 @@ setMBOControlMultiFid(control, param, lvls, costs = NULL,
 Control object for mbo.}
 
 \item{param}{[\code{character(1)}]\cr
-The name of the parameter which increases the performance but also calculation costs.
-Must be a discrete parameter.}
+The name of the parameter which increases the performance but also calculation costs.}
 
 \item{lvls}{[\code{numeric}]\cr
-The values of the param the learner should be trained with.}
+The values of the param the learner should be trained with, in ascending order.}
 
 \item{costs}{[\code{function}]\cr
-Vektorized (?) cost function with the params \code{cur} and \code{last}.}
+Vectorized (?) cost function with the params \code{cur} and \code{last}.}
 
 \item{cor.grid.points}{[\code{integer(1)}]\cr
 Numbers of points used to calculate the correlation between the different levels of
