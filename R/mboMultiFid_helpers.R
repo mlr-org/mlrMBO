@@ -31,53 +31,45 @@ expandDesign = function(design, control, npoints.per.lvl = NULL) {
   do.call(rbind.data.frame, designs)
 }
 
+# convert OP to a df, of a specified structure with col .multifid.lvl, so we can model on it
+convertMFOptPathToDesign = function(opt.path) {
+  as.data.frame(opt.path, include.rest = FALSE, discretes.as.factor = TRUE)
+}
+
 # convert OP to a mlr task, of a specified structure with col .multifid.lvl, so we can model on it
-convertMFOptPathToTask = function(opt.path, control) {
-  d = as.data.frame(opt.path, discretes.as.factor = TRUE)
+convertMFOptPathToTask = function(opt.path) {
+  d = convertMFOptPathToDesign(opt.path)
   makeRegrTask(id = "multifid.task", data = d, target = "y")
 }
 
 # propose Points for each multifid level. return a list
-proposePointsMultiFid = function(model, par.set, control, opt.path, model.cor, model.cost, model.sd) {
-  lapply(control$multifid.lvls, function(v) {
-    this.par.set = par.set
-    this.par.set$pars[[control$multifid.param]]$lower = v
-    this.par.set$pars[[control$multifid.param]]$upper = v
-    proposePointsByInfillOptimization(models = model, par.set = this.par.set, control = control, opt.path = opt.path,
-      model.cor = model.cor, model.cost = model.cost, model.sd = model.sd)
+proposePointsMultiFid = function(model, par.set, control, opt.path, lvl.cors, lvl.costs, lvl.sds) {
+  lapply(seq_along(control$multifid.lvls), function(lvl) {
+    proposePointsByInfillOptimization(model, par.set, control, opt.path,
+      lvl.cors = lvl.cors, lvl.costs = lvl.costs, lvl.sds = lvl.sds, lvl = lvl)
   })
 }
 
 # return only crit vector
-infillCritMultiFid = function(points, model, control, par.set, design, iter, model.cor, model.sd, model.cost, ...) {
-  infillCritMultiFid2(points, model, control, par.set, design, iter, model.cor, model.sd, model.cost, ...)$crit
+infillCritMultiFid = function(points, model, control, par.set, design, iter, lvl.cors, lvl.sds, lvl.costs, lvl) {
+  infillCritMultiFid2(points, model, control, par.set, design, iter, lvl.cors, lvl.sds, lvl.costs, lvl)$crit
 }
 
 # return all crap so we can plot it later
-infillCritMultiFid2 = function(points, model, control, par.set, design, iter, model.cor, model.sd, model.cost, ...) {
-  lastPoints = function(x) {
-    x[, control$multifid.param] = tail(control$multifid.lvls, 1)
-    x
-  }
+infillCritMultiFid2 = function(points, model, control, par.set, design, iter, lvl.cors, lvl.sds, lvl.costs, lvl) {
+  nlvls = length(control$multifid.lvls)
+  points1 = cbind(points, .multifid.lvl = lvl)
+  points2 = cbind(points, .multifid.lvl = nlvls)
+  design2 = design[design$.multifid.lvl == nlvls, , drop = FALSE]
   # note: mbo returns the negated EI (and SE), so have to later minimize the huang crit.
   # which is done by default by our optimizer anyway
-  ei.last = infillCritEI(lastPoints(points), model, control, par.set, lastPoints(design), iter)
-  alpha1 = replaceByList(points[, control$multifid.param], model.cor)
-  se = -infillCritStandardError(points, model, control, par.set, design, iter)
-  # FIXME: do we really have to adapt this? alpha2 should be 0 when?
-  model.sd.vec = replaceByList(points[[control$multifid.param]], model.sd) #FIXME: Make 100% sure
-  alpha2 = 1 - (model.sd.vec / sqrt(se^2 + model.sd.vec^2))
-  alpha3 = replaceByList(points[[control$multifid.param]], model.cost)
+  ei.last = infillCritEI(points2, model, control, par.set, design2, iter)
+  alpha1 = lvl.cors[lvl]
+  se = -infillCritStandardError(points1, model, control, par.set, NULL, iter)
+  taus = lvl.sds[lvl]
+  alpha2 = 1 - (taus / sqrt(se^2 + taus^2))
+  alpha3 = lvl.costs[lvl]
   crit = ei.last * alpha1 * alpha2 * alpha3
-  list(crit = crit, ei = ei.last, se = se, alpha1 = alpha1, alpha2 = alpha2, alpha3 = alpha3, sd = model.sd.vec)
+  list(crit = crit, ei = ei.last, se = se, alpha1 = alpha1, alpha2 = alpha2, alpha3 = alpha3, sd = taus)
 }
 
-# replaces the values a,b,c in x by the values r,s,t from the rep.list = list(a=r,b=s,c=t) with replications in x allowed
-replaceByList = function(x, rep.list) {
-  x = as.character(x)
-  res = rep(rep.list[[1]], times = length(x)) #res gets the right type
-  for (key in names(rep.list)) {
-    res[x == key] = rep.list[[key]]
-  }
-  res
-}

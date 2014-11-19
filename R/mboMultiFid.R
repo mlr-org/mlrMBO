@@ -16,10 +16,9 @@ mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE,
   )
 
   # some short names and data extractions
-  mfp = control$multifid.param
   iters = control$iters
-  lvls = control$multifid.lvls
-  nlvls = length(lvls)
+  nlvls = length(control$multifid.lvls)
+  lvls = 1:nlvls
   # extra param set, with int param for lvl
   par.set2 = c(par.set, makeParamSet(
     makeIntegerParam(".multifid.lvl", lower = 1L, upper = nlvls)))
@@ -38,30 +37,29 @@ mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE,
   learner = makeMultiFidBaggingWrapper(learner)
   learner = setPredictType(learner, predict.type = "se")
 
-  task = convertOptPathToTask(opt.path, control = control)
-  print(task)
-
   # now fit to init design
-  model = train(learner, task = convertOptPathToTask(opt.path, control = control))
+  task = convertMFOptPathToTask(opt.path)
+  model = train(learner, task = task)
+  print(model$learner.model)
 
   ##### LOCAL FUNCTIONS FOR MEI CRIT VALUES: START #####
 
-  # calculate cost relation between model w/ par.val and last model
-  calcModelCost = function(par.val) {
-    control$multifid.costs(par.val, last.lvl)
+  # calculate cost relation between lvl and last-lvl
+  calcModelCost = function(lvl) {
+    control$multifid.costs(lvl, nlvls)
   }
 
-  # estimate process noise tau of real process belonging to par.val, we use residual sd here
-  calcModelSD = function(par.val) {
-    newdata = convertOptPathToDesign(opt.path)
-    newdata = newdata[newdata[[mfp]] == par.val, ]
+  # estimate process noise tau of real process belonging to lvl, we use residual sd here
+  calcModelSD = function(lvl) {
+    newdata = convertMFOptPathToDesign(opt.path)
+    newdata = newdata[newdata$.multifid.lvl == lvl, ]
     sqrt(estimateResidualVariance(model, data = newdata, target = "y"))
   }
 
-  # calculate GLOBAL correlation between model w/ par.val and last model. currently rank correlation.
-  calcModelCor = function(par.val, grid) {
-    grid1 = grid; grid1[[mfp]] = par.val
-    grid2 = grid; grid2[[mfp]] = last.lvl
+  # calculate GLOBAL correlation between model w/ lvl and last-lvl. currently rank correlation.
+  calcModelCor = function(lvl, grid) {
+    grid1 = grid; grid1$.multifid.lvl = lvl
+    grid2 = grid; grid2$.multifid.lvl = nlvls
     p1 = predict(model, newdata = grid1)$data$response
     p2 = predict(model, newdata = grid2)$data$response
     # check whether vectors are constant, cor = NA then
@@ -74,7 +72,7 @@ mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE,
   ##### LOCAL FUNCTIONS FOR MEI CRIT VALUES: END #####
 
   # generate the x values we want to use to calculate the correlation between the surrogat models
-  corgrid = generateDesign(n = control$multifid.cor.grid.points, par.set = dropParams(par.set, mfp))
+  corgrid = generateDesign(n = control$multifid.cor.grid.points, par.set = par.set)
 
   plot.data = list()
 
@@ -83,12 +81,12 @@ mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE,
     showInfo(show.info, "loop = %i", loop)
 
     # evaluate numbers we need for MEI (all vectors with length = #levels)
-    model.sds = vnapply(lvls, calcModelSD)
-    model.cors = vnapply(lvls, calcModelCor, grid = corgrid)
-    model.costs = vnapply(lvls, calcModelCost)
+    lvl.sds = vnapply(lvls, calcModelSD)
+    lvl.cors = vnapply(lvls, calcModelCor, grid = corgrid)
+    lvl.costs = vnapply(lvls, calcModelCost)
 
-    showInfo(show.info, "Estimated cor to last model = %s", collapse(sprintf("%.3g", model.cors), ", "))
-    showInfo(show.info, "Estimated residual var = %s", collapse(sprintf("%.3g", model.sds), ", "))
+    showInfo(show.info, "Estimated cor to last model = %s", collapse(sprintf("%.3g", lvl.cors), ", "))
+    showInfo(show.info, "Estimated residual var = %s", collapse(sprintf("%.3g", lvl.sds), ", "))
 
     # every couple of levels we only optimize the last one
     # to ensure that we update that model and see what happens here
@@ -99,7 +97,7 @@ mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE,
     # return a list, get a proposed point for each level
     prop = proposePointsMultiFid(model = model, par.set = par.set,
       control = control.mod, opt.path = opt.path,
-      model.cor = model.cor, model.cost = model.cost, model.sd = model.sd)
+      lvl.cors = lvl.cors, lvl.costs = lvl.costs, lvl.sds = lvl.sds)
     # find the level where the crit val / infill vals is smallest
     infill.vals = extractSubList(prop, "crit.vals")
     messagef("Infill vals = %s", collapse(sprintf("%.3g", infill.vals), ", "))
@@ -107,19 +105,20 @@ mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE,
     best.points = prop[[getMinIndex(infill.vals)]]$prop.points
 
     # only generate plot data, if we are in a 1D case
-    if (length(dropParams(par.set, mfp)$pars) == 1) {
-      plot.data[[loop]] = genPlotData(model = model, par.set = par.set,
-        control = control, fun = fun, opt.path = opt.path,
-        model.cor = model.cor, model.sd = model.sd,
-        model.cost = model.cost, best.points = best.points)
+    if (getParamNr(par.set) == 1L) {
+      plot.data[[loop]] = genPlotData(model, par.set, control, fun, opt.path,
+        lvl.cors = lvl.cors, lvl.sds = lvl.sds, lvl.costs = lvl.costs,
+        best.points = best.points)
     }
 
-    # should we always also update the models of the lower levels. Fixes some theoretical problems.
-    if (control$multifid.eval.lower) {
-      tmp = data.frame(best.points[1,1], lvls[lvls <= best.points[,mfp]])
-      colnames(tmp) = colnames(best.points)
-      best.points = tmp
-    }
+    # FIXME: BB: we need to talk about this
+    # # should we always also update the models of the lower levels. Fixes some theoretical problems.
+    # if (control$multifid.eval.lower) {
+    #   tmp = data.frame(best.points[1,1], lvls[lvls <= best.points[,mfp]])
+    #   colnames(tmp) = colnames(best.points)
+    #   best.points = tmp
+    # }
+
     # evaluate the new points (and thus add them to the opt path)
     evalProposedPoints(loop = loop, prop.points = best.points, par.set = par.set,
       opt.path = opt.path, control = control, fun = fun, show.info = show.info,
@@ -133,6 +132,7 @@ mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE,
   proposed.index = chooseFinalPoint(NULL, par.set, model, y.name = "y",
     opt.path = opt.path, control = control)
   proposed = convertOptPathToDesign(opt.path, drop = TRUE)[proposed.index, ]
+  print(str(proposed))
   proposed$y = NULL
   proposed[,mfp] = last.lvl
   proposed = convertDfCols(proposed, factors.as.char = TRUE)
