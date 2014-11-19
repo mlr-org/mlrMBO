@@ -1,3 +1,16 @@
+if (FALSE) {
+  n = 100
+  x = seq(from = -3, to = 3, length.out = n)
+  df = data.frame(y = x^2 + rnorm(n), .multifid.lvl = sample(1:3, n, replace = TRUE), x = x)
+  task = makeRegrTask(data = df, target = "y")
+  ctrl = makeMBOControl()
+  ctrl = setMBOControlMultiFid(ctrl, param = ".multifid.lvl", lvls = 1:3/3)
+  lrn = makeLearner("regr.randomForest")
+  lrn = setPredictType(lrn, "se")
+  learner = makeMultiFidWrapper(lrn, ctrl)
+  mod = train(learner, task)
+}
+
 makeMultiFidWrapper = function(learner, control) {
   learner = checkLearner(learner, type = "regr")
   assertClass(control, "MBOControl")
@@ -17,7 +30,8 @@ makeMultiFidWrapper = function(learner, control) {
 #' @export
 trainLearner.MultiFidWrapper = function(.learner, .task, .subset, .weights = NULL, ...) {
   control = .learner$mbo.control   # control object
-  fid.par = control$multifid.param # name of column in task, e.g. ".fidelity.lvl"
+  # fid.par = control$multifid.param # name of column in task, e.g. ".fidelity.lvl"
+  fid.par = ".multifid.lvl"        # we agreed on this internal column name
   fid.lvls = control$multifid.lvls # numeric vector of levels, in ascending order, e.g. c(0.3, 0.7)
   n.lvls = length(fid.lvls)        # number of levels
   lvls = getTaskData(.task)[[fid.par]] # integer referering to fid.lvls
@@ -54,16 +68,17 @@ trainLearner.MultiFidWrapper = function(.learner, .task, .subset, .weights = NUL
 predictLearner.MultiFidWrapper = function(.learner, .model, .newdata, ...) {
   models = .model$learner.model$next.model
   control = .learner$mbo.control   # control object
-  fid.par = control$multifid.param # name of column in task, e.g. ".fidelity.lvl"
+  # fid.par = control$multifid.param # name of column in task, e.g. ".multifid.lvl"
+  fid.par = ".multifid.lvl"        # we agreed on this internal column name
   fid.lvls = control$multifid.lvls # numeric vector of levels, in ascending order, e.g. c(0.3, 0.7)
 
   # we ignore the given perf.val in (newdata, task) and calcuate it for all
   lvls = .newdata[[fid.par]]
   cn = setdiff(colnames(.newdata), fid.par)
-  split.inds = unlist(split(seq_along(lvls), lvls), use.names = FALSE)
+  split.inds = split(seq_along(lvls), lvls)
 
   responses = lapply(seq_along(fid.lvls), function(i) {
-    rows = which(lvls == i)
+    rows = split.inds[[i]]
     if (length(rows) == 0L)
       return(numeric(0L))
     sub.data = .newdata[rows, cn, drop = FALSE]
@@ -71,7 +86,7 @@ predictLearner.MultiFidWrapper = function(.learner, .model, .newdata, ...) {
     response = extractSubList(response, c("data", "response"), simplify = FALSE)
     Reduce("+", response)
   })
-  unlist(responses, use.names = FALSE)[split.inds]
+  unlist(responses, use.names = FALSE)[match(seq_along(lvls), unlist(split.inds, use.names = FALSE))]
 }
 
 
