@@ -19,21 +19,27 @@ mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE,
   mfp = control$multifid.param
   iters = control$iters
   lvls = control$multifid.lvls
-  last.lvl = tail(lvls, 1L)
+  nlvls = length(lvls)
+  # extra param set, with int param for lvl
+  par.set2 = c(par.set, makeParamSet(
+    makeIntegerParam(".multifid.lvl", lower = 1L, upper = nlvls)))
 
-  # init design optpath
+  # init design optpath, we store lvl there as well
   design = generateMBOMultiFidDesign(par.set, control)
-  print(str(design))
-  opt.path = makeOptPathDF(par.set, control$y.name, control$minimize,
+  opt.path = makeOptPathDF(par.set2, control$y.name, control$minimize,
     include.error.message = TRUE, include.exec.time = TRUE)
-  # simply compute y values and log to optpath, design was generated above
-  generateMBODesign(design, fun, par.set, opt.path, control, show.info, oldopts, more.args)
+  # eval + log to opt.path
+  xs = dfRowsToList(design, par.set2)
+  evalTargetFun(fun, par.set2, 0L, xs, opt.path, control, show.info, oldopts, more.args, extras = NULL)
 
   # contruct multifid learner, with summed model and bootstrapping
   # FIXME: we need to exactly define how bootstrapping should work for multifid
   learner = makeMultiFidWrapper(learner, control)
   learner = makeMultiFidBaggingWrapper(learner)
   learner = setPredictType(learner, predict.type = "se")
+
+  task = convertOptPathToTask(opt.path, control = control)
+  print(task)
 
   # now fit to init design
   model = train(learner, task = convertOptPathToTask(opt.path, control = control))

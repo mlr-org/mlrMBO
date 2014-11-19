@@ -3,12 +3,11 @@
 generateMBOMultiFidDesign = function(par.set, control) {
   n = control$init.design.points
   k = length(control$multifid.lvls)
-  ps2 = dropParams(par.set, control$multifid.param)
   npoints.per.lvl = viapply(chunk(1:n, n.chunks = k), length)
   # generate the points for the lowest level
-  design = generateDesign(max(ns), ps2, fun = control$init.design.fun,
+  design = generateDesign(max(npoints.per.lvl), ps, fun = control$init.design.fun,
     fun.args = control$init.design.args, trafo = FALSE)
-  expandDesign(design = design, control = control, ns = ns)
+  expandDesign(design = design, control = control, npoints.per.lvl = npoints.per.lvl)
 }
 
 # make a design (data.frame) with the exact same points for each multifid level.
@@ -23,11 +22,11 @@ expandDesign = function(design, control, npoints.per.lvl = NULL) {
   designs = lapply(1:k, function(i) {
     nppl = npoints.per.lvl[i]
     # do we need to drop some rows of design? lets also keep the order of all.inds
-    inds = if (nnpl < n)
-      set.diff(all.inds, sample(all.inds, n - nnpl))
+    inds = if (nppl < n)
+      set.diff(all.inds, sample(all.inds, n - nppl))
     else
       all.inds
-    cbind(design[inds, ], .multifid.level = i)
+    cbind(design[inds, , drop = FALSE], .multifid.lvl = i)
   })
   do.call(rbind.data.frame, designs)
 }
