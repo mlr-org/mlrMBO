@@ -31,14 +31,10 @@ expandDesign = function(design, control, npoints.per.lvl = NULL) {
   do.call(rbind.data.frame, designs)
 }
 
-# convert opt path to a data.frame, maybe drop technical columns so we only have features and y
-convertOptPathToDesign = function(opt.path, drop = TRUE) {
+# convert OP to a mlr task, of a specified structure with col .multifid.lvl, so we can model on it
+convertMFOptPathToTask = function(opt.path, control) {
   d = as.data.frame(opt.path, discretes.as.factor = TRUE)
-  drop.names = setdiff(colnames(d), c(opt.path$y.names, names(opt.path$par.set$pars)))
-  if (drop)
-    dropNamed(d, drop.names)
-  else
-    d
+  makeRegrTask(id = "multifid.task", data = d, target = "y")
 }
 
 # propose Points for each multifid level. return a list
@@ -51,20 +47,6 @@ proposePointsMultiFid = function(model, par.set, control, opt.path, model.cor, m
       model.cor = model.cor, model.cost = model.cost, model.sd = model.sd)
   })
 }
-
-convertOptPathToTask = function(opt.path, control = NULL, drop = TRUE, blocking = TRUE) {
-  d = convertOptPathToDesign(opt.path, drop = drop)
-  if (!is.null(control) && !is.null(control$multifid.param) && blocking) {
-    id.vars = setdiff(colnames(d), c("y", control$multifid.param))
-    d.blocking = unique(d[, id.vars, drop = FALSE])
-    d.blocking$blocking = factor(seq_row(d.blocking))
-    d.blocking = merge(d, d.blocking)
-    makeRegrTask(id = "surrogate", data = d, target = "y", blocking = d.blocking$blocking)
-  } else {
-    makeRegrTask(id = "surrogate", data = d, target = "y")
-  }
-}
-
 
 # return only crit vector
 infillCritMultiFid = function(points, model, control, par.set, design, iter, model.cor, model.sd, model.cost, ...) {
