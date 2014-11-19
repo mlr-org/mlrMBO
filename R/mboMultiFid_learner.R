@@ -14,8 +14,6 @@ if (FALSE) {
 makeMultiFidWrapper = function(learner, control) {
   learner = checkLearner(learner, type = "regr")
   assertClass(control, "MBOControl")
-  if (learner$predict.type != "se")
-   stop("Predict type of the basic learner must be 'se'.")
   # FIXME: export this in mlr?
   w = mlr:::makeBaseWrapper(
     id = sprintf("%s.multifid", learner$id),
