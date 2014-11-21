@@ -95,7 +95,7 @@ mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE,
       control.mod$multifid.lvls = tail(control.mod$multifid.lvls, 1L)
 
     # return a list, get a proposed point for each level
-    prop = proposePointsMultiFid(model = model, par.set = par.set,
+    prop = proposePointsMultiFid(model = model, par.set = par.set2,
       control = control.mod, opt.path = opt.path,
       lvl.cors = lvl.cors, lvl.costs = lvl.costs, lvl.sds = lvl.sds)
     # find the level where the crit val / infill vals is smallest
@@ -106,7 +106,12 @@ mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE,
 
     # only generate plot data, if we are in a 1D case
     if (getParamNr(par.set) == 1L) {
-      plot.data[[loop]] = genPlotData(model, par.set, control, fun, opt.path,
+      plot.data[[loop]] = genPlotData(
+        compound.model = model, 
+        par.set = par.set2, 
+        control = control, 
+        fun = fun, 
+        opt.path = opt.path,
         lvl.cors = lvl.cors, lvl.sds = lvl.sds, lvl.costs = lvl.costs,
         best.points = best.points)
     }
@@ -120,24 +125,24 @@ mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE,
     # }
 
     # evaluate the new points (and thus add them to the opt path)
-    evalProposedPoints(loop = loop, prop.points = best.points, par.set = par.set,
+    evalProposedPoints(loop = loop, prop.points = best.points, par.set = par.set2,
       opt.path = opt.path, control = control, fun = fun, show.info = show.info,
       oldopts = oldopts, more.args = more.args, extras = NULL)
 
     # train the model again with new data
-    model = train(learner, task = convertOptPathToTask(opt.path, control = control))
+    model = train(learner, task = convertMFOptPathToTask(opt.path))
   }
 
   # return complete designs for all levels
   proposed.index = chooseFinalPoint(NULL, par.set, model, y.name = "y",
     opt.path = opt.path, control = control)
-  proposed = convertOptPathToDesign(opt.path, drop = TRUE)[proposed.index, ]
+  proposed = convertMFOptPathToDesign(opt.path)[proposed.index, ]
   print(str(proposed))
   proposed$y = NULL
-  proposed[,mfp] = last.lvl
+  proposed$.multifid.lvl = nlvls
   proposed = convertDfCols(proposed, factors.as.char = TRUE)
   y.hat = predict(model, newdata = proposed)$data$response
-  y = evalProposedPoints(loop = iters+1, prop.points = proposed, par.set = par.set, opt.path = opt.path,
+  y = evalProposedPoints(loop = iters+1, prop.points = proposed, par.set = par.set2, opt.path = opt.path,
     control = control, fun = fun, show.info = show.info, oldopts = oldopts,
     more.args = more.args, extras = NULL)
 
@@ -146,7 +151,7 @@ mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE,
     model = model,
     y.hat = y.hat,
     y = y,
-    x = as.list(proposed[, colnames(proposed) %nin% mfp, drop = FALSE]),
+    x = as.list(proposed[, colnames(proposed) %nin% ".multifid.lvl", drop = FALSE]),
     plot.data = plot.data
   )
 }

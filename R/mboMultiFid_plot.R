@@ -1,23 +1,23 @@
-genPlotData = function(compound.model, opt.path, control, fun, res = 100, model.cor, model.sd, model.cost, par.set, best.points) {
+genPlotData = function(compound.model, opt.path, control, fun, res = 100, lvl.cors, lvl.sds, lvl.costs, par.set, best.points) {
   requirePackages(packs=c("ggplot2", "reshape2"), why="generate MultiFid Plot")
   # par set without the multifid lvl param
-  par.set.lower = dropParams(par.set, control$multifid.param)
+  par.set.lower = dropParams(par.set, ".multifid.lvl")
   # generate a grid design for without respect to the multifid level
   grid.design = generateGridDesign(par.set = par.set.lower, resolution = res)
   # expand the design to the same points on each multifid level
   grid.design = expandDesign(design = grid.design, control = control)
   # get the points we already have evaluated during the algorithm
-  old.points = convertOptPathToDesign(opt.path)
+  old.points = convertMFOptPathToDesign(opt.path)
   # combine the grid and the already calculated points so plot lines also have the exact points
   grid.design = rbind(grid.design, old.points[,colnames(grid.design)])
   # predict all the y values by the model
   p = predict(compound.model, newdata = grid.design)
-  z = infillCritMultiFid2(points = grid.design, model = compound.model, control = control, par.set = par.set, design = old.points , model.cor = model.cor, model.sd = model.sd, model.cost = model.cost)
+  z = infillCritMultiFid2(points = dropNamed(grid.design, ".multifid.lvl"), model = compound.model, control = control, par.set = par.set, design = old.points , lvl.cors = lvl.cors, lvl.sds = lvl.sds, lvl.costs = lvl.costs, lvl = grid.design$.multifid.lvl)
   z.df = do.call(cbind.data.frame, z)
   all = cbind(grid.design, response = p$data$response, z)
   stopifnot(length(par.set.lower$pars) == 1) #nur 1d-plots
   xname = names(par.set.lower$pars)
-  zname = control$multifid.param
+  zname = ".multifid.lvl"
   m.all = melt(all, id.vars=c(xname, zname))
   #ei last extra care
   m.all[m.all[["variable"]] == "ei", control$multifid.param] = tail(control$multifid.lvls,1)

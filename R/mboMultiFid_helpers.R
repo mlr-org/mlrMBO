@@ -59,7 +59,7 @@ infillCritMultiFid = function(points, model, control, par.set, design, iter, lvl
 infillCritMultiFid2 = function(points, model, control, par.set, design, iter, lvl.cors, lvl.sds, lvl.costs, lvl) {
   nlvls = length(control$multifid.lvls)
   points1 = cbind(points, .multifid.lvl = lvl)
-  points2 = cbind(points, .multifid.lvl = nlvls)
+  points2 = cbind(points, .multifid.lvl = nlvls) #points on most expensive level
   design2 = design[design$.multifid.lvl == nlvls, , drop = FALSE]
   # note: mbo returns the negated EI (and SE), so have to later minimize the huang crit.
   # which is done by default by our optimizer anyway
