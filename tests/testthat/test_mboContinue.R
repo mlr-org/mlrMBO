@@ -1,7 +1,5 @@
 context("mboContinue")
 
-if (interactive()) {
-
 # Here we want to leave the debug-mode to test the saving
 options(mlrMBO.debug.mode = FALSE)
 
@@ -21,7 +19,7 @@ test_that("mboContinue", {
 
   # First test sombo
   learner = makeLearner("regr.rpart")
-  save.file = tempfile(fileext = ".RData")
+  save.file = tempfile("state", fileext=".RData")
   ctrl = makeMBOControl(iters = 3, save.on.disk.at = 0:4,
     save.file.path = save.file, init.design.points = 10L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10)
@@ -76,5 +74,3 @@ test_that("mboContinue works when we at end", {
 
 # reenter debug-mode
 options(mlrMBO.debug.mode = TRUE)
-
-}
