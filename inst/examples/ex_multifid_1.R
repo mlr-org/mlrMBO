@@ -6,10 +6,10 @@ set.seed(123)
 # objective function and param regions
 objfun = addDistortion(sasena, yshift)
 ps = makeParamSet(
-  makeNumericParam("lv", lower = 0, upper = 1),
   makeNumericParam("x", lower = 0, upper = 10)
 )
 lvls = c(0.1, 0.5)
+objfun2 = makeMBOMultifidFunction(objfun, lvls)
 
 # define mlr learner
 lrn = makeLearner("regr.km", nugget.estim = TRUE, jitter = TRUE)
@@ -27,5 +27,5 @@ ctrl = setMBOControlMultiFid(ctrl, param = "lv", lvls = lvls, cor.grid.points = 
 )
 
 # run optimizer
-res = mbo(fun = makeMBOMultifidFunction(objfun), par.set = ps, learner = lrn, control = ctrl)
+res = mbo(fun = objfun2, par.set = ps, learner = lrn, control = ctrl)
 

@@ -85,10 +85,6 @@ checkStuff = function(fun, par.set, design, learner, control) {
   }
 
   # multifidelity stuff
-  if (control$multifid) {
-    if (control$multifid.param %nin% pids)
-      stopf("Fidelity param '%s' must be in par.set!", control$multifid.param)
-  }
 
   # propose point filtering
   # FIXME: implement something that works for integer and discrte params

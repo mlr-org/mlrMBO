@@ -1,8 +1,8 @@
 # in the following we assume:
 # - the signature of all testfunction is (lv, x)
 # - x is a real value (dim = 1)
-# - lv is the multifid param, from [0, 1]
-
+# - lv is the multifid param, from [0, 1] here
+# - we pre-specify the levels as a finite subset from [0, 1] later, to define the discrete level points
 
 ##### NORMAL UNIVARIATE TESTFUNCTIONS #####
 # NB: we already add "lv" to signature, but it has nor effect here!
@@ -88,9 +88,13 @@ plotTestfunFamily = function(f, lvs, x1, x2) {
 }
 
 ##### CONVERT TEST FUNCTION TO MBO OBJECTIVE FUNCTION #####
-# we need to ensure that the signature is now f(x), where x is a list, which contain the lvl param
-makeMBOMultifidFunction = function(f) {
-  function(x) f(lv = x$lv, x = x$x)
+# we need to ensure that the signature is now f(x), where x is a list, which contains the lvl param
+makeMBOMultifidFunction = function(f, lvls) {
+  force(f)
+  force(lvls)
+  function(x) {
+    f(lv = lvls[x$.multifid.lvl], x = x$x)
+  }
 }
 
 ##### EXAMPLE CALLS #####
