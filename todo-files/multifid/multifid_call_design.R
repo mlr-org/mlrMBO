@@ -67,7 +67,7 @@ show.info = TRUE
 more.args = list()
 fun = objfun
 learner = surrogat.model
-mf.learner = makeMultiFidLearner(surrogat.learner=surrogat.model, par.set=par.set, control=control)
+mf.learner = mlrMBO:::makeMultiFidWrapper(learner = surrogat.model, control=control)
 mf.design = mlrMBO:::generateMBOMultiFidDesign(par.set=par.set, control=control)
 oldopts = list(
   ole = getOption("mlr.on.learner.error"),

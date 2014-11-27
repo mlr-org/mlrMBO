@@ -35,12 +35,12 @@ mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE,
   # FIXME: we need to exactly define how bootstrapping should work for multifid
   learner = makeMultiFidWrapper(learner, control)
   learner = makeMultiFidBaggingWrapper(learner)
-  learner = setPredictType(learner, predict.type = "se")
+  learner = mlr:::setPredictType.BaggingWrapper(learner, predict.type = "se")
 
   # now fit to init design
   task = convertMFOptPathToTask(opt.path)
   model = train(learner, task = task)
-  print(model$learner.model)
+  #print(model$learner.model)
 
   ##### LOCAL FUNCTIONS FOR MEI CRIT VALUES: START #####
 

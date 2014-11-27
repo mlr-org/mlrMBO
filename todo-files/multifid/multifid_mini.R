@@ -1,17 +1,15 @@
 library(devtools)
 load_all(".")
-library("mlr")
 source("todo-files/test_functions.R")
 options(warn = 2)
-
-e.lvls = c(0.3,1)
+e.lvls = c(0.3, 1)
 
 ctrl = makeMBOControl(
   init.design.points = 20L, 
   init.design.fun = maximinLHS,
-  iters = 20L,
+  iters = 6L,
   on.learner.error = "stop",
-  show.learner.output = TRUE
+  show.learner.output = FALSE
 )
 
 ctrl = setMBOControlInfill(
@@ -30,17 +28,19 @@ ctrl = setMBOControlMultiFid(
   param = "dw.perc", 
   lvls = e.lvls,
   cor.grid.points = 20L,
-  costs = function(cur, last) (last / cur)^1.2
+  costs = function(cur, last) (last / cur)^1.2,
 )
 
 par.set = makeParamSet(
   makeNumericParam(id = "x", lower = 0, upper = 10))
 
-lrn = makeLearner("regr.km")
+lrn = makeLearner("regr.km", nugget.estim = TRUE, jitter = TRUE)
 
-obj = makeMBOMultifidFunction(addDistortion(sasena, g=yshift), lvls = ctrl$multifid.lvls)
-res = mbo(fun = obj, par.set = par.set, control = ctrl, learner = lrn)
+obj = makeMBOMultifidFunction(addDistortion(addDistortion(sasena, g=yshift), noiseGaussian), lvls = ctrl$multifid.lvls)
+res = mbo(fun = obj, par.set = par.set, control = ctrl, learner = lrn, show.info = TRUE)
 
 for(i in seq_along(res$plot.data)) {
-  genGgplot(plotdata=res$plot.data[[i]])
+  print(genGgplot(plotdata=res$plot.data[[i]]))
+  cat ("Press [enter] to continue")
+  line <- readline()
 }

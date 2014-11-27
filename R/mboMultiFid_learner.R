@@ -5,10 +5,10 @@ if (FALSE) {
   task = makeRegrTask(data = df, target = "y")
   ctrl = makeMBOControl()
   ctrl = setMBOControlMultiFid(ctrl, param = ".multifid.lvl", lvls = 1:3/3)
-  lrn = makeLearner("regr.randomForest")
-  lrn = setPredictType(lrn, "se")
+  lrn = makeLearner("regr.km")
   learner = makeMultiFidWrapper(lrn, ctrl)
   mod = train(learner, task)
+  p = predict(mod, task)
 }
 
 makeMultiFidWrapper = function(learner, control) {
@@ -28,12 +28,10 @@ makeMultiFidWrapper = function(learner, control) {
 #' @export
 trainLearner.MultiFidWrapper = function(.learner, .task, .subset, .weights = NULL, ...) {
   control = .learner$mbo.control   # control object
-  # fid.par = control$multifid.param # name of column in task, e.g. ".fidelity.lvl"
-  fid.par = ".multifid.lvl"        # we agreed on this internal column name
   fid.lvls = control$multifid.lvls # numeric vector of levels, in ascending order, e.g. c(0.3, 0.7)
   n.lvls = length(fid.lvls)        # number of levels
-  lvls = getTaskData(.task)[[fid.par]] # integer referering to fid.lvls
-  cn = setdiff(getTaskFeatureNames(.task), fid.par) # feature names
+  lvls = getTaskData(.task)$.multifid.lvl # integer referering to fid.lvls
+  cn = setdiff(getTaskFeatureNames(.task), ".multifid.lvl") # feature names
   if (!all(seq_len(n.lvls) %in% lvls))
     stopf("MultiFid model has to be initialized on all values of '%s'", collapse(fid.lvls))
 
@@ -66,16 +64,14 @@ trainLearner.MultiFidWrapper = function(.learner, .task, .subset, .weights = NUL
 predictLearner.MultiFidWrapper = function(.learner, .model, .newdata, ...) {
   models = .model$learner.model$next.model
   control = .learner$mbo.control   # control object
-  # fid.par = control$multifid.param # name of column in task, e.g. ".multifid.lvl"
-  fid.par = ".multifid.lvl"        # we agreed on this internal column name
   fid.lvls = control$multifid.lvls # numeric vector of levels, in ascending order, e.g. c(0.3, 0.7)
 
   # we ignore the given perf.val in (newdata, task) and calcuate it for all
-  lvls = .newdata[[fid.par]]
-  cn = setdiff(colnames(.newdata), fid.par)
+  lvls = .newdata$.multifid.lvl
+  cn = setdiff(colnames(.newdata), ".multifid.lvl")
   split.inds = split(seq_along(lvls), lvls)
 
-  responses = lapply(seq_along(fid.lvls), function(i) {
+  responses = lapply(seq_along(unique(lvls)), function(i) {
     rows = split.inds[[i]]
     if (length(rows) == 0L)
       return(numeric(0L))
@@ -84,7 +80,8 @@ predictLearner.MultiFidWrapper = function(.learner, .model, .newdata, ...) {
     response = extractSubList(response, c("data", "response"), simplify = FALSE)
     Reduce("+", response)
   })
-  unlist(responses, use.names = FALSE)[match(seq_along(lvls), unlist(split.inds, use.names = FALSE))]
+  reorder = match(seq_along(lvls), unlist(split.inds, use.names = FALSE))
+  unlist(responses, use.names = FALSE)[reorder]
 }
 
 

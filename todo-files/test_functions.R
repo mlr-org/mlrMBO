@@ -42,13 +42,13 @@ sasena = function(lv, x) {
 
 # add 2 testfunctions to get a new one of the same form
 # examples: a) add a shifting distortion in Y or b) add Gaussian noise
-addDistortion = function(f, g) {
-  function(lv, x) f(lv, x) + g(lv, x)
+addDistortion = function(f, g, ...) {
+  function(lv, x) f(lv, x) + g(lv, x, ...)
 }
 
 # given, f and g, does h(lv, x) = f(g(x, lv), lv)
-distortX = function(f, g) {
-  function(lv, x) f(lv ,g(lv, x))
+distortX = function(f, g, ...) {
+  function(lv, x) f(lv ,g(lv, x, ...))
 }
 
 ##### COMBINATION OPERANDS #####
