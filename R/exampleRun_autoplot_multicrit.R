@@ -162,9 +162,11 @@ autoplot.MBOExampleRunMultiCrit = function(object, iters, pause = TRUE, y1lim = 
   createPlSet = function(gg.points.set, iter) {
     pl.set = ggplot()
     # only for parego, color background with scalar model / crit
+    brewer.palette = colorRampPalette(brewer.pal(11, "Spectral"), interpolate = "spline")
+
     if (control$multicrit.method == "parego") {
       pl.set = pl.set + geom_tile(data = xgrid2, aes_string(x = x.name[1L], y = x.name[2L], fill = name.crit))
-      pl.set = pl.set + scale_fill_gradientn(colours = topo.colors(7))
+      pl.set = pl.set + scale_fill_gradientn(colours = brewer.palette(200))
     }
     pl.set = pl.set +  geom_point(data = gg.points.set[which(gg.points.set$type == "front"), ],
       aes_string(x = "x1", y = "x2", colour = "type", shape = "type"), size = 2, alpha = 0.8)
