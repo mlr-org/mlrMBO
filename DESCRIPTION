@@ -21,6 +21,7 @@ Imports:
     BBmisc (>= 1.7),
     checkmate (>= 1.4),
     ggplot2,
+    RColorBrewer,
     gridExtra,
     parallelMap (>= 1.1),
     plyr,

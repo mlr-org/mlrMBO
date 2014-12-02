@@ -97,7 +97,6 @@ renderExampleRunPlots1d = function(x, iters,
   plot.sequence = list()
 
   for (i in iters) {
-    catf("Iter %i", i)
 
     model = models[[i]]
     idx.seq = which(opt.path$dob > 0 & opt.path$dob < i)

@@ -1,6 +1,7 @@
 #' @import BBmisc
 #' @import checkmate
 #' @import ggplot2
+#' @import RColorBrewer
 #' @import gridExtra
 #' @import lhs
 #' @import mlr

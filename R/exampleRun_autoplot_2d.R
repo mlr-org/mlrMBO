@@ -62,7 +62,6 @@ renderExampleRunPlots2d = function(x, iters,
 
   # FIXME: what to plot if not infillcrit that uses se?
   for (i in iters) {
-    catf("Iter %i", i)
     model = mbo.res$models[[i]]
     evals.x = evals[, names.x, drop = FALSE]
 
@@ -119,13 +118,19 @@ renderExampleRunPlots2d = function(x, iters,
       if (!is.null(trafo)) {
         data[, name.z] = trafo(data[, name.z])
       }
+
+      # set up nice colour palette
+      brewer.palette = colorRampPalette(brewer.pal(11, "Spectral"), interpolate = "spline")
+
       pl = ggplot(data = data, aes_string(x = name.x1, y = name.x2, z = name.z))
       pl = pl + geom_tile(aes_string(fill = name.z))
-      pl = pl + scale_fill_gradientn(colours = topo.colors(7))
+      pl = pl + scale_fill_gradientn(colours = brewer.palette(200))
+
       # sometimes contour lines cannot be plotted for EI
       if (name.z != "ei") {
-        pl = pl + stat_contour(aes_string(fill = name.z), binwidth = 5)
+        pl = pl + stat_contour(aes_string(fill = name.z), binwidth = 5, colour = "gray", alpha = 0.8)
       }
+      
       # Keep in mind, that for the points the z value is always "name.y"
       pl = pl + geom_point(data = points, aes_string(x = name.x1, y = name.x2, z = name.y,
           colour = "type", shape = "type"), size = point.size)
