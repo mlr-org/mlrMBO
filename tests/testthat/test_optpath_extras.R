@@ -33,4 +33,5 @@ test_that("extras are logged a expected", {
   # check whether times (model fitting, execution, ...) are logged
   expect_true(all(is.numeric(opt.path[["exec.time"]])))
   expect_true(all(is.numeric(opt.path[["train.time"]])))
+  expect_true(all(is.numeric(opt.path[["propose.time"]])))
 })

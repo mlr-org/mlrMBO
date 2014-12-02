@@ -97,48 +97,50 @@ proposePointsMOIMBO = function(models, par.set, control, opt.path, iter, ...) {
   if (objective %in% c("mean.dist", "ei.dist", "mean.se.dist"))
     Y[, y.dim] = -mydist(as.matrix(X), Y[,1])
 
-  for (i in 1:control$multipoint.multicrit.maxit) {
-    # Create new individual (mu + 1)
-    parents = sample(1:mu, 2)
-    # get two kids from CX, sel. 1 randomly, mutate
-    child = crossover(t(X[parents, , drop = FALSE]))
-    child1 = child[,sample(c(1, 2), 1)]
-    child1 = mutate(child1)
-    # Add new individual:
-    X[nrow(X) + 1,] = child1
-    child2 = setColNames(as.data.frame(as.list(child1)), repids)
-    # FIXME
-    # distanace has potentielly calculated avccording to Q = P + A
-    # best try arhoive with design and empthy both...
-    Y = rbind(Y, rep(NA, y.dim))
-    # mbo infill crits are always minimized
-    if (objective == "mean.dist") {
-      Y[nrow(Y), 1] = infillCritMeanResponse(child2, model, control, par.set, design)
-    } else if (objective == "ei.dist") {
-      Y[nrow(Y), 1] = infillCritEI(child2, model, control, par.set, design)
-    } else if (objective %in% c("mean.se", "mean.se.dist")) {
-      Y[nrow(Y), 1] = infillCritMeanResponse(child2, model, control, par.set, design)
-      Y[nrow(Y), 2] = infillCritStandardError(child2, model, control, par.set, design)
-    }
-    # use first Y criterion to for nearest better
-    if (objective %in% c("mean.dist", "ei.dist", "mean.se.dist"))
-      Y[, y.dim] = -mydist(as.matrix(X), Y[,1])
+  st = system.time({
+    for (i in 1:control$multipoint.multicrit.maxit) {
+      # Create new individual (mu + 1)
+      parents = sample(1:mu, 2)
+      # get two kids from CX, sel. 1 randomly, mutate
+      child = crossover(t(X[parents, , drop = FALSE]))
+      child1 = child[,sample(c(1, 2), 1)]
+      child1 = mutate(child1)
+      # Add new individual:
+      X[nrow(X) + 1,] = child1
+      child2 = setColNames(as.data.frame(as.list(child1)), repids)
+      # FIXME
+      # distanace has potentielly calculated avccording to Q = P + A
+      # best try arhoive with design and empthy both...
+      Y = rbind(Y, rep(NA, y.dim))
+      # mbo infill crits are always minimized
+      if (objective == "mean.dist") {
+        Y[nrow(Y), 1] = infillCritMeanResponse(child2, model, control, par.set, design)
+      } else if (objective == "ei.dist") {
+        Y[nrow(Y), 1] = infillCritEI(child2, model, control, par.set, design)
+      } else if (objective %in% c("mean.se", "mean.se.dist")) {
+        Y[nrow(Y), 1] = infillCritMeanResponse(child2, model, control, par.set, design)
+        Y[nrow(Y), 2] = infillCritStandardError(child2, model, control, par.set, design)
+      }
+      # use first Y criterion to for nearest better
+      if (objective %in% c("mean.dist", "ei.dist", "mean.se.dist"))
+        Y[, y.dim] = -mydist(as.matrix(X), Y[,1])
 
-    # get elements we want to remove from current pop as index vector
-    to.kill = if (control$multipoint.multicrit.selection == "hypervolume") {
-      nds_hv_selection(t(Y))
-    } else if (control$multipoint.multicrit.selection == "crowdingdist") {
-      nds_cd_selection(t(Y))
-    } else if (control$multipoint.multicrit.selection == "first") {
-      nds_1d_selection(t(Y), index = 1)
-    } else if (control$multipoint.multicrit.selection == "last") {
-      nds_1d_selection(t(Y), index = y.dim)
+      # get elements we want to remove from current pop as index vector
+      to.kill = if (control$multipoint.multicrit.selection == "hypervolume") {
+        nds_hv_selection(t(Y))
+      } else if (control$multipoint.multicrit.selection == "crowdingdist") {
+        nds_cd_selection(t(Y))
+      } else if (control$multipoint.multicrit.selection == "first") {
+        nds_1d_selection(t(Y), index = 1)
+      } else if (control$multipoint.multicrit.selection == "last") {
+        nds_1d_selection(t(Y), index = y.dim)
+      }
+      X = X[-to.kill, ,drop = FALSE]
+      Y = Y[-to.kill, ,drop = FALSE]
     }
-    X = X[-to.kill, ,drop = FALSE]
-    Y = Y[-to.kill, ,drop = FALSE]
-  }
+  }) # system.time
   rownames(X) = NULL
-  return(list(prop.points = X, crit.vals = Y, errors.model = NA_character_))
+  return(list(prop.points = X, propose.time = st[3L], crit.vals = Y, errors.model = NA_character_))
 }
 
 

@@ -4,7 +4,7 @@ getExtras = function(n, prop, train.time, control) {
   # this happens in init design
   if (is.null(prop)) {
     k = ifelse(control$number.of.targets > 1L && control$multicrit.method == "mspot", control$number.of.targets + 1, 1L)
-    prop = list(crit.vals = matrix(NA_real_, nrow = n, ncol = k), errors.model = NA_character_,
+    prop = list(crit.vals = matrix(NA_real_, nrow = n, ncol = k), propose.time = NA_real_, errors.model = NA_character_,
       filter.replace = rep(NA, n))
   }
   exs = vector("list", n)
@@ -44,6 +44,12 @@ getExtras = function(n, prop, train.time, control) {
       ex$filter.replace = prop$filter.replace[i]
     }
     ex$train.time = if (i == 1) train.time else NA_real_
+    ex$propose.time = NA_real_
+    if (length(prop$propose.time) > 1L) {
+      ex$propose.time = prop$propose.time[i]
+    } else {
+      ex$propose.time = if (i == 1) prop$propose.time else NA_real_
+    }
     exs[[i]] = ex
   }
   return(exs)
