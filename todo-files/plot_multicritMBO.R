@@ -1,6 +1,22 @@
 
-# alpha: alpha fading for parallel x plot
-
+#' Plot method for multi-objective result objects.
+#'
+#' @param result [\code{MBOSingleObjResult}]\cr
+#'   Multi-Objective mlrMBO result object.
+#' @param infill.crit [\code{character(1)}]\cr
+#'   Infill criterion used for optimization.
+#' @param iters [\code{numeric} | NULL]\cr
+#'   Vector of iteration which should be plotted one after another. If \code{NULL},
+#'   which is the default, all iterations are plotted.
+#' @param alpha [\code{logical(1)}]\cr
+#'   Activates or deactivates the alpha fading for the parallel X-space plot. Default is \code{TRUE}.
+#' @param pause [\code{logical(1)}]\cr
+#'   Pause after each iteration?
+#'   Default is \code{TRUE}.
+#' @pause log.infill.crit [\code{logical(1)}]\cr
+#'   Should the infill criterion be log-transformed? Default is \code{FALSE}.
+#' @return Nothing
+#FIXME: it would be more comfortable if the infill crit could be extracted from the result object. Maybe save control object in result?
 plot.MBOMultiObjResult = function(result, infill.crit, iters = NULL, alpha = TRUE, pause = TRUE,
   log.infill.crit = FALSE) {
   requirePackages("GGally")
@@ -18,7 +34,7 @@ plot.MBOMultiObjResult = function(result, infill.crit, iters = NULL, alpha = TRU
   if (any(iters > max(getOptPathDOB(op))))
     stop("You want to plot an iteration that does not exist!")
   
-  # FIXME: better way die get x-names?
+  # FIXME: better way to get x-names?
   x.names = colnames(getOptPathX(result$opt.path))
   y.names = result$opt.path$y.names
   
@@ -40,12 +56,15 @@ plot.MBOMultiObjResult = function(result, infill.crit, iters = NULL, alpha = TRU
     # get the data
     op.x = as.data.frame(op, include.y = FALSE, include.rest = FALSE, dob = 0:i)
     op.y = as.data.frame(op, include.x = FALSE, include.rest = FALSE, dob = 0:i)
-    dob = getOptPathDOB(result$opt.path, dob = 0:i)
+    dob = getOptPathDOB(op, dob = 0:i)
     
     # plot 1: y-space
-    op.y$type = ifelse(dob == 0, "init", ifelse(dob == i, "prop", "seq"))
-    p1 = ggplot(op.y, aes(x = y_1, y = y_2, pch = type, col = type)) +
-      geom_point(size = 3) + ggtitle("Y-Space")
+    op.y$type = as.factor(ifelse(dob == 0, "init", ifelse(dob == i, "prop", "seq")))
+    pl1 = ggplot(op.y, aes(x = y_1, y = y_2, shape = type, colour = type))
+    pl1 = pl1 + geom_point(size = 3)
+    pl1 = pl1 + ggtitle("Y-Space")
+    pl1 = pl1 + xlab(expression(y[1])) + ylab(expression(y[2]))
+    pl1 = pl1 + theme(legend.position = "top")
     
     # plot 2: x-space
     args = list(columns = seq_along(x.names))
@@ -58,56 +77,62 @@ plot.MBOMultiObjResult = function(result, infill.crit, iters = NULL, alpha = TRU
     args$data = op.x
     args$groupColumn = ncol(op.x)
     args$mapping = aes(lwd = 1.5)
-    p2 = do.call(ggparcoord, args)
-    p2 = p2 +
-      ylab ("value divided by standard deviation") +
-      ggtitle("X-Space") + 
-      guides(alpha = FALSE)
+    pl2 = do.call(ggparcoord, args)
+    pl2 = pl2 + ylab ("value divided by standard deviation")
+    pl2 = pl2 + ggtitle("X-Space")
+    pl2 = pl2 + guides(alpha = FALSE)
+    pl2 = pl2 + theme(legend.position = "top", legend.margin = unit(0.05, "cm"))
     
     # plot 3 - dominated hypervolume
     hv = dominated_hypervolume(t(getOptPathParetoFront(result$opt.path, dob = 0:i)), ref = ref.point)
     hv.data = rbind(hv.data, data.frame(hv = hv, dob = i))
-    p3 = ggplot(hv.data, aes(x = dob, y = hv)) + 
+    pl3 = ggplot(hv.data, aes(x = dob, y = hv)) + 
       geom_point() + ggtitle(paste("Dominated Hypervolume, ref.point = (", 
         collapse((round(ref.point, 1)), sep = ", "), ")", sep = "")) + 
       theme(plot.title = element_text(size = rel(1)))
     if (nrow(hv.data) > 1)
-      p3 = p3 + geom_line()
+      pl3 = pl3 + geom_line()
     
+
     # plot 4 - indicator value. ony available if iter != 0
+    pl4 = NA
     if (i != 0) {
       crit = as.data.frame(op, include.x = FALSE, include.y = FALSE, dob = i)[, 5]
       # we want to log some crits. this must be user defined. since we have
       # some negated crits, replace them with positive values
       # we prechecked: eiter all or none crit value is negative
-      if (log.infill.crit & any(crit < 0))
+      if (log.infill.crit & any(crit < 0)) {
         crit = -crit
+      }
       crit.data = rbind(crit.data, data.frame(crit = crit, dob = i))
-      print(crit.data)
-      p4 = ggplot(crit.data, aes(x = dob, y = crit)) + geom_point() + 
-        ggtitle("Values of used infill.crit") + 
-        theme(plot.title = element_text(size = rel(1)))
+      
+      pl4 = ggplot(crit.data, aes(x = dob, y = crit))
+      pl4 = pl4 + geom_point()
+      pl4 = pl4 + ggtitle("Values of used infill criterion") 
+      pl4 = pl4 + theme(plot.title = element_text(size = rel(1)))
+      pl4 = pl4 + ylab(infill.crit)
+
       # plot lines only if more than one crit observation exists
       # if more than 1 value per dob exists (if prop.points > 1)
       # use mean value for lines
       if (length(unique(dob[dob != 0L])) > 1L) {
         d = data.frame(
-          crit =  tapply(crit.data$crit, crit.data$dob, mean),
+          crit = tapply(crit.data$crit, crit.data$dob, mean),
           dob = unique(dob[dob != 0])
-          )
-        print(d)
-        p4 = p4 + geom_line(data = d)
+        )
+        pl4 = pl4 + geom_line(data = d)
       }
-      if (log.infill.crit)
-        p4 = p4 + scale_y_log10()
-      # Arrange 3 or 4 plot - depending if p4 exists
-      grid.arrange(p1, p2, p3, p4, nrow = 2, heights = c(2, 1))
-    } else
-      grid.arrange(p1, p2, p3, nrow = 2, heights = c(2, 1))
-    
-    
+      if (log.infill.crit) {
+        pl4 = pl4 + scale_y_log10()
+      }
+      # Arrange 3 or 4 plot - depending if pl4 exists
+      grid.arrange(pl1, pl2, pl3, pl4, nrow = 2, heights = c(2, 1))
+    } else {
+      grid.arrange(pl1, pl2, pl3, nrow = 2, heights = c(2, 1))
+    }
+
     if(pause && i != max(iters))
-      readline(prompt="Press [enter] to continue")
+      readline(prompt = "Press [enter] to continue")
   }
   return(invisible(NULL))
 }
