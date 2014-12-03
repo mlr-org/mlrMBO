@@ -1,4 +1,9 @@
-#  Optimizes a multicrit optimization problem with the SMS EGO algo
+# magic mboTemplate - in this function the mbo magic for all our mbo approaches
+# does happen - model fitting und point proposal in a generall way. the respective
+# mbo algorithms differ in the subfunctions.
+
+# continue - do we continue an already started (and aborted) mbo run or is this
+#            a fresh one?
 
 mboTemplate = function(fun, par.set, design = NULL, learner, control, show.info = TRUE,
   more.args = list(), continue = NULL) {
@@ -44,9 +49,10 @@ mboTemplate = function(fun, par.set, design = NULL, learner, control, show.info 
   tasks = makeTasks(par.set, opt.path, algo.init, control = control)
   tr = trainModels(learner, tasks, control)
 
+  
   # if we are restarting from a save file, we possibly start in a higher iteration
   loop = max(getOptPathDOB(opt.path)) + 1L
-
+  
   # small helper for learner resampling
   # if we have multiple tasks, return a list, otherwise singleton result
   doResample = function(tasks) {
@@ -74,7 +80,6 @@ mboTemplate = function(fun, par.set, design = NULL, learner, control, show.info 
     if (control$filter.proposed.points) {
       prop = filterProposedPoints(prop, opt.path, par.set, control)
     }
-    crit.vals = prop$crit.vals
     extras = getExtras(nrow(prop$prop.points), prop, tr$train.time, control)
     evalProposedPoints(loop, prop$prop.points, par.set, opt.path, control,
       fun, learner, show.info, oldopts, more.args, extras)

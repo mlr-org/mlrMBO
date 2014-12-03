@@ -1,3 +1,5 @@
+#FIXME: Doku
+
 makeTasks = function(par.set, opt.path, algo.init, control) {
   if (control$number.of.targets == 1L) {
     tasks = list(makeTaskSingleObj(par.set, opt.path, control))
