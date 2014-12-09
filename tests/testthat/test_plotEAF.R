@@ -15,7 +15,7 @@ test_that("plotEAF works", {
   n.reps = 3L
   opt.pathes = lapply(seq(n.reps), function(i) {
     set.seed(i)
-    res = mbo(f, ps, learner = learner, control = ctrl)
+    res = mbo(obj.fun, par.set, learner = learner, control = ctrl)
     return(res$opt.path)
   })
   opt.pathes = list("algo1" = opt.pathes, "algo2" = opt.pathes)
