@@ -1,9 +1,17 @@
 # Function for plotting 1d numeric respectively discrete functions.
 #
 # @param x [\code{function}]\cr
-#   Objective function.
+#  \code{MBOExampleRun} object.
 # @param iter [\code{integer}]\cr
 #   Selected iteration of \code{x} to render plots for.
+# @param densregion [\code{logical(1)}]\cr
+#   Should the background be shaded? Default ist \code{TRUE}.
+#   Only used if learner supports computation of standard error.
+# @param se.factor [\code{numeric(1)}]\cr
+#   If the model provides local standard error estimation,
+#   in addition to the mean response \code{yhat(x) +- se.factor * se(x)}
+#   is plotted above and below.
+#   Default is 1.
 # @param xlim [\code{numeric(2)}]\cr
 #   For 1D: \code{xlim} parameter for first and second plot.
 #   Default is range of x-values evaluated in run object \code{x}.
@@ -30,12 +38,13 @@
 #   Only used if learner supports computation of standard error.
 # @param ... [\code{list}]\cr
 #   Not used.
-# @return [\code{list}] List of length ggplot2 objects.
+# @return [\code{list}] List of ggplot2 objects.
 renderExampleRunPlot1d = function(x, iter,
-  xlim, ylim,
-  se.factor,
+  densregion = TRUE,
+  se.factor = 1,
+  xlim = NULL, ylim = NULL,
   point.size, line.size,
-  trafo, densregion = TRUE, ...) {
+  trafo = NULL, ...)  {
   # extract relevant data from MBOExampleRun
   par.set = x$par.set
   names.x = x$names.x

@@ -19,8 +19,8 @@
 #' @param iter [\code{integer}]\cr
 #'   Selected iteration of \code{object} to render plots for.
 #' @param densregion [\code{logical(1)}]\cr
-#'   Should the background be shaded?
-#'   Default is \code{TRUE}.
+#'   Should the background be shaded? Default is \code{TRUE}.
+#'   Only used if learner supports computation of standard error.
 #' @param se.factor [\code{numeric(1)}]\cr
 #'   If the model provides local standard error estimation,
 #'   in addition to the mean response \code{yhat(x) +- se.factor * se(x)}
@@ -28,7 +28,7 @@
 #'   Default is 1.
 #' @param xlim [\code{numeric(2)}]\cr
 #'   For 1D: \code{xlim} parameter for first and second plot.
-#'   Default is range of x-values evaluated in run object \code{x}.
+#'   Default is range of x-values evaluated in run object \code{object}.
 #' @param ylim [\code{numeric(2)}]\cr
 #'   For 1D: \code{ylim} parameter for first plot, for the second plot \code{ylim} is always set
 #'   automatically, depending on the range of the evaluated infill criterion.

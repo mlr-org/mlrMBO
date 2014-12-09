@@ -16,8 +16,8 @@ renderExampleRunPlot(object, iter, densregion = TRUE, se.factor = 1,
 Selected iteration of \code{object} to render plots for.}
 
 \item{densregion}{[\code{logical(1)}]\cr
-Should the background be shaded?
-Default is \code{TRUE}.}
+Should the background be shaded? Default is \code{TRUE}.
+Only used if learner supports computation of standard error.}
 
 \item{se.factor}{[\code{numeric(1)}]\cr
 If the model provides local standard error estimation,
@@ -27,7 +27,7 @@ Default is 1.}
 
 \item{xlim}{[\code{numeric(2)}]\cr
 For 1D: \code{xlim} parameter for first and second plot.
-Default is range of x-values evaluated in run object \code{x}.}
+Default is range of x-values evaluated in run object \code{object}.}
 
 \item{ylim}{[\code{numeric(2)}]\cr
 For 1D: \code{ylim} parameter for first plot, for the second plot \code{ylim} is always set

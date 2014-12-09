@@ -23,8 +23,8 @@
 #'   Should the process be paused after each iteration?
 #'   Default is \code{TRUE}.
 #' @param densregion [\code{logical(1)}]\cr
-#'   Should the background be shaded?
-#'   Default is \code{TRUE}.
+#'   Should the background be shaded? Default is \code{TRUE}.
+#'   Only used if learner supports computation of standard error.
 #' @param se.factor [\code{numeric(1)}]\cr
 #'   If the model provides local standard error estimation,
 #'   in addition to the mean response \code{yhat(x) +- se.factor * se(x)}

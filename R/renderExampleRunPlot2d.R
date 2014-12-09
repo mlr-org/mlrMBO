@@ -1,12 +1,17 @@
 # Function for plotting 2d numeric respectively mixed discrete/numeric functions.
 #
 # @param x [\code{function}]\cr
-#   Objective function.
+#  \code{MBOExampleRun} object.
 # @param iter [\code{integer}]\cr
 #   Selected iteration of \code{x} to render plots for.
 # @param densregion [\code{logical(1)}]\cr
-#   Should the background be shaded by the density of the posterior distribution? Default ist \code{TRUE}.
+#   Should the background be shaded? Default ist \code{TRUE}.
 #   Only used if learner supports computation of standard error.
+# @param se.factor [\code{numeric(1)}]\cr
+#   If the model provides local standard error estimation,
+#   in addition to the mean response \code{yhat(x) +- se.factor * se(x)}
+#   is plotted above and below.
+#   Default is 1.
 # @param point.size [\code{numeric(1)}]\cr
 #   Size of the points in the plots.
 # @param line.size [\code{numeric(1)}]\cr
@@ -24,8 +29,9 @@
 # @return [\code{list}] List of ggplot2 objects.
 renderExampleRunPlot2d = function(x, iter,
   densregion = TRUE,
+  se.factor = 1,
+  xlim = NULL, ylim = NULL,
   point.size, line.size,
-  se.factor,
   trafo = NULL, ...)  {
   # extract information from example run object
   par.set = x$par.set
