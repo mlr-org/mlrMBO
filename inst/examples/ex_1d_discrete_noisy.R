@@ -28,4 +28,4 @@ run = exampleRun(objfun, par.set = par.set, learner = lrn, control = ctrl,
 
 print(run)
 
-res = autoplot(run, pause = TRUE, densregion = TRUE)
+plotExampleRun(run, pause = TRUE, densregion = TRUE)

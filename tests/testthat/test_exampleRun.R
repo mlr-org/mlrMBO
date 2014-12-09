@@ -1,10 +1,10 @@
 context("exampleRun")
 
-test_that("exampleRun", {
+test_that("renderExampleRunPlot produces list of ggplot2 objects", {
   library(ggplot2)
   library(soobench)
 
-  n.iters = 2L
+  n.iters = 1L
 
   doRun = function(obj.fn, par.set, predict.type, crit, learner = "regr.km", has.simple.signature = TRUE) {
     learner = makeLearner(learner, predict.type = predict.type)
@@ -13,7 +13,7 @@ test_that("exampleRun", {
     if (has.simple.signature)
       obj.fn = makeMBOFunction(obj.fn)
     run = exampleRun(obj.fn, global.opt = 0L, par.set, learner, control = control)
-    return(autoplot(run, pause = FALSE))
+    return(renderExampleRunPlot(run, iter = 1L))
   }
 
   ### 1D NUMERIC
@@ -22,28 +22,24 @@ test_that("exampleRun", {
     makeNumericParam("x", lower = -2, upper = 2)
   )
 
-  checkPlotList = function(plot.list, len) {
+  checkPlotList = function(plot.list) {
     expect_is(plot.list, "list")
-    expect_equal(length(plot.list), len)
-    lapply(plot.list, function(pl.sublist) {
-      expect_is(pl.sublist, "list")
-      lapply(pl.sublist, function(pl) {
+    lapply(plot.list, function(pl) {
         # sometimes for example the 'se' plot is NA, if learner does not support standard error estimation
         if (!any(is.na(pl))) {
           expect_is(pl, "gg")
           expect_is(pl, "ggplot")
         }
-      })
     })
   }
 
   # without se
   plot.list = doRun(obj.fn, par.set, "response", "mean")
-  checkPlotList(plot.list, len = n.iters)
+  checkPlotList(plot.list)
 
   # with se
   plot.list = doRun(obj.fn, par.set, "se", "ei")
-  checkPlotList(plot.list, len = n.iters)
+  checkPlotList(plot.list)
 
 
   ### 2d MIXED
@@ -62,7 +58,7 @@ test_that("exampleRun", {
   )
 
   plot.list = doRun(obj.fn, par.set, "se", "ei", "regr.randomForest", has.simple.signature = FALSE)
-  checkPlotList(plot.list, len = n.iters)
+  checkPlotList(plot.list)
 
   ### 2D NUMERIC (MULTIPOINT)
   obj.fun = function(x) {
@@ -83,6 +79,6 @@ test_that("exampleRun", {
 
   run = exampleRun(makeMBOFunction(obj.fun), par.set = par.set, learner = lrn, control = ctrl, points.per.dim = 50)
 
-  plot.list = autoplot(run, pause = FALSE)
-  checkPlotList(plot.list, len = n.iters)
+  plot.list = renderExampleRunPlot(run, iter = 1L)
+  checkPlotList(plot.list)
 })

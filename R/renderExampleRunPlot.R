@@ -13,12 +13,8 @@
 #'
 #' @param object [\code{function}]\cr
 #'   Objective function.
-#' @param iters [\code{integer}]\cr
-#'   Selected iterations of \code{x} to display.
-#'   Default is all iterations.
-#' @param pause [\code{logical(1)}]\cr
-#'   Pause after each iteration?
-#'   Default is \code{TRUE}.
+#' @param iter [\code{integer}]\cr
+#'   Selected iteration of \code{x} to render plots for.
 #' @param densregion [\code{logical(1)}]\cr
 #'   Should the background be shaded by the density of the
 #'   posterior distribution?
@@ -54,19 +50,20 @@
 #'   If a single function is provided, this function is used for all plots.
 #' @param ... [any]\cr
 #'   Currently not used.
-#' @return [\code{list}]. List containing seperate ggplot plots for each iteration.
+#' @return [\code{list}]. List containing seperate ggplot object. The number of plots depends on
+#'   the type of MBO problem:
+#FIXME: itemize possible results, i.e., 1DNumeric, 2DMixed, 2DNumeric
 #' @export
-autoplot.MBOExampleRun = function(object, iters, pause = TRUE, densregion = TRUE,
+renderExampleRunPlot =  function(object, iter, densregion = TRUE,
+  se.factor = 1, xlim, ylim, point.size = 3, line.size = 1, trafo = NULL, ...) {
+  UseMethod("renderExampleRunPlot")
+}
+
+renderExampleRunPlot.MBOExampleRun = function(object, iter, densregion = TRUE,
   se.factor = 1, xlim, ylim, point.size = 3, line.size = 1, trafo = NULL, ...) {
 
-  requirePackages("gridExtra", why = "autoplot.MBOExampleRun")
   iters.max = object$control$iters
-  if (missing(iters)) {
-    iters = seq_len(iters.max)
-  } else {
-    iters = asInteger(iters, min.len = 1L, lower = 1L, upper = iters.max, any.missing = FALSE)
-  }
-  assertFlag(pause)
+  assertInteger(iter, lower = 0L, upper = iters.max, len = 1L, any.missing = FALSE)
   assertFlag(densregion)
   assertNumber(se.factor, lower = 0)
   assertNumber(point.size, lower = 1)
@@ -86,14 +83,14 @@ autoplot.MBOExampleRun = function(object, iters, pause = TRUE, densregion = TRUE
     if (par.types %nin% c("numeric", "numericvector", "discrete", "discretevector")) {
       stopf("For 1D function only plotting of numeric or discrete functions possible, but your function is '%s'.", par.types)
     }
-    renderExampleRunPlots1d(object, iters = iters, xlim = xlim, ylim = ylim, se.factor = se.factor, pause = pause,
-      point.size = point.size, line.size = line.size, trafo = trafo, densregion = densregion, ...)
+    return(renderExampleRunPlot1d(object, iter = iter, xlim = xlim, ylim = ylim, se.factor = se.factor, pause = pause,
+      point.size = point.size, line.size = line.size, trafo = trafo, densregion = densregion, ...))
   } else if (n.params == 2) {
     if (!hasNumeric(par.set)) {
       stopf("At least one parameter of the target function must be numeric!")
     }
-    renderExampleRunPlots2d(object, iters = iters, xlim = xlim, ylim = ylim, se.factor = se.factor, pause = pause,
-      point.size = point.size, line.size = line.size, trafo = trafo, ...)
+    return(renderExampleRunPlot2d(object, iter = iter, xlim = xlim, ylim = ylim, se.factor = se.factor, pause = pause,
+      point.size = point.size, line.size = line.size, trafo = trafo, ...))
   } else {
     stopf("Functions with greater than 3 parameters are not supported.")
   }
@@ -137,8 +134,3 @@ buildTrafoList = function(n.params, input.trafo) {
   }
   return(trafo)
 }
-
-# renderExampleRunPlots = function(object, iters, pause = TRUE, densregion = TRUE,
-#   se.factor = 1, xlim, ylim, point.size = 3, line.size = 1, trafo = NULL, ...) {
-#   UseMethod("renderExampleRunPlots")
-# }

@@ -22,4 +22,4 @@ run = exampleRun(obj.fun, par.set = par.set, learner = lrn, control = ctrl,
 
 print(run)
 
-res = autoplot(run, pause = TRUE)
+plotExampleRun(run, pause = TRUE)

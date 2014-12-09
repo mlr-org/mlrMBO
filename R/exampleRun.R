@@ -3,8 +3,10 @@
 #' Usually used for 1D or 2D examples,
 #' useful for figuring out how stuff works and for teaching purposes.
 #' Currently only parameter spaces with numerical parameters are supported.
-#' For visualization, run \code{autoplot} on the resulting object.
-#' What is displayed is documented here: \code{\link{autoplot.MBOExampleRun}}.
+#' For visualization, run \code{plotExampleRun} on the resulting object.
+#' What is displayed is documented here: \code{\link{plotExampleRun}}.
+#' Rendering the plots without displaying them is possible via the function
+#' \code{\link{renderExampleRunPlot}}.
 #'
 #' Please note the following things:
 #' - The true objective function (and later everything which is predicted from our surrogate model)
