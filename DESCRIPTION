@@ -41,7 +41,8 @@ Suggests:
     randomForest,
     rpart,
     soobench,
-    testthat
+    testthat,
+    eaf
 LazyData: yes
 ByteCompile: yes
 Version: 1.0
