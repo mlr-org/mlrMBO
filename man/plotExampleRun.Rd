@@ -5,8 +5,8 @@
 displays them.}
 \usage{
 plotExampleRun(object, iters, pause = TRUE, densregion = TRUE,
-  se.factor = 1, xlim, ylim, point.size = 3, line.size = 1,
-  trafo = NULL, ...)
+  se.factor = 1, xlim = NULL, ylim = NULL, point.size = 3,
+  line.size = 1, trafo = NULL, ...)
 }
 \arguments{
 \item{object}{[\code{function}]\cr
@@ -68,14 +68,16 @@ Nothing.
 }
 \description{
 The graphical output depends on the target function at hand.
-For 1D numeric functions the upper plot shows the true function (if known),
+- For 1D numeric functions the upper plot shows the true function (if known),
 the model and the (infill) points. The lower plot shows the infill criterion.
-For 2D mixed target functions only one plot is displayed.
-For 2D numeric only target functions up to four plots are presented to the
-viewer:
-- levelplot of the true function landscape (with [infill] points),
-- levelplot of the model landscape (with [infill] points),
-- levelplot of the infill criterion
-- levelplot of the standard error (only if learner supports standard error estimation).
+- For 2D mixed target functions only one plot is displayed.
+- For 2D numeric only target functions up to four plots are presented to the
+  viewer:
+  - levelplot of the true function landscape (with [infill] points),
+  - levelplot of the model landscape (with [infill] points),
+  - levelplot of the infill criterion
+  - levelplot of the standard error (only if learner supports standard error estimation).
+- For bi-criteria target functions the upper plot shows the target space and the lower
+  plot displays the x-space.
 }
 

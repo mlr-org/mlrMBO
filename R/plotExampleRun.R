@@ -2,15 +2,17 @@
 #' displays them.
 #'
 #' The graphical output depends on the target function at hand.
-#' For 1D numeric functions the upper plot shows the true function (if known),
+#' - For 1D numeric functions the upper plot shows the true function (if known),
 #' the model and the (infill) points. The lower plot shows the infill criterion.
-#' For 2D mixed target functions only one plot is displayed.
-#' For 2D numeric only target functions up to four plots are presented to the
-#' viewer:
-#' - levelplot of the true function landscape (with [infill] points),
-#' - levelplot of the model landscape (with [infill] points),
-#' - levelplot of the infill criterion
-#' - levelplot of the standard error (only if learner supports standard error estimation).
+#' - For 2D mixed target functions only one plot is displayed.
+#' - For 2D numeric only target functions up to four plots are presented to the
+#'   viewer:
+#'   - levelplot of the true function landscape (with [infill] points),
+#'   - levelplot of the model landscape (with [infill] points),
+#'   - levelplot of the infill criterion
+#'   - levelplot of the standard error (only if learner supports standard error estimation).
+#' - For bi-criteria target functions the upper plot shows the target space and the lower
+#'   plot displays the x-space.
 #'
 #' @param object [\code{function}]\cr
 #'   Objective function.
@@ -59,34 +61,47 @@
 #' @export
 plotExampleRun = function(object, iters, pause = TRUE, 
   densregion = TRUE, se.factor = 1,
-  xlim, ylim,
+  xlim = NULL, ylim = NULL,
   point.size = 3, line.size = 1,
   trafo = NULL, ...) {
 	iters.max = object$control$iters
 	if (missing(iters)) {
 		iters = 1:iters.max
-  	}
-  	assertInteger(iters, lower = 0L, upper = iters.max, any.missing = FALSE)
+  }
+  assertInteger(iters, lower = 0L, upper = iters.max, any.missing = FALSE)
 	assertFlag(pause)
-  	assertFlag(densregion)
-  	assertNumber(se.factor, lower = 0)
-  	assertNumber(point.size, lower = 1)
-  	assertNumber(line.size, lower = 1)
+  assertFlag(densregion)
+  assertNumber(se.factor, lower = 0)
+  assertNumber(point.size, lower = 1)
+  assertNumber(line.size, lower = 1)
 
-  	if (!missing(xlim))
-    	assertNumeric(xlim, len = 2L, any.missing = FALSE)
-  	if (!missing(ylim))
-   		assertNumeric(ylim, len = 2L, any.missing = FALSE)
+	if (!is.null(xlim))
+  	assertNumeric(xlim, len = 2L, any.missing = FALSE)
+	if (!is.null(ylim))
+ 		assertNumeric(ylim, len = 2L, any.missing = FALSE)
 
 	requirePackages("gridExtra", why = "plotExampleRun")
 	
-	for (iter in iters) {		
+  # Helper to arragne plot via gridExtra and pause process
+  arrangePlots = function(plots) {
+    plots = Filter(Negate(isScalarNA), plots)
+    n.plots = length(plots)
+    n.row = if (n.plots <= 2) 2L else { if (n.plots <= 3) 1L else 2L }
+    do.call("grid.arrange", c(plots, nrow = n.row, main = "test"))
+    pause()  
+  }
+
+	for (iter in iters) {
+    # get rendered plot data		
 		plots = renderExampleRunPlot(object, iter = iter, densregion = densregion, se.factor = se.factor,
 			xlim = xlim, ylim = ylim, point.size = point.size, line.size = line.size, trafo = trafo, ...)
-  	plots = Filter(Negate(isScalarNA), plots)
-  	n.plots = length(plots)
-  	n.row = if (n.plots <= 2) 2L else { if (n.plots <= 3) 1L else 2L }
-  	do.call("grid.arrange", c(plots, nrow = n.row, main = "test"))
-  	pause()
+    if (!inherits(plots, "ggplot")) {
+      # in this case we have multipoint proposal with parego: list of plots for each proposed point
+      for (jter in 1:length(plots)) {
+        arrangePlots(plots[[jter]])
+      }
+    } else {
+      arrangePlots(plots)
+    }
 	}
 }

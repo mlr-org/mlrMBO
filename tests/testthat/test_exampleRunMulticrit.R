@@ -16,10 +16,8 @@ test_that("exampleRunMulticrit", {
 
     run = exampleRunMultiCrit(fun, par.set, learner, control, points.per.dim = 4L,
       nsga2.args = list(popsize = 4L, generations = 2L), ref.point = c(11, 11))
-    p = autoplot.MBOExampleRunMultiCrit(run, pause = FALSE)
-    print(p)
+    res = renderExampleRunPlot(run, iter = 1L)
   }
-
 
   fun1 = makeMBOFunction(mco::zdt1)
   par.set1 = makeNumericParamSet("x", lower = 0, upper = 1, len = 2L)

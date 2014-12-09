@@ -4,8 +4,8 @@
 #' Only available for 2D -> 2D examples,
 #' useful for figuring out how stuff works and for teaching purposes.
 #' Currently only parameter spaces with numerical parameters are supported.
-#' For visualization, run \code{autoplot} on the resulting object.
-#' What is displayed is documented here: \code{\link{autoplot.MBOExampleRunMultiCrit}}.
+#' For visualization, run \code{plotExampleRun} on the resulting object.
+#' What is displayed is documented here: \code{\link{plotExampleRun}}.
 #'
 #' @param fun [\code{function}]\cr
 #'   Target function. See \code{\link{mbo}} for details.
