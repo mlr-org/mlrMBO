@@ -15,18 +15,15 @@
 #'   plot displays the x-space.
 #'
 #' @param object [\code{function}]\cr
-#'   Objective function.
+#'   \code{MBOExampleRun} or \code{MBOExampleRunMulticrit} object.
 #' @param iters [\code{integer}]\cr
-#'   Selected iterations of \code{x} to produce plots.
+#'   Selected iterations of \code{object} to produce plots.
 #'   Default is all iterations.
 #' @param pause [\code{logical(1)}]\cr
 #'   Should the process be paused after each iteration?
 #'   Default is \code{TRUE}.
 #' @param densregion [\code{logical(1)}]\cr
-#'   Should the background be shaded by the density of the
-#'   posterior distribution?
-#'   Looks nice, but is currently pretty slow. You might want to
-#'   disable this if you want to do stuff more interactively.
+#'   Should the background be shaded?
 #'   Default is \code{TRUE}.
 #' @param se.factor [\code{numeric(1)}]\cr
 #'   If the model provides local standard error estimation,

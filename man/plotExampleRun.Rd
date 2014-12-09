@@ -10,10 +10,10 @@ plotExampleRun(object, iters, pause = TRUE, densregion = TRUE,
 }
 \arguments{
 \item{object}{[\code{function}]\cr
-Objective function.}
+\code{MBOExampleRun} or \code{MBOExampleRunMulticrit} object.}
 
 \item{iters}{[\code{integer}]\cr
-Selected iterations of \code{x} to produce plots.
+Selected iterations of \code{object} to produce plots.
 Default is all iterations.}
 
 \item{pause}{[\code{logical(1)}]\cr
@@ -21,10 +21,7 @@ Should the process be paused after each iteration?
 Default is \code{TRUE}.}
 
 \item{densregion}{[\code{logical(1)}]\cr
-Should the background be shaded by the density of the
-posterior distribution?
-Looks nice, but is currently pretty slow. You might want to
-disable this if you want to do stuff more interactively.
+Should the background be shaded?
 Default is \code{TRUE}.}
 
 \item{se.factor}{[\code{numeric(1)}]\cr

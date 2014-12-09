@@ -1,25 +1,25 @@
-#' Renders plots for exampleRun objects, either in 1D or 2D, or exampleRunMultiCrit objects.
+#' Renders plots for exampleRun objects, either in 1D or 2D, or 
+#' exampleRunMultiCrit objects.
 #'
-#' Each plot will show the following elements per iteration:
-#' - The true objective function (solid line).
-#' - The surrogate approximation, represented by its mean response.
-#' - Surrogate mean +- 1 standard deviation, from local uncertainty.
-#' - Infill criterion.
-#'
-#' In both plots the following elements are present
-#' - Initial design points
-#' - Points from previous sequential iterations
-#' - Proposed point in current iteration.
+#' The graphical output depends on the target function at hand.
+#' - For 1D numeric functions the upper plot shows the true function (if known),
+#' the model and the (infill) points. The lower plot shows the infill criterion.
+#' - For 2D mixed target functions only one plot is displayed.
+#' - For 2D numeric only target functions up to four plots are presented to the
+#'   viewer:
+#'   - levelplot of the true function landscape (with [infill] points),
+#'   - levelplot of the model landscape (with [infill] points),
+#'   - levelplot of the infill criterion
+#'   - levelplot of the standard error (only if learner supports standard error estimation).
+#' - For bi-criteria target functions the upper plot shows the target space and the lower
+#'   plot displays the x-space.
 #'
 #' @param object [\code{function}]\cr
-#'   Objective function.
+#'   \code{MBOExampleRun} or \code{MBOExampleRunMulticrit} object.
 #' @param iter [\code{integer}]\cr
-#'   Selected iteration of \code{x} to render plots for.
+#'   Selected iteration of \code{object} to render plots for.
 #' @param densregion [\code{logical(1)}]\cr
-#'   Should the background be shaded by the density of the
-#'   posterior distribution?
-#'   Looks nice, but is currently pretty slow. You might want to
-#'   disable this if you want to do stuff more interactively.
+#'   Should the background be shaded?
 #'   Default is \code{TRUE}.
 #' @param se.factor [\code{numeric(1)}]\cr
 #'   If the model provides local standard error estimation,
@@ -51,7 +51,7 @@
 #' @param ... [any]\cr
 #'   Currently not used.
 #' @return [\code{list}]. List containing seperate ggplot object. The number of plots depends on
-#'   the type of MBO problem:
+#'   the type of MBO problem. See the description for details.
 #' @export
 renderExampleRunPlot =  function(object, iter, densregion = TRUE,
   se.factor = 1, xlim = NULL, ylim = NULL, point.size = 3, line.size = 1, trafo = NULL, ...) {
