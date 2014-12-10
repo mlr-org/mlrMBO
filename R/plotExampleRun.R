@@ -56,43 +56,43 @@
 #'   Currently not used.
 #' @return Nothing.
 #' @export
-plotExampleRun = function(object, iters, pause = TRUE, 
+plotExampleRun = function(object, iters, pause = TRUE,
   densregion = TRUE, se.factor = 1,
   xlim = NULL, ylim = NULL,
   point.size = 3, line.size = 1,
   trafo = NULL, ...) {
-	iters.max = object$control$iters
-	if (missing(iters)) {
-		iters = 1:iters.max
+  iters.max = object$control$iters
+  if (missing(iters)) {
+    iters = 1:iters.max
   }
   assertInteger(iters, lower = 0L, upper = iters.max, any.missing = FALSE)
-	assertFlag(pause)
+  assertFlag(pause)
   assertFlag(densregion)
   assertNumber(se.factor, lower = 0)
   assertNumber(point.size, lower = 1)
   assertNumber(line.size, lower = 1)
 
-	if (!is.null(xlim))
-  	assertNumeric(xlim, len = 2L, any.missing = FALSE)
-	if (!is.null(ylim))
- 		assertNumeric(ylim, len = 2L, any.missing = FALSE)
+  if (!is.null(xlim))
+    assertNumeric(xlim, len = 2L, any.missing = FALSE)
+  if (!is.null(ylim))
+    assertNumeric(ylim, len = 2L, any.missing = FALSE)
 
-	requirePackages("gridExtra", why = "plotExampleRun")
-	
+  requirePackages("gridExtra", why = "plotExampleRun")
+
   # Helper to arragne plot via gridExtra and pause process
   arrangePlots = function(plots) {
     plots = Filter(Negate(isScalarNA), plots)
     n.plots = length(plots)
     n.row = if (n.plots <= 2) 2L else { if (n.plots <= 3) 1L else 2L }
-    do.call("grid.arrange", c(plots, nrow = n.row, main = "test"))
-    pause()  
+    do.call(grid.arrange, plots)
+    pause()
   }
 
-	for (iter in iters) {
-    # get rendered plot data		
-		plots = renderExampleRunPlot(object, iter = iter, densregion = densregion, se.factor = se.factor,
-			xlim = xlim, ylim = ylim, point.size = point.size, line.size = line.size, trafo = trafo, ...)
-    if (!inherits(plots, "ggplot")) {
+  for (iter in iters) {
+    # get rendered plot data
+    plots = renderExampleRunPlot(object, iter = iter, densregion = densregion, se.factor = se.factor,
+      xlim = xlim, ylim = ylim, point.size = point.size, line.size = line.size, trafo = trafo, ...)
+    if (!inherits(plots[[1L]], "ggplot")) {
       # in this case we have multipoint proposal with parego: list of plots for each proposed point
       for (jter in 1:length(plots)) {
         arrangePlots(plots[[jter]])
@@ -100,5 +100,5 @@ plotExampleRun = function(object, iters, pause = TRUE,
     } else {
       arrangePlots(plots)
     }
-	}
+  }
 }
