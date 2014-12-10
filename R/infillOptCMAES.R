@@ -49,7 +49,7 @@ infillOptCMAES = function(infill.crit, model, control, par.set, opt.path, design
       start = sampleValue(par.set)
     }
     start = unlist(start)
-    results[[i]] = cma_es(par = start, fn = f, lower = low, upper = upp, control = control$infill.opt.cmaes.control)
+    results[[i]] = cmaes::cma_es(par = start, fn = f, lower = low, upper = upp, control = control$infill.opt.cmaes.control)
   }
   ys = extractSubList(results, "value")
   ys = ys[!is.infinite(ys)]

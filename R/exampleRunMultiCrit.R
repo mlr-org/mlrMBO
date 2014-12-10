@@ -79,7 +79,7 @@ exampleRunMultiCrit= function(fun, par.set, learner, control, points.per.dim = 5
 
   requirePackages("mco", why = "exampleRunMultiCrit")
   args = insert(args, nsga2.args)
-  nsga2.res = do.call(nsga2, args)
+  nsga2.res = do.call(mco::nsga2, args)
   nsga2.paretoset = setColNames(as.data.frame(nsga2.res$par[nsga2.res$pareto.optimal, ]), names.x)
   nsga2.paretofront = nsga2.res$value[nsga2.res$pareto.optimal, ]
   if (is.null(ref.point))

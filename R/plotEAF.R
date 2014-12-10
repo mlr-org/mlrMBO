@@ -23,7 +23,7 @@
 plotEAF = function(opt.paths, xlim = NULL, ylim = NULL, ...) {
   requirePackages("eaf", why = "plotEAF")
 
-  # we need a list of lists with optimization pathes 
+  # we need a list of lists with optimization pathes
   assertList(opt.paths, min.len = 1L, types = "list", names = "unique")
   algos = names(opt.paths)
   y.names = NULL
@@ -52,7 +52,7 @@ plotEAF = function(opt.paths, xlim = NULL, ylim = NULL, ...) {
           collapse(y.names), collapse(cns))
       }
       if (!all(minimize == run$minimize)) {
-        stop("Must always have the same 'minimize' settings for objectives in opt path: %s (first one taken). 
+        stop("Must always have the same 'minimize' settings for objectives in opt path: %s (first one taken).
           But found here: %s", collapse(minimize), collapse(run$minimize))
       }
       # add column for algorithm and replication
@@ -79,6 +79,6 @@ plotEAF = function(opt.paths, xlim = NULL, ylim = NULL, ...) {
   args$ylim = ylim
   args$col = c("darkgrey", "darkgrey", "darkgrey", "black", "black", "black")
   args$lty = c("solid", "dashed", "dotdash", "solid", "dashed", "dotdash")
-  do.call(eafplot, args)
+  do.call(eaf::eafplot, args)
   return(data)
 }

@@ -18,7 +18,7 @@ infillOptMultiCritNSGA2 = function(infill.crit, models, control, par.set, opt.pa
         par.set = par.set, design = design, iter = iter, ...)
     }))
   }
-  res = nsga2(fun.tmp, idim = getParamNr(par.set, devectorize = TRUE), odim = control$number.of.targets,
+  res = mco::nsga2(fun.tmp, idim = getParamNr(par.set, devectorize = TRUE), odim = control$number.of.targets,
     lower.bounds = getLower(par.set), upper.bounds = getUpper(par.set), vectorized = TRUE,
     popsize = control$infill.opt.nsga2.popsize, generations = control$infill.opt.nsga2.generations,
     cprob = control$infill.opt.nsga2.cprob, cdist = control$infill.opt.nsga2.cdist,
@@ -35,13 +35,13 @@ infillOptMultiCritNSGA2 = function(infill.crit, models, control, par.set, opt.pa
   candidate.vals = asMatrixCols(lapply(1:m, function(i) {
     # we need to make sure mininimize in control is a scalar, so we can multiply it in infill crits...
     control2$minimize = control$minimize[i]
-    
+
     newdata = as.data.frame(res$par)
     colnames(newdata) = rep.pids
     hv.contr.crit(points = newdata, model = models[[i]], control = control2,
       par.set = par.set, design = design, iter = iter, ...)
   }))
-  
+
   prop.points = matrix(nrow = 0, ncol = ncol(candidate.points))
   prop.vals = matrix(nrow = 0, ncol = ncol(candidate.vals))
   colnames(prop.vals) = control$y.name

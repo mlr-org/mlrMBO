@@ -62,13 +62,13 @@ exampleRun = function(fun, par.set, global.opt = NA_real_, learner, control,
   }
   assertClass(control, "MBOControl")
 
-  if (missing(par.set) && is_soo_function(fun)) {
+  if (missing(par.set) && soobench::is_soo_function(fun)) {
     par.set = extractParamSetFromSooFunction(fun)
   }
   assertClass(par.set, "ParamSet")
 
-  if (missing(global.opt) && is_soo_function(fun)) {
-    global.opt = global_minimum(fun)$val
+  if (missing(global.opt) && soobench::is_soo_function(fun)) {
+    global.opt = soobench::global_minimum(fun)$val
   }
   assertNumber(global.opt, na.ok = TRUE)
 
@@ -109,7 +109,7 @@ exampleRun = function(fun, par.set, global.opt = NA_real_, learner, control,
     )
   }
 
-  if (is_soo_function(fun)) {
+  if (soobench::is_soo_function(fun)) {
     fun = makeMBOFunction(fun)
   }
 

@@ -30,7 +30,7 @@ distToNB = function(X, y) {
 nds_1d_selection = function(values, n = 1, index = 1, ...) {
   # order according to non-dominated front, then break ties by objective value at index
   # if still tied, break randomly
-  ranks = nds_rank(values)
+  ranks = emoa::nds_rank(values)
   o = order(ranks, values[index, ], runif(length(ranks)))
   return(tail(o, n))
 }
@@ -71,9 +71,9 @@ proposePointsMOIMBO = function(models, par.set, control, opt.path, iter, ...) {
   d = sum(getParamLengths(par.set))
   mu = n
   # FIXME: what are good defaults?
-  mutate = pm_operator(control$multipoint.multicrit.pm.eta, control$multipoint.multicrit.pm.p,
+  mutate =  emoa::pm_operator(control$multipoint.multicrit.pm.eta, control$multipoint.multicrit.pm.p,
     getLower(par.set), getUpper(par.set))
-  crossover = sbx_operator(control$multipoint.multicrit.sbx.eta, control$multipoint.multicrit.sbx.p,
+  crossover = emoa::sbx_operator(control$multipoint.multicrit.sbx.eta, control$multipoint.multicrit.sbx.p,
     getLower(par.set), getUpper(par.set))
   mydist = switch(control$multipoint.multicrit.dist,
     nearest.neighbor = distToNN,
@@ -127,9 +127,9 @@ proposePointsMOIMBO = function(models, par.set, control, opt.path, iter, ...) {
 
       # get elements we want to remove from current pop as index vector
       to.kill = if (control$multipoint.multicrit.selection == "hypervolume") {
-        nds_hv_selection(t(Y))
+        emoa::nds_hv_selection(t(Y))
       } else if (control$multipoint.multicrit.selection == "crowdingdist") {
-        nds_cd_selection(t(Y))
+        emoa::nds_cd_selection(t(Y))
       } else if (control$multipoint.multicrit.selection == "first") {
         nds_1d_selection(t(Y), index = 1)
       } else if (control$multipoint.multicrit.selection == "last") {

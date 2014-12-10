@@ -108,7 +108,7 @@ renderExampleRunPlot2d = function(x, iter,
     pl = pl + ylab(NULL)
     pl = pl + theme(
       plot.title = element_text(size = 11, face = "bold"), # decrease font size and weight
-      plot.margin = unit(c(0.2, 0.2, 0.2, 0.2), "cm") # adapt margins
+      plot.margin = grid::unit(c(0.2, 0.2, 0.2, 0.2), "cm") # adapt margins
     )
     return(pl)
   }
@@ -130,7 +130,7 @@ renderExampleRunPlot2d = function(x, iter,
     if (name.z != "ei") {
       pl = pl + stat_contour(aes_string(fill = name.z), binwidth = 5, colour = "gray", alpha = 0.8)
     }
-    
+
     # Keep in mind, that for the points the z value is always "name.y"
     pl = pl + geom_point(data = points, aes_string(x = name.x1, y = name.x2, z = name.y,
         colour = "type", shape = "type"), size = point.size)

@@ -138,7 +138,7 @@ renderExampleRunPlot1d = function(x, iter,
     # ggplot stuff
     n = nrow(evals)
 
-    # data frame with real fun and model fun evaluations      
+    # data frame with real fun and model fun evaluations
     gg.fun = data.frame(
       x = rep(evals[, names.x], 2),
       y = c(evals[, name.y], evals[, "yhat"]),
@@ -147,7 +147,7 @@ renderExampleRunPlot1d = function(x, iter,
       type = as.factor(rep(c(name.y, "yhat"), each = n))
     )
     names(gg.fun) = c(names.x, name.y, "se.min", "se.max", "type")
-    
+
     # data frame with points of different type (initial design points, infill points, proposed points)
     gg.points = buildPointsData(opt.path, names.x, name.y, idx, idx.init, idx.seq, idx.proposed)
 
@@ -201,7 +201,7 @@ renderExampleRunPlot1d = function(x, iter,
       legend.position = "top",
       legend.box = "horizontal",
       axis.text.x = element_blank(),
-      panel.margin = unit(0, "lines"),
+      panel.margin = grid::unit(0, "lines"),
       plot.title = element_text(size = 11, face = "bold")
     )
 

@@ -12,9 +12,9 @@ infillOptEA = function(infill.crit, model, control, par.set, opt.path, design, i
   # (mu + lambda) strategy
   mu = control$infill.opt.ea.mu
   lambda = control$infill.opt.ea.lambda
-  mutate = pm_operator(control$infill.opt.ea.pm.eta, control$infill.opt.ea.pm.p,
+  mutate = emoa::pm_operator(control$infill.opt.ea.pm.eta, control$infill.opt.ea.pm.p,
     getLower(par.set), getUpper(par.set))
-  crossover = sbx_operator(control$infill.opt.ea.sbx.eta, control$infill.opt.ea.sbx.p,
+  crossover = emoa::sbx_operator(control$infill.opt.ea.sbx.eta, control$infill.opt.ea.sbx.p,
     getLower(par.set), getUpper(par.set))
 
   best.x = NULL

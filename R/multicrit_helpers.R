@@ -2,14 +2,14 @@
 getDominatedHV = function(points, ref.point, minimize) {
   mults = ifelse(minimize, 1, -1)
   points2 = t(as.matrix(points) %*% diag(mults))
-  dominated_hypervolume(points2, ref.point)
+  emoa::dominated_hypervolume(points2, ref.point)
 }
 
 # returns logical index
 isDominated = function(points, minimize) {
   mults = ifelse(minimize, 1, -1)
   points2 = t(as.matrix(points) %*% diag(mults))
-  is_dominated(points2)
+  emoa::is_dominated(points2)
 }
 
 # get subset of point which are non-dominated
@@ -57,10 +57,10 @@ evalCritFunForMultiCritModels = function(infill.crit.fun, points, models, contro
       control2$minimize = control$minimize[i]
       infill.crit.fun(points, models[[i]], control2, par.set, design, iter)
   }))
-  
+
   # FIXME: This is the second time we have to calc this, we also to it
   # in infillOptNSGA2. could we avoid this?
-  
+
   # We also want to have the hypervolume contribution for every new point
   # But we use a different infill.crit for candidate selection
   # So, calc the second infill.crit, two
@@ -70,7 +70,7 @@ evalCritFunForMultiCritModels = function(infill.crit.fun, points, models, contro
     control2$minimize = control$minimize[i]
     hv.contr.crit(points, models[[i]], control2, par.set, design, iter)
   }))
-  
+
   # Now, calc the hv contribution
   ys = design[, control$y.name]
   ref.point = getMultiCritRefPoint(design[, control$y.name], control)
@@ -81,7 +81,7 @@ evalCritFunForMultiCritModels = function(infill.crit.fun, points, models, contro
     # add point to ys, since next hv.contr. is with reference to larger front
     ys = rbind(ys, candidate.vals[i, ])
   }
-  
+
   return(cbind(crit.vals, hv.contr))
 }
 
