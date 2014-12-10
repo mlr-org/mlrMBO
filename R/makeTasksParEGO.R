@@ -23,7 +23,7 @@ makeTasksParEGO = function(par.set, opt.path, control, all.possible.weights) {
   if (control$multicrit.parego.normalize == "standard") {
     y = normalize(y, method = "range", margin = 2L)
   } else {
-    front = paretoFilter(y)
+    front = mco::paretoFilter(y)
     if (nrow(front) != 1) {
       y.max = apply(y, 2, max)
       y.min = apply(y, 2, min)
