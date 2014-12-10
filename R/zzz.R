@@ -9,6 +9,7 @@
 #' @import ParamHelpers
 #' @import plyr
 #' @import reshape2
+#' @useDynLib mlrMBO c_sms_indicator c_eps_indicator
 NULL
 
 .onAttach = function(libname, pkgname) {
