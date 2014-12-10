@@ -23,6 +23,11 @@
 #'   Target function. See \code{\link{mbo}} for details. It is also possible to
 #'   provide a function from the \code{soobench} package.
 #' @template arg_parset
+#' @param design [\code{data.frame} | NULL]\cr
+#'   Initial design as data frame.
+#'   If the parameters have corresponding trafo functions,
+#'   the design must not be transformed before it is passed!
+#'   If \code{NULL}, one is constructed from the settings in \code{control}.
 #' @param global.opt [\code{numeric(1)}]\cr
 #'   Objective value of global optimum, if known.
 #'   \code{NA} means not known, which is the default.
@@ -53,7 +58,7 @@
 #'   Further arguments passed to the learner.
 #' @return [\code{MBOExampleRun}]
 #' @export
-exampleRun = function(fun, par.set, global.opt = NA_real_, learner, control,
+exampleRun = function(fun, par.set, design = NULL, global.opt = NA_real_, learner, control,
   points.per.dim = 50, noisy.evals = 10, show.info = NULL, fun.mean = NULL, ...) {
 
   assertFunction(fun)
@@ -124,12 +129,13 @@ exampleRun = function(fun, par.set, global.opt = NA_real_, learner, control,
   #show some info on console
   if (show.info) {
     messagef("Performing MBO on function.")
-    messagef("Initial design: %i. Sequential iterations: %i.", control$init.design.points, control$iters)
+    if (is.null(design))
+      messagef("Initial design: %i. Sequential iterations: %i.", control$init.design.points, control$iters)
     messagef("Learner: %s. Settings:\n%s", learner$id, mlr:::getHyperParsString(learner))
   }
 
   # run optimizer now
-  res = mbo(fun, par.set, learner = learner, control = control, show.info = show.info)
+  res = mbo(fun, par.set, design = design, learner = learner, control = control, show.info = show.info)
 
   # compute true y-values if deterministic function is known
   y.true = NA

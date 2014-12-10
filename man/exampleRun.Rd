@@ -3,8 +3,8 @@
 \alias{exampleRun}
 \title{Perform an mbo run on a test function and and visualize what happens.}
 \usage{
-exampleRun(fun, par.set, global.opt = NA_real_, learner, control,
-  points.per.dim = 50, noisy.evals = 10, show.info = NULL,
+exampleRun(fun, par.set, design = NULL, global.opt = NA_real_, learner,
+  control, points.per.dim = 50, noisy.evals = 10, show.info = NULL,
   fun.mean = NULL, ...)
 }
 \arguments{
@@ -14,6 +14,12 @@ provide a function from the \code{soobench} package.}
 
 \item{par.set}{[\code{\link[ParamHelpers]{ParamSet}}]\cr
 See \code{\link{mbo}}.}
+
+\item{design}{[\code{data.frame} | NULL]\cr
+Initial design as data frame.
+If the parameters have corresponding trafo functions,
+the design must not be transformed before it is passed!
+If \code{NULL}, one is constructed from the settings in \code{control}.}
 
 \item{global.opt}{[\code{numeric(1)}]\cr
 Objective value of global optimum, if known.
