@@ -1,0 +1,17 @@
+#!/usr/bin/env Rscript
+
+library(BBmisc)
+
+dir = file.path("inst/examples")
+files = list.files(dir, pattern = ".R", full.names = TRUE)
+
+for (f in files) {
+    catf("Checking example '%s'", f)
+    args = c("--verbose", "--vanilla", f)
+    output = try(system3("Rscript", args, stdout = TRUE, stderr = TRUE), silent = TRUE)
+    if (inherits(output, "try-error")) {
+        messagef("Example '%s' failed!", f)
+        messagef("Details:\n '%s", attr(output, "condition")$message)
+    }
+}
+
