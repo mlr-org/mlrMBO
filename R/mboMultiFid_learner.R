@@ -19,7 +19,9 @@ makeMultiFidWrapper = function(learner, control) {
     id = sprintf("%s.multifid", learner$id),
     next.learner = learner,
     package = learner$package,
-    cl = "MultiFidWrapper")
+    learner.subclass = "MultiFidWrapper",
+    model.subclass = "MultiFidModel"
+  )
   w$mbo.control = control
   # FIXME: this is a ugly hack
   return(addProperties(w, c("numerics")))

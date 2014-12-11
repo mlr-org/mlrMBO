@@ -1,4 +1,4 @@
-#' Renders plots for exampleRun objects, either in 1D or 2D, or 
+#' Renders plots for exampleRun objects, either in 1D or 2D, or
 #' exampleRunMultiCrit objects.
 #'
 #' The graphical output depends on the target function at hand.
@@ -260,7 +260,7 @@ renderExampleRunPlot.MBOExampleRunMultiCrit = function(object, iter, densregion 
       else
         mbo.res$models[[iter]][[j]]
       idx = getIDX(opt.path, iter)
-      weights = as.numeric(opt.path[idx$proposed, c(".weight1", ".weight2")])
+      weights = as.numeric(opt.path[idx$proposed[j], c(".weight1", ".weight2")])
       model.ok = !inherits(model, "FailureModel")
       if (model.ok) {
         xgrid2[[name.crit]] = opt.direction *
@@ -305,7 +305,6 @@ renderExampleRunPlot.MBOExampleRunMultiCrit = function(object, iter, densregion 
       pl.front = createPlFront(gg.points.front, iter)
       pl.set = createPlSet(gg.points.set)
 
-      #FIXME: why do we have these plots for each proposed point and not a 'joined' plot?
       plots[[j]] = list(pl.front = pl.front, pl.set = pl.set)
     }
   } else {

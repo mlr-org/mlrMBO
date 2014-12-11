@@ -2,7 +2,7 @@ makeMultiFidBaggingWrapper = function(learner) {
   learner = checkLearner(learner, type = "regr")
   if (learner$predict.type != "response")
     stop("Predict type of the basic learner must be 'response'.")
-  addProperties(mlr:::makeBaseWrapper(
+  x = mlr:::makeBaseWrapper(
     id = sprintf("%s.bagged", learner$id),
     next.learner = learner,
     package = learner$package,
@@ -10,7 +10,10 @@ makeMultiFidBaggingWrapper = function(learner) {
       makeIntegerLearnerParam(id = "iters", lower = 1L, default = 50L),
       makeNumericLearnerParam(id = "split", lower = 0, upper = 1, default = 2/3)),
     par.vals = list(),
-    cl = "MultiFidBaggingWrapper"), "se")
+    learner.subclass = "MultiFidBaggingWrapper",
+    model.subclass = "BaggingModel"
+  )
+  addProperties(x, "se")
 }
 
 

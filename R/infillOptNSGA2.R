@@ -48,10 +48,12 @@ infillOptMultiCritNSGA2 = function(infill.crit, models, control, par.set, opt.pa
   ys = design[, control$y.name]
 
   ref.point = getMultiCritRefPoint(design[, control$y.name], control)
+  prop.hv.contrs = numeric(control$propose.points)
   for (i in 1:control$propose.points) {
     hv.contrs = getHypervolumeContributions(xs = candidate.vals,
       ys = rbind(ys, prop.vals), ref.point = ref.point, minimize = control$minimize)
     best.ind = which.max(hv.contrs)
+    prop.hv.contrs[i] = max(hv.contrs)
     # add best to prop.points/vals and remove from candidate.point/vals
     prop.points = rbind(prop.points, candidate.points[best.ind, ])
     candidate.points = candidate.points[-best.ind, ]
@@ -62,5 +64,5 @@ infillOptMultiCritNSGA2 = function(infill.crit, models, control, par.set, opt.pa
   # FIXME: cleanup - i'm reall unsure how to set the names of prop.points technically
   prop.points = as.data.frame(prop.points)
   colnames(prop.points) = names(design[, which(colnames(design) %nin% control$y.name)])
-  return(prop.points)
+  list(prop.points = prop.points, prop.hv.contrs = prop.hv.contrs)
 }
