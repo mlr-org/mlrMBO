@@ -37,7 +37,7 @@ test_that("basic multifid works", {
     costs = function(cur, last) (last / cur)^0.5,
     cor.grid.points = 40L)
 
-  surrogat.learner = makeLearner("regr.rpart", predict.type = "response", nugget.estim = TRUE, jitter = TRUE)
+  surrogat.learner = makeLearner("regr.rpart", predict.type = "response")
   result = mbo(fun = objfun, par.set = par.set, learner = surrogat.learner, control = control)
   expect_true(inherits(result, "MultiFidResult"))
 })
