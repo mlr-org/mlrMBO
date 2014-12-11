@@ -17,6 +17,7 @@ makeMultiFidBaggingWrapper = function(learner) {
 }
 
 
+#' @export
 trainLearner.MultiFidBaggingWrapper = function(.learner, .task, .subset, .weights = NULL, iters = 50L, split = 2/3, ...) {
   .task = subsetTask(.task, subset = .subset)
   d = getTaskData(.task)
@@ -32,6 +33,7 @@ trainLearner.MultiFidBaggingWrapper = function(.learner, .task, .subset, .weight
 }
 
 
+#' @export
 predictLearner.MultiFidBaggingWrapper = function(.learner, .model, .newdata, ...) {
   models = getBaggingModels(.model)
   p = asMatrixCols(lapply(models, function(m) {
@@ -46,6 +48,7 @@ predictLearner.MultiFidBaggingWrapper = function(.learner, .model, .newdata, ...
 }
 
 
+#' @export
 makeWrappedModel.MultiFidBaggingWrapper = function(learner, learner.model, task.desc, subset, features, factor.levels, time) {
   x = NextMethod()
   addClasses(x, "BaggingModel")
