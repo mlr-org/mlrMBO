@@ -5,6 +5,7 @@ library(mlrMBO)
 library(ggplot2)
 set.seed(1)
 configureMlr(show.learner.output=FALSE)
+pause = interactive()
 
 objfun = function(x) {
   if (x$foo == "a") {
@@ -28,4 +29,4 @@ run = exampleRun(objfun, par.set = par.set, learner = lrn, control = ctrl,
 
 print(run)
 
-plotExampleRun(run, pause = TRUE, densregion = TRUE)
+plotExampleRun(run, pause = pause, densregion = TRUE)

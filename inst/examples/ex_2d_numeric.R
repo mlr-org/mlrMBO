@@ -5,6 +5,7 @@ library(ggplot2)
 library(soobench)
 set.seed(1)
 configureMlr(show.learner.output = FALSE)
+pause = interactive()
 
 set.seed(423)
 
@@ -17,9 +18,9 @@ ctrl = setMBOControlInfill(ctrl, crit = "ei", opt = "focussearch", opt.focussear
 
 lrn = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
 
-run = exampleRun(obj.fun, par.set = par.set, learner = lrn, control = ctrl, 
+run = exampleRun(obj.fun, par.set = par.set, learner = lrn, control = ctrl,
 	points.per.dim = 50, show.info = TRUE)
 
 print(run)
 
-plotExampleRun(run, pause = TRUE)
+plotExampleRun(run, pause = pause)

@@ -2,6 +2,7 @@ load_all()
 source("todo-files/test_functions.R")
 
 set.seed(123)
+pause = interactive()
 
 # objective function and param regions
 objfun = addDistortion(sasena, yshift)

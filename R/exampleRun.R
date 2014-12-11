@@ -277,8 +277,7 @@ evaluate = function(fun, par.set, n.params, par.types, noisy, noisy.evals, point
 #'
 #' @param run [\code{MBOExampleRun}]\cr
 #'   Object of type \code{MBOExampleRun}.
-#' @return [\code{numeric(1)}]\cr
-#'   (Estimated) global optimum.
+#' @return [\code{numeric(1)}]. (Estimated) global optimum.
 #' @export
 getGlobalOpt = function(run) {
   ifelse(is.na(run$global.opt), run$global.opt.estim, run$global.opt)

@@ -5,6 +5,7 @@ library(mco)
 
 set.seed(1)
 configureMlr(show.learner.output = FALSE)
+pause = interactive()
 
 # f = makeMBOFunction(function(x) {
   # c(x^2, (x - 2)^2)
@@ -25,4 +26,4 @@ ctrl = setMBOControlMultiCrit(ctrl, parego.s = 100)
 run = exampleRunMultiCrit(f, ps, learner, ctrl, points.per.dim = 50,
   show.info = TRUE, nsga2.args = list(), ref.point = c(11, 11))
 
-plotExampleRun(run, pause = TRUE)
+plotExampleRun(run, pause = pause)

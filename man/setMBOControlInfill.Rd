@@ -3,10 +3,10 @@
 \alias{setMBOControlInfill}
 \title{Extends mbo control object with infill criteria and infill optimizer options.}
 \usage{
-setMBOControlInfill(control, crit = NULL, crit.eqi.beta = 0.75,
-  crit.lcb.lambda = 1, crit.lcb.pi = NULL, filter.proposed.points = NULL,
-  filter.proposed.points.tol = NULL, opt = "focussearch",
-  opt.restarts = NULL, opt.focussearch.maxit = NULL,
+setMBOControlInfill(control, crit = NULL, interleave.random.points = 0L,
+  crit.eqi.beta = 0.75, crit.lcb.lambda = 1, crit.lcb.pi = NULL,
+  filter.proposed.points = NULL, filter.proposed.points.tol = NULL,
+  opt = "focussearch", opt.restarts = NULL, opt.focussearch.maxit = NULL,
   opt.focussearch.points = NULL, opt.cmaes.control = NULL,
   opt.ea.maxit = NULL, opt.ea.mu = NULL, opt.ea.sbx.eta = NULL,
   opt.ea.sbx.p = NULL, opt.ea.pm.eta = NULL, opt.ea.pm.p = NULL,
@@ -27,6 +27,11 @@ How should infill points be rated. Possible parameter values are:
 \dQuote{lcb}: Lower confidence bound.
 \dQuote{multiFid}: Multifidelity: Expected improvement on different levels of the perfomance parameter defined in the \code{MBOMultiFidControl}.
 Alternatively, you may pass a function name as string.}
+
+\item{interleave.random.points}{[\code{integer(1)}]\cr
+Add \code{interleave.random.points} uniformly sampled points additionally to the
+regular proposed points in each step.
+Default is 0.}
 
 \item{crit.eqi.beta}{[\code{numeric(1)}]\cr
 Beta parameter for expected quantile improvement criterion.
