@@ -95,17 +95,17 @@ setMBOControlMultiPoint = function(control,
   assertChoice(control$multipoint.multicrit.selection, choices = c("hypervolume", "crowdingdist", "first", "last"))
 
   if (!is.null(multicrit.maxit)) {
-    multicrit.maxit = asCount(multicrit.maxit) 
+    multicrit.maxit = asCount(multicrit.maxit)
   }
   control$multipoint.multicrit.maxit = coalesce(multicrit.maxit, control$multipoint.multicrit.maxit, 100L)
   assertCount(control$multipoint.multicrit.maxit, na.ok = FALSE, positive = TRUE)
 
   control$multipoint.multicrit.sbx.eta = coalesce(multicrit.sbx.eta, control$multipoint.multicrit.sbx.eta, 15)
   assertNumber(control$multipoint.multicrit.sbx.eta, na.ok = FALSE, lower = 0)
- 
+
   control$multipoint.multicrit.sbx.p = coalesce(multicrit.sbx.p, control$multipoint.multicrit.sbx.p, 1)
   assertNumber(control$multipoint.multicrit.sbx.p, na.ok = FALSE, lower = 0, upper = 1)
- 
+
   control$multipoint.multicrit.pm.eta = coalesce(multicrit.pm.eta, control$multipoint.multicrit.pm.eta, 15)
   assertNumber(control$multipoint.multicrit.pm.eta, na.ok = FALSE, lower = 0)
 
