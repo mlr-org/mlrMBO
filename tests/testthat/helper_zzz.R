@@ -1,2 +1,3 @@
 set.seed(1)
-options(mlrMBO.debug.mode = TRUE)
+configureMlr(show.learner.output = FALSE)
+options(mlrMBO.show.info = FALSE, mlrMBO.debug.mode = TRUE)
