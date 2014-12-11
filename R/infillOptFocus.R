@@ -18,6 +18,8 @@ infillOptFocus = function(infill.crit, model, control, par.set, opt.path, design
       # predict on design where NAs were imputed, but return proposed points with NAs
       newdesign = generateDesign(control$infill.opt.focussearch.points, ps2,
         randomLHS)
+      # convert to param encoding our model was trained on and can use
+      newdesign = convertDataFrameCols(newdesign, ints.as.num = TRUE, logicals.as.factor = TRUE)
       y = infill.crit(newdesign, model, control, ps2, design, iter, ...)
       # get current best value
       local.index = getMinIndex(y, ties.method = "random")
