@@ -2,7 +2,7 @@ makeMultiFidBaggingWrapper = function(learner) {
   learner = checkLearner(learner, type = "regr")
   if (learner$predict.type != "response")
     stop("Predict type of the basic learner must be 'response'.")
-  x = mlr:::makeBaseWrapper(
+  x = mlr:::makeHomogeneousEnsemble(
     id = sprintf("%s.bagged", learner$id),
     next.learner = learner,
     package = learner$package,
@@ -11,7 +11,7 @@ makeMultiFidBaggingWrapper = function(learner) {
       makeNumericLearnerParam(id = "split", lower = 0, upper = 1, default = 2/3)),
     par.vals = list(),
     learner.subclass = "MultiFidBaggingWrapper",
-    model.subclass = "BaggingModel"
+    model.subclass = "MultiFidBaggingModel"
   )
   addProperties(x, "se")
 }
@@ -28,7 +28,7 @@ trainLearner.MultiFidBaggingWrapper = function(.learner, .task, .subset, .weight
     w = .weights[bag]
     train(.learner$next.learner, .task, subset = bag, weights = w)
   }, simplify = FALSE)
-  mlr:::makeChainModel(next.model = models, cl = "BaggingModel")
+  mlr:::makeHomChainModel(.learner, models)
 }
 
 
