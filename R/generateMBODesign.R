@@ -33,6 +33,13 @@ generateMBODesign = function(design, fun, par.set, opt.path, control, show.info,
   if (is.null(design)) {
     design.x = generateDesign(control$init.design.points, par.set,
       fun = control$init.design.fun, fun.args = control$init.design.args, trafo = FALSE)
+    points.diff = control$init.design.points - nrow(design.x)
+    if (points.diff > 0L) {
+      warningf("Could not generate enough points for init design: Only got %i / %i. Augmenting with %i random points now!",
+        nrow(design.x), control$init.design.points, points.diff)
+      design.x.rand = generateRandomDesign(points.diff, par.set, trafo = FALSE)
+      design.x = rbind(design.x, design.x.rand)
+    }
   } else {
     # sanity check: are paramter values and colnames of design consistent?
     if (!setequal(setdiff(colnames(design), y.name), pids))

@@ -11,8 +11,9 @@
 #'   criteria optimization, \code{number.of.targets > 1} implies multicriteria optimization.
 #'   Default is 1.
 #' @param init.design.points [\code{integer(1)}]\cr
-#'   Number of points in inital design.
+#'   Number of points to generate for initial design via \code{\link[ParamHelpers]{generateDesign}}.
 #'   Only used if no design is given in \code{mbo} function.
+#'   If for any reason not enough points could be generated, the missing ones are generated randomly.
 #'   Default is 20.
 #' @param init.design.fun [\code{function}]\cr
 #'   Function from package lhs for the sequential design.

@@ -19,8 +19,10 @@ objfun = function(x) {
 
 par.set = makeParamSet(makeDiscreteParam("foo", values = letters[1:3]))
 
-ctrl = makeMBOControl(init.design.points = 20, iters = 5, noisy = TRUE)
-ctrl = setMBOControlInfill(ctrl, crit = "ei", opt.focussearch.points = 100)
+ctrl = makeMBOControl(init.design.points = 20, iters = 1, noisy = TRUE)
+# we can basically do an exhaustive search in 3 values
+ctrl = setMBOControlInfill(ctrl, crit = "ei",
+  opt.restarts = L, opt.focussearch.points = 3L, opt.focussearch.maxit = 1L)
 
 lrn = makeLearner("regr.randomForest", predict.type = "se")
 
