@@ -26,12 +26,12 @@ test_that("mbo works with different learners", {
   f = function(x) sum(x$x) + as.numeric(x$z)
   # check with larger initial design so all factor levels are there
   ctrl = makeMBOControl(iters = 2, init.design.points = 50)
-  ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100)
+  ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100, opt.restarts  = 1L)
 
   testit = function(lrn, se) {
     lrn = makeLearner(lrn)
     if (se) {
-      lrn = makeBaggingWrapper(lrn, bw.iters = 10L)
+      lrn = makeBaggingWrapper(lrn, bw.iters = 5L)
       lrn = setPredictType(lrn, "se")
       ctrl$infill.crit = "ei"
     }
