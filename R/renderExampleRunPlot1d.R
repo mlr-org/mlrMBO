@@ -238,7 +238,8 @@ renderExampleRunPlot1d = function(x, iter,
     gg.points = buildPointsData(opt.path, names.x, name.y, idx, idx.init, idx.seq, idx.proposed)
 
     if (se & densregion) {
-      gg.points$se = -infillCritStandardError(data.frame(x = gg.points[[names.x]]), model, control, par.set, opt.path[idx.past, ])
+      gg.points$se = -infillCritStandardError(gg.points[, names.x, drop = FALSE],
+        model, control, par.set, opt.path[idx.past, , drop = FALSE])
       gg.points$se.min = gg.points[[name.y]] - se.factor * gg.points$se
       gg.points$se.max = gg.points[[name.y]] + se.factor * gg.points$se
     }
