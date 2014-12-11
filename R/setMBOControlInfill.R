@@ -10,6 +10,10 @@
 #'   \dQuote{lcb}: Lower confidence bound.
 #'   \dQuote{multiFid}: Multifidelity: Expected improvement on different levels of the perfomance parameter defined in the \code{MBOMultiFidControl}.
 #'   Alternatively, you may pass a function name as string.
+#' @param interleave.random.points [\code{integer(1)}]\cr
+#'   Add \code{interleave.random.points} uniformly sampled points additionally to the
+#'   regular proposed points in each step.
+#'   Default is 0.
 #' @param crit.eqi.beta [\code{numeric(1)}]\cr
 #'   Beta parameter for expected quantile improvement criterion.
 #'   Only used if \code{crit == "eqi"}, ignored otherwise.
@@ -119,7 +123,11 @@
 #' @seealso makeMBOControl
 #' @export
 setMBOControlInfill = function(control,
-  crit = NULL, crit.eqi.beta = 0.75, crit.lcb.lambda = 1, crit.lcb.pi = NULL,
+  crit = NULL,
+  interleave.random.points = 0L,
+  crit.eqi.beta = 0.75,
+  crit.lcb.lambda = 1,
+  crit.lcb.pi = NULL,
   filter.proposed.points = NULL,
   filter.proposed.points.tol = NULL,
   opt = "focussearch", opt.restarts = NULL,
@@ -139,9 +147,12 @@ setMBOControlInfill = function(control,
   control$infill.crit = coalesce(crit, control$infill.crit, "mean")
   assertChoice(control$infill.crit, choices = getSupportedInfillCritFunctions())
 
+  assertCount(interleave.random.points)
+  control$interleave.random.points = interleave.random.points
+
   control$infill.crit.eqi.beta = coalesce(crit.eqi.beta, control$infill.crit.eqi.beta, 0.75)
   assertNumber(control$infill.crit.eqi.beta, na.ok = FALSE, lower = 0.5, upper = 1)
-  
+
   # lambda value for lcb - either given, or set via given pi, the other one must be NULL!
   if (!is.null(crit.lcb.lambda) && !is.null(crit.lcb.pi))
     stop("Please specify either 'crit.lcb.lambda' or 'crit.lcb.pi' for the lcb crit, not both!")
@@ -207,7 +218,7 @@ setMBOControlInfill = function(control,
   #control$infill.opt.multicrit.randomsearch.points = coalesce(opt.multicrit.randomsearch.points, control$infill.opt.multicrit.randomsearch.points)
   #control$infill.opt.multicrit.randomsearch.points = asCount(control$infill.opt.multicrit.randomsearch.points)
   #assertCount(control$infill.opt.multicrit.randomsearch.points, na.ok = FALSE, positive = TRUE)
-  
+
   control$infill.opt.nsga2.popsize = coalesce(opt.nsga2.popsize, control$infill.opt.nsga2.popsize, 100L)
   control$infill.opt.nsga2.popsize = asCount(control$infill.opt.nsga2.popsize)
   assertCount(control$infill.opt.nsga2.popsize, na.ok = FALSE, positive = TRUE)
@@ -219,16 +230,15 @@ setMBOControlInfill = function(control,
 
   control$infill.opt.nsga2.cprob = coalesce(opt.nsga2.cprob, control$infill.opt.nsga2.cprob, 0.7)
   assertNumber(control$infill.opt.nsga2.cprob, lower = 0, upper = 1, na.ok = FALSE)
-  
+
   control$infill.opt.nsga2.cdist = coalesce(opt.nsga2.cdist, control$infill.opt.nsga2.cdist, 5)
   assertNumber(control$infill.opt.nsga2.cdist, lower = 1e-16, na.ok = FALSE, finite = TRUE)
-  
+
   control$infill.opt.nsga2.mprob = coalesce(opt.nsga2.mprob, control$infill.opt.nsga2.mprob, 0.2)
   assertNumber(control$infill.opt.nsga2.mprob, lower = 0, upper = 1, na.ok = FALSE)
-  
+
   control$infill.opt.nsga2.mdist = coalesce(opt.nsga2.mdist, control$infill.opt.nsga2.mdist, 10)
   assertNumber(control$infill.opt.nsga2.mdist, lower = 1e-16, na.ok = FALSE, finite  = TRUE)
 
   return(control)
 }
-
