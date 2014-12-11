@@ -23,6 +23,7 @@ checkFailedModels = function(models, par.set, npoints, control) {
     else
       prop$crit.vals = matrix(rep(NA_real_, npoints), ncol = 1L)
     prop$errors.model = getFailureModelMsg(models[[which.first(isfail)]])
+    prop$propose.time = rep(NA_real_, npoints)
   }
   return(list(ok = all(!isfail), prop = prop))
 }
