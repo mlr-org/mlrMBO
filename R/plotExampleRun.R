@@ -85,7 +85,8 @@ plotExampleRun = function(object, iters, pause = TRUE,
     n.plots = length(plots)
     n.row = if (n.plots <= 2) 2L else { if (n.plots <= 3) 1L else 2L }
     do.call(grid.arrange, plots)
-    pause()
+    if (pause)
+      pause()
   }
 
   for (iter in iters) {
