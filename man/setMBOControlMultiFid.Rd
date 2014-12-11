@@ -29,6 +29,10 @@ How many evaluations should be done on the last value of fid.param?}
 
 \item{eval.lower}{[\code{boolean(1)}]\cr
 For each evaluation, evaluate the lower fidelity levels as well. Default is \code{FALSE}.}
+
+\item{show.info}{[\code{logical(1)}]\cr
+Verbose output on console?
+Default is \code{TRUE}.}
 }
 \value{
 [\code{\link{MBOControl}}].

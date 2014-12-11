@@ -16,6 +16,7 @@
 #'   How many evaluations should be done on the last value of fid.param?
 #' @param eval.lower [\code{boolean(1)}]\cr
 #'   For each evaluation, evaluate the lower fidelity levels as well. Default is \code{FALSE}.
+#' @template arg_showinfo
 #' @return [\code{\link{MBOControl}}].
 #' @note See the other setMBOControl... functions and \code{makeMBOControl} for referenced arguments.
 #' @seealso makeMBOControl
