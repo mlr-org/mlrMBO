@@ -31,8 +31,9 @@ Is the target function noisy?
 Default is \code{FALSE}.}
 
 \item{init.design.points}{[\code{integer(1)}]\cr
-Number of points in inital design.
+Number of points to generate for initial design via \code{\link[ParamHelpers]{generateDesign}}.
 Only used if no design is given in \code{mbo} function.
+If for any reason not enough points could be generated, the missing ones are generated randomly.
 Default is 20.}
 
 \item{init.design.fun}{[\code{function}]\cr

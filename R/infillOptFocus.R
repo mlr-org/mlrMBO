@@ -11,17 +11,19 @@ infillOptFocus = function(infill.crit, model, control, par.set, opt.path, design
 
   # restart the whole crap some times
   for (restart.iter in 1:control$infill.opt.restarts) {
+    # copy parset so we can shrink it
+    ps2 = par.set
     # do iterations where we focus the region-of-interest around the current best point
     for (local.iter in 1:control$infill.opt.focussearch.maxit) {
       # predict on design where NAs were imputed, but return proposed points with NAs
-      newdesign = generateDesign(control$infill.opt.focussearch.points, par.set,
+      newdesign = generateDesign(control$infill.opt.focussearch.points, ps2,
         randomLHS)
-      y = infill.crit(newdesign, model, control, par.set, design, iter, ...)
+      y = infill.crit(newdesign, model, control, ps2, design, iter, ...)
       # get current best value
       local.index = getMinIndex(y, ties.method = "random")
       local.y = y[local.index]
       local.x.df = newdesign[local.index, , drop = FALSE]
-      local.x.list = dfRowToList(recodeTypes(local.x.df, par.set), par.set, 1)
+      local.x.list = dfRowToList(recodeTypes(local.x.df, ps2), ps2, 1)
 
       # if we found a new best value, store it
       if (local.y < global.y) {
@@ -29,9 +31,9 @@ infillOptFocus = function(infill.crit, model, control, par.set, opt.path, design
         global.y = local.y
       }
 
-      # now shrink par.set object so we search more locally
-      for (i in seq_along(par.set$pars)) {
-        par = par.set$pars[[i]]
+      # now shrink ps2 object so we search more locally
+      for (i in seq_along(ps2$pars)) {
+        par = ps2$pars[[i]]
         val = local.x.list[[par$id]]
         # only shrink when there is a value
         if (!isScalarNA(val)) {
@@ -55,7 +57,7 @@ infillOptFocus = function(infill.crit, model, control, par.set, opt.path, design
             }
           }
         }
-        par.set$pars[[i]] = par
+        ps2$pars[[i]] = par
       }
     }
   }
