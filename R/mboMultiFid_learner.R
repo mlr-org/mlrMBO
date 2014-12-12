@@ -86,24 +86,9 @@ predictLearner.MultiFidWrapper = function(.learner, .model, .newdata, ...) {
   unlist(responses, use.names = FALSE)[reorder]
 }
 
-
-#' @export
-makeWrappedModel.MultiFidWrapper = function(learner, learner.model, task.desc, subset, features, factor.levels, time) {
-  x = NextMethod()
-  addClasses(x, "MultiFidModel")
-}
-
 #' @export
 isFailureModel.MultiFidModel = function(model) {
   mods = model$learner.model$next.model
   any(vlapply(mods, isFailureModel))
 }
 
-#' @export
-print.MultiFidModel = function(x, ...) {
-  # FIXME: export this in mlr?
-  s = capture.output(mlr:::print.WrappedModel(x))
-  u = sprintf("Multifid Learner: %s", class(x$learner$next.learner)[1L])
-  s = append(s, u, 1L)
-  lapply(s, catf)
-}

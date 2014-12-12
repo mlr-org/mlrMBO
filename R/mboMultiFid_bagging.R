@@ -33,13 +33,9 @@ trainLearner.MultiFidBaggingWrapper = function(.learner, .task, .subset, .weight
 }
 
 
-#' @export
 predictLearner.MultiFidBaggingWrapper = function(.learner, .model, .newdata, ...) {
-  models = getBaggingModels(.model)
-  p = asMatrixCols(lapply(models, function(m) {
-    nd = .newdata[, m$features, drop = FALSE]
-    predict(m, newdata = nd, ...)$data$response
-  }))
+  p = mlr:::predictHomogeneousEnsemble(.learner, .model, .newdata, ...)
+  # FIXME: the next line could be done in mlr::HomoEns
   if (.learner$predict.type == "response") {
     rowMeans(p)
   } else {
@@ -48,8 +44,3 @@ predictLearner.MultiFidBaggingWrapper = function(.learner, .model, .newdata, ...
 }
 
 
-#' @export
-makeWrappedModel.MultiFidBaggingWrapper = function(learner, learner.model, task.desc, subset, features, factor.levels, time) {
-  x = NextMethod()
-  addClasses(x, "BaggingModel")
-}
