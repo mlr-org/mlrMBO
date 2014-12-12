@@ -5,8 +5,9 @@
 \usage{
 setMBOControlInfill(control, crit = NULL, interleave.random.points = 0L,
   crit.eqi.beta = 0.75, crit.lcb.lambda = 1, crit.lcb.pi = NULL,
-  filter.proposed.points = NULL, filter.proposed.points.tol = NULL,
-  opt = "focussearch", opt.restarts = NULL, opt.focussearch.maxit = NULL,
+  crit.lcb.inflate.se = FALSE, filter.proposed.points = NULL,
+  filter.proposed.points.tol = NULL, opt = "focussearch",
+  opt.restarts = NULL, opt.focussearch.maxit = NULL,
   opt.focussearch.points = NULL, opt.cmaes.control = NULL,
   opt.ea.maxit = NULL, opt.ea.mu = NULL, opt.ea.sbx.eta = NULL,
   opt.ea.sbx.p = NULL, opt.ea.pm.eta = NULL, opt.ea.pm.p = NULL,
@@ -49,6 +50,12 @@ It is an alternative to set the trade-off between \dQuote{mean} and \dQuote{se}.
 Only used if \code{crit == "lcb"}, ignored otherwise.
 If specified, \code{crit.lcb.lambda == NULL} must hold.
 Default is \code{NULL}.}
+
+\item{crit.lcb.inflate.se}{[\code{logical(1)}]\cr
+Try to inflate or deflate the estimated standard error to get to the same scale as the mean?
+Calculates the range of the mean and standard error and multiplies the standard error
+with the quotient of theses ranges.
+Default is \code{FALSE}.}
 
 \item{filter.proposed.points}{[\code{logical(1)}]\cr
 Design points located too close to each other can lead to
@@ -158,6 +165,11 @@ nsga2 param. Default is 0.2.}
 \item{opt.nsga2.mdist}{[\code{numeric{1}}]\cr
 For \code{opt.multicrit.method = "nsga2"}.
 nsga2 param. Default is 10.}
+
+\item{crit.lcb.lambda}{[\code{numeric(1)}]\cr
+Lambda parameter for lower confidence bound infill criterion.
+Only used if \code{crit == "lcb"}, ignored otherwise.
+Default is 1.}
 }
 \value{
 [\code{\link{MBOControl}}].
