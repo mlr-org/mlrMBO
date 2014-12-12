@@ -22,6 +22,10 @@
 #'   Lambda parameter for lower confidence bound infill criterion.
 #'   Only used if \code{crit == "lcb"}, ignored otherwise.
 #'   Default is 1.
+#' @param crit.lcb.lambda [\code{numeric(1)}]\cr
+#'   Lambda parameter for lower confidence bound infill criterion.
+#'   Only used if \code{crit == "lcb"}, ignored otherwise.
+#'   Default is 1.
 # FIXME: does this only make sense for multicrit? or single crit too?
 #' @param crit.lcb.pi [\code{numeric(1)}]\cr
 #'   Probability-of-improvement value to determine the lambda parameter for lcb infill criterion.
@@ -29,6 +33,11 @@
 #'   Only used if \code{crit == "lcb"}, ignored otherwise.
 #'   If specified, \code{crit.lcb.lambda == NULL} must hold.
 #'   Default is \code{NULL}.
+#' @param crit.lcb.inflate.se [\code{logical(1)}]\cr
+#'   Try to inflate or deflate the estimated standard error to get to the same scale as the mean?
+#'   Calculates the range of the mean and standard error and multiplies the standard error
+#'   with the quotient of theses ranges.
+#'   Default is \code{FALSE}.
 #' @param filter.proposed.points [\code{logical(1)}]\cr
 #'   Design points located too close to each other can lead to
 #'   numerical problems when using e.g. kriging as a surrogate model.
@@ -128,6 +137,7 @@ setMBOControlInfill = function(control,
   crit.eqi.beta = 0.75,
   crit.lcb.lambda = 1,
   crit.lcb.pi = NULL,
+  crit.lcb.inflate.se = FALSE,
   filter.proposed.points = NULL,
   filter.proposed.points.tol = NULL,
   opt = "focussearch", opt.restarts = NULL,
@@ -165,6 +175,9 @@ setMBOControlInfill = function(control,
     crit.lcb.lambda = -qnorm(0.5 * crit.lcb.pi^(1 / control$number.of.targets))
   }
   control$infill.crit.lcb.lambda = coalesce(crit.lcb.lambda, control$infill.crit.lcb.lambda, 1)
+
+  assertFlag(crit.lcb.inflate.se)
+  control$infill.crit.lcb.inflate.se = crit.lcb.inflate.se
 
   control$filter.proposed.points = coalesce(filter.proposed.points, control$filter.proposed.points, FALSE)
   assertFlag(control$filter.proposed.points)
