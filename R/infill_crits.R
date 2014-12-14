@@ -55,8 +55,20 @@ infillCritEI = function(points, model, control, par.set, design, iter) {
 infillCritLCB = function(points, model, control, par.set, design, iter) {
   maximize.mult = ifelse(control$minimize, 1, -1)
   p = predict(model, newdata = points)$data
-  lcb = maximize.mult * p$response - control$infill.crit.lcb.lambda * p$se
-  return(lcb)
+  if (control$infill.crit.lcb.inflate.se) {
+    r.response = diff(range(p$response))
+    r.se = diff(range(p$se))
+    tol = .Machine$double.eps^0.5
+    if (r.response < tol)
+      return(r.se)
+    if (r.se < tol)
+      return(r.response)
+    inflate = r.response / r.se
+  } else {
+    inflate = 1
+  }
+
+  maximize.mult * p$response - inflate * control$infill.crit.lcb.lambda * p$se
 }
 
 ######################  Noisy criteria ###########################################################
