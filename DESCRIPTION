@@ -32,6 +32,7 @@ Suggests:
     DiceOptim,
     earth,
     emoa,
+    GGally,
     kernlab,
     kknn,
     mboost,

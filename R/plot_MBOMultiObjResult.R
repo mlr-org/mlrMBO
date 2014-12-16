@@ -1,7 +1,6 @@
-
 #' Plot method for multi-objective result objects.
 #'
-#' @param result [\code{MBOSingleObjResult}]\cr
+#' @param x [\code{MBOMultiObjResult}]\cr
 #'   Multi-Objective mlrMBO result object.
 #' @param infill.crit [\code{character(1)}]\cr
 #'   Infill criterion used for optimization.
@@ -13,34 +12,37 @@
 #' @param pause [\code{logical(1)}]\cr
 #'   Pause after each iteration?
 #'   Default is \code{TRUE}.
-#' @pause log.infill.crit [\code{logical(1)}]\cr
+#' @param log.infill.crit [\code{logical(1)}]\cr
 #'   Should the infill criterion be log-transformed? Default is \code{FALSE}.
+#' @param ... [\code{list}]\cr
+#'   Not used.
 #' @return Nothing
 #FIXME: it would be more comfortable if the infill crit could be extracted from the result object. Maybe save control object in result?
-plot.MBOMultiObjResult = function(result, infill.crit, iters = NULL, alpha = TRUE, pause = TRUE,
-  log.infill.crit = FALSE) {
+#' @export
+plot.MBOMultiObjResult = function(x, infill.crit, iters = NULL, alpha = TRUE, pause = TRUE,
+  log.infill.crit = FALSE, ...) {
   requirePackages("GGally")
   requirePackages("ggplot2")
   requirePackages("gridExtra")
-  
-  assertClass(result, "MBOMultiObjResult")
-  
-  op = result$opt.path
+
+  assertClass(x, "MBOMultiObjResult")
+
+  op = x$opt.path
   ref.point = apply(getOptPathY(op), 2, max) + 1
   if (is.null(iters))
     iters = unique(getOptPathDOB(op))
   assertIntegerish(iters)
-  
+
   if (any(iters > max(getOptPathDOB(op))))
     stop("You want to plot an iteration that does not exist!")
-  
+
   # FIXME: better way to get x-names?
-  x.names = colnames(getOptPathX(result$opt.path))
-  y.names = result$opt.path$y.names
-  
+  x.names = colnames(getOptPathX(x$opt.path))
+  y.names = x$opt.path$y.names
+
   if (length(y.names) != 2)
     stop("Can only plot optimizations with 2 targets.")
-  
+
   # initialize data.frames for hypervolume and crit value
   hv.data = makeDataFrame(ncol = 2, nrow = 0, col.types = "numeric", col.names = c("hv", "dob"))
   crit.data = makeDataFrame(ncol = 2, nrow = 0, col.types = "numeric", col.names = c("crit", "dob"))
@@ -51,21 +53,21 @@ plot.MBOMultiObjResult = function(result, infill.crit, iters = NULL, alpha = TRU
   crits = extras[, infill.crit]
   if (log.infill.crit && any(crits < 0) && any(crits > 0))
     stop("You want to log the infill.crit, but it does contain both positive and negative values.")
-  
+
   for (i in iters) {
     # get the data
     op.x = as.data.frame(op, include.y = FALSE, include.rest = FALSE, dob = 0:i)
     op.y = as.data.frame(op, include.x = FALSE, include.rest = FALSE, dob = 0:i)
     dob = getOptPathDOB(op, dob = 0:i)
-    
+
     # plot 1: y-space
     op.y$type = as.factor(ifelse(dob == 0, "init", ifelse(dob == i, "prop", "seq")))
-    pl1 = ggplot(op.y, aes(x = y_1, y = y_2, shape = type, colour = type))
+    pl1 = ggplot(op.y, aes_string(x = "y_1", y = "y_2", shape = "type", colour = "type"))
     pl1 = pl1 + geom_point(size = 3)
     pl1 = pl1 + ggtitle("Y-Space")
     pl1 = pl1 + xlab(expression(y[1])) + ylab(expression(y[2]))
     pl1 = pl1 + theme(legend.position = "top")
-    
+
     # plot 2: x-space
     args = list(columns = seq_along(x.names))
     if (alpha) {
@@ -77,22 +79,21 @@ plot.MBOMultiObjResult = function(result, infill.crit, iters = NULL, alpha = TRU
     args$data = op.x
     args$groupColumn = ncol(op.x)
     args$mapping = aes(lwd = 1.5)
-    pl2 = do.call(ggparcoord, args)
+    pl2 = do.call(GGally::ggparcoord, args)
     pl2 = pl2 + ylab ("value divided by standard deviation")
     pl2 = pl2 + ggtitle("X-Space")
     pl2 = pl2 + guides(alpha = FALSE)
-    pl2 = pl2 + theme(legend.position = "top", legend.margin = unit(0.05, "cm"))
-    
+    pl2 = pl2 + theme(legend.position = "top", legend.margin = grid::unit(0.05, "cm"))
+
     # plot 3 - dominated hypervolume
-    hv = dominated_hypervolume(t(getOptPathParetoFront(result$opt.path, dob = 0:i)), ref = ref.point)
+    hv = emoa::dominated_hypervolume(t(getOptPathParetoFront(x$opt.path, dob = 0:i)), ref = ref.point)
     hv.data = rbind(hv.data, data.frame(hv = hv, dob = i))
-    pl3 = ggplot(hv.data, aes(x = dob, y = hv)) + 
-      geom_point() + ggtitle(paste("Dominated Hypervolume, ref.point = (", 
-        collapse((round(ref.point, 1)), sep = ", "), ")", sep = "")) + 
+    pl3 = ggplot(hv.data, aes(x = dob, y = hv)) +
+      geom_point() + ggtitle(paste("Dominated Hypervolume, ref.point = (",
+        collapse((round(ref.point, 1)), sep = ", "), ")", sep = "")) +
       theme(plot.title = element_text(size = rel(1)))
     if (nrow(hv.data) > 1)
       pl3 = pl3 + geom_line()
-    
 
     # plot 4 - indicator value. ony available if iter != 0
     pl4 = NA
@@ -105,10 +106,10 @@ plot.MBOMultiObjResult = function(result, infill.crit, iters = NULL, alpha = TRU
         crit = -crit
       }
       crit.data = rbind(crit.data, data.frame(crit = crit, dob = i))
-      
+
       pl4 = ggplot(crit.data, aes(x = dob, y = crit))
       pl4 = pl4 + geom_point()
-      pl4 = pl4 + ggtitle("Values of used infill criterion") 
+      pl4 = pl4 + ggtitle("Values of used infill criterion")
       pl4 = pl4 + theme(plot.title = element_text(size = rel(1)))
       pl4 = pl4 + ylab(infill.crit)
 

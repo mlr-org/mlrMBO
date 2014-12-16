@@ -2,6 +2,7 @@
 
 S3method(isFailureModel,MultiFidModel)
 S3method(makeRLearner,regr.kmforrester)
+S3method(plot,MBOMultiObjResult)
 S3method(predictLearner,MultiFidWrapper)
 S3method(predictLearner,regr.kmforrester)
 S3method(print,MBOControl)
