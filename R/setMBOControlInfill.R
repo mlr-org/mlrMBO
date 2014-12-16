@@ -22,10 +22,6 @@
 #'   Lambda parameter for lower confidence bound infill criterion.
 #'   Only used if \code{crit == "lcb"}, ignored otherwise.
 #'   Default is 1.
-#' @param crit.lcb.lambda [\code{numeric(1)}]\cr
-#'   Lambda parameter for lower confidence bound infill criterion.
-#'   Only used if \code{crit == "lcb"}, ignored otherwise.
-#'   Default is 1.
 # FIXME: does this only make sense for multicrit? or single crit too?
 #' @param crit.lcb.pi [\code{numeric(1)}]\cr
 #'   Probability-of-improvement value to determine the lambda parameter for lcb infill criterion.
