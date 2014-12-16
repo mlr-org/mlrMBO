@@ -47,7 +47,7 @@ infillOptMultiCritNSGA2 = function(infill.crit, models, control, par.set, opt.pa
   colnames(prop.vals) = control$y.name
   ys = design[, control$y.name]
 
-  ref.point = getMultiCritRefPoint(design[, control$y.name], control)
+  ref.point = getMultiCritRefPoint(ys, control)
   prop.hv.contrs = numeric(control$propose.points)
   for (i in 1:control$propose.points) {
     hv.contrs = getHypervolumeContributions(xs = candidate.vals,

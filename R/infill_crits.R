@@ -152,7 +152,8 @@ infillCritDIB = function(points, models, control, par.set, design, iter) {
   ys.front = getNonDominatedPoints(ys, minimize = all.mini)
 
   if (control$multicrit.dib.indicator == "sms") {
-    ref.point = getMultiCritRefPoint(ys.front, control, minimize = all.mini)
+    # get refpoint by ctrl-method, ys could be scaled by -1 (if yi = max!)
+    ref.point = getMultiCritRefPoint(ys, control, minimize = all.mini)
     # get epsilon for epsilon-dominace - set adaptively or use given constant value
     if (is.null(control$dib.sms.eps)) {
       c.val = 1 - 1 / 2^control$number.of.targets
