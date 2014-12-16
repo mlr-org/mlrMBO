@@ -21,7 +21,7 @@ getNonDominatedPoints = function(points, minimize) {
 # returns  max (or min) of all coords, depending on minimization (or maximization)
 getWorstExtremePoint = function(points, minimize) {
   mults = ifelse(minimize, 1, -1)
-  apply(as.matrix(points) %*% diag(mults), 2L, min) * mults
+  apply(as.matrix(points) %*% diag(mults), 2L, max) * mults
 }
 
 # return the hypervolume contribution of each elemt (row) of xs (matrix with length
