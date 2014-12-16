@@ -2,8 +2,9 @@ context("exampleRunMulticrit")
 
 test_that("exampleRunMulticrit", {
 
-  doRun = function(fun, par.set, method, crit, prop.points, indicator = "sms", learner = "regr.km") {
-    learner = makeLearner(learner, predict.type = "se")
+  doRun = function(fun, par.set, method, crit, prop.points, indicator = "sms") {
+    # set nugget effect to small value for num stability in this unit test
+    learner = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2", nugget = 0.001)
     control = makeMBOControl(init.design.points = 10, iters = 1L, propose.points = prop.points,
       number.of.targets = 2L)
     if (method == "mspot")

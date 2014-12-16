@@ -4,6 +4,7 @@ library(mlrMBO)
 library(ggplot2)
 set.seed(1)
 configureMlr(show.learner.output = FALSE)
+pause = interactive()
 
 
 # function with noise
@@ -39,4 +40,4 @@ run = exampleRun(obj.fun, par.set, global.opt = -1, learner = lrn,
 
 print(run)
 
-plotExampleRun(run, pause = TRUE, densregion = TRUE)
+plotExampleRun(run, pause = pause, densregion = TRUE)

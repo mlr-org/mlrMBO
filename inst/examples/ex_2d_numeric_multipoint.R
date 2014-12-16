@@ -5,6 +5,7 @@ library(ggplot2)
 library(soobench)
 set.seed(2) # FIXME: does not work for seed == 1
 configureMlr(show.learner.output = FALSE)
+pause = interactive()
 
 obj.fun = branin_function()
 
@@ -25,4 +26,4 @@ run = exampleRun(obj.fun, par.set = par.set, learner = lrn, control = ctrl,
 
 print(run)
 
-plotExampleRun(run, pause = TRUE)
+plotExampleRun(run, pause = pause)

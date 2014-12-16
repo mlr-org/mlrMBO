@@ -3,8 +3,9 @@
 \alias{setMBOControlInfill}
 \title{Extends mbo control object with infill criteria and infill optimizer options.}
 \usage{
-setMBOControlInfill(control, crit = NULL, crit.eqi.beta = 0.75,
-  crit.lcb.lambda = 1, crit.lcb.pi = NULL, filter.proposed.points = NULL,
+setMBOControlInfill(control, crit = NULL, interleave.random.points = 0L,
+  crit.eqi.beta = 0.75, crit.lcb.lambda = 1, crit.lcb.pi = NULL,
+  crit.lcb.inflate.se = FALSE, filter.proposed.points = NULL,
   filter.proposed.points.tol = NULL, opt = "focussearch",
   opt.restarts = NULL, opt.focussearch.maxit = NULL,
   opt.focussearch.points = NULL, opt.cmaes.control = NULL,
@@ -28,6 +29,11 @@ How should infill points be rated. Possible parameter values are:
 \dQuote{multiFid}: Multifidelity: Expected improvement on different levels of the perfomance parameter defined in the \code{MBOMultiFidControl}.
 Alternatively, you may pass a function name as string.}
 
+\item{interleave.random.points}{[\code{integer(1)}]\cr
+Add \code{interleave.random.points} uniformly sampled points additionally to the
+regular proposed points in each step.
+Default is 0.}
+
 \item{crit.eqi.beta}{[\code{numeric(1)}]\cr
 Beta parameter for expected quantile improvement criterion.
 Only used if \code{crit == "eqi"}, ignored otherwise.
@@ -44,6 +50,12 @@ It is an alternative to set the trade-off between \dQuote{mean} and \dQuote{se}.
 Only used if \code{crit == "lcb"}, ignored otherwise.
 If specified, \code{crit.lcb.lambda == NULL} must hold.
 Default is \code{NULL}.}
+
+\item{crit.lcb.inflate.se}{[\code{logical(1)}]\cr
+Try to inflate or deflate the estimated standard error to get to the same scale as the mean?
+Calculates the range of the mean and standard error and multiplies the standard error
+with the quotient of theses ranges.
+Default is \code{FALSE}.}
 
 \item{filter.proposed.points}{[\code{logical(1)}]\cr
 Design points located too close to each other can lead to
@@ -153,6 +165,11 @@ nsga2 param. Default is 0.2.}
 \item{opt.nsga2.mdist}{[\code{numeric{1}}]\cr
 For \code{opt.multicrit.method = "nsga2"}.
 nsga2 param. Default is 10.}
+
+\item{crit.lcb.lambda}{[\code{numeric(1)}]\cr
+Lambda parameter for lower confidence bound infill criterion.
+Only used if \code{crit == "lcb"}, ignored otherwise.
+Default is 1.}
 }
 \value{
 [\code{\link{MBOControl}}].

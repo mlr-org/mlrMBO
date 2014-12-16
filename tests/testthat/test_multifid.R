@@ -1,6 +1,6 @@
-context("mutlifid")
+context("multifid")
 
-test_that("essential mutlifid works", {
+test_that("basic multifid works", {
 
   objfun = function(x, fac = 0.5) {
     lvl.par.val = x$dw.perc
@@ -14,7 +14,7 @@ test_that("essential mutlifid works", {
 
   par.set = makeParamSet(
     makeNumericParam("x", lower = 0, upper = 10),
-    makeNumericParam("dw.perc", lower=0, upper=1)
+    makeNumericParam("dw.perc", lower = 0, upper = 1)
   )
 
   control = makeMBOControl(
@@ -36,8 +36,8 @@ test_that("essential mutlifid works", {
     lvls = c(0.1, 0.5, 1),
     costs = function(cur, last) (last / cur)^0.5,
     cor.grid.points = 40L)
-  
-  surrogat.learner = makeLearner("regr.km", predict.type="response", nugget.estim = TRUE, jitter = TRUE)
+
+  surrogat.learner = makeLearner("regr.rpart", predict.type = "response")
   result = mbo(fun = objfun, par.set = par.set, learner = surrogat.learner, control = control)
   expect_true(inherits(result, "MultiFidResult"))
 })

@@ -10,8 +10,7 @@ getGlobalOpt(run)
 Object of type \code{MBOExampleRun}.}
 }
 \value{
-[\code{numeric(1)}]\cr
-  (Estimated) global optimum.
+[\code{numeric(1)}]. (Estimated) global optimum.
 }
 \description{
 Helper function which returns the (estimated) global optimum.

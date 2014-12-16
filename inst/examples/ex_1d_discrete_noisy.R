@@ -4,7 +4,8 @@
 library(mlrMBO)
 library(ggplot2)
 set.seed(1)
-configureMlr(show.learner.output=FALSE)
+configureMlr(show.learner.output = FALSE)
+pause = interactive()
 
 objfun = function(x) {
   if (x$foo == "a") {
@@ -18,8 +19,10 @@ objfun = function(x) {
 
 par.set = makeParamSet(makeDiscreteParam("foo", values = letters[1:3]))
 
-ctrl = makeMBOControl(init.design.points = 20, iters = 5, noisy = TRUE)
-ctrl = setMBOControlInfill(ctrl, crit = "ei", opt.focussearch.points = 100)
+ctrl = makeMBOControl(init.design.points = 20, iters = 1, noisy = TRUE)
+# we can basically do an exhaustive search in 3 values
+ctrl = setMBOControlInfill(ctrl, crit = "ei",
+  opt.restarts = 1L, opt.focussearch.points = 3L, opt.focussearch.maxit = 1L)
 
 lrn = makeLearner("regr.randomForest", predict.type = "se")
 
@@ -27,5 +30,4 @@ run = exampleRun(objfun, par.set = par.set, learner = lrn, control = ctrl,
 	points.per.dim = 50, show.info = TRUE)
 
 print(run)
-
-plotExampleRun(run, pause = TRUE, densregion = TRUE)
+plotExampleRun(run, pause = pause, densregion = TRUE)

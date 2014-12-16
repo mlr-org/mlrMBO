@@ -13,10 +13,9 @@
 #                               length is one string PER PROPOSED POINT, not per element of <models>
 #                               NA if the model was Ok, or the (first) error message if some model crashed
 proposePoints = function(tasks, models, par.set, control, opt.path, iter) {
-  n = control$propose.points
   m = control$number.of.targets
   if (m == 1L) {
-    if (n == 1L) {
+    if (is.null(control$multipoint.method)) {
       res = proposePointsByInfillOptimization(models[[1L]], par.set, control, opt.path, iter)
     } else {
       if (control$multipoint.method == "lcb")
@@ -31,7 +30,7 @@ proposePoints = function(tasks, models, par.set, control, opt.path, iter) {
       if (control$multicrit.method == "parego") {
         res = proposePointsParEGO(models, par.set, control, opt.path, iter, attr(tasks, "weight.mat"))
       } else if (control$multicrit.method == "mspot") {
-        res = proposePointsByInfillOptimization(models, par.set, control, opt.path, iter)
+        res = proposePointsMSPOT(models, par.set, control, opt.path, iter)
       } else if (control$multicrit.method == "dib") {
         res = proposePointsDIB(models, par.set, control, opt.path, iter)
       }

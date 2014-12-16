@@ -26,14 +26,8 @@ proposePointsByInfillOptimization = function(models, par.set, control, opt.path,
   st = system.time({
     prop.points = infill.opt.fun(infill.crit.fun, models, control, par.set, opt.path, design, iter, ...)
   })
-  # mspot is a bit special, we have multiple crit.val
-  if (control$number.of.targets > 1L && control$multicrit.method == "mspot") {
-    crit.vals = evalCritFunForMultiCritModels(infill.crit.fun, prop.points, models, control,
-      par.set, design, iter)
-  } else {
-    crit.vals = infill.crit.fun(prop.points, models, control, par.set, design, iter, ...)
-    crit.vals = matrix(crit.vals, ncol = 1L)
-  }
+  crit.vals = infill.crit.fun(prop.points, models, control, par.set, design, iter, ...)
+  crit.vals = matrix(crit.vals, ncol = 1L)
   return(list(prop.points = prop.points, propose.time = st[3L], crit.vals = crit.vals, errors.model = NA_character_))
 }
 

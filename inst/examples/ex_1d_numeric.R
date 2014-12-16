@@ -3,7 +3,7 @@
 library(mlrMBO)
 library(ggplot2)
 configureMlr(show.learner.output = FALSE)
-
+pause = interactive()
 set.seed(1)
 
 obj.fun = function(x) {
@@ -20,4 +20,4 @@ lrn = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
 run = exampleRun(obj.fun, par.set, global.opt = -1, learner = lrn,
   control = ctrl, points.per.dim = 100, show.info = TRUE)
 
-plotExampleRun(run, pause = TRUE, densregion = TRUE)
+plotExampleRun(run, pause = pause, densregion = TRUE)
