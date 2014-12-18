@@ -6,7 +6,6 @@
 #' The function can handle mixed parameter spaces. It first calculates the Gower
 #' distances, then scales them with theta, then passes them to a kernel function.
 #'
-#'
 #' @param [\code{\link[ParamHelpers]{ParamSet}}]\cr
 #'   Param set for feature space, containing \code{p} parameters (when counting devectorized scalars).
 #' @param data.x [\code{data.frame(n, p)}]\cr
@@ -42,11 +41,11 @@ calcGowerCovMat = function (par.set, data.x, data.y = data.x, theta = NULL, dist
 
   if (is.character(dist2cov)) {
     assertChoice(dist2cov, c("gauss", "matern3_2", "matern5_2"))
-    switch(dist2cov,
+    dist2cov = switch(dist2cov,
       gauss = function(d) exp(-d^2),
       matern3_2 = function(d) (1 + sqrt(3)*d) * exp(-sqrt(3) * d),
       matern5_2 = function(d) (1 + sqrt(5)*d + (5/3) * d^2) * exp(-sqrt(5) * d)
-      )
+    )
   } else {
     assertFunction(dist2cov, "d")
   }
@@ -164,47 +163,76 @@ calcGowerCovMat = function (par.set, data.x, data.y = data.x, theta = NULL, dist
   result
 }
 
-library(ParamHelpers)
-library(checkmate)
-ps = makeParamSet(
-  makeNumericParam("a", lower = 1, upper = 3),
-  makeDiscreteParam("b", values = c("v", "w"))
-  # makeNumericParam("c", lower = 0, upper = 5),
-  # makeDiscreteVectorParam("d", len = 2L, values = c("v", "w"))
-)
-
-# data.x = generateRandomDesign(2, ps)
-# K = calcGowerCovMat(data.x = data.x, par.set = ps, dist2cov = "matern3_2")
-# print(K)
-
 
 calcGowerLocalUncertainty = function(traindata, y, newdata, ...) {
-   n = nrow(traindata)
-   R = calcGowerCovMat(data.x = traindata, ...)
-   rs = calcGowerCovMat(data.x = traindata, data.y = newdata, ...) # n x m
-   o = rep(1, n)
-   a1 = solve(R, y)                 # R^-1 y
-   a2 = solve(R, o)                 # R^-1 1
-   a3 = crossprod(o, a2)            # 1^T R^-1 1
-   mu = crossprod(o, a1) / a3       # 1^T R^-1 y / 1^T R^-1 1
-   a4 = y - mu * o                  # y - mu * 1
-   a5 = solve(R, a4)                # R^-1 (y - mu * 1)
-   sigma = crossprod(a4, a5) / n    # (y - mu * 1)^T R^-1 (y - mu * 1) / n
-   bs = solve(R, rs)
-   crossprods1 = colSums(rs * bs)   # crossprods between cols rs[,i] and bs[,i]
-   crossprods2 = colSums(bs)        # crossprods between bs[,i] and 1 vec
+  n = nrow(traindata)
+  R = calcGowerCovMat(data.x = traindata, ...)
+  rs = calcGowerCovMat(data.x = traindata, data.y = newdata, ...) # n x m
+  o = rep(1, n)
+  print(y)
+  a1 = solve(R, y)                 # R^-1 y
+  a2 = solve(R, o)                 # R^-1 1
+  a3 = crossprod(o, a2)            # 1^T R^-1 1
+  mu = crossprod(o, a1) / a3       # 1^T R^-1 y / 1^T R^-1 1
+  a4 = y - mu * o                  # y - mu * 1
+  a5 = solve(R, a4)                # R^-1 (y - mu * 1)
+  sigma = crossprod(a4, a5) / n    # (y - mu * 1)^T R^-1 (y - mu * 1) / n
+  bs = solve(R, rs)
+  crossprods1 = colSums(rs * bs)   # crossprods between cols rs[,i] and bs[,i]
+  crossprods2 = colSums(bs)        # crossprods between bs[,i] and 1 vec
 
-   # (1 - r^T R^-1 r + (1 - 1^T R^-1 r)^2 / 1^T R^-1 1) * sigma
-   s = sigma * (1 - crossprods1 + (1 - crossprods2)^2 / a3)
-   return(s)
+  # (1 - r^T R^-1 r + (1 - 1^T R^-1 r)^2 / 1^T R^-1 1) * sigma
+  s = sigma * (1 - crossprods1 + (1 - crossprods2)^2 / a3)
+  return(s)
 }
 
-set.seed(1L)
-td = generateRandomDesign(2, ps)
-nd = generateRandomDesign(3, ps) # this drops levels, fix now!!!!
-y = c(0, 1)
-levels(nd$b) = levels(td$b)
-print(td)
-print(nd)
-s = calcGowerLocalUncertainty(td, y, nd, par.set = ps)
-print(s)
+# set.seed(1L)
+# # td = generateRandomDesign(2, ps)
+# # nd = generateRandomDesign(3, ps) # this drops levels, fix now!!!!
+# # y = c(0, 1)
+# # levels(nd$b) = levels(td$b)
+# # print(td)
+# # print(nd)
+# # s = calcGowerLocalUncertainty(td, y, nd, par.set = ps)
+# # print(s)
+
+# f = function(x) x^2
+
+# library(ParamHelpers)
+# library(checkmate)
+# ps = makeParamSet(
+#   # makeNumericParam("a", lower = 1, upper = 3),
+#   # makeDiscreteParam("b", values = c("v", "w"))
+#   makeNumericParam("x1", lower = -5, upper = 5)
+#   # makeDiscreteVectorParam("d", len = 2L, values = c("v", "w"))
+# )
+
+# # data.x = generateRandomDesign(2, ps)
+# # K = calcGowerCovMat(data.x = data.x, par.set = ps, dist2cov = "matern3_2")
+# # print(K)
+
+# x1 = -5; x2 = 5
+# xseq.train = seq(x1, x2, length.out = 5)
+# xseq.test = seq(x1, x2, length.out = 1000)
+# traindata = data.frame(x1 = xseq.train)
+# y.train = f(xseq.train)
+# y.test = f(xseq.test)
+# newdata = data.frame(x1 = xseq.test)
+
+# s = calcGowerLocalUncertainty(traindata, y.train, newdata, par.set = ps, theta = c(0.01))
+
+# library(ggplot2)
+
+# ggdat = data.frame(
+#   x = xseq.test,
+#   y = f(xseq.test),
+#   yse = f(xseq.test) + s
+# )
+# pl = ggplot(ggdat)
+# pl = pl + geom_line(mapping = aes(x = x, y = y))
+# pl = pl + geom_line(mapping = aes(x = x, y = yse))
+# print(pl)
+
+
+
+
