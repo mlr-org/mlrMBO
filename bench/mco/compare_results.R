@@ -167,30 +167,30 @@ compareGroup = function(res, expr, indicator, digits = NULL, ref.algo = NULL,
 
 # Tables for our Paper
 # ParEGO Analyse
-tab.parego = compareGroup(res = res, expr = res$algo == "parego", indicator = "r2",
+tab.parego.ei = compareGroup(res = res, expr = res$algo == "parego" & res$crit == "ei", indicator = "r2",
   digits = 3, ref.algo = "parego-1-ei", include.baseline = TRUE, label = "parego.table")
-tab.parego$d
-# 1) LCB ist ueberall besser, ausser auf einer funktion wo es egal ist
-# 2) Multipoint ist entweder besser, oder es ist es stueck nur schlecher / gleich
  
+tab.parego.lcb = compareGroup(res = res, expr = res$algo == "parego" & res$crit == "lcb", indicator = "r2",
+  digits = 3, ref.algo = "parego-1-lcb", include.baseline = TRUE, label = "parego.table")
+
 # DIB - sms Analyse
 tab.sms = compareGroup(res = res, expr = res$algo == "dib" & res$indicator %in% c(NA, "sms"),
   indicator = "hv", digits = 3, ref.algo = "dib-1-sms", include.baseline = TRUE, label = "sms.table")
-tab.sms$d
 
 # DIB - eps Analyse
 tab.eps = compareGroup(res = res, expr = res$algo == "dib" & res$indicator %in% c(NA, "eps"),
   indicator = "eps", digits = 3, ref.algo = "dib-1-eps", include.baseline = TRUE, label = "eps.table")
-tab.eps$d
-# 1) 1-point liegt sms klar vorne, ist aber nicht sehr viel
-# 2) Multipoint ist es nicht ganz klar (?), aber man wuerde wohl auch den SMS nehmen. eps ist teilweise auch ok,
-#    wird manchmal aber outperformed
 
 # MSPOT Analyse
-tab.mspot = compareGroup(res = res, expr = res$algo == "mspot", indicator = "hv",
-  digits = 3, ref.algo = "mspot-1-mean", include.baseline = TRUE, label = "mspot.table",
-  col.sorting = c(3, 1, 2, 6, 4, 5))
-tab.mspot$d
+tab.mspot.mean = compareGroup(res = res, expr = res$algo == "mspot" & res$crit == "mean", indicator = "hv",
+  digits = 3, ref.algo = "mspot-1-mean", include.baseline = TRUE, label = "mspot.table")
+
+tab.mspot.ei = compareGroup(res = res, expr = res$algo == "mspot" & res$crit == "ei", indicator = "hv",
+  digits = 3, ref.algo = "mspot-1-ei", include.baseline = TRUE, label = "mspot.table")
+
+tab.mspot.lcb = compareGroup(res = res, expr = res$algo == "mspot" & res$crit == "lcb", indicator = "hv",
+  digits = 3, ref.algo = "mspot-1-lcb", include.baseline = TRUE, label = "mspot.table")
+
 
 # best algo tables
 expr.single = res$prop.points == 1 & ((res$algo == "dib"& res$indicator == "sms") |
@@ -206,10 +206,16 @@ all.cmp.hv = compareGroup(res = res, expr = expr.single | expr.mult, indicator =
   col.sorting = c(1, 5, 2, 3, 4, 6))
 
 # write tables on disk
-write(x = print(tab.parego$xtab, type = "latex",
-  sanitize.text.function = function(x){x}), file= "tableParego.tex")
-write(x = print(tab.mspot$xtab, type = "latex",
-  sanitize.text.function = function(x){x}), file= "tableMspot.tex")
+write(x = print(tab.parego.ei$xtab, type = "latex",
+  sanitize.text.function = function(x){x}), file= "tableParegoEi.tex")
+write(x = print(tab.paregollcb$xtab, type = "latex",
+   sanitize.text.function = function(x){x}), file= "tableParegoLcb.tex")
+write(x = print(tab.mspot.mean$xtab, type = "latex",
+  sanitize.text.function = function(x){x}), file= "tableMspotMean.tex")
+write(x = print(tab.mspot.lcb$xtab, type = "latex",
+  sanitize.text.function = function(x){x}), file= "tableMspotLcb.tex")
+write(x = print(tab.mspot.ei$xtab, type = "latex",
+  sanitize.text.function = function(x){x}), file= "tableMspotEi.tex")
 write(x = print(tab.eps$xtab, type = "latex",
   sanitize.text.function = function(x){x}), file= "tableEps.tex")
 write(x = print(tab.sms$xtab, type = "latex",
