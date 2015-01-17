@@ -13,14 +13,12 @@
 # x* = (0.114, 0.556, 0.852), f* = -3.8627 (global minimum for d = 3)
 # region of interest is [0, 15]^d
 hartman = function(lv, x, d = 1) {
-  # define for d =3
+  x.opt = c(0.114, 0.556, 0.852)
+  missing = setdiff(1:3, seq_len(d))
+  x[missing] = x.opt[missing]
   a = matrix(c(3, 0.1, 3, 0.1, 10, 10, 10, 10, 30, 35, 30, 35), nrow = 4)
   c = c(1, 1.2, 3, 3.2)
   p = matrix(c(0.3689, 0.4699, 0.1091, 0.03815, 0.1170, 0.4387, 0.8732, 0.5743, 0.2673, 0.7470, 0.5547, 0.8828), nrow = 4)
-  # reduce dimensions
-  a = a[, seq_len(d), drop = F]
-  c = c[seq_len(d)]
-  p = p[seq_len(d), , drop = F]
   res = sapply(seq_along(c), function(i) {
     expon = sapply(seq_along(x), function(j) a[i,j] * (x[j] - p[i,j])^2)
     -1 * c[i] * exp(-1 * sum(expon))

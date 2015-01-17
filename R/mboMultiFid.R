@@ -24,7 +24,7 @@ mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE,
     makeIntegerParam(".multifid.lvl", lower = 1L, upper = nlvls)))
 
   # init design optpath, we store lvl there as well
-  design = generateMBOMultiFidDesign(par.set, control)
+  design = generateMBOMultiFidDesign(par.set2, control)
   opt.path = makeOptPathDF(par.set2, control$y.name, control$minimize,
     include.error.message = TRUE, include.exec.time = TRUE)
   # eval + log to opt.path

@@ -1,13 +1,6 @@
 # generates initial design for multifid
-# currently we do: equal nr of points for each level, generate the same X points for each level
 generateMBOMultiFidDesign = function(par.set, control) {
-  n = control$init.design.points
-  k = length(control$multifid.lvls)
-  npoints.per.lvl = viapply(chunk(seq_len(n), n.chunks = k), length)
-  # generate the points for the lowest level
-  design = generateDesign(max(npoints.per.lvl), par.set, fun = control$init.design.fun,
-    fun.args = control$init.design.args, trafo = FALSE)
-  expandDesign(design = design, control = control, npoints.per.lvl = npoints.per.lvl)
+  design = generateDesign(control$init.design.points, par.set, fun = control$init.design.fun, fun.args = control$init.design.args, trafo = FALSE)
 }
 
 # make a design (data.frame) with the exact same points for each multifid level.
