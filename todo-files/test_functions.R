@@ -62,6 +62,10 @@ yshift = function(lv, x, fac = 1) {
   lv + lv/10 * (x - lv * 10)^2
 }
 
+yupp = function(lv, x, fac = 1) {
+  fac * (1 - lv)
+}
+
 #FIXME ????
 # adds a y-shift to a testfunction
 xshift = function(lv, x, direction = 2) {

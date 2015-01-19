@@ -29,14 +29,14 @@ e.par.set = makeParamSet(
 sasenas = list(sasena10 = 1, sasena07 = 0.7, sasena05 = 0.5, sasena02 = 0.2)
 #sasenas = list(sasena02 = 0.5)
 sasens.res = lapply(names(sasenas), function(sn) {
-  objfun = makeMBOMultifidFunction(f = addDistortion(sasena, g=yshift, fac = sasenas[[sn]]), lvls = e.lvl)
+  objfun = makeMBOMultifidFunction(f = addDistortion(sasena, g = yshift, fac = sasenas[[sn]]), lvls = e.lvl)
   generalBenchmark(e.name = sn, objfun = objfun, e.seed = e.seed, e.par.set = e.par.set, e.lvl = e.lvl, grid.all = TRUE, surrogat.model = surrogat.model, e.string = e.string)
 })
 
 
 hartmans = list(hartman10 = 1, hartman07 = 0.7, hartman05 = 0.5, hartman02 = 0.2)
 hartmans.res = lapply(names(hartmans), function(sn) {
-  objfun = makeMBOMultifidFunction(f = distortX(addDistortion(hartman, yshift, fac = 0.2), xshift, direction = hartmans[[sn]]), lvls = e.lvl)
+  objfun = makeMBOMultifidFunction(f = distortX(addDistortion(hartman, yupp, fac = hartmans[[sn]]), xshift, direction = hartmans[[sn]]), lvls = e.lvl)
   generalBenchmark(e.name = sn, objfun = objfun, e.seed = e.seed, e.par.set = e.par.set, e.lvl = e.lvl, grid.all = TRUE, e.string = e.string)
 })
 

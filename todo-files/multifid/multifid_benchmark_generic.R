@@ -43,7 +43,7 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
     param = "dw.perc", 
     lvls = e.lvl,
     cor.grid.points = 40L,
-    costs = function(cur, last) (last / cur)^1.2
+    costs = function(cur, last) (last / cur)^1.8
   )
   
   if (is.null(surrogat.model)) {
@@ -189,7 +189,6 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
   df$speedup = df$theoretical.costs / min(df$theoretical.costs)
   g = ggplot()
   g = g + geom_line(data = df.grid.2, alpha = 0.5, mapping = aes_string(x = names(e.par.set$pars), y = "value", group = ".multifid.lvl"))
-  xx <<- df
   g = g + geom_hline(data = df, mapping = aes(yintercept = y, color = method), alpha = 0.5)
   g = g + geom_vline(data = df, mapping = aes(xintercept = x, color = method), alpha = 0.5)
   g1 = g + geom_text(data = df, mapping = aes(x = x, y = y, label = time, color = method, angle = 70, hjust = -0.2))
