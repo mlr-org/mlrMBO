@@ -73,7 +73,7 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
   mbo1.time = system.time( {mbo1 = mbo(fun = getLast(objfuns), e.par.set, learner = surrogat.model, control = control.common, show.info = TRUE) })
   mbo1$system.time = mbo1.time
   mbo1$opt.path$env$path$.multifid.lvl = length(e.lvl)
-  mbo.res$mbo_expansive = mbo1
+  mbo.res$mbo_expensive = mbo1
   
   # 6. mbo cheapest experiment
   set.seed(e.seed)

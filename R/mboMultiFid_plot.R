@@ -30,13 +30,20 @@ genGgplot = function(plotdata, subset.variable = NULL, title = character(0), add
   assertList(add.g)
   m.all = plotdata$m.all
   if (!is.null(subset.variable)) {
-    m.all = subset(m.all, subset=m.all[["variable"]] %in% subset.variable)
+    m.all = subset(m.all, subset = m.all[["variable"]] %in% subset.variable)
   }
   xname = plotdata$xname
   zname = plotdata$zname
   old.points = plotdata$old.points
   best.points = plotdata$best.points
   best.points.txt = best.points; best.points.txt$variable = "response"
+  
+  # factorize multifid
+  m.all[,zname] = as.factor(m.all[,zname])
+  old.points[,zname] = as.factor(old.points[,zname])
+  best.points[,zname] = as.factor(best.points[,zname])
+  best.points.txt[,zname] = as.factor(best.points.txt[,zname])
+
   g = ggplot(m.all, aes_string(x = xname, y = "value", color = zname, group = zname))
   g = g + geom_line()
   g = g + geom_point(data = old.points)
