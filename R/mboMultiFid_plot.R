@@ -39,10 +39,10 @@ genGgplot = function(plotdata, subset.variable = NULL, title = character(0), add
   best.points.txt = best.points; best.points.txt$variable = "response"
   
   # factorize multifid
-  m.all[,zname] = as.factor(m.all[,zname])
-  old.points[,zname] = as.factor(old.points[,zname])
-  best.points[,zname] = as.factor(best.points[,zname])
-  best.points.txt[,zname] = as.factor(best.points.txt[,zname])
+#   m.all[,zname] = as.factor(m.all[,zname])
+#   old.points[,zname] = as.factor(old.points[,zname])
+#   best.points[,zname] = as.factor(best.points[,zname])
+#   best.points.txt[,zname] = as.factor(best.points.txt[,zname])
 
   g = ggplot(m.all, aes_string(x = xname, y = "value", color = zname, group = zname))
   g = g + geom_line()
