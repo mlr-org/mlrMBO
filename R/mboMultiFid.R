@@ -33,9 +33,10 @@ mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE,
 
   # contruct multifid learner, with summed model and bootstrapping
   # FIXME: we need to exactly define how bootstrapping should work for multifid
+  learner = mlr:::setPredictType(learner, predict.type = "se")
   learner = makeMultiFidWrapper(learner, control)
-  learner = makeMultiFidBaggingWrapper(learner)
-  learner = mlr:::setPredictType.BaggingWrapper(learner, predict.type = "se")
+  #learner = makeMultiFidBaggingWrapper(learner)
+  
 
   # now fit to init design
   task = convertMFOptPathToTask(opt.path)
@@ -58,10 +59,14 @@ mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE,
 
   # calculate GLOBAL correlation between model w/ lvl and last-lvl. currently rank correlation.
   calcModelCor = function(lvl, grid) {
-    grid1 = grid; grid1$.multifid.lvl = lvl
-    grid2 = grid; grid2$.multifid.lvl = nlvls
-    p1 = predict(model, newdata = grid1)$data$response
-    p2 = predict(model, newdata = grid2)$data$response
+    new.grid = rbind.data.frame(
+      cbind.data.frame(grid, .multifid.lvl = lvl),
+      cbind.data.frame(grid, .multifid.lvl = nlvls)
+    )
+    p = predict(model, newdata = new.grid)$data$response
+    p1 = p[new.grid$.multifid.lvl == lvl]
+    p2 = p[new.grid$.multifid.lvl == nlvls]
+    
     # check whether vectors are constant, cor = NA then
     if (diff(range(p1)) < sqrt(.Machine$double.eps) || diff(range(p2)) < sqrt(.Machine$double.eps))
       0
@@ -79,7 +84,7 @@ mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE,
   # multifid main iteration
   for (loop in seq_len(iters)) {
     showInfo(show.info, "loop = %i", loop)
-
+    
     # evaluate numbers we need for MEI (all vectors with length = #levels)
     lvl.sds = vnapply(lvls, calcModelSD)
     lvl.cors = vnapply(lvls, calcModelCor, grid = corgrid)

@@ -72,18 +72,21 @@ predictLearner.MultiFidWrapper = function(.learner, .model, .newdata, ...) {
   lvls = .newdata$.multifid.lvl
   cn = setdiff(colnames(.newdata), ".multifid.lvl")
   split.inds = split(seq_along(lvls), lvls)
-
-  responses = lapply(seq_along(unique(lvls)), function(i) {
+  lvls.inds = sort(unique(lvls))
+  
+  responses = lapply(seq_along(lvls.inds), function(i) {
     rows = split.inds[[i]]
     if (length(rows) == 0L)
       return(numeric(0L))
     sub.data = .newdata[rows, cn, drop = FALSE]
-    response = lapply(head(models, i), mlr:::predict.WrappedModel, newdata = sub.data)
-    response = extractSubList(response, c("data", "response"), simplify = FALSE)
-    Reduce("+", response)
+    pred = lapply(head(models, lvls.inds[i]), mlr:::predict.WrappedModel, newdata = sub.data)
+    response = extractSubList(pred, c("data", "response"), simplify = FALSE)
+    se = tail(pred,1)[[1]]$data$se
+    cbind.data.frame(Reduce("+", response), se) 
   })
   reorder = match(seq_along(lvls), unlist(split.inds, use.names = FALSE))
-  unlist(responses, use.names = FALSE)[reorder]
+  res = as.matrix(do.call(rbind.data.frame, responses)[reorder,])
+  res
 }
 
 #' @export
