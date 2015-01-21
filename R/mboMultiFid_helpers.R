@@ -38,8 +38,10 @@ convertMFOptPathToTask = function(opt.path) {
 # propose Points for each multifid level. return a list
 proposePointsMultiFid = function(model, par.set, control, opt.path, lvl.cors, lvl.costs, lvl.sds) {
   lapply(seq_along(control$multifid.lvls), function(lvl) {
-    proposePointsByInfillOptimization(model, par.set, control, opt.path,
+    res = proposePointsByInfillOptimization(model, par.set, control, opt.path,
       lvl.cors = lvl.cors, lvl.costs = lvl.costs, lvl.sds = lvl.sds, lvl = lvl)
+    res$prop.points$.multifid.lvl = lvl
+    res
   })
 }
 

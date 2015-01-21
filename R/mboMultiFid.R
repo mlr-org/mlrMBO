@@ -100,7 +100,7 @@ mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE,
       control.mod$multifid.lvls = tail(control.mod$multifid.lvls, 1L)
 
     # return a list, get a proposed point for each level
-    prop = proposePointsMultiFid(model = model, par.set = par.set2,
+    prop = proposePointsMultiFid(model = model, par.set = par.set,
       control = control.mod, opt.path = opt.path,
       lvl.cors = lvl.cors, lvl.costs = lvl.costs, lvl.sds = lvl.sds)
     # find the level where the crit val / infill vals is smallest
@@ -108,6 +108,7 @@ mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE,
     messagef("Infill vals = %s", collapse(sprintf("%.3g", infill.vals), ", "))
     # get one x point (see as par vector) and the level parameter
     best.points = prop[[getMinIndex(infill.vals)]]$prop.points
+    print(best.points)
 
     # only generate plot data, if we are in a 1D case
     if (getParamNr(par.set) == 1L) {
@@ -142,7 +143,6 @@ mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE,
   proposed.index = chooseFinalPoint(NULL, par.set, model, y.name = "y",
     opt.path = opt.path, control = control)
   proposed = convertMFOptPathToDesign(opt.path)[proposed.index, ]
-  print(str(proposed))
   proposed$y = NULL
   proposed$.multifid.lvl = nlvls
   proposed = convertDfCols(proposed, factors.as.char = TRUE)
