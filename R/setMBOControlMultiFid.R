@@ -38,10 +38,11 @@ setMBOControlMultiFid = function(control, param, lvls, costs = NULL, cor.grid.po
 
   control$multifid = TRUE
 
-  if (!is.null(costs)){
-    assertFunction(costs, args = c("cur", "last"), ordered = TRUE)
+  if (is.null(costs)) {
+    costs = function(cur, last, opt.path = NULL, grid = NULL) (last / cur)^2   
   } else {
-    costs = function(cur, last) (last / cur)^2
+    assertFunction(costs, args = c("cur", "last", "opt.path", "grid"), ordered = TRUE)
+    
   }
   control$multifid.costs = costs
 

@@ -6,48 +6,11 @@
 
 mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE, more.args = list()) {
 
-  if (!is.null(design))
-    stopf("mboMultiFid does not work with a preconstructed design!")
-
-  # save currently set options
-  oldopts = list(
-    ole = getOption("mlr.on.learner.error"),
-    slo = getOption("mlr.show.learner.output")
-  )
-
-  # some short names and data extractions
-  iters = control$iters
-  nlvls = length(control$multifid.lvls)
-  lvls = 1:nlvls
-  # extra param set, with int param for lvl
-  par.set2 = c(par.set, makeParamSet(
-    makeIntegerParam(".multifid.lvl", lower = 1L, upper = nlvls)))
-
-  # init design optpath, we store lvl there as well
-  design = generateMBOMultiFidDesign(par.set2, control)
-  opt.path = makeOptPathDF(par.set2, control$y.name, control$minimize,
-    include.error.message = TRUE, include.exec.time = TRUE)
-  # eval + log to opt.path
-  xs = dfRowsToList(design, par.set2)
-  evalTargetFun(fun, par.set2, 0L, xs, opt.path, control, show.info, oldopts, more.args, extras = NULL)
-
-  # contruct multifid learner, with summed model and bootstrapping
-  # FIXME: we need to exactly define how bootstrapping should work for multifid
-  learner = mlr:::setPredictType(learner, predict.type = "se")
-  learner = makeMultiFidWrapper(learner, control)
-  #learner = makeMultiFidBaggingWrapper(learner)
-  
-
-  # now fit to init design
-  task = convertMFOptPathToTask(opt.path)
-  model = train(learner, task = task)
-  #print(model$learner.model)
-
   ##### LOCAL FUNCTIONS FOR MEI CRIT VALUES: START #####
 
   # calculate cost relation between lvl and last-lvl
-  calcModelCost = function(lvl) {
-    control$multifid.costs(lvl, nlvls)
+  calcModelCost = function(lvl, opt.path, grid) {
+    control$multifid.costs(lvl, nlvls, opt.path, grid)
   }
 
   # estimate process noise tau of real process belonging to lvl, we use residual sd here
@@ -76,6 +39,43 @@ mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE,
 
   ##### LOCAL FUNCTIONS FOR MEI CRIT VALUES: END #####
 
+  if (!is.null(design))
+    stopf("mboMultiFid does not work with a preconstructed design!")
+
+  # save currently set options
+  oldopts = list(
+    ole = getOption("mlr.on.learner.error"),
+    slo = getOption("mlr.show.learner.output")
+  )
+
+  # some short names and data extractions
+  iters = control$iters
+  nlvls = length(control$multifid.lvls)
+  lvls = 1:nlvls
+  # extra param set, with int param for lvl
+  par.set2 = c(par.set, makeParamSet(
+    makeIntegerParam(".multifid.lvl", lower = 1L, upper = nlvls)))
+
+  # init design optpath, we store lvl there as well
+  design = generateMBOMultiFidDesign(par.set2, control)
+  opt.path = makeOptPathDF(par.set2, control$y.name, control$minimize,
+    include.error.message = TRUE, include.exec.time = TRUE, include.extra = TRUE)
+  # eval + log to opt.path
+  xs = dfRowsToList(design, par.set2)
+  extra.th.costs = NULL
+  evalTargetFun(fun, par.set2, 0L, xs, opt.path, control, show.info, oldopts, more.args, extras = extra.th.costs)
+
+  # contruct multifid learner, with summed model and bootstrapping
+  # FIXME: we need to exactly define how bootstrapping should work for multifid
+  learner = mlr:::setPredictType(learner, predict.type = "se")
+  learner = makeMultiFidWrapper(learner, control)
+  #learner = makeMultiFidBaggingWrapper(learner)
+  
+
+  # now fit to init design
+  task = convertMFOptPathToTask(opt.path)
+  model = train(learner, task = task)
+
   # generate the x values we want to use to calculate the correlation between the surrogat models
   corgrid = generateDesign(n = control$multifid.cor.grid.points, par.set = par.set)
 
@@ -88,7 +88,7 @@ mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE,
     # evaluate numbers we need for MEI (all vectors with length = #levels)
     lvl.sds = vnapply(lvls, calcModelSD)
     lvl.cors = vnapply(lvls, calcModelCor, grid = corgrid)
-    lvl.costs = vnapply(lvls, calcModelCost)
+    lvl.costs = vnapply(lvls, calcModelCost, opt.path = opt.path, grid = corgrid)
 
     showInfo(show.info, "Estimated cor to last model = %s", collapse(sprintf("%.3g", lvl.cors), ", "))
     showInfo(show.info, "Estimated residual var = %s", collapse(sprintf("%.3g", lvl.sds), ", "))
@@ -108,19 +108,16 @@ mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE,
     messagef("Infill vals = %s", collapse(sprintf("%.3g", infill.vals), ", "))
     # get one x point (see as par vector) and the level parameter
     best.points = prop[[getMinIndex(infill.vals)]]$prop.points
-    print(best.points)
 
-    # only generate plot data, if we are in a 1D case
-    if (getParamNr(par.set) == 1L) {
-      plot.data[[loop]] = genPlotData(
-        compound.model = model, 
-        par.set = par.set2, 
-        control = control, 
-        fun = fun, 
-        opt.path = opt.path,
-        lvl.cors = lvl.cors, lvl.sds = lvl.sds, lvl.costs = lvl.costs,
-        best.points = best.points)
-    }
+    plot.data[[loop]] = genPlotData(
+      compound.model = model, 
+      par.set = par.set2, 
+      control = control, 
+      fun = fun, 
+      opt.path = opt.path,
+      lvl.cors = lvl.cors, lvl.sds = lvl.sds, lvl.costs = lvl.costs,
+      best.points = best.points,
+      merge = getParamNr(par.set) == 1L) #merge opt.path with new grid for plot prediction data, only when 1d, because of geom_tile
 
     # FIXME: BB: we need to talk about this
     # # should we always also update the models of the lower levels. Fixes some theoretical problems.

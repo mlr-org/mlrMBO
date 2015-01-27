@@ -8,24 +8,11 @@ e.string = paste0("km_",format(Sys.time(), "%Y_%m_%d-%H%M"))
 
 # Define learner and parameter
 e.lrn = makeLearner("classif.LiblineaRBinary", type = 1)
-e.par.set = makeParamSet(
-  makeNumericParam("cost", lower = -15, upper = 5, trafo = function(x) 2^x)
-)
+
 e.lvl = c(0.1, 0.2, 0.5, 1)
 #e.lvl = c(0.1, 0.3, 1)
 
 surrogat.model = makeLearner("regr.km", nugget.estim = TRUE, jitter = TRUE)
-
-dat.w7a = libsvm.read("../data/w7a")
-#dat.w8a = libsvm.read("../data/w8a")
-
-e.task = makeClassifTask(id = "w7a", data = dat.w7a, target = "Y")
-e.rin = makeResampleInstance("Holdout", task = e.task)
-dat.res = dataBenchmark(e.name = "w7a", e.task = e.task, e.rin = e.rin, e.lrn = e.lrn, e.seed = e.seed, e.par.set = e.par.set, e.lvl = e.lvl, surrogat.model = surrogat.model, e.string = e.string, grid.all = TRUE)
-
-#e.task = makeClassifTask(id = "w8a", data = dat.w8a, target = "Y")
-#e.rin = makeResampleInstance("Holdout", task = e.task)
-#dat.res = dataBenchmark(e.name = "w8a", e.task = e.task, e.rin = e.rin, e.lrn = e.lrn, e.seed = e.seed, e.par.set = e.par.set, e.lvl = e.lvl, surrogat.model = surrogat.model, e.string = e.string, grid.all = TRUE)
 
 e.par.set = makeParamSet(
   makeNumericParam("x", lower = 0, upper = 10)

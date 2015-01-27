@@ -131,18 +131,21 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
   
   if(sum(getParamLengths(e.par.set)) == 1) {
     
-    #### 1d Visualisierung ####
+    #### 1d Visuialisierung ####
     
     # preproc grid search
     df.grid = grid.opt.paths.complete
     
-    # 9.1 mbo Full + mbo Cheap + grid
-    g = genPlotCompareMbos(
-      opt.path.grids = extractSubList(grid.res, "opt.path", simplify = FALSE),
-      opt.path.cheap = mbo.res$mbo_cheap,
-      opt.path.expensive = mbo.res$mbo_expensive
-      )
-    ggsave(g, paste0("plots/",e.name,"_mbo1and2.pdf"), width = 8, height = 5)
+    # 9.1 mbo Full + mbo Cheam + grid
+    df.grid.1 = rename(df.grid, c("y"="y"))
+    op1 = as.data.frame(mbo.res$mbo_expensive$opt.path)
+    op2 = as.data.frame(mbo.res$mbo_cheap$opt.path)
+    df = rbind(cbind(op1, .multifid.lvl = length(e.lvl)), cbind(op2, .multifid.lvl = 1))
+    g = ggplot(df, aes_string(x = getParamIds(e.par.set), y = "y", color = "dob", shape = "as.factor(.multifid.lvl)"))
+    g = g + geom_point(size = 4, alpha = 0.6)
+    g = g + geom_line(data = df.grid.1, alpha = 0.5, lty = 2, color = "black", mapping = aes(group = .multifid.lvl))
+    g
+    ggsave(paste0("plots/",e.name,"_mbo1and2.pdf"), width = 8, height = 5)
     
     # 9.2 multiFid + grid
     df.grid.2 = rename(df.grid, c("y"="value"))
@@ -173,8 +176,11 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
     })
     
     # 9.2.5 Multifid Steps As plot (and table)
-    g = genPlotSteps(mbo.res$multifid$opt.path)
-    ggsave(g, filename = paste0("plots/", e.name, "_multifid_steps.pdf"), plot = g, width = 7, height = 5)
+    df = as.data.frame(mbo.res$multifid$opt.path)
+    df = df[df$dob>0,]
+    g = ggplot(df, aes(y = .multifid.lvl, x = dob))
+    g = g + geom_line() + geom_point(aes(size = y)) 
+    ggsave(filename = paste0("plots/", e.name, "_multifid_steps.pdf"), plot = g, width = 7, height = 5)
     
     # 9.3 Compare different methods end result
     df = data.frame(

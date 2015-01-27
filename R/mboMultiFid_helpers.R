@@ -25,13 +25,13 @@ expandDesign = function(design, control, npoints.per.lvl = NULL) {
 }
 
 # convert OP to a df, of a specified structure with col .multifid.lvl, so we can model on it
-convertMFOptPathToDesign = function(opt.path) {
-  as.data.frame(opt.path, include.rest = FALSE, discretes.as.factor = TRUE)
+convertMFOptPathToDesign = function(opt.path, ...) {
+  as.data.frame(opt.path, include.rest = FALSE, discretes.as.factor = TRUE, ...)
 }
 
 # convert OP to a mlr task, of a specified structure with col .multifid.lvl, so we can model on it
-convertMFOptPathToTask = function(opt.path) {
-  d = convertMFOptPathToDesign(opt.path)
+convertMFOptPathToTask = function(opt.path, ...) {
+  d = convertMFOptPathToDesign(opt.path, ...)
   makeRegrTask(id = "multifid.task", data = d, target = "y")
 }
 
@@ -71,3 +71,17 @@ infillCritMultiFid2 = function(points, model, control, par.set, design, iter, lv
   list(crit = crit, ei = ei.last, se = se, alpha1 = alpha1, alpha2 = alpha2, alpha3 = alpha3, sd = taus)
 }
 
+# time cost model
+multiFidTimeCosts = function(cur, last, opt.path, grid) {
+  time.data = convertMFOptPathToDesign(opt.path, include.y = FALSE)
+  time.data$exec.time = getOptPathExecTimes(opt.path)
+  time.learner = makeLearner("regr.km", nugget.estim = TRUE, jitter = TRUE)
+  time.task = makeRegrTask(id = "multifid.task", data = time.data, target = "exec.time")
+  time.model = train(time.learner, task = time.task)
+  #grid = generateDesign(n = control$multifid.cor.grid.points, par.set = par.set)
+  grid = do.call(rbind, lapply(c(cur,last), function(x) cbind(grid, .multifid.lvl = x)))
+  p = predict(time.model, newdata = grid)$data$response
+  p = split(p, grid$.multifid.lvl)
+  times = sapply(p, mean)
+  times[2]/times[1]
+}

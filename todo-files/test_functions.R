@@ -26,6 +26,8 @@ hartman = function(lv, x, d = 1) {
   sum(res)
 }
 
+hartman2d = function(lv, x) hartman(lv, x, d=2)
+
 # Sasena (2002)
 # Sasena, M.J. (2002), Flexibility and Efficiency Enhancements for Constrained Global Design Optimization
 #   with Kriging Approximations, Ph. D. dissertation, University of Michigan.
@@ -95,7 +97,10 @@ makeMBOMultifidFunction = function(f, lvls) {
   force(f)
   force(lvls)
   function(x) {
-    f(lv = lvls[x$.multifid.lvl], x = x$x)
+    #put all other x to one vector
+    lv = lvls[x$.multifid.lvl]
+    x = unlist(dropNamed(x, ".multifid.lvl"))
+    f(lv = lv, x = x)
   }
 }
 
