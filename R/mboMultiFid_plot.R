@@ -1,4 +1,4 @@
-genPlotData = function(compound.model, opt.path, control, fun, res = 100, lvl.cors, lvl.sds, lvl.costs, par.set, best.points, merge = TRUE) {
+genPlotData = function(compound.model, opt.path, control, fun, res = 100, lvl.cors, lvl.sds, time.model, par.set, best.points, merge = TRUE) {
   requirePackages(packs=c("ggplot2", "reshape2"), why="generate MultiFid Plot")
   # par set without the multifid lvl param
   par.set.lower = dropParams(par.set, ".multifid.lvl")
@@ -20,7 +20,7 @@ genPlotData = function(compound.model, opt.path, control, fun, res = 100, lvl.co
     design = old.points, 
     lvl.cors = lvl.cors, 
     lvl.sds = lvl.sds, 
-    lvl.costs = lvl.costs, 
+    time.model = time.model, 
     lvl = grid.design$.multifid.lvl)
   z.df = do.call(cbind.data.frame, z)
   all = cbind(grid.design, y = p$data$response, z)
@@ -101,7 +101,7 @@ genGgplot2dRawEach = function(m.spec, xname, old.points, best.points, add.g = li
   g = g + stat_contour(aes(z = value), size = 0.5, alpha = 0.5)
   g = g + geom_point(data = old.points, size = 2)
   g = g + geom_point(data = best.points, pch = 4, size = 4)
-  g = g + facet_grid(.multifid.lvl ~ variable)
+  g = g + facet_grid(.multifid.lvl ~ variable, scales = "free")
   g = g + theme(legend.position = "bottom")
   g = g + scale_fill_gradient2(low = "red", mid = "yellow", high = "blue", midpoint = mean(range(m.spec$value)))
   for (i in seq_along(add.g)) {

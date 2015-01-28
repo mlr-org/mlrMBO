@@ -8,11 +8,6 @@ mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE,
 
   ##### LOCAL FUNCTIONS FOR MEI CRIT VALUES: START #####
 
-  # calculate cost relation between lvl and last-lvl
-  calcModelCost = function(lvl, opt.path, grid) {
-    control$multifid.costs(lvl, nlvls, opt.path, grid)
-  }
-
   # estimate process noise tau of real process belonging to lvl, we use residual sd here
   calcModelSD = function(lvl) {
     newdata = convertMFOptPathToDesign(opt.path)
@@ -70,11 +65,15 @@ mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE,
   learner = mlr:::setPredictType(learner, predict.type = "se")
   learner = makeMultiFidWrapper(learner, control)
   #learner = makeMultiFidBaggingWrapper(learner)
-  
 
   # now fit to init design
   task = convertMFOptPathToTask(opt.path)
   model = train(learner, task = task)
+
+  #time learner
+  time.learner = makeLearner("regr.km", nugget.estim = TRUE, jitter = TRUE)
+  time.task = convertMFOptPathToTimeTask(opt.path)
+  time.model = train(time.learner, task = time.task)
 
   # generate the x values we want to use to calculate the correlation between the surrogat models
   corgrid = generateDesign(n = control$multifid.cor.grid.points, par.set = par.set)
@@ -88,7 +87,6 @@ mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE,
     # evaluate numbers we need for MEI (all vectors with length = #levels)
     lvl.sds = vnapply(lvls, calcModelSD)
     lvl.cors = vnapply(lvls, calcModelCor, grid = corgrid)
-    lvl.costs = vnapply(lvls, calcModelCost, opt.path = opt.path, grid = corgrid)
 
     showInfo(show.info, "Estimated cor to last model = %s", collapse(sprintf("%.3g", lvl.cors), ", "))
     showInfo(show.info, "Estimated residual var = %s", collapse(sprintf("%.3g", lvl.sds), ", "))
@@ -102,7 +100,7 @@ mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE,
     # return a list, get a proposed point for each level
     prop = proposePointsMultiFid(model = model, par.set = par.set,
       control = control.mod, opt.path = opt.path,
-      lvl.cors = lvl.cors, lvl.costs = lvl.costs, lvl.sds = lvl.sds)
+      lvl.cors = lvl.cors, time.model = time.model, lvl.sds = lvl.sds)
     # find the level where the crit val / infill vals is smallest
     infill.vals = extractSubList(prop, "crit.vals")
     messagef("Infill vals = %s", collapse(sprintf("%.3g", infill.vals), ", "))
@@ -115,7 +113,7 @@ mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE,
       control = control, 
       fun = fun, 
       opt.path = opt.path,
-      lvl.cors = lvl.cors, lvl.sds = lvl.sds, lvl.costs = lvl.costs,
+      lvl.cors = lvl.cors, lvl.sds = lvl.sds, time.model = time.model,
       best.points = best.points,
       merge = getParamNr(par.set) == 1L) #merge opt.path with new grid for plot prediction data, only when 1d, because of geom_tile
 
@@ -134,6 +132,7 @@ mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE,
 
     # train the model again with new data
     model = train(learner, task = convertMFOptPathToTask(opt.path))
+    time.model = train(time.learner, task = convertMFOptPathToTimeTask(opt.path))
   }
 
   # return complete designs for all levels

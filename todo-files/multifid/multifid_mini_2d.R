@@ -3,13 +3,13 @@ library(gridExtra)
 load_all(".")
 source("todo-files/test_functions.R")
 options(warn = 2)
-set.seed(1995)
+set.seed(030)
 e.lvls = c(0.1, 0.3, 1)
 
 ctrl = makeMBOControl(
   init.design.points = length(e.lvls) * 5 * 2, 
   init.design.fun = maximinLHS,
-  iters = 2L,
+  iters = 10L,
   on.learner.error = "stop",
   show.learner.output = FALSE
 )
@@ -29,8 +29,8 @@ ctrl = setMBOControlMultiFid(
   control = ctrl, 
   param = "dw.perc", 
   lvls = e.lvls,
-  cor.grid.points = 40L#,
-  #costs = "time"
+  cor.grid.points = 40L,
+  costs = c(0.1, 0.2, 3)
 )
 
 par.set = makeParamSet(
@@ -43,9 +43,9 @@ lrn = makeLearner("regr.km", nugget.estim = TRUE, jitter = TRUE)
 obj = makeMBOMultifidFunction(addDistortion(addDistortion(hartman2d, g=noiseGaussian), g=yupp), lvls = ctrl$multifid.lvls)
 res = mbo(fun = obj, par.set = par.set, control = ctrl, learner = lrn, show.info = TRUE)
 
-pdf("tmp_multifid_min_2d.pdf", width = 9, height = 11)
+pdf("plots/tmp_multifid_min_2d.pdf", width = 9, height = 11)
 for(i in seq_along(res$plot.data)) {
- plots = genGgplot2dRaw(plotdata = res$plot.data[[1]], subset.variable = c("y", "crit"), add.g = NULL)
+ plots = genGgplot2dRaw(plotdata = res$plot.data[[i]], subset.variable = c("y", "crit"), add.g = NULL)
  do.call(grid.arrange, c(plots, list(nrow = 1, main = sprintf("Stage %i", i))))
  # cat ("Press [enter] to continue")
  # line <- readline()

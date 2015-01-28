@@ -35,38 +35,50 @@ convertMFOptPathToTask = function(opt.path, ...) {
   makeRegrTask(id = "multifid.task", data = d, target = "y")
 }
 
+convertMFOptPathToTimeTask = function(opt.path, ...) {
+  time.data = convertMFOptPathToDesign(opt.path, include.y = FALSE, ...)
+  time.data$exec.time = getOptPathExecTimes(opt.path)
+  makeRegrTask(id = "time.task", data = time.data, target = "exec.time")
+}
+
 # propose Points for each multifid level. return a list
-proposePointsMultiFid = function(model, par.set, control, opt.path, lvl.cors, lvl.costs, lvl.sds) {
+proposePointsMultiFid = function(model, par.set, control, opt.path, lvl.cors, time.model, lvl.sds) {
   lapply(seq_along(control$multifid.lvls), function(lvl) {
     res = proposePointsByInfillOptimization(model, par.set, control, opt.path,
-      lvl.cors = lvl.cors, lvl.costs = lvl.costs, lvl.sds = lvl.sds, lvl = lvl)
+      lvl.cors = lvl.cors, time.model = time.model, lvl.sds = lvl.sds, lvl = lvl)
     res$prop.points$.multifid.lvl = lvl
     res
   })
 }
 
 # return only crit vector
-infillCritMultiFid = function(points, model, control, par.set, design, iter, lvl.cors, lvl.sds, lvl.costs, lvl) {
-  infillCritMultiFid2(points, model, control, par.set, design, iter, lvl.cors, lvl.sds, lvl.costs, lvl)$crit
+infillCritMultiFid = function(points, model, control, par.set, design, iter, lvl.cors, lvl.sds, time.model, lvl) {
+  infillCritMultiFid2(points, model, control, par.set, design, iter, lvl.cors, lvl.sds, time.model, lvl)$crit
 }
 
 # return all crap so we can plot it later
-infillCritMultiFid2 = function(points, model, control, par.set, design, iter, lvl.cors, lvl.sds, lvl.costs, lvl) {
+infillCritMultiFid2 = function(points, model, control, par.set, design, iter, lvl.cors, lvl.sds, time.model, lvl) {
   nlvls = length(control$multifid.lvls)
-  points1 = cbind(points, .multifid.lvl = lvl)
-  points2 = cbind(points, .multifid.lvl = nlvls) #points on most expensive level
-  design2 = design[design$.multifid.lvl == nlvls, , drop = FALSE]
+  points.current = cbind(points, .multifid.lvl = lvl)
+  points.last = cbind(points, .multifid.lvl = nlvls) #points on most expensive level
+  design.last = design[design$.multifid.lvl == nlvls, , drop = FALSE]
   # note: mbo returns the negated EI (and SE), so have to later minimize the huang crit.
   # which is done by default by our optimizer anyway
-  ei.last = infillCritAEI(points2, model, control, par.set, design2, iter)
+  ei.last = infillCritAEI(points.last, model, control, par.set, design.last, iter)
+  cost.current = infillCritMeanResponse(points.current, time.model, control)
+  cost.last = infillCritMeanResponse(points.last, time.model, control)
   if(all(ei.last == 0)) {
     # warning("All EI = 0!")
   }
   alpha1 = lvl.cors[lvl]
-  se = -infillCritStandardError(points1, model, control, par.set, NULL, iter)
+  se = -infillCritStandardError(points.current, model, control, par.set, NULL, iter)
   taus = lvl.sds[lvl]
   alpha2 = 1 - (taus / sqrt(se^2 + taus^2))
-  alpha3 = lvl.costs[lvl]
+  if (!is.null(control$multifid.costs)) {
+    alpha3 = getLast(control$multifid.costs) / control$multifid.costs[lvl]
+  } else {
+    alpha3 = cost.last / cost.current 
+  }
   crit = ei.last * alpha1 * alpha2 * alpha3
   list(crit = crit, ei = ei.last, se = se, alpha1 = alpha1, alpha2 = alpha2, alpha3 = alpha3, sd = taus)
 }

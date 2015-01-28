@@ -8,7 +8,7 @@ e.seed = 10243
 options(warn=2)
 
 e.control = makeMBOControl(
-  init.design.points = 50L, #distributed over the different levels, seems not to work for <5 each
+  init.design.points = 20L, #distributed over the different levels, seems not to work for <5 each
   init.design.fun = maximinLHS,
   iters = 10L,
   on.learner.error = "stop",
@@ -32,8 +32,8 @@ e.par.set = makeParamSet(
   makeNumericParam("cost", lower = -15, upper = 10, trafo = function(x) 2^x),
   makeNumericParam("epsilon", lower = -20, upper = 2, trafo = function(x) 2^x)
 )
-e.lvl = c(0.1, 0.2) #, 0.5, 1)
-#e.lvl = c(0.1, 0.3, 1)
+#e.lvl = c(0.1, 0.2) #, 0.5, 1)
+e.lvl = c(0.1, 0.3, 1)
 
 surrogat.model = makeLearner("regr.km", nugget.estim = TRUE, jitter = TRUE)
 
@@ -48,8 +48,8 @@ e.par.set = makeParamSet(
   makeNumericParam("x2", lower = 0, upper = 15)
 )
 
-hartmans = list(hartman10 = 1, hartman07 = 0.7, hartman05 = 0.5, hartman02 = 0.2)
-#hartmans = list(hartman10 = 1)
+#hartmans = list(hartman10 = 1, hartman07 = 0.7, hartman05 = 0.5, hartman02 = 0.2)
+hartmans = list(hartman10 = 1)
 hartmans.res = lapply(names(hartmans), function(sn) {
   #objfun = makeMBOMultifidFunction(f = distortX(addDistortion(hartman2d, yupp, fac = hartmans[[sn]]), xshift, direction = hartmans[[sn]]), lvls = e.lvl)
   objfun = makeMBOMultifidFunction(f = addDistortion(hartman2d, yupp, fac = hartmans[[sn]]), lvls = e.lvl)

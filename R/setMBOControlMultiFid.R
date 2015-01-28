@@ -10,8 +10,9 @@
 #' @param cor.grid.points [\code{integer(1)}]\cr
 #'   Numbers of points used to calculate the correlation between the different levels of
 #'   the \code{param}.
-#' @param costs [\code{function}]\cr
-#'   Vectorized (?) cost function with the params \code{cur} and \code{last}.
+#' @param costs [\code{numeric}]\cr
+#'   Vector defining the cost for each level.
+#'   Default is \code{NULL} which means that the cost will be predicted by a model build on the \code{exec.time} from the so far evaluated points.
 #' @param force.last.level.evals [\code{integer(1)}]
 #'   How many evaluations should be done on the last value of fid.param?
 #' @param eval.lower [\code{boolean(1)}]\cr
@@ -38,11 +39,8 @@ setMBOControlMultiFid = function(control, param, lvls, costs = NULL, cor.grid.po
 
   control$multifid = TRUE
 
-  if (is.null(costs)) {
-    costs = function(cur, last, opt.path = NULL, grid = NULL) (last / cur)^2   
-  } else {
-    assertFunction(costs, args = c("cur", "last", "opt.path", "grid"), ordered = TRUE)
-    
+  if (!is.null(costs)) {
+    assertNumeric(costs, len = length(control$multifid.lvls))
   }
   control$multifid.costs = costs
 
