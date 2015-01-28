@@ -9,7 +9,7 @@ e.lvls = c(0.1, 0.3, 1)
 ctrl = makeMBOControl(
   init.design.points = length(e.lvls) * 5 * 2, 
   init.design.fun = maximinLHS,
-  iters = 5L,
+  iters = 2L,
   on.learner.error = "stop",
   show.learner.output = FALSE
 )
@@ -45,8 +45,7 @@ res = mbo(fun = obj, par.set = par.set, control = ctrl, learner = lrn, show.info
 
 pdf("tmp_multifid_min_2d.pdf", width = 9, height = 11)
 for(i in seq_along(res$plot.data)) {
- print(genGgplot(plotdata=res$plot.data[[i]]), subset.variable = c("response", "crit"))
- plots = genGgplot2dRaw(plotdata = res$plot.data[[1]], subset.variable = "response", add.g = NULL)
+ plots = genGgplot2dRaw(plotdata = res$plot.data[[1]], subset.variable = c("y", "crit"), add.g = NULL)
  do.call(grid.arrange, c(plots, list(nrow = 1, main = sprintf("Stage %i", i))))
  # cat ("Press [enter] to continue")
  # line <- readline()

@@ -1,12 +1,3 @@
-# 0. Load packages and seed
-library("devtools")
-library("BBmisc")
-library("mlr")
-library("ggplot2")
-library("reshape2")
-library("plyr")
-load_all()
-
 openMLBenchmark = function (task.id, e.seed, e.lrn, e.par.set, e.lvl, ...) {
   task.openML = downloadOpenMLTask(id = task.id)
   e.name = paste0(task.openML$data.desc$name,"_",task.openML$id)

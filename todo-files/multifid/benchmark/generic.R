@@ -1,15 +1,4 @@
-# 0. Load packages and seed
-library("devtools")
-library("BBmisc")
-library("mlr")
-library("ggplot2")
-library("reshape2")
-library("plyr")
-library("gridExtra")
-
-load_all()
-
-generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.model = NULL, control = NULL, grid.all = TRUE, e.string = NULL) {
+generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.model = NULL, control = NULL, grid.all = TRUE, e.string = NULL, high.res = FALSE) {
   # store plots in subdirectory
   if(!is.null(e.string)) {
     dir.create(paste0("plots/", e.string), showWarnings = FALSE)
@@ -61,9 +50,7 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
     }
   })
   
-  
   # 4.1 Wrapper + Obj Func
-  par.set = e.par.set
   
   # 5.0 Initiate result list
   mbo.res = list()
@@ -87,7 +74,7 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
   # 7. multifid
   set.seed(e.seed)
   catf("7. multiFid")
-  mbo3.time = system.time({mbo3 = mbo(fun = objfun, par.set = par.set, learner = surrogat.model, control = control.multifid, show.info = TRUE)})
+  mbo3.time = system.time({mbo3 = mbo(fun = objfun, par.set = e.par.set, learner = surrogat.model, control = control.multifid, show.info = TRUE)})
   mbo3$system.time = mbo3.time
   df = as.data.frame(mbo3$opt.path)
   df = df[df$dob > 0,]
@@ -103,7 +90,10 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
   }
   grid.res = lapply(grid.lvls, function(lvl) {
     set.seed(e.seed)
-    grid.design = generateGridDesign(par.set = e.par.set, resolution = ceiling((control.common$init.design.points + control.common$iters)^(1/sum(getParamLengths(par.set)))))
+    resolution = control.common$init.design.points + control.common$iters
+    if (!high.res) 
+      resolution = ceiling((resolution)^(1/sum(getParamLengths(e.par.set))))
+    grid.design = generateGridDesign(par.set = e.par.set, resolution = resolution)
     control.grid = makeMBOControl(iters = 1)
     control.grid$iters = 0
     mbo4.time = system.time({mbo4 = mbo(fun = objfuns[[lvl]], par.set = e.par.set, design = grid.design, learner = surrogat.model, control = control.grid, show.info = TRUE)})
@@ -114,8 +104,8 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
   })
   names(grid.res) = paste("grid", grid.lvls, sep = ".")
   
-  grid.opt.paths = lapply(extractSubList(grid.res, "opt.path", simplify = FALSE), as.data.frame)
-  grid.opt.paths.complete = do.call(rbind, grid.opt.paths)
+  grid.opt.path.dfs = lapply(extractSubList(grid.res, "opt.path", simplify = FALSE), as.data.frame)
+  grid.opt.path.df.complete = do.call(rbind, grid.opt.path.dfs)
   
   mbo.res = c(mbo.res, grid.res)
   
@@ -131,24 +121,21 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
   
   if(sum(getParamLengths(e.par.set)) == 1) {
     
-    #### 1d Visuialisierung ####
+    #### 1d Visualisierung ####
     
     # preproc grid search
-    df.grid = grid.opt.paths.complete
     
-    # 9.1 mbo Full + mbo Cheam + grid
-    df.grid.1 = rename(df.grid, c("y"="y"))
-    op1 = as.data.frame(mbo.res$mbo_expensive$opt.path)
-    op2 = as.data.frame(mbo.res$mbo_cheap$opt.path)
-    df = rbind(cbind(op1, .multifid.lvl = length(e.lvl)), cbind(op2, .multifid.lvl = 1))
-    g = ggplot(df, aes_string(x = getParamIds(e.par.set), y = "y", color = "dob", shape = "as.factor(.multifid.lvl)"))
-    g = g + geom_point(size = 4, alpha = 0.6)
-    g = g + geom_line(data = df.grid.1, alpha = 0.5, lty = 2, color = "black", mapping = aes(group = .multifid.lvl))
-    g
-    ggsave(paste0("plots/",e.name,"_mbo1and2.pdf"), width = 8, height = 5)
+    # 9.1 mbo Full + mbo Cheap + grid
+    g = genPlotCompareMbos(
+      opt.path.grids = extractSubList(grid.res, "opt.path", simplify = FALSE),
+      opt.path.cheap = mbo.res$mbo_cheap,
+      opt.path.expensive = mbo.res$mbo_expensive,
+      x.pars = getParamIds(e.par.set),
+      )
+    ggsave(g, paste0("plots/",e.name,"_mbo1and2.pdf"), width = 8, height = 5)
     
     # 9.2 multiFid + grid
-    df.grid.2 = rename(df.grid, c("y"="value"))
+    df.grid.2 = rename(grid.opt.path.df.complete, c("y"="value"))
     df.grid.2$variable = "response"
     add.g = list(
       geom_line(data = df.grid.2, alpha = 0.5, lty = 2, mapping = aes(group = .multifid.lvl, color = .multifid.lvl)),
@@ -176,44 +163,32 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
     })
     
     # 9.2.5 Multifid Steps As plot (and table)
-    df = as.data.frame(mbo.res$multifid$opt.path)
-    df = df[df$dob>0,]
-    g = ggplot(df, aes(y = .multifid.lvl, x = dob))
-    g = g + geom_line() + geom_point(aes(size = y)) 
-    ggsave(filename = paste0("plots/", e.name, "_multifid_steps.pdf"), plot = g, width = 7, height = 5)
+    g = genPlotSteps(mbo.res$multifid$opt.path)
+    ggsave(g, filename = paste0("plots/", e.name, "_multifid_steps.pdf"), plot = g, width = 7, height = 5)
     
     # 9.3 Compare different methods end result
-    df = data.frame(
+    final.points = data.frame(
       method = names(mbo.res),
       x = unlist(extractSubList(mbo.res,"x")),
-      y = extractSubList(mbo.res,"y"),
-      time = extractSubList(mbo.res,list("system.time",1)),
-      theoretical.costs = extractSubList(mbo.res, "theoretical.costs")
+      y = extractSubList(mbo.res,"y")
     )
     # normalize theoretical costs to speed up from most expenisve method
-    df$speedup = df$theoretical.costs / min(df$theoretical.costs)
-    g = ggplot()
-    g = g + geom_line(data = df.grid.2, alpha = 0.5, mapping = aes_string(x = names(e.par.set$pars), y = "value", group = ".multifid.lvl"))
-    g = g + geom_hline(data = df, mapping = aes(yintercept = y, color = method), alpha = 0.5)
-    g = g + geom_vline(data = df, mapping = aes(xintercept = x, color = method), alpha = 0.5)
-    g1 = g + geom_text(data = df, mapping = aes(x = x, y = y, label = time, color = method, angle = 70, hjust = -0.2))
-    ggsave(filename = paste0("plots/", e.name, "_res_compare_system_time.pdf"), plot = g1, width = 10, height = 5)
-    g2 = g + geom_text(data = df, mapping = aes(x = x, y = y, label = round(speedup,1), color = method, angle = 70, hjust = -0.2))
-    ggsave(filename = paste0("plots/", e.name, "_res_compare_speedup.pdf"), plot = g2, width = 10, height = 5)
+    g = genPlotOptPoints(extractSubList(grid.res, "opt.path", simplify = FALSE), dropNamed())
+    ggsave(g, filename = paste0("plots/", e.name, "_res_compare_system_time.pdf"), plot = g1, width = 10, height = 5)
     
   } else if (sum(getParamLengths(e.par.set)) == 2) {
     
     #### 2d plots ####
     
-    versions = list(basic = c("response", "crit"), extended = c("response", "ei", "alpha2"))
+    versions = list(basic = c("y", "crit"), extended = c("y", "ei", "alpha2"))
     lapply(names(versions), function(v.name) {
       subs = versions[[v.name]]
       p.width = length(subs) * 4
       pdf(paste0("plots/",e.name, "_multifid_steps_",v.name,".pdf"), width = p.width, height = 10)
       for (i in seq_along(mbo.res$multifid$plot.data)) {
         plot.data = mbo.res$multifid$plot.data[[i]]
-        alpha1 = collapse(round(unique(plot.data$m.all$value[plot.data$m.all$variable=="alpha1"]), 3), sep = ", ")
-        alpha3 = collapse(round(unique(plot.data$m.all$value[plot.data$m.all$variable=="alpha3"]), 3), sep = ", ")
+        alpha1 = collapse(round(unique(plot.data$all$alpha1), 3), sep = ", ")
+        alpha3 = collapse(round(unique(plot.data$all$alpha3), 3), sep = ", ")
         plot = genGgplot(plot.data, title = sprintf("Step: %i, a1: %s, a3: %s", i, alpha1, alpha3), subset.variable = subs)
         print(plot)
       }
@@ -222,8 +197,9 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
     
     ## Final state
     plot.data = getLast(mbo.res$multifid$plot.data) #last step
-    plots = genGgplot2dRaw(plot.data, subset.variable = c("response", "crit"))
-    m.spec = rename(grid.opt.paths.complete, c("y"="value"))
+    plots = genGgplot2dRaw(plot.data, subset.variable = c("y", "crit"))
+    m.spec = rename(grid.opt.path.df.complete, c("y" = "value"))
+    m.spec = m.spec[m.spec$dob == 0, ] #remove proposed values for correct geom_grid()
     m.spec$variable = "real"
     xname = plot.data$xname
     g.real = genGgplot2dRawEach(m.spec, xname, plot.data$old.points[,c(xname, ".multifid.lvl")], plot.data$best.points[,c(xname, ".multifid.lvl")] )

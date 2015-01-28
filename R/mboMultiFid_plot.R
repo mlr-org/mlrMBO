@@ -12,20 +12,33 @@ genPlotData = function(compound.model, opt.path, control, fun, res = 100, lvl.co
   if (merge) grid.design = rbind(grid.design, old.points[,colnames(grid.design)])
   # predict all the y values by the model
   p = predict(compound.model, newdata = grid.design)
-  z = infillCritMultiFid2(points = dropNamed(grid.design, ".multifid.lvl"), model = compound.model, control = control, par.set = par.set, design = old.points , lvl.cors = lvl.cors, lvl.sds = lvl.sds, lvl.costs = lvl.costs, lvl = grid.design$.multifid.lvl)
+  z = infillCritMultiFid2(
+    points = dropNamed(grid.design, ".multifid.lvl"), 
+    model = compound.model, 
+    control = control, 
+    par.set = par.set, 
+    design = old.points, 
+    lvl.cors = lvl.cors, 
+    lvl.sds = lvl.sds, 
+    lvl.costs = lvl.costs, 
+    lvl = grid.design$.multifid.lvl)
   z.df = do.call(cbind.data.frame, z)
-  all = cbind(grid.design, response = p$data$response, z)
-  xname = names(par.set.lower$pars)
-  m.all = melt(all, id.vars=c(xname, ".multifid.lvl"))
+  all = cbind(grid.design, y = p$data$response, z)
+  xname = getParamIds(par.set.lower)
+  #m.all = melt(all, id.vars=c(xname, ".multifid.lvl"))
   #ei last extra care
-  m.all[m.all[["variable"]] == "ei", control$multifid.param] = getLast(control$multifid.lvls)
-  old.points = rename(old.points, c("y"="value")); old.points$variable = "response"
-  best.points$value = predict(compound.model, newdata = best.points)$data$response
-  return(list(m.all = m.all, xname = xname, old.points = old.points, best.points = best.points))
+  #m.all[m.all[["variable"]] == "ei", control$multifid.param] = getLast(control$multifid.lvls)
+  #old.points = rename(old.points, c("y"="value")); old.points$variable = "response"
+  best.points$y = predict(compound.model, newdata = best.points)$data$response
+  return(list(all = all, xname = xname, old.points = old.points, best.points = best.points))
 }
 
 genGgplot = function(plotdata, subset.variable = NULL, title = character(0), add.g = list()) {
   assertList(add.g)
+  assertCharacter(title)
+  assertCharacter(subset.variable)
+  assertList(plotdata)
+  assertSubset(subset.variable, colnames(plotdata$all))
   dim = length(plotdata$xname)
   if(dim == 1) {
     genGgplot1d(plotdata, subset.variable, title, add.g)
@@ -35,12 +48,14 @@ genGgplot = function(plotdata, subset.variable = NULL, title = character(0), add
 }
 
 genGgplot1d = function(plotdata, subset.variable = NULL, title = character(0), add.g = list()) {
-  m.all = plotdata$m.all
-  if (!is.null(subset.variable)) {
-    m.all = subset(m.all, subset = m.all[["variable"]] %in% subset.variable)
-  }
   xname = plotdata$xname
-  old.points = plotdata$old.points
+  m.all = melt(plotdata$all, id.vars = c(xname, ".multifid.lvl"))
+  m.all = m.all[m.all$variable != "ei" | (m.all$variable == "ei" & m.all$.multifid.lvl == max(m.all$.multifid.lvl))] # drop EI for not last .multifid.lvl
+  if (!is.null(subset.variable)) {
+    m.all = subset(m.all, subset = m.all$variable %in% subset.variable)
+  }
+  old.points = rename(plotdata$old.points, c("y"="value"))
+  old.points$variable = "response"
   best.points = plotdata$best.points
   best.points.txt = best.points; best.points.txt$variable = "response"
 
@@ -66,17 +81,17 @@ genGgplot2d = function(plotdata, subset.variable = NULL, title = character(0), a
 }
 
 genGgplot2dRaw = function(plotdata, subset.variable = NULL, add.g = list()) {
-  if (is.null(subset.variable)) {
-    subset.variable = unique(plotdata$m.all$variable)
-  }
-  plots = lapply(c("response", "crit"), function(var) {
-    m.spec = plotdata$m.all[plotdata$m.all$variable == var,]
+  plots = lapply(subset.variable, function(var) {
     xname = plotdata$xname
-    g = genGgplot2dRawEach(m.spec, xname, 
+    m.all = melt(plotdata$all, id.vars = c(xname, ".multifid.lvl"))
+    if(!is.null(subset.variable))
+      m.all = m.all[m.all$variable == var,]
+    g = genGgplot2dRawEach(m.all, xname, 
       old.points = plotdata$old.points[,c(xname, ".multifid.lvl")], 
       best.points = plotdata$best.points[,c(xname, ".multifid.lvl")])
     return(g)
   })
+  xx.plots <<- plots
   return(plots)
 }
 
