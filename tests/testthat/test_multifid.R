@@ -34,7 +34,6 @@ test_that("basic multifid works", {
   control = setMBOControlMultiFid(control = control,
     param = "dw.perc",
     lvls = c(0.1, 0.5, 1),
-    costs = function(cur, last) (last / cur)^0.5,
     cor.grid.points = 40L)
 
   surrogat.learner = makeLearner("regr.rpart", predict.type = "response")

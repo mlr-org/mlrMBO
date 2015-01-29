@@ -33,7 +33,7 @@ genPlotData = function(compound.model, opt.path, control, fun, res = 100, lvl.co
   return(list(all = all, xname = xname, old.points = old.points, best.points = best.points))
 }
 
-genGgplot = function(plotdata, subset.variable = NULL, title = character(0), add.g = list()) {
+genGgplot = function(plotdata, subset.variable = character(), title = character(0), add.g = list()) {
   assertList(add.g)
   assertCharacter(title)
   assertCharacter(subset.variable)
@@ -47,55 +47,63 @@ genGgplot = function(plotdata, subset.variable = NULL, title = character(0), add
   }
 }
 
-genGgplot1d = function(plotdata, subset.variable = NULL, title = character(0), add.g = list()) {
+genGgplot1d = function(plotdata, subset.variable = character(), title = character(0), add.g = list()) {
   xname = plotdata$xname
   m.all = melt(plotdata$all, id.vars = c(xname, ".multifid.lvl"))
-  m.all = m.all[m.all$variable != "ei" | (m.all$variable == "ei" & m.all$.multifid.lvl == max(m.all$.multifid.lvl))] # drop EI for not last .multifid.lvl
-  if (!is.null(subset.variable)) {
+  
+  xx.m.all <<- m.all
+  
+  m.all = m.all[m.all$variable != "ei" | (m.all$variable == "ei" & m.all$.multifid.lvl == max(m.all$.multifid.lvl)), ] # drop EI for not last .multifid.lvl
+  if (length(subset.variable)) {
     m.all = subset(m.all, subset = m.all$variable %in% subset.variable)
   }
   old.points = rename(plotdata$old.points, c("y"="value"))
-  old.points$variable = "response"
-  best.points = plotdata$best.points
-  best.points.txt = best.points; best.points.txt$variable = "response"
+  old.points$variable = "y"
+  best.points = rename(plotdata$best.points, c("y"="value"))
+  best.points.txt = best.points; best.points.txt$variable = "y"
+  vars.needed = c("value", xname, ".multifid.lvl", "variable") 
+  
+  assertSubset(vars.needed, colnames(m.all))
+  assertSubset(vars.needed, colnames(old.points))
+  assertSubset(vars.needed[-4], colnames(best.points))
 
-  g = ggplot(m.all, aes_string(x = xname, y = "value", color = ".multifid.lvl", group = ".multifid.lvl"))
+  g = ggplot(m.all, aes_string(x = xname, y = "value", color = "as.factor(.multifid.lvl)", group = ".multifid.lvl"))
   g = g + geom_line()
   g = g + geom_point(data = old.points)
-  g = g + geom_vline(data = best.points, aes_string(xintercept = xname, color = ".multifid.lvl"), lty=2)
-  g = g + geom_text(data = best.points.txt, aes_string(x = xname, y = "value", label = ".multifid.lvl"), hjust = 0, vjust = 0, size = 5)
+  g = g + geom_vline(data = best.points, aes_string(xintercept = xname, color = "as.factor(.multifid.lvl)"), lty=2)
+  g = g + geom_text(data = best.points.txt, aes(label = .multifid.lvl), hjust = 0, vjust = 0, size = 5)
   for (i in seq_along(add.g)) {
     g = g + add.g[[i]]
   }
-  g = g + facet_wrap(~variable, scales="free_y", ncol=1)
+  g = g + facet_grid(variable~., scales="free_y")
   if (length(title)>0) {
     g = g + ggtitle(title)
   }
   return(g)
 }
 
-genGgplot2d = function(plotdata, subset.variable = NULL, title = character(0), add.g = list()) {
+genGgplot2d = function(plotdata, subset.variable = character(), title = character(0), add.g = list()) {
   plots = genGgplot2dRaw(plotdata, subset.variable, title)
   gs = do.call(grid.arrange, c(plots, list(nrow = 1, main = title)))
   return(gs)
 }
 
-genGgplot2dRaw = function(plotdata, subset.variable = NULL, add.g = list()) {
+genGgplot2dRaw = function(plotdata, subset.variable = character(), add.g = list()) {
   plots = lapply(subset.variable, function(var) {
     xname = plotdata$xname
     m.all = melt(plotdata$all, id.vars = c(xname, ".multifid.lvl"))
-    if(!is.null(subset.variable))
+    if (length(subset.variable))
       m.all = m.all[m.all$variable == var,]
     g = genGgplot2dRawEach(m.all, xname, 
       old.points = plotdata$old.points[,c(xname, ".multifid.lvl")], 
       best.points = plotdata$best.points[,c(xname, ".multifid.lvl")])
     return(g)
   })
-  xx.plots <<- plots
   return(plots)
 }
 
 genGgplot2dRawEach = function(m.spec, xname, old.points, best.points, add.g = list()){
+  assertSubset(c("value", xname, "variable", ".multifid.lvl"), colnames(m.spec))
   g = ggplot(m.spec, aes_string(x = xname[1], y = xname[2]))
   g = g + geom_tile(aes(fill = value))
   g = g + stat_contour(aes(z = value), size = 0.5, alpha = 0.5)

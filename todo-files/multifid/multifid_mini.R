@@ -28,8 +28,8 @@ ctrl = setMBOControlMultiFid(
   control = ctrl, 
   param = "dw.perc", 
   lvls = e.lvls,
-  cor.grid.points = 40L#,
-  #costs = "time"
+  cor.grid.points = 40L,
+  costs = 1:3
 )
 
 par.set = makeParamSet(

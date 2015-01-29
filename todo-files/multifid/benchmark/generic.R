@@ -32,8 +32,7 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
     control = control.multifid, 
     param = "dw.perc", 
     lvls = e.lvl,
-    cor.grid.points = 40L,
-    costs = function(cur, last, opt.path = NULL, grid = NULL) (last / cur)^1.8
+    cor.grid.points = 40L
   )
   
   if (is.null(surrogat.model)) {
@@ -113,7 +112,11 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
   # 9.0 Calculate thoretical Costs and level count
   for (idx in names(mbo.res)) {
     df = as.data.frame(mbo.res[[idx]]$opt.path)
-    mbo.res[[idx]]$theoretical.costs = sum(sapply(df$.multifid.lvl, function(x) control.multifid$multifid.costs(x, getLast(e.lvl))))
+    if(is.null(control.multifid$multifid.costs))
+      cost.vector = length(e.lvl)/seq_along(e.lvl)
+    else
+      cost.vector = control.multifid$multifid.costs
+    mbo.res[[idx]]$theoretical.costs = sum(cost.vector[df$.multifid.lvl])
     mbo.res[[idx]]$level.count = table(factor(df$.multifid.lvl, levels = e.lvl))
   }
   
@@ -128,17 +131,16 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
     # 9.1 mbo Full + mbo Cheap + grid
     g = genPlotCompareMbos(
       opt.path.grids = extractSubList(grid.res, "opt.path", simplify = FALSE),
-      opt.path.cheap = mbo.res$mbo_cheap,
-      opt.path.expensive = mbo.res$mbo_expensive,
-      x.pars = getParamIds(e.par.set),
+      opt.path.cheap = extractSubList(mbo.res$mbo_cheap, "opt.path", simplify = FALSE),
+      opt.path.expensive = extractSubList(mbo.res$mbo_expensive, "opt.path", simplify = FALSE)
       )
     ggsave(g, paste0("plots/",e.name,"_mbo1and2.pdf"), width = 8, height = 5)
     
     # 9.2 multiFid + grid
     df.grid.2 = rename(grid.opt.path.df.complete, c("y"="value"))
-    df.grid.2$variable = "response"
+    df.grid.2$variable = "y"
     add.g = list(
-      geom_line(data = df.grid.2, alpha = 0.5, lty = 2, mapping = aes(group = .multifid.lvl, color = .multifid.lvl)),
+      geom_line(data = df.grid.2, alpha = 0.5, lty = 2, mapping = aes(group = .multifid.lvl, color = as.factor(.multifid.lvl))),
       scale_color_gradient2(low = "green", high = "red", mid="blue", midpoint=mean(range(e.lvl)))
     )
     versions = list(

@@ -42,12 +42,12 @@ checkOptPath = function(op, forced.columns = NULL) {
 
 }
 
-checkOptPathList = function(ops, forced.columns = NULL) {
+checkOptPathList = function(ops, forced.columns = character()) {
 	assertList(ops)
 	assertCharacter(forced.columns)
 	x.pars = getParamIds(ops[[1]]$par.set)
 	y.names = ops[[1]]$y.names
-	if (is.null(forced.columns)) {
+	if (length(forced.columns)) {
 		forced.columns = as.data.frame(ops[[1]])
 	} else {
 		forced.columns = union(forced.columns, c(x.pars, y.names))
