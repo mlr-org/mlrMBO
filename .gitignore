@@ -9,3 +9,4 @@ bench/mco/mco_bench-files/
 bench/mlr/modelsel-files
 src/*.o
 src/*.so
+plots

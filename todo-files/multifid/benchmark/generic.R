@@ -1,3 +1,5 @@
+library(gridExtra)
+
 generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.model = NULL, control = NULL, grid.all = TRUE, e.string = NULL, high.res = FALSE) {
   # store plots in subdirectory
   if(!is.null(e.string)) {
@@ -10,7 +12,7 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
     control.common = makeMBOControl(
       init.design.points = 20L, #distributed over the different levels, seems not to work for <5 each
       init.design.fun = maximinLHS,
-      iters = 5L,
+      iters = 20L,
       on.learner.error = "stop",
       show.learner.output = FALSE,
     )
@@ -177,7 +179,7 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
     })
     
     # 9.2.5 Multifid Steps As plot (and table)
-    g = genPlotSteps(mbo.res$multifid$opt.path)
+    g = genPlotSteps(mfbo.res$multifid$opt.path)
     ggsave(plot = g, filename = paste0("plots/", e.name, "_multifid_steps.pdf"), width = 7, height = 5)
     
     # 9.3 Compare different methods end result
@@ -232,6 +234,9 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
     theoretical.costs = extractSubList(mbo.res, element = "theoretical.costs"),
     lvl.counts = do.call(rbind, extractSubList(mbo.res, element = "level.count", simplify = FALSE))
     )
+  pdf(paste0("plots/",e.name, "_compare_table.pdf"), width = 14, height = 10)
+    grid.table(mbo.res$bench.table)
+  dev.off()
   
   mbo.res  
 }
