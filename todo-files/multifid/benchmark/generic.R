@@ -80,8 +80,18 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
   mbo3$perf.steps = table(df$.multifid.lvl, cut(df$dob,3))
   mbo.res$multifid = mbo3
   
-  # 8. grid Search
-  catf("8. grid Search")
+  # 8a Random Search
+  catf("8a. random Search")
+  random.design = generateRandomDesign(par.set = e.par.set, n = control.common$init.design.points + control.common$iters)
+  random.control = makeMBOControl(iters = 1L)
+  random.control$iters = 0L
+  mbo5.time = system.time({mbo5 = mbo(fun = getLast(objfuns), par.set = e.par.set, design = random.design, learner = surrogat.model, control = random.control, show.info = TRUE)})
+  mbo5$system.time = mbo5.time
+  mbo5$opt.path$env$path$.multifid.lvl = length(e.lvl)
+  mbo.res$random = mbo5
+  
+  # 8b grid Search
+  catf("8b. grid Search")
   if (grid.all) {
     grid.lvls = seq_along(e.lvl)
   } else {
@@ -93,9 +103,9 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
     if (!high.res) 
       resolution = ceiling((resolution)^(1/sum(getParamLengths(e.par.set))))
     grid.design = generateGridDesign(par.set = e.par.set, resolution = resolution)
-    control.grid = makeMBOControl(iters = 1)
-    control.grid$iters = 0
-    mbo4.time = system.time({mbo4 = mbo(fun = objfuns[[lvl]], par.set = e.par.set, design = grid.design, learner = surrogat.model, control = control.grid, show.info = TRUE)})
+    grid.control = makeMBOControl(iters = 1)
+    grid.control$iters = 0
+    mbo4.time = system.time({mbo4 = mbo(fun = objfuns[[lvl]], par.set = e.par.set, design = grid.design, learner = surrogat.model, control = grid.control, show.info = TRUE)})
     mbo4$system.time = mbo4.time
     mbo4$opt.path$env$path$.multifid.lvl = lvl
     mbo4
@@ -113,12 +123,14 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
   for (idx in names(mbo.res)) {
     df = as.data.frame(mbo.res[[idx]]$opt.path)
     if(is.null(control.multifid$multifid.costs))
-      cost.vector = length(e.lvl)/seq_along(e.lvl)
+      cost.vector = (e.lvl)^2
     else
       cost.vector = control.multifid$multifid.costs
     mbo.res[[idx]]$theoretical.costs = sum(cost.vector[df$.multifid.lvl])
-    mbo.res[[idx]]$level.count = table(factor(df$.multifid.lvl, levels = e.lvl))
+    mbo.res[[idx]]$level.count = table(factor(df$.multifid.lvl, levels = seq_along(e.lvl)))
   }
+  
+  xx.mbo.res <<- mbo.res
   
   # 9. Visualisation
   
@@ -131,24 +143,24 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
     # 9.1 mbo Full + mbo Cheap + grid
     g = genPlotCompareMbos(
       opt.path.grids = extractSubList(grid.res, "opt.path", simplify = FALSE),
-      opt.path.cheap = extractSubList(mbo.res$mbo_cheap, "opt.path", simplify = FALSE),
-      opt.path.expensive = extractSubList(mbo.res$mbo_expensive, "opt.path", simplify = FALSE)
+      opt.path.cheap = mbo.res$mbo_cheap$opt.path,
+      opt.path.expensive = mbo.res$mbo_expensive$opt.path
       )
-    ggsave(g, paste0("plots/",e.name,"_mbo1and2.pdf"), width = 8, height = 5)
+    xx.g <<- g
+    ggsave(plot = g, filename = paste0("plots/",e.name,"_mbo1and2.pdf"), width = 8, height = 5)
     
     # 9.2 multiFid + grid
     df.grid.2 = rename(grid.opt.path.df.complete, c("y"="value"))
     df.grid.2$variable = "y"
     add.g = list(
-      geom_line(data = df.grid.2, alpha = 0.5, lty = 2, mapping = aes(group = .multifid.lvl, color = as.factor(.multifid.lvl))),
-      scale_color_gradient2(low = "green", high = "red", mid="blue", midpoint=mean(range(e.lvl)))
+      geom_line(data = df.grid.2, alpha = 0.5, lty = 2, mapping = aes(group = .multifid.lvl, color = as.factor(.multifid.lvl)))
     )
     versions = list(
-      all = NULL,
-      crit = c("response","crit"),
-      crit_ei = c("response","crit", "ei", "alpha2"),
-      crit_alpha2 = c("response","crit", "alpha2"),
-      se_alpha2 = c("se", "alpha2")
+      all = character(),
+      crit = c("y","crit"),
+      crit_ei = c("y","crit", "ei", "alpha2"),
+      crit_alpha2 = c("y","crit", "alpha2"),
+      se_alpha2 = c("y", "se", "alpha2")
     )
     lapply(names(versions), function(v.name) {
       subs = versions[[v.name]]
@@ -156,8 +168,8 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
       pdf(paste0("plots/",e.name, "_multifid_steps_",v.name,".pdf"), width = 10, height = p.height)
       for (i in seq_along(mbo.res$multifid$plot.data)) {
         plot.data = mbo.res$multifid$plot.data[[i]]
-        alpha1 = collapse(round(unique(plot.data$m.all$value[plot.data$m.all$variable=="alpha1"]), 3), sep = ", ")
-        alpha3 = collapse(round(unique(plot.data$m.all$value[plot.data$m.all$variable=="alpha3"]), 3), sep = ", ")
+        alpha1 = collapse(round(unique(plot.data$all$alpha1), 3), sep = ", ")
+        alpha3 = collapse(round(unique(plot.data$all$alpha3), 3), sep = ", ")
         plot = genGgplot(plot.data, title = sprintf("Step: %i, a1: %s, a3: %s", i, alpha1, alpha3), add.g = add.g, subset.variable = subs)
         print(plot)
       }
@@ -166,7 +178,7 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
     
     # 9.2.5 Multifid Steps As plot (and table)
     g = genPlotSteps(mbo.res$multifid$opt.path)
-    ggsave(g, filename = paste0("plots/", e.name, "_multifid_steps.pdf"), plot = g, width = 7, height = 5)
+    ggsave(plot = g, filename = paste0("plots/", e.name, "_multifid_steps.pdf"), width = 7, height = 5)
     
     # 9.3 Compare different methods end result
     final.points = data.frame(
@@ -175,8 +187,10 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
       y = extractSubList(mbo.res,"y")
     )
     # normalize theoretical costs to speed up from most expenisve method
-    g = genPlotOptPoints(extractSubList(grid.res, "opt.path", simplify = FALSE), dropNamed())
-    ggsave(g, filename = paste0("plots/", e.name, "_res_compare_system_time.pdf"), plot = g1, width = 10, height = 5)
+    g = genPlotOptPoints(extractSubList(grid.res, "opt.path", simplify = FALSE), 
+                         opt.paths = extractSubList(xx.mbo.res[- grep(pattern = "grid", x = names(xx.mbo.res))], "opt.path", simplify = FALSE),
+                         final.points = final.points)
+    ggsave(plot = g, filename = paste0("plots/", e.name, "_res_compare.pdf"), width = 10, height = 5)
     
   } else if (sum(getParamLengths(e.par.set)) == 2) {
     
@@ -211,10 +225,10 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
     dev.off()
   }
   # 10 Create a table
-  mbo.res$bench.table = data.frame(
+  mbo.res$bench.table = cbind.data.frame(
     y = extractSubList(mbo.res, element = "y"),
     x = convertListOfRowsToDataFrame(extractSubList(mbo.res, element = "x", simplify = FALSE)),
-    time = extractSubList(mbo.res,list("system.time",1)),
+    time = extractSubList(mbo.res,list("system.time",1), simplify = TRUE),
     theoretical.costs = extractSubList(mbo.res, element = "theoretical.costs"),
     lvl.counts = do.call(rbind, extractSubList(mbo.res, element = "level.count", simplify = FALSE))
     )

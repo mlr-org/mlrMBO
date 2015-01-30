@@ -54,7 +54,7 @@ checkOptPathList = function(ops, forced.columns = character()) {
 	}
 	op.dfs = extractSubList(
 		lapply(ops, checkOptPath, forced.columns = forced.columns),
-		"op.df")
+		"op.df", simplify = FALSE)
 	list(
 		x.pars = x.pars,
 		y.names = y.names,

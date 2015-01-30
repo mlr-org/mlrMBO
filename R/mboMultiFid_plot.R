@@ -33,7 +33,7 @@ genPlotData = function(compound.model, opt.path, control, fun, res = 100, lvl.co
   return(list(all = all, xname = xname, old.points = old.points, best.points = best.points))
 }
 
-genGgplot = function(plotdata, subset.variable = character(), title = character(0), add.g = list()) {
+genGgplot = function(plotdata, subset.variable = character(0), title = character(0), add.g = list()) {
   assertList(add.g)
   assertCharacter(title)
   assertCharacter(subset.variable)
@@ -47,14 +47,12 @@ genGgplot = function(plotdata, subset.variable = character(), title = character(
   }
 }
 
-genGgplot1d = function(plotdata, subset.variable = character(), title = character(0), add.g = list()) {
+genGgplot1d = function(plotdata, subset.variable = character(0), title = character(0), add.g = list()) {
   xname = plotdata$xname
   m.all = melt(plotdata$all, id.vars = c(xname, ".multifid.lvl"))
-  
-  xx.m.all <<- m.all
-  
+    
   m.all = m.all[m.all$variable != "ei" | (m.all$variable == "ei" & m.all$.multifid.lvl == max(m.all$.multifid.lvl)), ] # drop EI for not last .multifid.lvl
-  if (length(subset.variable)) {
+  if (length(subset.variable)>0) {
     m.all = subset(m.all, subset = m.all$variable %in% subset.variable)
   }
   old.points = rename(plotdata$old.points, c("y"="value"))
@@ -82,13 +80,13 @@ genGgplot1d = function(plotdata, subset.variable = character(), title = characte
   return(g)
 }
 
-genGgplot2d = function(plotdata, subset.variable = character(), title = character(0), add.g = list()) {
+genGgplot2d = function(plotdata, subset.variable = character(0), title = character(0), add.g = list()) {
   plots = genGgplot2dRaw(plotdata, subset.variable, title)
   gs = do.call(grid.arrange, c(plots, list(nrow = 1, main = title)))
   return(gs)
 }
 
-genGgplot2dRaw = function(plotdata, subset.variable = character(), add.g = list()) {
+genGgplot2dRaw = function(plotdata, subset.variable = character(0), add.g = list()) {
   plots = lapply(subset.variable, function(var) {
     xname = plotdata$xname
     m.all = melt(plotdata$all, id.vars = c(xname, ".multifid.lvl"))
