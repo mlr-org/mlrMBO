@@ -6,6 +6,15 @@
 
 mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE, more.args = list()) {
 
+  if (!is.null(design))
+    stopf("mboMultiFid does not work with a preconstructed design!")
+
+  # save currently set options
+  oldopts = list(
+    ole = getOption("mlr.on.learner.error"),
+    slo = getOption("mlr.show.learner.output")
+  )
+
   ##### LOCAL FUNCTIONS FOR MEI CRIT VALUES: START #####
 
   # estimate process noise tau of real process belonging to lvl, we use residual sd here
@@ -33,15 +42,6 @@ mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE,
   }
 
   ##### LOCAL FUNCTIONS FOR MEI CRIT VALUES: END #####
-
-  if (!is.null(design))
-    stopf("mboMultiFid does not work with a preconstructed design!")
-
-  # save currently set options
-  oldopts = list(
-    ole = getOption("mlr.on.learner.error"),
-    slo = getOption("mlr.show.learner.output")
-  )
 
   # some short names and data extractions
   iters = control$iters
@@ -91,21 +91,23 @@ mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE,
     showInfo(show.info, "Estimated cor to last model = %s", collapse(sprintf("%.3g", lvl.cors), ", "))
     showInfo(show.info, "Estimated residual var = %s", collapse(sprintf("%.3g", lvl.sds), ", "))
 
-    # every couple of levels we only optimize the last one
-    # to ensure that we update that model and see what happens here
-    control.mod = control
-    if (loop %% control$multifid.force.last.level.evals == 0)
-      control.mod$multifid.lvls = tail(control.mod$multifid.lvls, 1L)
-
     # return a list, get a proposed point for each level
     prop = proposePointsMultiFid(model = model, par.set = par.set,
-      control = control.mod, opt.path = opt.path,
+      control = control, opt.path = opt.path,
       lvl.cors = lvl.cors, time.model = time.model, lvl.sds = lvl.sds)
     # find the level where the crit val / infill vals is smallest
     infill.vals = extractSubList(prop, "crit.vals")
     messagef("Infill vals = %s", collapse(sprintf("%.3g", infill.vals), ", "))
+    
+    # every couple of levels we only optimize the last one
+    # to ensure that we update that model and see what happens here
+    # also on last eval
+    if(loop %% control$multifid.force.last.level.evals == 0 | loop == iters)
+      min.index = nlvls
+    else
+      min.index = getMinIndex(infill.vals)
     # get one x point (see as par vector) and the level parameter
-    best.points = prop[[getMinIndex(infill.vals)]]$prop.points
+    best.points = prop[[min.index]]$prop.points
 
     plot.data[[loop]] = genPlotData(
       compound.model = model, 
@@ -115,7 +117,8 @@ mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE,
       opt.path = opt.path,
       lvl.cors = lvl.cors, lvl.sds = lvl.sds, time.model = time.model,
       best.points = best.points,
-      merge = getParamNr(par.set) == 1L) #merge opt.path with new grid for plot prediction data, only when 1d, because of geom_tile
+      merge = getParamNr(par.set) == 1L,
+      res = ifelse(getParamNr(par.set) == 1L, 100, 50)) #merge opt.path with new grid for plot prediction data, only when 1d, because of geom_tile
 
     # FIXME: BB: we need to talk about this
     # # should we always also update the models of the lower levels. Fixes some theoretical problems.
@@ -134,25 +137,21 @@ mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE,
     model = train(learner, task = convertMFOptPathToTask(opt.path))
     time.model = train(time.learner, task = convertMFOptPathToTimeTask(opt.path))
   }
-
-  # return complete designs for all levels
-  proposed.index = chooseFinalPoint(NULL, par.set, model, y.name = "y",
+  final.index = chooseFinalPoint(fun, par.set2, model, y.name = "y",
     opt.path = opt.path, control = control)
-  proposed = convertMFOptPathToDesign(opt.path)[proposed.index, ]
-  proposed$y = NULL
-  proposed$.multifid.lvl = nlvls
-  proposed = convertDfCols(proposed, factors.as.char = TRUE)
-  y.hat = predict(model, newdata = proposed)$data$response
-  y = evalProposedPoints(loop = iters+1, prop.points = proposed, par.set = par.set2, opt.path = opt.path,
-    control = control, fun = fun, show.info = show.info, oldopts = oldopts,
-    more.args = more.args, extras = NULL)
+  proposed = getOptPathEl(opt.path, final.index)
+  if (proposed$x$.multifid.lvl != nlvls) {
+    warningf("best y is not on level %i instead of %i!", proposed$.multifid.lvl, nlvls)
+  }
+
+  # restore mlr configuration
+  configureMlr(on.learner.error = oldopts[["ole"]], show.learner.output = oldopts[["slo"]])
 
   makeS3Obj("MultiFidResult",
     opt.path = opt.path,
     model = model,
-    y.hat = y.hat,
-    y = y,
-    x = as.list(proposed[, colnames(proposed) %nin% ".multifid.lvl", drop = FALSE]),
+    y = proposed$y,
+    x = dropNamed(proposed$x, ".multifid.lvl"),
     plot.data = plot.data
   )
 }
