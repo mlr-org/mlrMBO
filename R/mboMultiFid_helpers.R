@@ -82,18 +82,3 @@ infillCritMultiFid2 = function(points, model, control, par.set, design, iter, lv
   crit = ei.last * alpha1 * alpha2 * alpha3
   list(crit = crit, ei = ei.last, se = se, alpha1 = alpha1, alpha2 = alpha2, alpha3 = alpha3, sd = taus)
 }
-
-# time cost model
-multiFidTimeCosts = function(cur, last, opt.path, grid) {
-  time.data = convertMFOptPathToDesign(opt.path, include.y = FALSE)
-  time.data$exec.time = getOptPathExecTimes(opt.path)
-  time.learner = makeLearner("regr.km", nugget.estim = TRUE, jitter = TRUE)
-  time.task = makeRegrTask(id = "multifid.task", data = time.data, target = "exec.time")
-  time.model = train(time.learner, task = time.task)
-  #grid = generateDesign(n = control$multifid.cor.grid.points, par.set = par.set)
-  grid = do.call(rbind, lapply(c(cur,last), function(x) cbind(grid, .multifid.lvl = x)))
-  p = predict(time.model, newdata = grid)$data$response
-  p = split(p, grid$.multifid.lvl)
-  times = sapply(p, mean)
-  times[2]/times[1]
-}
