@@ -1,6 +1,6 @@
 library(gridExtra)
 
-generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.model = NULL, control = NULL, grid.all = TRUE, e.string = NULL, high.res = FALSE) {
+generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.model = NULL, control = NULL, grid.all = TRUE, e.string = NULL, high.res = FALSE, multifid.costs = NULL) {
   # store plots in subdirectory
   if(!is.null(e.string)) {
     dir.create(paste0("plots/", e.string), showWarnings = FALSE)
@@ -35,6 +35,7 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
     param = "dw.perc", 
     lvls = e.lvl,
     cor.grid.points = 50L
+    costs = multifid.costs
   )
   
   if (is.null(surrogat.model)) {
@@ -102,9 +103,11 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
   }
   grid.res = lapply(grid.lvls, function(lvl) {
     set.seed(e.seed)
-    resolution = control.common$init.design.points + control.common$iters
+    resolution = c(control.common$init.design.points, control.common$iters)
     if (!high.res) 
-      resolution = ceiling((resolution)^(1/sum(getParamLengths(e.par.set))))
+      resolution = ceiling(sum(resolution)^(1/sum(getParamLengths(e.par.set))))
+    else
+      resolution = resolution[1]
     grid.design = generateGridDesign(par.set = e.par.set, resolution = resolution)
     grid.control = makeMBOControl(iters = 1)
     grid.control$iters = 0
@@ -161,28 +164,28 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
       geom_line(data = df.grid.2, alpha = 0.5, lty = 2, mapping = aes(group = .multifid.lvl, color = as.factor(.multifid.lvl)))
     )
     versions = list(
-      all = character(),
+      all = c("y", "crit", "ei", "alpha1", "alpha2", "alpha3", "se"),
       crit = c("y","crit"),
       crit_ei = c("y","crit", "ei", "alpha2"),
       crit_alpha2 = c("y","crit", "alpha2"),
-      se_alpha2 = c("y", "se", "alpha2")
+      se_alpha2_3 = c("y", "se", "alpha2", "alpha3")
     )
     lapply(names(versions), function(v.name) {
       subs = versions[[v.name]]
-      p.height = ifelse(is.null(subs), 12, length(subs) * 3)
+      p.height = ifelse(is.null(subs), 12, length(subs) * 2 + 2)
       pdf(paste0("plots/",e.name, "_multifid_steps_",v.name,".pdf"), width = 10, height = p.height)
       for (i in seq_along(mbo.res$multifid$plot.data)) {
         plot.data = mbo.res$multifid$plot.data[[i]]
         alpha1 = collapse(round(unique(plot.data$all$alpha1), 3), sep = ", ")
-        alpha3 = collapse(round(unique(plot.data$all$alpha3), 3), sep = ", ")
-        plot = genGgplot(plot.data, title = sprintf("Step: %i, a1: %s, a3: %s", i, alpha1, alpha3), add.g = add.g, subset.variable = subs)
+        sd = collapse(round(unique(plot.data$all$sd), 3), sep = ", ")
+        plot = genGgplot(plot.data, title = sprintf("Step: %i, a1: %s, sd: %s", i, alpha1, sd), add.g = add.g, subset.variable = subs)
         print(plot)
       }
       dev.off()
     })
     
     # 9.2.5 Multifid Steps As plot (and table)
-    g = genPlotSteps(mfbo.res$multifid$opt.path)
+    g = genPlotSteps(mbo.res$multifid$opt.path)
     ggsave(plot = g, filename = paste0("plots/", e.name, "_multifid_steps.pdf"), width = 7, height = 5)
     
     # 9.3 Compare different methods end result
@@ -201,7 +204,10 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
     
     #### 2d plots ####
     
-    versions = list(basic = c("y", "crit"), extended = c("y", "ei", "alpha2"))
+    versions = list(
+      basic = c("y", "crit"), 
+      alphas = c("y", "crit", "alpha2", "alpha3"),
+      extended = c("y", "ei", "se", "alpha2", "alpha3"))
     lapply(names(versions), function(v.name) {
       subs = versions[[v.name]]
       p.width = length(subs) * 4
@@ -209,8 +215,8 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
       for (i in seq_along(mbo.res$multifid$plot.data)) {
         plot.data = mbo.res$multifid$plot.data[[i]]
         alpha1 = collapse(round(unique(plot.data$all$alpha1), 3), sep = ", ")
-        alpha3 = collapse(round(unique(plot.data$all$alpha3), 3), sep = ", ")
-        plot = genGgplot(plot.data, title = sprintf("Step: %i, a1: %s, a3: %s", i, alpha1, alpha3), subset.variable = subs)
+        sd = collapse(round(unique(plot.data$all$sd), 3), sep = ", ")
+        plot = genGgplot(plot.data, title = sprintf("Step: %i, a1: %s, sd: %s", i, alpha1, sd), subset.variable = subs)
         print(plot)
       }
       dev.off()
@@ -237,8 +243,11 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
     theoretical.costs = extractSubList(mbo.res, element = "theoretical.costs"),
     lvl.counts = do.call(rbind, extractSubList(mbo.res, element = "level.count", simplify = FALSE))
     )
+  df = mbo.res$bench.table
+  num.col = sapply(df, is.numeric)
+  df[,num.col] = sapply(df[,num.col], function(x) sprintf("%g", x))
   pdf(paste0("plots/",e.name, "_compare_table.pdf"), width = 14, height = 10)
-    grid.table(mbo.res$bench.table)
+    grid.table(df)
   dev.off()
   
   mbo.res  
