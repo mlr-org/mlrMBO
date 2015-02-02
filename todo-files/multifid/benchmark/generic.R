@@ -14,7 +14,7 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
       init.design.fun = maximinLHS,
       iters = 20L,
       on.learner.error = "stop",
-      show.learner.output = FALSE,
+      show.learner.output = FALSE
     )
     control.common = setMBOControlInfill(
       control = control.common, 
@@ -34,7 +34,7 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
     control = control.multifid, 
     param = "dw.perc", 
     lvls = e.lvl,
-    cor.grid.points = 40L
+    cor.grid.points = 50L
   )
   
   if (is.null(surrogat.model)) {
@@ -70,6 +70,7 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
   mbo2.time = system.time( {mbo2 = mbo(fun = getFirst(objfuns), e.par.set, learner = surrogat.model, control = control.common, show.info = TRUE) })
   mbo2$system.time = mbo2.time
   mbo2$opt.path$env$path$.multifid.lvl = 1
+  mbo2$y = getLast(objfuns)(c(mbo2$x, list(.multifid.lvl = nlvls))
   mbo.res$mbo_cheap = mbo2
   
   # 7. multifid
@@ -110,6 +111,9 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
     mbo4.time = system.time({mbo4 = mbo(fun = objfuns[[lvl]], par.set = e.par.set, design = grid.design, learner = surrogat.model, control = grid.control, show.info = TRUE)})
     mbo4$system.time = mbo4.time
     mbo4$opt.path$env$path$.multifid.lvl = lvl
+    if(lvl < nlvls) {
+      mbo4$y = getLast(objfuns)(c(mbo4$x, list(.multifid.lvl = nlvls))
+    }
     mbo4
     #mbo.res$grid = mbo4
   })
@@ -148,7 +152,6 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
       opt.path.cheap = mbo.res$mbo_cheap$opt.path,
       opt.path.expensive = mbo.res$mbo_expensive$opt.path
       )
-    xx.g <<- g
     ggsave(plot = g, filename = paste0("plots/",e.name,"_mbo1and2.pdf"), width = 8, height = 5)
     
     # 9.2 multiFid + grid
