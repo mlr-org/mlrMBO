@@ -18,7 +18,7 @@ test_that("basic multifid works", {
   )
 
   control = makeMBOControl(
-    init.design.points = 9L, #distributed over the different levels, seems not to work for <5 each
+    init.design.points = 9L,
     init.design.fun = maximinLHS,
     iters = 3L,
     on.learner.error = "stop",
@@ -36,7 +36,7 @@ test_that("basic multifid works", {
     lvls = c(0.1, 0.5, 1),
     cor.grid.points = 40L)
 
-  surrogat.learner = makeLearner("regr.rpart", predict.type = "response")
+  surrogat.learner = makeLearner("regr.km", nugget.estim = TRUE, jitter = TRUE)
   result = mbo(fun = objfun, par.set = par.set, learner = surrogat.learner, control = control)
   expect_true(inherits(result, "MultiFidResult"))
 })
