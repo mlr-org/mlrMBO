@@ -29,7 +29,18 @@ genPlotData = function(compound.model, opt.path, control, fun, res = 100, lvl.co
   #ei last extra care
   #m.all[m.all[["variable"]] == "ei", control$multifid.param] = getLast(control$multifid.lvls)
   #old.points = rename(old.points, c("y"="value")); old.points$variable = "response"
+  best.points.z = infillCritMultiFid2(
+    points = dropNamed(best.points, ".multifid.lvl"), 
+    model = compound.model, 
+    control = control, 
+    par.set = par.set, 
+    design = old.points, 
+    lvl.cors = lvl.cors, 
+    lvl.sds = lvl.sds, 
+    time.model = time.model, 
+    lvl = best.points$.multifid.lvl)
   best.points$y = predict(compound.model, newdata = best.points)$data$response
+  best.points = do.call(cbind, c(list(best.points), best.points.z))
   return(list(all = all, xname = xname, old.points = old.points, best.points = best.points))
 }
 
@@ -52,24 +63,26 @@ genGgplot1d = function(plotdata, subset.variable = character(0), title = charact
   m.all = melt(plotdata$all, id.vars = c(xname, ".multifid.lvl"))
     
   m.all = m.all[m.all$variable != "ei" | (m.all$variable == "ei" & m.all$.multifid.lvl == max(m.all$.multifid.lvl)), ] # drop EI for not last .multifid.lvl
-  if (length(subset.variable)>0) {
-    m.all = subset(m.all, subset = m.all$variable %in% subset.variable)
-  }
   old.points = rename(plotdata$old.points, c("y"="value"))
   old.points$variable = "y"
-  best.points = rename(plotdata$best.points, c("y"="value"))
-  best.points.txt = best.points; best.points.txt$variable = "y"
+#  best.points = rename(plotdata$best.points, c("y"="value"))
+#  best.points.txt = best.points; best.points.txt$variable = "y"
+  m.best.points = melt(plotdata$best.points, id.vars = c(xname, ".multifid.lvl"))
+  if (length(subset.variable)>0) {
+    m.all = subset(m.all, subset = m.all$variable %in% subset.variable)
+    m.best.points = subset(m.best.points, subset = m.best.points$variable %in% subset.variable)
+  }
   vars.needed = c("value", xname, ".multifid.lvl", "variable") 
   
   assertSubset(vars.needed, colnames(m.all))
   assertSubset(vars.needed, colnames(old.points))
-  assertSubset(vars.needed[-4], colnames(best.points))
+  assertSubset(vars.needed, colnames(m.best.points))
 
   g = ggplot(m.all, aes_string(x = xname, y = "value", color = "as.factor(.multifid.lvl)", group = ".multifid.lvl"))
   g = g + geom_line()
   g = g + geom_point(data = old.points)
-  g = g + geom_vline(data = best.points, aes_string(xintercept = xname, color = "as.factor(.multifid.lvl)"), lty=2)
-  g = g + geom_text(data = best.points.txt, aes(label = .multifid.lvl), hjust = 0, vjust = 0, size = 5)
+  g = g + geom_vline(data = m.best.points, aes_string(xintercept = xname, color = "as.factor(.multifid.lvl)"), lty=2)
+  g = g + geom_text(data = m.best.points, aes(label = sprintf("%.4g", value)), hjust = 0, vjust = 0, size = 3, color = "black", alpha = 0.7)
   for (i in seq_along(add.g)) {
     g = g + add.g[[i]]
   }

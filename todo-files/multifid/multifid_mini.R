@@ -18,10 +18,8 @@ ctrl = setMBOControlInfill(
   control = ctrl, 
   opt = "focussearch", 
   opt.restarts = 1L, 
-  opt.focussearch.maxit = 2L, 
+  opt.focussearch.maxit = 1L, 
   opt.focussearch.points = 100L,
-  filter.proposed.points = TRUE,
-  filter.proposed.points.tol = 0.001
 )
 
 ctrl = setMBOControlMultiFid(
@@ -40,8 +38,10 @@ lrn = makeLearner("regr.km", nugget.estim = TRUE, jitter = TRUE)
 obj = makeMBOMultifidFunction(addDistortion(addDistortion(sasena, g=yshift), noiseGaussian), lvls = ctrl$multifid.lvls)
 res = mbo(fun = obj, par.set = par.set, control = ctrl, learner = lrn, show.info = TRUE)
 
+pdf("plots/multifid_mini.pdf")
 for(i in seq_along(res$plot.data)) {
-  print(genGgplot(plotdata=res$plot.data[[i]]))
+  print(genGgplot(plotdata=res$plot.data[[i]], subset.variable = character()))
  # cat ("Press [enter] to continue")
 #  line <- readline()
 }
+dev.off()

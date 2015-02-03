@@ -72,13 +72,16 @@ infillCritMultiFid2 = function(points, model, control, par.set, design, iter, lv
   }
   alpha1 = lvl.cors[lvl]
   se = -infillCritStandardError(points.current, model, control, par.set, NULL, iter)
-  taus = lvl.sds[lvl]
-  alpha2 = 1 - (taus / sqrt(se^2 + taus^2))
+  if (any(lvl.sds < 0.01)) { # FIXME: IF lvl.sd near 0 it will make alpha2 useless
+    lvl.sds = lvl.sds + 0.01
+  }
+  sigmas = lvl.sds[lvl]
+  alpha2 = 1 - (sigmas / sqrt(se^2 + sigmas^2))
   if (!is.null(control$multifid.costs)) {
     alpha3 = getLast(control$multifid.costs) / control$multifid.costs[lvl]
   } else {
     alpha3 = cost.last / cost.current 
   }
   crit = ei.last * alpha1 * alpha2 * alpha3
-  list(crit = crit, ei = ei.last, se = se, alpha1 = alpha1, alpha2 = alpha2, alpha3 = alpha3, sd = taus)
+  list(crit = crit, ei = ei.last, se = se, alpha1 = alpha1, alpha2 = alpha2, alpha3 = alpha3, sd = sigmas)
 }

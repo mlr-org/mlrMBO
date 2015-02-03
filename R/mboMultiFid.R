@@ -57,8 +57,7 @@ mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE,
     include.error.message = TRUE, include.exec.time = TRUE, include.extra = FALSE)
   # eval + log to opt.path
   xs = dfRowsToList(design, par.set2)
-  extra.th.costs = NULL
-  evalTargetFun(fun, par.set2, 0L, xs, opt.path, control, show.info, oldopts, more.args, extras = extra.th.costs)
+  evalTargetFun(fun, par.set2, 0L, xs, opt.path, control, show.info, oldopts, more.args, extras = NULL)
 
   # contruct multifid learner, with summed model and bootstrapping
   # FIXME: we need to exactly define how bootstrapping should work for multifid
@@ -140,7 +139,7 @@ mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE,
   final.index = chooseFinalPoint(fun, par.set2, model, y.name = "y",
     opt.path = opt.path, control = control)
   proposed = getOptPathEl(opt.path, final.index)
-  if (proposed$x$.multifid.lvl != nlvls) {
+  if (getOption("warn") != 2 && proposed$x$.multifid.lvl != nlvls) {
     warningf("best y is not on level %i instead of %i!", proposed$.multifid.lvl, nlvls)
   }
 

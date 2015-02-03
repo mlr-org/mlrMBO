@@ -34,14 +34,18 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
     control = control.multifid, 
     param = "dw.perc", 
     lvls = e.lvl,
-    cor.grid.points = 50L
-    costs = multifid.costs
+    cor.grid.points = 50L,
+    costs = multifid.costs,
+    force.last.level.evals = 5L,
   )
   
   if (is.null(surrogat.model)) {
     #surrogat.model = makeLearner("regr.km", predict.type="se", nugget.estim = TRUE, jitter = TRUE)
     surrogat.model = makeLearner("regr.km", nugget.estim = TRUE, jitter = TRUE)
   }
+  
+  #common variables
+  nlvls = length(e.lvl)
   
   # generate different objfuns in a list
   objfuns = lapply(seq_along(e.lvl), function(lvl) {
@@ -62,7 +66,7 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
   catf("5. mbo Full Experiment")
   mbo1.time = system.time( {mbo1 = mbo(fun = getLast(objfuns), e.par.set, learner = surrogat.model, control = control.common, show.info = TRUE) })
   mbo1$system.time = mbo1.time
-  mbo1$opt.path$env$path$.multifid.lvl = length(e.lvl)
+  mbo1$opt.path$env$path$.multifid.lvl = nlvls
   mbo.res$mbo_expensive = mbo1
   
   # 6. mbo cheapest experiment
@@ -71,7 +75,7 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
   mbo2.time = system.time( {mbo2 = mbo(fun = getFirst(objfuns), e.par.set, learner = surrogat.model, control = control.common, show.info = TRUE) })
   mbo2$system.time = mbo2.time
   mbo2$opt.path$env$path$.multifid.lvl = 1
-  mbo2$y = getLast(objfuns)(c(mbo2$x, list(.multifid.lvl = nlvls))
+  mbo2$y = getLast(objfuns)(c(trafoValue(e.par.set, mbo2$x), list(.multifid.lvl = nlvls)))
   mbo.res$mbo_cheap = mbo2
   
   # 7. multifid
@@ -91,7 +95,7 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
   random.control$iters = 0L
   mbo5.time = system.time({mbo5 = mbo(fun = getLast(objfuns), par.set = e.par.set, design = random.design, learner = surrogat.model, control = random.control, show.info = TRUE)})
   mbo5$system.time = mbo5.time
-  mbo5$opt.path$env$path$.multifid.lvl = length(e.lvl)
+  mbo5$opt.path$env$path$.multifid.lvl = nlvls
   mbo.res$random = mbo5
   
   # 8b grid Search
@@ -99,7 +103,7 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
   if (grid.all) {
     grid.lvls = seq_along(e.lvl)
   } else {
-    grid.lvls = length(e.lvl)
+    grid.lvls = nlvls
   }
   grid.res = lapply(grid.lvls, function(lvl) {
     set.seed(e.seed)
@@ -115,7 +119,7 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
     mbo4$system.time = mbo4.time
     mbo4$opt.path$env$path$.multifid.lvl = lvl
     if(lvl < nlvls) {
-      mbo4$y = getLast(objfuns)(c(mbo4$x, list(.multifid.lvl = nlvls))
+      mbo4$y = getLast(objfuns)(c(trafoValue(e.par.set, mbo4$x), list(.multifid.lvl = nlvls)))
     }
     mbo4
     #mbo.res$grid = mbo4
@@ -176,8 +180,8 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
       pdf(paste0("plots/",e.name, "_multifid_steps_",v.name,".pdf"), width = 10, height = p.height)
       for (i in seq_along(mbo.res$multifid$plot.data)) {
         plot.data = mbo.res$multifid$plot.data[[i]]
-        alpha1 = collapse(round(unique(plot.data$all$alpha1), 3), sep = ", ")
-        sd = collapse(round(unique(plot.data$all$sd), 3), sep = ", ")
+        alpha1 = collapse(round(daply(plot.data$all, ".multifid.lvl", function(x) getFirst(x$alpha1)), 3), sep = ", ")
+        sd = collapse(round(daply(plot.data$all, ".multifid.lvl", function(x) getFirst(x$sd)), 3), sep = ", ")
         plot = genGgplot(plot.data, title = sprintf("Step: %i, a1: %s, sd: %s", i, alpha1, sd), add.g = add.g, subset.variable = subs)
         print(plot)
       }
@@ -235,11 +239,13 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
       print(gs)
     dev.off()
   }
+  xx.mbo.res <<- mbo.res
   # 10 Create a table
   mbo.res$bench.table = cbind.data.frame(
     y = extractSubList(mbo.res, element = "y"),
     x = convertListOfRowsToDataFrame(extractSubList(mbo.res, element = "x", simplify = FALSE)),
-    time = extractSubList(mbo.res,list("system.time",1), simplify = TRUE),
+    system.time = extractSubList(mbo.res, list("system.time",1), simplify = TRUE),
+    eval.time = sapply(extractSubList(mbo.res, list("opt.path", "env", "exec.time")), sum),
     theoretical.costs = extractSubList(mbo.res, element = "theoretical.costs"),
     lvl.counts = do.call(rbind, extractSubList(mbo.res, element = "level.count", simplify = FALSE))
     )

@@ -57,11 +57,11 @@ dat.w8a = libsvm.read("../data/w8a")
 
 e.task = makeClassifTask(id = "w7a", data = dat.w7a, target = "Y")
 e.rin = makeResampleInstance("Holdout", task = e.task)
-dat.w7a.res = dataBenchmark(e.name = "w7a", e.task = e.task, e.rin = e.rin, e.lrn = e.lrn, e.seed = e.seed, e.par.set = e.par.set, e.lvl = e.lvl, surrogat.model = surrogat.model, e.string = e.string, grid.all = TRUE, high.res = TRUE)
+dat.w7a.res = dataBenchmark(e.name = "w7a", e.task = e.task, e.rin = e.rin, e.lrn = e.lrn, e.seed = e.seed, e.par.set = e.par.set, e.lvl = e.lvl, surrogat.model = surrogat.model, control = e.control, e.string = e.string, grid.all = TRUE, high.res = TRUE)
 
 e.task = makeClassifTask(id = "w8a", data = dat.w8a, target = "Y")
 e.rin = makeResampleInstance("Holdout", task = e.task)
-dat.w8a.res = dataBenchmark(e.name = "w8a", e.task = e.task, e.rin = e.rin, e.lrn = e.lrn, e.seed = e.seed, e.par.set = e.par.set, e.lvl = e.lvl, surrogat.model = surrogat.model, e.string = e.string, grid.all = TRUE, high.res = TRUE)
+dat.w8a.res = dataBenchmark(e.name = "w8a", e.task = e.task, e.rin = e.rin, e.lrn = e.lrn, e.seed = e.seed, e.par.set = e.par.set, e.lvl = e.lvl, surrogat.model = surrogat.model, control = e.control, e.string = e.string, grid.all = TRUE, high.res = TRUE)
 
 
 
