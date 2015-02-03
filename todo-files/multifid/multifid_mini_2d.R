@@ -7,9 +7,9 @@ set.seed(030)
 e.lvls = c(0.1, 0.3, 1)
 
 ctrl = makeMBOControl(
-  init.design.points = length(e.lvls) * 5 * 2, 
+  init.design.points = length(e.lvls) * 2 * 5, 
   init.design.fun = maximinLHS,
-  iters = 10L,
+  iters = 4L,
   on.learner.error = "stop",
   show.learner.output = FALSE
 )
@@ -30,7 +30,7 @@ ctrl = setMBOControlMultiFid(
   param = "dw.perc", 
   lvls = e.lvls,
   cor.grid.points = 40L,
-  costs = c(0.1, 0.2, 3)
+  costs = NULL #c(0.1, 0.2, 3)
 )
 
 par.set = makeParamSet(

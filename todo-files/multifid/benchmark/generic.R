@@ -218,8 +218,8 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
       pdf(paste0("plots/",e.name, "_multifid_steps_",v.name,".pdf"), width = p.width, height = 10)
       for (i in seq_along(mbo.res$multifid$plot.data)) {
         plot.data = mbo.res$multifid$plot.data[[i]]
-        alpha1 = collapse(round(unique(plot.data$all$alpha1), 3), sep = ", ")
-        sd = collapse(round(unique(plot.data$all$sd), 3), sep = ", ")
+        alpha1 = collapse(round(daply(plot.data$all, ".multifid.lvl", function(x) getFirst(x$alpha1)), 3), sep = ", ")
+        sd = collapse(round(daply(plot.data$all, ".multifid.lvl", function(x) getFirst(x$sd)), 3), sep = ", ")
         plot = genGgplot(plot.data, title = sprintf("Step: %i, a1: %s, sd: %s", i, alpha1, sd), subset.variable = subs)
         print(plot)
       }

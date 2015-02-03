@@ -140,7 +140,7 @@ mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE,
     opt.path = opt.path, control = control)
   proposed = getOptPathEl(opt.path, final.index)
   if (getOption("warn") != 2 && proposed$x$.multifid.lvl != nlvls) {
-    warningf("best y is not on level %i instead of %i!", proposed$.multifid.lvl, nlvls)
+    # warningf("best y is not on level %i instead of %i!", proposed$.multifid.lvl, nlvls)
   }
 
   # restore mlr configuration

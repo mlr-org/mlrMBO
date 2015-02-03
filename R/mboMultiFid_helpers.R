@@ -46,9 +46,54 @@ proposePointsMultiFid = function(model, par.set, control, opt.path, lvl.cors, ti
   lapply(seq_along(control$multifid.lvls), function(lvl) {
     res = proposePointsByInfillOptimization(model, par.set, control, opt.path,
       lvl.cors = lvl.cors, time.model = time.model, lvl.sds = lvl.sds, lvl = lvl)
+    if (control$filter.proposed.points) {
+      res = filterProposedPointsMultiFid(res, opt.path, par.set, control, lvl)
+    }
     res$prop.points$.multifid.lvl = lvl
     res
   })
+}
+
+# FIXME: Should be implemented smarter with the already existent filterProposedPoints function
+filterProposedPointsMultiFid = function(prop, opt.path, par.set, control, lvl) {
+  # prepare stuff
+  n = nrow(prop$prop.points)
+  design = getOptPathX(opt.path)
+  design = design[design$.multifid.lvl == lvl,]
+  design = dropNamed(design, ".multifid.lvl")
+  calcMaxMetric = function(x, y) max(abs(x - y))
+  to.delete = rep(FALSE,  n)
+
+  # look at min distance from i-point to current set (design + accepted)
+  for (i in 1:n) {
+    pp = prop$prop.points[i, ]
+    min.dist = min(apply(design, 1, calcMaxMetric, y = pp))
+    # if too close, mark i-point, otherwise add it to set
+    if (min.dist < control$filter.proposed.points.tol)
+      to.delete[i] = TRUE
+    else
+      design = rbind(design, pp)
+  }
+
+  # for now replace removed design points with random points,
+  #  we leave all other data in prop like it is, we have flag filter.replace
+  n.replace = sum(to.delete)
+  prop$filter.replace = to.delete
+
+  if (n.replace > 0) {
+    counter = 0
+    repeat {
+      prop$prop.points[to.delete, ] = generateRandomDesign(n.replace, par.set)
+      min.dist = min(apply(design, 1, calcMaxMetric, y = pp))
+      counter = counter + 1
+      if(min.dist > control$filter.proposed.points.tol || counter > 20L)
+        break
+    }
+    # FIXME: we might want to do something smarter here. how about augmenting the current design?
+    
+  }
+
+  return(prop)
 }
 
 # return only crit vector
