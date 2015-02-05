@@ -36,16 +36,3 @@ dataBenchmark = function (e.name, e.task, e.rin, e.seed, e.lrn, e.par.set, e.lvl
   
   generalBenchmark(e.name = e.name, objfun = objfun, e.seed = e.seed, e.par.set = e.par.set, e.lvl = e.lvl, surrogat.model = surrogat.model, control = control, grid.all = grid.all, ...)
 }
- 
-
-libsvm.read = function(file) {
-  library(SparseM)
-  library(Matrix)
-  library(e1071)
-  dataset = read.matrix.csr(file)
-  colNames = sapply( (1:(dim(dataset$x)[2])), FUN = function(x) { paste("X",x, sep = "") })
-  dataframe = as.data.frame(as.matrix(dataset$x))
-  colnames(dataframe) = colNames
-  dataframe$Y = dataset$y
-  dataframe
-}

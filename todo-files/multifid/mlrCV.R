@@ -4,12 +4,13 @@
 library(mlrMBO)
 library(mlr)
 library(gridExtra)
-source("todo-files/multifid/benchmark/data_benchmark.R")
+library(foreign)
+source("todo-files/multifid/benchmark/helpers.R")
 
 set.seed(2)
-e.lvls = c(0.1, 0.25, 0.5, 1)
+e.lvls = c(0.1, 0.5, 1)
 ctrl = makeMBOControl(
-  init.design.points = length(e.lvls) * 5, 
+  init.design.points = length(e.lvls) * 4, 
   init.design.fun = maximinLHS,
   iters = 10L,
   on.learner.error = "stop",
@@ -36,10 +37,14 @@ ctrl.multiFid$infill.crit = "multiFid"
 surrogat.learner = makeLearner("regr.km", nugget.estim = TRUE, jitter = TRUE)
 
 lrns = list(
-  liblineaR = makeLearner("classif.LiblineaRBinary", type = 1),
+  LiblineaRMultiClass = makeLearner("classif.LiblineaRMultiClass"),
+  liblineaRBinary = makeLearner("classif.LiblineaRBinary", type = 1),
   ksvm = makeLearner("classif.ksvm"))
 par.sets = list(
-  liblineaR = makeParamSet(
+  LiblineaRMultiClass = makeParamSet(
+    makeNumericParam("cost", lower = -15, upper = 10, trafo = function(x) 2^x),
+    makeNumericParam("epsilon", lower = -20, upper = 2, trafo = function(x) 2^x)),
+  liblineaRBinary = makeParamSet(
     makeNumericParam("cost", lower = -15, upper = 10, trafo = function(x) 2^x),
     makeNumericParam("epsilon", lower = -20, upper = 2, trafo = function(x) 2^x)),
   ksvm = makeParamSet(
@@ -47,8 +52,8 @@ par.sets = list(
     makeNumericParam("sigma", lower = -3, upper = 3, trafo = function(x) 2^x))
 )
 
-rsi = makeResampleDesc("CV", iters = 2)
-#rsi = makeResampleDesc("Holdout")
+rsi = makeResampleDesc("Subsample", iters = 2)
+# rsi = makeResampleDesc("Holdout")
 
 mlr.mlrMBO.multiFid.control = mlr:::makeTuneControlMBO(mbo.control = ctrl.multiFid, learner = surrogat.learner)
 mlr.mlrMBO.control = mlr:::makeTuneControlMBO(mbo.control = ctrl, learner = surrogat.learner)
@@ -64,34 +69,55 @@ tune.controls = list(
 
 tasks = list(
   sonar = sonar.task,
-  w7a = makeClassifTask(id = "w7a", data = libsvm.read("../data/w7a"), target = "Y")
+  w7a = makeClassifTask(id = "w7a", data = libsvm.read("../data/w7a"), target = "Y"),
+  #w8a = makeClassifTask(id = "w8a", data = libsvm.read("../data/w8a"), target = "Y"),
+  #covtype = makeClassifTask(id = "covtype", data = read.arff("../data/covtype-normalized.arff"), target = "class")
+  iris = iris.task
 )
 
+#tasks = c(tasks, list(
+#  covtype.dummy = createDummyFeatures(tasks$covtype)
+#  ))
+
 #only one test now
-lrn = lrns[[1]]
-ps = par.sets[[1]]
-task = tasks[[2]]
+lrn = lrns[[2]]
+ps = par.sets[[2]]
+task = tasks$w7a
 
 tune.rres = lapply(names(tune.controls), function(tune.name) {
   lrn.dws = makeDownsampleWrapper(learner = lrn, dw.perc = 1, dw.stratify = TRUE)
   lrn.tuned = makeTuneWrapper(learner = lrn.dws, resampling = makeResampleDesc("Holdout"), measures = mmce, par.set = ps, control = tune.controls[[tune.name]])
   rres = resample(learner = lrn.tuned, task = task, resampling = rsi, extract = getTuneResult, measures = list(mmce, timetrain))  
+  return(rres)
+})
+names(tune.rres) = names(tune.controls)
+save.image(file = "plots/CV_compare.RData")
+
+#now handle the data
+tune.rres2 = lapply(tune.rres, function(rres) {
   ops = extractSubList(rres$extract, "opt.path", simplify = FALSE)
   rres$exec.times = vnapply(ops, function(op) sum(getOptPathExecTimes(op)))
   rres$exec.times.mean = c(exec.times.mean = mean(rres$exec.times))
   rres$exec.times.sd = c(exec.times.sd = sd(rres$exec.times))
   rres$measures.test.sd = vnapply(rres$measures.test[,-1], sd)
   names(rres$measures.test.sd) = paste0(names(rres$measures.test.sd), ".sd")
+  rres$op.dfs = OpsAddByIter(ops, best.col = "mmce.test.mean")
+  rres$best.reached.at = vnapply(rres$op.dfs, function(df) getLast(df$mmce.test.mean.best.index))
+  rres$best.reached.at.mean = mean(rres$best.reached.at)
+  rres$ops.df = do.call(rbind, rres$op.dfs)
+  rres$extract = NULL
   return(rres)
 })
-names(tune.rres) = names(tune.controls)
+
+save.image(file = "plots/CV_compare.RData")
 
 #result df preparation
 res.df = cbind.data.frame(
-  convertListOfRowsToDataFrame(extractSubList(tune.rres, c("aggr"), simplify = FALSE)),
-  convertListOfRowsToDataFrame(extractSubList(tune.rres, c("measures.test.sd"), simplify = FALSE)),
-  convertListOfRowsToDataFrame(extractSubList(tune.rres, c("exec.times.mean"), simplify = FALSE)),
-  convertListOfRowsToDataFrame(extractSubList(tune.rres, c("exec.times.sd"), simplify = FALSE))
+  convertListOfRowsToDataFrame(extractSubList(tune.rres2, c("aggr"), simplify = FALSE)),
+  convertListOfRowsToDataFrame(extractSubList(tune.rres2, c("measures.test.sd"), simplify = FALSE)),
+  convertListOfRowsToDataFrame(extractSubList(tune.rres2, c("exec.times.mean"), simplify = FALSE)),
+  convertListOfRowsToDataFrame(extractSubList(tune.rres2, c("exec.times.sd"), simplify = FALSE)),
+  convertListOfRowsToDataFrame(extractSubList(tune.rres2, c("best.reached.at.mean"), simplify = FALSE), col.names = "best.reached.at.mean")
   )
 res.df
 
@@ -104,4 +130,12 @@ dev.off()
 
 save.image(file = "plots/CV_compare.RData")
 
-
+tune.rres2$multiFid$ops.df
+all.df = melt(extractSubList(tune.rres2, "ops.df", simplify = FALSE), measure.vars = c("mmce.test.mean.best", "mmce.test.mean.best.index", "exec.time.cum"))
+all.df = rename(all.df, c("L1" = "learner.id"))
+g = ggplot(data = all.df, aes(y = value, x = dob, color = learner.id))
+g = g + geom_line(siez = 1, alpha = 0.5, mapping = aes(group = paste0(iter,learner.id)))
+g = g + facet_wrap(~variable, scales = "free")
+g = g + stat_summary(fun.y=mean, geom="line", size = 2, alpha = 0.9, mapping = aes(group = learner.id))
+g = g + theme_bw()
+g

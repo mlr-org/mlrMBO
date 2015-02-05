@@ -1,6 +1,4 @@
 # 0. Load packages and seed
-library("devtools")
-load_all()
 library("BBmisc")
 library("checkmate")
 library("mlr")
@@ -8,6 +6,12 @@ library("ggplot2")
 library("reshape2")
 library("plyr")
 library("gridExtra")
+library("compiler")
+library("SparseM")
+library("Matrix")
+library("e1071")
+
+
 
 # in:
 #	opt.paths: list of opt.paths
@@ -61,3 +65,48 @@ checkOptPathList = function(ops, forced.columns = character()) {
 		op.dfs = op.dfs
 		)
 }
+
+OpsAddByIter = function(ops, best.col = NULL) {
+  op.dfs = lapply(ops, as.data.frame)
+  op.dfs = lapply(seq_along(op.dfs), function(i) {
+    df = op.dfs[[i]]
+    df[,"iter"] = i
+    df 
+  })
+  if (!is.null(best.col)) {
+    op.dfs = lapply(op.dfs, function(df) {
+      assertSubset(best.col, colnames(df))
+      df = cbind(df, trailingMin(df[, c("dob",best.col), drop = FALSE]))
+      df$exec.time.cum = cumsum(df$exec.time)
+      return(df)
+    })
+  }
+}
+
+trailingMin.uncomp = function(x) {
+  stopifnot(colnames(x)[1] == "dob")
+  min.x = Inf
+  for(i in seq_row(x)){
+    if (x[i,2] < min.x) {
+      min.x = x[i,2]
+    } else {
+      x[i,2] = min.x
+      x[i,1] = x[i-1,1]
+    }
+  }
+  colnames(x) = paste0(colnames(x)[2],c(".best.index", ".best"))
+  x
+}
+
+trailingMin = cmpfun(trailingMin.uncomp)
+
+libsvm.read = function(file) {
+  dataset = read.matrix.csr(file)
+  colNames = sapply( (1:(dim(dataset$x)[2])), FUN = function(x) { paste("X",x, sep = "") })
+  dataframe = as.data.frame(as.matrix(dataset$x))
+  colnames(dataframe) = colNames
+  dataframe$Y = dataset$y
+  dataframe
+}
+
+
