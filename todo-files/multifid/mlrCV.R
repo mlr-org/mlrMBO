@@ -3,86 +3,30 @@
 #load_all()
 library(mlrMBO)
 library(mlr)
+library(ggplot2)
 library(gridExtra)
 library(foreign)
 source("todo-files/multifid/benchmark/helpers.R")
+source("todo-files/multifid/benchmark/giveMe.R")
 
-set.seed(2)
-e.lvls = c(0.1, 0.5, 1)
-ctrl = makeMBOControl(
-  init.design.points = length(e.lvls) * 4, 
-  init.design.fun = maximinLHS,
-  iters = 10L,
-  on.learner.error = "stop",
-  show.learner.output = FALSE
-)
-ctrl = setMBOControlInfill(
-  control = ctrl, 
-  opt = "focussearch", 
-  opt.restarts = 1L, 
-  opt.focussearch.maxit = 1L, 
-  opt.focussearch.points = 100L,
-  filter.proposed.points = TRUE,
-  filter.proposed.points.tol = 0.01
-)
-ctrl.multiFid = setMBOControlMultiFid(
-  control = ctrl, 
-  param = "dw.perc", 
-  lvls = e.lvls,
-  cor.grid.points = 40L,
-  costs = NULL #c(0.1, 0.2, 3)
-)
-ctrl.multiFid$infill.crit = "multiFid"
+set.seed(030)
 
-surrogat.learner = makeLearner("regr.km", nugget.estim = TRUE, jitter = TRUE)
-
-lrns = list(
-  LiblineaRMultiClass = makeLearner("classif.LiblineaRMultiClass"),
-  liblineaRBinary = makeLearner("classif.LiblineaRBinary", type = 1),
-  ksvm = makeLearner("classif.ksvm"))
-par.sets = list(
-  LiblineaRMultiClass = makeParamSet(
-    makeNumericParam("cost", lower = -15, upper = 10, trafo = function(x) 2^x),
-    makeNumericParam("epsilon", lower = -20, upper = 2, trafo = function(x) 2^x)),
-  liblineaRBinary = makeParamSet(
-    makeNumericParam("cost", lower = -15, upper = 10, trafo = function(x) 2^x),
-    makeNumericParam("epsilon", lower = -20, upper = 2, trafo = function(x) 2^x)),
-  ksvm = makeParamSet(
-    makeNumericParam("C", lower = -5, upper = 2, trafo = function(x) 2^x),
-    makeNumericParam("sigma", lower = -3, upper = 3, trafo = function(x) 2^x))
-)
-
-rsi = makeResampleDesc("Subsample", iters = 2)
-# rsi = makeResampleDesc("Holdout")
-
-mlr.mlrMBO.multiFid.control = mlr:::makeTuneControlMBO(mbo.control = ctrl.multiFid, learner = surrogat.learner)
-mlr.mlrMBO.control = mlr:::makeTuneControlMBO(mbo.control = ctrl, learner = surrogat.learner)
-iters = mlr.mlrMBO.control$mbo.control$init.design.points + mlr.mlrMBO.control$mbo.control$iters
-
-mlr.tuneRandom.control = makeTuneControlRandom(maxit = iters)
-
+surrogat.learner = giveMeSurrogatLearner()
+rsi = giveMeResampleDesc("cv")
 tune.controls = list(
-  multiFid = mlr.mlrMBO.multiFid.control,
-  mlrMBO = mlr.mlrMBO.control,
-  random = mlr.tuneRandom.control
+  mlr.multiFid.control = mlr:::makeTuneControlMBO(mbo.control = giveMeMBOMultiFidControl(), learner = surrogat.learner),
+  mlr.multiFid.highFidelity.control = mlr:::makeTuneControlMBO(mbo.control = giveMeMBOMultiFidControl(e.lvls = giveMeLvl("big.data")), learner = surrogat.learner),
+  mlr.multiFid.fixedCosts.control = mlr:::makeTuneControlMBO(mbo.control = giveMeMBOMultiFidControl(e.lvls = giveMeLvl("std"), costs = giveMeLvl("std")^2), learner = surrogat.learner),
+  mlr.mlrMBO.control = mlr:::makeTuneControlMBO(mbo.control = giveMeMBOControl(), learner = surrogat.learner)
 )
-
-tasks = list(
-  sonar = sonar.task,
-  w7a = makeClassifTask(id = "w7a", data = libsvm.read("../data/w7a"), target = "Y"),
-  #w8a = makeClassifTask(id = "w8a", data = libsvm.read("../data/w8a"), target = "Y"),
-  #covtype = makeClassifTask(id = "covtype", data = read.arff("../data/covtype-normalized.arff"), target = "class")
-  iris = iris.task
+tune.controls = c(tune.controls, list(
+  mlr.tuneRandom.control = makeTuneControlRandom(maxit = giveMeResolution(tune.controls$mlr.multiFid.control)))
 )
-
-#tasks = c(tasks, list(
-#  covtype.dummy = createDummyFeatures(tasks$covtype)
-#  ))
 
 #only one test now
-lrn = lrns[[2]]
-ps = par.sets[[2]]
-task = tasks$w7a
+lrn = giveMeLearners("liblineaRBinary")[[1]]
+ps = giveMeParamSets(list(lrn))[[1]]
+task = giveMeTasks("w8a")[[1]]
 
 tune.rres = lapply(names(tune.controls), function(tune.name) {
   lrn.dws = makeDownsampleWrapper(learner = lrn, dw.perc = 1, dw.stratify = TRUE)
@@ -130,12 +74,13 @@ dev.off()
 
 save.image(file = "plots/CV_compare.RData")
 
-tune.rres2$multiFid$ops.df
 all.df = melt(extractSubList(tune.rres2, "ops.df", simplify = FALSE), measure.vars = c("mmce.test.mean.best", "mmce.test.mean.best.index", "exec.time.cum"))
 all.df = rename(all.df, c("L1" = "learner.id"))
-g = ggplot(data = all.df, aes(y = value, x = dob, color = learner.id))
-g = g + geom_line(siez = 1, alpha = 0.5, mapping = aes(group = paste0(iter,learner.id)))
-g = g + facet_wrap(~variable, scales = "free")
-g = g + stat_summary(fun.y=mean, geom="line", size = 2, alpha = 0.9, mapping = aes(group = learner.id))
-g = g + theme_bw()
-g
+g = giveMePlot(all.df)
+ggsave(plot = g, filename = "plots/CV_compare_increase.pdf", width = 14, height= 6 )
+
+g = giveMePlot(all.df[!(all.df$dob < 10),])
+ggsave(plot = g, filename = "plots/CV_compare_increase_shortened.pdf", width = 14, height= 6 )
+
+
+save.image(file = "plots/CV_compare.RData")
