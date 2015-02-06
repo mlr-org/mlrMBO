@@ -94,7 +94,7 @@
 #'   Default is \code{\link[mlr]{mse}}.
 #' @param on.learner.error [\code{character(1)}]\cr
 #'   See [\code{\link[mlr]{configureMlr}}].
-#'   Default is \dQuote{stop}.
+#'   Default is \dQuote{warn}.
 #' @param show.learner.output [\code{logical(1)}]\cr
 #'   See [\code{\link[mlr]{configureMlr}}].
 #'   Default is \code{FALSE}.
