@@ -55,21 +55,8 @@ tune.rres2 = lapply(tune.rres, function(rres) {
 
 save.image(file = "plots/CV_compare.RData")
 
-#result df preparation
-res.df = cbind.data.frame(
-  convertListOfRowsToDataFrame(extractSubList(tune.rres2, c("aggr"), simplify = FALSE)),
-  convertListOfRowsToDataFrame(extractSubList(tune.rres2, c("measures.test.sd"), simplify = FALSE)),
-  convertListOfRowsToDataFrame(extractSubList(tune.rres2, c("exec.times.mean"), simplify = FALSE)),
-  convertListOfRowsToDataFrame(extractSubList(tune.rres2, c("exec.times.sd"), simplify = FALSE)),
-  convertListOfRowsToDataFrame(extractSubList(tune.rres2, c("best.reached.at.mean"), simplify = FALSE), col.names = "best.reached.at.mean")
-  )
-res.df
-
-num.col = sapply(res.df, is.numeric)
-res.df[,num.col] = sapply(res.df[,num.col], function(x) sprintf("%.4g", x))
-
 pdf(paste0("plots/CV_compare_table.pdf"), width = 14, height = 10)
-grid.table(res.df)
+grid.table(giveMeResultTable(tune.rres2, pretty = TRUE))
 dev.off()
 
 save.image(file = "plots/CV_compare.RData")

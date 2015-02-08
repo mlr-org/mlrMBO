@@ -1,4 +1,4 @@
-batchmark = function(reg, learners, tasks, resamplings, measures = NULL, repls = 1L, save.models = FALSE, overwrite = FALSE, pm.opts = list()) {
+batchmark = function(reg, learners, tasks, resamplings, measures = NULL, repls = 1L, save.opt.result = FALSE, overwrite = FALSE, pm.opts = list()) {
   # not needed for BE>=1.4, remove then
   fixID = function(x) gsub(".", "_", x, fixed = TRUE)
 
@@ -29,7 +29,7 @@ batchmark = function(reg, learners, tasks, resamplings, measures = NULL, repls =
   }
 
   assertCount(repls)
-  assertFlag(save.models)
+  assertFlag(save.opt.result)
   assertFlag(overwrite)
   assertList(pm.opts, names = "named")
 
@@ -42,7 +42,7 @@ batchmark = function(reg, learners, tasks, resamplings, measures = NULL, repls =
 
   # generate algos
   ades = Map(function(id, learner) {
-    apply.fun = getAlgoFun(learner, measures, save.models, pm.opts)
+    apply.fun = getAlgoFun(learner, measures, save.opt.result, pm.opts)
     addAlgorithm(reg, id, apply.fun, overwrite = overwrite)
     makeDesign(id)
   }, id = fixID(learner.ids), learner = learners)
@@ -56,10 +56,10 @@ resample.fun = function(job, static, i) {
   list(train = rin$train.inds[[i]], test = rin$test.inds[[i]])
 }
 
-getAlgoFun = function(lrn, measures, save.models, pm.opts) {
+getAlgoFun = function(lrn, measures, save.opt.result, pm.opts) {
   force(lrn)
   force(measures)
-  force(save.models)
+  force(save.opt.result)
   force(pm.opts)
   function(job, static, dynamic) {
     if (length(pm.opts) > 0L) {
@@ -68,31 +68,12 @@ getAlgoFun = function(lrn, measures, save.models, pm.opts) {
     }
     model = train(learner = lrn, task = static$task, subset = dynamic$train)
     pred = predict(model, task = static$task, subset = dynamic$test)
-    perf = as.list(performance(pred, measures, task = task, model = model))
-    if (save.models) c(list(model = model), perf) else perf
+    perf = performance(pred, measures, task = task, model = model)
+    if (save.opt.result) {
+      c(list(opt.result = model$learner.model$opt.result, 
+             task.id = getTaskId(static$task)), learner.id = model$learner$id, performance = list(perf))
+    } else {
+      as.list(perf)
+    } 
   }
-}
-
-if (FALSE) {
-  library(checkmate)
-  library(mlr)
-  library(mlrMBO)
-  library(BatchExperiments)
-
-  reg = makeExperimentRegistry("mlr_benchmark", packages = c("mlr", "mlrMBO"))
-  tasks = giveMeTasks("sonar")
-  resampling.inner = giveMeResampleDesc("inner")
-  learners = giveMeLearners("liblineaRBinary")
-  tune.controls = list(
-    mlr.multiFid.control = mlr:::makeTuneControlMBO(mbo.control = giveMeMBOMultiFidControl(), learner = surrogat.learner),
-    mlr.multiFid.fixedCosts.control = mlr:::makeTuneControlMBO(mbo.control = giveMeMBOMultiFidControl(e.lvls = giveMeLvl("std"), costs = giveMeLvl("std")^2), learner = surrogat.learner),
-    mlr.mlrMBO.control = mlr:::makeTuneControlMBO(mbo.control = giveMeMBOControl(), learner = surrogat.learner)
-  )
-  tune.learners = giveMeTunedLearners(learners = learners, tune.controls = tune.controls, rsi = )
-  resamplings = list(makeResampleDesc("CV", iters = 5), makeResampleDesc("CV", iters = 2))
-
-  batchmark(reg, learners, tasks, resamplings, measures = list(mmce, timetrain), overwrite = TRUE, repls = 2)
-  submitJobs(reg, getJobIds(reg))
-  testJob(reg, 1, external = FALSE)
-  reduceResultsExperiments(reg, fun=list)
 }

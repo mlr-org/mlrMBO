@@ -7,7 +7,8 @@ giveMeTasks = function(x = NULL) {
     w8a = function() {makeClassifTask(id = "w8a", data = libsvm.read("../data/w8a"), target = "Y")},
     covtype = covtype.f,
     iris = function() {iris.task},
-    covtype.dummy = function() {covtype.dummy = createDummyFeatures(covtype.f())}
+    covtype.dummy = function() {covtype.dummy = createDummyFeatures(covtype.f())},
+    covtype.binary = function() {makeClassifTask(id = "covtype.binary", data = libsvm.read("../data/covtype.libsvm.binary"), target = "Y")}
   )
   if (is.null(x))
     x = names(task.list)
@@ -18,7 +19,7 @@ giveMeTasks = function(x = NULL) {
 giveMeLearners = function(x = NULL) {
   lrns = list(
     LiblineaRMultiClass = makeLearner("classif.LiblineaRMultiClass"),
-    liblineaRBinary = makeLearner("classif.LiblineaRBinary", type = 1),
+    LiblineaRBinary = makeLearner("classif.LiblineaRBinary", type = 1),
     svm = makeLearner("classif.svm")
   )
   if (is.null(x))
@@ -36,8 +37,8 @@ giveMeParamSets = function(lrns) {
     classif.LiblineaRMultiClass = LiblineaR,
     classif.LiblineaRBinary = LiblineaR,
     classif.svm = makeParamSet(
-      makeNumericParam("C", lower = -5, upper = 2, trafo = function(x) 2^x),
-      makeNumericParam("sigma", lower = -3, upper = 3, trafo = function(x) 2^x))
+      makeNumericParam("cost", lower = -15, upper = 10, trafo = function(x) 2^x),
+      makeNumericParam("nu", lower = -10, upper = 10))
   )
   par.set.list[lrns.ids]
 }
@@ -47,7 +48,7 @@ giveMeMBOControl = function(e.lvls = giveMeLvl("std"), budget = 50L) {
   ctrl = makeMBOControl(
     init.design.points = init.design.points, 
     init.design.fun = maximinLHS,
-    iters = budget - init.design.points,
+    iters = max(1L, budget - init.design.points),
     on.learner.error = "stop",
     show.learner.output = FALSE
   )
@@ -63,9 +64,9 @@ giveMeMBOControl = function(e.lvls = giveMeLvl("std"), budget = 50L) {
   ctrl
 }
 
-giveMeMBOMultiFidControl = function(ctrl = NULL, e.lvls = giveMeLvl("std"), costs = NULL) {
+giveMeMBOMultiFidControl = function(ctrl = NULL, e.lvls = giveMeLvl("std"), costs = NULL, ...) {
   if (is.null(ctrl))
-      ctrl = giveMeMBOControl(e.lvls = e.lvls)
+      ctrl = giveMeMBOControl(e.lvls = e.lvls, ...)
   ctrl = setMBOControlMultiFid(
     control = ctrl, 
     param = "dw.perc", 
@@ -94,15 +95,20 @@ giveMeSurrogatLearner = function(x = 1) {
 }
 
 giveMeTunedLearners = function (learners, tune.controls, rsi, measures = mmce, par.sets = NULL, show.info = TRUE) {
-  if (is.null(par.set))
+  if (is.null(par.sets))
     par.sets = giveMeParamSets(learners)
   assertList(par.sets, len = length(learners))
-  assertSubset(names(par.sets), extractSubList(learers, "id"))
-  lapply(learners, function(lrn) {
-    lapply(tune.controls, function(tune.ctrl) {
-      makeTuneWrapper(learner = lrn, resampling = rsi, measures = measures, par.set = par.sets[[lrn$id]], control = tune.ctrl, show.info = show.info)
+  assertSubset(names(par.sets), extractSubList(learners, "id"))
+  res = lapply(learners, function(lrn) {
+    lapply(names(tune.controls), function(tune.ctrl.name) {
+      lrn.id = lrn$id
+      lrn = makeDownsampleWrapper(learner = lrn, dw.perc = 1, dw.stratify = TRUE)
+      lrn = makeTuneWrapper(learner = lrn, resampling = rsi, measures = measures, par.set = par.sets[[lrn.id]], control = tune.controls[[tune.ctrl.name]], show.info = show.info)
+      lrn$id = paste0(lrn.id, ".", tune.ctrl.name)
+      return(lrn)
     })
   })
+  unlist(res, recursive = FALSE)
 }
 
 giveMeResampleDesc = function(x = 1, ...) {
@@ -110,7 +116,8 @@ giveMeResampleDesc = function(x = 1, ...) {
     subsample = makeResampleDesc("Subsample", iters = 2, ...),
     cv = makeResampleDesc("CV", iters = 10, ...),
     holdout = makeResampleDesc("Holdout", ...),
-    inner = makeResampleDesc("Holdout")
+    inner = makeResampleDesc("Holdout"),
+    outer = makeResampleDesc("Subsample", iters = 2)
   )
   rdesc.list[[x]]
 }
@@ -126,4 +133,22 @@ giveMePlot = function(all.df) {
   g = g + stat_summary(fun.y=mean, geom="line", size = 2, alpha = 0.9, mapping = aes(group = learner.id))
   g = g + theme_bw()
   return(g)
+}
+
+giveMeResultTable = function(tune.rres2, pretty = TRUE) {
+  #result df preparation
+  res.df = cbind.data.frame(
+    convertListOfRowsToDataFrame(extractSubList(tune.rres2, c("aggr"), simplify = FALSE)),
+    convertListOfRowsToDataFrame(extractSubList(tune.rres2, c("measures.test.sd"), simplify = FALSE)),
+    convertListOfRowsToDataFrame(extractSubList(tune.rres2, c("exec.times.mean"), simplify = FALSE)),
+    convertListOfRowsToDataFrame(extractSubList(tune.rres2, c("exec.times.sd"), simplify = FALSE)),
+    convertListOfRowsToDataFrame(extractSubList(tune.rres2, c("best.reached.at.mean"), simplify = FALSE), col.names = "best.reached.at.mean")
+  )
+  res.df
+  if (pretty) {
+    num.col = sapply(res.df, is.numeric)
+    res.df[,num.col] = sapply(res.df[,num.col], function(x) sprintf("%.4g", x))
+  }
+  return(res.df)
+  
 }
