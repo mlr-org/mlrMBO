@@ -26,7 +26,7 @@ ps = makeNumericParamSet("x", len = d, lower = 0, upper = 1)
 
 surrogate = makeLearner("regr.kmlocal", predict.type = "se")
 
-ctrl = makeMBOControl(init.design.points = 20L, iters = 40L)
+ctrl = makeMBOControl(init.design.points = 8L, iters = 32L)
 ctrl = setMBOControlInfill(ctrl, crit = "ei", opt = "cmaes", opt.restarts = 3L)
 
 res = mbo(makeMBOFunction(f), par.set = ps, learner = surrogate, control = ctrl)
@@ -37,9 +37,6 @@ ggdata = op
 ggdata$isc = FALSE
 ggdata$isc[mm$local.centers.i] = TRUE
 
-
 pl = ggplot(ggdata, aes(x = x1, y = x2, col = isc))
 pl = pl + geom_point(size = 3)
 print(pl)
-
-
