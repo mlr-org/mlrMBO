@@ -61,7 +61,7 @@ trainLearner.regr.kmlocal = function(.learner, .task, .subset, min.clust.size = 
       k = k + 1
       ic = ic + sum(clusters$cluster==k)
     }
-    while(cov.x.minx[ic] >= clust.cor.th) {
+    while(cov.x.minx$x[ic] >= clust.cor.th) {
       lcount = lcount + 1
       # fit submodel to minx and highly correlated points
       suppressAll({
