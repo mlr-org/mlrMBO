@@ -43,7 +43,57 @@ trainLearner.regr.kmlocal = function(.learner, .task, .subset, min.clust.size = 
   local.centers = list()
   local.centers.minc = list()    
   
-  while (TRUE) {
+  # select best y
+  min.i = getMinIndex(local.y, ties.method = "random")
+  min.x = local.x[min.i, , drop = FALSE]
+  min.y = local.y[min.i]
+    
+  # get correlation of all points to best and find out which are highly correlated
+  cov.x.minx = covMat1Mat2(globm@covariance, local.x, min.x)[,1L] / globm@covariance@sd2
+  cov.x.minx = sort(cov.x.minx, decreasing = TRUE, index.return = TRUE)
+  cov.x.minx.delta = head(cov.x.minx$x, n = length(cov.x.minx$x)-1) - tail(cov.x.minx$x, n = length(cov.x.minx$x)-1)
+  cov.x.minx.delta = scale(cov.x.minx.delta)
+  print(cov.x.minx$x)
+  print(cov.x.minx$x[cov.x.minx.delta>0])
+  clusters = kmeans(cov.x.minx$x, cov.x.minx$x[cov.x.minx.delta>0], iter.max = length(cov.x.minx$x)+1, nstart = 1)
+  k = 1
+  ic = sum(clusters$cluster==k)    
+  while(ic < min.clust.size) {
+    k = k + 1
+    ic = ic + sum(clusters$cluster==k)
+  }
+  while(cov.x.minx$x[ic] >= clust.cor.th) {
+    lcount = lcount + 1
+    # fit submodel to minx and highly correlated points
+    suppressAll({
+      locm = DiceKriging::km(design = local.x[cov.x.minx$ix[1:ic], , drop = FALSE], response = local.y[cov.x.minx$ix[1:ic]])
+    })
+    local.models[[lcount]] = locm
+    local.centers[[lcount]] = min.x
+    local.centers.minc[[lcount]] = cov.x.minx$x[ic]
+    ###############################################
+    # insert mean optimization on local model     #
+    # box constraints are min, max of the cluster #
+    # add new point to point set                  #
+    ###############################################
+    # remove best and highly correlated points from set, and handle remaining points
+    if(exists("rem.x", mode="numeric")) {
+      rem.x = rbind(rem.x, min.x)
+    } else {
+      rem.x = min.x      
+    }      
+    if(exists("rem.y", mode="numeric")) {
+      rem.y = c(rem.y, min.y)
+    } else {
+      rem.y = min.y      
+    }
+    if(ic == dim(local.x)[1]) {
+      break;
+    } else {
+      local.x = local.x[(ic+1):dim(local.x)[1], , drop = FALSE]
+      local.y = local.y[(ic+1):length(local.y)]    
+    }    
+    
     # select best y
     min.i = getMinIndex(local.y, ties.method = "random")
     min.x = local.x[min.i, , drop = FALSE]
@@ -54,57 +104,14 @@ trainLearner.regr.kmlocal = function(.learner, .task, .subset, min.clust.size = 
     cov.x.minx = sort(cov.x.minx, decreasing = TRUE, index.return = TRUE)
     cov.x.minx.delta = head(cov.x.minx$x, n = length(cov.x.minx$x)-1) - tail(cov.x.minx$x, n = length(cov.x.minx$x)-1)
     cov.x.minx.delta = scale(cov.x.minx.delta)
-    clusters = kmeans(cov.x.minx$x, cov.x.minx$x[cov.x.minx.delta>0], iter.max = length(cov.x.minx)+1, nstart = 1)
+    print(cov.x.minx$x)
+    print(cov.x.minx$x[cov.x.minx.delta>0])
+    clusters = kmeans(cov.x.minx$x, cov.x.minx$x[cov.x.minx.delta>0], iter.max = length(cov.x.minx$x)+1, nstart = 1)
     k = 1
-    ic = sum(clusters$cluster==k)    
+    ic = sum(clusters$cluster==k)
     while(ic < min.clust.size) {
       k = k + 1
       ic = ic + sum(clusters$cluster==k)
-    }
-    while(cov.x.minx$x[ic] >= clust.cor.th) {
-      lcount = lcount + 1
-      # fit submodel to minx and highly correlated points
-      suppressAll({
-        locm = DiceKriging::km(design = local.x[cov.x.minx$ix[1:ic], , drop = FALSE], response = local.y[cov.x.minx$ix[1:ic]])
-      })
-      local.models[[lcount]] = locm
-      local.centers[[lcount]] = min.x
-      local.centers.minc[[lcount]] = cov.x.minx$x[ic]
-      ###############################################
-      # insert mean optimization on local model     #
-      # box constraints are min, max of the cluster #
-      # add new point to point set                  #
-      ###############################################
-      # remove best and highly correlated points from set, and handle rest points
-      local.x = local.x[ic+1:dim(local.x)[1], , drop = FALSE]
-      if(exists("rem.x", mode="numeric")) {
-        rem.x = rbind(rem.x, min.x)
-      } else {
-        rem.x = min.x      
-      }      
-      local.y = local.y[ic+1:length(local.y)]
-      if(exists("rem.y", mode="numeric")) {
-        rem.y = c(rem.y, min.y)
-      } else {
-        rem.y = min.y      
-      }
-      # select best y
-      min.i = getMinIndex(local.y, ties.method = "random")
-      min.x = local.x[min.i, , drop = FALSE]
-      min.y = local.y[min.i]
-      
-      # get correlation of all points to best and find out which are highly correlated
-      cov.x.minx = covMat1Mat2(globm@covariance, local.x, min.x)[,1L] / globm@covariance@sd2
-      cov.x.minx = sort(cov.x.minx, decreasing = TRUE, index.return = TRUE)
-      cov.x.minx.delta = head(cov.x.minx$x, n = length(cov.x.minx$x)-1) - tail(cov.x.minx$x, n = length(cov.x.minx$x)-1)
-      cov.x.minx.delta = scale(cov.x.minx.delta)
-      clusters = kmeans(cov.x.minx$x, cov.x.minx$x[cov.x.minx.delta>0], iter.max = length(cov.xminx)+1, nstart = 1)
-      k = 1
-      ic = sum(clusters$cluster==k)
-      while(ic < min.clust.size) {
-        k = k + 1
-        ic = ic + sum(clusters$cluster==k)
-      }
     }
   }
   if(exists("rem.x", mode="numeric")) {
@@ -117,7 +124,7 @@ trainLearner.regr.kmlocal = function(.learner, .task, .subset, min.clust.size = 
   } else {
     rem.y = local.y      
   }  
-  
+
   local.centers = do.call(rbind, local.centers)
   local.centers.minc = do.call(c, local.centers.minc)
   return(list(global.model = globm, local.models = local.models, local.centers = local.centers, 

@@ -27,7 +27,7 @@ ps = makeNumericParamSet("x", len = d, lower = 0, upper = 1)
 surrogate = makeLearner("regr.kmlocal", predict.type = "se")
 
 ctrl = makeMBOControl(init.design.points = 8L, iters = 32L, on.learner.error = "stop")
-ctrl = setMBOControlInfill(ctrl, crit = "ei", opt = "cmaes", opt.restarts = 3L)
+ctrl = setMBOControlInfill(ctrl, crit = "ei", opt = "cmaes", opt.restarts = 1L)
 
 res = mbo(makeMBOFunction(f), par.set = ps, learner = surrogate, control = ctrl)
 op = as.data.frame(res$opt.path)
