@@ -54,17 +54,19 @@ trainLearner.regr.kmlocal = function(.learner, .task, .subset, min.clust.size = 
   cov.x.minx.delta = head(cov.x.minx$x, n = length(cov.x.minx$x)-1) - tail(cov.x.minx$x, n = length(cov.x.minx$x)-1)
   cov.x.minx.delta = scale(cov.x.minx.delta)
   print(cov.x.minx$x)
-  print(cov.x.minx$x[cov.x.minx.delta>0])
-  clusters = kmeans(cov.x.minx$x, cov.x.minx$x[cov.x.minx.delta>0], iter.max = length(cov.x.minx$x)+1, nstart = 1)
+  print(cov.x.minx$x[c(TRUE, cov.x.minx.delta>0)])
+  clusters = kmeans(cov.x.minx$x, cov.x.minx$x[c(TRUE, cov.x.minx.delta>0)], iter.max = length(cov.x.minx$x)+1, nstart = 1)  
+  print(clusters$cluster)
   k = 1
   ic = sum(clusters$cluster==k)    
   while(ic < min.clust.size) {
     k = k + 1
     ic = ic + sum(clusters$cluster==k)
   }
-  while(cov.x.minx$x[ic] >= clust.cor.th) {
+  while((cov.x.minx$x[ic] >= clust.cor.th) && (dim(local.x)[1] > min.clust.size)) {
     lcount = lcount + 1
     # fit submodel to minx and highly correlated points
+    print(ic)
     suppressAll({
       locm = DiceKriging::km(design = local.x[cov.x.minx$ix[1:ic], , drop = FALSE], response = local.y[cov.x.minx$ix[1:ic]])
     })
@@ -90,8 +92,8 @@ trainLearner.regr.kmlocal = function(.learner, .task, .subset, min.clust.size = 
     if(ic == dim(local.x)[1]) {
       break;
     } else {
-      local.x = local.x[(ic+1):dim(local.x)[1], , drop = FALSE]
-      local.y = local.y[(ic+1):length(local.y)]    
+      local.x = local.x[cov.x.minx$ix[(ic+1):dim(local.x)[1]], , drop = FALSE]
+      local.y = local.y[cov.x.minx$ix[(ic+1):length(local.y)]]    
     }    
     
     # select best y
@@ -105,8 +107,9 @@ trainLearner.regr.kmlocal = function(.learner, .task, .subset, min.clust.size = 
     cov.x.minx.delta = head(cov.x.minx$x, n = length(cov.x.minx$x)-1) - tail(cov.x.minx$x, n = length(cov.x.minx$x)-1)
     cov.x.minx.delta = scale(cov.x.minx.delta)
     print(cov.x.minx$x)
-    print(cov.x.minx$x[cov.x.minx.delta>0])
-    clusters = kmeans(cov.x.minx$x, cov.x.minx$x[cov.x.minx.delta>0], iter.max = length(cov.x.minx$x)+1, nstart = 1)
+    print(cov.x.minx$x[c(TRUE, cov.x.minx.delta>0)])
+    clusters = kmeans(cov.x.minx$x, cov.x.minx$x[c(TRUE, cov.x.minx.delta>0)], iter.max = length(cov.x.minx$x)+1, nstart = 1)    
+    print(clusters$cluster)
     k = 1
     ic = sum(clusters$cluster==k)
     while(ic < min.clust.size) {
@@ -156,7 +159,7 @@ predictLearner.regr.kmlocal = function(.learner, .model, .newdata, ...) {
     }
   }
   
-  if (k > 0L) {
+  if (k > 0L) {    
     covs = covMat1Mat2(gm@covariance, loccs, nd) / gm@covariance@sd2
     
     # loop thru local models, start from "finest", 
