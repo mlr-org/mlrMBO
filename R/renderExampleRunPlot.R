@@ -59,11 +59,12 @@ renderExampleRunPlot =  function(object, iter, densregion = TRUE,
 }
 
 # single-objective
+#' @export
 renderExampleRunPlot.MBOExampleRun = function(object, iter, densregion = TRUE,
   se.factor = 1, xlim = NULL, ylim = NULL, point.size = 3, line.size = 1, trafo = NULL, ...) {
 
   iters.max = object$control$iters
-  assertInteger(iter, lower = 0L, upper = iters.max, len = 1L, any.missing = FALSE)
+  assertIntegerish(iter, lower = 0L, upper = iters.max, len = 1L, any.missing = FALSE)
   assertFlag(densregion)
   assertNumber(se.factor, lower = 0)
   assertNumber(point.size, lower = 1)
@@ -99,11 +100,12 @@ renderExampleRunPlot.MBOExampleRun = function(object, iter, densregion = TRUE,
 }
 
 # multi-objective
+#' @export
 renderExampleRunPlot.MBOExampleRunMultiCrit = function(object, iter, densregion = TRUE,
   se.factor = 1, xlim = NULL, ylim = NULL, point.size = 3, line.size = 1, trafo = NULL, ...) {
 
   iters.max = object$control$iters
-  assertInteger(iter, len = 1L, lower = 1L, upper = iters.max, any.missing = FALSE)
+  assertIntegerish(iter, len = 1L, lower = 1L, upper = iters.max, any.missing = FALSE)
 
   points.per.dim = asCount(object$points.per.dim)
   assertCount(points.per.dim, na.ok = FALSE, positive = TRUE)
