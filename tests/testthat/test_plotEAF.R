@@ -21,8 +21,6 @@ test_that("plotEAF works", {
   opt.pathes = list("algo1" = opt.pathes, "algo2" = opt.pathes)
 
   # plot eaf and check returned data frame
-  ## FIXME: the eafplot function is not found without loading the package here
-  library(eaf)
   res = plotEAF(opt.pathes)
 
   algo.names = c("algo1", "algo2")
