@@ -65,7 +65,7 @@ plotExampleRun = function(object, iters, pause = TRUE,
   if (missing(iters)) {
     iters = 1:iters.max
   }
-  assertInteger(iters, lower = 0L, upper = iters.max, any.missing = FALSE)
+  assertIntegerish(iters, lower = 0L, upper = iters.max, any.missing = FALSE)
   assertFlag(pause)
   assertFlag(densregion)
   assertNumber(se.factor, lower = 0)
