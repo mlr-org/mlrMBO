@@ -43,7 +43,7 @@ lrn = makeLearner("regr.km", nugget.estim = TRUE, jitter = TRUE)
 obj = makeMBOMultifidFunction(addDistortion(addDistortion(hartman2d, g=noiseGaussian), g=yupp), lvls = ctrl$multifid.lvls)
 res = mbo(fun = obj, par.set = par.set, control = ctrl, learner = lrn, show.info = TRUE)
 
-pdf("plots/tmp_multifid_min_2d.pdf", width = 9, height = 11)
+pdf("../plots/tmp_multifid_min_2d.pdf", width = 9, height = 11)
 for(i in seq_along(res$plot.data)) {
  plots = genGgplot2dRaw(plotdata = res$plot.data[[i]], subset.variable = c("y", "crit"), add.g = NULL)
  do.call(grid.arrange, c(plots, list(nrow = 1, main = sprintf("Stage %i", i))))

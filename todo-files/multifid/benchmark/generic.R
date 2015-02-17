@@ -3,7 +3,7 @@ library(gridExtra)
 generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.model = NULL, control = NULL, grid.all = TRUE, e.string = NULL, high.res = FALSE, multifid.costs = NULL) {
   # store plots in subdirectory
   if(!is.null(e.string)) {
-    dir.create(paste0("plots/", e.string), showWarnings = FALSE)
+    dir.create(paste0("../plots/", e.string), showWarnings = FALSE)
     e.name = paste0(e.string, "/", e.name)
   }
   # initialize control if not sets
@@ -159,7 +159,7 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
       opt.path.cheap = mbo.res$mbo_cheap$opt.path,
       opt.path.expensive = mbo.res$mbo_expensive$opt.path
       )
-    ggsave(plot = g, filename = paste0("plots/",e.name,"_mbo1and2.pdf"), width = 8, height = 5)
+    ggsave(plot = g, filename = paste0("../plots/",e.name,"_mbo1and2.pdf"), width = 8, height = 5)
     
     # 9.2 multiFid + grid
     df.grid.2 = rename(grid.opt.path.df.complete, c("y"="value"))
@@ -177,7 +177,7 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
     lapply(names(versions), function(v.name) {
       subs = versions[[v.name]]
       p.height = ifelse(is.null(subs), 12, length(subs) * 2 + 2)
-      pdf(paste0("plots/",e.name, "_multifid_steps_",v.name,".pdf"), width = 10, height = p.height)
+      pdf(paste0("../plots/",e.name, "_multifid_steps_",v.name,".pdf"), width = 10, height = p.height)
       for (i in seq_along(mbo.res$multifid$plot.data)) {
         plot.data = mbo.res$multifid$plot.data[[i]]
         alpha1 = collapse(round(daply(plot.data$all, ".multifid.lvl", function(x) getFirst(x$alpha1)), 3), sep = ", ")
@@ -190,7 +190,7 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
     
     # 9.2.5 Multifid Steps As plot (and table)
     g = genPlotSteps(mbo.res$multifid$opt.path)
-    ggsave(plot = g, filename = paste0("plots/", e.name, "_multifid_steps.pdf"), width = 7, height = 5)
+    ggsave(plot = g, filename = paste0("../plots/", e.name, "_multifid_steps.pdf"), width = 7, height = 5)
     
     # 9.3 Compare different methods end result
     final.points = data.frame(
@@ -202,7 +202,7 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
     g = genPlotOptPoints(extractSubList(grid.res, "opt.path", simplify = FALSE), 
                          opt.paths = extractSubList(xx.mbo.res[- grep(pattern = "grid", x = names(xx.mbo.res))], "opt.path", simplify = FALSE),
                          final.points = final.points)
-    ggsave(plot = g, filename = paste0("plots/", e.name, "_res_compare.pdf"), width = 10, height = 5)
+    ggsave(plot = g, filename = paste0("../plots/", e.name, "_res_compare.pdf"), width = 10, height = 5)
     
   } else if (sum(getParamLengths(e.par.set)) == 2) {
     
@@ -215,11 +215,11 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
     lapply(names(versions), function(v.name) {
       subs = versions[[v.name]]
       p.width = length(subs) * 4
-      pdf(paste0("plots/",e.name, "_multifid_steps_",v.name,".pdf"), width = p.width, height = 10)
+      pdf(paste0("../plots/",e.name, "_multifid_steps_",v.name,".pdf"), width = p.width, height = 10)
       for (i in seq_along(mbo.res$multifid$plot.data)) {
         plot.data = mbo.res$multifid$plot.data[[i]]
-        alpha1 = collapse(round(daply(plot.data$all, ".multifid.lvl", function(x) getFirst(x$alpha1)), 3), sep = ", ")
-        sd = collapse(round(daply(plot.data$all, ".multifid.lvl", function(x) getFirst(x$sd)), 3), sep = ", ")
+        alpha1 = collapse(round(unique(plot.data$all$alpha1), 3), sep = ", ")
+        sd = collapse(round(unique(plot.data$all$sd), 3), sep = ", ")
         plot = genGgplot(plot.data, title = sprintf("Step: %i, a1: %s, sd: %s", i, alpha1, sd), subset.variable = subs)
         print(plot)
       }
@@ -234,7 +234,7 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
     m.spec$variable = "real"
     xname = plot.data$xname
     g.real = genGgplot2dRawEach(m.spec, xname, plot.data$old.points[,c(xname, ".multifid.lvl")], plot.data$best.points[,c(xname, ".multifid.lvl")] )
-    pdf(paste0("plots/",e.name, "_multifid_final.pdf"), width = 8, height = 10)
+    pdf(paste0("../plots/",e.name, "_multifid_final.pdf"), width = 8, height = 10)
       gs = do.call(grid.arrange, c(c(plots, list(g.real)), list(nrow = 1, main = "Final Stage")))
       print(gs)
     dev.off()
@@ -252,7 +252,7 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
   df = mbo.res$bench.table
   num.col = sapply(df, is.numeric)
   df[,num.col] = sapply(df[,num.col], function(x) sprintf("%g", x))
-  pdf(paste0("plots/",e.name, "_compare_table.pdf"), width = 14, height = 10)
+  pdf(paste0("../plots/",e.name, "_compare_table.pdf"), width = 14, height = 10)
     grid.table(df)
   dev.off()
   

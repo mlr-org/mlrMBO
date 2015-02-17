@@ -1,7 +1,7 @@
 context("multifid")
 
 test_that("basic multifid works", {
-
+  
   objfun = function(x, fac = 0.5) {
     lvl.par.val = x$dw.perc
     x = x$x
@@ -24,12 +24,14 @@ test_that("basic multifid works", {
     on.learner.error = "stop",
     show.learner.output = FALSE,
   )
-  control = setMBOControlInfill(control = control,
+  control = setMBOControlInfill(control = control, 
     crit = "multiFid",
     opt = "focussearch",
     opt.restarts = 1L,
     opt.focussearch.maxit = 1L,
-    opt.focussearch.points = 10L
+    opt.focussearch.points = 10L,
+    filter.proposed.points = TRUE,
+    filter.proposed.points.tol = 0.01
   )
   control = setMBOControlMultiFid(control = control,
     param = "dw.perc",

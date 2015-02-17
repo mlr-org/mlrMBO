@@ -69,5 +69,5 @@ e.task = makeClassifTask(id = "w8a", data = dat.w8a, target = "Y")
 e.rin = makeResampleInstance("Holdout", task = e.task)
 dat.w8a.res = dataBenchmark(e.name = "w8a", e.task = e.task, e.rin = e.rin, e.lrn = e.lrn, e.seed = e.seed, e.par.set = e.par.set, e.lvl = e.lvl, surrogat.model = surrogat.model, control = e.control, e.string = e.string, grid.all = TRUE, high.res = TRUE)
 
-save.image(paste0("plots/", e.string, "/multifid_compare.RData"))
+save.image(paste0("../plots/", e.string, "/multifid_compare.RData"))
 

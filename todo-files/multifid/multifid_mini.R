@@ -38,7 +38,7 @@ lrn = makeLearner("regr.km", nugget.estim = TRUE, jitter = TRUE)
 obj = makeMBOMultifidFunction(addDistortion(addDistortion(sasena, g=yshift), noiseGaussian), lvls = ctrl$multifid.lvls)
 res = mbo(fun = obj, par.set = par.set, control = ctrl, learner = lrn, show.info = TRUE)
 
-pdf("plots/multifid_mini.pdf")
+pdf("../plots/multifid_mini.pdf")
 for(i in seq_along(res$plot.data)) {
   print(genGgplot(plotdata=res$plot.data[[i]], subset.variable = character()))
  # cat ("Press [enter] to continue")

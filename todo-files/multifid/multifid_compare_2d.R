@@ -65,7 +65,7 @@ e.rin = makeResampleInstance("Holdout", task = e.task)
 
 
 
-save.image(paste0("plots/", e.string, "/multifid_compare.RData"))
+save.image(paste0("../plots/", e.string, "/multifid_compare.RData"))
 
 
 
