@@ -14,12 +14,13 @@
 #'     FIXME: Finish doc here
 #'   \item{resample.vals ???}{???}
 #'   \item{models [List of \code{\link[mlr]{WrappedModel}}]}{List of saved regression models.}
+#'   \item{control[\code{MBOControl}] Control object used in optimization}
 #' }
 #' @name MBOSingleObjResult
 #' @rdname MBOSingleObjResult
 NULL
 
-makeMBOSingleObjResult = function(final.index, opt.path, resample.results, convergence, models) {
+makeMBOSingleObjResult = function(final.index, opt.path, resample.results, convergence, models, control) {
   best = getOptPathEl(opt.path, final.index)
   x = best$x
   y = best$y
@@ -31,7 +32,8 @@ makeMBOSingleObjResult = function(final.index, opt.path, resample.results, conve
     opt.path = opt.path,
     resample.results = resample.results,
     convergence = convergence,
-    models = models
+    models = models,
+    control = control
   )
 }
 
@@ -60,12 +62,13 @@ print.MBOResult = function(x, ...) {
 #'     Includes all evaluated points and additional information.
 #'     You can convert it via \code{as.data.frame}.}
 #'   \item{models [List of \code{\link[mlr]{WrappedModel}}]}{List of saved regression models.}
+#'   \item{control[\code{MBOControl}] Control object used in optimization}
 #' }
 #' @name MBOMultiObjResult
 #' @rdname MBOMultiObjResult
 NULL
 
-makeMBOMultiCritResult = function(opt.path, convergence, models) {
+makeMBOMultiCritResult = function(opt.path, convergence, models, control) {
   # get indices of pareto front from path, then add rest
   inds = getOptPathParetoFront(opt.path, index = TRUE)
   res = makeS3Obj(c("MBOMultiObjResult", "MBOResult"),
@@ -74,7 +77,8 @@ makeMBOMultiCritResult = function(opt.path, convergence, models) {
     pareto.inds = inds,
     opt.path = opt.path,
     convergence = convergence,
-    models = models
+    models = models,
+    control = control
   )
 }
 

@@ -121,9 +121,10 @@ mboTemplate = function(fun, par.set, design = NULL, learner, control, show.info 
       ys = evalTargetFun(fun, par.set, loop, xs, opt.path, control, show.info, oldopts, more.args, extras)
       best$y = mean(ys)
     }
-    res = makeMBOSingleObjResult(final.index, opt.path, resample.results, terminate, stored.models)
+    res = makeMBOSingleObjResult(final.index, opt.path, resample.results, terminate,
+      stored.models, control)
   } else {
-    res = makeMBOMultiCritResult(opt.path, terminate, stored.models)
+    res = makeMBOMultiCritResult(opt.path, terminate, stored.models, control)
   }
   # make sure to save final res on disk
   saveStateOnDisk(loop, fun, learner, par.set, opt.path, control, show.info, more.args, stored.models,
