@@ -110,21 +110,22 @@ infillCritMultiFid2 = function(points, model, control, par.set, design, iter, lv
   # note: mbo returns the negated EI (and SE), so have to later minimize the huang crit.
   # which is done by default by our optimizer anyway
   ei.last = infillCritAEI(points.last, model, control, par.set, design.last, iter)
-  cost.current = infillCritMeanResponse(points.current, time.model, control)
-  cost.last = infillCritMeanResponse(points.last, time.model, control)
-  if(all(ei.last == 0)) {
-    # warning("All EI = 0!")
-  }
   alpha1 = lvl.cors[lvl]
+
+  # ALPHA 2
   se = -infillCritStandardError(points.current, model, control, par.set, NULL, iter)
   if (any(lvl.sds < 0.01)) { # FIXME: IF lvl.sd near 0 it will make alpha2 useless
     lvl.sds = lvl.sds + 0.01
   }
   sigmas = lvl.sds[lvl]
   alpha2 = 1 - (sigmas / sqrt(se^2 + sigmas^2))
+
+  # ALPHA 3
   if (!is.null(control$multifid.costs)) {
     alpha3 = getLast(control$multifid.costs) / control$multifid.costs[lvl]
   } else {
+    cost.current = infillCritMeanResponse(points.current, time.model, control)
+    cost.last = infillCritMeanResponse(points.last, time.model, control)
     alpha3 = cost.last / cost.current 
   }
   crit = ei.last * alpha1 * alpha2 * alpha3

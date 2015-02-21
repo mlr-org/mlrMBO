@@ -40,7 +40,7 @@ res = mbo(fun = obj, par.set = par.set, control = ctrl, learner = lrn, show.info
 
 pdf("../plots/multifid_mini.pdf")
 for(i in seq_along(res$plot.data)) {
-  print(genGgplot(plotdata=res$plot.data[[i]], subset.variable = character()))
+  print(plotMultiFidStep(plotdata=res$plot.data[[i]], subset.variable = character()))
  # cat ("Press [enter] to continue")
 #  line <- readline()
 }

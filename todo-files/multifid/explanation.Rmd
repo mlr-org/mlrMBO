@@ -69,7 +69,7 @@ So könnte man es auswerten:
 ```{r, eval=FALSE}
 pdf("multifid_steps.pdf", width=6, height=6)
 for (i in seq_along(result$plot.data)) {
-  plot = genGgplot(result$plot.data[[i]], subset.variable=c("response", "crit"), title = sprintf("Step %i", i))
+  plot = plotMultiFidStep(result$plot.data[[i]], subset.variable=c("response", "crit"), title = sprintf("Step %i", i))
   print(plot)
 }
 dev.off()

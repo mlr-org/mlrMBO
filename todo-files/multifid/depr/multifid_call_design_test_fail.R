@@ -49,7 +49,7 @@ add.g = list(geom_line(data = df, alpha = 0.5, lty = 2),
 
 pdf("multifid_steps_test_fail.pdf", width=10, height=12)
 for (i in seq_along(result$plot.data)) {
-  plot = genGgplot(result$plot.data[[i]], title = sprintf("Step %i", i), add.g = add.g)
+  plot = plotMultiFidStep(result$plot.data[[i]], title = sprintf("Step %i", i), add.g = add.g)
   print(plot)
 }
 dev.off()

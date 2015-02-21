@@ -53,7 +53,7 @@ surrogat.model = makeLearner("regr.km", nugget.estim = TRUE, jitter = TRUE)
 result = mbo(fun = objfun, par.set = par.set, learner = surrogat.model, control = control, show.info = TRUE)
 pdf("multifid_steps.pdf", width=6, height=6)
 for (i in seq_along(result$plot.data)) {
-  plot = genGgplot(result$plot.data[[i]], subset.variable=c("response", "crit"), title = sprintf("Step %i", i))
+  plot = plotMultiFidStep(result$plot.data[[i]], subset.variable=c("response", "crit"), title = sprintf("Step %i", i))
   print(plot)
 }
 dev.off()

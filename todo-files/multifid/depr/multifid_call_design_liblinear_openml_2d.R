@@ -94,7 +94,7 @@ save.image("multifid_steps_liblinear_openml_2d.RData")
 # 
 # pdf("multifid_steps_liblinear_openml_cost.pdf", width=10, height=12)
 # for (i in seq_along(result$plot.data)) {
-#   plot = genGgplot(result$plot.data[[i]], title = sprintf("Step %i", i), add.g = add.g)
+#   plot = plotMultiFidStep(result$plot.data[[i]], title = sprintf("Step %i", i), add.g = add.g)
 #   print(plot)
 # }
 # dev.off()

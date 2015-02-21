@@ -70,9 +70,14 @@ mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE,
   model = train(learner, task = task)
 
   #time learner
-  time.learner = makeLearner("regr.km", nugget.estim = TRUE, jitter = TRUE)
-  time.task = convertMFOptPathToTimeTask(opt.path)
-  time.model = train(time.learner, task = time.task)
+  if (is.null(control$multifid.costs)) {
+    time.learner = makeLearner("regr.km", nugget.estim = TRUE, jitter = TRUE)
+    time.task = convertMFOptPathToTimeTask(opt.path)
+    time.model = train(time.learner, task = time.task) 
+  } else {
+    time.model = NULL
+  }
+  
 
   # generate the x values we want to use to calculate the correlation between the surrogat models
   corgrid = generateDesign(n = control$multifid.cor.grid.points, par.set = par.set)
@@ -96,7 +101,8 @@ mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE,
       lvl.cors = lvl.cors, time.model = time.model, lvl.sds = lvl.sds)
     # find the level where the crit val / infill vals is smallest
     infill.vals = extractSubList(prop, "crit.vals")
-    messagef("Infill vals = %s", collapse(sprintf("%.3g", infill.vals), ", "))
+    if(show.info)
+      messagef("Infill vals = %s", collapse(sprintf("%.3g", infill.vals), ", "))
     
     # every couple of levels we only optimize the last one
     # to ensure that we update that model and see what happens here
@@ -134,7 +140,11 @@ mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE,
 
     # train the model again with new data
     model = train(learner, task = convertMFOptPathToTask(opt.path))
-    time.model = train(time.learner, task = convertMFOptPathToTimeTask(opt.path))
+    
+    if (is.null(control$multifid.costs)) {
+      time.model = train(time.learner, task = convertMFOptPathToTimeTask(opt.path))
+    }
+
   }
   final.index = chooseFinalPoint(fun, par.set2, model, y.name = "y",
     opt.path = opt.path, control = control)

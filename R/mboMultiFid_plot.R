@@ -40,7 +40,7 @@ genPlotData = function(compound.model, opt.path, control, fun, res = 100, lvl.co
   return(list(all = all, xname = xname, old.points = old.points, best.points = best.points))
 }
 
-genGgplot = function(plotdata, subset.variable = character(0), title = character(0), add.g = list()) {
+plotMultiFidStep = function(plotdata, subset.variable = character(0), title = character(0), add.g = list()) {
   assertList(add.g)
   assertCharacter(title)
   assertCharacter(subset.variable)
@@ -48,13 +48,13 @@ genGgplot = function(plotdata, subset.variable = character(0), title = character
   assertSubset(subset.variable, colnames(plotdata$all))
   dim = length(plotdata$xname)
   if(dim == 1) {
-    genGgplot1d(plotdata, subset.variable, title, add.g)
+    plotMultiFidStep1d(plotdata, subset.variable, title, add.g)
   } else if (dim == 2) {
-    genGgplot2d(plotdata, subset.variable, title, add.g)
+    plotMultiFidStep2d(plotdata, subset.variable, title, add.g)
   }
 }
 
-genGgplot1d = function(plotdata, subset.variable = character(0), title = character(0), add.g = list()) {
+plotMultiFidStep1d = function(plotdata, subset.variable = character(0), title = character(0), add.g = list()) {
   xname = plotdata$xname
   m.all = melt(plotdata$all, id.vars = c(xname, ".multifid.lvl"))
     
@@ -89,19 +89,19 @@ genGgplot1d = function(plotdata, subset.variable = character(0), title = charact
   return(g)
 }
 
-genGgplot2d = function(plotdata, subset.variable = character(0), title = character(0), add.g = list()) {
-  plots = genGgplot2dRaw(plotdata, subset.variable, title)
+plotMultiFidStep2d = function(plotdata, subset.variable = character(0), title = character(0), add.g = list()) {
+  plots = plotMultiFidStep2dRaw(plotdata, subset.variable, title)
   gs = do.call(grid.arrange, c(plots, list(nrow = 1, main = title)))
   return(gs)
 }
 
-genGgplot2dRaw = function(plotdata, subset.variable = character(0), add.g = list()) {
+plotMultiFidStep2dRaw = function(plotdata, subset.variable = character(0), add.g = list()) {
   plots = lapply(subset.variable, function(var) {
     xname = plotdata$xname
     m.all = melt(plotdata$all, id.vars = c(xname, ".multifid.lvl"))
     if (length(subset.variable))
       m.all = m.all[m.all$variable == var,]
-    g = genGgplot2dRawEach(m.all, xname, 
+    g = plotMultiFidStep2dRawEach(m.all, xname, 
       old.points = plotdata$old.points[,c(xname, ".multifid.lvl")], 
       best.points = plotdata$best.points[,c(xname, ".multifid.lvl")])
     return(g)
@@ -109,7 +109,7 @@ genGgplot2dRaw = function(plotdata, subset.variable = character(0), add.g = list
   return(plots)
 }
 
-genGgplot2dRawEach = function(m.spec, xname, old.points, best.points, add.g = list()){
+plotMultiFidStep2dRawEach = function(m.spec, xname, old.points, best.points, add.g = list()){
   assertSubset(c("value", xname, "variable", ".multifid.lvl"), colnames(m.spec))
   g = ggplot(m.spec, aes_string(x = xname[1], y = xname[2]))
   g = g + geom_tile(aes(fill = value))

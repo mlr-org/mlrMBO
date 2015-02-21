@@ -182,7 +182,7 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
         plot.data = mbo.res$multifid$plot.data[[i]]
         alpha1 = collapse(round(daply(plot.data$all, ".multifid.lvl", function(x) getFirst(x$alpha1)), 3), sep = ", ")
         sd = collapse(round(daply(plot.data$all, ".multifid.lvl", function(x) getFirst(x$sd)), 3), sep = ", ")
-        plot = genGgplot(plot.data, title = sprintf("Step: %i, a1: %s, sd: %s", i, alpha1, sd), add.g = add.g, subset.variable = subs)
+        plot = plotMultiFidStep(plot.data, title = sprintf("Step: %i, a1: %s, sd: %s", i, alpha1, sd), add.g = add.g, subset.variable = subs)
         print(plot)
       }
       dev.off()
@@ -220,7 +220,7 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
         plot.data = mbo.res$multifid$plot.data[[i]]
         alpha1 = collapse(round(unique(plot.data$all$alpha1), 3), sep = ", ")
         sd = collapse(round(unique(plot.data$all$sd), 3), sep = ", ")
-        plot = genGgplot(plot.data, title = sprintf("Step: %i, a1: %s, sd: %s", i, alpha1, sd), subset.variable = subs)
+        plot = plotMultiFidStep(plot.data, title = sprintf("Step: %i, a1: %s, sd: %s", i, alpha1, sd), subset.variable = subs)
         print(plot)
       }
       dev.off()
@@ -228,12 +228,12 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
     
     ## Final state
     plot.data = getLast(mbo.res$multifid$plot.data) #last step
-    plots = genGgplot2dRaw(plot.data, subset.variable = c("y", "crit"))
+    plots = plotMultiFidStep2dRaw(plot.data, subset.variable = c("y", "crit"))
     m.spec = rename(grid.opt.path.df.complete, c("y" = "value"))
     m.spec = m.spec[m.spec$dob == 0, ] #remove proposed values for correct geom_grid()
     m.spec$variable = "real"
     xname = plot.data$xname
-    g.real = genGgplot2dRawEach(m.spec, xname, plot.data$old.points[,c(xname, ".multifid.lvl")], plot.data$best.points[,c(xname, ".multifid.lvl")] )
+    g.real = plotMultiFidStep2dRawEach(m.spec, xname, plot.data$old.points[,c(xname, ".multifid.lvl")], plot.data$best.points[,c(xname, ".multifid.lvl")] )
     pdf(paste0("../plots/",e.name, "_multifid_final.pdf"), width = 8, height = 10)
       gs = do.call(grid.arrange, c(c(plots, list(g.real)), list(nrow = 1, main = "Final Stage")))
       print(gs)
