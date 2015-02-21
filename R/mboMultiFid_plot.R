@@ -25,10 +25,6 @@ genPlotData = function(compound.model, opt.path, control, fun, res = 100, lvl.co
   z.df = do.call(cbind.data.frame, z)
   all = cbind(grid.design, y = p$data$response, z)
   xname = getParamIds(par.set.lower)
-  #m.all = melt(all, id.vars=c(xname, ".multifid.lvl"))
-  #ei last extra care
-  #m.all[m.all[["variable"]] == "ei", control$multifid.param] = getLast(control$multifid.lvls)
-  #old.points = rename(old.points, c("y"="value")); old.points$variable = "response"
   best.points.z = infillCritMultiFid2(
     points = dropNamed(best.points, ".multifid.lvl"), 
     model = compound.model, 

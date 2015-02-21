@@ -15,8 +15,6 @@
 #'   Default is \code{NULL} which means that the cost will be predicted by a model build on the \code{exec.time} from the so far evaluated points.
 #' @param force.last.level.evals [\code{integer(1)}]
 #'   How many evaluations should be done on the last value of fid.param?
-#' @param eval.lower [\code{boolean(1)}]\cr
-#'   For each evaluation, evaluate the lower fidelity levels as well. Default is \code{FALSE}.
 #' @template arg_showinfo
 #' @return [\code{\link{MBOControl}}].
 #' @note See the other setMBOControl... functions and \code{makeMBOControl} for referenced arguments.
@@ -30,7 +28,7 @@ setMBOControlMultiFid = function(control, param, lvls, costs = NULL, cor.grid.po
   assertString(control$multifid.param)
 
   control$multifid.lvls = coalesce(lvls, control$multifid.lvls)
-  assertNumeric(control$multifid.lvls, lower = 0, upper = 1, min.len = 2L, any.missing = FALSE)
+  assertNumeric(control$multifid.lvls, min.len = 2L, any.missing = FALSE)
   if (is.unsorted(control$multifid.lvls))
     stop("MultiFid levels must be sorted!")
 
@@ -46,7 +44,7 @@ setMBOControlMultiFid = function(control, param, lvls, costs = NULL, cor.grid.po
 
   if (!is.null(cor.grid.points))
     cor.grid.point = asInt(cor.grid.points, lower = 2L)
-  control$multifid.cor.grid.points = coalesce(cor.grid.points, control$multifid.cor.grid.points, 10L)
+  control$multifid.cor.grid.points = coalesce(cor.grid.points, control$multifid.cor.grid.points, 50L)
 
   if (!is.null(force.last.level.evals))
     force.last.level.evals = asInt(force.last.level.evals, lower = 0L)
