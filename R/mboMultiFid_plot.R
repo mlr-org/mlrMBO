@@ -37,7 +37,7 @@ genPlotData = function(compound.model, opt.path, control, fun, res = 100, lvl.co
     lvl = best.points$.multifid.lvl)
   best.points$y = predict(compound.model, newdata = best.points)$data$response
   best.points = do.call(cbind, c(list(best.points), best.points.z))
-  return(list(all = all, xname = xname, old.points = old.points, best.points = best.points))
+  return(list(all = all, xname = xname, old.points = old.points, best.points = best.points, lvls = control$multifid.lvls, param = control$multifid.param))
 }
 
 plotMultiFidStep = function(plotdata, subset.variable = character(0), title = character(0), add.g = list()) {
@@ -74,7 +74,7 @@ plotMultiFidStep1d = function(plotdata, subset.variable = character(0), title = 
   assertSubset(vars.needed, colnames(old.points))
   assertSubset(vars.needed, colnames(m.best.points))
 
-  g = ggplot(m.all, aes_string(x = xname, y = "value", color = "as.factor(.multifid.lvl)", group = ".multifid.lvl"))
+  g = ggplot(m.all, aes_string(x = xname, y = "value", color = "as.factor(.multifid.lvl)", group = "as.factor(.multifid.lvl)"))
   g = g + geom_line()
   g = g + geom_point(data = old.points)
   g = g + geom_vline(data = m.best.points, aes_string(xintercept = xname, color = "as.factor(.multifid.lvl)"), lty=2)
@@ -83,6 +83,8 @@ plotMultiFidStep1d = function(plotdata, subset.variable = character(0), title = 
     g = g + add.g[[i]]
   }
   g = g + facet_grid(variable~., scales="free_y")
+  g = g + scale_color_discrete(name = plotdata$param, labels = plotdata$lvls)
+  g = g + theme(legend.position = "bottom")
   if (length(title)>0) {
     g = g + ggtitle(title)
   }
