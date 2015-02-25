@@ -9,6 +9,21 @@ giveMeTasks = function(x = NULL) {
   #multiclass numeric and 01 factors
   #110393 inst & 54 features
   covertype.f = function() {makeClassifTask(id = "covertype", data = read.arff("../data/dataset_184_covertype.arff"), target = "class")} 
+
+  # electricity http://openml.org/d/151
+  # binary numeric only
+  # 45312 inst & 7 features
+  electricity.f = function() {makeClassifTask(id = "electricity", data = read.arff("../data/electricity-normalized.arff"), target = "class")} 
+
+  # pendigits http://openml.org/d/32
+  # multiclass numeric only
+  # 10992 inst & 16 feat
+  pendigits.f = function() {makeClassifTask(id = "pendigits", data = read.arff("../data/dataset_32_pendigits.arff", target = "class"))}
+
+  # nursery http://openml.org/d/26
+  # multiclass symbolic only
+  # 12960 inst & 8 feat
+  nursery.f = function() {makeClassifTask(id = "nursery", data = read.arff("../data/dataset_26_nursery.arff", target = "class"))}
   
   #BNG CMC http://openml.org/d/255
   #multiclass numeric and factors
@@ -20,13 +35,24 @@ giveMeTasks = function(x = NULL) {
     makeClassifTask(id = "bng_cmc", data = data, target = "Contraceptive_method_used") 
   }
   
-  #meta steam intervals OpenML
+  #meta steam intervals OpenML http://openml.org/d/279
   #multiclass numeric
+  #45164 inst & 74 feautres & 13 classes
   meta_stream_intervals.f = function() {
     data = read.arff("../data/meta_stream_intervals.arff")
     colnames(data) = make.names(colnames(data))
     makeClassifTask(id = "meta_stream_intervals", data = data, target = "class")
   } 
+
+  #kin8nm http://openml.org/d/189
+  #regression
+  #8192 inst & 9 numeric
+  kin8nm.f = function() {makeRegrTask(id = "kin8nm", data = read.arff("../data/dataset_2175_kin8nm.arff", target = "y"))}
+
+  #puma32H http://openml.org/d/308
+  #regression
+  #8192 & 32 numeric
+  puma32H.f = function() {makeRegrTask(id = puma32H, data = read.arff("../phpJEvZWG", target = "thetadd6"))}
   
   task.list = list(
     sonar = function() {sonar.task},
