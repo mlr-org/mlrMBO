@@ -8,6 +8,7 @@ giveMeTasks = function(x = NULL) {
   #Covertype http://openml.org/d/180
   #multiclass numeric and 01 factors
   #110393 inst & 54 features
+  #too slow!
   covertype.f = function() {makeClassifTask(id = "covertype", data = read.arff("../data/dataset_184_covertype.arff"), target = "class")} 
 
   # electricity http://openml.org/d/151
@@ -18,12 +19,12 @@ giveMeTasks = function(x = NULL) {
   # pendigits http://openml.org/d/32
   # multiclass numeric only
   # 10992 inst & 16 feat
-  pendigits.f = function() {makeClassifTask(id = "pendigits", data = read.arff("../data/dataset_32_pendigits.arff", target = "class"))}
+  pendigits.f = function() {makeClassifTask(id = "pendigits", data = read.arff("../data/dataset_32_pendigits.arff"), target = "class")}
 
   # nursery http://openml.org/d/26
   # multiclass symbolic only
   # 12960 inst & 8 feat
-  nursery.f = function() {makeClassifTask(id = "nursery", data = read.arff("../data/dataset_26_nursery.arff", target = "class"))}
+  nursery.f = function() {makeClassifTask(id = "nursery", data = read.arff("../data/dataset_26_nursery.arff"), target = "class")}
   
   #BNG CMC http://openml.org/d/255
   #multiclass numeric and factors
@@ -47,16 +48,17 @@ giveMeTasks = function(x = NULL) {
   #kin8nm http://openml.org/d/189
   #regression
   #8192 inst & 9 numeric
-  kin8nm.f = function() {makeRegrTask(id = "kin8nm", data = read.arff("../data/dataset_2175_kin8nm.arff", target = "y"))}
+  kin8nm.f = function() {makeRegrTask(id = "kin8nm", data = read.arff("../data/dataset_2175_kin8nm.arff"), target = "y")}
 
   #puma32H http://openml.org/d/308
   #regression
   #8192 & 32 numeric
-  puma32H.f = function() {makeRegrTask(id = puma32H, data = read.arff("../phpJEvZWG", target = "thetadd6"))}
+  puma32H.f = function() {makeRegrTask(id = puma32H, data = read.arff("../phpJEvZWG"), target = "thetadd6")}
   
   task.list = list(
     sonar = function() {sonar.task},
     iris = function() {iris.task},
+    bh = function() {bh.task},
     
     #http://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/binary.html
     #binary
@@ -68,10 +70,15 @@ giveMeTasks = function(x = NULL) {
     covtype.dummy = function() {createDummyFeatures(covtype.f(), method = "reference")},
     covertype = covertype.f,
     covertype.dummy = function() {createDummyFeatures(covertype.f(), method = "reference")},
-    bng_cmc = bng_cmc.f(),
+    bng_cmc = bng_cmc.f,
     bng_cmc.dummy = function() {createDummyFeatures(bng_cmc.f(), method = "reference")},
-    meta_stream_intervals = meta_stream_intervals.f
-    # clickprediction = function()
+    meta_stream_intervals = meta_stream_intervals.f,
+    pendigits = pendigits.f,
+    nursery = nursery.f,
+    electricity = electricity.f,
+    kin8nm = kin8nm.f,
+    puma32H = puma32H.f
+
   )
   if (is.null(x))
     x = names(task.list)
@@ -84,6 +91,7 @@ giveMeLearners = function(x = NULL) {
     LiblineaRMultiClass = makeLearner("classif.LiblineaRMultiClass"),
     LiblineaRBinary = makeLearner("classif.LiblineaRBinary", type = 1),
     svm = makeLearner("classif.svm")
+    regr.svm = makeLearner("regr.svm")
   )
   if (is.null(x))
     x = names(task.list)
@@ -164,26 +172,26 @@ giveMeSurrogatLearner = function(x = 1) {
 
 giveMeTuneControls = function (budget, surrogat.learner = giveMeSurrogatLearner()) {
   tune.controls = list(
-    mlr.multiFid.control = mlr:::makeTuneControlMBO(
+    mfMBO = mlr:::makeTuneControlMBO(
       mbo.control = giveMeMBOMultiFidControl(budget = budget), 
       learner = surrogat.learner),
-    mlr.multiFid.fixedCosts.control = mlr:::makeTuneControlMBO(
+    mfMBO.fixedCosts = mlr:::makeTuneControlMBO(
       mbo.control = giveMeMBOMultiFidControl(
         e.lvls = giveMeLvl("std"), 
         costs = giveMeLvl("std")^2,
         budget = budget), 
       learner = surrogat.learner),
-    mlr.multiFid.bigData.control = mlr:::makeTuneControlMBO(
+    mfMBO.low = mlr:::makeTuneControlMBO(
       mbo.control = giveMeMBOMultiFidControl(
         e.lvls = giveMeLvl("big.data"),
         budget = budget), 
       learner = surrogat.learner),
-    mlr.mlrMBO.control = mlr:::makeTuneControlMBO(
+    mlrMBO = mlr:::makeTuneControlMBO(
       mbo.control = giveMeMBOControl(budget = budget), 
       learner = surrogat.learner)
   )
   tune.controls = c(tune.controls, list(
-    mlr.tuneRandom.control = makeTuneControlRandom(maxit = giveMeResolution(tune.controls$mlr.multiFid.control)))
+    RandomSearch = makeTuneControlRandom(maxit = giveMeResolution(tune.controls$mlr.multiFid.control)))
   )
   tune.controls
 }
@@ -211,7 +219,7 @@ giveMeTunedLearners = function(learners, tune.controls, rsi, measures = mmce, pa
   is.mf = names(is.mf[is.mf]) #only take true
   is.mf = names(tune.controls) %in% is.mf
   tune.controls = tune.controls[!is.mf] #subset to not multifid tune objects
-  names(tune.controls) = paste0(names(tune.controls),".lowFidelity")
+  names(tune.controls) = paste0(names(tune.controls), " ", getFirst(giveMeLvl())*100, "%")
   low = giveMeTunedLearners2(learners, tune.controls, rsi, measures = measures, par.sets = par.sets, show.info = show.info, dw.perc = getFirst(giveMeLvl()))
   c(high, low)
 }

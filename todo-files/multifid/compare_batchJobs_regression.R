@@ -10,17 +10,19 @@ source("todo-files/multifid/benchmark/helpers.R")
 source("todo-files/multifid/benchmark/giveMe.R")
 source("todo-files/multifid/benchmark/mbo_batchmark.R")
 
-e.string = paste0("bJ_multiclass_",format(Sys.time(), "%Y_%m%d_%H%M"))
+e.string = paste0("bJ_regression_",format(Sys.time(), "%Y_%m%d_%H%M"))
 dir.create(paste0("../plots/", e.string), showWarnings = FALSE)
 
 budget = 50L
-tasks = giveMeTasks(c("iris", "meta_stream_intervals", "covertype.dummy", "bng_cmc.dummy"))
+tasks = giveMeTasks(c("bh", "kin8nm", "puma32H"))
 resampling.inner = giveMeResampleDesc("inner")
 resampling.outer = giveMeResampleDesc("cv")
-learners = giveMeLearners(c("LiblineaRMultiClass", "svm"))
+learners = giveMeLearners(c("regr.svm"))
 tune.controls = giveMeTuneControls(budget)
 tuned.learners = giveMeTunedLearners(learners = learners, tune.controls = tune.controls, rsi = resampling.inner)
 resamplings = replicate(n = length(tasks), resampling.outer, simplify = FALSE)
+
+save.image(file = paste0("../plots/",e.string,"/CV_compare.RData"))
 
 reg = makeExperimentRegistry(e.string, packages = c("mlr", "mlrMBO"))
 batchmark(reg, learners = tuned.learners, tasks = tasks, resamplings, measures = list(mmce, timetrain), overwrite = TRUE, repls = 1, save.opt.result = TRUE)
