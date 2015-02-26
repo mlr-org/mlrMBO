@@ -90,7 +90,7 @@ giveMeLearners = function(x = NULL) {
   lrns = list(
     LiblineaRMultiClass = makeLearner("classif.LiblineaRMultiClass"),
     LiblineaRBinary = makeLearner("classif.LiblineaRBinary", type = 1),
-    svm = makeLearner("classif.svm")
+    svm = makeLearner("classif.svm"),
     regr.svm = makeLearner("regr.svm")
   )
   if (is.null(x))
@@ -107,7 +107,7 @@ giveMeParamSets = function(lrns) {
   svm = makeParamSet(
     makeNumericParam("cost", lower = -15, upper = 10, trafo = function(x) 2^x),
     makeNumericParam("gamma", lower = -10, upper = 6, trafo = function(x) 2^x),
-    makeNumericParam("tolerance", lower = -10, upper = -1, trafo = function(x) log(1+2^x) )
+    makeNumericParam("tolerance", lower = -11, upper = -2, trafo = function(x) log(1+2^x) )
   )
   par.set.list = list(
     classif.LiblineaRMultiClass = LiblineaR,
@@ -148,7 +148,8 @@ giveMeMBOMultiFidControl = function(ctrl = NULL, e.lvls = giveMeLvl("std"), cost
     param = "dw.perc", 
     lvls = e.lvls,
     cor.grid.points = 40L,
-    costs = NULL
+    costs = NULL,
+    generate.plot.data = FALSE,
   )
   ctrl$infill.crit = "multiFid"
   ctrl
@@ -191,7 +192,7 @@ giveMeTuneControls = function (budget, surrogat.learner = giveMeSurrogatLearner(
       learner = surrogat.learner)
   )
   tune.controls = c(tune.controls, list(
-    RandomSearch = makeTuneControlRandom(maxit = giveMeResolution(tune.controls$mlr.multiFid.control)))
+    RandomSearch = makeTuneControlRandom(maxit = giveMeResolution(tune.controls$mfMBO)))
   )
   tune.controls
 }
@@ -219,7 +220,7 @@ giveMeTunedLearners = function(learners, tune.controls, rsi, measures = mmce, pa
   is.mf = names(is.mf[is.mf]) #only take true
   is.mf = names(tune.controls) %in% is.mf
   tune.controls = tune.controls[!is.mf] #subset to not multifid tune objects
-  names(tune.controls) = paste0(names(tune.controls), " ", getFirst(giveMeLvl())*100, "%")
+  names(tune.controls) = paste0(names(tune.controls), ".l")
   low = giveMeTunedLearners2(learners, tune.controls, rsi, measures = measures, par.sets = par.sets, show.info = show.info, dw.perc = getFirst(giveMeLvl()))
   c(high, low)
 }

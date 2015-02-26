@@ -1,4 +1,6 @@
 genPlotData = function(compound.model, opt.path, control, fun, res = 100, lvl.cors, lvl.sds, time.model, par.set, best.points, merge = TRUE) {
+  if (!control$multifid.generate.plot.data)
+    return(NULL)
   requirePackages(packs=c("ggplot2", "reshape2"), why="generate MultiFid Plot")
   # par set without the multifid lvl param
   par.set.lower = dropParams(par.set, ".multifid.lvl")

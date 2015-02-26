@@ -15,13 +15,15 @@
 #'   Default is \code{NULL} which means that the cost will be predicted by a model build on the \code{exec.time} from the so far evaluated points.
 #' @param force.last.level.evals [\code{integer(1)}]
 #'   How many evaluations should be done on the last value of fid.param?
+#' @param generate.plot.data [\code{boolean(1)}]
+#'   Should plot data be generated? Default ist \code{TRUE}.
 #' @template arg_showinfo
 #' @return [\code{\link{MBOControl}}].
 #' @note See the other setMBOControl... functions and \code{makeMBOControl} for referenced arguments.
 #' @seealso makeMBOControl
 #' @export
 setMBOControlMultiFid = function(control, param, lvls, costs = NULL, cor.grid.points = NULL,
-  force.last.level.evals = NULL, eval.lower = NULL, show.info = NULL) {
+  force.last.level.evals = NULL, eval.lower = NULL, generate.plot.data = TRUE, show.info = NULL) {
 
   assertClass(control, "MBOControl")
   control$multifid.param = coalesce(param, control$multifid.param)
@@ -50,6 +52,7 @@ setMBOControlMultiFid = function(control, param, lvls, costs = NULL, cor.grid.po
     force.last.level.evals = asInt(force.last.level.evals, lower = 0L)
   control$multifid.force.last.level.evals = coalesce(force.last.level.evals, control$multifid.force.last.level.evals, 10L)
 
+  control$multifid.generate.plot.data = coalesce(generate.plot.data, control$multifid.generate.plot.data, TRUE)
   # FIXME: This following line is maybe not needed anymore. proposePoints() might not work now for multiFid control objects.
   control$multifid.show.info = coalesce(show.info, control$multifid.show.info, FALSE)
 
