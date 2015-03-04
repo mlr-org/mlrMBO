@@ -14,7 +14,7 @@ e.string = paste0("bJ_classification_",format(Sys.time(), "%Y_%m%d_%H%M"))
 dir.create(paste0("../plots/", e.string), showWarnings = FALSE)
 
 budget = 50L
-tasks = giveMeTasks(c("iris", "meta_stream_intervals", "bng_cmc", "sonar", "w7a", "w8a", "pendigits", "covtype.binary", "nursery", "electricity"))
+tasks = giveMeTasks(c("iris", "meta_stream_intervals", "bng_cmc", "sonar", "w7a", "w8a", "pendigits", "nursery", "electricity"))
 resampling.inner = giveMeResampleDesc("inner")
 resampling.outer = giveMeResampleDesc("cv")
 learners = giveMeLearners(c("svm"))
@@ -36,6 +36,6 @@ save.image(file = paste0("../plots/",e.string,"/CV_compare.RData"))
 ##### Visualisierung ####
 #####
 
-giveMeVisuals(all.res, e.string, init.design.points = tune.controls[[1]]$mbo.control$init.design.points)
+giveMeVisuals(all.res, e.string, init.design.points = tune.controls[[1]]$mbo.control$init.design.points, tasks = tasks)
 
 save.image(file = paste0("../plots/",e.string,"/CV_compare.RData"))

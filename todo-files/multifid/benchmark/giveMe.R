@@ -1,3 +1,6 @@
+library(plyr)
+library(reshape2)
+
 ### Define Learners
 giveMeTasks = function(x = NULL) {
   #Covertype http://openml.org/d/150
@@ -83,7 +86,9 @@ giveMeTasks = function(x = NULL) {
   if (is.null(x))
     x = names(task.list)
   assertSubset(x, names(task.list))
-  lapply(x, function(name) do.call(task.list[[name]], list()))
+  task.list = lapply(x, function(name) do.call(task.list[[name]], list()))
+  names(task.list) = extractSubList(task.list, c("task.desc", "id"))
+  task.list
 }
 
 giveMeLearners = function(x = NULL) {
@@ -274,7 +279,61 @@ giveMePareto = function(tune.rres2, ...) {
   return(g)
 }
 
-giveMeVisuals = function (all.res, e.string, init.design.points = NULL) {
+giveMeBoxPlots = function(tune.rres2, ...) {
+  measures.test = extractSubList(tune.rres2, "measures.test", simplify = FALSE)
+  measures.test = melt(measures.test)
+  measures.test = rename(measures.test, c("L1" = "learner.id"))
+  g = ggplot(measures.test, aes(x = learner.id, y = value, fill = learner.id))
+  g = g + geom_boxplot()
+  g = g + facet_wrap(~variable, scales = "free")
+  g = giveMeGgExtras(g = g, ...)
+  g = g + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+  g = g + guides(fill=FALSE)
+  return(g)
+}
+
+giveMeAllBoxPlots = function(df, ...) {
+  m.df = melt(df, id.vars = c("task.id", "learner.id")) 
+  g = ggplot(m.df, aes(x = learner.id, y = value, fill = learner.id))
+  g = g + geom_boxplot()
+  g = g + facet_wrap(task.id~variable, scales = "free_y", ncol = 2)
+  g = giveMeGgExtras(g = g, ...)
+  g = g + theme(axis.text.x = element_blank())
+  # g = g + guides(fill=FALSE)
+  return(g)
+}
+
+giveMeTimeVsPerformance = function(tune.rres2, init.design.points = NULL, normalize = FALSE, ...) {
+  xx.tune.rres2 <<- tune.rres2
+  xx.init.design.points <<- init.design.points
+  ls = extractSubList(tune.rres2, "ops.df", simplify = FALSE)
+  common.cols = Reduce(intersect, lapply(ls, colnames))
+  all.df = melt(ls, id.vars = common.cols)
+  all.df = rename(all.df, c("L1" = "learner.id"))
+  all.df$phase = ifelse(all.df$dob <= init.design.points, "init", "algo")
+  if (normalize) {
+    all.df = ddply(all.df, ~learner.id+iter, function(df) {
+      df$exec.time.cum = df$exec.time.cum - getFirst(df$exec.time.cum)
+      return(df)})
+  }
+  all.df2 = ddply(all.df, ~dob+learner.id+phase, summarize, 
+                  mmce.test.mean.best = mean(mmce.test.mean.best),
+                  exec.time.cum = mean(exec.time.cum))
+  all.df2.s = split(all.df2, all.df2$phase)
+  g = ggplot(mapping = aes(y = mmce.test.mean.best, x = exec.time.cum, color = learner.id))
+  # g = g + geom_line(aes(group = paste0(learner.id, iter)), size = 1, alpha = 0.1)
+  g = g + geom_line(data = all.df2.s$init, aes(group = learner.id), lty = 3, alpha = 0.5, size = 1.5)
+  g = g + geom_line(data = all.df2.s$algo, aes(group = learner.id), size = 1.5, arrow = arrow(angle = 90, length = unit(0.25, units = "cm")))
+  g = g + scale_y_continuous(limits = range(all.df2.s$algo$mmce.test.mean.best))
+  if ("mfMBO" %in% all.df2$learner.id) {
+    g = g + geom_vline(xintercept = getLast(all.df2[all.df2$learner.id == "mfMBO", "exec.time.cum"]), lty = 2, alpha = 0.6)
+    g = g + geom_hline(yintercept = getLast(all.df2[all.df2$learner.id == "mfMBO", "mmce.test.mean.best"]), lty = 2, alpha = 0.6)
+  }
+  g = giveMeGgExtras(g = g, ...)
+  return(g)
+}
+
+giveMeVisuals = function (all.res, e.string, init.design.points = NULL, tasks, drop.n) {
   task.ids = extractSubList(all.res, c("task.id"))
   learner.ids = extractSubList(all.res, c("opt.result", "learner", "next.learner", "id"))
   combs = unique(data.frame(task.ids, learner.ids))
@@ -318,10 +377,25 @@ giveMeVisuals = function (all.res, e.string, init.design.points = NULL) {
     
     g = giveMePareto(tune.rres2, title = paste(task.id, learner.id))
     ggsave(plot = g, filename = paste0("../plots/",this.e.string,"_CV_compare_pareto.pdf"), width = 10, height = 6)
+
+    g = giveMeTimeVsPerformance(tune.rres2, init.design.points = init.design.points, title = common.title)
+    ggsave(plot = g, filename = paste0("../plots/",this.e.string,"_CV_compare_TimeVsPerf.pdf"), width = 8, height = 4)
+    
+    g = giveMeBoxPlots(tune.rres2, title = common.title)
+    ggsave(plot = g, filename = paste0("../plots/",this.e.string,"_CV_compare_Boxplots.pdf"), width = 8, height = 4)
+    giveMeBoxPlots
     
     invisible(NULL)
   } 
   apply(combs, 1, function(x) visualize(x["task.ids"], x["learner.ids"]))
+  
+  #big plots for a learner together on all data.sets
+  lapply(unique(learner.ids), function(learner.id) {
+    res.by.learner = all.res[learner.ids == learner.id]
+    data = giveMeAllResTable(res.by.learner, tasks = tasks, drop.n = drop.n)
+    g = giveMeAllBoxPlots(data, title = learner.id)
+    ggsave(plot = g, filename = paste0("../plots/",e.string,"/",learner.id,"_CV_compare_Boxplots.pdf"), width = 10, height = 2 + length(unique(data$task.id)) * 1.15)
+  })
 }
 
 
@@ -357,13 +431,62 @@ giveMeResultTable = function(tune.rres2, pretty = TRUE) {
   return(res.df)
 }
 
+giveMeAllResTable = function(res.by.learner, tasks, drop.n) {
+  # gives a nice table with all results. resampling is averaged
+  # only works for one learner until now!
+  df = data.frame (
+    mmce = extractSubList(all.res, c("performance","mmce"), simplify = TRUE),
+    exec.time = sapply(extractSubList(all.res, c("opt.result","opt.path","env","exec.time"), simplify = FALSE), sum),
+    task.id = extractSubList(all.res, "task.id", simplify = TRUE),
+    learner.id = extractSubList(all.res, "learner.id")
+  )
+  df$task.id = factor(
+    df$task.id,
+    levels = levels(df$task.id)[giveMeOrderOfTaks(tsks = tasks[levels(df$task.id)], drop.n)])
+  df = df[!is.na(df$task.id),]
+  rawnames = strsplit(as.character(df$learner.id), split = "\\.")
+  df$learner.id = sapply(lapply(rawnames, tail, -2), paste, collapse = ".")
+  df  
+}
+
+giveMeAllAverageTable = function(df) {
+  df.mean = ddply(df, ~task.id+learner.id, numcolwise(mean,na.rm = TRUE))
+  df.cast.mmce = dcast(df.mean, task.id~learner.id, value.var = "mmce")
+  df.cast.exec.time = dcast(df.mean, task.id~learner.id, value.var = "exec.time")
+  df.info = giveMeDataInfoTable(tasks, drop.n = 0)
+  join_all(list(df.cast.mmce, df.cast.exec.time, df.info), by = "task.id")
+}
+
+giveMeOrderOfTaks = function(tsks, drop.n = 0) {
+  ns = extractSubList(tsks, c("task.desc", "size"), simplify = TRUE)
+  ns = sapply(ns, function(n) ifelse(is.null(n), NA, n))
+  ons = order(ns)
+  ons[sort(ns>=drop.n, na.last = TRUE) & !sort(is.na(ns))] #drops the first with ns below drop.n
+}
+
+giveMeDataInfoTable = function(tasks, drop.n = 0) {
+  res = ldply(tasks, function(task) {
+    freq.tab = prop.table(table(getTaskData(task = task, target.extra = TRUE)$target))
+    data.frame(
+      Datensatz = task$task.desc$id,
+      n = task$task.desc$size,
+      "Unabhängige Variablen" = sum(task$task.desc$n.feat),
+      "Klassen" = length(task$task.desc$class.levels),
+      "Baseline" = max(freq.tab),
+      "kleinste Klasse" = min(freq.tab))
+  })
+  res = res[giveMeOrderOfTaks(tasks, drop.n),]
+  rename(res, c(".id" = "task.id"))
+}
+
 giveMeGgExtras = function(g, title = character(0), ...) {
   add.g = list(...)
   for (i in seq_along(add.g)) {
     g = g + add.g[[i]]
   }
-  #g = g + scale_colour_brewer(palette="Set1")
-  g = g + scale_color_manual(values = c("#7F0000", "#FF3A39", "#1BE800", "#246616", "#A2E58C", "#0056CF", "#4C94FF"))
+  color_values =  c("#1BE800", "#246616", "#A2E58C", "#7F0000", "#FF3A39", "#0056CF", "#4C94FF")
+  g = g + scale_color_manual(values = color_values)
+  g = g + scale_fill_manual(values = color_values)
   g = g + theme_bw() + ggtitle(label = title)
   return(g)
 }
