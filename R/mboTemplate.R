@@ -18,6 +18,7 @@ mboTemplate = function(fun, par.set, design = NULL, learner, control, show.info 
   start.time = Sys.time()
   iters = control$iters
   time.budget = control$time.budget
+  exec.time.budget = control$exec.time.budget
 
   # shortcut names
   ninit = if (is.null(design)) control$init.design.points else nrow(design)
@@ -103,7 +104,7 @@ mboTemplate = function(fun, par.set, design = NULL, learner, control, show.info 
 
     # increase loop counter and check if done
     loop = loop + 1L
-    terminate = shouldTerminate(iters, loop, time.budget, start.time)
+    terminate = shouldTerminate(iters, loop, time.budget, start.time, exec.time.budget, opt.path)
     if (terminate >= 0)
       break
   }

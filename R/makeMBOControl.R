@@ -31,6 +31,9 @@
 #' @param time.budget [\code{integer(1)} | NULL]\cr
 #'   Running time budget in seconds. Note that the actual mbo run can take more time since
 #'   the condition is checked after each iteration.
+#' @param exec.time.budget [\code{integer(1)} | NULL]\cr
+#'   Execution time (time spent executing the function passed to \code{mbo}) budget in seconds. Note that the actual mbo run can take more time since
+#'   the condition is checked after each iteration.
 #' @param propose.points [\code{integer(1)}]\cr
 #'   Number of proposed / really evaluated points each iteration.
 #'   Default is 1.
@@ -106,7 +109,7 @@
 makeMBOControl = function(number.of.targets = 1L,
   minimize = rep(TRUE, number.of.targets), noisy = FALSE,
   init.design.points = 20L, init.design.fun = maximinLHS, init.design.args = list(),
-  iters = 10L, time.budget = NULL,
+  iters = 10L, time.budget = NULL, exec.time.budget = NULL,
   propose.points = 1L,
   final.method = "best.true.y", final.evals = 0L,
   y.name = "y",
@@ -129,7 +132,7 @@ makeMBOControl = function(number.of.targets = 1L,
   assertFunction(init.design.fun)
   assertList(init.design.args)
 
-  if (is.null(iters) && is.null(time.budget))
+  if (is.null(iters) && is.null(time.budget) && is.null(exec.time.budget))
     stopf("You need to specify a maximal number of iteration, a time budget or both, but you provided neither.")
 
   if (is.null(iters)) {
@@ -142,6 +145,12 @@ makeMBOControl = function(number.of.targets = 1L,
     time.budget = Inf
   } else {
     assertCount(time.budget, na.ok = FALSE, positive = TRUE)
+  }
+
+  if (is.null(exec.time.budget)) {
+    exec.time.budget = Inf
+  } else {
+    assertCount(exec.time.budget, na.ok = FALSE, positive = TRUE)
   }
 
   propose.points = asInt(propose.points, lower = 1L)
@@ -191,6 +200,7 @@ makeMBOControl = function(number.of.targets = 1L,
     init.design.args = init.design.args,
     iters = iters,
     time.budget = time.budget,
+    exec.time.budget = exec.time.budget,
     propose.points = propose.points,
     final.method = final.method,
     final.evals = final.evals,

@@ -14,6 +14,11 @@ mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE,
     ole = getOption("mlr.on.learner.error"),
     slo = getOption("mlr.show.learner.output")
   )
+  
+  # termination
+  start.time = Sys.time()
+  iters = control$iters
+  time.budget = control$time.budget
 
   ##### LOCAL FUNCTIONS FOR MEI CRIT VALUES: START #####
 
@@ -84,8 +89,11 @@ mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE,
 
   plot.data = list()
 
+  # if we are restarting from a save file, we possibly start in a higher iteration
+  loop = max(getOptPathDOB(opt.path)) + 1L
+
   # multifid main iteration
-  for (loop in seq_len(iters)) {
+  repeat {
     showInfo(show.info, "loop = %i", loop)
     
     # evaluate numbers we need for MEI (all vectors with length = #levels)
@@ -145,6 +153,11 @@ mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE,
       time.model = train(time.learner, task = convertMFOptPathToTimeTask(opt.path))
     }
 
+    # increase loop counter and check if done
+    loop = loop + 1L
+    terminate = shouldTerminate(iters, loop, time.budget, start.time, exec.time.budget, opt.path)
+    if (terminate >= 0)
+      break
   }
   final.index = chooseFinalPoint(fun, par.set2, model, y.name = "y",
     opt.path = opt.path, control = control)
