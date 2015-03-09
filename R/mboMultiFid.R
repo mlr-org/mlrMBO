@@ -14,11 +14,12 @@ mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE,
     ole = getOption("mlr.on.learner.error"),
     slo = getOption("mlr.show.learner.output")
   )
-  
+
   # termination
   start.time = Sys.time()
   iters = control$iters
   time.budget = control$time.budget
+  exec.time.budget = control$exec.time.budget
 
   ##### LOCAL FUNCTIONS FOR MEI CRIT VALUES: START #####
 
