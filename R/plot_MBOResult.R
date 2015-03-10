@@ -10,6 +10,7 @@
 #'   Should the process be paused after each iteration?
 #'   Default is \code{TRUE}.
 #' @template arg_plot_MBO
+#' @export
 
 plotMBOResult = function(result, iters, pause = TRUE, 
   crit.plot = TRUE, hv.plot = NA,  extra.measures = NULL,
