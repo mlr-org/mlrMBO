@@ -16,6 +16,7 @@
     FIXME: Finish doc here
   \item{resample.vals ???}{???}
   \item{models [List of \code{\link[mlr]{WrappedModel}}]}{List of saved regression models.}
+  \item{control[\code{MBOControl}] Control object used in optimization}
 }
 }
 

@@ -12,6 +12,7 @@
     Includes all evaluated points and additional information.
     You can convert it via \code{as.data.frame}.}
   \item{models [List of \code{\link[mlr]{WrappedModel}}]}{List of saved regression models.}
+  \item{control[\code{MBOControl}] Control object used in optimization}
 }
 }
 
