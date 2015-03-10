@@ -6,7 +6,7 @@
 \usage{
 setMBOControlMultiFid(control, param, lvls, costs = NULL,
   cor.grid.points = NULL, force.last.level.evals = NULL,
-  eval.lower = NULL, show.info = NULL)
+  eval.lower = NULL, generate.plot.data = TRUE, show.info = NULL)
 }
 \arguments{
 \item{control}{[\code{\link{MBOControl}}]\cr
@@ -28,6 +28,9 @@ the \code{param}.}
 
 \item{force.last.level.evals}{[\code{integer(1)}]
 How many evaluations should be done on the last value of fid.param?}
+
+\item{generate.plot.data}{[\code{boolean(1)}]
+Should plot data be generated? Default ist \code{TRUE}.}
 
 \item{show.info}{[\code{logical(1)}]\cr
 Verbose output on console?

@@ -66,17 +66,22 @@ checkOptPathList = function(ops, forced.columns = character()) {
 		)
 }
 
-OpsAddByIter = function(ops, best.col = NULL) {
+OpsAddByIter = function(ops, best.col = NULL, init.design.points = NULL) {
   op.dfs = lapply(ops, as.data.frame)
   op.dfs = lapply(seq_along(op.dfs), function(i) {
     df = op.dfs[[i]]
     df[,"iter"] = i
     df 
   })
-  if (!is.null(best.col)) {
+  if (!is.null(best.col) || !is.null(init.design.points)) {
     op.dfs = lapply(op.dfs, function(df) {
-      assertSubset(best.col, colnames(df))
-      df = cbind(df, trailingMin(df[, c("dob",best.col), drop = FALSE]))
+      if (!is.null(best.col)) {
+        assertSubset(best.col, colnames(df))
+        df = cbind(df, trailingMin(df[, c("dob",best.col), drop = FALSE]))
+      }
+      if (!is.null(init.design.points)) {
+        df$phase = ifelse(df$dob <= init.design.points, "init", "algo")
+      }
       df$exec.time.cum = cumsum(df$exec.time)
       return(df)
     })
@@ -109,4 +114,25 @@ libsvm.read = function(file) {
   dataframe
 }
 
+getOptPathColAtTimes = function(op, times) {
+  if (!is.data.frame(op))
+    op = as.data.frame(op)
+  assertNumeric(op$exec.time)
+  op$exec.time.cum = cumsum(op$exec.time)
+  times = times[times>=getFirst(op$exec.time.cum)]
+  res = adply(times, 1, function(t) getOptPathColAtTime(op, t))
+  res$time = times
+  res$finished = c(FALSE, head(max(res$exec.time.cum) == res$exec.time.cum, -1)) #the last opt.path element doesnt count as finished
+  res
+}
+
+getOptPathColAtTime = function(op.df, time) {
+  col = op.df[which.last(op.df$exec.time.cum<=time), ]
+  col
+}
+
+Mode = function(x) {
+  ux = unique(x)
+  ux[which.max(tabulate(match(x, ux)))]
+}
 

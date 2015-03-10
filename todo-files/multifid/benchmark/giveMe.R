@@ -124,12 +124,14 @@ giveMeParamSets = function(lrns) {
   par.set.list[lrns.ids]
 }
 
-giveMeMBOControl = function(e.lvls = giveMeLvl("std"), budget = 50L) {
+giveMeMBOControl = function(e.lvls = giveMeLvl("std"), budget = 50L, exec.time.budget = 4*60^2, time.budget = 6*60^2) {
   init.design.points = length(e.lvls) * 4
   ctrl = makeMBOControl(
     init.design.points = init.design.points, 
     init.design.fun = maximinLHS,
     iters = max(1L, budget - init.design.points),
+    exec.time.budget = exec.time.budget,
+    time.budget = time.budget,
     on.learner.error = "stop",
     show.learner.output = FALSE
   )
@@ -176,7 +178,7 @@ giveMeSurrogatLearner = function(x = 1) {
   sur.list[[x]]
 }
 
-giveMeTuneControls = function (budget, surrogat.learner = giveMeSurrogatLearner()) {
+giveMeTuneControls = function (budget, surrogat.learner = giveMeSurrogatLearner(), exec.time.budget, time.budget) {
   tune.controls = list(
     mfMBO = mlr:::makeTuneControlMBO(
       mbo.control = giveMeMBOMultiFidControl(budget = budget), 
@@ -185,19 +187,23 @@ giveMeTuneControls = function (budget, surrogat.learner = giveMeSurrogatLearner(
       mbo.control = giveMeMBOMultiFidControl(
         e.lvls = giveMeLvl("std"), 
         costs = giveMeLvl("std")^2,
-        budget = budget), 
+        budget = budget,
+        exec.time.budget = exec.time.budget,
+        time.budget = time.budget), 
       learner = surrogat.learner),
     mfMBO.low = mlr:::makeTuneControlMBO(
       mbo.control = giveMeMBOMultiFidControl(
         e.lvls = giveMeLvl("big.data"),
-        budget = budget), 
+        budget = budget,
+        exec.time.budget = exec.time.budget,
+        time.budget = time.budget), 
       learner = surrogat.learner),
     mlrMBO = mlr:::makeTuneControlMBO(
-      mbo.control = giveMeMBOControl(budget = budget), 
+      mbo.control = giveMeMBOControl(budget = budget, exec.time.budget = exec.time.budget, time.budget = time.budget), 
       learner = surrogat.learner)
   )
   tune.controls = c(tune.controls, list(
-    RandomSearch = makeTuneControlRandom(maxit = giveMeResolution(tune.controls$mfMBO)))
+    RandomSearch = makeTuneControlRandom(maxit = budget, exec.time.budget = exec.time.budget, time.budget = time.budget))
   )
   tune.controls
 }
@@ -260,19 +266,19 @@ giveMePlot = function(tune.rres2, init.design.points = NULL, cut.dob = -1L, ...)
 }
 
 giveMePareto = function(tune.rres2, ...) {
-  exec.times = melt(extractSubList(tune.rres2, "exec.times", simplify = FALSE), value.name = "exec.times")
-  exec.times = rename(exec.times, c("L1" = "learner.id"))
+  op.steps = melt(extractSubList(tune.rres2, "op.steps", simplify = FALSE), value.name = "op.steps")
+  op.steps = rename(op.steps, c("L1" = "learner.id"))
   all.df = cbind.data.frame(
-    exec.times,
+    op.steps,
     rbind.fill(extractSubList(tune.rres2, "measures.test", simplify = FALSE))
   )
-  exec.times.mean = melt(extractSubList(tune.rres2, "exec.times.mean", simplify = FALSE), value.name = "exec.times")
+  op.steps.mean = melt(extractSubList(tune.rres2, "op.steps.mean", simplify = FALSE), value.name = "op.steps")
   all.df2 = cbind.data.frame(
-    exec.times.mean,
+    op.steps.mean,
     convertListOfRowsToDataFrame(extractSubList(tune.rres2, "aggr", simplify = FALSE))
   )
   all.df2 = rename(all.df2, c("L1" = "learner.id", "mmce.test.mean" = "mmce"))
-  g = ggplot(data = all.df, aes(x = mmce, y = exec.times, color = learner.id, group = learner.id))
+  g = ggplot(data = all.df, aes(x = mmce, y = op.steps, color = learner.id, group = learner.id))
   g = g + geom_point(alpha = 0.2, size = 3)
   g = g + geom_point(data = all.df2, size = 5, alpha = 0.9)
   g = giveMeGgExtras(g = g, ...)
@@ -280,7 +286,9 @@ giveMePareto = function(tune.rres2, ...) {
 }
 
 giveMeBoxPlots = function(tune.rres2, ...) {
-  measures.test = extractSubList(tune.rres2, "measures.test", simplify = FALSE)
+  measures.test = Map(cbind.data.frame,
+      mmce = extractSubList(tune.rres2, c("measures.test","mmce"), simplify = FALSE),
+      op.steps = extractSubList(tune.rres2, c("op.steps"), simplify = FALSE))
   measures.test = melt(measures.test)
   measures.test = rename(measures.test, c("L1" = "learner.id"))
   g = ggplot(measures.test, aes(x = learner.id, y = value, fill = learner.id))
@@ -293,37 +301,38 @@ giveMeBoxPlots = function(tune.rres2, ...) {
 }
 
 giveMeAllBoxPlots = function(df, ...) {
-  m.df = melt(df, id.vars = c("task.id", "learner.id")) 
+  m.df = melt(df, id.vars = c("task.id", "learner.id"), measure.vars = "mmce") 
   g = ggplot(m.df, aes(x = learner.id, y = value, fill = learner.id))
   g = g + geom_boxplot()
-  g = g + facet_wrap(task.id~variable, scales = "free_y", ncol = 2)
+  g = g + facet_wrap(task.id~variable, scales = "free_y", ncol = 3)
   g = giveMeGgExtras(g = g, ...)
   g = g + theme(axis.text.x = element_blank())
   # g = g + guides(fill=FALSE)
   return(g)
 }
 
-giveMeTimeVsPerformance = function(tune.rres2, init.design.points = NULL, normalize = FALSE, ...) {
-  xx.tune.rres2 <<- tune.rres2
-  xx.init.design.points <<- init.design.points
-  ls = extractSubList(tune.rres2, "ops.df", simplify = FALSE)
-  common.cols = Reduce(intersect, lapply(ls, colnames))
-  all.df = melt(ls, id.vars = common.cols)
-  all.df = rename(all.df, c("L1" = "learner.id"))
-  all.df$phase = ifelse(all.df$dob <= init.design.points, "init", "algo")
-  if (normalize) {
-    all.df = ddply(all.df, ~learner.id+iter, function(df) {
-      df$exec.time.cum = df$exec.time.cum - getFirst(df$exec.time.cum)
-      return(df)})
-  }
-  all.df2 = ddply(all.df, ~dob+learner.id+phase, summarize, 
+giveMeTimeVsPerformance = function(tune.rres2, init.design.points = NULL, ...) {
+  max.time = max(sapply(extractSubList(tune.rres2, "exec.times", simplify = FALSE),max))
+  ops = extractSubList(tune.rres2, "op.dfs", simplify = FALSE)
+  #times = extractSubList(unlist(ops, recursive = FALSE, use.names = TRUE), "exec.time.cum", simplify = FALSE)
+  #times = sort(unique(ceiling(do.call(c, times))))
+  times = seq(from = 0, to = max.time, length.out = 100L)
+  ops.times = lapply(ops, lapply, getOptPathColAtTimes, times)
+  ops.times = lapply(ops.times, function(x) do.call(rbind, x))
+  ops.times = Map(cbind, ops.times, learner.id = names(ops.times))
+  all.df = do.call(rbind.fill, ops.times)
+  all.df2 = ddply(all.df, ~time+learner.id, summarize, 
                   mmce.test.mean.best = mean(mmce.test.mean.best),
-                  exec.time.cum = mean(exec.time.cum))
+                  exec.time.cum = median(exec.time.cum),
+                  finished = Mode(finished),
+                  phase = Mode(phase))
   all.df2.s = split(all.df2, all.df2$phase)
   g = ggplot(mapping = aes(y = mmce.test.mean.best, x = exec.time.cum, color = learner.id))
   # g = g + geom_line(aes(group = paste0(learner.id, iter)), size = 1, alpha = 0.1)
-  g = g + geom_line(data = all.df2.s$init, aes(group = learner.id), lty = 3, alpha = 0.5, size = 1.5)
-  g = g + geom_line(data = all.df2.s$algo, aes(group = learner.id), size = 1.5, arrow = arrow(angle = 90, length = unit(0.25, units = "cm")))
+  if (!is.null(all.df2.s$init))
+    g = g + geom_line(data = all.df2.s$init, aes(group = learner.id), lty = 3, alpha = 0.5, size = 1.5)
+  if (!is.null(all.df2.s$algo))
+    g = g + geom_line(data = all.df2.s$algo, aes(group = learner.id), size = 1.5, arrow = arrow(angle = 90, length = unit(0.25, units = "cm")))
   g = g + scale_y_continuous(limits = range(all.df2.s$algo$mmce.test.mean.best))
   if ("mfMBO" %in% all.df2$learner.id) {
     g = g + geom_vline(xintercept = getLast(all.df2[all.df2$learner.id == "mfMBO", "exec.time.cum"]), lty = 2, alpha = 0.6)
@@ -333,7 +342,35 @@ giveMeTimeVsPerformance = function(tune.rres2, init.design.points = NULL, normal
   return(g)
 }
 
-giveMeVisuals = function (all.res, e.string, init.design.points = NULL, tasks, drop.n) {
+giveMeDataForVisuals = function(res.by.resampling, learner.id) {
+  tune.rres2 = lapply(res.by.resampling, function(rres) {
+    res = list()
+    ops = extractSubList(rres, c("opt.result", "opt.path"), simplify = FALSE)
+    res$runs = c(runs = length(ops))
+    res$exec.times = vnapply(ops, function(op) sum(getOptPathExecTimes(op)))
+    res$exec.times.mean = c(exec.times.mean = mean(res$exec.times))
+    res$exec.times.sd = c(exec.times.sd = sd(res$exec.times))
+    res$op.steps = vnapply(ops, function(op) tail(getOptPathDOB(op),1))
+    res$op.steps.mean = c(op.steps.mean = mean(res$op.steps))
+    res$op.steps.sd = c(op.steps.sd = sd(res$op.steps))
+    res$measures.test = convertListOfRowsToDataFrame(extractSubList(rres, "performance", simplify = FALSE))
+    res$aggr = vnapply(res$measures.test, mean)
+    names(res$aggr) = paste0(names(res$aggr),".test.mean")
+    res$measures.test.sd = vnapply(res$measures.test, sd)
+    names(res$measures.test.sd) = paste0(names(res$aggr),".test.sd")
+    res$op.dfs = OpsAddByIter(ops, best.col = "mmce.test.mean", init.design.points = coalesce(rres[[1]]$opt.result$control$mbo.control$init.design.points, 0))
+    res$best.reached.at = vnapply(res$op.dfs, function(df) getLast(df$mmce.test.mean.best.index))
+    res$best.reached.at.mean = c(best.reached.at.mean = mean(res$best.reached.at))
+    res$ops.df = do.call(rbind, res$op.dfs)
+    return(res)
+  })
+  
+  #shorten names of learners
+  names(tune.rres2) = substr(names(tune.rres2), start = nchar(learner.id)+2, stop = 99)
+  tune.rres2
+}
+
+giveMeVisuals = function(all.res, e.string, init.design.points = NULL, tasks, drop.n = 0) {
   task.ids = extractSubList(all.res, c("task.id"))
   learner.ids = extractSubList(all.res, c("opt.result", "learner", "next.learner", "id"))
   combs = unique(data.frame(task.ids, learner.ids))
@@ -342,27 +379,8 @@ giveMeVisuals = function (all.res, e.string, init.design.points = NULL, tasks, d
     res.by.task.learner = all.res[task.ids == task.id & learner.ids == learner.id]
     res.by.resampling = split(res.by.task.learner, extractSubList(res.by.task.learner, "learner.id"))
     this.e.string = paste0(e.string,"/", task.id, "_", learner.id)
+    tune.rres2 = giveMeDataForVisuals(res.by.resampling, learner.id)
     
-    tune.rres2 = lapply(res.by.resampling, function(rres) {
-      res = list()
-      ops = extractSubList(rres, c("opt.result", "opt.path"), simplify = FALSE)
-      res$exec.times = vnapply(ops, function(op) sum(getOptPathExecTimes(op)))
-      res$exec.times.mean = c(exec.times.mean = mean(res$exec.times))
-      res$exec.times.sd = c(exec.times.sd = sd(res$exec.times))
-      res$measures.test = convertListOfRowsToDataFrame(extractSubList(rres, "performance", simplify = FALSE))
-      res$aggr = vnapply(res$measures.test, mean)
-      names(res$aggr) = paste0(names(res$aggr),".test.mean")
-      res$measures.test.sd = vnapply(res$measures.test, sd)
-      names(res$measures.test.sd) = paste0(names(res$aggr),".test.sd")
-      res$op.dfs = OpsAddByIter(ops, best.col = "mmce.test.mean")
-      res$best.reached.at = vnapply(res$op.dfs, function(df) getLast(df$mmce.test.mean.best.index))
-      res$best.reached.at.mean = mean(res$best.reached.at)
-      res$ops.df = do.call(rbind, res$op.dfs)
-      return(res)
-    })
-    
-    #shorten names of learners
-    names(tune.rres2) = substr(names(tune.rres2), start = nchar(learner.id)+2, stop = 99)
     common.title = paste(task.id, learner.id)
     
     pdf(paste0("../plots/",this.e.string,"_CV_compare_table.pdf"), width = 20, height = 5)
@@ -387,6 +405,7 @@ giveMeVisuals = function (all.res, e.string, init.design.points = NULL, tasks, d
     
     invisible(NULL)
   } 
+  
   apply(combs, 1, function(x) visualize(x["task.ids"], x["learner.ids"]))
   
   #big plots for a learner together on all data.sets
@@ -395,6 +414,9 @@ giveMeVisuals = function (all.res, e.string, init.design.points = NULL, tasks, d
     data = giveMeAllResTable(res.by.learner, tasks = tasks, drop.n = drop.n)
     g = giveMeAllBoxPlots(data, title = learner.id)
     ggsave(plot = g, filename = paste0("../plots/",e.string,"/",learner.id,"_CV_compare_Boxplots.pdf"), width = 10, height = 2 + length(unique(data$task.id)) * 1.15)
+    pdf(paste0("../plots/", e.string, "/", learner.id,"_CV_data_info.pdf"), width = 20, height = 20)
+      giveMeGridTable(giveMeAllAverageTable(data, tasks = tasks)[, c("Datensatz", "n", "m", "Klassen", "Baseline", "mfMBO", "mlrMBO", "RandomSearch")], title = learner.id)
+    dev.off()
   })
 }
 
@@ -405,11 +427,11 @@ giveMeGridTable = function (d, title = "", footnote = "") {
   h = grobHeight(table)
   w = grobWidth(table)
   title = textGrob(title, y=unit(0.5,"npc") + 0.5*h, 
-                    vjust=0, gp=gpar(fontsize=20))
+                   vjust=0, gp=gpar(fontsize=20))
   footnote = textGrob(footnote, 
-                       x=unit(0.5,"npc") - 0.5*w,
-                       y=unit(0.5,"npc") - 0.5*h, 
-                       vjust=1, hjust=0,gp=gpar( fontface="italic"))
+                      x=unit(0.5,"npc") - 0.5*w,
+                      y=unit(0.5,"npc") - 0.5*h, 
+                      vjust=1, hjust=0,gp=gpar( fontface="italic"))
   gt = gTree(children=gList(table, title, footnote))
   return(grid.draw(gt))
 }
@@ -421,7 +443,8 @@ giveMeResultTable = function(tune.rres2, pretty = TRUE) {
     convertListOfRowsToDataFrame(extractSubList(tune.rres2, c("measures.test.sd"), simplify = FALSE)),
     convertListOfRowsToDataFrame(extractSubList(tune.rres2, c("exec.times.mean"), simplify = FALSE)),
     convertListOfRowsToDataFrame(extractSubList(tune.rres2, c("exec.times.sd"), simplify = FALSE)),
-    convertListOfRowsToDataFrame(extractSubList(tune.rres2, c("best.reached.at.mean"), simplify = FALSE), col.names = "best.reached.at.mean")
+    convertListOfRowsToDataFrame(extractSubList(tune.rres2, c("best.reached.at.mean"), simplify = FALSE)),
+    convertListOfRowsToDataFrame(extractSubList(tune.rres2, c("runs"), simplify = FALSE))
   )
   res.df
   if (pretty) {
@@ -431,7 +454,7 @@ giveMeResultTable = function(tune.rres2, pretty = TRUE) {
   return(res.df)
 }
 
-giveMeAllResTable = function(res.by.learner, tasks, drop.n) {
+giveMeAllResTable = function(res.by.learner, tasks, drop.n = 0) {
   # gives a nice table with all results. resampling is averaged
   # only works for one learner until now!
   df = data.frame (
@@ -449,11 +472,13 @@ giveMeAllResTable = function(res.by.learner, tasks, drop.n) {
   df  
 }
 
-giveMeAllAverageTable = function(df) {
-  df.mean = ddply(df, ~task.id+learner.id, numcolwise(mean,na.rm = TRUE))
+giveMeAllAverageTable = function(df, tasks, drop.n = 0) {
+  df.mean = ddply(df, ~task.id+learner.id, numcolwise(mean, na.rm = TRUE))
+  df.median = ddply(df, ~task.id+learner.id, numcolwise(median, na.rm = TRUE))
   df.cast.mmce = dcast(df.mean, task.id~learner.id, value.var = "mmce")
-  df.cast.exec.time = dcast(df.mean, task.id~learner.id, value.var = "exec.time")
-  df.info = giveMeDataInfoTable(tasks, drop.n = 0)
+  df.cast.exec.time = dcast(df.median, task.id~learner.id, value.var = "exec.time")
+  colnames(df.cast.exec.time)[-1] = paste0(colnames(df.cast.exec.time)[-1], ".exec.time")
+  df.info = giveMeDataInfoTable(tasks, drop.n = drop.n)
   join_all(list(df.cast.mmce, df.cast.exec.time, df.info), by = "task.id")
 }
 
@@ -470,9 +495,9 @@ giveMeDataInfoTable = function(tasks, drop.n = 0) {
     data.frame(
       Datensatz = task$task.desc$id,
       n = task$task.desc$size,
-      "Unabhängige Variablen" = sum(task$task.desc$n.feat),
+      m = sum(task$task.desc$n.feat),
       "Klassen" = length(task$task.desc$class.levels),
-      "Baseline" = max(freq.tab),
+      "Baseline" = 1-max(freq.tab),
       "kleinste Klasse" = min(freq.tab))
   })
   res = res[giveMeOrderOfTaks(tasks, drop.n),]
@@ -484,7 +509,7 @@ giveMeGgExtras = function(g, title = character(0), ...) {
   for (i in seq_along(add.g)) {
     g = g + add.g[[i]]
   }
-  color_values =  c("#1BE800", "#246616", "#A2E58C", "#7F0000", "#FF3A39", "#0056CF", "#4C94FF")
+  color_values =  c("#7F0000", "#FF3A39", "#1BE800", "#246616", "#A2E58C", "#0056CF", "#4C94FF")
   g = g + scale_color_manual(values = color_values)
   g = g + scale_fill_manual(values = color_values)
   g = g + theme_bw() + ggtitle(label = title)

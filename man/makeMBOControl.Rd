@@ -8,9 +8,9 @@
 makeMBOControl(number.of.targets = 1L, minimize = rep(TRUE,
   number.of.targets), noisy = FALSE, init.design.points = 20L,
   init.design.fun = maximinLHS, init.design.args = list(), iters = 10L,
-  time.budget = NULL, propose.points = 1L, final.method = "best.true.y",
-  final.evals = 0L, y.name = "y", impute.y.fun = NULL,
-  trafo.y.fun = NULL, suppress.eval.errors = TRUE,
+  time.budget = NULL, exec.time.budget = NULL, propose.points = 1L,
+  final.method = "best.true.y", final.evals = 0L, y.name = "y",
+  impute.y.fun = NULL, trafo.y.fun = NULL, suppress.eval.errors = TRUE,
   save.on.disk.at = integer(0L), save.file.path = file.path(getwd(),
   "mlr_run.RData"), store.model.at = iters, resample.at = integer(0),
   resample.desc = makeResampleDesc("CV", iter = 10),
@@ -55,6 +55,10 @@ Default is 10.}
 
 \item{time.budget}{[\code{integer(1)} | NULL]\cr
 Running time budget in seconds. Note that the actual mbo run can take more time since
+the condition is checked after each iteration.}
+
+\item{exec.time.budget}{[\code{integer(1)} | NULL]\cr
+Execution time (time spent executing the function passed to \code{mbo}) budget in seconds. Note that the actual mbo run can take more time since
 the condition is checked after each iteration.}
 
 \item{propose.points}{[\code{integer(1)}]\cr
