@@ -36,6 +36,11 @@
 # @param densregion [\code{logical(1)}]\cr
 #   Should the background be shaded by the density of the posterior distribution? Default ist \code{TRUE}.
 #   Only used if learner supports computation of standard error.
+# @param colors [\code{character(3)}]
+#   Specify colors for point in the plots. Must be a vector of length 3,
+#   each element a color for the type design, prop and seq respectivly.
+#   Default is red for the initial design, blue for allready proposed points
+#   and green for the actual iteration.
 # @param ... [\code{list}]\cr
 #   Not used.
 # @return [\code{list}] List of ggplot2 objects.
@@ -44,7 +49,8 @@ renderExampleRunPlot1d = function(x, iter,
   se.factor = 1,
   xlim = NULL, ylim = NULL,
   point.size, line.size,
-  trafo = NULL, ...)  {
+  trafo = NULL, 
+  colors = c("red", "blue", "green"), ...)  {
   # extract relevant data from MBOExampleRun
   par.set = x$par.set
   names.x = x$names.x
@@ -53,7 +59,7 @@ renderExampleRunPlot1d = function(x, iter,
   noisy = control$noisy
   mbo.res = x$mbo.res
   models = mbo.res$models
-
+  
   # check if standard error is available
   se = (x$learner$predict.type == "se")
 
@@ -179,6 +185,7 @@ renderExampleRunPlot1d = function(x, iter,
       ylab = paste(name.y, " (", attr(trafo$y, "name"), "-transformed)", sep = "")
     }
     pl.fun = pl.fun + scale_y_continuous(name = ylab)
+    pl.fun = pl.fun + scale_colour_manual(values = colors)
 
 
     if (noisy) {

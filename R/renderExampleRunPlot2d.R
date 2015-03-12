@@ -24,6 +24,11 @@
 #   For 2D: The list should contain at least one element "y", "yhat", "crit" or "se". This way one can
 #   specify different transformations for different plots. If a single function is provided, this function
 #    is used for all plots.
+# @param colors [\code{character(3)}]
+#   Specify colors for point in the plots. Must be a vector of length 3,
+#   each element a color for the type design, prop and seq respectivly.
+#   Default is red for the initial design, blue for allready proposed points
+#   and green for the actual iteration.
 # @param ... [\code{list}]\cr
 #   Not used.
 # @return [\code{list}] List of ggplot2 objects.
@@ -32,7 +37,8 @@ renderExampleRunPlot2d = function(x, iter,
   se.factor = 1,
   xlim = NULL, ylim = NULL,
   point.size, line.size,
-  trafo = NULL, ...)  {
+  trafo = NULL,
+  colors = c("red", "blue", "green"), ...)  {
   # extract information from example run object
   par.set = x$par.set
   names.x = x$names.x
@@ -135,7 +141,7 @@ renderExampleRunPlot2d = function(x, iter,
     pl = pl + geom_point(data = points, aes_string(x = name.x1, y = name.x2, z = name.y,
         colour = "type", shape = "type"), size = point.size)
 
-    pl = pl + scale_colour_manual(name = "type", values = c("#000000", "red", "gray"))
+    pl = pl + scale_colour_manual(name = "type", values = colors)# c("#000000", "red", "gray"))
     pl = applyMBOTheme(pl, title = name.z, trafo = trafo)
     return(pl)
   }

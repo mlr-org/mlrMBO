@@ -48,27 +48,35 @@
 #'   or \dQuote{se}.
 #'   This way one can specify different transformations for different plots.
 #'   If a single function is provided, this function is used for all plots.
+#' @param colors [\code{character(3)}]
+#'   Specify colors for point in the plots. Must be a vector of length 3,
+#'   each element a color for the type design, prop and seq respectivly.
+#'   Default is red for the initial design, blue for allready proposed points
+#'   and green for the actual iteration.
 #' @param ... [any]\cr
 #'   Currently not used.
 #' @return [\code{list}]. List containing seperate ggplot object. The number of plots depends on
 #'   the type of MBO problem. See the description for details.
 #' @export
 renderExampleRunPlot =  function(object, iter, densregion = TRUE,
-  se.factor = 1, xlim = NULL, ylim = NULL, point.size = 3, line.size = 1, trafo = NULL, ...) {
+  se.factor = 1, xlim = NULL, ylim = NULL, point.size = 3, line.size = 1, trafo = NULL,
+  colors = c("red", "blue", "green"), ...) {
   UseMethod("renderExampleRunPlot")
 }
 
 # single-objective
 #' @export
 renderExampleRunPlot.MBOExampleRun = function(object, iter, densregion = TRUE,
-  se.factor = 1, xlim = NULL, ylim = NULL, point.size = 3, line.size = 1, trafo = NULL, ...) {
-
+  se.factor = 1, xlim = NULL, ylim = NULL, point.size = 3, line.size = 1, trafo = NULL, 
+  colors = c("red", "blue", "green"), ...) {
+  
   iters.max = object$control$iters
   assertIntegerish(iter, lower = 0L, upper = iters.max, len = 1L, any.missing = FALSE)
   assertFlag(densregion)
   assertNumber(se.factor, lower = 0)
   assertNumber(point.size, lower = 1)
   assertNumber(line.size, lower = 1)
+  assertCharacter(colors, len = 3, any.missing = FALSE)
 
   if (!is.null(xlim)) {
     assertNumeric(xlim, len = 2L, any.missing = FALSE)
@@ -87,13 +95,15 @@ renderExampleRunPlot.MBOExampleRun = function(object, iter, densregion = TRUE,
       stopf("For 1D function only plotting of numeric or discrete functions possible, but your function is '%s'.", par.types)
     }
     return(renderExampleRunPlot1d(object, iter = iter, xlim = xlim, ylim = ylim, se.factor = se.factor, pause = pause,
-      point.size = point.size, line.size = line.size, trafo = trafo, densregion = densregion, ...))
+      point.size = point.size, line.size = line.size, trafo = trafo, densregion = densregion, 
+      colors = colors, ...))
   } else if (n.params == 2) {
     if (!hasNumeric(par.set)) {
       stopf("At least one parameter of the target function must be numeric!")
     }
     return(renderExampleRunPlot2d(object, iter = iter, xlim = xlim, ylim = ylim, se.factor = se.factor, pause = pause,
-      point.size = point.size, line.size = line.size, trafo = trafo, ...))
+      point.size = point.size, line.size = line.size, trafo = trafo, 
+      colors = colors, ...))
   } else {
     stopf("Functions with greater than 3 parameters are not supported.")
   }
@@ -102,7 +112,8 @@ renderExampleRunPlot.MBOExampleRun = function(object, iter, densregion = TRUE,
 # multi-objective
 #' @export
 renderExampleRunPlot.MBOExampleRunMultiCrit = function(object, iter, densregion = TRUE,
-  se.factor = 1, xlim = NULL, ylim = NULL, point.size = 3, line.size = 1, trafo = NULL, ...) {
+  se.factor = 1, xlim = NULL, ylim = NULL, point.size = 3, line.size = 1, trafo = NULL, 
+  colors = c("red", "blue", "green"), ...) {
 
   iters.max = object$control$iters
   assertIntegerish(iter, len = 1L, lower = 1L, upper = iters.max, any.missing = FALSE)

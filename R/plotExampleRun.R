@@ -52,6 +52,11 @@
 #'   or \dQuote{se}.
 #'   This way one can specify different transformations for different plots.
 #'   If a single function is provided, this function is used for all plots.
+#' @param colors [\code{character(3)}]
+#'   Specify colors for point in the plots. Must be a vector of length 3,
+#'   each element a color for the type design, prop and seq respectivly.
+#'   Default is red for the initial design, blue for allready proposed points
+#'   and green for the actual iteration.
 #' @param ... [any]\cr
 #'   Currently not used.
 #' @return Nothing.
@@ -60,7 +65,8 @@ plotExampleRun = function(object, iters, pause = TRUE,
   densregion = TRUE, se.factor = 1,
   xlim = NULL, ylim = NULL,
   point.size = 3, line.size = 1,
-  trafo = NULL, ...) {
+  trafo = NULL, colors = c("red", "blue", "green"), ...) {
+  
   iters.max = object$control$iters
   if (missing(iters)) {
     iters = 1:iters.max
@@ -92,7 +98,8 @@ plotExampleRun = function(object, iters, pause = TRUE,
   for (iter in iters) {
     # get rendered plot data
     plots = renderExampleRunPlot(object, iter = iter, densregion = densregion, se.factor = se.factor,
-      xlim = xlim, ylim = ylim, point.size = point.size, line.size = line.size, trafo = trafo, ...)
+      xlim = xlim, ylim = ylim, point.size = point.size, line.size = line.size, trafo = trafo,
+      colors = colors, ...)
     if (!inherits(plots[[1L]], "ggplot")) {
       # in this case we have multipoint proposal with parego: list of plots for each proposed point
       for (jter in 1:length(plots)) {
