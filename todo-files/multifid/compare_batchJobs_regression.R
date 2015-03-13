@@ -13,21 +13,24 @@ source("todo-files/multifid/benchmark/mbo_batchmark.R")
 e.string = paste0("bJ_regression_",format(Sys.time(), "%Y_%m%d_%H%M"))
 dir.create(paste0("../plots/", e.string), showWarnings = FALSE)
 
-budget = 50L
+budget = 10000L
+exec.time.budget = 2*60^2
+time.budget = 6*60^2
 tasks = giveMeTasks(c("bh", "kin8nm", "puma32H"))
 resampling.inner = giveMeResampleDesc("inner")
 resampling.outer = giveMeResampleDesc("cv")
 learners = giveMeLearners(c("regr.svm"))
-tune.controls = giveMeTuneControls(budget)
-tuned.learners = giveMeTunedLearners(learners = learners, tune.controls = tune.controls, rsi = resampling.inner)
+tune.controls = giveMeTuneControls(budget = budget, exec.time.budget = exec.time.budget, time.budget = time.budget)
+tuned.learners = giveMeTunedLearners(learners = learners, tune.controls = tune.controls, rsi = resampling.inner, measures = mse)
 resamplings = replicate(n = length(tasks), resampling.outer, simplify = FALSE)
 
 save.image(file = paste0("../plots/",e.string,"/CV_compare.RData"))
 
 reg = makeExperimentRegistry(e.string, packages = c("mlr", "mlrMBO"))
-batchmark(reg, learners = tuned.learners, tasks = tasks, resamplings, measures = list(mmce, timetrain), overwrite = TRUE, repls = 1, save.opt.result = TRUE)
-rres = testJob(reg, 1, external = FALSE)
+batchmark(reg, learners = tuned.learners, tasks = tasks, resamplings, measures = list(mse, timetrain), overwrite = TRUE, repls = 1, save.opt.result = TRUE)
+rres = testJob(reg, 1, external = FALSE, resources = list(walltime = 60L))
 submitJobs(reg, sample(getJobIds(reg)))
+waitForJobs(reg)
 all.res = reduceResultsList(reg = reg)
 
 save.image(file = paste0("../plots/",e.string,"/CV_compare.RData"))
