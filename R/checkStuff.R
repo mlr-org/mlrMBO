@@ -44,7 +44,13 @@ checkStuff = function(fun, par.set, design, learner, control) {
       ifelse(hasProperties(learner, "se"), "",
         "\nBut this learner does not seem to support prediction of standard errors! You could use the mlr wrapper makeBaggingWrapper to bootstrap the standard error estimator."))
   }
-
+  
+  # If nugget estimation should be used, make sure learner is a km model with activated nugget estim
+  if (control$infill.crit.aei.use.nugget) {
+    if (learner$short.name != "km" || !isTRUE(getHyperPars(learner)$nugget.estim)) {
+      stop("You have to turn on nugget estimation in your Kriging Model, if you want to use nugget estimation in the aei!")
+    }
+  }
   # compatibility of optimizers and parameters
   if (control$infill.opt %in% c("cmaes", "ea") && !isNumeric(par.set))
     stopf("Optimizer '%s' can only be applied to numeric, integer, numericvector, integervector parameters!", control$infill.opt)

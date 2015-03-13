@@ -34,6 +34,9 @@
 #'   Calculates the range of the mean and standard error and multiplies the standard error
 #'   with the quotient of theses ranges.
 #'   Default is \code{FALSE}.
+#' @param crit.aei.use.nugget [\code{logical(1)}]\cr
+#'   Only used if \code{crit == "aei"}. Should the nugget effect be used for the
+#'   pure variance estimation? Default is \code{FALSE}. 
 #' @param filter.proposed.points [\code{logical(1)}]\cr
 #'   Design points located too close to each other can lead to
 #'   numerical problems when using e.g. kriging as a surrogate model.
@@ -133,7 +136,8 @@ setMBOControlInfill = function(control,
   crit.eqi.beta = 0.75,
   crit.lcb.lambda = 1,
   crit.lcb.pi = NULL,
-  crit.lcb.inflate.se = FALSE,
+  crit.lcb.inflate.se = NULL,
+  crit.aei.use.nugget = NULL,
   filter.proposed.points = NULL,
   filter.proposed.points.tol = NULL,
   opt = "focussearch", opt.restarts = NULL,
@@ -171,10 +175,13 @@ setMBOControlInfill = function(control,
     crit.lcb.lambda = -qnorm(0.5 * crit.lcb.pi^(1 / control$number.of.targets))
   }
   control$infill.crit.lcb.lambda = coalesce(crit.lcb.lambda, control$infill.crit.lcb.lambda, 1)
-
-  assertFlag(crit.lcb.inflate.se)
-  control$infill.crit.lcb.inflate.se = crit.lcb.inflate.se
-
+  
+  control$infill.crit.lcb.inflate.se = coalesce(crit.lcb.inflate.se, control$infill.crit.lcb.inflate.se, FALSE)
+  assertFlag(control$infill.crit.lcb.inflate.se)
+  
+  control$infill.crit.aei.use.nugget = coalesce(crit.aei.use.nugget, control$infill.crit.aei.use.nugget, FALSE)
+  assertFlag(control$infill.crit.aei.use.nugget)
+  
   control$filter.proposed.points = coalesce(filter.proposed.points, control$filter.proposed.points, FALSE)
   assertFlag(control$filter.proposed.points)
 

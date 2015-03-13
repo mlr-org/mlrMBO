@@ -121,7 +121,7 @@ renderExampleRunPlot1d = function(x, iter,
 
     if (propose.points == 1L) {
       evals[[name.crit]] = opt.direction *
-        critfun(evals.x, model, control, par.set, opt.path[idx.past, ])
+        critfun(evals.x, model, control, par.set, opt.path[idx.past, c(names.x, name.y)])
     } else {
       objective = control$multipoint.multicrit.objective
       if (objective == "mean.dist") {
