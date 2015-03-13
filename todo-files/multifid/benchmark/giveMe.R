@@ -56,7 +56,7 @@ giveMeTasks = function(x = NULL) {
   #puma32H http://openml.org/d/308
   #regression
   #8192 & 32 numeric
-  puma32H.f = function() {makeRegrTask(id = puma32H, data = read.arff("../phpJEvZWG"), target = "thetadd6")}
+  puma32H.f = function() {makeRegrTask(id = "puma32H", data = read.arff("../data/phpJEvZWG"), target = "thetadd6")}
   
   task.list = list(
     sonar = function() {sonar.task},
@@ -112,13 +112,13 @@ giveMeParamSets = function(lrns) {
   svm = makeParamSet(
     makeNumericParam("cost", lower = -15, upper = 10, trafo = function(x) 2^x),
     makeNumericParam("gamma", lower = -10, upper = 6, trafo = function(x) 2^x),
-    makeNumericParam("tolerance", lower = -11, upper = -2, trafo = function(x) log(1+2^x) )
+    makeNumericParam("tolerance", lower = -11, upper = 0, trafo = function(x) log(1+2^x) )
   )
   par.set.list = list(
     classif.LiblineaRMultiClass = LiblineaR,
     classif.LiblineaRBinary = LiblineaR,
     classif.svm = svm,
-    regr.svm = list(svm, makeParamSet(
+    regr.svm = c(svm, makeParamSet(
       makeNumericParam("epsilon", lower = -10, upper = 6, trafo = function(x) 2^x)))
   )
   par.set.list[lrns.ids]
@@ -173,7 +173,8 @@ giveMeLvl = function(x = 1) {
 
 giveMeSurrogatLearner = function(x = 1) {
   sur.list = list(
-    surrogat.learner = makeLearner("regr.km", nugget.estim = TRUE, jitter = TRUE)
+    surrogat.learner = makeLearner("regr.km", nugget.estim = TRUE, jitter = TRUE),
+    deterministic = makeLearner("regr.km", nugget.estim = FALSE)
     )
   sur.list[[x]]
 }
@@ -216,7 +217,7 @@ giveMeTunedLearners2 = function (learners, tune.controls, rsi, measures = mmce, 
   res = lapply(learners, function(lrn) {
     lapply(names(tune.controls), function(tune.ctrl.name) {
       lrn.id = lrn$id
-      lrn = makeDownsampleWrapper(learner = lrn, dw.perc = dw.perc, dw.stratify = TRUE)
+      lrn = makeDownsampleWrapper(learner = lrn, dw.perc = dw.perc, dw.stratify = (learners[[1]]$type == "classif"))
       lrn = makeTuneWrapper(learner = lrn, resampling = rsi, measures = measures, par.set = par.sets[[lrn.id]], control = tune.controls[[tune.ctrl.name]], show.info = show.info)
       lrn$id = paste0(lrn.id, ".", tune.ctrl.name)
       return(lrn)
@@ -510,8 +511,8 @@ giveMeGgExtras = function(g, title = character(0), ...) {
     g = g + add.g[[i]]
   }
   color_values =  c("#7F0000", "#FF3A39", "#1BE800", "#246616", "#A2E58C", "#0056CF", "#4C94FF")
-  g = g + scale_color_manual(values = color_values)
-  g = g + scale_fill_manual(values = color_values)
+  g = g + scale_color_manual(values = color_values, drop = FALSE)
+  g = g + scale_fill_manual(values = color_values, drop = FALSE)
   g = g + theme_bw() + ggtitle(label = title)
   return(g)
 }

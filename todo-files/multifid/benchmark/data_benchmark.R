@@ -8,7 +8,7 @@ openMLBenchmark = function (task.id, e.seed, e.lrn, e.par.set, e.lvl, ...) {
 }
 
 dataBenchmark = function (e.name, e.task, e.rin, e.seed, e.lrn, e.par.set, e.lvl, control = NULL, surrogat.model = NULL, grid.all = FALSE, ...) {
-  lrn = makeDownsampleWrapper(learner = e.lrn, dw.stratify = TRUE, dw.perc = 1)
+  lrn = makeDownsampleWrapper(learner = e.lrn, dw.stratify = (e.lrn$type == "classif"), dw.perc = 1)
   
   makeObjFun = function(lrn, task, rsm, lvl) {
     force(lrn)

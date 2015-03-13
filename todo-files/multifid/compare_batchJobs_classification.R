@@ -15,7 +15,7 @@ BatchJobs::loadConfig(conffile = "../.BatchJobs.R")
 e.string = paste0("bJ_classification_",format(Sys.time(), "%Y_%m%d_%H%M"))
 dir.create(paste0("../plots/", e.string), showWarnings = FALSE)
 
-budget = 1000L
+budget = 10000L
 exec.time.budget = 4*60^2
 time.budget = 6*60^2
 tasks = giveMeTasks(c("meta_stream_intervals", "bng_cmc", "w7a", "w8a", "pendigits", "nursery", "electricity"))
