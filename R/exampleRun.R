@@ -117,10 +117,13 @@ exampleRun = function(fun, par.set, design = NULL, global.opt = NA_real_, learne
   if (soobench::is_soo_function(fun)) {
     fun = makeMBOFunction(fun)
   }
-
-  evals = evaluate(fun, par.set, n.params, par.types, noisy, noisy.evals, points.per.dim, names.x, name.y)
+  
+  # # If noisy and we have the mean function, use it
+  f.eval = if(is.null(fun.mean)) fun else fun.mean
+  evals = evaluate(f.eval, par.set, n.params, par.types, noisy, noisy.evals, points.per.dim, names.x, name.y)
   colnames(evals) = c(names.x, name.y)
 
+  
   if (is.na(global.opt))
     global.opt.estim = ifelse(control$minimize, min(evals[, name.y]), max(evals[, name.y]))
   else
