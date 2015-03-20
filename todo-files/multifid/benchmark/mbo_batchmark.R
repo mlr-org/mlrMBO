@@ -19,7 +19,7 @@ batchmark = function(reg, learners, tasks, resamplings, measures = NULL, repls =
     stop("Duplicated task ids found")
 
   resamplings = ensureVector(resamplings, length(tasks), "ResampleDesc")
-  assertList(resamplings, "ResampleDesc", len = length(tasks))
+  assertList(resamplings, c("ResampleDesc"), len = length(tasks))
 
   if (is.null(measures)) {
     measures = default.measures(tasks[[1L]])

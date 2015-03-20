@@ -17,9 +17,9 @@ e.string = paste0("bJ_regression_",format(Sys.time(), "%Y_%m%d_%H%M"))
 dir.create(paste0("../plots/", e.string), showWarnings = FALSE)
 
 budget = 10000L
-exec.time.budget = 0.5*60^2
-time.budget = 0.9*60^2
-init.design.points = 25L
+exec.time.budget = 20*60
+time.budget = 50*60
+init.design.points = 30L
 tasks = giveMeTasks(c("bh", "kin8nm", "puma32H"))
 resampling.inner = giveMeResampleDesc("inner")
 resampling.outer = giveMeResampleDesc("cv")
@@ -43,6 +43,6 @@ save.image(file = paste0("../plots/",e.string,"/CV_compare.RData"))
 ##### Visualisierung ####
 #####
 
-giveMeVisuals(all.res, e.string, init.design.points = tune.controls[[1]]$mbo.control$init.design.points)
+giveMeVisuals(all.res, e.string, init.design.points = tune.controls[[1]]$mbo.control$init.design.points, tasks = tasks)
 
 save.image(file = paste0("../plots/",e.string,"/CV_compare.RData"))

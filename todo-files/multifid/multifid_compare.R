@@ -44,17 +44,17 @@ e.par.set2 = makeParamSet(
   makeNumericParam("x2", lower = 0, upper = 15)
 )
 
-hartmans = list(hartman10 = 1, hartman07 = 0.7, hartman05 = 0.5, hartman02 = 0.2)
-#hartmans = list(hartman10 = 1)
-hartmans.res = lapply(names(hartmans), function(sn) {
-  objfun = makeMBOMultifidFunction(f = distortX(addDistortion(hartman, yupp, fac = hartmans[[sn]]), xshift, direction = hartmans[[sn]]), lvls = e.lvl)
-  generalBenchmark(e.name = sn, objfun = objfun, control = e.control, e.seed = e.seed, e.par.set = e.par.set, e.lvl = e.lvl, grid.all = TRUE, e.string = e.string, high.res = TRUE, multifid.costs = e.lvl)
-})
+# hartmans = list(hartman10 = 1, hartman07 = 0.7, hartman05 = 0.5, hartman02 = 0.2)
+# #hartmans = list(hartman10 = 1)
+# hartmans.res = lapply(names(hartmans), function(sn) {
+#   objfun = makeMBOMultifidFunction(f = distortX(addDistortion(hartman, yupp, fac = hartmans[[sn]]), xshift, direction = hartmans[[sn]]), lvls = e.lvl)
+#   generalBenchmark(e.name = sn, objfun = objfun, control = e.control, e.seed = e.seed, e.par.set = e.par.set, e.lvl = e.lvl, grid.all = TRUE, e.string = e.string, high.res = TRUE, multifid.costs = e.lvl)
+# })
 
-hartmans.res2 = lapply(names(hartmans), function(sn) {
-  objfun = makeMBOMultifidFunction(f = distortX(addDistortion(hartman2d, yupp, fac = hartmans[[sn]]), xshift, direction = hartmans[[sn]]), lvls = e.lvl)
-  generalBenchmark(e.name = sn, objfun = objfun, control = e.control, e.seed = e.seed, e.par.set = e.par.set2, e.lvl = e.lvl, grid.all = TRUE, e.string = e.string2, high.res = TRUE, multifid.costs = e.lvl)
-})
+# hartmans.res2 = lapply(names(hartmans), function(sn) {
+#   objfun = makeMBOMultifidFunction(f = distortX(addDistortion(hartman2d, yupp, fac = hartmans[[sn]]), xshift, direction = hartmans[[sn]]), lvls = e.lvl)
+#   generalBenchmark(e.name = sn, objfun = objfun, control = e.control, e.seed = e.seed, e.par.set = e.par.set2, e.lvl = e.lvl, grid.all = TRUE, e.string = e.string2, high.res = TRUE, multifid.costs = e.lvl)
+# })
 
 ##
 #### DATA BENCHMARK #####
@@ -62,7 +62,7 @@ hartmans.res2 = lapply(names(hartmans), function(sn) {
 # Define learner and parameter
 e.lrn = giveMeLearners("svm")[[1]]
 e.par.set3 = giveMeParamSets(list(e.lrn))[[1]]
-e.par.set = dropParams(e.par.set3, c("gamma", "tolerance"))
+e.par.set = dropParams(e.par.set3, c("cost", "tolerance"))
 e.par.set2 = dropParams(e.par.set3, c("tolerance"))
 e.task = giveMeTasks(x = c("nursery"))[[1]]
 e.control$filter.proposed.points.tol = 0.005

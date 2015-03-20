@@ -202,10 +202,11 @@ giveMeTuneControls = function (budget, surrogat.learner = giveMeSurrogatLearner(
       mbo.control = giveMeMBOControl(
         budget = budget, 
         ...), 
-      learner = surrogat.learner)
+      learner = surrogat.learner,
+      final.dw.perc = 1)
   )
   tune.controls = c(tune.controls, list(
-    RandomSearch = makeTuneControlRandom(maxit = budget, exec.time.budget = exec.time.budget, time.budget = time.budget))
+    RandomSearch = makeTuneControlRandom(maxit = budget, exec.time.budget = exec.time.budget, time.budget = time.budget, final.dw.perc = 1))
   )
   tune.controls
 }
@@ -233,6 +234,8 @@ giveMeTunedLearners = function(learners, tune.controls, rsi, measures = mmce, pa
   is.mf = names(is.mf[is.mf]) #only take true
   is.mf = names(tune.controls) %in% is.mf
   tune.controls = tune.controls[!is.mf] #subset to not multifid tune objects
+  for(i in seq_along(tune.controls))
+    tune.controls[[i]]$extra.args$dw.steps = 5L
   names(tune.controls) = paste0(names(tune.controls), ".l")
   low = giveMeTunedLearners2(learners, tune.controls, rsi, measures = measures, par.sets = par.sets, show.info = show.info, dw.perc = getFirst(giveMeLvl()))
   c(high, low)
@@ -361,31 +364,56 @@ giveMeTimeVsPerformance = function(tune.rres2, init.design.points = NULL, ...) {
   return(g)
 }
 
+giveMeDataForVisuals.helper = function(rres, ops) {
+  res = list()
+  res$runs = c(runs = length(ops))
+  res$measure.name = names(rres[[1]]$opt.result$y) #eg: "mmce.test.mean"
+  res$exec.times = vnapply(ops, function(op) sum(getOptPathExecTimes(op)))
+  res$exec.times.mean = c(exec.times.mean = mean(res$exec.times))
+  res$exec.times.sd = c(exec.times.sd = sd(res$exec.times))
+  res$op.steps = vnapply(ops, function(op) tail(getOptPathDOB(op),1))
+  res$op.steps.mean = c(op.steps.mean = mean(res$op.steps))
+  res$op.steps.sd = c(op.steps.sd = sd(res$op.steps))
+  res$measures.test = convertListOfRowsToDataFrame(extractSubList(rres, "performance", simplify = FALSE))
+  res$aggr = vnapply(res$measures.test, mean)
+  names(res$aggr) = paste0(names(res$aggr),".test.mean")
+  res$measures.test.sd = vnapply(res$measures.test, sd)
+  names(res$measures.test.sd) = paste0(names(res$aggr),".test.sd")
+  res$op.dfs = OpsAddByIter(ops, best.col = res$measure.name, init.design.points = coalesce(rres[[1]]$opt.result$control$mbo.control$init.design.points, 0))
+  res$best.reached.at = vnapply(res$op.dfs, function(df) getLast(df[[paste0(res$measure.name,".best.index")]]))
+  res$best.reached.at.mean = c(best.reached.at.mean = mean(res$best.reached.at))
+  res$ops.df = do.call(rbind, res$op.dfs)
+  return(res)
+}
+
+giveMeDataForVisualsFull = function(res.by.resampling, learner.id) {
+  #build an extra tune.rres for when full.measuer is present op$env.
+  has.full = !sapply(extractSubList(res.by.resampling, list(1, "opt.result", "opt.path", "env", "full"), simplify = FALSE), is.null)
+  if (any(has.full)) {
+    tune.rres2.full = lapply(res.by.resampling[has.full], function(rres) {
+      ops = extractSubList(rres, c("opt.result", "opt.path"), simplify = FALSE)
+      ops = lapply(ops, function(op) {
+        new.m = repeatBefore(op$env$full[[1]])
+        new.m[is.na(new.m)] = head(na.exclude(new.m), 1)
+        op$env = as.environment(as.list(op$env, all.names=TRUE))
+        op$env$path[,op$y.names[1]] = new.m
+        op
+      })
+      giveMeDataForVisuals.helper(rres, ops)
+    })
+    names(tune.rres2.full) = paste0(substr(names(tune.rres2.full), start = nchar(learner.id)+2, stop = 99), ".full")
+    #shorten names of learners
+    return(tune.rres2.full)
+  } else {
+    return(NULL)
+  }
+}
+
 giveMeDataForVisuals = function(res.by.resampling, learner.id) {
   tune.rres2 = lapply(res.by.resampling, function(rres) {
-    res = list()
     ops = extractSubList(rres, c("opt.result", "opt.path"), simplify = FALSE)
-    res$runs = c(runs = length(ops))
-    res$measure.name = names(rres[[1]]$opt.result$y) #eg: "mmce.test.mean"
-    res$exec.times = vnapply(ops, function(op) sum(getOptPathExecTimes(op)))
-    res$exec.times.mean = c(exec.times.mean = mean(res$exec.times))
-    res$exec.times.sd = c(exec.times.sd = sd(res$exec.times))
-    res$op.steps = vnapply(ops, function(op) tail(getOptPathDOB(op),1))
-    res$op.steps.mean = c(op.steps.mean = mean(res$op.steps))
-    res$op.steps.sd = c(op.steps.sd = sd(res$op.steps))
-    res$measures.test = convertListOfRowsToDataFrame(extractSubList(rres, "performance", simplify = FALSE))
-    res$aggr = vnapply(res$measures.test, mean)
-    names(res$aggr) = paste0(names(res$aggr),".test.mean")
-    res$measures.test.sd = vnapply(res$measures.test, sd)
-    names(res$measures.test.sd) = paste0(names(res$aggr),".test.sd")
-    res$op.dfs = OpsAddByIter(ops, best.col = res$measure.name, init.design.points = coalesce(rres[[1]]$opt.result$control$mbo.control$init.design.points, 0))
-    res$best.reached.at = vnapply(res$op.dfs, function(df) getLast(df[[paste0(res$measure.name,".best.index")]]))
-    res$best.reached.at.mean = c(best.reached.at.mean = mean(res$best.reached.at))
-    res$ops.df = do.call(rbind, res$op.dfs)
-    return(res)
+    giveMeDataForVisuals.helper(rres, ops)
   })
-  
-  #shorten names of learners
   names(tune.rres2) = substr(names(tune.rres2), start = nchar(learner.id)+2, stop = 99)
   tune.rres2
 }
@@ -400,7 +428,8 @@ giveMeVisuals = function(all.res, e.string, init.design.points = NULL, tasks, dr
     res.by.resampling = split(res.by.task.learner, extractSubList(res.by.task.learner, "learner.id"))
     this.e.string = paste0(e.string,"/", task.id, "_", learner.id)
     tune.rres2 = giveMeDataForVisuals(res.by.resampling, learner.id)
-    
+    tune.rres2.full = giveMeDataForVisualsFull(res.by.resampling, learner.id)
+
     common.title = paste(task.id, learner.id)
     
     pdf(paste0("../plots/",this.e.string,"_CV_compare_table.pdf"), width = 20, height = 5)
@@ -416,7 +445,7 @@ giveMeVisuals = function(all.res, e.string, init.design.points = NULL, tasks, dr
     g = giveMePareto(tune.rres2, title = paste(task.id, learner.id))
     ggsave(plot = g, filename = paste0("../plots/",this.e.string,"_CV_compare_pareto.pdf"), width = 10, height = 6)
 
-    g = giveMeTimeVsPerformance(tune.rres2, init.design.points = init.design.points, title = common.title)
+    g = giveMeTimeVsPerformance(c(tune.rres2, tune.rres2.full), init.design.points = init.design.points, title = common.title)
     ggsave(plot = g, filename = paste0("../plots/",this.e.string,"_CV_compare_TimeVsPerf.pdf"), width = 8, height = 4)
     
     g = giveMeBoxPlots(tune.rres2, title = common.title)
@@ -530,7 +559,7 @@ giveMeGgExtras = function(g, title = character(0), ...) {
   for (i in seq_along(add.g)) {
     g = g + add.g[[i]]
   }
-  color_values =  c("#7F0000", "#FF3A39", "#1BE800", "#246616", "#A2E58C", "#0056CF", "#4C94FF")
+  color_values =  c("#7F0000", "#FF3A39", "#1BE800", "#246616", "#A2E58C", "#0056CF", "#4C94FF", "#ff69b4", "#551a8b")
   g = g + scale_color_manual(values = color_values, drop = FALSE)
   g = g + scale_fill_manual(values = color_values, drop = FALSE)
   g = g + theme_bw() + ggtitle(label = title)
