@@ -17,13 +17,24 @@ isTimeBudgetExceeded.POSIXct = function(x, time.budget) {
     return(FALSE)
   current.time = Sys.time()
   time.difference = as.numeric(difftime(current.time, x, units = "secs"))
-  return(time.difference > time.budget)
+  if (time.difference > time.budget) {
+  	messagef("time.budget %i reached with %.1f", time.budget, time.difference)
+  	return(TRUE)
+  } else {
+  	return(FALSE)
+  }
 }
 
 isTimeBudgetExceeded.OptPath = function(x, time.budget) {
   if (is.null(time.budget) || is.infinite(time.budget))
     return(FALSE)
-  return(sum(getOptPathExecTimes(x)) > time.budget)
+  exec.time = sum(getOptPathExecTimes(x))
+  if (exec.time > time.budget) {
+  	messagef("exec.time.budget %i reached with %.1f", time.budget, exec.time)
+  	return(TRUE)
+  } else {
+  	return(FALSE)
+  } 
 }
 
 

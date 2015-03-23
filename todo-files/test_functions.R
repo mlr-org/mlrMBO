@@ -28,6 +28,8 @@ hartman = function(lv, x, d = 1) {
 
 hartman2d = function(lv, x) hartman(lv, x, d=2)
 
+hartman3d = function(lv, x) hartman(lv, x, d=3)
+
 # Sasena (2002)
 # Sasena, M.J. (2002), Flexibility and Efficiency Enhancements for Constrained Global Design Optimization
 #   with Kriging Approximations, Ph. D. dissertation, University of Michigan.

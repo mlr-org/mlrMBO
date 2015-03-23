@@ -18,13 +18,14 @@ e.string = paste0("bJ_classification_",format(Sys.time(), "%Y_%m%d_%H%M"))
 dir.create(paste0("../plots/", e.string), showWarnings = FALSE)
 
 budget = 10000L
-# budget = 40L
-exec.time.budget = 4*60^2
-time.budget = 6*60^2
-#tasks = giveMeTasks(c("meta_stream_intervals", "bng_cmc", "w7a", "w8a", "pendigits", "nursery", "electricity"))
-tasks = giveMeTasks("electricity")
+#budget = 30L
+exec.time.budget = 3*60^2
+time.budget = 5*60^2
+tasks = giveMeTasks(c("meta_stream_intervals", "bng_cmc", "w7a", "w8a", "pendigits", "nursery", "electricity"))
+#tasks = giveMeTasks("electricity")
 resampling.inner = giveMeResampleDesc("inner")
 resampling.outer = giveMeResampleDesc("cv")
+#resampling.outer = giveMeResampleDesc("outer")
 learners = giveMeLearners(c("svm"))
 tune.controls = giveMeTuneControls(budget = budget, exec.time.budget = exec.time.budget, time.budget = time.budget)
 tuned.learners = giveMeTunedLearners(learners = learners, tune.controls = tune.controls, rsi = resampling.inner)

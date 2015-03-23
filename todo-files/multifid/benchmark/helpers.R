@@ -145,3 +145,14 @@ repeatBefore = function(x) {    # repeats the last non NA value. Keeps leading N
        c(ind, length(x) + 1) )) # diffing the indices + length yields how often 
 } 
 
+timeexec = makeMeasure(
+  id = "timeexec", minimize = TRUE, best = 0, worst = Inf,
+  properties = c("classif", "classif.multi", "regr", "surv", "costsens", "cluster", "req.model"),
+  name = "Time of executing the fitnes function",
+  fun = function(task, model, pred, feats, extra.args) {
+    if(is.null(model$learner.model$opt.result$opt.path))
+      return(NA)
+    sum(getOptPathExecTimes(model$learner.model$opt.result$opt.path))
+  }
+)
+

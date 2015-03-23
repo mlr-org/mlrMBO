@@ -39,16 +39,16 @@ evalTargetFun = function(fun, par.set, dobs, xs, opt.path, control, show.info, o
 
   # function to measure of fun call
   wrapFun = function(x) {
-    st = proc.time()
-    y = do.call(fun, insert(list(x = x), more.args))
+    st = system.time({
+      y = do.call(fun, insert(list(x = x), more.args)) 
+    })
     user.extras = list()
     # here we extract additional stuff which the user wants to log in the opt path
     if (hasAttributes(y, "extras")) {
       user.extras = attr(y, "extras")
       y = setAttribute(y, "extras", NULL)
     }
-    st = proc.time() - st
-    list(y = y, time = st[3], user.extras = user.extras)
+    list(y = y, time = max(st[3] - 0.4, 0), user.extras = user.extras) #FIXME give mlr some time we don't count
   }
 
   # do we have a valid y object?

@@ -58,6 +58,12 @@ giveMeTasks = function(x = NULL) {
   #8192 & 32 numeric
   puma32H.f = function() {makeRegrTask(id = "puma32H", data = read.arff("../data/phpJEvZWG"), target = "thetadd6")}
   
+  #credit-a http://openml.org/d/29
+  #classfication
+  #690
+  diabetes.f = function() {makeClassifTask(id = "diabetes", data = read.arff("../data/dataset_37_diabetes.arff"), target = "class")}
+  
+  
   task.list = list(
     sonar = function() {sonar.task},
     iris = function() {iris.task},
@@ -80,7 +86,8 @@ giveMeTasks = function(x = NULL) {
     nursery = nursery.f,
     electricity = electricity.f,
     kin8nm = kin8nm.f,
-    puma32H = puma32H.f
+    puma32H = puma32H.f,
+    diabetes = diabetes.f
 
   )
   if (is.null(x))
@@ -124,8 +131,9 @@ giveMeParamSets = function(lrns) {
   par.set.list[lrns.ids]
 }
 
-giveMeMBOControl = function(e.lvls = giveMeLvl("std"), budget = 50L, exec.time.budget = 4*60^2, time.budget = 6*60^2, init.design.points = length(e.lvls) * 4) {
+giveMeMBOControl = function(e.lvls = giveMeLvl("std"), budget = 50L, exec.time.budget = 4*60^2, time.budget = 6*60^2, init.design.points = length(e.lvls) * 4, noisy = TRUE) {
   ctrl = makeMBOControl(
+    noisy = noisy,
     init.design.points = init.design.points, 
     init.design.fun = maximinLHS,
     iters = max(1L, budget - init.design.points),
@@ -135,11 +143,12 @@ giveMeMBOControl = function(e.lvls = giveMeLvl("std"), budget = 50L, exec.time.b
     show.learner.output = FALSE
   )
   ctrl = setMBOControlInfill(
+    crit = "ei",
     control = ctrl, 
     opt = "focussearch", 
     opt.restarts = 1L, 
-    opt.focussearch.maxit = 1L, 
-    opt.focussearch.points = 100L,
+    opt.focussearch.maxit = 2L, 
+    opt.focussearch.points = 1000L,
     filter.proposed.points = TRUE,
     filter.proposed.points.tol = 0.0005
   )
@@ -172,8 +181,8 @@ giveMeLvl = function(x = 1) {
 
 giveMeSurrogatLearner = function(x = 1) {
   sur.list = list(
-    surrogat.learner = makeLearner("regr.km", nugget.estim = TRUE, jitter = TRUE),
-    deterministic = makeLearner("regr.km", nugget.estim = FALSE)
+    surrogat.learner = makeLearner("regr.km", nugget.estim = TRUE, jitter = TRUE, predict.type = "se"),
+    deterministic = makeLearner("regr.km", nugget.estim = FALSE, predict.type = "se")
     )
   sur.list[[x]]
 }
@@ -492,7 +501,7 @@ giveMeResultTable = function(tune.rres2, pretty = TRUE) {
     convertListOfRowsToDataFrame(extractSubList(tune.rres2, c("measures.test.sd"), simplify = FALSE)),
     convertListOfRowsToDataFrame(extractSubList(tune.rres2, c("exec.times.mean"), simplify = FALSE)),
     convertListOfRowsToDataFrame(extractSubList(tune.rres2, c("exec.times.sd"), simplify = FALSE)),
-    convertListOfRowsToDataFrame(extractSubList(tune.rres2, c("best.reached.at.mean"), simplify = FALSE)),
+    convertListOfRowsToDataFrame(extractSubList(tune.rres2, c("op.steps.mean"), simplify = FALSE)),
     convertListOfRowsToDataFrame(extractSubList(tune.rres2, c("runs"), simplify = FALSE))
   )
   res.df
