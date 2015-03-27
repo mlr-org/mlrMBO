@@ -1,9 +1,12 @@
 library(gridExtra)
 
-generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.model = NULL, control = NULL, grid.all = TRUE, e.string = NULL, high.res = FALSE, multifid.costs = NULL) {
+generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.model = NULL, control = NULL, grid.all = TRUE, e.string = NULL, high.res = FALSE, multifid.costs = NULL, gen.plots = TRUE, only.table = FALSE) {
+  catf("generalBenchmark for %s", e.name)
+  
+  if (only.table) gen.plots = FALSE
   # store plots in subdirectory
   if(!is.null(e.string)) {
-    dir.create(paste0("../plots/", e.string), showWarnings = FALSE)
+    dir.create(paste0("../plots/", e.string), showWarnings = TRUE, recursive = TRUE)
     e.name = paste0(e.string, "/", e.name)
   }
   # initialize control if not sets
@@ -17,6 +20,7 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
       show.learner.output = FALSE
     )
     control.common = setMBOControlInfill(
+      crit = "ei",
       control = control.common, 
       opt = "focussearch", 
       opt.restarts = 1L, 
@@ -41,9 +45,11 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
   )
   
   if (is.null(surrogat.model)) {
-    #surrogat.model = makeLearner("regr.km", predict.type="se", nugget.estim = TRUE, jitter = TRUE)
-    surrogat.model = makeLearner("regr.km", nugget.estim = TRUE, jitter = TRUE)
+    surrogat.model = makeLearner("regr.km", predict.type="se", nugget.estim = TRUE, jitter = TRUE)
+    #surrogat.model = makeLearner("regr.km", nugget.estim = TRUE, jitter = TRUE)
   }
+  # a not so clever surrogat.model to trick randomSearch and gridSearch
+  stupid.surrogat.model = giveMeSurrogatLearner("stupid")
   
   #common variables
   nlvls = length(e.lvl)
@@ -65,7 +71,11 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
   # 5. mbo Full experiment
   set.seed(e.seed)
   catf("5. mbo Full Experiment")
-  mbo1.time = system.time( {mbo1 = mbo(fun = getLast(objfuns), e.par.set, learner = surrogat.model, control = control.common, show.info = TRUE) })
+  mbo1.time = system.time({
+    mbo1 = tryCatch(
+      expr = {mbo(fun = getLast(objfuns), e.par.set, learner = surrogat.model, control = control.common, show.info = TRUE) }
+      error = function(e) NULL
+    )}
   mbo1$system.time = mbo1.time
   mbo1$opt.path$env$path$.multifid.lvl = nlvls
   mbo.res$mbo_expensive = mbo1
@@ -73,7 +83,11 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
   # 6. mbo cheapest experiment
   set.seed(e.seed)
   catf("6. mbo cheapest Experiment")
-  mbo2.time = system.time( {mbo2 = mbo(fun = getFirst(objfuns), e.par.set, learner = surrogat.model, control = control.common, show.info = TRUE) })
+  mbo2.time = system.time({
+    mbo2 = tryCatch(
+      expr = {mbo(fun = getFirst(objfuns), e.par.set, learner = surrogat.model, control = control.common, show.info = TRUE)}
+      error = function(e) NULL
+    )}
   mbo2$system.time = mbo2.time
   mbo2$opt.path$env$path$.multifid.lvl = 1
   mbo2$y = getLast(objfuns)(c(trafoValue(e.par.set, mbo2$x), list(.multifid.lvl = nlvls)))
@@ -82,7 +96,11 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
   # 7. multifid
   set.seed(e.seed)
   catf("7. multiFid")
-  mbo3.time = system.time({mbo3 = mbo(fun = objfun, par.set = e.par.set, learner = surrogat.model, control = control.multifid, show.info = TRUE)})
+  mbo3.time = system.time({
+    mbo3 = tryCatch(
+      expr = {mbo(fun = objfun, par.set = e.par.set, learner = surrogat.model, control = control.multifid, show.info = TRUE)}
+      error = function(e) NULL
+    )}
   mbo3$system.time = mbo3.time
   df = as.data.frame(mbo3$opt.path)
   df = df[df$dob > 0,]
@@ -91,10 +109,14 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
   
   # 8a Random Search
   catf("8a. random Search")
-  random.design = generateRandomDesign(par.set = e.par.set, n = control.common$init.design.points + control.common$iters)
-  random.control = makeMBOControl(iters = 1L)
+  random.design = generateRandomDesign(par.set = e.par.set, n = control.common$init.design.points + control.common$iters - 1) #1 mbo eval
+  random.control = control.common
   random.control$iters = 0L
-  mbo5.time = system.time({mbo5 = mbo(fun = getLast(objfuns), par.set = e.par.set, design = random.design, learner = surrogat.model, control = random.control, show.info = TRUE)})
+  mbo5.time = system.time({
+    mbo5 = tryCatch(
+      expr = {mbo(fun = getLast(objfuns), par.set = e.par.set, design = random.design, learner = stupid.surrogat.model, control = random.control, show.info = TRUE)}
+      error = function(e) NULL
+    )}
   mbo5$system.time = mbo5.time
   mbo5$opt.path$env$path$.multifid.lvl = nlvls
   mbo.res$random = mbo5
@@ -109,14 +131,18 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
   grid.res = lapply(grid.lvls, function(lvl) {
     set.seed(e.seed)
     resolution = c(control.common$init.design.points, control.common$iters)
-    if (!high.res) 
+    if (!high.res || sum(getParamLengths(e.par.set)) == 1) 
       resolution = ceiling(sum(resolution)^(1/sum(getParamLengths(e.par.set))))
     else
       resolution = resolution[1]
     grid.design = generateGridDesign(par.set = e.par.set, resolution = resolution)
-    grid.control = makeMBOControl(iters = 1)
+    grid.control = control.common
     grid.control$iters = 0
-    mbo4.time = system.time({mbo4 = mbo(fun = objfuns[[lvl]], par.set = e.par.set, design = grid.design, learner = surrogat.model, control = grid.control, show.info = TRUE)})
+    mbo4.time = system.time({
+      mbo4 = tryCatch(
+        expr = {mbo(fun = objfuns[[lvl]], par.set = e.par.set, design = grid.design, learner = stupid.surrogat.model, control = grid.control, show.info = TRUE)}
+        error = function(e) NULL
+      )}
     mbo4$system.time = mbo4.time
     mbo4$opt.path$env$path$.multifid.lvl = lvl
     if(lvl < nlvls) {
@@ -144,11 +170,9 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
     mbo.res[[idx]]$level.count = table(factor(df$.multifid.lvl, levels = seq_along(e.lvl)))
   }
   
-  xx.mbo.res <<- mbo.res
-  
   # 9. Visualisation
   
-  if(sum(getParamLengths(e.par.set)) == 1) {
+  if(gen.plots && sum(getParamLengths(e.par.set)) == 1) {
     
     #### 1d Visualisierung ####
     
@@ -205,7 +229,7 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
                          final.points = final.points)
     ggsave(plot = g, filename = paste0("../plots/", e.name, "_res_compare.pdf"), width = 10, height = 5)
     
-  } else if (sum(getParamLengths(e.par.set)) == 2) {
+  } else if (gen.plots && sum(getParamLengths(e.par.set)) == 2) {
     
     #### 2d plots ####
     
@@ -240,7 +264,7 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
       print(gs)
     dev.off()
   }
-  xx.mbo.res <<- mbo.res
+  
   # 10 Create a table
   mbo.res$bench.table = cbind.data.frame(
     y = extractSubList(mbo.res, element = "y"),
@@ -257,5 +281,8 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
     grid.table(df)
   dev.off()
   
-  mbo.res  
+  if (only.table)
+    mbo.res["bench.table"]
+  else
+    mbo.res  
 }
