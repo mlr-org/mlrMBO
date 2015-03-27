@@ -11,22 +11,41 @@ source("todo-files/multifid/benchmark/giveMe.R")
 source("todo-files/multifid/benchmark/mbo_batchmark.R")
 
 BatchJobs::loadConfig(conffile = "../.BatchJobs.R")
-e.resources = list(walltime = 8*60^2)
+e.resources = list(walltime = 4*24*60^2)
+# e.resources = list(walltime = 1*60^2)
 
-e.string = paste0("bJ_regression_",format(Sys.time(), "%Y_%m%d_%H%M"))
+e.string = paste0("bJ_YearPredictionMSD_",format(Sys.time(), "%Y_%m%d_%H%M"))
 dir.create(paste0("../plots/", e.string), showWarnings = FALSE)
 
 budget = 100000L
-exec.time.budget = 10*60
-time.budget = 7*60^2
-init.design.points = 30L
-tasks = giveMeTasks(c("kin8nm", "puma32H"))
+#budget = 30L
+exec.time.budget = 3*24*60^2
+time.budget = 3.5*24*60^2
+data = read.table("../data/YearPredictionMSD.txt", header = FALSE, sep = ",")
+colnames(data) = c("year", paste0("feat.",1:90))
+tasks = makeRegrTask(id = "YearPredictionMSD", data = data, target = "year")
+#tasks = giveMeTasks("electricity")
 resampling.inner = giveMeResampleDesc("inner")
-resampling.outer = giveMeResampleDesc("cv")
+resampling.outer = makeResampleDesc("Subsample", iters = 2)
 learners = giveMeLearners(c("regr.svm"))
-tune.controls = giveMeTuneControls(budget = budget, exec.time.budget = exec.time.budget, time.budget = time.budget, init.design.points = init.design.points)
+surrogat.learner = giveMeSurrogatLearner()
+tune.controls = list(
+  mfMBO.low = mlr:::makeTuneControlMBO(
+    mbo.control = giveMeMBOMultiFidControl(
+      e.lvls = c(0.01, 0.02, 0.05, 0.1, 0.2, 1),
+      budget = budget, exec.time.budget = exec.time.budget, time.budget = time.budget,
+      init.design.points = 18L),
+    learner = surrogat.learner),
+  mlrMBO = mlr:::makeTuneControlMBO(
+    mbo.control = giveMeMBOControl(
+      budget = budget, exec.time.budget = exec.time.budget, time.budget = time.budget, 
+      init.design.points = 4L), 
+    learner = surrogat.learner,
+    final.dw.perc = 1),
+  RandomSearch = makeTuneControlRandom(maxit = budget, exec.time.budget = exec.time.budget, time.budget = time.budget, final.dw.perc = 1)
+)
 tuned.learners = giveMeTunedLearners(learners = learners, tune.controls = tune.controls, rsi = resampling.inner, measures = mse)
-resamplings = replicate(n = length(tasks), resampling.outer, simplify = FALSE)
+resamplings = list(resampling.outer)
 
 save.image(file = paste0("../plots/",e.string,"/CV_compare.RData"))
 

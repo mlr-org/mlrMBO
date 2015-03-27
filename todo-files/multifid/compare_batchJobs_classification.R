@@ -11,17 +11,17 @@ source("todo-files/multifid/benchmark/giveMe.R")
 source("todo-files/multifid/benchmark/mbo_batchmark.R")
 
 BatchJobs::loadConfig(conffile = "../.BatchJobs.R")
-e.resources = list(walltime = 8*60^2)
-# e.resources = list(walltime = 1*60^2)
+e.resources = list(walltime = 36*60^2)
+e.resources.short = list(walltime = 8*60^2)
 
 e.string = paste0("bJ_classification_",format(Sys.time(), "%Y_%m%d_%H%M"))
 dir.create(paste0("../plots/", e.string), showWarnings = FALSE)
 
-budget = 10000L
+budget = 100000L
 #budget = 30L
-exec.time.budget = 3*60^2
-time.budget = 5*60^2
-tasks = giveMeTasks(c("meta_stream_intervals", "bng_cmc", "w7a", "w8a", "pendigits", "nursery", "electricity"))
+exec.time.budget = 4*60^2
+time.budget = 24*60^2
+tasks = giveMeTasks(c("meta_stream_intervals", "bng_cmc", "w7a", "w8a", "electricity", "covtype"))
 #tasks = giveMeTasks("electricity")
 resampling.inner = giveMeResampleDesc("inner")
 resampling.outer = giveMeResampleDesc("cv")
@@ -37,7 +37,12 @@ save.image(file = paste0("../plots/",e.string,"/CV_compare.RData"))
 reg = makeExperimentRegistry(e.string, packages = c("mlr", "mlrMBO"))
 batchmark(reg, learners = tuned.learners, tasks = tasks, resamplings, measures = list(mmce, timetrain), overwrite = TRUE, repls = 1, save.opt.result = TRUE)
 #rres = testJob(reg, 1, external = FALSE)
-submitJobs(reg, sample(getJobIds(reg)), resources = e.resources)
+df = getJobInfo(reg)
+longs = substrRight(df$algo, 5) == "MBO_l"
+jobs.short = df$id[!longs]
+jobs.long = df$id[longs]
+submitJobs(reg, sample(jobs.short), resources = e.resources.short)
+submitJobs(reg, sample(jobs.long), resources = e.resources)
 waitForJobs(reg)
 all.res = reduceResultsList(reg = reg)
 

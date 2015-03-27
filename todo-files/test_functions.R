@@ -28,6 +28,15 @@ hartman = function(lv, x, d = 1) {
 
 hartman2d = function(lv, x) hartman(lv, x, d=2)
 
+hartman1d = lapply(1:3, function(s) {
+  force(s)
+  function(lv, x) {
+    xs = c(0.114, 0.556, 0.852)
+    xs[s] = x
+    hartman(lv, xs, d = 3)
+  }
+})
+
 hartman3d = function(lv, x) hartman(lv, x, d=3)
 
 # Sasena (2002)
