@@ -73,9 +73,9 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
   catf("5. mbo Full Experiment")
   mbo1.time = system.time({
     mbo1 = tryCatch(
-      expr = {mbo(fun = getLast(objfuns), e.par.set, learner = surrogat.model, control = control.common, show.info = TRUE) }
+      expr = {mbo(fun = getLast(objfuns), e.par.set, learner = surrogat.model, control = control.common, show.info = TRUE) },
       error = function(e) NULL
-    )}
+    )})
   mbo1$system.time = mbo1.time
   mbo1$opt.path$env$path$.multifid.lvl = nlvls
   mbo.res$mbo_expensive = mbo1
@@ -85,9 +85,9 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
   catf("6. mbo cheapest Experiment")
   mbo2.time = system.time({
     mbo2 = tryCatch(
-      expr = {mbo(fun = getFirst(objfuns), e.par.set, learner = surrogat.model, control = control.common, show.info = TRUE)}
+      expr = {mbo(fun = getFirst(objfuns), e.par.set, learner = surrogat.model, control = control.common, show.info = TRUE)},
       error = function(e) NULL
-    )}
+    )})
   mbo2$system.time = mbo2.time
   mbo2$opt.path$env$path$.multifid.lvl = 1
   mbo2$y = getLast(objfuns)(c(trafoValue(e.par.set, mbo2$x), list(.multifid.lvl = nlvls)))
@@ -98,13 +98,15 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
   catf("7. multiFid")
   mbo3.time = system.time({
     mbo3 = tryCatch(
-      expr = {mbo(fun = objfun, par.set = e.par.set, learner = surrogat.model, control = control.multifid, show.info = TRUE)}
+      expr = {mbo(fun = objfun, par.set = e.par.set, learner = surrogat.model, control = control.multifid, show.info = TRUE)},
       error = function(e) NULL
-    )}
+    )})
   mbo3$system.time = mbo3.time
-  df = as.data.frame(mbo3$opt.path)
-  df = df[df$dob > 0,]
-  mbo3$perf.steps = table(df$.multifid.lvl, cut(df$dob,3))
+  if (!is.null(mbo3)) {
+    df = as.data.frame(mbo3$opt.path)
+    df = df[df$dob > 0,]
+    mbo3$perf.steps = table(df$.multifid.lvl, cut(df$dob,3))  
+  }
   mbo.res$multifid = mbo3
   
   # 8a Random Search
@@ -114,9 +116,9 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
   random.control$iters = 0L
   mbo5.time = system.time({
     mbo5 = tryCatch(
-      expr = {mbo(fun = getLast(objfuns), par.set = e.par.set, design = random.design, learner = stupid.surrogat.model, control = random.control, show.info = TRUE)}
+      expr = {mbo(fun = getLast(objfuns), par.set = e.par.set, design = random.design, learner = stupid.surrogat.model, control = random.control, show.info = TRUE)},
       error = function(e) NULL
-    )}
+    )})
   mbo5$system.time = mbo5.time
   mbo5$opt.path$env$path$.multifid.lvl = nlvls
   mbo.res$random = mbo5
@@ -140,9 +142,9 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
     grid.control$iters = 0
     mbo4.time = system.time({
       mbo4 = tryCatch(
-        expr = {mbo(fun = objfuns[[lvl]], par.set = e.par.set, design = grid.design, learner = stupid.surrogat.model, control = grid.control, show.info = TRUE)}
+        expr = {mbo(fun = objfuns[[lvl]], par.set = e.par.set, design = grid.design, learner = stupid.surrogat.model, control = grid.control, show.info = TRUE)},
         error = function(e) NULL
-      )}
+      )})
     mbo4$system.time = mbo4.time
     mbo4$opt.path$env$path$.multifid.lvl = lvl
     if(lvl < nlvls) {

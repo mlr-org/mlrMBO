@@ -15,8 +15,7 @@
 #   maximum number of iterations is reached and 1 if time budget is exceeded.
 shouldTerminate = function(max.iters, iter, time.budget, start.time, exec.time.budget, opt.path = NULL, show.info = FALSE) {
   if (iter > max.iters){
-    if (show.info)
-  	  messagef("max.iters %i reached with %i", max.iters, iter)
+    showInfo(show.info, "max.iters %i reached with %i", max.iters, iter)
   	return(0L)
   }
   if (isTimeBudgetExceeded(start.time, time.budget)) {

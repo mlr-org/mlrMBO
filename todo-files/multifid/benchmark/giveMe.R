@@ -435,6 +435,12 @@ giveMeDataForVisuals = function(res.by.resampling, learner.id) {
 }
 
 giveMeVisualData = function(all.res, task.id, learner.id, full = FALSE) {
+  assertList(all.res)
+  assertCharacter(task.id, len = 1)
+  assertCharacter(learner.id, len = 1)
+  assertFlag(full)
+  task.ids = extractSubList(all.res, c("task.id"))
+  learner.ids = extractSubList(all.res, c("opt.result", "learner", "next.learner", "id"))
   res.by.task.learner = all.res[task.ids == task.id & learner.ids == learner.id]
   res.by.resampling = split(res.by.task.learner, extractSubList(res.by.task.learner, "learner.id"))
   if (full)

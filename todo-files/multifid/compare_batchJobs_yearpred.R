@@ -28,6 +28,22 @@ tasks = makeRegrTask(id = "YearPredictionMSD", data = data, target = "year")
 resampling.inner = giveMeResampleDesc("inner")
 resampling.outer = makeResampleDesc("Subsample", iters = 2)
 learners = giveMeLearners(c("regr.svm"))
+
+#overwrite giveMe
+giveMeParamSets = function(lrns) {
+  # lrns.ids = sapply(strsplit(extractSubList(lrns, "id"), "\\."), getLast)
+  lrns.ids = extractSubList(lrns, "id")
+  svm = makeParamSet(
+    makeNumericParam("cost", lower = -15, upper = 10, trafo = function(x) 2^x),
+    makeNumericParam("gamma", lower = -10, upper = 6, trafo = function(x) 2^x))
+  par.set.list = list(
+    classif.svm = svm,
+    regr.svm = c(svm, makeParamSet(
+      makeNumericParam("epsilon", lower = -10, upper = 0, trafo = function(x) 2^x)))
+  )
+  par.set.list[lrns.ids]
+}
+
 surrogat.learner = giveMeSurrogatLearner()
 tune.controls = list(
   mfMBO.low = mlr:::makeTuneControlMBO(

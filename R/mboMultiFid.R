@@ -110,8 +110,7 @@ mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE,
       lvl.cors = lvl.cors, time.model = time.model, lvl.sds = lvl.sds)
     # find the level where the crit val / infill vals is smallest
     infill.vals = extractSubList(prop, "crit.vals")
-    if(show.info)
-      messagef("Infill vals = %s", collapse(sprintf("%.3g", infill.vals), ", "))
+    showInfo(show.info, "Infill vals = %s", collapse(sprintf("%.3g", infill.vals), ", "))
     
     # every couple of levels we only optimize the last one
     # to ensure that we update that model and see what happens here
