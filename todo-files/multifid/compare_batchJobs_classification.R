@@ -21,7 +21,7 @@ budget = 100000L
 #budget = 30L
 exec.time.budget = 4*60^2
 time.budget = 24*60^2
-tasks = giveMeTasks(c("meta_stream_intervals", "bng_cmc", "w7a", "w8a", "electricity", "covtype"))
+tasks = giveMeTasks(c("meta_stream_intervals", "bng_cmc", "w7a", "w8a", "electricity", "covtype_20"))
 #tasks = giveMeTasks("electricity")
 resampling.inner = giveMeResampleDesc("inner")
 resampling.outer = giveMeResampleDesc("cv")
@@ -41,11 +41,13 @@ df = getJobInfo(reg)
 longs = substrRight(df$algo, 5) == "MBO_l"
 jobs.short = df$id[!longs]
 jobs.long = df$id[longs]
-df2 = getJobInfo(reg = reg, ids = findExpired(reg))
-jobs.more = df2$id[substrRight(df2$algo, 2) %in% c("_l", "ow", "ts")]
 submitJobs(reg, sample(jobs.short), resources = e.resources.short)
 submitJobs(reg, sample(jobs.long), resources = e.resources)
 waitForJobs(reg)
+# df2 = getJobInfo(reg = reg, ids = findExpired(reg))
+# jobs.more = df2$id[substrRight(df2$algo, 2) %in% c("_l", "ow", "ts")]
+# submitJobs(reg, sample(jobs.more), resources = e.resources)
+
 all.res = reduceResultsList(reg = reg)
 
 save.image(file = paste0("../plots/",e.string,"/CV_compare.RData"))

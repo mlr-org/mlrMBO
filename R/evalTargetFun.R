@@ -48,7 +48,7 @@ evalTargetFun = function(fun, par.set, dobs, xs, opt.path, control, show.info, o
       user.extras = attr(y, "extras")
       y = setAttribute(y, "extras", NULL)
     }
-    list(y = y, time = max(st[3] - 0.4, 0), user.extras = user.extras) #FIXME give mlr some time we don't count
+    list(y = y, time = st[3], user.extras = user.extras)
   }
 
   # do we have a valid y object?

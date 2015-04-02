@@ -77,6 +77,7 @@ giveMeTasks = function(x = NULL) {
     
     covtype = covtype.f,
     covtype.dummy = function() {createDummyFeatures(covtype.f(), method = "reference")},
+    covtype_20 = function() {downsample(covtype.f(), perc = 0.2, stratify = TRUE)},
     covertype = covertype.f,
     covertype.dummy = function() {createDummyFeatures(covertype.f(), method = "reference")},
     bng_cmc = bng_cmc.f,
@@ -457,9 +458,11 @@ giveMeVisuals = function(all.res, e.string, init.design.points = NULL, tasks, dr
   visualize = function(task.id, learner.id) {
     
     this.e.string = paste0(e.string,"/", task.id, "_", learner.id)
+
+    messagef("Generate Plots for %s %s", task.id, learner.id)
     
     tune.rres2 = giveMeVisualData(all.res, task.id, learner.id)
-    tune.rres2.full = giveMeVisualData(all.res, learner.id, full = TRUE)
+    tune.rres2.full = giveMeVisualData(all.res, task.id, learner.id, full = TRUE)
 
     common.title = paste(task.id, learner.id)
     
@@ -526,7 +529,6 @@ giveMeResultTable = function(tune.rres2, pretty = TRUE) {
     convertListOfRowsToDataFrame(extractSubList(tune.rres2, c("op.steps.mean"), simplify = FALSE)),
     convertListOfRowsToDataFrame(extractSubList(tune.rres2, c("runs"), simplify = FALSE))
   )
-  res.df
   if (pretty) {
     num.col = sapply(res.df, is.numeric)
     res.df[,num.col] = sapply(res.df[,num.col], function(x) sprintf("%.4g", x))

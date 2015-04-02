@@ -12,16 +12,16 @@ source("todo-files/multifid/benchmark/plots.R")
 source("todo-files/multifid/benchmark/giveMe.R")
 source("todo-files/test_functions.R")
 
-e.seed = 1511
+e.seed = 1600
 options(warn = 0)
 allOrAny = all #whcih function to choose to overwrite
 e.control = giveMeMBOControl(budget = 36L, exec.time.budget = NULL, time.budget = NULL, noisy = FALSE)
-e.control$filter.proposed.points.tol = 0.01
+e.control$filter.proposed.points.tol = 0.0001
 e.control2 = e.control
 e.control2$filter.proposed.points.tol = 0.0001
 e.control3 = e.control
 e.control3$init.design.points = 30L
-e.control3$filter.proposed.points.tol = 0.0005
+e.control3$filter.proposed.points.tol = 0.0001
 
 if (!exists("e.string"))
   e.string = paste0("analyse_rep",format(Sys.time(), "%Y_%m_%d-%H%M/1d"))

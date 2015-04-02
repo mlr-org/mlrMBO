@@ -1,6 +1,6 @@
 library(gridExtra)
 
-generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.model = NULL, control = NULL, grid.all = TRUE, e.string = NULL, high.res = FALSE, multifid.costs = NULL, gen.plots = TRUE, only.table = FALSE) {
+generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.model = NULL, control = NULL, grid.all = TRUE, e.string = NULL, high.res = FALSE, multifid.costs = NULL, gen.plots = TRUE, only.table = FALSE, show.info = FALSE) {
   catf("generalBenchmark for %s", e.name)
   
   if (only.table) gen.plots = FALSE
@@ -73,7 +73,7 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
   catf("5. mbo Full Experiment")
   mbo1.time = system.time({
     mbo1 = tryCatch(
-      expr = {mbo(fun = getLast(objfuns), e.par.set, learner = surrogat.model, control = control.common, show.info = TRUE) },
+      expr = {mbo(fun = getLast(objfuns), e.par.set, learner = surrogat.model, control = control.common, show.info = show.info) },
       error = function(e) NULL
     )})
   mbo1$system.time = mbo1.time
@@ -85,7 +85,7 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
   catf("6. mbo cheapest Experiment")
   mbo2.time = system.time({
     mbo2 = tryCatch(
-      expr = {mbo(fun = getFirst(objfuns), e.par.set, learner = surrogat.model, control = control.common, show.info = TRUE)},
+      expr = {mbo(fun = getFirst(objfuns), e.par.set, learner = surrogat.model, control = control.common, show.info = show.info)},
       error = function(e) NULL
     )})
   mbo2$system.time = mbo2.time
@@ -98,7 +98,7 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
   catf("7. multiFid")
   mbo3.time = system.time({
     mbo3 = tryCatch(
-      expr = {mbo(fun = objfun, par.set = e.par.set, learner = surrogat.model, control = control.multifid, show.info = TRUE)},
+      expr = {mbo(fun = objfun, par.set = e.par.set, learner = surrogat.model, control = control.multifid, show.info = show.info)},
       error = function(e) NULL
     )})
   mbo3$system.time = mbo3.time
@@ -116,7 +116,7 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
   random.control$iters = 0L
   mbo5.time = system.time({
     mbo5 = tryCatch(
-      expr = {mbo(fun = getLast(objfuns), par.set = e.par.set, design = random.design, learner = stupid.surrogat.model, control = random.control, show.info = TRUE)},
+      expr = {mbo(fun = getLast(objfuns), par.set = e.par.set, design = random.design, learner = stupid.surrogat.model, control = random.control, show.info = show.info)},
       error = function(e) NULL
     )})
   mbo5$system.time = mbo5.time
@@ -142,7 +142,7 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
     grid.control$iters = 0
     mbo4.time = system.time({
       mbo4 = tryCatch(
-        expr = {mbo(fun = objfuns[[lvl]], par.set = e.par.set, design = grid.design, learner = stupid.surrogat.model, control = grid.control, show.info = TRUE)},
+        expr = {mbo(fun = objfuns[[lvl]], par.set = e.par.set, design = grid.design, learner = stupid.surrogat.model, control = grid.control, show.info = show.info)},
         error = function(e) NULL
       )})
     mbo4$system.time = mbo4.time
