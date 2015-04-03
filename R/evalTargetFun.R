@@ -38,18 +38,18 @@ evalTargetFun = function(fun, par.set, dobs, xs, opt.path, control, show.info, o
   xs.trafo = lapply(xs, trafoValue, par = par.set)
 
   # function to measure of fun call
-  wrapFun = function(x) {
-    st = system.time({
-      y = do.call(fun, insert(list(x = x), more.args)) 
-    })
-    user.extras = list()
-    # here we extract additional stuff which the user wants to log in the opt path
-    if (hasAttributes(y, "extras")) {
-      user.extras = attr(y, "extras")
-      y = setAttribute(y, "extras", NULL)
+    wrapFun = function(x) {
+      st = proc.time()
+      y = do.call(fun, insert(list(x = x), more.args))
+      user.extras = list()
+      # here we extract additional stuff which the user wants to log in the opt path
+      if (hasAttributes(y, "extras")) {
+        user.extras = attr(y, "extras")
+        y = setAttribute(y, "extras", NULL)
+      }
+      st = proc.time() - st
+      list(y = y, time = st[3], user.extras = user.extras)
     }
-    list(y = y, time = st[3], user.extras = user.extras)
-  }
 
   # do we have a valid y object?
   isYValid = function(y) {

@@ -41,8 +41,9 @@ df = getJobInfo(reg)
 longs = substrRight(df$algo, 5) == "MBO_l"
 jobs.short = df$id[!longs]
 jobs.long = df$id[longs]
-submitJobs(reg, sample(jobs.short), resources = e.resources.short)
-submitJobs(reg, sample(jobs.long), resources = e.resources)
+submitJobs(reg, sample(jobs.short), resources = e.resources.short, job.delay = TRUE)
+Sys.sleep(60)
+submitJobs(reg, sample(jobs.long), resources = e.resources, job.delay = TRUE)
 waitForJobs(reg)
 # df2 = getJobInfo(reg = reg, ids = findExpired(reg))
 # jobs.more = df2$id[substrRight(df2$algo, 2) %in% c("_l", "ow", "ts")]
