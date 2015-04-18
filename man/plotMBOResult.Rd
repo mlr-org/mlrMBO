@@ -7,7 +7,7 @@ the optimization path are available.}
 \usage{
 plotMBOResult(result, iters, pause = TRUE, crit.plot = TRUE, hv.plot = NA,
   extra.measures = NULL, ref.point = NULL, lim.x = list(),
-  lim.y = list())
+  lim.y = list(), ...)
 }
 \arguments{
 \item{result}{[\code{MBOResult}]\cr
@@ -56,6 +56,10 @@ HVPlot - limits for the Hypervolume Plit
 Extra1Plot - Limits for the Plot given by the first element of extra.measure
 Extra2Plot - Limits for the Plot given by the second element of extra.measure
 Default is an empty list - in this case limits are automatically set.}
+
+\item{...}{\cr
+Additional parameters for the \code{\link[ParamHelpers]{renderOptPathPlot}}
+function in package \code{ParamHelpers}.}
 }
 \description{
 Plots any MBO result objects. Plots for X-Space, Y-Space and any coloumn in

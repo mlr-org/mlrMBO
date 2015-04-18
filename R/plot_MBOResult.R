@@ -9,14 +9,17 @@
 #' @param pause [\code{logical(1)}]\cr
 #'   Should the process be paused after each iteration?
 #'   Default is \code{TRUE}.
+#' @param ... \cr
+#'  Additional parameters for the \code{\link[ParamHelpers]{renderOptPathPlot}} 
+#'  function in package \code{ParamHelpers}.
 #' @template arg_plot_MBO
 #' @export
 
 plotMBOResult = function(result, iters, pause = TRUE, 
   crit.plot = TRUE, hv.plot = NA,  extra.measures = NULL,
-  ref.point = NULL, lim.x = list(), lim.y = list()) {
+  ref.point = NULL, lim.x = list(), lim.y = list(), ...) {
   
-  # Helper to arragne plot via gridExtra and pause process
+  # Helper to arrange plot via gridExtra and pause process
   arrangePlots = function(plots) {
     plots = Filter(Negate(isScalarNA), plots)
     n.row = if(length(plots) > 2) 2L else 1L
@@ -43,7 +46,7 @@ plotMBOResult = function(result, iters, pause = TRUE,
     # get rendered plot data
     plots = renderMBOPlot(result, iter = iter, crit.plot = crit.plot,
       hv.plot = hv.plot, extra.measures = extra.measures, 
-      ref.point = ref.point, lim.x = lim.x, lim.y = lim.y)
+      ref.point = ref.point, lim.x = lim.x, lim.y = lim.y, ...)
     arrangePlots(plots)
   }
 }

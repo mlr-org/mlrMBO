@@ -6,11 +6,14 @@
 #'   \code{MBOSingleObjResult} or \code{MBOMultiObjResult} object.
 #' @param iter [\code{integer(1)}]\cr
 #'   Selected iteration of \code{object} to render plots for.
+#' @param ... \cr
+#'  Additional parameters for the \code{\link[ParamHelpers]{renderOptPathPlot}} 
+#'  function in package \code{ParamHelpers}.
 #' @template arg_plot_MBO
 
 renderMBOPlot =  function(result, iter,
   crit.plot = TRUE, hv.plot = NA,  extra.measures = NULL,
-  ref.point = NULL, lim.x = list(), lim.y = list()) {
+  ref.point = NULL, lim.x = list(), lim.y = list(), ...) {
   
   # extract and set params
   opt.path = result$opt.path
@@ -30,7 +33,7 @@ renderMBOPlot =  function(result, iter,
   if (is.na(hv.plot))
     hv.plot = control$number.of.targets != 1L
   if (hv.plot & control$number.of.targets == 1L)
-    stop("You required a Hypervolume Plot, but you have done single crit optimiation.")
+    stop("You required a Hypervolume Plot, but you have done single crit optimization.")
   
   # checks
   assertIntegerish(iter, lower = 0, upper = max(getOptPathDOB(opt.path)),
@@ -38,15 +41,15 @@ renderMBOPlot =  function(result, iter,
   assertFlag(hv.plot)
   assertFlag(crit.plot)
   
-  # do not allow to produce more than 4 plots at a time. since X and Y space
+  # do not allow to produce more than 4 plots at a time. Since X and Y space
   # is allways included, only 2 more plots are allowed
   if (hv.plot + crit.plot + length(extra.measures) > 2)
-    stop("You required more than 2 extra plots. Pleas deactivate some.")
+    stop("You required more than 2 extra plots. Please deactivate some.")
   
   # And call all plot functions
   # X and Y Space
   plots = renderOptPathPlot(opt.path, iter, 
-    lim.x = lim.x[c("XSpace", "YSpace")], lim.y = lim.y[c("XSpace", "YSpace")])
+    lim.x = lim.x[c("XSpace", "YSpace")], lim.y = lim.y[c("XSpace", "YSpace")], ...)
   pl1 = plots[[1]]
   pl2 = plots[[2]]
   

@@ -7,7 +7,7 @@ a plot for X and Y Space respectively, additional diagnostic plots are available
 \usage{
 renderMBOPlot(result, iter, crit.plot = TRUE, hv.plot = NA,
   extra.measures = NULL, ref.point = NULL, lim.x = list(),
-  lim.y = list())
+  lim.y = list(), ...)
 }
 \arguments{
 \item{result}{[\code{MBOResult}]\cr
@@ -52,6 +52,10 @@ HVPlot - limits for the Hypervolume Plit
 Extra1Plot - Limits for the Plot given by the first element of extra.measure
 Extra2Plot - Limits for the Plot given by the second element of extra.measure
 Default is an empty list - in this case limits are automatically set.}
+
+\item{...}{\cr
+Additional parameters for the \code{\link[ParamHelpers]{renderOptPathPlot}}
+function in package \code{ParamHelpers}.}
 }
 \description{
 Renders plots for MBO result objects, every dimension is supported. Renders

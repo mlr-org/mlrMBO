@@ -20,7 +20,7 @@ getLimits <- function(lim.x, lim.y, result, iters, extra.measure, ref.point) {
   # Crit Plot
   # FIXME MSPOT is special
   
-  # lim.x is iteration number here. if NULL, use ggplot defauls, else check
+  # lim.x is iteration number here. if NULL, use ggplot defaults, else check
   if (is.null(lim.x$CritPlot)) {
     lim.x$CritPlot = c(NA_real_, NA_real_)
   } else {
@@ -44,7 +44,7 @@ getLimits <- function(lim.x, lim.y, result, iters, extra.measure, ref.point) {
   # HV Plot
   # iteration
   if (ctrl$number.of.target > 1L) {
-    # lim.x is iteration number here. if NULL, use ggplot defauls, else check
+    # lim.x is iteration number here. if NULL, use ggplot defaults, else check
     if (is.null(lim.x$HVPlot)) {
       lim.x$HVPlot = c(NA_real_, NA_real_)
     } else {
@@ -64,7 +64,7 @@ getLimits <- function(lim.x, lim.y, result, iters, extra.measure, ref.point) {
   
   # Extra Measure Plots
   if (length(extra.measure) > 0L) {
-    # lim.x is iteration number here. if NULL, use ggplot defauls, else check
+    # lim.x is iteration number here. if NULL, use ggplot defaults, else check
     if (is.null(lim.x$ExtraPlot1)) {
       # If NULL, we do nothing and use the ggplot defaults later
       lim.x$ExtraPlot1 = c(NA_real_, NA_real_)

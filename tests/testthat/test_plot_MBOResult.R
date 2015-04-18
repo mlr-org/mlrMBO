@@ -19,6 +19,9 @@ test_that("plot single crit", {
     lim.x = list(YSpace = c(-1, 1), CritPlot = c(-1, 1), ExtraPlot1 = c(-1, 1), XSpace = c(-1, 1)),
     lim.y = list(YSpace = c(-1, 1), CritPlot = c(-1, 1), ExtraPlot1 = c(-1, 1), XSpace = c(-1, 1))
     )
+  plots = renderMBOPlot(or, 2, extra.measures = "train.time", colours = c("black", "orange", "yellow"), 
+    scale = "robust", size = c(2,2)
+  )
   plotMBOResult(or, 0:2, extra.measures = "train.time", pause  = FALSE)
 })
 
@@ -42,6 +45,9 @@ test_that("plot multi crit", {
     lim.x = list(YSpace = c(-1, 1), CritPlot = c(-1, 1), ExtraPlot1 = c(-1, 1), XSpace = c(-1, 1)),
     lim.y = list(YSpace = c(-1, 1), CritPlot = c(-1, 1), ExtraPlot1 = c(-1, 1), XSpace = c(-1, 1)),
     ref.point = c(11, 11)
+  )
+  plots = renderMBOPlot(or, 2, colours = c("black", "orange", "yellow"), 
+    scale = "robust", size = c(2,2)
   )
   plotMBOResult(or, 0:2, pause  = FALSE)
 })
