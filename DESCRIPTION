@@ -25,7 +25,8 @@ Imports:
     gridExtra,
     parallelMap (>= 1.1),
     plyr,
-    reshape2
+    reshape2,
+    scales
 Suggests:
     cmaes,
     DiceKriging,

@@ -14,7 +14,7 @@
 renderMBOPlot =  function(result, iter,
   crit.plot = TRUE, hv.plot = NA,  extra.measures = NULL,
   ref.point = NULL, lim.x = list(), lim.y = list(), ...) {
-  
+    
   # extract and set params
   opt.path = result$opt.path
   control = result$control
@@ -110,6 +110,7 @@ renderHVPlot = function(op, iter, ref.point, lim.x, lim.y) {
       collapse((round(ref.point, 1)), sep = ", "), ")", sep = ""))
   pl = pl + theme(plot.title = element_text(size = rel(1)))
   pl = pl + xlab("iteration") + xlim(lim.x) + ylim(lim.y)
+  pl = pl + scale_x_discrete(breaks = scales::pretty_breaks())
   
   if (nrow(hv.data) > 1)
     pl = pl + geom_line()
@@ -146,8 +147,9 @@ renderMeasureOverTimePlot = function(op, iter, control, measure, lim.x, lim.y) {
   pl = ggplot(measure.data, aes_string(x = "dob", y = "measure"))
   pl = pl + geom_point()
   pl = pl + theme(plot.title = element_text(size = rel(1)))
-  pl = pl + ylab(measure) + xlab("Iteration")
+  pl = pl + ylab(measure) + xlab("iteration")
   pl = pl + ggtitle("Measure over time")
+  pl = pl + scale_x_discrete(breaks = scales::pretty_breaks())
   #pl = pl + xlim(lim.x) + ylim(lim.y)
   
   # plot lines only if more than one crit observation exists
