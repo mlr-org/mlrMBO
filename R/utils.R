@@ -23,9 +23,9 @@ checkLearner = function(learner, par.set, control, ...) {
 # load required extra packages
 loadPackages = function(control) {
   if (control$infill.opt == "cmaes")
-    requirePackages("cmaes", "proposePoints")
+    requirePackages("cmaes", why = "proposePoints")
   if (control$number.of.targets == 1L && control$propose.points > 1L && control$multipoint.method == "multicrit")
-    requirePackages("emoa", "proposePoints")
+    requirePackages("emoa", why = "proposePoints")
 }
 
 # to list + repair + eval
