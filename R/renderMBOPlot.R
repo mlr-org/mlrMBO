@@ -79,12 +79,14 @@ renderMBOPlot =  function(result, iter,
   
   # Extra measure plots
   if (length(extra.measures) > 0) {
-    pl5 = renderMeasureOverTimePlot(opt.path, iter, control, measure = extra.measures[1])
+    pl5 = renderMeasureOverTimePlot(opt.path, iter, control, measure = extra.measures[1],
+      lim.x = lim.x[["ExtraPlot1"]], lim.y = lim.y[["ExtraPlot1"]])
   } else {
     pl5 = NULL
   }
   if (length(extra.measures) > 1) {
-    pl6 = renderMeasureOverTimePlot(opt.path, iter, control, measure = extra.measures[2])
+    pl6 = renderMeasureOverTimePlot(opt.path, iter, control, measure = extra.measures[2],
+      lim.x = lim.x[["ExtraPlot2"]], lim.y = lim.y[["ExtraPlot2"]])
   } else {
     pl6 = NULL
   }
@@ -105,12 +107,14 @@ renderHVPlot = function(op, iter, ref.point, lim.x, lim.y) {
     emoa::dominated_hypervolume(t(getOptPathParetoFront(op, dob = 0:i)), ref = ref.point))
   hv.data = data.frame(hv = hvs, dob = 0:iter)  
   pl = ggplot(hv.data, aes(x = dob, y = hv)) + geom_point()
-  pl
+
   pl = pl + ggtitle(paste("Dominated Hypervolume, ref.point = (",
       collapse((round(ref.point, 1)), sep = ", "), ")", sep = ""))
   pl = pl + theme(plot.title = element_text(size = rel(1)))
-  pl = pl + xlab("iteration") + xlim(lim.x) + ylim(lim.y)
-  pl = pl + scale_x_discrete(breaks = scales::pretty_breaks())
+  pl = pl + xlab("iteration") + ylim(lim.y)
+  n = min(5, abs(diff(lim.x)))
+  n = ifelse(is.na(n), iter, n)
+  pl = pl + scale_x_continuous(limits = lim.x, breaks = scales::pretty_breaks(n = n))
   
   if (nrow(hv.data) > 1)
     pl = pl + geom_line()
@@ -149,8 +153,10 @@ renderMeasureOverTimePlot = function(op, iter, control, measure, lim.x, lim.y) {
   pl = pl + theme(plot.title = element_text(size = rel(1)))
   pl = pl + ylab(measure) + xlab("iteration")
   pl = pl + ggtitle("Measure over time")
-  pl = pl + scale_x_discrete(breaks = scales::pretty_breaks())
-  #pl = pl + xlim(lim.x) + ylim(lim.y)
+  pl = pl + ylim(lim.y)
+  n = min(5, diff(lim.x))
+  n = ifelse(is.na(n), iter - 1, n)
+  pl = pl + scale_x_continuous(limits = lim.x, breaks = scales::pretty_breaks(n = n))
   
   # plot lines only if more than one crit observation exists
   # if more than 1 value per dob exists and if there is more than 1 unique
