@@ -20,7 +20,7 @@ plotMBOResult = function(result, iters, pause = TRUE,
   ref.point = NULL, lim.x = list(), lim.y = list(), ...) {
   
   # Helper to arrange plot via gridExtra and pause process
-  arrangePlots = function(plots) {
+  arrangePlots = function(plots, iter, iters) {
     plots = Filter(Negate(isScalarNA), plots)
     n.row = if(length(plots) > 2) 2L else 1L
     
@@ -29,8 +29,9 @@ plotMBOResult = function(result, iters, pause = TRUE,
     args$nrow = n.row
     args$heights = c(2, 1)[1:n.row]
     do.call(grid.arrange,  args)
-    if (pause)
+    if (pause && iter != BBmisc::getLast(iters)) {
       pause()
+    }
   }
   
   if (is.null(ref.point)) {
@@ -47,7 +48,7 @@ plotMBOResult = function(result, iters, pause = TRUE,
     plots = renderMBOPlot(result, iter = iter, crit.plot = crit.plot,
       hv.plot = hv.plot, extra.measures = extra.measures, 
       ref.point = ref.point, lim.x = lim.x, lim.y = lim.y, ...)
-    arrangePlots(plots)
+    arrangePlots(plots, iter, iters)
   }
 }
 
