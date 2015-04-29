@@ -24,7 +24,7 @@ getLimits <- function(lim.x, lim.y, result, iters, extra.measure, ref.point) {
   if (is.null(lim.x$CritPlot)) {
     lim.x$CritPlot = c(NA_real_, NA_real_)
   } else {
-    assertNumeric(lim.x$CritPlot, len = 2)
+    asInteger(lim.x$CritPlot, len = 2)
   }
   
   # If NULL, use range of observed crit, else check.
@@ -48,7 +48,7 @@ getLimits <- function(lim.x, lim.y, result, iters, extra.measure, ref.point) {
     if (is.null(lim.x$HVPlot)) {
       lim.x$HVPlot = c(NA_real_, NA_real_)
     } else {
-      assertNumeric(lim.x$HVPlot, len = 2)
+      asInteger(lim.x$HVPlot, len = 2)
     }
     
     # If null, use min and max of hypervolume, else check.
@@ -69,7 +69,7 @@ getLimits <- function(lim.x, lim.y, result, iters, extra.measure, ref.point) {
       # If NULL, we do nothing and use the ggplot defaults later.
       lim.x$ExtraPlot1 = c(NA_real_, NA_real_)
     } else {
-      assertNumeric(lim.x$ExtraPlot1, len = 2)
+      asInteger(lim.x$ExtraPlot1, len = 2)
     }
     
     # If NULL, use range of observed measure, else check.
@@ -91,7 +91,7 @@ getLimits <- function(lim.x, lim.y, result, iters, extra.measure, ref.point) {
     if (is.null(lim.x$ExtraPlot2)) {
       lim.x$ExtraPlot2 = c(NA_real_, NA_real_)
     } else {
-      assertNumeric(lim.x$ExtraPlot2, len = 2)
+      asInteger(lim.x$ExtraPlot2, len = 2)
     }
     
     # If NULL, use range of observed measure, else check.
