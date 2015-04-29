@@ -1,5 +1,5 @@
 #' Plots any MBO result objects. Plots for X-Space, Y-Space and any coloumn in
-#' the optimization path are available.
+#' the optimization path are available. This function uses \code{\link{renderMBOPlot}}.
 #' 
 #' 
 #' @param result [\code{MBOResult}]\cr

@@ -3,7 +3,7 @@
 \name{plotMBOResult}
 \alias{plotMBOResult}
 \title{Plots any MBO result objects. Plots for X-Space, Y-Space and any coloumn in
-the optimization path are available.}
+the optimization path are available. This function uses \code{\link{renderMBOPlot}}.}
 \usage{
 plotMBOResult(result, iters, pause = TRUE, crit.plot = TRUE, hv.plot = NA,
   extra.measures = NULL, ref.point = NULL, lim.x = list(),
@@ -63,6 +63,6 @@ function in package \code{ParamHelpers}.}
 }
 \description{
 Plots any MBO result objects. Plots for X-Space, Y-Space and any coloumn in
-the optimization path are available.
+the optimization path are available. This function uses \code{\link{renderMBOPlot}}.
 }
 
