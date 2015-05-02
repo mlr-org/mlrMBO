@@ -158,10 +158,9 @@ renderMeasureOverTimePlot = function(op, iter, control, measure, lim.x, lim.y) {
   n = ifelse(is.na(n), iter - 1, n)
   pl = pl + scale_x_continuous(limits = lim.x, breaks = scales::pretty_breaks(n = n))
   
-  # plot lines only if more than one crit observation exists
-  # if more than 1 value per dob exists and if there is more than 1 unique
-  # dob value
-  if (length(table(dob[!na.inds])) > 1L && max(table(dob[!na.inds])) > 1L) {
+  # Plot lines only if there are two or more iterations with values for this
+  # measure.
+  if (length(table(dob[!na.inds])) > 1L) {
     d = data.frame(
       measure = tapply(measure.data$measure, measure.data$dob, mean),
       dob = 1:iter)
