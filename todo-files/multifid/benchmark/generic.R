@@ -238,16 +238,18 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
     versions = list(
       basic = c("y", "crit"), 
       alphas = c("y", "crit", "alpha2", "alpha3"),
-      extended = c("y", "ei", "se", "alpha2", "alpha3"))
+      extended = c("y", "ei", "se", "alpha2", "alpha3"),
+      important.fixed = c("y", "crit", "ei", "se", "alpha2")
+      )
     lapply(names(versions), function(v.name) {
       subs = versions[[v.name]]
-      p.width = length(subs) * 4
-      pdf(paste0("../plots/",e.name, "_multifid_steps_",v.name,".pdf"), width = p.width, height = 10)
+      p.width = length(subs) * 2
+      pdf(paste0("../plots/",e.name, "_multifid_steps_",v.name,".pdf"), width = p.width, height = 5)
       for (i in seq_along(mbo.res$multifid$plot.data)) {
         plot.data = mbo.res$multifid$plot.data[[i]]
-        alpha1 = collapse(round(unique(plot.data$all$alpha1), 3), sep = ", ")
-        sd = collapse(round(unique(plot.data$all$sd), 3), sep = ", ")
-        plot = mlrMBO:::plotMultiFidStep(plot.data, title = sprintf("Step: %i, a1: %s, sd: %s", i, alpha1, sd), subset.variable = subs)
+        alpha1 = collapse(round(daply(plot.data$all, ".multifid.lvl", function(x) getFirst(x$alpha1)), 3), sep = ", ")
+        sd = collapse(round(daply(plot.data$all, ".multifid.lvl", function(x) getFirst(x$sd)), 3), sep = ", ")
+        plot = mlrMBO:::plotMultiFidStep(plot.data, title = sprintf("Step: %i, a1: %s, sd: %s", i, alpha1, sd), subset.variable = subs, add.g = list(theme(plot.margin= unit(c(1,0.2,1,0.2), "lines"))))
         print(plot)
       }
       dev.off()
@@ -260,8 +262,8 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
     m.spec = m.spec[m.spec$dob == 0, ] #remove proposed values for correct geom_grid()
     m.spec$variable = "real"
     xname = plot.data$xname
-    g.real = mlrMBO:::plotMultiFidStep2dRawEach(m.spec, xname, plot.data$old.points[,c(xname, ".multifid.lvl")], plot.data$best.points[,c(xname, ".multifid.lvl")] )
-    pdf(paste0("../plots/",e.name, "_multifid_final.pdf"), width = 8, height = 10)
+    g.real = mlrMBO:::plotMultiFidStep2dRawEach(m.spec, xname, plot.data$old.points[,c(xname, ".multifid.lvl")], plot.data$best.points[,c(xname, ".multifid.lvl")], add.g = list(theme(plot.margin= unit(c(1,0.1,1,0.1), "lines"))))
+    pdf(paste0("../plots/",e.name, "_multifid_final.pdf"), width = 6, height = 8)
       gs = do.call(grid.arrange, c(c(plots, list(g.real)), list(nrow = 1, main = "Final Stage")))
       print(gs)
     dev.off()
@@ -282,6 +284,8 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
   pdf(paste0("../plots/",e.name, "_compare_table.pdf"), width = 14, height = 10)
     grid.table(df)
   dev.off()
+  
+  save2(file = paste0("../plots/",e.name, ".RData"), mbo.res)
   
   if (only.table)
     mbo.res["bench.table"]

@@ -21,7 +21,7 @@ budget = 100000L
 #budget = 30L
 exec.time.budget = 4*60^2
 time.budget = 24*60^2
-tasks = giveMeTasks(c("meta_stream_intervals", "bng_cmc", "w7a", "w8a", "electricity", "covtype_20"))
+tasks = giveMeTasks(c("meta_stream_intervals", "bng_cmc", "w7a", "w8a", "electricity", "covertype"))
 #tasks = giveMeTasks("electricity")
 resampling.inner = giveMeResampleDesc("inner")
 resampling.outer = giveMeResampleDesc("cv")
@@ -46,7 +46,7 @@ Sys.sleep(60)
 submitJobs(reg, sample(jobs.long), resources = e.resources, job.delay = TRUE)
 waitForJobs(reg)
 # df2 = getJobInfo(reg = reg, ids = findExpired(reg))
-# jobs.more = df2$id[substrRight(df2$algo, 2) %in% c("_l", "ow", "ts")]
+# jobs.more = setdiff(df2$id[substrRight(df2$algo, 2) %in% c("_l", "ow", "ts")], jobs.long)
 # submitJobs(reg, sample(jobs.more), resources = e.resources)
 
 all.res = reduceResultsList(reg = reg)

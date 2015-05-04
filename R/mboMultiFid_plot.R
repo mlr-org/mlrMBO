@@ -94,7 +94,7 @@ plotMultiFidStep1d = function(plotdata, subset.variable = character(0), title = 
 }
 
 plotMultiFidStep2d = function(plotdata, subset.variable = character(0), title = character(0), add.g = list()) {
-  plots = plotMultiFidStep2dRaw(plotdata, subset.variable, title)
+  plots = plotMultiFidStep2dRaw(plotdata, subset.variable, add.g = add.g)
   gs = do.call(grid.arrange, c(plots, list(nrow = 1, main = title)))
   return(gs)
 }
@@ -107,7 +107,8 @@ plotMultiFidStep2dRaw = function(plotdata, subset.variable = character(0), add.g
       m.all = m.all[m.all$variable == var,]
     g = plotMultiFidStep2dRawEach(m.all, xname, 
       old.points = plotdata$old.points[,c(xname, ".multifid.lvl")], 
-      best.points = plotdata$best.points[,c(xname, ".multifid.lvl")])
+      best.points = plotdata$best.points[,c(xname, ".multifid.lvl")],
+      add.g = add.g)
     return(g)
   })
   return(plots)
