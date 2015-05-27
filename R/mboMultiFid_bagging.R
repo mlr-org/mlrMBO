@@ -4,6 +4,7 @@ makeMultiFidBaggingWrapper = function(learner) {
     stop("Predict type of the basic learner must be 'response'.")
   x = mlr:::makeHomogeneousEnsemble(
     id = sprintf("%s.bagged", learner$id),
+    type = learner$type,
     next.learner = learner,
     package = learner$package,
     par.set = makeParamSet(
