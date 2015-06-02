@@ -27,7 +27,21 @@ resampling.inner = giveMeResampleDesc("inner")
 resampling.outer = giveMeResampleDesc("cv")
 #resampling.outer = giveMeResampleDesc("outer")
 learners = giveMeLearners(c("svm"))
-tune.controls = giveMeTuneControls(budget = budget, exec.time.budget = exec.time.budget, time.budget = time.budget)
+mbo.control = giveMeMBOMultiFidControl(e.lvls = giveMeLvl(), costs = giveMeLvl("std")^2, budget = budget, exec.time.budget = exec.time.budget, time.budget = time.budget)
+surrogat.learner = giveMeSurrogatLearner("randomForest")
+mbo.control.lcb = mbo.control; mbo.control.lcb$multifid.last.level.crit = "lcb"
+tune.controls = list(
+  mfMBO.rf = mlr:::makeTuneControlMBO(
+    mbo.control = mbo.control,
+    learner = surrogat.learner),
+  mfMBO.rf.lcb = mlr:::makeTuneControlMBO(
+    mbo.control = mbo.control.lcb,
+    learner = surrogat.learner),
+  mfMBO.kriging = mlr:::makeTuneControlMBO(
+    mbo.control = mbo.control, 
+    learner = giveMeSurrogatLearner())
+)
+
 tuned.learners = giveMeTunedLearners(learners = learners, tune.controls = tune.controls, rsi = resampling.inner)
 resamplings = replicate(n = length(tasks), resampling.outer, simplify = FALSE)
 names(resamplings) = names(tasks)
@@ -37,13 +51,7 @@ save.image(file = paste0("../plots/",e.string,"/CV_compare.RData"))
 reg = makeExperimentRegistry(e.string, packages = c("mlr", "mlrMBO"))
 batchmark(reg, learners = tuned.learners, tasks = tasks, resamplings, measures = list(mmce, timetrain), overwrite = TRUE, repls = 1, save.opt.result = TRUE)
 #rres = testJob(reg, 1, external = FALSE)
-df = getJobInfo(reg)
-longs = substrRight(df$algo, 5) == "MBO_l"
-jobs.short = df$id[!longs]
-jobs.long = df$id[longs]
-submitJobs(reg, sample(jobs.short), resources = e.resources.short, job.delay = TRUE)
-Sys.sleep(60)
-submitJobs(reg, sample(jobs.long), resources = e.resources, job.delay = TRUE)
+submitJobs(reg, sample(getJobIds(reg)), resources = e.resources.short, job.delay = TRUE)
 waitForJobs(reg)
 # df2 = getJobInfo(reg = reg, ids = findExpired(reg))
 # jobs.more = setdiff(df2$id[substrRight(df2$algo, 2) %in% c("_l", "ow", "ts")], jobs.long)

@@ -104,7 +104,8 @@ giveMeLearners = function(x = NULL) {
     LiblineaRMultiClass = makeLearner("classif.LiblineaRMultiClass"),
     LiblineaRBinary = makeLearner("classif.LiblineaRBinary", type = 1),
     svm = makeLearner("classif.svm"),
-    regr.svm = makeLearner("regr.svm")
+    regr.svm = makeLearner("regr.svm"),
+    randomForest = makeLearner("classif.randomForest")
   )
   if (is.null(x))
     x = names(task.list)
@@ -115,11 +116,11 @@ giveMeParamSets = function(lrns) {
   # lrns.ids = sapply(strsplit(extractSubList(lrns, "id"), "\\."), getLast)
   lrns.ids = extractSubList(lrns, "id")
   LiblineaR = makeParamSet(
-    makeNumericParam("cost", lower = -15, upper = 10, trafo = function(x) 2^x),
-    makeNumericParam("epsilon", lower = -20, upper = 2, trafo = function(x) 2^x))
+    makeNumericParam("cost", lower = -15, upper = 15, trafo = function(x) 2^x),
+    makeNumericParam("epsilon", lower = -15, upper = 15, trafo = function(x) 2^x))
   svm = makeParamSet(
-    makeNumericParam("cost", lower = -15, upper = 10, trafo = function(x) 2^x),
-    makeNumericParam("gamma", lower = -10, upper = 6, trafo = function(x) 2^x),
+    makeNumericParam("cost", lower = -15, upper = 15, trafo = function(x) 2^x),
+    makeNumericParam("gamma", lower = -15, upper = 15, trafo = function(x) 2^x),
     makeNumericParam("tolerance", lower = -11, upper = -2, trafo = function(x) log(1+2^x) )
   )
   par.set.list = list(
@@ -184,7 +185,8 @@ giveMeSurrogatLearner = function(x = 1) {
   sur.list = list(
     surrogat.learner = makeLearner("regr.km", nugget.estim = TRUE, jitter = TRUE, predict.type = "se"),
     deterministic = makeLearner("regr.km", nugget.estim = FALSE, predict.type = "se"),
-    stupid = makeLearner("regr.lm", predict.type = "se")
+    stupid = makeLearner("regr.lm", predict.type = "se"),
+    randomForest = makeLearner("regr.randomForest", predict.type = "se")
     )
   sur.list[[x]]
 }

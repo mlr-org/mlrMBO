@@ -109,7 +109,8 @@ infillCritMultiFid2 = function(points, model, control, par.set, design, iter, lv
   design.last = design[design$.multifid.lvl == nlvls, , drop = FALSE]
   # note: mbo returns the negated EI (and SE), so have to later minimize the huang crit.
   # which is done by default by our optimizer anyway
-  ei.last = infillCritAEI(points.last, model, control, par.set, design.last, iter)
+  infill.crit.fun = getInfillCritFunction(control$multifid.last.level.crit)
+  ei.last = infill.crit.fun(points.last, model, control, par.set, design.last, iter)
   alpha1 = lvl.cors[lvl]
 
   # ALPHA 2
