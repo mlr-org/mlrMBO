@@ -34,6 +34,7 @@ mboTemplate = function(fun, par.set, design = NULL, learner, control, show.info 
   if (is.null(continue)) {
     opt.path = makeMBOOptPath(par.set, control)
     extras = getExtras(ninit, NULL, NA_real_, control)
+    #MFMBO HERE:
     generateMBODesign(design, fun, par.set, opt.path, control, show.info, oldopts, more.args, extras)
     stored.models = namedList(control$store.model.at)
     resample.results = namedList(control$resample.at)
@@ -47,7 +48,9 @@ mboTemplate = function(fun, par.set, design = NULL, learner, control, show.info 
     resample.results = continue$resample.results
   }
 
+  #MFMBO HERE:
   tasks = makeTasks(par.set, opt.path, algo.init, control = control)
+  #MFMBO HERE:
   tr = trainModels(learner, tasks, control)
 
   
