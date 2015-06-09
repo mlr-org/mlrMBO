@@ -10,7 +10,7 @@
 #   makeNumericParam("x", lower = 0, upper = 10)
 # )
 # lvls = c(0.1, 0.5)
-# objfun2 = makeMBOMultifidFunction(objfun, lvls)
+# objfun2 = makeMBOMultiFidFunction(objfun, lvls)
 
 # # define mlr learner
 # lrn = makeLearner("regr.km", nugget.estim = TRUE, jitter = TRUE)

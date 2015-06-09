@@ -1,5 +1,5 @@
 ---
-title: "Multifid"
+title: "MultiFid"
 author: "Jakob R"
 date: "29. August 2014"
 output: pdf_document

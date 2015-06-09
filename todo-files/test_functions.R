@@ -104,7 +104,7 @@ plotTestfunFamily = function(f, lvs, x1, x2) {
 
 ##### CONVERT TEST FUNCTION TO MBO OBJECTIVE FUNCTION #####
 # we need to ensure that the signature is now f(x), where x is a list, which contains the lvl param
-makeMBOMultifidFunction = function(f, lvls) {
+makeMBOMultiFidFunction = function(f, lvls) {
   force(f)
   force(lvls)
   function(x) {

@@ -215,7 +215,7 @@ generalBenchmark = function(e.name, objfun, e.seed, e.par.set, e.lvl, surrogat.m
       dev.off()
     })
     
-    # 9.2.5 Multifid Steps As plot (and table)
+    # 9.2.5 MultiFid Steps As plot (and table)
     g = genPlotSteps(mbo.res$multifid$opt.path)
     ggsave(plot = g, filename = paste0("../plots/", e.name, "_multifid_steps.pdf"), width = 7, height = 5)
     

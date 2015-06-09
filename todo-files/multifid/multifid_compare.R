@@ -42,7 +42,7 @@ sasenas = list(sasena10 = 1, sasena07 = 0.7, sasena05 = 0.5, sasena02 = 0.2)
 #sasenas = list(sasena02 = 0.5)
 if (!exists("sasens.res")) {
   sasens.res = lapply(names(sasenas), function(sn) {
-    objfun = makeMBOMultifidFunction(f = addDistortion(sasena, g = yshift, fac = sasenas[[sn]]), lvls = e.lvl)
+    objfun = makeMBOMultiFidFunction(f = addDistortion(sasena, g = yshift, fac = sasenas[[sn]]), lvls = e.lvl)
     generalBenchmark(e.name = sn, objfun = objfun, control = e.control, e.seed = e.seed, e.par.set = e.par.set, e.lvl = e.lvl, grid.all = TRUE, surrogat.model = surrogat.model, e.string = e.string, high.res = TRUE, multifid.costs = e.lvl)
   })
   save.image(paste0("../plots/", e.string, "/multifid_compare.RData"))
@@ -70,7 +70,7 @@ if (!exists("hartmans.res"))
   hartmans.res = list()
 for(sn in names(hartmans)) {
   if (is.null(hartmans.res[[sn]])) {
-    objfun = makeMBOMultifidFunction(f = distortX(addDistortion(hartman, yupp, fac = hartmans[[sn]]), xshift, direction = hartmans[[sn]]), lvls = e.lvl)
+    objfun = makeMBOMultiFidFunction(f = distortX(addDistortion(hartman, yupp, fac = hartmans[[sn]]), xshift, direction = hartmans[[sn]]), lvls = e.lvl)
     hartmans.res[[sn]] = generalBenchmark(e.name = sn, objfun = objfun, control = e.control, e.seed = e.seed, e.par.set = e.par.set, e.lvl = e.lvl, grid.all = TRUE, surrogat.model = surrogat.model, e.string = e.string, high.res = TRUE, multifid.costs = e.lvl)
     save.image(paste0("../plots/", e.string, "/multifid_compare.RData"))
   } else {
@@ -82,7 +82,7 @@ if (!exists("hartmans.res2"))
   hartmans.res2 = list()
 for(sn in names(hartmans)) {
   if (is.null(hartmans.res2[[sn]])) {
-    objfun = makeMBOMultifidFunction(f = distortX(addDistortion(hartman2d, yupp, fac = hartmans[[sn]]), xshift, direction = hartmans[[sn]]), lvls = e.lvl)
+    objfun = makeMBOMultiFidFunction(f = distortX(addDistortion(hartman2d, yupp, fac = hartmans[[sn]]), xshift, direction = hartmans[[sn]]), lvls = e.lvl)
     hartmans.res2[[sn]] = generalBenchmark(e.name = sn, objfun = objfun, control = e.control2, e.seed = e.seed, e.par.set = e.par.set2, e.lvl = e.lvl, grid.all = TRUE, surrogat.model = surrogat.model, e.string = e.string2, high.res = TRUE, multifid.costs = e.lvl)
     save.image(paste0("../plots/", e.string, "/multifid_compare.RData"))
   } else {
@@ -94,7 +94,7 @@ if (!exists("hartmans.res3"))
   hartmans.res3 = list()
 for(sn in names(hartmans)) {
   if (is.null(hartmans.res3[[sn]])) {
-    objfun = makeMBOMultifidFunction(f = distortX(addDistortion(hartman3d, yupp, fac = hartmans[[sn]]), xshift, direction = hartmans[[sn]]), lvls = e.lvl)
+    objfun = makeMBOMultiFidFunction(f = distortX(addDistortion(hartman3d, yupp, fac = hartmans[[sn]]), xshift, direction = hartmans[[sn]]), lvls = e.lvl)
     hartmans.res3[[sn]] = generalBenchmark(e.name = sn, objfun = objfun, control = e.control3, e.seed = e.seed, e.par.set = e.par.set3, e.lvl = e.lvl, grid.all = TRUE, surrogat.model = surrogat.model, e.string = e.string3, high.res = FALSE, multifid.costs = e.lvl)
     save.image(paste0("../plots/", e.string, "/multifid_compare.RData"))
   } else {

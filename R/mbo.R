@@ -53,17 +53,13 @@ mbo = function(fun, par.set, design = NULL, learner, control,
 
   # Call the correct mbo function
   mbo.fun = determineMBOFun(control)
-  mbo.fun(fun = fun, par.set = par.set, design = design,
+
+  if(control$multifid) {
+    par.set = c(par.set, makeParamSet(
+    makeIntegerParam(".multifid.lvl", lower = 1L, upper = length(control$multifid.lvls))))
+  }
+
+  mboTemplate(fun = fun, par.set = par.set, design = design,
     learner = learner, control = control,
     show.info = show.info, more.args = more.args)
-}
-
-# Helper function which selects the correct mbo main function
-# based on the user settings.
-determineMBOFun = function(control) {
-  if (control$infill.crit == "multiFid") {
-    return(mboMultiFid)
-  } else {
-    return(mboTemplate)
-  }
 }

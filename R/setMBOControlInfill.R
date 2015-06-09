@@ -8,7 +8,6 @@
 #'   \dQuote{aei}: Augmented expected improvement.
 #'   \dQuote{eqi}: Expected quantile improvement.
 #'   \dQuote{lcb}: Lower confidence bound.
-#'   \dQuote{multiFid}: Multifidelity: Expected improvement on different levels of the perfomance parameter defined in the \code{MBOMultiFidControl}.
 #'   Alternatively, you may pass a function name as string.
 #' @param interleave.random.points [\code{integer(1)}]\cr
 #'   Add \code{interleave.random.points} uniformly sampled points additionally to the

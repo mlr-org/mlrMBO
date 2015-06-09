@@ -20,7 +20,11 @@ proposePointsByInfillOptimization = function(models, par.set, control, opt.path,
     return(ch$prop)
 
   design = convertOptPathToDf(par.set, opt.path, control)
-  infill.crit.fun = getInfillCritFunction(control$infill.crit)
+  if (control$multifid) {
+    infill.crit.fun = infillCritMultiFid
+  } else {
+    infill.crit.fun = getInfillCritFunction(control$infill.crit)
+  }
   infill.opt.fun = getInfillOptFunction(control$infill.opt)
   # store time to propose single point
   st = system.time({

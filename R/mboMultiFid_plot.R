@@ -129,3 +129,24 @@ plotMultiFidStep2dRawEach = function(m.spec, xname, old.points, best.points, add
   }
   return(g)
 }
+
+# make a design (data.frame) with the exact same points for each multifid level.
+# if the requested number of points is a bit lower than design, we randomly drop some rows
+expandDesign = function(design, control, npoints.per.lvl = NULL) {
+  n = nrow(design)
+  k = length(control$multifid.lvls)
+  # default is to replicate the design for all levels
+  if (is.null(npoints.per.lvl))
+    npoints.per.lvl = rep(n, times = k)
+  all.inds = seq_len(n)
+  designs = lapply(seq_len(k), function(i) {
+    nppl = npoints.per.lvl[i]
+    # do we need to drop some rows of design? lets also keep the order of all.inds
+    inds = if (nppl < n)
+      setdiff(all.inds, sample(all.inds, n - nppl))
+    else
+      all.inds
+    cbind(design[inds, , drop = FALSE], .multifid.lvl = i)
+  })
+  do.call(rbind.data.frame, designs)
+}

@@ -40,7 +40,7 @@ par.set = makeParamSet(
 
 lrn = makeLearner("regr.km", nugget.estim = TRUE, jitter = TRUE)
 
-obj = makeMBOMultifidFunction(addDistortion(addDistortion(hartman2d, g=noiseGaussian), g=yupp), lvls = ctrl$multifid.lvls)
+obj = makeMBOMultiFidFunction(addDistortion(addDistortion(hartman2d, g=noiseGaussian), g=yupp), lvls = ctrl$multifid.lvls)
 res = mbo(fun = obj, par.set = par.set, control = ctrl, learner = lrn, show.info = TRUE)
 
 pdf("../plots/tmp_multifid_min_2d.pdf", width = 9, height = 11)
