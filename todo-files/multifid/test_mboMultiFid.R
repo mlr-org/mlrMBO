@@ -1,6 +1,6 @@
 library(devtools)
 load_all()
-
+options(warn = 2)
 set.seed(21)
 objfun = function(x, fac = 0.5) {
   lvl.par.val = x$.multifid.lvl / 3
