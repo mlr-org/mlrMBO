@@ -36,11 +36,7 @@ setMBOControlMultiFid = function(control, param, lvls, costs = NULL, cor.grid.po
 
   control$multifid = TRUE
 
-  if (!is.null(costs)) {
-    assertNumeric(costs, len = length(control$multifid.lvls))
-  }
-  control$multifid.costs = costs
-
+  assertNumeric(costs, len = length(control$multifid.lvls))
   if (!is.null(cor.grid.points))
     cor.grid.point = asInt(cor.grid.points, lower = 2L)
   control$multifid.cor.grid.points = coalesce(cor.grid.points, control$multifid.cor.grid.points, 50L)

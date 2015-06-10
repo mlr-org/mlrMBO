@@ -1,4 +1,4 @@
-genPlotData = function(compound.model, opt.path, control, fun, res = 100, lvl.cors, lvl.sds, time.model, par.set, best.points, merge = TRUE) {
+genPlotData = function(compound.model, opt.path, control, fun, res = 100, lvl.cors, lvl.sds, par.set, best.points, merge = TRUE) {
   if (!control$multifid.generate.plot.data)
     return(NULL)
   requirePackages(packs=c("ggplot2", "reshape2"), why="generate MultiFid Plot")
@@ -22,7 +22,6 @@ genPlotData = function(compound.model, opt.path, control, fun, res = 100, lvl.co
     design = old.points, 
     lvl.cors = lvl.cors, 
     lvl.sds = lvl.sds, 
-    time.model = time.model, 
     lvl = grid.design$.multifid.lvl)
   z.df = do.call(cbind.data.frame, z)
   all = cbind(grid.design, y = p$data$response, z)
@@ -35,7 +34,6 @@ genPlotData = function(compound.model, opt.path, control, fun, res = 100, lvl.co
     design = old.points, 
     lvl.cors = lvl.cors, 
     lvl.sds = lvl.sds, 
-    time.model = time.model, 
     lvl = best.points$.multifid.lvl)
   best.points$y = predict(compound.model, newdata = best.points)$data$response
   best.points = do.call(cbind, c(list(best.points), best.points.z))
