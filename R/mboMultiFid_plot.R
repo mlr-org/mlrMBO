@@ -9,7 +9,7 @@ genPlotData = function(compound.model, opt.path, control, fun, res = 100, lvl.co
   # expand the design to the same points on each multifid level
   grid.design = expandDesign(design = grid.design, control = control)
   # get the points we already have evaluated during the algorithm
-  old.points = convertMFOptPathToDesign(opt.path)
+  old.points = convertOptPathToDf(par.set, opt.path, control)
   # combine the grid and the already calculated points so plot lines also have the exact points
   if (merge) grid.design = rbind(grid.design, old.points[,colnames(grid.design)])
   # predict all the y values by the model

@@ -1,19 +1,3 @@
-# generates initial design for multifid
-generateMBOMultiFidDesign = function(par.set, control) {
-  design = generateDesign(control$init.design.points, par.set, fun = control$init.design.fun, fun.args = control$init.design.args, trafo = FALSE)
-}
-
-# convert OP to a df, of a specified structure with col .multifid.lvl, so we can model on it
-convertMFOptPathToDesign = function(opt.path, ...) {
-  as.data.frame(opt.path, include.rest = FALSE, discretes.as.factor = TRUE, ...)
-}
-
-# convert OP to a mlr task, of a specified structure with col .multifid.lvl, so we can model on it
-convertMFOptPathToTask = function(opt.path, ...) {
-  d = convertMFOptPathToDesign(opt.path, ...)
-  makeRegrTask(id = "multifid.task", data = d, target = "y")
-}
-
 # propose Points for each multifid level. return a list
 proposePointsMultiFid = function(model, par.set, control, opt.path, iter) {
   # lvl.cors, lvl.sds
@@ -28,48 +12,6 @@ proposePointsMultiFid = function(model, par.set, control, opt.path, iter) {
     res$prop.points$.multifid.lvl = lvl
     res
   })
-}
-
-# FIXME: Should be implemented smarter with the already existent filterProposedPoints function
-filterProposedPointsMultiFid = function(prop, opt.path, par.set, control, lvl) {
-  # prepare stuff
-  n = nrow(prop$prop.points)
-  design = getOptPathX(opt.path)
-  design = design[design$.multifid.lvl == lvl,]
-  design = dropNamed(design, ".multifid.lvl")
-  calcMaxMetric = function(x, y) max(abs(x - y))
-  to.delete = rep(FALSE,  n)
-
-  # look at min distance from i-point to current set (design + accepted)
-  for (i in 1:n) {
-    pp = prop$prop.points[i, ]
-    min.dist = min(apply(design, 1, calcMaxMetric, y = pp))
-    # if too close, mark i-point, otherwise add it to set
-    if (min.dist < control$filter.proposed.points.tol)
-      to.delete[i] = TRUE
-    else
-      design = rbind(design, pp)
-  }
-
-  # for now replace removed design points with random points,
-  #  we leave all other data in prop like it is, we have flag filter.replace
-  n.replace = sum(to.delete)
-  prop$filter.replace = to.delete
-
-  if (n.replace > 0) {
-    counter = 0
-    repeat {
-      prop$prop.points[to.delete, ] = generateRandomDesign(n.replace, par.set)
-      min.dist = min(apply(design, 1, calcMaxMetric, y = pp))
-      counter = counter + 1
-      if(min.dist > control$filter.proposed.points.tol || counter > 20L)
-        break
-    }
-    # FIXME: we might want to do something smarter here. how about augmenting the current design?
-    
-  }
-
-  return(prop)
 }
 
 # return only crit vector

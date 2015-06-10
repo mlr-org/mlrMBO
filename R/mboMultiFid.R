@@ -177,3 +177,19 @@ mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE,
     plot.data = plot.data
   )
 }
+
+# generates initial design for multifid
+generateMBOMultiFidDesign = function(par.set, control) {
+  design = generateDesign(control$init.design.points, par.set, fun = control$init.design.fun, fun.args = control$init.design.args, trafo = FALSE)
+}
+
+# convert OP to a df, of a specified structure with col .multifid.lvl, so we can model on it
+convertMFOptPathToDesign = function(opt.path, ...) {
+  as.data.frame(opt.path, include.rest = FALSE, discretes.as.factor = TRUE, ...)
+}
+
+# convert OP to a mlr task, of a specified structure with col .multifid.lvl, so we can model on it
+convertMFOptPathToTask = function(opt.path, ...) {
+  d = convertMFOptPathToDesign(opt.path, ...)
+  makeRegrTask(id = "multifid.task", data = d, target = "y")
+}
