@@ -51,9 +51,6 @@ mbo = function(fun, par.set, design = NULL, learner, control,
   configureMlr(on.learner.error = control$on.learner.error,
     show.learner.output = control$show.learner.output)
 
-  # Call the correct mbo function
-  mbo.fun = determineMBOFun(control)
-
   if(control$multifid) {
     par.set = c(par.set, makeParamSet(
     makeIntegerParam(".multifid.lvl", lower = 1L, upper = length(control$multifid.lvls))))

@@ -1,17 +1,28 @@
 # propose Points for each multifid level. return a list
 proposePointsMultiFid = function(model, par.set, control, opt.path, iter) {
   # lvl.cors, lvl.sds
-  lvl.sds = vnapply(seq_along(control$multifid.lvls), calcModelSD, model = model, par.set = par.set, control = controll, opt.path = opt.ptah)
-  corgrid = generateDesign(n = control$multifid.cor.grid.points, par.set = par.set)
-  lvl.cors = vnapply(seq_along(control$multifid.lvls), calcModelCor, grid = corgrid, nlvls = length(control$multifid.lvls))
-  contorl.nomf = control
+  control.nomf = control
   control.nomf$multifid = FALSE
-  par.set.nomf = dropNamed(par.set, ".multifid.lvl")
-  lapply(seq_along(control$multifid.lvls), function(lvl) {
+  par.set.nomf = dropParams(par.set, ".multifid.lvl")
+
+  lvl.sds = vnapply(seq_along(control$multifid.lvls), calcModelSD, model = model, par.set = par.set, control = controll, opt.path = opt.path)
+  corgrid = generateDesign(n = control$multifid.cor.grid.points, par.set = par.set.nomf)
+  lvl.cors = vnapply(seq_along(control$multifid.lvls), calcModelCor, model = model, grid = corgrid, nlvls = length(control$multifid.lvls))
+
+  prop = lapply(seq_along(control$multifid.lvls), function(lvl) {
     res = proposePointsByInfillOptimization(model, par.set.nomf, control, opt.path, iter = iter, lvl.cors = lvl.cors, lvl.sds = lvl.sds, lvl = lvl)
     res$prop.points$.multifid.lvl = lvl
     res
   })
+
+  infill.vals = extractSubList(prop, "crit.vals")
+
+  if(iter %% control$multifid.force.last.level.steps == 0 | iter == control$iters)
+    min.index = length(control$multifid.lvls)
+  else
+    min.index = getMinIndex(infill.vals)
+  
+  prop[[min.index]]
 }
 
 # return only crit vector
@@ -27,7 +38,7 @@ infillCritMultiFid2 = function(points, model, control, par.set, design, iter, lv
   design.last = design[design$.multifid.lvl == nlvls, , drop = FALSE]
   # note: mbo returns the negated EI (and SE), so have to later minimize the huang crit.
   # which is done by default by our optimizer anyway
-  infill.crit.fun = getInfillCritFunction(control)
+  infill.crit.fun = getInfillCritFunction(control$infill.crit)
   ei.last = infill.crit.fun(points.last, model, control, par.set, design.last, iter)
   alpha1 = lvl.cors[lvl]
 

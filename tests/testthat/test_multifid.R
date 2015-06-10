@@ -3,7 +3,7 @@ context("multifid")
 test_that("basic multifid works", {
   
   objfun = function(x, fac = 0.5) {
-    lvl.par.val = x$dw.perc
+    lvl.par.val = x$.multifid.lvl / 3
     x = x$x
     assertNumeric(x, len = 1, lower = 0, upper = 10)
     res = -1 * sin(x) - exp(x/100) + 10
@@ -25,11 +25,11 @@ test_that("basic multifid works", {
     show.learner.output = FALSE,
   )
   control = setMBOControlInfill(control = control, 
-    crit = "multiFid",
+    crit = "ei",
     opt = "focussearch",
     opt.restarts = 1L,
     opt.focussearch.maxit = 1L,
-    opt.focussearch.points = 10L,
+    opt.focussearch.points = 200L,
     filter.proposed.points = TRUE,
     filter.proposed.points.tol = 0.01
   )
