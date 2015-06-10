@@ -22,7 +22,7 @@ convertMFOptPathToTimeTask = function(opt.path, ...) {
 
 # propose Points for each multifid level. return a list
 proposePointsMultiFid = function(model, par.set, control, opt.path, iter) {
-  # lvl.cors, time.model, lvl.sds
+  # lvl.cors, lvl.sds
   lvl.sds = vnapply(seq_along(control$multifid.lvls), calcModelSD, model = model, par.set = par.set, control = controll, opt.path = opt.ptah)
   corgrid = generateDesign(n = control$multifid.cor.grid.points, par.set = par.set)
   lvl.cors = vnapply(seq_along(control$multifid.lvls), calcModelCor, grid = corgrid, nlvls = length(control$multifid.lvls))
@@ -79,12 +79,12 @@ filterProposedPointsMultiFid = function(prop, opt.path, par.set, control, lvl) {
 }
 
 # return only crit vector
-infillCritMultiFid = function(points, model, control, par.set, design, iter, lvl.cors, lvl.sds, time.model, lvl) {
-  infillCritMultiFid2(points, model, control, par.set, design, iter, lvl.cors, lvl.sds, time.model, lvl)$crit
+infillCritMultiFid = function(points, model, control, par.set, design, iter, lvl.cors, lvl.sds, lvl) {
+  infillCritMultiFid2(points, model, control, par.set, design, iter, lvl.cors, lvl.sds, lvl)$crit
 }
 
 # return all crap so we can plot it later
-infillCritMultiFid2 = function(points, model, control, par.set, design, iter, lvl.cors, lvl.sds, time.model, lvl) {
+infillCritMultiFid2 = function(points, model, control, par.set, design, iter, lvl.cors, lvl.sds, lvl) {
   nlvls = length(control$multifid.lvls)
   points.current = cbind(points, .multifid.lvl = lvl)
   points.last = cbind(points, .multifid.lvl = nlvls) #points on most expensive level
@@ -104,13 +104,7 @@ infillCritMultiFid2 = function(points, model, control, par.set, design, iter, lv
   alpha2 = 1 - (sigmas / sqrt(se^2 + sigmas^2))
 
   # ALPHA 3
-  if (!is.null(control$multifid.costs)) {
-    alpha3 = getLast(control$multifid.costs) / control$multifid.costs[lvl]
-  } else {
-    cost.current = infillCritMeanResponse(points.current, time.model, control)
-    cost.last = infillCritMeanResponse(points.last, time.model, control)
-    alpha3 = cost.last / cost.current 
-  }
+  alpha3 = getLast(control$multifid.costs) / control$multifid.costs[lvl]
   crit = ei.last * alpha1 * alpha2 * alpha3
   list(crit = crit, ei = ei.last, se = se, alpha1 = alpha1, alpha2 = alpha2, alpha3 = alpha3, sd = sigmas)
 }
