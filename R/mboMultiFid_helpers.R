@@ -14,12 +14,6 @@ convertMFOptPathToTask = function(opt.path, ...) {
   makeRegrTask(id = "multifid.task", data = d, target = "y")
 }
 
-convertMFOptPathToTimeTask = function(opt.path, ...) {
-  time.data = convertMFOptPathToDesign(opt.path, include.y = FALSE, ...)
-  time.data$exec.time = getOptPathExecTimes(opt.path)
-  makeRegrTask(id = "time.task", data = time.data, target = "exec.time")
-}
-
 # propose Points for each multifid level. return a list
 proposePointsMultiFid = function(model, par.set, control, opt.path, iter) {
   # lvl.cors, lvl.sds
