@@ -3,11 +3,10 @@
 \name{plotMBOResult}
 \alias{plotMBOResult}
 \title{Plots any MBO result objects. Plots for X-Space, Y-Space and any coloumn in
-the optimization path are available.}
+the optimization path are available. This function uses \code{\link{renderMBOPlot}}.}
 \usage{
-plotMBOResult(result, iters, pause = TRUE, crit.plot = TRUE, hv.plot = NA,
-  extra.measures = NULL, ref.point = NULL, lim.x = list(),
-  lim.y = list())
+plotMBOResult(result, iters, pause = TRUE, hv.plot = NA, ref.point = NULL,
+  y.over.time, title = "MBO Result", ...)
 }
 \arguments{
 \item{result}{[\code{MBOResult}]\cr
@@ -20,21 +19,9 @@ Iterations to be plotted, 0 indicates the initial design.}
 Should the process be paused after each iteration?
 Default is \code{TRUE}.}
 
-\item{crit.plot}{[\code{logical(1)}]\cr
-Should the infill criterion versus the iteration be plotted? For multi objective
-and method = MSPOT multiple infill criterion values per iterion do exist,
-so a multi-dimensional plot is used. Default is TRUE}
-
 \item{hv.plot}{[\code{logical(1)}]\cr
 Should the hypervolume development be plotted? Default is FALSE for single
 objective und TRUE for multi objective.}
-
-\item{extra.measures}{[\code{character}]\cr
- Additional measures to be plotted versus the iteration. Must be the name
- of a coloumn available in the optimization path. Notice that at most 4 plost
- can be renderd at the same time. Since X and Y Space plots will allways be
- rendered, at most 2 addition plots are possible. You must deactivate crit.plot
- or hv.plot, if you want to add additional plots via extra.measure.}
 
 \item{ref.point}{[\code{numeric}]\cr
   Reference point used for the hypervolume development plot. Length of vector
@@ -42,6 +29,22 @@ objective und TRUE for multi objective.}
   \code{NULL}, in this case the maximum / minimum values in the optimization
   path, that are alive in iteration iter, are used and increased / decreased
   by 0.1 (depending on minimization / maximization of the objective).}
+
+\item{...}{\cr
+Additional parameters for the \code{\link[ParamHelpers]{renderOptPathPlot}}
+function in package \code{ParamHelpers}.}
+
+\item{crit.plot}{[\code{logical(1)}]\cr
+Should the infill criterion versus the iteration be plotted? For multi objective
+and method = MSPOT multiple infill criterion values per iterion do exist,
+so a multi-dimensional plot is used. Default is TRUE}
+
+\item{extra.measures}{[\code{character}]\cr
+ Additional measures to be plotted versus the iteration. Must be the name
+ of a coloumn available in the optimization path. Notice that at most 4 plost
+ can be renderd at the same time. Since X and Y Space plots will allways be
+ rendered, at most 2 addition plots are possible. You must deactivate crit.plot
+ or hv.plot, if you want to add additional plots via extra.measure.}
 
 \item{lim.x}{[\code{list}],}
 
@@ -59,6 +62,6 @@ Default is an empty list - in this case limits are automatically set.}
 }
 \description{
 Plots any MBO result objects. Plots for X-Space, Y-Space and any coloumn in
-the optimization path are available.
+the optimization path are available. This function uses \code{\link{renderMBOPlot}}.
 }
 
