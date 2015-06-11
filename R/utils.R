@@ -16,7 +16,7 @@ checkLearner = function(learner, par.set, control, ...) {
     assertClass(learner, "Learner")
   }
   # so we dont run into problems with focus search et al
-  learner$fix.factors = TRUE
+  learner$fix.factors.prediction = TRUE
   return(learner)
 }
 
