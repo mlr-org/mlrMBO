@@ -1,7 +1,7 @@
 context("multipoint multicrit")
 
 test_that("multipoint multicrit", {
-  f = branin
+  f = DiceKriging::branin
   ps = makeNumericParamSet(len = 2L, lower = 0, upper = 1)
   lrn = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
 
