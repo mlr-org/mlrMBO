@@ -30,7 +30,8 @@ proposePointsByInfillOptimization = function(models, par.set, control, opt.path,
   st = system.time({
     prop.points = infill.opt.fun(infill.crit.fun, models, control, par.set, opt.path, design, iter, ...)
   })
-  crit.vals = infill.crit.fun(prop.points, models, control, par.set, design, iter, ...)
+  prop.points.converted = convertDataFrameCols(prop.points, ints.as.num = TRUE, logicals.as.factor = TRUE)
+  crit.vals = infill.crit.fun(prop.points.converted, models, control, par.set, design, iter, ...)
   crit.vals = matrix(crit.vals, ncol = 1L)
   return(list(prop.points = prop.points, propose.time = st[3L], crit.vals = crit.vals, errors.model = NA_character_))
 }
