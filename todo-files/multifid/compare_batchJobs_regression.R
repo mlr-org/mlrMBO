@@ -11,16 +11,16 @@ source("todo-files/multifid/benchmark/giveMe.R")
 source("todo-files/multifid/benchmark/mbo_batchmark.R")
 
 BatchJobs::loadConfig(conffile = "../.BatchJobs.R")
-e.resources = list(walltime = 3600L)
+e.resources = list(walltime = 8*60^2)
 
 e.string = paste0("bJ_regression_",format(Sys.time(), "%Y_%m%d_%H%M"))
 dir.create(paste0("../plots/", e.string), showWarnings = FALSE)
 
-budget = 10000L
-exec.time.budget = 0.5*60^2
-time.budget = 0.9*60^2
-init.design.points = 25L
-tasks = giveMeTasks(c("bh", "kin8nm", "puma32H"))
+budget = 100000L
+exec.time.budget = 10*60
+time.budget = 7*60^2
+init.design.points = 30L
+tasks = giveMeTasks(c("kin8nm", "puma32H"))
 resampling.inner = giveMeResampleDesc("inner")
 resampling.outer = giveMeResampleDesc("cv")
 learners = giveMeLearners(c("regr.svm"))
@@ -43,6 +43,6 @@ save.image(file = paste0("../plots/",e.string,"/CV_compare.RData"))
 ##### Visualisierung ####
 #####
 
-giveMeVisuals(all.res, e.string, init.design.points = tune.controls[[1]]$mbo.control$init.design.points)
+giveMeVisuals(all.res, e.string, init.design.points = tune.controls[[1]]$mbo.control$init.design.points, tasks = tasks)
 
-save.image(file = paste0("../plots/",e.string,"/CV_compare.RData"))
+# save.image(file = paste0("../plots/",e.string,"/CV_compare.RData"))

@@ -28,6 +28,17 @@ hartman = function(lv, x, d = 1) {
 
 hartman2d = function(lv, x) hartman(lv, x, d=2)
 
+hartman1d = lapply(1:3, function(s) {
+  force(s)
+  function(lv, x) {
+    xs = c(0.114, 0.556, 0.852)
+    xs[s] = x
+    hartman(lv, xs, d = 3)
+  }
+})
+
+hartman3d = function(lv, x) hartman(lv, x, d=3)
+
 # Sasena (2002)
 # Sasena, M.J. (2002), Flexibility and Efficiency Enhancements for Constrained Global Design Optimization
 #   with Kriging Approximations, Ph. D. dissertation, University of Michigan.
@@ -93,7 +104,7 @@ plotTestfunFamily = function(f, lvs, x1, x2) {
 
 ##### CONVERT TEST FUNCTION TO MBO OBJECTIVE FUNCTION #####
 # we need to ensure that the signature is now f(x), where x is a list, which contains the lvl param
-makeMBOMultifidFunction = function(f, lvls) {
+makeMBOMultiFidFunction = function(f, lvls) {
   force(f)
   force(lvls)
   function(x) {

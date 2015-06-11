@@ -27,7 +27,6 @@ How should infill points be rated. Possible parameter values are:
 \dQuote{aei}: Augmented expected improvement.
 \dQuote{eqi}: Expected quantile improvement.
 \dQuote{lcb}: Lower confidence bound.
-\dQuote{multiFid}: Multifidelity: Expected improvement on different levels of the perfomance parameter defined in the \code{MBOMultiFidControl}.
 Alternatively, you may pass a function name as string.}
 
 \item{interleave.random.points}{[\code{integer(1)}]\cr

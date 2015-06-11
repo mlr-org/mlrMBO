@@ -13,12 +13,16 @@
 # @param opt.path [\code{OptPath}]\cr
 # @return [\code{integer(1)}] Negative value is no stopping criterion is satisfied. 0 if
 #   maximum number of iterations is reached and 1 if time budget is exceeded.
-shouldTerminate = function(max.iters, iter, time.budget, start.time, exec.time.budget, opt.path = NULL) {
-  if (iter > max.iters)
-    return(0L)
-  if (isTimeBudgetExceeded(start.time, time.budget))
-    return(1L)
-  if (isTimeBudgetExceeded(opt.path, exec.time.budget))
+shouldTerminate = function(max.iters, iter, time.budget, start.time, exec.time.budget, opt.path = NULL, show.info = FALSE) {
+  if (iter > max.iters){
+    showInfo(show.info, "max.iters %i reached with %i", max.iters, iter)
+  	return(0L)
+  }
+  if (isTimeBudgetExceeded(start.time, time.budget)) {
+  	return(1L)
+  }
+  if (isTimeBudgetExceeded(opt.path, exec.time.budget)) {
   	return(2L)
+  }
   return(-1L)
 }

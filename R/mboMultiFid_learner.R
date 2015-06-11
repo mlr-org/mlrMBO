@@ -17,6 +17,7 @@ makeMultiFidWrapper = function(learner, control) {
   # FIXME: export this in mlr?
   w = mlr:::makeBaseWrapper(
     id = sprintf("%s.multifid", learner$id),
+    type = learner$type,
     next.learner = learner,
     package = learner$package,
     learner.subclass = "MultiFidWrapper",

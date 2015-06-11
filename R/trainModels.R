@@ -1,4 +1,7 @@
 trainModel = function(learner, task, control) {
+  if (control$multifid) {
+    learner = makeMultiFidWrapper(learner, control)
+  }
   st = system.time({
     m = train(learner, task)
   })

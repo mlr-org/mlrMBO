@@ -15,7 +15,9 @@
 proposePoints = function(tasks, models, par.set, control, opt.path, iter) {
   m = control$number.of.targets
   if (m == 1L) {
-    if (is.null(control$multipoint.method)) {
+    if (control$multifid) {
+      res = proposePointsMultiFid(models[[1L]], par.set, control, opt.path, iter)
+    } else if (is.null(control$multipoint.method)) {
       res = proposePointsByInfillOptimization(models[[1L]], par.set, control, opt.path, iter)
     } else {
       if (control$multipoint.method == "lcb")

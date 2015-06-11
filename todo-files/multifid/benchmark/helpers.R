@@ -136,3 +136,27 @@ Mode = function(x) {
   ux[which.max(tabulate(match(x, ux)))]
 }
 
+#http://stackoverflow.com/questions/7735647
+repeatBefore = function(x) {    # repeats the last non NA value. Keeps leading NA
+    ind = which(!is.na(x))      # get positions of nonmissing values
+    if(is.na(x[1]))             # if it begins with a missing, add the 
+          ind = c(1,ind)        # first position to the indices
+    rep(x[ind], times = diff(   # repeat the values at these indices
+       c(ind, length(x) + 1) )) # diffing the indices + length yields how often 
+} 
+
+timeexec = makeMeasure(
+  id = "timeexec", minimize = TRUE, best = 0, worst = Inf,
+  properties = c("classif", "classif.multi", "regr", "surv", "costsens", "cluster", "req.model"),
+  name = "Time of executing the fitnes function",
+  fun = function(task, model, pred, feats, extra.args) {
+    if(is.null(model$learner.model$opt.result$opt.path))
+      return(NA)
+    sum(getOptPathExecTimes(model$learner.model$opt.result$opt.path))
+  }
+)
+
+substrRight = function(x, n){
+  substr(x, nchar(x)-n+1, nchar(x))
+}
+

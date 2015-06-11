@@ -37,8 +37,8 @@ surrogat.model = makeLearner("regr.km", nugget.estim = TRUE, jitter = TRUE)
 # hartmans = list(hartman10 = 1, hartman07 = 0.7, hartman05 = 0.5, hartman02 = 0.2)
 # #hartmans = list(hartman10 = 1)
 # hartmans.res = lapply(names(hartmans), function(sn) {
-#   objfun = makeMBOMultifidFunction(f = distortX(addDistortion(hartman2d, yupp, fac = hartmans[[sn]]), xshift, direction = hartmans[[sn]]), lvls = e.lvl)
-#   #objfun = makeMBOMultifidFunction(f = addDistortion(hartman2d, yupp, fac = hartmans[[sn]]), lvls = e.lvl)
+#   objfun = makeMBOMultiFidFunction(f = distortX(addDistortion(hartman2d, yupp, fac = hartmans[[sn]]), xshift, direction = hartmans[[sn]]), lvls = e.lvl)
+#   #objfun = makeMBOMultiFidFunction(f = addDistortion(hartman2d, yupp, fac = hartmans[[sn]]), lvls = e.lvl)
 #   generalBenchmark(e.name = sn, objfun = objfun, e.seed = e.seed, e.par.set = e.par.set, e.lvl = e.lvl, control = e.control, grid.all = TRUE, e.string = e.string, high.res = TRUE, multifid.costs = e.lvl)
 # })
 

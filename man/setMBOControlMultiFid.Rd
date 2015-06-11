@@ -5,8 +5,8 @@
 \title{Extends mbo control object with multiFid-algorithm specific options.}
 \usage{
 setMBOControlMultiFid(control, param, lvls, costs = NULL,
-  cor.grid.points = NULL, force.last.level.evals = NULL,
-  eval.lower = NULL, generate.plot.data = TRUE, show.info = NULL)
+  cor.grid.points = NULL, force.last.level.steps = NULL,
+  generate.plot.data = NULL, show.info = NULL)
 }
 \arguments{
 \item{control}{[\code{\link{MBOControl}}]\cr
@@ -26,11 +26,11 @@ Default is \code{NULL} which means that the cost will be predicted by a model bu
 Numbers of points used to calculate the correlation between the different levels of
 the \code{param}.}
 
-\item{force.last.level.evals}{[\code{integer(1)}]
-How many evaluations should be done on the last value of fid.param?}
+\item{force.last.level.steps}{[\code{integer(1)}]
+Force an evaluation on the highest fidelity level each i-th step.}
 
 \item{generate.plot.data}{[\code{boolean(1)}]
-Should plot data be generated? Default ist \code{TRUE}.}
+Should plot data be generated? Default ist \code{FALSE}.}
 
 \item{show.info}{[\code{logical(1)}]\cr
 Verbose output on console?

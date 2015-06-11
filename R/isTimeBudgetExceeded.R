@@ -8,22 +8,33 @@
 #   Time budget in seconds.
 # @return [\code{logical(1)}]
 
-isTimeBudgetExceeded = function(x, time.budget) {
+isTimeBudgetExceeded = function(x, time.budget, show.info = FALSE) {
 	UseMethod("isTimeBudgetExceeded")
 }
 
-isTimeBudgetExceeded.POSIXct = function(x, time.budget) {
+isTimeBudgetExceeded.POSIXct = function(x, time.budget, show.info = FALSE) {
   if (is.null(time.budget) || is.infinite(time.budget))
     return(FALSE)
   current.time = Sys.time()
   time.difference = as.numeric(difftime(current.time, x, units = "secs"))
-  return(time.difference > time.budget)
+  if (time.difference > time.budget) {
+    showInfo(show.info, "time.budget %i reached with %.1f", time.budget, time.difference)
+  	return(TRUE)
+  } else {
+  	return(FALSE)
+  }
 }
 
-isTimeBudgetExceeded.OptPath = function(x, time.budget) {
+isTimeBudgetExceeded.OptPath = function(x, time.budget, show.info = FALSE) {
   if (is.null(time.budget) || is.infinite(time.budget))
     return(FALSE)
-  return(sum(getOptPathExecTimes(x)) > time.budget)
+  exec.time = sum(getOptPathExecTimes(x))
+  if (exec.time > time.budget) {
+    showInfo(show.info, "exec.time.budget %i reached with %.1f", time.budget, exec.time)
+  	return(TRUE)
+  } else {
+  	return(FALSE)
+  } 
 }
 
 

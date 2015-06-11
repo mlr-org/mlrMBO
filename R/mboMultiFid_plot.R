@@ -1,4 +1,4 @@
-genPlotData = function(compound.model, opt.path, control, fun, res = 100, lvl.cors, lvl.sds, time.model, par.set, best.points, merge = TRUE) {
+genPlotData = function(compound.model, opt.path, control, fun, res = 100, lvl.cors, lvl.sds, par.set, best.points, merge = TRUE) {
   if (!control$multifid.generate.plot.data)
     return(NULL)
   requirePackages(packs=c("ggplot2", "reshape2"), why="generate MultiFid Plot")
@@ -9,7 +9,7 @@ genPlotData = function(compound.model, opt.path, control, fun, res = 100, lvl.co
   # expand the design to the same points on each multifid level
   grid.design = expandDesign(design = grid.design, control = control)
   # get the points we already have evaluated during the algorithm
-  old.points = convertMFOptPathToDesign(opt.path)
+  old.points = convertOptPathToDf(par.set, opt.path, control)
   # combine the grid and the already calculated points so plot lines also have the exact points
   if (merge) grid.design = rbind(grid.design, old.points[,colnames(grid.design)])
   # predict all the y values by the model
@@ -22,7 +22,6 @@ genPlotData = function(compound.model, opt.path, control, fun, res = 100, lvl.co
     design = old.points, 
     lvl.cors = lvl.cors, 
     lvl.sds = lvl.sds, 
-    time.model = time.model, 
     lvl = grid.design$.multifid.lvl)
   z.df = do.call(cbind.data.frame, z)
   all = cbind(grid.design, y = p$data$response, z)
@@ -35,7 +34,6 @@ genPlotData = function(compound.model, opt.path, control, fun, res = 100, lvl.co
     design = old.points, 
     lvl.cors = lvl.cors, 
     lvl.sds = lvl.sds, 
-    time.model = time.model, 
     lvl = best.points$.multifid.lvl)
   best.points$y = predict(compound.model, newdata = best.points)$data$response
   best.points = do.call(cbind, c(list(best.points), best.points.z))
@@ -94,7 +92,7 @@ plotMultiFidStep1d = function(plotdata, subset.variable = character(0), title = 
 }
 
 plotMultiFidStep2d = function(plotdata, subset.variable = character(0), title = character(0), add.g = list()) {
-  plots = plotMultiFidStep2dRaw(plotdata, subset.variable, title)
+  plots = plotMultiFidStep2dRaw(plotdata, subset.variable, add.g = add.g)
   gs = do.call(grid.arrange, c(plots, list(nrow = 1, main = title)))
   return(gs)
 }
@@ -107,7 +105,8 @@ plotMultiFidStep2dRaw = function(plotdata, subset.variable = character(0), add.g
       m.all = m.all[m.all$variable == var,]
     g = plotMultiFidStep2dRawEach(m.all, xname, 
       old.points = plotdata$old.points[,c(xname, ".multifid.lvl")], 
-      best.points = plotdata$best.points[,c(xname, ".multifid.lvl")])
+      best.points = plotdata$best.points[,c(xname, ".multifid.lvl")],
+      add.g = add.g)
     return(g)
   })
   return(plots)
@@ -127,4 +126,25 @@ plotMultiFidStep2dRawEach = function(m.spec, xname, old.points, best.points, add
     g = g + add.g[[i]]
   }
   return(g)
+}
+
+# make a design (data.frame) with the exact same points for each multifid level.
+# if the requested number of points is a bit lower than design, we randomly drop some rows
+expandDesign = function(design, control, npoints.per.lvl = NULL) {
+  n = nrow(design)
+  k = length(control$multifid.lvls)
+  # default is to replicate the design for all levels
+  if (is.null(npoints.per.lvl))
+    npoints.per.lvl = rep(n, times = k)
+  all.inds = seq_len(n)
+  designs = lapply(seq_len(k), function(i) {
+    nppl = npoints.per.lvl[i]
+    # do we need to drop some rows of design? lets also keep the order of all.inds
+    inds = if (nppl < n)
+      setdiff(all.inds, sample(all.inds, n - nppl))
+    else
+      all.inds
+    cbind(design[inds, , drop = FALSE], .multifid.lvl = i)
+  })
+  do.call(rbind.data.frame, designs)
 }

@@ -73,17 +73,7 @@ mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE,
 
   # now fit to init design
   task = convertMFOptPathToTask(opt.path)
-  model = train(learner, task = task)
-
-  #time learner
-  if (is.null(control$multifid.costs)) {
-    time.learner = makeLearner("regr.km", nugget.estim = TRUE, jitter = TRUE)
-    time.task = convertMFOptPathToTimeTask(opt.path)
-    time.model = train(time.learner, task = time.task) 
-  } else {
-    time.model = NULL
-  }
-  
+  model = train(learner, task = task) 
 
   # generate the x values we want to use to calculate the correlation between the surrogat models
   corgrid = generateDesign(n = control$multifid.cor.grid.points, par.set = par.set)
@@ -107,11 +97,10 @@ mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE,
     # return a list, get a proposed point for each level
     prop = proposePointsMultiFid(model = model, par.set = par.set,
       control = control, opt.path = opt.path,
-      lvl.cors = lvl.cors, time.model = time.model, lvl.sds = lvl.sds)
+      lvl.cors = lvl.cors, lvl.sds = lvl.sds)
     # find the level where the crit val / infill vals is smallest
     infill.vals = extractSubList(prop, "crit.vals")
-    if(show.info)
-      messagef("Infill vals = %s", collapse(sprintf("%.3g", infill.vals), ", "))
+    showInfo(show.info, "Infill vals = %s", collapse(sprintf("%.3g", infill.vals), ", "))
     
     # every couple of levels we only optimize the last one
     # to ensure that we update that model and see what happens here
@@ -129,7 +118,7 @@ mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE,
       control = control, 
       fun = fun, 
       opt.path = opt.path,
-      lvl.cors = lvl.cors, lvl.sds = lvl.sds, time.model = time.model,
+      lvl.cors = lvl.cors, lvl.sds = lvl.sds,
       best.points = best.points,
       merge = getParamNr(par.set) == 1L,
       res = ifelse(getParamNr(par.set) == 1L, 100, 50)) #merge opt.path with new grid for plot prediction data, only when 1d, because of geom_tile
@@ -149,10 +138,6 @@ mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE,
 
     # train the model again with new data
     model = train(learner, task = convertMFOptPathToTask(opt.path))
-    
-    if (is.null(control$multifid.costs)) {
-      time.model = train(time.learner, task = convertMFOptPathToTimeTask(opt.path))
-    }
 
     # increase loop counter and check if done
     loop = loop + 1L
@@ -177,4 +162,20 @@ mboMultiFid = function(fun, par.set, design, learner, control, show.info = TRUE,
     x = dropNamed(proposed$x, ".multifid.lvl"),
     plot.data = plot.data
   )
+}
+
+# generates initial design for multifid
+generateMBOMultiFidDesign = function(par.set, control) {
+  design = generateDesign(control$init.design.points, par.set, fun = control$init.design.fun, fun.args = control$init.design.args, trafo = FALSE)
+}
+
+# convert OP to a df, of a specified structure with col .multifid.lvl, so we can model on it
+convertMFOptPathToDesign = function(opt.path, ...) {
+  as.data.frame(opt.path, include.rest = FALSE, discretes.as.factor = TRUE, ...)
+}
+
+# convert OP to a mlr task, of a specified structure with col .multifid.lvl, so we can model on it
+convertMFOptPathToTask = function(opt.path, ...) {
+  d = convertMFOptPathToDesign(opt.path, ...)
+  makeRegrTask(id = "multifid.task", data = d, target = "y")
 }
