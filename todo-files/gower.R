@@ -53,8 +53,8 @@ calcGowerCovMat = function (par.set, data.x, data.y = data.x, theta = NULL, dist
   assertFlag(KR.corr)
 
   pids = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
-  pids1 = getParamIds(filterParams(par.set, c("numeric", "numericvector")), repeated = TRUE, with.nr = TRUE)
-  pids2 = getParamIds(filterParams(par.set, c("discrete", "discretevector")), repeated = TRUE, with.nr = TRUE)
+  pids1 = getParamIds(filterParams(par.set, type = c("numeric", "numericvector")), repeated = TRUE, with.nr = TRUE)
+  pids2 = getParamIds(filterParams(par.set, type = c("discrete", "discretevector")), repeated = TRUE, with.nr = TRUE)
   low = getLower(par.set, with.nr = TRUE)
   upp = getUpper(par.set, with.nr = TRUE)
   rngs = setNames(numeric(p), pids)

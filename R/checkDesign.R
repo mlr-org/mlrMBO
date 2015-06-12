@@ -6,7 +6,7 @@
 checkInitDesign = function(design, par.set) {
   # discrete Params
   # all levels are visited
-  disc.params = filterParams(par.set, "discrete")
+  disc.params = filterParams(par.set, type = "discrete")
   disc.params.values = getValues(disc.params)
   disc.design = design[getParamIds(disc.params)]
   disc.design.values = apply(disc.design, 2, unique)
