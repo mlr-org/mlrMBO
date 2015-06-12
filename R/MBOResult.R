@@ -23,6 +23,8 @@ NULL
 makeMBOSingleObjResult = function(final.index, opt.path, resample.results, convergence, models, control) {
   best = getOptPathEl(opt.path, final.index)
   x = best$x
+  if (control$multifid)
+    x = dropNamed(x, ".multifid.lvl")
   y = best$y
 
   makeS3Obj(c("MBOSingleObjResult", "MBOResult"),
