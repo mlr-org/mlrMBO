@@ -25,10 +25,9 @@ makeMBOSingleObjResult = function(final.index, opt.path, resample.results, conve
   x = best$x
   if (control$multifid)
     x = dropNamed(x, ".multifid.lvl")
-  y = best$y
 
   makeS3Obj(c("MBOSingleObjResult", "MBOResult"),
-    x = best$x,
+    x = x,
     y = as.numeric(best$y), # strip name
     best.ind = final.index,
     opt.path = opt.path,
