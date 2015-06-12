@@ -12,10 +12,7 @@ bench
 fragen.txt
 install_dependencies.R
 Makefile
-multicrit_test.R
 README.md
-test_all.R
-test_src.R
 todo.txt
 
 src/*.o
