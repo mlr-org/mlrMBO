@@ -120,7 +120,7 @@ mboTemplate = function(fun, par.set, design = NULL, learner, control, show.info 
   configureMlr(on.learner.error = oldopts[["ole"]], show.learner.output = oldopts[["slo"]])
 
   if (control$number.of.targets == 1L) {
-    final.index = chooseFinalPoint(fun, par.set, tr$models[[1L]], opt.path, y.name, control)
+    final.index = chooseFinalPoint(fun = fun, opt.path = opt.path, model = tr$models[[1L]], task = tasks[[1]], control = control)
     if (fevals > 0L) {
       # do some final evaluations and compute mean of target fun values
       showInfo(show.info, "Performing %i final evals", fevals)
