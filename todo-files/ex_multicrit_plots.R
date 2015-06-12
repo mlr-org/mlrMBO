@@ -2,6 +2,8 @@ library(mco)
 library(mlrMBO)
 
 set.seed(1)
+configureMlr(show.learner.output = FALSE)
+pause = interactive()
 
 obj.fun = makeMBOFunction(mco::zdt1)
 par.set = makeNumericParamSet(len = 5L, lower = 0, upper = 1)
@@ -15,4 +17,4 @@ ctrl = setMBOControlMultiCrit(ctrl, method = "parego")
 
 or = mbo(obj.fun, par.set, learner = lrn, control = ctrl, show.info = TRUE)
 
-plot(or, alpha = TRUE, infill.crit = "ei", log.infill.crit = FALSE, pause = TRUE)
+plot(or, alpha = TRUE, infill.crit = "ei", log.infill.crit = FALSE, pause = pause)
