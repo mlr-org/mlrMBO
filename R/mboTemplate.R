@@ -48,9 +48,7 @@ mboTemplate = function(fun, par.set, design = NULL, learner, control, show.info 
     resample.results = continue$resample.results
   }
 
-  #MFMBO HERE: mf might not be necessary
   tasks = makeTasks(par.set, opt.path, algo.init, control = control)
-  #MFMBO HERE: mf learner will be wrapped
   tr = trainModels(learner, tasks, control)
 
   
@@ -79,15 +77,12 @@ mboTemplate = function(fun, par.set, design = NULL, learner, control, show.info 
 
   repeat {
     # propose new points and evaluate target function
-    # MFMBO HERE:
     prop = proposePoints(tasks, tr$models, par.set, control, opt.path, iter = loop)
     # drop proposed points, which are too close to design points
     if (control$filter.proposed.points) {
-      #MFMBO HERE:
       prop = filterProposedPoints(prop, opt.path, par.set, control)
     }
     extras = getExtras(nrow(prop$prop.points), prop, tr$train.time, control)
-    #MFMBO HERE:
     evalProposedPoints(loop, prop$prop.points, par.set, opt.path, control,
       fun, learner, show.info, oldopts, more.args, extras)
 
@@ -97,9 +92,7 @@ mboTemplate = function(fun, par.set, design = NULL, learner, control, show.info 
     # but what if not?
 
     # train models
-    #MFMBO HERE: see above
     tasks = makeTasks(par.set, opt.path, algo.init, control)
-    #MFMBO HERE: see above
     tr = trainModels(learner, tasks, control)
 
     # store models + resample + store on disk
