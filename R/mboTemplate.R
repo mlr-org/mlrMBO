@@ -34,7 +34,6 @@ mboTemplate = function(fun, par.set, design = NULL, learner, control, show.info 
   if (is.null(continue)) {
     opt.path = makeMBOOptPath(par.set, control)
     extras = getExtras(ninit, NULL, NA_real_, control)
-    #MFMBO HERE: Could work out of the box
     generateMBODesign(design, fun, par.set, opt.path, control, show.info, oldopts, more.args, extras)
     stored.models = namedList(control$store.model.at)
     resample.results = namedList(control$resample.at)

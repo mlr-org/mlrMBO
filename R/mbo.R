@@ -52,6 +52,8 @@ mbo = function(fun, par.set, design = NULL, learner, control,
     show.learner.output = control$show.learner.output)
 
   if(control$multifid) {
+    if(learner$predict.type!="se")
+      learner = setPredictType(learner, "se")
     par.set = c(par.set, makeParamSet(
     makeIntegerParam(".multifid.lvl", lower = 1L, upper = length(control$multifid.lvls))))
   }
