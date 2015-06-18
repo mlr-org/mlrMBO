@@ -78,3 +78,23 @@ generateMBODesign = function(design, fun, par.set, opt.path, control, show.info,
   invisible(NULL)
 }
 
+generateMBODesign.TuningState = function(tuningState, tuningProblem) {
+  extras = getExtras(
+    n = getTuningProblemInitDesignPoints(tuningProblem), 
+    prop = NULL, 
+    train.time = NA_real_, 
+    control = getTuningProblemControl(tuningProblem)
+  )
+  generateMBODesign(
+    design = getTuningProblemDesign(tuningProblem),
+    fun = getTuningProblemFun(tuningProblem),
+    par.set = getTuningProblemParSet(tuningProblem),
+    opt.path = getTuningProblemOptPath(tuningProblem),
+    control = getTuningProblemControl(tuningProblem),
+    show.info = getTuningProblemShowInfo(tuningProblem),
+    oldopts = getTuningProblemOldopts(tuningProblem),
+    more.args = getTuningProblemMoreArgs(tuningProblem),
+    extras = extras
+    )
+}
+

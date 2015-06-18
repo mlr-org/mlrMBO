@@ -8,51 +8,24 @@
 mboTemplate = function(fun, par.set, design = NULL, learner, control, show.info = TRUE,
   more.args = list(), continue = NULL) {
 
-  # save currently set options
-  oldopts = list(
-    ole = getOption("mlr.on.learner.error"),
-    slo = getOption("mlr.show.learner.output")
-  )
+  tuningProblem = makeTuningProblem(
+    fun = fun, 
+    par.set = par.set, 
+    design = design,
+    learner = learner,
+    control = control,
+    show.info = show.info,
+    more.args = more.args)
 
-  # termination
-  start.time = Sys.time()
-  iters = control$iters
-  time.budget = control$time.budget
-  exec.time.budget = control$exec.time.budget
-
-  # shortcut names
-  ninit = if (is.null(design)) control$init.design.points else nrow(design)
-  crit = control$infill.crit
-  y.name = control$y.name
-  crit = control$infill.crit
-  islcb = (control$propose.points > 1L && control$multipoint.method == "lcb")
-  fevals = control$final.evals
-
-  algo.init = mboAlgoInit(par.set, opt.path, control)
-
-  # for normal start, we setup initial design, otherwise take stuff from continue object from disk
   if (is.null(continue)) {
-    opt.path = makeMBOOptPath(par.set, control)
-    extras = getExtras(ninit, NULL, NA_real_, control)
-    generateMBODesign(design, fun, par.set, opt.path, control, show.info, oldopts, more.args, extras)
-    stored.models = namedList(control$store.model.at)
-    resample.results = namedList(control$resample.at)
+    tuningState = makeTuningState(tuningProblem)
   } else {
-    if (!is.null(continue$mbo.result)) {
-      warningf("mboContinue: No need to continue, we were already finished. Simply returning stored result.")
-      return(continue$mbo.result)
-    }
-    opt.path = continue$opt.path
-    stored.models = continue$stored.models
-    resample.results = continue$resample.results
+    #FIXME: What restart options would we like
+    tuningState = loadTuningState(tuningProblem)
   }
 
-  tasks = makeTasks(par.set, opt.path, algo.init, control = control)
-  tr = trainModels(learner, tasks, control)
-
-  
-  # if we are restarting from a save file, we possibly start in a higher iteration
-  loop = max(getOptPathDOB(opt.path)) + 1L
+  tasks = getTuningStateTasks(tuningState)
+  tr = getTuningStateModels(tuningState)
   
   # small helper for learner resampling
   # if we have multiple tasks, return a list, otherwise singleton result
@@ -102,15 +75,15 @@ mboTemplate = function(fun, par.set, design = NULL, learner, control, show.info 
     saveStateOnDisk(loop, fun, learner, par.set, opt.path, control, show.info, more.args, stored.models,
       resample.results, NULL)
 
-    # increase loop counter and check if done
-    loop = loop + 1L
-    terminate = shouldTerminate(iters, loop, time.budget, start.time, exec.time.budget, opt.path)
+    setTuningStateLoop(tuningState)
+    terminate = shouldTerminate.TuningState(tuningState)
     if (terminate >= 0)
       break
   }
   # restore mlr configuration
   configureMlr(on.learner.error = oldopts[["ole"]], show.learner.output = oldopts[["slo"]])
 
+  fevals = control$final.evals
   if (control$number.of.targets == 1L) {
     final.index = chooseFinalPoint(fun = fun, opt.path = opt.path, model = tr$models[[1L]], task = tasks[[1]], control = control)
     if (fevals > 0L) {
