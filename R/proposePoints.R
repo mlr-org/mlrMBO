@@ -47,3 +47,14 @@ proposePoints = function(tasks, models, par.set, control, opt.path, iter) {
     res$crit.vals = matrix(res$crit.vals, ncol = 1L)
   return(res)
 }
+
+proposePoints.TuningState = function(tuningState) {
+  proposePoints(
+    tasks = getTuningStateTasks(tuningState),
+    models = getTuningStateModels(tuningState),
+    par.set = getTuningStateParSet(tuningState),
+    control = getTuningProblemControl(getTuningStateTuningProblem(tuningState)),
+    opt.path = getTuningStateOptPath(tuningState),
+    iter = getTuningStateLoop(tuningState)
+  )
+}

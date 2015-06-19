@@ -37,6 +37,29 @@ evalProposedPoints = function(loop, prop.points, par.set, opt.path, control,
   evalTargetFun(fun, par.set, loop, xs, opt.path, control, show.info, oldopts, more.args, extras)
 }
 
+evalProposedPoints.TuningState = function(tuningState, prop) {
+  tuningProblem = getTuningStateTuningProblem(tuningState)
+  extras = getExtras(
+    n = nrow(prop$prop.points),
+    prop = prop,
+    train.time = getTuningStateModels(tuningState)$train.time,
+    control = getTuningProblemControl(tuningProblem)
+  )
+  evalProposedPoints(
+    loop = getTuningStateLoop(tuningState),
+    prop.points = prop,
+    par.set = getTuningProblemParSet(tuningProblem),
+    opt.path = getTuningStateOptPath(tuningState),
+    control = getTuningProblemControl(tuningProblem),
+    fun = getTuningProblemFun(tuningProblem),
+    learner = getTuningProblemLearner(tuningProblem),
+    show.info = getTuningProblemShowInfo(tuningProblem),
+    oldopts = getTuningProblemOldopts(tuningProblem),
+    more.args = getTuningProblemMoreArgs(tuningProblem),
+    extras = extras
+  )
+}
+
 # for Parego: calculate all integer vectors of length k with sum n
 combWithSum = function(n, k) {
   fun = function(n, k) {

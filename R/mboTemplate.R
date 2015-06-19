@@ -24,64 +24,16 @@ mboTemplate = function(fun, par.set, design = NULL, learner, control, show.info 
     tuningState = loadTuningState(tuningProblem)
   }
 
-  tasks = getTuningStateTasks(tuningState)
-  tr = getTuningStateModels(tuningState)
-  
-  # small helper for learner resampling
-  # if we have multiple tasks, return a list, otherwise singleton result
-  doResample = function(tasks) {
-    if (length(tasks) == 1L)
-      resample(learner, tasks[[1L]], control$resample.desc, measures = control$resample.measures, show.info = FALSE)
-    else
-      lapply(tasks, resample, learner = learner, resampling = control$resample.desc,
-        measures = control$resample.measures, show.info = FALSE)
-  }
-
-  # save some stuff for iter 0, not necessary if we continue
-  if (is.null(continue)) {
-    if (0L %in% control$store.model.at)
-      stored.models[["0"]] = if (length(tr$models) == 1L) tr$models[[1L]] else tr$models
-    if (0L %in% control$resample.model.at)
-      resample.results[["0"]] = doResample(tasks)
-    saveStateOnDisk(0L, fun, learner, par.set, opt.path, control, show.info, more.args,
-      stored.models, resample.results, NULL)
-  }
+  setTuningStateLoop(tuningState)
 
   repeat {
-    # propose new points and evaluate target function
-    prop = proposePoints(tasks, tr$models, par.set, control, opt.path, iter = loop)
-    # drop proposed points, which are too close to design points
-    if (control$filter.proposed.points) {
-      prop = filterProposedPoints(prop, opt.path, par.set, control)
-    }
-    extras = getExtras(nrow(prop$prop.points), prop, tr$train.time, control)
-    evalProposedPoints(loop, prop$prop.points, par.set, opt.path, control,
-      fun, learner, show.info, oldopts, more.args, extras)
-
-    #FIXME: why do we do the expansive operation of training here, if we might break at the end?
-    # dont we waste useless time for the final iter?
-    # ok we might use the model for choosing the final point....
-    # but what if not?
-
-    # train models
-    tasks = makeTasks(par.set, opt.path, algo.init, control)
-    tr = trainModels(learner, tasks, control)
-
-    # store models + resample + store on disk
-    if (loop %in% control$store.model.at)
-      stored.models[[as.character(loop)]] = if (length(tr$models) == 1L) tr$models[[1L]] else tr$models
-    if (loop %in% control$resample.at)
-      resample.results[[as.character(loop)]] = doResample(tasks)
-    saveStateOnDisk(loop, fun, learner, par.set, opt.path, control, show.info, more.args, stored.models,
-      resample.results, NULL)
-
+    prop = proposePoints.TuningState(tuningState)
+    evalProposedPoints.TuningState(tuningState, prop)
     setTuningStateLoop(tuningState)
     terminate = shouldTerminate.TuningState(tuningState)
     if (terminate >= 0)
       break
   }
-  # restore mlr configuration
-  configureMlr(on.learner.error = oldopts[["ole"]], show.learner.output = oldopts[["slo"]])
 
   fevals = control$final.evals
   if (control$number.of.targets == 1L) {
@@ -100,9 +52,12 @@ mboTemplate = function(fun, par.set, design = NULL, learner, control, show.info 
   } else {
     res = makeMBOMultiCritResult(opt.path, terminate, stored.models, control)
   }
+  
   # make sure to save final res on disk
-  saveStateOnDisk(loop, fun, learner, par.set, opt.path, control, show.info, more.args, stored.models,
-    resample.results, res)
+  saveTuningStateNow(tuningState)
+
+  # restore mlr configuration
+  configureMlr(on.learner.error = getTuningProblemOldopts(tuningProblem)[["ole"]], show.learner.output = getTuningProblemOldopts(tuningProblem)[["slo"]])
 
   return(res)
 }
