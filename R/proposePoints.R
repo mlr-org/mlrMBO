@@ -51,8 +51,8 @@ proposePoints = function(tasks, models, par.set, control, opt.path, iter) {
 proposePoints.TuningState = function(tuningState) {
   proposePoints(
     tasks = getTuningStateTasks(tuningState),
-    models = getTuningStateModels(tuningState),
-    par.set = getTuningStateParSet(tuningState),
+    models = getTuningStateModels(tuningState)$models,
+    par.set = getTuningProblemParSet(getTuningStateTuningProblem(tuningState)),
     control = getTuningProblemControl(getTuningStateTuningProblem(tuningState)),
     opt.path = getTuningStateOptPath(tuningState),
     iter = getTuningStateLoop(tuningState)

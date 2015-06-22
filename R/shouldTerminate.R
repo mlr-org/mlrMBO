@@ -32,7 +32,7 @@ shouldTerminate.TuningState = function(tuningState) {
   control = getTuningProblemControl(tuningProblem)
   shouldTerminate(
     max.iters = control$iters,
-    iter = tuningState$loop(tuningState),
+    iter = getTuningStateLoop(tuningState),
     time.budget = control$time.budget,
     start.time = getTuningProblemStartTime(tuningProblem),
     exec.time.budget = control$exec.time.budget,

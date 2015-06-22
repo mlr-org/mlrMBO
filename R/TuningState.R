@@ -1,4 +1,4 @@
-makeTuningState = function(tuningProblem, loop = 0L, tasks = NULL, models = NULL, tuningResult = makeTuningResult()) {
+makeTuningState = function(tuningProblem, loop = 0L, tasks = NULL, models = NULL, tuningResult = NULL, state = "init", opt.path = NULL) {
 
   tuningState = new.env()
 
@@ -6,19 +6,24 @@ makeTuningState = function(tuningProblem, loop = 0L, tasks = NULL, models = NULL
   tuningState$loop = loop
   tuningState$tasks = tasks
   tuningState$models = models
-  tuningState$tuningResult = tuningResult
 
-  tuningState$opt.path = makeMBOOptPath(par.set, control)
-
-  if (loop == 0L) {
-    generateMBODesign.TuningState(
-      tuningState = tuningState,
-      tuningProblem = tuningProblem
-    )
+  if (is.null(tuningResult)) {
+    tuningState$tuningResult = makeTuningResult()
+  } else {
+    tuningState$tuningResult = tuningResult
   }
+  
+  tuningState$state = state #states = init, iter, iter.exceeded, time.exceeded, exec.time,exceeded, 
 
+  if (is.null(opt.path)) {
+    tuningState$opt.path = makeMBOOptPath(
+      getTuningProblemParSet(tuningProblem),
+      getTuningProblemControl(tuningProblem)
+    )  
+  } else {
+    tuningState$opt.path = opt.path
+  }
   tuningState$random.seed = .Random.seed
-
   class(tuningState) = append(class(tuningState), "TuningState")
   tuningState
 }
@@ -50,6 +55,11 @@ setTuningStateRandomSeed = function(tuningState) {
   tuningState$random.seed = .Random.seed
   invisible()
 }
+
+getTuningStateRandomSeed = function(tuningState) {
+  tuningState$random.seed
+}
+
 
 getTuningStateTasks = function(tuningState) {
 	if (is.null(tuningState$tasks)) {
@@ -110,6 +120,7 @@ saveTuningState = function(tuningState) {
 saveTuningStateNow = function(tuningState) {
   loop = getTuningStateLoop(tuningState)
   control = getTuningProblemControl(getTuningStateTuningProblem(tuningState))
+  show.info = getTuningProblemShowInfo(getTuningStateTuningProblem(tuningState))
   fn = control$save.file.path
   backup.fn = getFileBackupName(fn)
   save2(file = backup.fn, tuningState = tuningState)
@@ -122,16 +133,25 @@ saveTuningStateNow = function(tuningState) {
     showInfo(show.info, "Saved the final state in the file %s", control$save.file.path)
 }
 
-loadTuningState = function(tuningProblem) {
-  fn = getTuningProblemControl(tuningProblem)$save.file.path
-  load2(file = fn, "tuningState")
+loadTuningState = function(obj) {
+  UseMethod("loadTuningState")
 }
 
-getTuningStateMBOResult = function(tuningState) {
-
+loadTuningState.TuningProblem = function(obj) {
+  fn = getTuningProblemControl(obj)$save.file.path
+  loadTuningState(fn)
 }
 
-getTuningStateFinalPoints = function(tuningState) {
+loadTuningState.character = function(obj) {
+  tuningState = load2(file = obj, "tuningState")
+  .Random.seed = getTuningStateRandomSeed(tuningState)
+  tuningState
+}
+
+
+# @param unify [\code{logical(1)}]
+#   Defines if in the case of multicriterial optimization we shoud try to make the output similar to the result of the normal optimization.
+getTuningStateFinalPoints = function(tuningState, unify = FALSE) {
   tuningProblem = getTuningStateTuningProblem(tuningState)
   control = getTuningProblemControl(tuningProblem)
   opt.path = getTuningStateOptPath(tuningState)
@@ -144,11 +164,50 @@ getTuningStateFinalPoints = function(tuningState) {
       task = getTuningStateTasks(tuningState)[[1]], 
       control = control)
     best = getOptPathEl(opt.path, final.index)
+    list(
+      x = dropNamed(best$x, ".multifid.lvl"),
+      y = as.numeric(best$y),
+      best.ind = final.index)
   } else {
     inds = getOptPathParetoFront(opt.path, index = TRUE)
-    pareto.set = lapply(inds, function(i) getOptPathEl(op, i)$x)
-    list(
-      x = do.call(rbind.data.frame ,pareto.set)
-      y = getOptPathParetoFront(opt.path))
+    pareto.set = lapply(inds, function(i) getOptPathEl(opt.path, i)$x)
+    if (unify) {
+      list(
+        x = do.call(rbind.data.frame ,pareto.set),
+        y = getOptPathParetoFront(opt.path),
+        best.ind = inds)  
+    } else {
+      list(
+        pareto.front = getOptPathY(opt.path)[inds, , drop = FALSE],
+        pareto.set = pareto.set,
+        inds = inds
+        )
+    }   
   }
+}
+
+setTuningStateState = function(tuningState, state) {
+  assertSubset(state, c("init", "iter", "iter.exceeded", "time.exceeded", "exec.time.exceeded"))
+  tuningState$state = state
+  invisible()
+}
+
+getTunigStateState = function(tuningState) {
+  tuningState$state
+}
+
+getTuningStateTermination = function(tuningState) {
+  terminate = shouldTerminate.TuningState(tuningState)
+  if (terminate == 0) {
+    setTuningStateState(tuningState, "iter.exceeded")
+  } else if (terminate == 1) {
+    setTuningStateState(tuningState, "time.exceeded")
+  } else if (terminate == 2) {
+    setTuningStateState(tuningState, "exec.time.exceeded")
+  } else if (terminate == -1) {
+    setTuningStateState(tuningState, "iter")
+  } else {
+    stopf("shouldTerminate() gave unexpected result: %i", terminate)
+  }
+  terminate
 }

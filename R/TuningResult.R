@@ -35,9 +35,17 @@ setTuningResultResampleResults = function(tuningResult, tuningState) {
 
 setTuningResultStoredModels = function(tuningResult, tuningState) {
   loop = getTuningStateLoop(tuningState)
-  control = getTuningProblemControl(tuningProblem)
+  control = getTuningProblemControl(getTuningStateTuningProblem(tuningState))
   models = getTuningStateModels(tuningState)
   if (loop %in% control$store.model.at)
     tuningResult$stored.models[[as.character(loop)]] = if (length(models$models) == 1L) models$models[[1L]] else models$models
   invisible()
+}
+
+getTuningResultResampleResults = function(tuningResult) {
+  tuningResult$resample.results
+}
+
+getTuningResultStoredModels = function(tuningResult) {
+  tuningResult$stored.models
 }

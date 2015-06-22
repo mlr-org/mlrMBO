@@ -58,7 +58,22 @@ mbo = function(fun, par.set, design = NULL, learner, control,
     makeIntegerParam(".multifid.lvl", lower = 1L, upper = length(control$multifid.lvls))))
   }
 
-  mboTemplate(fun = fun, par.set = par.set, design = design,
-    learner = learner, control = control,
-    show.info = show.info, more.args = more.args)
+  tuningProblem = makeTuningProblem(
+    fun = fun, 
+    par.set = par.set, 
+    design = design,
+    learner = learner,
+    control = control,
+    show.info = show.info,
+    more.args = more.args)
+
+  finalTuningState = mboTemplate(tuningProblem)
+
+  # restore mlr configuration
+  configureMlr(
+    on.learner.error = getTuningProblemOldopts(tuningProblem)[["ole"]], 
+    show.learner.output = getTuningProblemOldopts(tuningProblem)[["slo"]]
+  )
+
+  makeMBOResult.TuningState(finalTuningState)
 }

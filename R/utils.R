@@ -47,7 +47,7 @@ evalProposedPoints.TuningState = function(tuningState, prop) {
   )
   evalProposedPoints(
     loop = getTuningStateLoop(tuningState),
-    prop.points = prop,
+    prop.points = prop$prop.points,
     par.set = getTuningProblemParSet(tuningProblem),
     opt.path = getTuningStateOptPath(tuningState),
     control = getTuningProblemControl(tuningProblem),

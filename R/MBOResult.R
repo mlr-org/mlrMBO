@@ -20,23 +20,37 @@
 #' @rdname MBOSingleObjResult
 NULL
 
-makeMBOSingleObjResult = function(final.index, opt.path, resample.results, convergence, models, control) {
-  best = getOptPathEl(opt.path, final.index)
-  x = best$x
-  if (control$multifid)
-    x = dropNamed(x, ".multifid.lvl")
+makeMBOResult.TuningState = function(tuningState) {
+  tuningProblem = getTuningStateTuningProblem(tuningState)
+  control = getTuningProblemControl(tuningProblem)
+  final.points = getTuningStateFinalPoints(tuningState)
+  tuningResult = getTuningStateTuningResult(tuningState)
 
-  makeS3Obj(c("MBOSingleObjResult", "MBOResult"),
-    x = x,
-    y = as.numeric(best$y), # strip name
-    best.ind = final.index,
-    opt.path = opt.path,
-    resample.results = resample.results,
-    convergence = convergence,
-    models = models,
-    control = control
-  )
+  if (length(final.points$x)) {
+    makeS3Obj(
+      c("MBOSingleObjResult", "MBOResult"),
+      x = final.points$x,
+      y = final.points$y, # strip name
+      best.ind = final.points$best.ind,
+      opt.path = getTuningStateOptPath(tuningState),
+      resample.results = getTuningResultResampleResults(tuningResult),
+      final.state = getTunigStateState(tuningState),
+      models = getTuningResultStoredModels(tuningResult),
+      control = control
+    )
+  } else {
+    makeS3Obj(c("MBOMultiObjResult", "MBOResult"),
+      pareto.front = final.points$pareto.front,
+      pareto.set = final.points$pareto.set,
+      pareto.inds = final.points$inds,
+      opt.path = getTuningStateOptPath(tuningState),
+      final.state = getTunigStateState(tuningState),
+      models = getTuningResultStoredModels(tuningResult),
+      control = control
+    )
+  }
 }
+
 
 #' @export
 print.MBOResult = function(x, ...) {
@@ -69,20 +83,6 @@ print.MBOResult = function(x, ...) {
 #' @rdname MBOMultiObjResult
 NULL
 
-makeMBOMultiCritResult = function(opt.path, convergence, models, control) {
-  # get indices of pareto front from path, then add rest
-  inds = getOptPathParetoFront(opt.path, index = TRUE)
-  res = makeS3Obj(c("MBOMultiObjResult", "MBOResult"),
-    pareto.front = getOptPathY(opt.path)[inds, , drop = FALSE],
-    pareto.set = lapply(inds, function(i) getOptPathEl(opt.path, i)$x),
-    pareto.inds = inds,
-    opt.path = opt.path,
-    convergence = convergence,
-    models = models,
-    control = control
-  )
-}
-
 #' @export
 print.MBOMultiObjResult = function(x, ...) {
   op = x$opt.path
@@ -93,6 +93,3 @@ print.MBOMultiObjResult = function(x, ...) {
   catf("%i + %i entries in total, displaying last 10 (or less):", n1, n2)
   print(tail(as.data.frame(x$opt.path), 10))
 }
-
-
-

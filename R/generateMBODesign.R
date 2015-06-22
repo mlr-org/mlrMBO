@@ -78,7 +78,8 @@ generateMBODesign = function(design, fun, par.set, opt.path, control, show.info,
   invisible(NULL)
 }
 
-generateMBODesign.TuningState = function(tuningState, tuningProblem) {
+generateMBODesign.TuningState = function(tuningState) {
+  tuningProblem = getTuningStateTuningProblem(tuningState)
   extras = getExtras(
     n = getTuningProblemInitDesignPoints(tuningProblem), 
     prop = NULL, 
@@ -89,7 +90,7 @@ generateMBODesign.TuningState = function(tuningState, tuningProblem) {
     design = getTuningProblemDesign(tuningProblem),
     fun = getTuningProblemFun(tuningProblem),
     par.set = getTuningProblemParSet(tuningProblem),
-    opt.path = getTuningProblemOptPath(tuningProblem),
+    opt.path = getTuningStateOptPath(tuningState),
     control = getTuningProblemControl(tuningProblem),
     show.info = getTuningProblemShowInfo(tuningProblem),
     oldopts = getTuningProblemOldopts(tuningProblem),
