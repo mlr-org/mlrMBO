@@ -57,6 +57,8 @@ setTuningProblemAlgoInit = function(tuningProblem, algo.init) {
 }
 
 getTuningProblemAlgoInit = function(tuningProblem) {
+  par.set = getTuningProblemParSet(tuningProblem)
+  control = getTuningProblemControl(tuningProblem)
   if (is.null(tuningProblem$algo.init)) {
     algo.init = mboAlgoInit(par.set = par.set, control = control)
     setTuningProblemAlgoInit(tuningProblem, algo.init)
