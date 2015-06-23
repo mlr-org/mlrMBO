@@ -4,7 +4,6 @@ makeTuningResult = function(stored.models = list(), resample.results = list(), m
   tuningResult$stored.models = stored.models
   tuningResult$resample.results = resample.results
   tuningResult$mbo.result = mbo.result
-  tuningResult$final.index = final.index
 
   class(tuningResult) = append(class(tuningResult), "TuningResult")
   tuningResult
@@ -15,7 +14,6 @@ setTuningResultResampleResults = function(tuningResult, tuningState) {
   # if we have multiple tasks, return a list, otherwise singleton result
 
   loop = getTuningStateLoop(tuningState)
-  tasks = getTuningStateTasks(tuningState)
   tuningProblem = getTuningStateTuningProblem(tuningState)
   learner = getTuningProblemLearner(tuningProblem)
   control = getTuningProblemControl(tuningProblem)
@@ -28,17 +26,20 @@ setTuningResultResampleResults = function(tuningResult, tuningState) {
         measures = control$resample.measures, show.info = FALSE)
   }
 
-  if (loop %in% control$resample.at)
+  if (loop %in% control$resample.at) {
+    tasks = getTuningStateTasks(tuningState)
     tuningResult$resample.results[[as.character(loop)]] = doResample(tasks)
+  }
   invisible()
 }
 
 setTuningResultStoredModels = function(tuningResult, tuningState) {
   loop = getTuningStateLoop(tuningState)
   control = getTuningProblemControl(getTuningStateTuningProblem(tuningState))
-  models = getTuningStateModels(tuningState)
-  if (loop %in% control$store.model.at)
+  if (loop %in% control$store.model.at) {
+    models = getTuningStateModels(tuningState)  
     tuningResult$stored.models[[as.character(loop)]] = if (length(models$models) == 1L) models$models[[1L]] else models$models
+  }
   invisible()
 }
 
@@ -48,4 +49,13 @@ getTuningResultResampleResults = function(tuningResult) {
 
 getTuningResultStoredModels = function(tuningResult) {
   tuningResult$stored.models
+}
+
+setTuningResultMboResult = function(tuningResult, mbo.result) {
+  tuningResult$mbo.result = mbo.result
+  invisible()
+}
+
+getTuningResultMboResult = function(tuningResult) {
+  tuningResult$mbo.result
 }

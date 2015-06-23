@@ -11,27 +11,30 @@ mboTemplate = function(obj) {
 mboTemplate.TuningProblem = function(obj) {
   tuningState = makeTuningState(obj)
   generateMBODesign.TuningState(tuningState)
-  setTuningStateLoop(tuningState) #loop + 1 and invalidate old
+  setTuningStateLoop(tuningState) #loop + 1
   mboTemplate(tuningState)
 }
 
 mboTemplate.TuningState = function(obj) {
+  #we start with a tuning state in the loop we want it to be
+  #loop = 1 is default
   tuningState = obj
-
   repeat {
-      prop = proposePoints.TuningState(tuningState) 
-      evalProposedPoints.TuningState(tuningState, prop)
-      setTuningStateLoop(tuningState) #loop + 1 and invalidate old models
-      terminate = getTuningStateTermination(tuningState)
-      if (terminate >= 0)
-        break
-    }
+    prop = proposePoints.TuningState(tuningState) 
+    evalProposedPoints.TuningState(tuningState, prop)
 
-    #make sure to invalidate models at end
+    # we are ready with the loop and can count + 1
+    # and save everything we used
     setTuningStateLoop(tuningState)
-    
-    # make sure to save final res on disk
-    saveTuningStateNow(tuningState)
 
-    tuningState
+    # save on disk routine
+    # save with increased loop so we can directly start from here again
+    if (getTuningStateLoop(tuningState) %in% getTuningProblemControl(getTuningStateTuningProblem(tuningState))$save.on.disk.at) {
+      saveTuningState(tuningState)
+    }
+    terminate = getTuningStateTermination(tuningState)
+    if (terminate >= 0)
+        break
+  } 
+  tuningState
 }

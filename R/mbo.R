@@ -69,11 +69,20 @@ mbo = function(fun, par.set, design = NULL, learner, control,
 
   finalTuningState = mboTemplate(tuningProblem)
 
+  # save final model if demanded
+  setTuningResultStoredModels(getTuningStateTuningResult(finalTuningState), finalTuningState)
+
+  mbo.result = makeMBOResult.TuningState(finalTuningState)
+  setTuningResultMboResult(getTuningStateTuningResult(finalTuningState), mbo.result)
+
+  # save on disk routine
+  if (getTuningStateLoop(finalTuningState) %in% getTuningProblemControl(getTuningStateTuningProblem(finalTuningState))$save.on.disk.at)
+    saveTuningState(finalTuningState)
+
   # restore mlr configuration
   configureMlr(
     on.learner.error = getTuningProblemOldopts(tuningProblem)[["ole"]], 
     show.learner.output = getTuningProblemOldopts(tuningProblem)[["slo"]]
   )
-
-  makeMBOResult.TuningState(finalTuningState)
+  mbo.result
 }

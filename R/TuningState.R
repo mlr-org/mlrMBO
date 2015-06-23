@@ -3,9 +3,11 @@ makeTuningState = function(tuningProblem, loop = 0L, tasks = NULL, models = NULL
   tuningState = new.env()
 
   tuningState$tuningProblem = tuningProblem
-  tuningState$loop = loop
+  tuningState$loop = loop #the loop the state is IN, not the one it is finished
   tuningState$tasks = tasks
   tuningState$models = models
+  tuningState$models.loop = -1
+  tuningState$tasks.loop = -1
 
   if (is.null(tuningResult)) {
     tuningState$tuningResult = makeTuningResult()
@@ -33,7 +35,7 @@ getTuningStateTuningProblem = function(tuningState) {
 }
 
 getTuningStateModels = function(tuningState) {
-  if (is.null(tuningState$models)) {
+  if (getTuningStateLoop(tuningState) != tuningState$models.loop) {
     tuningProblem = getTuningStateTuningProblem(tuningState)
   	models = trainModels(
   	  learner = getTuningProblemLearner(tuningProblem), 
@@ -48,6 +50,7 @@ getTuningStateModels = function(tuningState) {
 
 setTuningStateModels = function(tuningState, models) {
   tuningState$models = models
+  tuningState$models.loop = getTuningStateLoop(tuningState)
   invisible()
 }
 
@@ -62,7 +65,7 @@ getTuningStateRandomSeed = function(tuningState) {
 
 
 getTuningStateTasks = function(tuningState) {
-	if (is.null(tuningState$tasks)) {
+	if (getTuningStateLoop(tuningState) != tuningState$tasks.loop) {
     tuningProblem = getTuningStateTuningProblem(tuningState)
     tasks = makeTasks(
       par.set = getTuningProblemParSet(tuningProblem),
@@ -78,6 +81,7 @@ getTuningStateTasks = function(tuningState) {
 
 setTuningStateTasks = function(tuningState, tasks) {
   tuningState$tasks = tasks
+  tuningState$tasks.loop = getTuningStateLoop(tuningState)
   invisible()
 }
 
@@ -86,17 +90,15 @@ getTuningStateTuningResult = function(tuningState) {
 }
 
 setTuningStateLoop = function(tuningState, loop = NULL) {
+  tuningResult = getTuningStateTuningResult(tuningState)
+  setTuningResultResampleResults(tuningResult, tuningState)
+  setTuningResultStoredModels(tuningResult, tuningState)
   if (is.null(loop))
     tuningState$loop = tuningState$loop + 1
   else
     tuningState$loop = loop
-  tuningResult = getTuningStateTuningResult(tuningState)
-  setTuningResultResampleResults(tuningResult, tuningState)
-  setTuningResultStoredModels(tuningResult, tuningState)
+      # save resampling and models in result routine
   setTuningStateRandomSeed(tuningState)
-  saveTuningState(tuningState)
-  tuningState$tasks = NULL
-  tuningState$models = NULL
   invisible()
 }
 
@@ -109,15 +111,6 @@ getTuningStateOptPath = function(tuningState) {
 }
 
 saveTuningState = function(tuningState) {
-  loop = getTuningStateLoop(tuningState)
-  control = getTuningProblemControl(getTuningStateTuningProblem(tuningState))
-  if (loop %in% control$save.on.disk.at) {
-    saveTuningStateNow(tuningState)
-  }
-  invisible()
-}
-
-saveTuningStateNow = function(tuningState) {
   loop = getTuningStateLoop(tuningState)
   control = getTuningProblemControl(getTuningStateTuningProblem(tuningState))
   show.info = getTuningProblemShowInfo(getTuningStateTuningProblem(tuningState))
@@ -192,7 +185,7 @@ setTuningStateState = function(tuningState, state) {
   invisible()
 }
 
-getTunigStateState = function(tuningState) {
+getTuningStateState = function(tuningState) {
   tuningState$state
 }
 

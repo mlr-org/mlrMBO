@@ -28,35 +28,18 @@ loadPackages = function(control) {
     requirePackages("emoa", why = "proposePoints")
 }
 
-# to list + repair + eval
-evalProposedPoints = function(loop, prop.points, par.set, opt.path, control,
-  fun, learner, show.info, oldopts, more.args, extras) {
-  xs = dfRowsToList(prop.points, par.set)
-  xs = lapply(xs, repairPoint, par.set = par.set)
-  evalTargetFun(fun, par.set, loop, xs, opt.path, control, show.info, oldopts, more.args, extras)
-}
-
 evalProposedPoints.TuningState = function(tuningState, prop) {
   tuningProblem = getTuningStateTuningProblem(tuningState)
+  par.set = getTuningProblemParSet(tuningProblem)
   extras = getExtras(
     n = nrow(prop$prop.points),
     prop = prop,
     train.time = getTuningStateModels(tuningState)$train.time,
     control = getTuningProblemControl(tuningProblem)
   )
-  evalProposedPoints(
-    loop = getTuningStateLoop(tuningState),
-    prop.points = prop$prop.points,
-    par.set = getTuningProblemParSet(tuningProblem),
-    opt.path = getTuningStateOptPath(tuningState),
-    control = getTuningProblemControl(tuningProblem),
-    fun = getTuningProblemFun(tuningProblem),
-    learner = getTuningProblemLearner(tuningProblem),
-    show.info = getTuningProblemShowInfo(tuningProblem),
-    oldopts = getTuningProblemOldopts(tuningProblem),
-    more.args = getTuningProblemMoreArgs(tuningProblem),
-    extras = extras
-  )
+  xs = dfRowsToList(prop$prop.points, par.set)
+  xs = lapply(xs, repairPoint, par.set = par.set)
+  evalTargetFun.TuningState(tuningState, xs = xs, extras = extras)
 }
 
 # for Parego: calculate all integer vectors of length k with sum n

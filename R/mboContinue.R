@@ -12,5 +12,10 @@
 mboContinue = function(file) {
   assertCharacter(file, len = 1L)
   tuningState = loadTuningState(file)
+  state = getTuningStateState(tuningState)
+  if (state %nin% c("init", "iter")) {
+    warningf("Tuning ended with %s. No need to continue. Simply returning stored result.", state)
+    return(getTuningResultMboResult(getTuningStateTuningResult(tuningState)))
+  }
   mboTemplate(tuningState)
 }

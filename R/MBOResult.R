@@ -11,10 +11,10 @@
 #'   \item{opt.path [\code{\link[ParamHelpers]{OptPath}}]}{Optimization path.
 #'     Includes all evaluated points and additional information.
 #'     You can convert it via \code{as.data.frame}.}
-#'     FIXME: Finish doc here
-#'   \item{resample.vals ???}{???}
-#'   \item{models [List of \code{\link[mlr]{WrappedModel}}]}{List of saved regression models.}
-#'   \item{control[\code{MBOControl}] Control object used in optimization}
+#'   \item{resample.results [List of \code{\link[mlr]{ResampleResult}}]}{List of the desired \code{resample.results} if \code{resample.at} is set in \code{makeMBOControl}.}
+#'   \item{final.state [\code{character}] The final termination state. Gives information why the optimization ended}
+#'   \item{models [List of \code{\link[mlr]{WrappedModel}}]}{List of saved regression models if \code{store.model.at} is set in \code{makeMBOControl}. The default is that it contains the model generated after the last iteration.}
+#'   \item{control [\code{MBOControl}] Control object used in optimization}
 #' }
 #' @name MBOSingleObjResult
 #' @rdname MBOSingleObjResult
@@ -27,6 +27,10 @@ makeMBOResult.TuningState = function(tuningState) {
   tuningResult = getTuningStateTuningResult(tuningState)
 
   if (length(final.points$x)) {
+    if (getTuningProblemControl(tuningProblem)$final.evals > 0) {
+      ys = evalFinalPoint(tuningState, final.points)
+      final.points$y = mean(ys)
+    }
     makeS3Obj(
       c("MBOSingleObjResult", "MBOResult"),
       x = final.points$x,
@@ -34,7 +38,7 @@ makeMBOResult.TuningState = function(tuningState) {
       best.ind = final.points$best.ind,
       opt.path = getTuningStateOptPath(tuningState),
       resample.results = getTuningResultResampleResults(tuningResult),
-      final.state = getTunigStateState(tuningState),
+      final.state = getTuningStateState(tuningState),
       models = getTuningResultStoredModels(tuningResult),
       control = control
     )
@@ -44,7 +48,7 @@ makeMBOResult.TuningState = function(tuningState) {
       pareto.set = final.points$pareto.set,
       pareto.inds = final.points$inds,
       opt.path = getTuningStateOptPath(tuningState),
-      final.state = getTunigStateState(tuningState),
+      final.state = getTuningStateState(tuningState),
       models = getTuningResultStoredModels(tuningResult),
       control = control
     )
@@ -76,6 +80,7 @@ print.MBOResult = function(x, ...) {
 #'   \item{opt.path [\code{\link[ParamHelpers]{OptPath}}]}{Optimization path.
 #'     Includes all evaluated points and additional information.
 #'     You can convert it via \code{as.data.frame}.}
+#'   \item{final.state [\code{character}] The final termination state. Gives information why the optimization ended}
 #'   \item{models [List of \code{\link[mlr]{WrappedModel}}]}{List of saved regression models.}
 #'   \item{control[\code{MBOControl}] Control object used in optimization}
 #' }

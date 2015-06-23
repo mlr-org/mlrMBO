@@ -31,7 +31,7 @@ evalTargetFun = function(fun, par.set, dobs, xs, opt.path, control, show.info, o
   ny = control$number.of.targets
   num.format = control$output.num.format
   num.format.string = paste("%s = ", num.format, sep = "")
-  dobs = ensureVector(dobs, n = nevals, cl = "integer")
+  dobs = ensureVector(dobs, n = nevals)
   imputeY = control$impute.y.fun
 
   # trafo - but we only want to use the Trafo for function eval, not for logging
@@ -117,3 +117,17 @@ evalTargetFun = function(fun, par.set, dobs, xs, opt.path, control, show.info, o
   extractSubList(res, "y")
 }
 
+evalTargetFun.TuningState = function(tuningState, xs, extras) {
+  tuningProblem = getTuningStateTuningProblem(tuningState)
+  evalTargetFun(
+    fun = getTuningProblemFun(tuningProblem), 
+    par.set = getTuningProblemParSet(tuningProblem), 
+    dobs = getTuningStateLoop(tuningState), 
+    xs = xs,
+    opt.path = getTuningStateOptPath(tuningState), 
+    control = getTuningProblemControl(tuningProblem), 
+    show.info = getTuningProblemShowInfo(tuningProblem), 
+    oldopts = getTuningProblemOldopts(tuningProblem),
+    more.args = getTuningProblemMoreArgs(tuningProblem), 
+    extras = extras)
+}

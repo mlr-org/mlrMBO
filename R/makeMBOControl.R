@@ -82,7 +82,7 @@
 #'   Default \dQuote{mbo_run.RData} in your current working directory.
 #' @param store.model.at [\code{integer}]\cr
 #'   Sequential optimization iterations when the model should be saved.
-#'   Iteration 0 is the model fit for the initial design, iters + 1 is a final
+#'   Iteration 1 is the model fit for the initial design, iters + 1 is a final
 #'   save containing the final results of the optimization. .
 #'   Default is \code{iters + 1}.
 #' @param resample.at [\code{integer}]\cr
@@ -118,7 +118,7 @@ makeMBOControl = function(number.of.targets = 1L,
   suppress.eval.errors = TRUE,
   save.on.disk.at = integer(0L),
   save.file.path = file.path(getwd(), "mlr_run.RData"),
-  store.model.at = iters,
+  store.model.at = iters + 1,
   resample.at = integer(0), resample.desc = makeResampleDesc("CV", iter = 10), resample.measures = list(mse),
   on.learner.error = "warn", show.learner.output = FALSE,
   output.num.format = "%.3g"
@@ -172,7 +172,7 @@ makeMBOControl = function(number.of.targets = 1L,
 
 
   if (length(save.on.disk.at) > 0) {
-    save.on.disk.at = asInteger(save.on.disk.at, any.missing = FALSE, lower = 0, upper = iters + 1)
+    save.on.disk.at = asInteger(save.on.disk.at, any.missing = FALSE, lower = 0 , upper = iters + 1)
     assertPathForOutput(save.file.path)
   }
 
@@ -182,7 +182,7 @@ makeMBOControl = function(number.of.targets = 1L,
   if (getOption("mlrMBO.debug.mode", default = FALSE))
     save.on.disk.at = NULL
 
-  store.model.at = asInteger(store.model.at, any.missing = FALSE, lower = 0, upper = iters + 1)
+  store.model.at = asInteger(store.model.at, any.missing = FALSE, lower = 1, upper = iters + 1)
   resample.at = asInteger(resample.at, any.missing = FALSE, lower = 0L, upper = iters + 1)
   assertClass(resample.desc, "ResampleDesc")
   assertList(resample.measures, types = "Measure")
