@@ -13,10 +13,10 @@
   \item{opt.path [\code{\link[ParamHelpers]{OptPath}}]}{Optimization path.
     Includes all evaluated points and additional information.
     You can convert it via \code{as.data.frame}.}
-    FIXME: Finish doc here
-  \item{resample.vals ???}{???}
-  \item{models [List of \code{\link[mlr]{WrappedModel}}]}{List of saved regression models.}
-  \item{control[\code{MBOControl}] Control object used in optimization}
+  \item{resample.results [List of \code{\link[mlr]{ResampleResult}}]}{List of the desired \code{resample.results} if \code{resample.at} is set in \code{makeMBOControl}.}
+  \item{final.state [\code{character}] The final termination state. Gives information why the optimization ended}
+  \item{models [List of \code{\link[mlr]{WrappedModel}}]}{List of saved regression models if \code{store.model.at} is set in \code{makeMBOControl}. The default is that it contains the model generated after the last iteration.}
+  \item{control [\code{MBOControl}] Control object used in optimization}
 }
 }
 
