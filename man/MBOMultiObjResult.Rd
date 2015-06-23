@@ -11,6 +11,7 @@
   \item{opt.path [\code{\link[ParamHelpers]{OptPath}}]}{Optimization path.
     Includes all evaluated points and additional information.
     You can convert it via \code{as.data.frame}.}
+  \item{final.state [\code{character}] The final termination state. Gives information why the optimization ended}
   \item{models [List of \code{\link[mlr]{WrappedModel}}]}{List of saved regression models.}
   \item{control[\code{MBOControl}] Control object used in optimization}
 }

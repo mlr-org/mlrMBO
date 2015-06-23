@@ -12,7 +12,7 @@ makeMBOControl(number.of.targets = 1L, minimize = rep(TRUE,
   final.method = "best.true.y", final.evals = 0L, y.name = "y",
   impute.y.fun = NULL, trafo.y.fun = NULL, suppress.eval.errors = TRUE,
   save.on.disk.at = integer(0L), save.file.path = file.path(getwd(),
-  "mlr_run.RData"), store.model.at = iters, resample.at = integer(0),
+  "mlr_run.RData"), store.model.at = iters + 1, resample.at = integer(0),
   resample.desc = makeResampleDesc("CV", iter = 10),
   resample.measures = list(mse), on.learner.error = "warn",
   show.learner.output = FALSE, output.num.format = "\%.3g")
@@ -118,7 +118,7 @@ Default \dQuote{mbo_run.RData} in your current working directory.}
 
 \item{store.model.at}{[\code{integer}]\cr
 Sequential optimization iterations when the model should be saved.
-Iteration 0 is the model fit for the initial design, iters + 1 is a final
+Iteration 1 is the model fit for the initial design, iters + 1 is a final
 save containing the final results of the optimization. .
 Default is \code{iters + 1}.}
 

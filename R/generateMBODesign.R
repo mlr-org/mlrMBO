@@ -3,27 +3,23 @@
 # If no design is passed, create it. otherwise sanity-check it.
 # Either do y-evals or log points to opt.path manually.
 #
-# @param design [\code{data.frame} | NULL]\cr
-#   Initial design as data frame. If none provided one is constructed.
-# @param fun [\code{function(x, ...)}]\cr
-#   Fitness function to minimize.
-# @param par.set [\code{param.set}]\cr
-#   Parameter set.
-# @param opt.path [\code{\link[ParamHelpers]{optPath}}]\cr
-#   Optimization path.
-# @param control [\code{\link{MBOControl}}]\cr
-#   MBO control object.
-# @param show.info [\code{logical(1)}]\cr
-#   Show info or not?
-# @param oldopts [\code{list}]\cr
-#   Old options for mlr.
-# @param more.args [\code{list}]\cr
-#   Further parameters for target function.
-# @param extras [\code{list}]\cr
-#   List of extra information to be logged in \code{opt.path}.
+# @param tuningState [\code{TuningState} | NULL]\cr
+#   Initial Tuning State with empty design slot
 # @return [\code{NULL}]
-generateMBODesign = function(design, fun, par.set, opt.path, control, show.info, oldopts,
-  more.args = list(), extras = NULL) {
+
+generateMBODesign.TuningState = function(tuningState) {
+  tuningProblem = getTuningStateTuningProblem(tuningState)
+  extras = getExtras(
+    n = getTuningProblemInitDesignPoints(tuningProblem), 
+    prop = NULL, 
+    train.time = NA_real_, 
+    control = getTuningProblemControl(tuningProblem)
+  )
+
+  design = getTuningProblemDesign(tuningProblem)
+  fun = getTuningProblemFun(tuningProblem)
+  par.set = getTuningProblemParSet(tuningProblem)
+  control = getTuningProblemControl(tuningProblem)
 
   # shortcut names
   pids = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
@@ -65,16 +61,15 @@ generateMBODesign = function(design, fun, par.set, opt.path, control, show.info,
   if (all(y.name %in% colnames(design))) {
     y = as.matrix(design[, y.name, drop = FALSE])
     lapply(seq_along(xs), function(i)
-      addOptPathEl(opt.path, x = xs[[i]], y = y[i, ], dob = 0L,
+      addOptPathEl(getTuningStateOptPath(tuningState), x = xs[[i]], y = y[i, ], dob = 0L,
         error.message = NA_character_, exec.time = NA_real_, extra = extras[[i]])
     )
   } else if (all(y.name %nin% colnames(design))) {
-    showInfo(show.info, "Computing y column(s) for design. Not provided.")
-    evalTargetFun(fun, par.set, 0L, xs, opt.path, control, show.info, oldopts, more.args, extras)
+    showInfo(getTuningProblemShowInfo(tuningProblem), "Computing y column(s) for design. Not provided.")
+    evalTargetFun.TuningState(tuningState, xs, extras)
   } else {
     stop("Only part of y-values are provided. Don't know what to do - provide either all or none.")
   }
 
-  invisible(NULL)
 }
 

@@ -17,5 +17,5 @@ test_that("stopping criteria works", {
   ctrl = makeMBOControl(iters = iters, time.budget = time.budget)
   or = mbo(makeMBOFunction(obj.fun), design = design, par.set = par.set, learner = learner, control = ctrl)
 
-  expect_equal(or$convergence, 1L)
+  expect_equal(or$final.state, "time.exceeded")
 })

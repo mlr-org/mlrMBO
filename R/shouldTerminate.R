@@ -26,3 +26,18 @@ shouldTerminate = function(max.iters, iter, time.budget, start.time, exec.time.b
   }
   return(-1L)
 }
+
+shouldTerminate.TuningState = function(tuningState) {
+  tuningProblem = getTuningStateTuningProblem(tuningState)
+  control = getTuningProblemControl(tuningProblem)
+  shouldTerminate(
+    max.iters = control$iters,
+    iter = getTuningStateLoop(tuningState),
+    time.budget = control$time.budget,
+    start.time = getTuningProblemStartTime(tuningProblem),
+    exec.time.budget = control$exec.time.budget,
+    opt.path = getTuningStateOptPath(tuningState),
+    show.info = getTuningProblemShowInfo(tuningProblem)
+  )
+
+}

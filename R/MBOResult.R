@@ -11,32 +11,50 @@
 #'   \item{opt.path [\code{\link[ParamHelpers]{OptPath}}]}{Optimization path.
 #'     Includes all evaluated points and additional information.
 #'     You can convert it via \code{as.data.frame}.}
-#'     FIXME: Finish doc here
-#'   \item{resample.vals ???}{???}
-#'   \item{models [List of \code{\link[mlr]{WrappedModel}}]}{List of saved regression models.}
-#'   \item{control[\code{MBOControl}] Control object used in optimization}
+#'   \item{resample.results [List of \code{\link[mlr]{ResampleResult}}]}{List of the desired \code{resample.results} if \code{resample.at} is set in \code{makeMBOControl}.}
+#'   \item{final.state [\code{character}] The final termination state. Gives information why the optimization ended}
+#'   \item{models [List of \code{\link[mlr]{WrappedModel}}]}{List of saved regression models if \code{store.model.at} is set in \code{makeMBOControl}. The default is that it contains the model generated after the last iteration.}
+#'   \item{control [\code{MBOControl}] Control object used in optimization}
 #' }
 #' @name MBOSingleObjResult
 #' @rdname MBOSingleObjResult
 NULL
 
-makeMBOSingleObjResult = function(final.index, opt.path, resample.results, convergence, models, control) {
-  best = getOptPathEl(opt.path, final.index)
-  x = best$x
-  if (control$multifid)
-    x = dropNamed(x, ".multifid.lvl")
+makeMBOResult.TuningState = function(tuningState) {
+  tuningProblem = getTuningStateTuningProblem(tuningState)
+  control = getTuningProblemControl(tuningProblem)
+  final.points = getTuningStateFinalPoints(tuningState)
+  tuningResult = getTuningStateTuningResult(tuningState)
 
-  makeS3Obj(c("MBOSingleObjResult", "MBOResult"),
-    x = x,
-    y = as.numeric(best$y), # strip name
-    best.ind = final.index,
-    opt.path = opt.path,
-    resample.results = resample.results,
-    convergence = convergence,
-    models = models,
-    control = control
-  )
+  if (length(final.points$x)) {
+    if (getTuningProblemControl(tuningProblem)$final.evals > 0) {
+      ys = evalFinalPoint(tuningState, final.points)
+      final.points$y = mean(ys)
+    }
+    makeS3Obj(
+      c("MBOSingleObjResult", "MBOResult"),
+      x = final.points$x,
+      y = final.points$y, # strip name
+      best.ind = final.points$best.ind,
+      opt.path = getTuningStateOptPath(tuningState),
+      resample.results = getTuningResultResampleResults(tuningResult),
+      final.state = getTuningStateState(tuningState),
+      models = getTuningResultStoredModels(tuningResult),
+      control = control
+    )
+  } else {
+    makeS3Obj(c("MBOMultiObjResult", "MBOResult"),
+      pareto.front = final.points$pareto.front,
+      pareto.set = final.points$pareto.set,
+      pareto.inds = final.points$inds,
+      opt.path = getTuningStateOptPath(tuningState),
+      final.state = getTuningStateState(tuningState),
+      models = getTuningResultStoredModels(tuningResult),
+      control = control
+    )
+  }
 }
+
 
 #' @export
 print.MBOResult = function(x, ...) {
@@ -62,26 +80,13 @@ print.MBOResult = function(x, ...) {
 #'   \item{opt.path [\code{\link[ParamHelpers]{OptPath}}]}{Optimization path.
 #'     Includes all evaluated points and additional information.
 #'     You can convert it via \code{as.data.frame}.}
+#'   \item{final.state [\code{character}] The final termination state. Gives information why the optimization ended}
 #'   \item{models [List of \code{\link[mlr]{WrappedModel}}]}{List of saved regression models.}
 #'   \item{control[\code{MBOControl}] Control object used in optimization}
 #' }
 #' @name MBOMultiObjResult
 #' @rdname MBOMultiObjResult
 NULL
-
-makeMBOMultiCritResult = function(opt.path, convergence, models, control) {
-  # get indices of pareto front from path, then add rest
-  inds = getOptPathParetoFront(opt.path, index = TRUE)
-  res = makeS3Obj(c("MBOMultiObjResult", "MBOResult"),
-    pareto.front = getOptPathY(opt.path)[inds, , drop = FALSE],
-    pareto.set = lapply(inds, function(i) getOptPathEl(opt.path, i)$x),
-    pareto.inds = inds,
-    opt.path = opt.path,
-    convergence = convergence,
-    models = models,
-    control = control
-  )
-}
 
 #' @export
 print.MBOMultiObjResult = function(x, ...) {
@@ -93,6 +98,3 @@ print.MBOMultiObjResult = function(x, ...) {
   catf("%i + %i entries in total, displaying last 10 (or less):", n1, n2)
   print(tail(as.data.frame(x$opt.path), 10))
 }
-
-
-

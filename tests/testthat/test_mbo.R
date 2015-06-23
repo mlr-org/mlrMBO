@@ -11,16 +11,16 @@ test_that("mbo works with rf", {
   y  = sapply(1:nrow(des), function(i) f(as.list(des[i,])))
   des$y = y
   learner = makeLearner("regr.randomForest")
-  ctrl = makeMBOControl(iters = 5, store.model.at = c(0,5))
+  ctrl = makeMBOControl(iters = 5, store.model.at = c(1,5))
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100)
-  or = mbo(f, ps, des, learner, ctrl)
+  or = mbo(f, ps, des, learner, ctrl, show.info = TRUE)
   expect_true(!is.na(or$y))
   expect_equal(or$y, f(or$x))
   expect_equal(getOptPathLength(or$opt.path), 15)
   expect_true(is.list(or$x))
   expect_equal(names(or$x), names(ps$pars))
   expect_equal(length(or$models[[1]]$subset), 10)
-  expect_equal(length(or$models[[2]]$subset), 15)
+  expect_equal(length(or$models[[2]]$subset), 14) #In the 15th step we used a model based on 14
 
   # check errors
   ctrl = makeMBOControl(iters = 5)
