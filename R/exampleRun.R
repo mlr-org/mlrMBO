@@ -98,7 +98,7 @@ exampleRun = function(fun, par.set, design = NULL, global.opt = NA_real_, learne
   if (n.params >= 3L)
     stopf("exampleRun can only be applied for functions with at most 2 dimensions, but you have %iD", n.params)
 
-  control$store.model.at = 0:control$iters
+  control$store.model.at = 1:(control$iters+1)
   names.x = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
   name.y = control$y.name
 
