@@ -29,9 +29,8 @@ mboTemplate.TuningState = function(obj) {
 
     # save on disk routine
     # save with increased loop so we can directly start from here again
-    if (getTuningStateLoop(tuningState) %in% getTuningProblemControl(getTuningStateTuningProblem(tuningState))$save.on.disk.at) {
+    if (getTuningStateShouldSave(tuningState))
       saveTuningState(tuningState)
-    }
     terminate = getTuningStateTermination(tuningState)
     if (terminate >= 0)
         break

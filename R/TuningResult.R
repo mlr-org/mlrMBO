@@ -1,11 +1,11 @@
 # The Tuning Result keeps all the things we want to later give back to the user
 # It is an enviroment and it is always pointed at by the TuningState.
-##' @param stored.models [\code{list()}]\cr
-##'    A list of all models which we wanted to store during the tuning process. Be aware that the true model is in \code{getTuningResultStoredModels[[i]]$model}. See \code{\link{trainModel}} for further details.
-##' @param resample.results [\code{list()}]\cr
-##'    Stores the resample result by mlr.
-##' @param mbo.result [\code{MBOResult}]\cr.
-##'    Will store one MBOResult. Usually the one created in \code{mbo()}, when all iterations are done.
+## @param stored.models [\code{list()}]\cr
+##    A list of all models which we wanted to store during the tuning process. Be aware that the true model is in \code{getTuningResultStoredModels[[i]]$model}. See \code{\link{trainModel}} for further details.
+## @param resample.results [\code{list()}]\cr
+##    Stores the resample result by mlr.
+## @param mbo.result [\code{MBOResult}]\cr.
+##    Will store one MBOResult. Usually the one created in \code{mbo()}, when all iterations are done.
 makeTuningResult = function(stored.models = list(), resample.results = list(), mbo.result = NULL) {
   tuningResult = new.env()
 

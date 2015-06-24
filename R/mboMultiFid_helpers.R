@@ -17,7 +17,7 @@ proposePointsMultiFid = function(model, par.set, control, opt.path, iter) {
 
   infill.vals = extractSubList(prop, "crit.vals")
 
-  if(iter %% control$multifid.force.last.level.steps == 0 | iter == control$iters)
+  if(iter %% control$multifid.force.last.level.steps == 0 || iter == control$iters)
     min.index = length(control$multifid.lvls)
   else
     min.index = getMinIndex(infill.vals)

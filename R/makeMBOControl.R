@@ -51,7 +51,7 @@
 #' @param y.name [\code{character}]\cr
 #'   Vector for names of y-columns for target values in optimization path.
 #'   Default is \dQuote{y_i}, i = 1, ..., number.of.targets.
-#' @param impute.y.fun [\code{function(x, y, opt.path), ...)}*]\cr
+#' @param impute.y.fun [\code{function(x, y, opt.path, ...)}*]\cr
 #'   Functions that gets triggered if your objective evaluation produced
 #'   a) an exception b) a return object of invalid type c) a numeric vector that
 #'   contains \code{NA}, \code{NaN}, \code{Inf}.
@@ -76,6 +76,9 @@
 #'   stops with an crucial error, it can be restarted with this file via the
 #'   function \code{\link{mboContinue}}.
 #'   Default is \code{integer(0L)}, i. e., not to save.
+#' @param save.on.disk.at.time [\code{integer}] \cr
+#'   Same as above. But here you define the time which have to be passed until the last save in seconds. Any finite value will lead to save at end.
+#'   Default is \code{Inf}, i. e., not to save ever.
 #' @param save.file.path [\code{character(1)}] \cr
 #'   If \code{save.on.disk.at} is used, this is the name of the file where the data
 #'   will be saved.
@@ -117,6 +120,7 @@ makeMBOControl = function(number.of.targets = 1L,
   trafo.y.fun = NULL,
   suppress.eval.errors = TRUE,
   save.on.disk.at = integer(0L),
+  save.on.disk.at.time = Inf,
   save.file.path = file.path(getwd(), "mlr_run.RData"),
   store.model.at = iters + 1,
   resample.at = integer(0), resample.desc = makeResampleDesc("CV", iter = 10), resample.measures = list(mse),
@@ -182,6 +186,8 @@ makeMBOControl = function(number.of.targets = 1L,
   if (getOption("mlrMBO.debug.mode", default = FALSE))
     save.on.disk.at = NULL
 
+  assertNumeric(save.on.disk.at.time, lower = 0, finite = FALSE, len = 1)
+
   store.model.at = asInteger(store.model.at, any.missing = FALSE, lower = 1, upper = iters + 1)
   resample.at = asInteger(resample.at, any.missing = FALSE, lower = 0L, upper = iters + 1)
   assertClass(resample.desc, "ResampleDesc")
@@ -209,6 +215,7 @@ makeMBOControl = function(number.of.targets = 1L,
     trafo.y.fun = trafo.y.fun,
     suppress.eval.errors = suppress.eval.errors,
     save.on.disk.at = save.on.disk.at,
+    save.on.disk.at.time = save.on.disk.at.time,
     save.file.path = save.file.path,
     store.model.at = store.model.at,
     resample.desc = resample.desc,

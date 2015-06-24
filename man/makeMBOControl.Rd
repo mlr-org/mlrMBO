@@ -11,8 +11,9 @@ makeMBOControl(number.of.targets = 1L, minimize = rep(TRUE,
   time.budget = NULL, exec.time.budget = NULL, propose.points = 1L,
   final.method = "best.true.y", final.evals = 0L, y.name = "y",
   impute.y.fun = NULL, trafo.y.fun = NULL, suppress.eval.errors = TRUE,
-  save.on.disk.at = integer(0L), save.file.path = file.path(getwd(),
-  "mlr_run.RData"), store.model.at = iters + 1, resample.at = integer(0),
+  save.on.disk.at = integer(0L), save.on.disk.at.time = Inf,
+  save.file.path = file.path(getwd(), "mlr_run.RData"),
+  store.model.at = iters + 1, resample.at = integer(0),
   resample.desc = makeResampleDesc("CV", iter = 10),
   resample.measures = list(mse), on.learner.error = "warn",
   show.learner.output = FALSE, output.num.format = "\%.3g")
@@ -82,7 +83,7 @@ Default is 0.}
 Vector for names of y-columns for target values in optimization path.
 Default is \dQuote{y_i}, i = 1, ..., number.of.targets.}
 
-\item{impute.y.fun}{[\code{function(x, y, opt.path), ...)}*]\cr
+\item{impute.y.fun}{[\code{function(x, y, opt.path, ...)}*]\cr
 Functions that gets triggered if your objective evaluation produced
 a) an exception b) a return object of invalid type c) a numeric vector that
 contains \code{NA}, \code{NaN}, \code{Inf}.
@@ -110,6 +111,10 @@ on disk. Iteration 0 denotes the initial design. If the optimization
 stops with an crucial error, it can be restarted with this file via the
 function \code{\link{mboContinue}}.
 Default is \code{integer(0L)}, i. e., not to save.}
+
+\item{save.on.disk.at.time}{[\code{integer}] \cr
+Same as above. But here you define the time which have to be passed until the last save in seconds. Any finite value will lead to save at end.
+Default is \code{Inf}, i. e., not to save ever.}
 
 \item{save.file.path}{[\code{character(1)}] \cr
 If \code{save.on.disk.at} is used, this is the name of the file where the data

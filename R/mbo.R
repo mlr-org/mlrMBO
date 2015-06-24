@@ -76,7 +76,7 @@ mbo = function(fun, par.set, design = NULL, learner, control,
   setTuningResultMboResult(getTuningStateTuningResult(finalTuningState), mbo.result)
 
   # save on disk routine
-  if (getTuningStateLoop(finalTuningState) %in% getTuningProblemControl(getTuningStateTuningProblem(finalTuningState))$save.on.disk.at)
+  if (getTuningStateLoop(finalTuningState) %in% getTuningProblemControl(getTuningStateTuningProblem(finalTuningState))$save.on.disk.at || is.finite(getTuningProblemControl(getTuningStateTuningProblem(finalTuningState))$save.on.disk.at.time))
     saveTuningState(finalTuningState)
 
   # restore mlr configuration

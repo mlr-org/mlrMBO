@@ -1,20 +1,22 @@
 ## TuningState is the central component of the mbo iterations. This enviroment contains every necessary information we need during tuning in MBO. It links to the \code{TuningProblem} and to the \code{TuningResult}.
-##' @param loop \code{integer()} \cr
-##'   Tells us in what loop we are at the moment. 0 means we are in the inital phase.
-##'   The loop i should change to i+1 as soon as the i-th point is evaluated
-##' @param tasks \code{list()} \cr
-##'   List of \code{RegrTask} which together formulate data neccessary for the surrogate.
-##'   Caching is done to not neccessarly regenerate tasks if the \code{loop} has not changed yes
-##'  @param models \code{list()} \cr
-##'    List of \code{WrappedModel} which are trained on the \code{tasks} and formulate the surrogate. 
-##'    Caching is done as above.
-##'  @param tuningResult \code{TuningResult} \cr
-##'    Pointer to the TuningResult Object.
-##'  @param state \code{character(1)} \cr
-##'    Tells us in what state we are in text. So far we know: init, iter, iter.exceeded, time.exceeded and exec.time.exceeded.
-##'  @param opt.path \code{OptPath} \cr
-##'    Here we keep the opt.path. It delivers the data for the tasks and other usefull information.
-makeTuningState = function(tuningProblem, loop = 0L, tasks = NULL, models = NULL, tuningResult = NULL, state = "init", opt.path = NULL) {
+## @param loop \code{integer()} \cr
+##   Tells us in what loop we are at the moment. 0 means we are in the inital phase.
+##   The loop i should change to i+1 as soon as the i-th point is evaluated
+## @param tasks \code{list()} \cr
+##   List of \code{RegrTask} which together formulate data neccessary for the surrogate.
+##   Caching is done to not neccessarly regenerate tasks if the \code{loop} has not changed yes
+##  @param models \code{list()} \cr
+##    List of \code{WrappedModel} which are trained on the \code{tasks} and formulate the surrogate. 
+##    Caching is done as above.
+##  @param tuningResult \code{TuningResult} \cr
+##    Pointer to the TuningResult Object.
+##  @param state \code{character(1)} \cr
+##    Tells us in what state we are in text. So far we know: init, iter, iter.exceeded, time.exceeded and exec.time.exceeded.
+##  @param opt.path \code{OptPath} \cr
+##    Here we keep the opt.path. It delivers the data for the tasks and other usefull information.
+##  @param last.saved \code{POSIXct} \cr
+##     The \code{Sys.time()} when the last save on disk was done.
+makeTuningState = function(tuningProblem, loop = 0L, tasks = NULL, models = NULL, tuningResult = NULL, state = "init", opt.path = NULL, last.saved = Sys.time()) {
 
   tuningState = new.env()
 
@@ -41,6 +43,8 @@ makeTuningState = function(tuningProblem, loop = 0L, tasks = NULL, models = NULL
   } else {
     tuningState$opt.path = opt.path
   }
+  tuningState$last.saved = last.saved
+
   tuningState$random.seed = .Random.seed
   class(tuningState) = append(class(tuningState), "TuningState")
   tuningState
@@ -126,6 +130,24 @@ getTuningStateOptPath = function(tuningState) {
   tuningState$opt.path
 }
 
+setTuningStateLastSaved = function(tuningState, time) {
+  tuningState$last.saved = time
+  invisible()
+}
+
+getTuningStateLastSaved = function(tuningState) {
+  tuningState$last.saved
+}
+
+getTuningStateShouldSave = function(tuningState) {
+  tuningProblem = getTuningStateTuningProblem(tuningState)
+  control = getTuningProblemControl(tuningProblem)
+
+  getTuningStateLoop(tuningState) %in% control$save.on.disk.at ||
+    difftime(Sys.time(), getTuningStateLastSaved(tuningState), units = "secs") > control$save.on.disk.at.time
+  
+}
+
 saveTuningState = function(tuningState) {
   loop = getTuningStateLoop(tuningState)
   control = getTuningProblemControl(getTuningStateTuningProblem(tuningState))
@@ -135,6 +157,7 @@ saveTuningState = function(tuningState) {
   save2(file = backup.fn, tuningState = tuningState)
   file.copy(backup.fn, fn, overwrite = TRUE)
   file.remove(backup.fn)
+  setTuningStateLastSaved(tuningState, Sys.time())
   if (loop <= control$iters)
     showInfo(show.info, "Saved the current state after iteration %i in the file %s.",
       loop, control$save.file.path)
