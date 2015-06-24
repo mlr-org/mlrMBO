@@ -1,3 +1,19 @@
+## TuningState is the central component of the mbo iterations. This enviroment contains every necessary information we need during tuning in MBO. It links to the \code{TuningProblem} and to the \code{TuningResult}.
+##' @param loop \code{integer()} \cr
+##'   Tells us in what loop we are at the moment. 0 means we are in the inital phase.
+##'   The loop i should change to i+1 as soon as the i-th point is evaluated
+##' @param tasks \code{list()} \cr
+##'   List of \code{RegrTask} which together formulate data neccessary for the surrogate.
+##'   Caching is done to not neccessarly regenerate tasks if the \code{loop} has not changed yes
+##'  @param models \code{list()} \cr
+##'    List of \code{WrappedModel} which are trained on the \code{tasks} and formulate the surrogate. 
+##'    Caching is done as above.
+##'  @param tuningResult \code{TuningResult} \cr
+##'    Pointer to the TuningResult Object.
+##'  @param state \code{character(1)} \cr
+##'    Tells us in what state we are in text. So far we know: init, iter, iter.exceeded, time.exceeded and exec.time.exceeded.
+##'  @param opt.path \code{OptPath} \cr
+##'    Here we keep the opt.path. It delivers the data for the tasks and other usefull information.
 makeTuningState = function(tuningProblem, loop = 0L, tasks = NULL, models = NULL, tuningResult = NULL, state = "init", opt.path = NULL) {
 
   tuningState = new.env()
@@ -15,7 +31,7 @@ makeTuningState = function(tuningProblem, loop = 0L, tasks = NULL, models = NULL
     tuningState$tuningResult = tuningResult
   }
   
-  tuningState$state = state #states = init, iter, iter.exceeded, time.exceeded, exec.time,exceeded, 
+  tuningState$state = state #states = init, iter, iter.exceeded, time.exceeded, exec.time.exceeded, 
 
   if (is.null(opt.path)) {
     tuningState$opt.path = makeMBOOptPath(

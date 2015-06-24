@@ -1,3 +1,26 @@
+##' The TuningProblem contains all the constants wich define a TuningProblem within our MBO Steps. It is an enviroment and is always pointed at by the TuningState.
+##' @param fun [\code{function(x, ...)}]\cr
+##'   Fitness function to minimize. The first argument has to be a list of values.
+##'   The function has to return a single numerical value.
+##'   In fact it is possible to return even more information which will be stored
+##'   in the optimization path. To achieve this, simply append the attribute \dQuote{extras}
+##'   to the return value of the target function. This has to be a named list of scalar values.
+##'   Each of these values will be stored additionally in the optimization path.
+##' @template arg_parset
+##' @param design [\code{data.frame} | NULL]\cr
+##'   Initial design as data frame.
+##'   If the parameters have corresponding trafo functions,
+##'   the design must not be transformed before it is passed!
+##'   If \code{NULL}, one is constructed from the settings in \code{control}.
+##' @param learner [\code{\link[mlr]{Learner}}]\cr
+##'   Regression learner to model \code{fun}.
+##' @template arg_control
+##' @arg start.time [\code{POSIXct}] \cr
+##'   Starting time of Tuning defined as an output from \code[Sys.time()].
+##' @template arg_showinfo
+##' @param more.args [list]\cr
+##'   Further arguments passed to fitness function.
+##' @return [\code{\link{MBOSingleObjResult}} | \code{\link{MBOMultiObjResult}}]
 makeTuningProblem = function(fun, par.set, design = NULL, learner, control, start.time = NULL, show.info = TRUE, more.args = list()) {
   tuningProblem = new.env()
 
