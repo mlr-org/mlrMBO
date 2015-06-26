@@ -175,7 +175,3 @@ infillCritDIB = function(points, models, control, par.set, design, iter) {
   }
   return(crit.vals)
 }
-
-
-
-

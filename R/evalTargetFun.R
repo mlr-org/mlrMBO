@@ -31,7 +31,7 @@ evalTargetFun = function(fun, par.set, dobs, xs, opt.path, control, show.info, o
   ny = control$number.of.targets
   num.format = control$output.num.format
   num.format.string = paste("%s = ", num.format, sep = "")
-  dobs = ensureVector(dobs, n = nevals)
+  dobs = ensureVector(asInteger(dobs), n = nevals, cl = "integer")
   imputeY = control$impute.y.fun
 
   # trafo - but we only want to use the Trafo for function eval, not for logging
