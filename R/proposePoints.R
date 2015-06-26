@@ -14,7 +14,7 @@
 #                               NA if the model was Ok, or the (first) error message if some model crashed
 proposePoints = function(tasks, models, par.set, control, opt.path, iter) {
   m = control$number.of.targets
-  if (m == 1L) {
+  if (m == 1L && control$infill.crit != "random") {
     if (control$multifid) {
       res = proposePointsMultiFid(models[[1L]], par.set, control, opt.path, iter)
     } else if (is.null(control$multipoint.method)) {
@@ -28,16 +28,20 @@ proposePoints = function(tasks, models, par.set, control, opt.path, iter) {
         res = proposePointsMOIMBO(models, par.set, control, opt.path, iter)
       }
     }
-  } else {
-      if (control$multicrit.method == "parego") {
-        res = proposePointsParEGO(models, par.set, control, opt.path, iter, attr(tasks, "weight.mat"))
-      } else if (control$multicrit.method == "mspot") {
-        res = proposePointsMSPOT(models, par.set, control, opt.path, iter)
-      } else if (control$multicrit.method == "dib") {
-        res = proposePointsDIB(models, par.set, control, opt.path, iter)
-      }
+  } else if (control$infill.crit != "random"){
+    if (control$multicrit.method == "parego") {
+      res = proposePointsParEGO(models, par.set, control, opt.path, iter, attr(tasks, "weight.mat"))
+    } else if (control$multicrit.method == "mspot") {
+      res = proposePointsMSPOT(models, par.set, control, opt.path, iter)
+    } else if (control$multicrit.method == "dib") {
+      res = proposePointsDIB(models, par.set, control, opt.path, iter)
+    }
   }
 
+  if (control$infill.crit == "random") {
+    res = proposePointsRandom(models, par.set, control, opt.path, iter)
+  }
+  
   if (control$interleave.random.points > 0L) {
     add = proposePointsRandom(models, par.set, control, opt.path, iter)
     res = joinProposedPoints(list(res, add))
