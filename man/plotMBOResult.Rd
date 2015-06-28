@@ -3,10 +3,11 @@
 \name{plotMBOResult}
 \alias{plotMBOResult}
 \title{Plots any MBO result objects. Plots for X-Space, Y-Space and any coloumn in
-the optimization path are available. This function uses \code{\link{renderMBOPlot}}.}
+the optimization path are available. This function uses
+\code{\link[ParamHelpers]{plotOptPath}} from package \code{ParamHelpers}.}
 \usage{
-plotMBOResult(result, iters, pause = TRUE, hv.plot = NA, ref.point = NULL,
-  y.over.time, title = "MBO Result", ...)
+plotMBOResult(result, iters, pause = TRUE, y.over.time,
+  title = "MBO Result", ...)
 }
 \arguments{
 \item{result}{[\code{MBOResult}]\cr
@@ -19,49 +20,20 @@ Iterations to be plotted, 0 indicates the initial design.}
 Should the process be paused after each iteration?
 Default is \code{TRUE}.}
 
-\item{hv.plot}{[\code{logical(1)}]\cr
-Should the hypervolume development be plotted? Default is FALSE for single
-objective und TRUE for multi objective.}
+\item{y.over.time}{[\code{list} | NULL]\cr
+See argument \code{y.over.time} of the function
+\code{\link[ParamHelpers]{renderOptPathPlot}} from package \code{ParamHelpers}.
+Default is to plot the y variable and the infill crit in the single crit case.}
 
-\item{ref.point}{[\code{numeric}]\cr
-  Reference point used for the hypervolume development plot. Length of vector
-  must equal the dimensionality of the optimization problem. Default is
-  \code{NULL}, in this case the maximum / minimum values in the optimization
-  path, that are alive in iteration iter, are used and increased / decreased
-  by 0.1 (depending on minimization / maximization of the objective).}
+\item{title}{[\code{character(1)}]\cr
+Main title for the plot.}
 
-\item{...}{\cr
-Additional parameters for the \code{\link[ParamHelpers]{renderOptPathPlot}}
+\item{...}{Additional parameters for the \code{\link[ParamHelpers]{plotOptPath}}
 function in package \code{ParamHelpers}.}
-
-\item{crit.plot}{[\code{logical(1)}]\cr
-Should the infill criterion versus the iteration be plotted? For multi objective
-and method = MSPOT multiple infill criterion values per iterion do exist,
-so a multi-dimensional plot is used. Default is TRUE}
-
-\item{extra.measures}{[\code{character}]\cr
- Additional measures to be plotted versus the iteration. Must be the name
- of a coloumn available in the optimization path. Notice that at most 4 plost
- can be renderd at the same time. Since X and Y Space plots will allways be
- rendered, at most 2 addition plots are possible. You must deactivate crit.plot
- or hv.plot, if you want to add additional plots via extra.measure.}
-
-\item{lim.x}{[\code{list}],}
-
-\item{lim.y}{[\code{list}]\cr
-Axis limits for the plots. Must be a named list, so you can specify the
-axis limits for every plot. Every element of the list must be a numeric
-vector of length 2. Available names for elements are:
-XSpace - limits for the X-Space plot
-YSpaCe - limits for the Y-Space plot
-CritPlot - limits for the plot infill criterion plot
-HVPlot - limits for the Hypervolume Plit
-Extra1Plot - Limits for the Plot given by the first element of extra.measure
-Extra2Plot - Limits for the Plot given by the second element of extra.measure
-Default is an empty list - in this case limits are automatically set.}
 }
 \description{
 Plots any MBO result objects. Plots for X-Space, Y-Space and any coloumn in
-the optimization path are available. This function uses \code{\link{renderMBOPlot}}.
+the optimization path are available. This function uses
+\code{\link[ParamHelpers]{plotOptPath}} from package \code{ParamHelpers}.
 }
 
