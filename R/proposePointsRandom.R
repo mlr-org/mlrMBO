@@ -1,7 +1,8 @@
 proposePointsRandom = function(models, par.set, control, opt.path, iter) {
-  n = control$interleave.random.points
   if (control$infill.crit == "random")
-    n = n + control$propose.points
+    n = control$propose.points
+  else
+    n = control$interleave.random.points
   list(
     prop.points = generateRandomDesign(par.set = par.set, n = n),
     crit.vals = matrix(rep.int(NA_real_, n), nrow = n, ncol = 1L),
