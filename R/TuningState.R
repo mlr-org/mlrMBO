@@ -189,12 +189,7 @@ getTuningStateFinalPoints = function(tuningState, unify = FALSE) {
   opt.path = getTuningStateOptPath(tuningState)
 
   if (control$number.of.targets == 1L) {
-    final.index = chooseFinalPoint(
-      fun = getTuningProblemFun(tuningProblem), 
-      opt.path = opt.path, 
-      model = getTuningStateModels(tuningState)$models[[1L]], 
-      task = getTuningStateTasks(tuningState)[[1]], 
-      control = control)
+    final.index = chooseFinalPoint(tuningState)
     best = getOptPathEl(opt.path, final.index)
     list(
       x = dropNamed(best$x, ".multifid.lvl"),
