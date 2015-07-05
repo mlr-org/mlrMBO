@@ -26,19 +26,19 @@ renderExampleRunPlot.MBOExampleRunMultiCrit = function(object, iter, densregion 
   issmspar = control$multicrit.method == "dib" && control$multicrit.dib.indicator == "sms" &&
     control$propose.points > 1L
   # build essential data frames for target values ...
-  yy = rbind(mbo.paretofront, nsga2.paretofront)
+  data.y = rbind(mbo.paretofront, nsga2.paretofront)
   
   # ... and for parameters
-  x = as.data.frame(mbo.res$opt.path, include.y = FALSE, include.rest = FALSE)
-  xx = setRowNames(rbind(x, nsga2.paretoset), NULL)
+  data.x = as.data.frame(mbo.res$opt.path, include.y = FALSE, include.rest = FALSE)
+  data.x = setRowNames(rbind(data.x, nsga2.paretoset), NULL)
   
-  idx.nsga2.paretofront = (nrow(mbo.paretofront) + 1):nrow(yy)
+  idx.nsga2.paretofront = (nrow(mbo.paretofront) + 1):nrow(data.y)
   # we need the range vor normalization. If no limits given, we use the ranges
   # for plotting limits too
-  y1range = range(yy[, 1L])
+  y1range = range(data.y[, 1L])
   if (is.null(xlim))
     y1lim = y1range
-  y2range = range(yy[, 2L])
+  y2range = range(data.y[, 2L])
   if (is.null(ylim))
     y2lim = y2range
   
@@ -54,104 +54,6 @@ renderExampleRunPlot.MBOExampleRunMultiCrit = function(object, iter, densregion 
   
   # save sequence of opt plots here
   plots = list()
-  
-  getIDX = function(opt.path, i) {
-    list(
-      seq = which(opt.path$dob > 0 & opt.path$dob < i),
-      proposed = which(opt.path$dob == i),
-      past = which(opt.path$dob < i),
-      pastpresent = which(opt.path$dob <= i)
-    )
-  }
-  
-  getGGPointsFront = function(yy, idx, idx.all) {
-    data.frame(
-      y1 = yy[idx.all, 1L],
-      y2 = yy[idx.all, 2L],
-      type = as.factor(c(
-        rep("init", length(idx.init)),
-        rep("seq", length(idx$seq)),
-        rep("prop", length(idx$proposed)),
-        rep("front", length(idx.nsga2.paretofront))
-      ))
-    )
-  }
-  
-  getGGPointsSet = function(xx, idx, idx.all) {
-    data.frame(
-      x1 = xx[idx.all, 1L],
-      x2 = xx[idx.all, 2L],
-      type = as.factor(c(
-        rep("init", length(idx.init)),
-        rep("seq", length(idx$seq)),
-        rep("prop", length(idx$proposed)),
-        rep("front", length(idx.nsga2.paretofront))
-      ))
-    )
-  }
-  
-  addApproxMBO = function(pl, gg.mbo, cols, isdom, col, lty) {
-    if (!is.null(gg.mbo)) {
-      gg.mbo = setColNames(gg.mbo[!isdom, 1:2], cols)
-      gg.mbo = sortByCol(gg.mbo, cols)
-      pl = pl + geom_line(aes_string(x = cols[1L], y = cols[2L]), gg.mbo,
-        col = col, linetype = lty, alpha = 0.8)
-    }
-    return(pl)
-  }
-  
-  createPlFront = function(gg.points.front, iter) {
-    pl.front = ggplot(data = gg.points.front, aes_string(x = "y1", y = "y2"))
-    
-    pl.front = pl.front + geom_point(
-      mapping = aes_string(colour = "type", shape = "type"),
-      data = gg.points.front[which(gg.points.front$type == "front"), ],
-      size = 2, alpha = 0.4)
-    pl.front = pl.front + geom_point(
-      mapping = aes_string(colour = "type", shape = "type"),
-      data = gg.points.front[which(gg.points.front$type != "front"), ],
-      size = 4)
-    if (isparego)
-      pl.front = pl.front + geom_abline(intercept = intercept, slope = slope)
-    pl.front = pl.front + xlab(y.name[1L])
-    pl.front = pl.front + ylab(y.name[2L])
-    pl.front = pl.front + xlim(y1lim) + ylim(y2lim)
-    #FIXME: this labels look very ugly and moreover overlap on scaling the plot
-    #pl.front = pl.front + geom_text(data = NULL, x = 3/12 * y1lim[2L], y = 24/24 * y2lim[2L],
-    #  label = paste("lambda[1] == ", round(weights[1L], 2), sep = ""), parse = TRUE, col = "black", size = 5)
-    #pl.front = pl.front + geom_text(data = NULL, x = 3/12 * y1lim[2L], y = 23/24 * y2lim[2L],
-    #  label = paste("lambda[2] == ", round(weights[2L], 2), sep = ""), parse = TRUE, col = "black", size = 5)
-    if (isparego) {
-      pl.front = pl.front + annotate("text", label = expression(paste(lambda[1], round(weights[1L], 2),
-        lambda[2], round(weights[2L], 2)), sep = ""), x = y1lim[2], y = y2lim[1])
-      pl.front = pl.front + geom_line(data = gg.line, col = "blue", shape = 1)
-    }
-    pl.front = addApproxMBO(pl.front, object$mbo.pred.grid.mean[[iter]], c("y1", "y2"),
-      object$mbo.pred.grid.mean[[iter]]$.is.dom, "brown", "solid")
-    pl.front = addApproxMBO(pl.front, object$mbo.pred.grid.lcb[[iter]], c("y1", "y2"),
-      object$mbo.pred.grid.lcb[[iter]]$.is.dom, "brown", "dotted")
-    return(pl.front)
-  }
-  
-  createPlSet = function(gg.points.set, iter) {
-    pl.set = ggplot()
-    # only for parego, color background with scalar model / crit
-    brewer.palette = colorRampPalette(brewer.pal(11, "Spectral"), interpolate = "spline")
-    
-    if (control$multicrit.method == "parego") {
-      pl.set = pl.set + geom_tile(data = xgrid2, aes_string(x = x.name[1L], y = x.name[2L], fill = name.crit))
-      pl.set = pl.set + scale_fill_gradientn(colours = brewer.palette(200))
-    }
-    pl.set = pl.set +  geom_point(data = gg.points.set[which(gg.points.set$type == "front"), ],
-      aes_string(x = "x1", y = "x2", colour = "type", shape = "type"), size = 2, alpha = 0.8)
-    pl.set = pl.set + geom_point(data = gg.points.set[which(gg.points.set$type != "front"), ],
-      aes_string(x = "x1", y = "x2", colour = "type", shape = "type"), size = 4)
-    pl.set = addApproxMBO(pl.set, object$mbo.pred.grid.x, x.name,
-      object$mbo.pred.grid.mean[[iter]]$.is.dom, "brown", "solid")
-    pl.set = addApproxMBO(pl.set, object$mbo.pred.grid.x, x.name,
-      object$mbo.pred.grid.lcb[[iter]]$.is.dom, "brown", "dotted")
-    return(pl.set)
-  }
   
   if (isparego) {
     for (j in 1:proppoints) {
@@ -170,8 +72,8 @@ renderExampleRunPlot.MBOExampleRunMultiCrit = function(object, iter, densregion 
       }
       idx.all = c(idx.init, idx$seq, idx$proposed, idx.nsga2.paretofront)
       
-      gg.points.front = getGGPointsFront(yy, idx, idx.all)
-      gg.points.set = getGGPointsSet(xx, idx, idx.all)
+      gg.points.front = getGGPointsFront(data.y, idx, idx.all, idx.init, idx.nsga2.paretofront)
+      gg.points.set = getGGPointsSet(data.x, idx, idx.all, idx.init, idx.nsga2.paretofront)
       
       # make dataframe for lines to show rho
       m.seq = seq(y1lim[1], y1lim[2], length.out = 10000)
@@ -195,17 +97,18 @@ renderExampleRunPlot.MBOExampleRunMultiCrit = function(object, iter, densregion 
       # FIXME: find a good way to set this constant. I tried a lot and i found
       # nothing that worked really good. this is the best i got ... it works somehow,
       # but is far from perfect.
-      tmp.x = sqrt(slope^2 / 4 + 1 - intercept) - slope / 2
+      tmp.x = sqrt(slope ^ 2 / 4 + 1 - intercept) - slope / 2
       tmp.y = tmp.x * slope + intercept
-      const = optimize(function(x) (f(tmp.x, weights, rho, x) - tmp.y)^2, interval = c(0, 10))$minimum
+      const = optimize(function(x) (f(tmp.x, weights, rho, x) - tmp.y) ^ 2, interval = c(0, 10))$minimum
       gg.line = data.frame(
         y1 = m.seq,
         y2 = f(m.seq, weights, rho, const),
         type = rep("init", 100)
       )
       
-      pl.front = createPlFront(gg.points.front, iter)
-      pl.set = createPlSet(gg.points.set)
+      pl.front = createPlFront(gg.points.front, iter, isparego, object, intercept, 
+        slope, gg.line, y.name, y1lim, y2lim)
+      pl.set = createPlSet(gg.points.set, iter, isparego, xgrid2, object, x.name, name.crit)
       
       plots[[j]] = list(pl.front = pl.front, pl.set = pl.set)
     }
@@ -219,13 +122,119 @@ renderExampleRunPlot.MBOExampleRunMultiCrit = function(object, iter, densregion 
     # }
     idx.all = c(idx.init, idx$seq, idx$proposed, idx.nsga2.paretofront)
     
-    gg.points.front = getGGPointsFront(yy, idx, idx.all)
-    gg.points.set = getGGPointsSet(xx, idx, idx.all)
+    gg.points.front = getGGPointsFront(data.y, idx, idx.all, idx.init, idx.nsga2.paretofront)
+    gg.points.set = getGGPointsSet(data.x, idx, idx.all, idx.init, idx.nsga2.paretofront)
     
-    pl.front = createPlFront(gg.points.front, iter)
-    pl.set = createPlSet(gg.points.set, iter)
+    pl.front = createPlFront(gg.points.front, iter, isparego, object, intercept, 
+      slope, gg.line, y.name, y1lim, y2lim)
+    pl.set = createPlSet(gg.points.set, iter, isparego, xgrid2, object, x.name, name.crit)
     
     plots = list(pl.front = pl.front, pl.set = pl.set)
   }
   return(plots)
+}
+
+
+# create plot for Y-space
+createPlFront = function(gg.points.front, iter, isparego, object, intercept, 
+  slope, gg.line, y.name, y1lim, y2lim) {
+  pl.front = ggplot(data = gg.points.front, aes_string(x = "y1", y = "y2"))
+  
+  pl.front = pl.front + geom_point(
+    mapping = aes_string(colour = "type", shape = "type"),
+    data = gg.points.front[which(gg.points.front$type == "front"), ],
+    size = 2, alpha = 0.4)
+  pl.front = pl.front + geom_point(
+    mapping = aes_string(colour = "type", shape = "type"),
+    data = gg.points.front[which(gg.points.front$type != "front"), ],
+    size = 4)
+  pl.front = pl.front + xlab(y.name[1L])
+  pl.front = pl.front + ylab(y.name[2L])
+  pl.front = pl.front + xlim(y1lim) + ylim(y2lim)
+  #FIXME: this labels look very ugly and moreover overlap on scaling the plot
+  #pl.front = pl.front + geom_text(data = NULL, x = 3/12 * y1lim[2L], y = 24/24 * y2lim[2L],
+  #  label = paste("lambda[1] == ", round(weights[1L], 2), sep = ""), parse = TRUE, col = "black", size = 5)
+  #pl.front = pl.front + geom_text(data = NULL, x = 3/12 * y1lim[2L], y = 23/24 * y2lim[2L],
+  #  label = paste("lambda[2] == ", round(weights[2L], 2), sep = ""), parse = TRUE, col = "black", size = 5)
+  if (isparego) {
+    pl.front = pl.front + annotate("text", label = expression(paste(lambda[1], round(weights[1L], 2),
+      lambda[2], round(weights[2L], 2)), sep = ""), x = y1lim[2], y = y2lim[1])
+    pl.front = pl.front + geom_line(data = gg.line, col = "blue", shape = 1)
+    
+    pl.front = pl.front + geom_abline(intercept = intercept, slope = slope)
+  }
+  pl.front = addApproxMBO(pl.front, object$mbo.pred.grid.mean[[iter]], c("y1", "y2"),
+    object$mbo.pred.grid.mean[[iter]]$.is.dom, "brown", "solid")
+  pl.front = addApproxMBO(pl.front, object$mbo.pred.grid.lcb[[iter]], c("y1", "y2"),
+    object$mbo.pred.grid.lcb[[iter]]$.is.dom, "brown", "dotted")
+  return(pl.front)
+}
+
+
+# create plot for X-space
+createPlSet = function(gg.points.set, iter, isparego, xgrid2, object, x.name, name.crit) {
+  pl.set = ggplot()
+  # only for parego, color background with scalar model / crit
+  brewer.palette = colorRampPalette(brewer.pal(11, "Spectral"), interpolate = "spline")
+  
+  if (isparego) {
+    pl.set = pl.set + geom_tile(data = xgrid2, aes_string(x = x.name[1L], y = x.name[2L], fill = name.crit))
+    pl.set = pl.set + scale_fill_gradientn(colours = brewer.palette(200))
+  }
+  pl.set = pl.set +  geom_point(data = gg.points.set[which(gg.points.set$type == "front"), ],
+    aes_string(x = "x1", y = "x2", colour = "type", shape = "type"), size = 2, alpha = 0.8)
+  pl.set = pl.set + geom_point(data = gg.points.set[which(gg.points.set$type != "front"), ],
+    aes_string(x = "x1", y = "x2", colour = "type", shape = "type"), size = 4)
+  pl.set = addApproxMBO(pl.set, object$mbo.pred.grid.x, x.name,
+    object$mbo.pred.grid.mean[[iter]]$.is.dom, "brown", "solid")
+  pl.set = addApproxMBO(pl.set, object$mbo.pred.grid.x, x.name,
+    object$mbo.pred.grid.lcb[[iter]]$.is.dom, "brown", "dotted")
+  return(pl.set)
+}
+
+
+getIDX = function(opt.path, i) {
+  list(
+    seq = which(opt.path$dob > 0 & opt.path$dob < i),
+    proposed = which(opt.path$dob == i),
+    past = which(opt.path$dob < i),
+    pastpresent = which(opt.path$dob <= i)
+  )
+}
+
+getGGPointsFront = function(data.y, idx, idx.all, idx.init, idx.nsga2.paretofront) {
+  data.frame(
+    y1 = data.y[idx.all, 1L],
+    y2 = data.y[idx.all, 2L],
+    type = as.factor(c(
+      rep("init", length(idx.init)),
+      rep("seq", length(idx$seq)),
+      rep("prop", length(idx$proposed)),
+      rep("front", length(idx.nsga2.paretofront))
+    ))
+  )
+}
+
+getGGPointsSet = function(data.x, idx, idx.all, idx.init, idx.nsga2.paretofront) {
+  data.frame(
+    x1 = data.x[idx.all, 1L],
+    x2 = data.x[idx.all, 2L],
+    type = as.factor(c(
+      rep("init", length(idx.init)),
+      rep("seq", length(idx$seq)),
+      rep("prop", length(idx$proposed)),
+      rep("front", length(idx.nsga2.paretofront))
+    ))
+  )
+}
+
+# add pareto front estimated by model
+addApproxMBO = function(pl, gg.mbo, cols, isdom, colour, lty) {
+  if (!is.null(gg.mbo)) {
+    gg.mbo = setColNames(gg.mbo[!isdom, 1:2], cols)
+    gg.mbo = sortByCol(gg.mbo, cols)
+    pl = pl + geom_line(aes_string(x = cols[1L], y = cols[2L]), gg.mbo,
+      colour = colour, linetype = lty, alpha = 0.8)
+  }
+  return(pl)
 }

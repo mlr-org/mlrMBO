@@ -2,8 +2,7 @@
 % Please edit documentation in R/plotExampleRun.R
 \name{plotExampleRun}
 \alias{plotExampleRun}
-\title{Renders plots for exampleRun objects, either in 1D or 2D and
-displays them.}
+\title{Renders plots for exampleRun objects and displays them.}
 \usage{
 plotExampleRun(object, iters, pause = TRUE, densregion = TRUE,
   se.factor = 1, xlim = NULL, ylim = NULL, point.size = 3,

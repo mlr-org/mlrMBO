@@ -1,5 +1,4 @@
-#' Renders plots for exampleRun objects, either in 1D or 2D and
-#' displays them.
+#' Renders plots for exampleRun objects and displays them.
 #'
 #' The graphical output depends on the target function at hand.
 #' - For 1D numeric functions the upper plot shows the true function (if known),
