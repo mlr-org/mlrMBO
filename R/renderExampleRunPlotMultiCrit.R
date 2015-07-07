@@ -15,25 +15,26 @@ renderExampleRunPlot.MBOExampleRunMultiCrit = function(object, iter, densregion 
   control = object$control
   y.name = control$y.name
   x.name = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
-  proppoints = control$propose.points
+  propose.points = control$propose.points
   rho = control$multicrit.parego.rho
   mbo.res = object$mbo.res
   nsga2.paretofront = object$nsga2.paretofront
   nsga2.paretoset = object$nsga2.paretoset
   opt.path = as.data.frame(mbo.res$opt.path)
-  mbo.paretofront = getOptPathY(mbo.res$opt.path)
   isparego = control$multicrit.method == "parego"
   issmspar = control$multicrit.method == "dib" && control$multicrit.dib.indicator == "sms" &&
     control$propose.points > 1L
   # build essential data frames for target values ...
-  data.y = rbind(mbo.paretofront, nsga2.paretofront)
+  data.y = getOptPathY(mbo.res$opt.path)
+  data.y = rbind(data.y, nsga2.paretofront)
   
   # ... and for parameters
   data.x = as.data.frame(mbo.res$opt.path, include.y = FALSE, include.rest = FALSE)
   data.x = setRowNames(rbind(data.x, nsga2.paretoset), NULL)
   
-  idx.nsga2.paretofront = (nrow(mbo.paretofront) + 1):nrow(data.y)
-  # we need the range vor normalization. If no limits given, we use the ranges
+  idx.nsga2.paretofront = (getOptPathLength(mbo.res$opt.path) + 1):nrow(data.y)
+  
+  # We need the range for normalization. If no limits given, we use the ranges
   # for plotting limits too
   y1range = range(data.y[, 1L])
   if (is.null(xlim))
@@ -50,16 +51,14 @@ renderExampleRunPlot.MBOExampleRunMultiCrit = function(object, iter, densregion 
   if (name.crit %in% c("ei"))
     opt.direction = -1
   
-  idx.init = which(opt.path$dob == 0)
-  
   # save sequence of opt plots here
   plots = list()
   
   if (isparego) {
-    for (j in 1:proppoints) {
+    for (j in 1:propose.points) {
       # if we propose 1 point, parego stores a list of models,
       # otherwise a list of model-list (1 per parallel proposal)
-      model = if (proppoints == 1L)
+      model = if (propose.points == 1L)
         mbo.res$models[[iter]]
       else
         mbo.res$models[[iter]][[j]]
@@ -70,10 +69,12 @@ renderExampleRunPlot.MBOExampleRunMultiCrit = function(object, iter, densregion 
         xgrid2[[name.crit]] = opt.direction *
           critfun(xgrid, model, control, par.set, opt.path[idx$past, ])
       }
-      idx.all = c(idx.init, idx$seq, idx$proposed, idx.nsga2.paretofront)
+      idx.all = c(idx$init, idx$seq, idx$proposed, idx.nsga2.paretofront)
       
-      gg.points.front = getGGPointsFront(data.y, idx, idx.all, idx.init, idx.nsga2.paretofront)
-      gg.points.set = getGGPointsSet(data.x, idx, idx.all, idx.init, idx.nsga2.paretofront)
+      gg.points.front = getGGPointsFront(data.y, idx, idx.all, idx.nsga2.paretofront)
+      gg.points.set = getGGPointsSet(data.x, idx, idx.all, idx.nsga2.paretofront)
+      
+      
       
       # make dataframe for lines to show rho
       m.seq = seq(y1lim[1], y1lim[2], length.out = 10000)
@@ -106,6 +107,7 @@ renderExampleRunPlot.MBOExampleRunMultiCrit = function(object, iter, densregion 
         type = rep("init", 100)
       )
       
+      
       pl.front = createPlFront(gg.points.front, iter, isparego, object, intercept, 
         slope, gg.line, y.name, y1lim, y2lim)
       pl.set = createPlSet(gg.points.set, iter, isparego, xgrid2, object, x.name, name.crit)
@@ -113,17 +115,17 @@ renderExampleRunPlot.MBOExampleRunMultiCrit = function(object, iter, densregion 
       plots[[j]] = list(pl.front = pl.front, pl.set = pl.set)
     }
   } else {
-    models = mbo.res$models[[iter]]
+    # models = mbo.res$models[[iter]]
     idx = getIDX(opt.path, iter)
-    models.ok = !any(sapply(models, inherits, what = "FailureModel"))
+    # models.ok = !any(sapply(models, inherits, what = "FailureModel"))
     # if (models.ok) {
     # xgrid2[[name.crit]] = opt.direction *
     # critfun(xgrid, model, control, par.set, opt.path[idx$past, ])
     # }
-    idx.all = c(idx.init, idx$seq, idx$proposed, idx.nsga2.paretofront)
+    idx.all = c(idx$init, idx$seq, idx$proposed, idx.nsga2.paretofront)
     
-    gg.points.front = getGGPointsFront(data.y, idx, idx.all, idx.init, idx.nsga2.paretofront)
-    gg.points.set = getGGPointsSet(data.x, idx, idx.all, idx.init, idx.nsga2.paretofront)
+    gg.points.front = getGGPointsFront(data.y, idx, idx.all, idx.nsga2.paretofront)
+    gg.points.set = getGGPointsSet(data.x, idx, idx.all, idx.nsga2.paretofront)
     
     pl.front = createPlFront(gg.points.front, iter, isparego, object, intercept, 
       slope, gg.line, y.name, y1lim, y2lim)
@@ -138,6 +140,7 @@ renderExampleRunPlot.MBOExampleRunMultiCrit = function(object, iter, densregion 
 # create plot for Y-space
 createPlFront = function(gg.points.front, iter, isparego, object, intercept, 
   slope, gg.line, y.name, y1lim, y2lim) {
+  
   pl.front = ggplot(data = gg.points.front, aes_string(x = "y1", y = "y2"))
   
   pl.front = pl.front + geom_point(
@@ -174,10 +177,9 @@ createPlFront = function(gg.points.front, iter, isparego, object, intercept,
 # create plot for X-space
 createPlSet = function(gg.points.set, iter, isparego, xgrid2, object, x.name, name.crit) {
   pl.set = ggplot()
-  # only for parego, color background with scalar model / crit
-  brewer.palette = colorRampPalette(brewer.pal(11, "Spectral"), interpolate = "spline")
-  
   if (isparego) {
+    # only for parego, color background with scalar model / crit
+    brewer.palette = colorRampPalette(brewer.pal(11, "Spectral"), interpolate = "spline")
     pl.set = pl.set + geom_tile(data = xgrid2, aes_string(x = x.name[1L], y = x.name[2L], fill = name.crit))
     pl.set = pl.set + scale_fill_gradientn(colours = brewer.palette(200))
   }
@@ -195,6 +197,7 @@ createPlSet = function(gg.points.set, iter, isparego, xgrid2, object, x.name, na
 
 getIDX = function(opt.path, i) {
   list(
+    init = which(opt.path$dob == 0), 
     seq = which(opt.path$dob > 0 & opt.path$dob < i),
     proposed = which(opt.path$dob == i),
     past = which(opt.path$dob < i),
@@ -202,12 +205,12 @@ getIDX = function(opt.path, i) {
   )
 }
 
-getGGPointsFront = function(data.y, idx, idx.all, idx.init, idx.nsga2.paretofront) {
+getGGPointsFront = function(data.y, idx, idx.all, idx.nsga2.paretofront) {
   data.frame(
     y1 = data.y[idx.all, 1L],
     y2 = data.y[idx.all, 2L],
     type = as.factor(c(
-      rep("init", length(idx.init)),
+      rep("init", length(idx$init)),
       rep("seq", length(idx$seq)),
       rep("prop", length(idx$proposed)),
       rep("front", length(idx.nsga2.paretofront))
@@ -215,12 +218,12 @@ getGGPointsFront = function(data.y, idx, idx.all, idx.init, idx.nsga2.paretofron
   )
 }
 
-getGGPointsSet = function(data.x, idx, idx.all, idx.init, idx.nsga2.paretofront) {
+getGGPointsSet = function(data.x, idx, idx.all, idx.nsga2.paretofront) {
   data.frame(
     x1 = data.x[idx.all, 1L],
     x2 = data.x[idx.all, 2L],
     type = as.factor(c(
-      rep("init", length(idx.init)),
+      rep("init", length(idx$init)),
       rep("seq", length(idx$seq)),
       rep("prop", length(idx$proposed)),
       rep("front", length(idx.nsga2.paretofront))
