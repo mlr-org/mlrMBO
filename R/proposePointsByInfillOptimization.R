@@ -19,7 +19,7 @@ proposePointsByInfillOptimization = function(models, par.set, control, opt.path,
   if (!ch$ok)
     return(ch$prop)
 
-  design = convertOptPathToDf(par.set, opt.path, control)
+  design = convertOptPathToDf(opt.path, control)
   if (control$multifid) {
     infill.crit.fun = infillCritMultiFid
   } else {

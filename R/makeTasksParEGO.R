@@ -1,8 +1,6 @@
 # Generates a list of scalarized MBO multi-criteria tasks by sampling a unique weight
 # vector for each task.
 #
-# @param par.set [\code{param.set}]\cr
-#   Parameter set.
 # @param opt.path [\code{\link[ParamHelpers]{optPath}}]\cr
 #   Optimization path.
 # @param control [\code{\link{MBOControl}}]\cr
@@ -14,10 +12,10 @@
 # @return [\code{list}] List with elements
 #   tasks: list of tasks
 #   weights: matrix of used weight vectors
-makeTasksParEGO = function(par.set, opt.path, control, all.possible.weights) {
+makeTasksParEGO = function(opt.path, control, all.possible.weights) {
   n.points = control$propose.points
   # get data + normalize the targets to [0, 1] + drop them from data
-  data = convertOptPathToDf(par.set, opt.path, control)
+  data = convertOptPathToDf(opt.path, control)
   data = dropNamed(data, control$y.name)
   y = getOptPathY(opt.path)
   if (control$multicrit.parego.normalize == "standard") {

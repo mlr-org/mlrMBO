@@ -4,7 +4,7 @@ proposePointsMSPOT = function(models, par.set, control, opt.path, iter, ...) {
   if (!ch$ok)
     return(ch$prop)
 
-  design = convertOptPathToDf(par.set, opt.path, control)
+  design = convertOptPathToDf(opt.path, control)
   infill.crit.fun = getInfillCritFunction(control$infill.crit)
   infill.opt.fun = getInfillOptFunction(control$infill.opt)
 

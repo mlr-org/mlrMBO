@@ -89,7 +89,6 @@ getTuningStateTasks = function(tuningState) {
 	if (is.null(tuningState$tasks) || getTuningStateLoop(tuningState) != tuningState$tasks.loop) {
     tuningProblem = getTuningStateTuningProblem(tuningState)
     tasks = makeTasks(
-      par.set = getTuningProblemParSet(tuningProblem),
       opt.path = getTuningStateOptPath(tuningState),
       algo.init = getTuningProblemAlgoInit(tuningProblem),
       control = getTuningProblemControl(tuningProblem))
@@ -193,7 +192,7 @@ getTuningStateFinalPoints = function(tuningState, unify = FALSE) {
     final.index = chooseFinalPoint(tuningState)
     best = getOptPathEl(opt.path, final.index)
     list(
-      x = dropNamed(best$x, ".multifid.lvl"),
+      x = best$x,
       y = as.numeric(best$y),
       best.ind = final.index)
   } else {
