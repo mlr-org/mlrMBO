@@ -33,7 +33,7 @@ makeMBOResult.TuningState = function(tuningState) {
     }
     makeS3Obj(
       c("MBOSingleObjResult", "MBOResult"),
-      x = final.points$x,
+      x = dropNamed(final.points$x, ".multifid.lvl"),
       y = final.points$y, # strip name
       best.ind = final.points$best.ind,
       opt.path = getTuningStateOptPath(tuningState),
