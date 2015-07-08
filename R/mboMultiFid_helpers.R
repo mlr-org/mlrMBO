@@ -1,11 +1,9 @@
 # propose Points for each multifid level. return a list
 proposePointsMultiFid = function(model, par.set, control, opt.path, iter) {
-  # lvl.cors, lvl.sds
-  control.nomf = control
-  control.nomf$multifid = FALSE
   par.set.nomf = dropParams(par.set, ".multifid.lvl")
 
-  lvl.sds = vnapply(seq_along(control$multifid.lvls), calcModelSD, model = model, par.set = par.set, control = controll, opt.path = opt.path)
+  design = convertOptPathToDf(opt.path = opt.path, control = control)
+  lvl.sds = vnapply(seq_along(control$multifid.lvls), calcModelSD, model = model, control = control, design = design)
   corgrid = generateDesign(n = control$multifid.cor.grid.points, par.set = par.set.nomf)
   lvl.cors = vnapply(seq_along(control$multifid.lvls), calcModelCor, model = model, grid = corgrid, nlvls = length(control$multifid.lvls))
 
@@ -23,6 +21,28 @@ proposePointsMultiFid = function(model, par.set, control, opt.path, iter) {
     min.index = getMinIndex(infill.vals)
   
   prop[[min.index]]
+}
+
+#this function allows for points including the .multifid.lvl columns
+infillCritMultiFid.external = function(points, model, control, par.set, design, iter, lvl.cors, lvl.sds, lvl) {
+  if (".multifid.lvl" %in% getParamIds(par.set)) {
+    par.set.nomf = dropParams(par.set, ".multifid.lvl")
+  } else {
+    par.set.nomf = par.set
+    par.set = c(par.set, makeParamSet(
+      makeIntegerParam(".multifid.lvl", lower = 1L, upper = length(control$multifid.lvls))))
+  }
+  lvl.sds = vnapply(seq_along(control$multifid.lvls), calcModelSD, model = model, control = control, design = design)
+  
+  corgrid = generateDesign(n = control$multifid.cor.grid.points, par.set = dropParams(par.set, ".multifid.lvl"))
+  lvl.cors = vnapply(seq_along(control$multifid.lvls), calcModelCor, model = model, grid = corgrid, nlvls = length(control$multifid.lvls))
+  pointssplit = split(points, points$.multifid.lvl)
+  lvls.inds = sort(unique(points$.multifid.lvl))
+  pointsres = lapply(seq_along(lvls.inds), function(i) {
+    points.lvl = dropNamed(pointssplit[[i]], ".multifid.lvl")
+    infillCritMultiFid2(points = points.lvl, model = model, control = control, par.set = par.set, design = design, iter = iter, lvl.cors = lvl.cors, lvl.sds = lvl.sds, lvl = lvls.inds[i])$crit
+  })
+  unsplit(pointsres, points$.multifid.lvl)
 }
 
 # return only crit vector
@@ -44,8 +64,8 @@ infillCritMultiFid2 = function(points, model, control, par.set, design, iter, lv
 
   # ALPHA 2
   se = -infillCritStandardError(points.current, model, control, par.set, NULL, iter)
-  if (any(lvl.sds < 0.01)) { # FIXME: IF lvl.sd near 0 it will make alpha2 useless
-    lvl.sds = lvl.sds + 0.01
+  if (any(lvl.sds < 0.001)) { # FIXME: IF lvl.sd near 0 it will make alpha2 useless
+    lvl.sds = lvl.sds + 0.001
   }
   sigmas = lvl.sds[lvl]
   alpha2 = 1 - (sigmas / sqrt(se^2 + sigmas^2))
@@ -56,9 +76,8 @@ infillCritMultiFid2 = function(points, model, control, par.set, design, iter, lv
   list(crit = crit, ei = ei.last, se = se, alpha1 = alpha1, alpha2 = alpha2, alpha3 = alpha3, sd = sigmas)
 }
 
-calcModelSD = function(lvl, model, par.set, control, opt.path) {
-    newdata = convertOptPathToDf(par.set, opt.path, control)
-    newdata = newdata[newdata$.multifid.lvl == lvl, ]
+calcModelSD = function(lvl, model, control, design) {
+    newdata = design[design$.multifid.lvl == lvl, ]
     sqrt(estimateResidualVariance(model, data = newdata, target = "y"))
 }
 
