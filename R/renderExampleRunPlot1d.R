@@ -206,12 +206,9 @@ renderExampleRunPlot1d = function(x, iter,
       gap = calculateGap(convertOptPathToDf(opt.path, control)[idx.pastpresent, ], global.opt, control)
     }
 
-    g = g + ggtitle(
-      sprintf("Iter = %i, Gap = %.4e", iter, gap)
-    )
-
+    g = g + ggtitle(sprintf("Iter = %i, Gap = %.4e", iter, gap))
+    g = g + ylab(NULL)
     g = g + theme(
-      axis.text.y = element_text(),
       plot.title = element_text(size = 11, face = "bold")
     )
 
