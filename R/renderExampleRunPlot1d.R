@@ -243,7 +243,7 @@ renderExampleRunPlot1d = function(x, iter,
     pl.fun = pl.fun + scale_colour_discrete(name = "type")
     pl.fun = pl.fun + ggtitle(
       sprintf("Iter = %i, Gap = %.4e", iter,
-      calculateGap(opt.path[idx.pastpresent,], global.opt, control))
+      calculateGap(convertOptPathToDf(opt.path, control)[idx.pastpresent,], global.opt, control))
     )
 
     pl.fun = pl.fun + theme(
