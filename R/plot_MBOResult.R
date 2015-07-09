@@ -1,5 +1,6 @@
 #' Plots any MBO result objects. Plots for X-Space, Y-Space and any coloumn in
-#' the optimization path are available. This function uses \code{\link{renderMBOPlot}}.
+#' the optimization path are available. This function uses 
+#' \code{\link[ParamHelpers]{plotOptPath}} from package \code{ParamHelpers}.
 #' 
 #' 
 #' @param result [\code{MBOResult}]\cr
@@ -9,15 +10,22 @@
 #' @param pause [\code{logical(1)}]\cr
 #'   Should the process be paused after each iteration?
 #'   Default is \code{TRUE}.
-#' @param ... \cr
-#'  Additional parameters for the \code{\link[ParamHelpers]{renderOptPathPlot}} 
+#' @param y.over.time [\code{list} | NULL]\cr
+#'  See argument \code{y.over.time} of the function 
+#'  \code{\link[ParamHelpers]{renderOptPathPlot}} from package \code{ParamHelpers}.
+#'  Default is to plot the y variable and the infill crit in the single crit case.
+#' @param title [\code{character(1)}]\cr
+#'   Main title for the plot.
+#' @param ... 
+#'  Additional parameters for the \code{\link[ParamHelpers]{plotOptPath}} 
 #'  function in package \code{ParamHelpers}.
-#' @template arg_plot_MBO
 #' @export
 
-plotMBOResult = function(result, iters, pause = TRUE, hv.plot = NA, ref.point = NULL, 
-  y.over.time, title = "MBO Result", ...) {
-  
+# @template arg_plot_MBO
+
+plotMBOResult = function(result, iters, pause = TRUE, y.over.time, 
+  title = "MBO Result", ...) {
+
   # extract and set params
   opt.path = result$opt.path
   control = result$control
