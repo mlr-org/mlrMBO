@@ -65,7 +65,14 @@ renderExampleRunPlot1d = function(x, iter,
 
   propose.points = control$propose.points
   name.crit = control$infill.crit
-  critfun = getInfillCritFunction(name.crit)
+  if(control$multifid) {
+    name.crit = "mfEI"
+    critfun = infillCritMultiFid.external
+  } else {
+    critfun = getInfillCritFunction(name.crit)
+  }
+    
+  
   opt.direction = 1
 
   # we need to maximize expected improvement
@@ -82,111 +89,110 @@ renderExampleRunPlot1d = function(x, iter,
   }
 
   evals = x$evals
-  evals.x = evals[, names.x, drop = FALSE]
-  opt.path = as.data.frame(mbo.res$opt.path)
-
-  idx.init = which(opt.path$dob == 0)
+  opt.path = mbo.res$opt.path
+  evals.x = evals[, getParamIds(opt.path$par.set) , drop = FALSE]
 
   # helper function for building up data frame of different points
   # i.e., initial design points, infilled points, proposed points for ggplot
-  buildPointsData = function(opt.path, names.x, name.y, idx, idx.init, idx.seq, idx.proposed) {
-    points = data.frame(
-      x = opt.path[idx, names.x],
-      y = opt.path[idx, name.y],
-      type = as.factor(c(
-        rep("init", length(idx.init)),
-        rep("seq", length(idx.seq)),
-        rep("prop", length(idx.proposed)))
-      )
+  getType = function(x, iter) {
+    if(x==0) return("init") else 
+    if(x>0 && x<iter) return("seq") else
+    if(x==iter) return("prop") else
+      return ("future")
+  }
+  buildPointsData = function(opt.path, iter) {
+    type = sapply(getOptPathDOB(opt.path), getType, iter = iter)
+    res = data.frame(
+      convertOptPathToDf(opt.path, control),
+      type = type
     )
-    names(points) = c(names.x, name.y, "type")
-    return(points)
+    res[res$type %nin% "future",]
   }
 
   plots = list()
 
   model = models[[iter]]
-  idx.seq = which(opt.path$dob > 0 & opt.path$dob < iter)
-  idx.proposed = which(opt.path$dob == iter)
-  idx.past = which(opt.path$dob < iter)
-  idx.pastpresent = which(opt.path$dob <= iter)
-  idx = c(idx.init, idx.seq, idx.proposed)
-
-  model.ok = !inherits(model, "FailureModel")
+  type = sapply(getOptPathDOB(opt.path), getType, iter = iter)
+  idx.past = which(type %in% c("init", "seq"))
+  idx.pastpresent = which(type %in% c("init", "seq", "prop"))
 
   # compute model prediction for current iter
-  if (model.ok) {
+  if (!inherits(model, "FailureModel")) {
     evals$yhat = infillCritMeanResponse(evals.x, model,
-      control, par.set, opt.path[idx.past, ])
+      control, par.set, convertOptPathToDf(opt.path, control)[idx.past, ])
 
     if (propose.points == 1L) {
       evals[[name.crit]] = opt.direction *
-        critfun(evals.x, model, control, par.set, opt.path[idx.past, c(names.x, name.y)])
+        critfun(evals.x, model, control, par.set, convertOptPathToDf(opt.path, control)[idx.past, ])
     } else {
       objective = control$multipoint.multicrit.objective
       if (objective == "mean.dist") {
-        evals[[name.crit]] = opt.direction * infillCritMeanResponse(evals.x, model, control, par.set, opt.path[idx.past, ])
+        evals[[name.crit]] = opt.direction * infillCritMeanResponse(evals.x, model, control, par.set, convertOptPathToDf(opt.path, control)[idx.past, ])
       } else if (objective == "ei.dist") {
-        evals[[name.crit]] = opt.direction * infillCritEI(evals.x, model, control, par.set, opt.path[idx.past, ])
+        evals[[name.crit]] = opt.direction * infillCritEI(evals.x, model, control, par.set, convertOptPathToDf(opt.path, control)[idx.past, ])
       } else if (objective %in% c("mean.se", "mean.se.dist")) {
-        evals[[name.crit]] = opt.direction * infillCritMeanResponse(evals.x, model, control, par.set, opt.path[idx.past, ])
+        evals[[name.crit]] = opt.direction * infillCritMeanResponse(evals.x, model, control, par.set, convertOptPathToDf(opt.path, control)[idx.past, ])
       }
     }
     # prepare drawing of standard error (confidence interval)
     if (se) {
-      evals$se = -infillCritStandardError(evals.x, model, control, par.set, opt.path[idx.past, ])
-      evals$se.min = evals$yhat - se.factor * evals$se
-      evals$se.max = evals$yhat + se.factor * evals$se
+      evals$se = -infillCritStandardError(evals.x, model, control, par.set, convertOptPathToDf(opt.path, control)[idx.past, ])
     }
   }
 
   if (isNumeric(par.set, include.int = FALSE)) {
-    # ggplot stuff
-    n = nrow(evals)
-
-    # data frame with real fun and model fun evaluations
-    gg.fun = data.frame(
-      x = rep(evals[, names.x], 2),
-      y = c(evals[, name.y], evals[, "yhat"]),
-      se.min = if (se) rep(evals[, "se.min"], 2) else NA,
-      se.max = if (se) rep(evals[, "se.max"], 2) else NA,
-      type = as.factor(rep(c(name.y, "yhat"), each = n))
-    )
-    names(gg.fun) = c(names.x, name.y, "se.min", "se.max", "type")
-
-    # data frame with points of different type (initial design points, infill points, proposed points)
-    gg.points = buildPointsData(opt.path, names.x, name.y, idx, idx.init, idx.seq, idx.proposed)
-
-    # transform y and yhat values according to trafo function
-    if (!is.null(trafo$y)) {
-      tr = trafo$y
-      gg.fun[[name.y]] = tr(gg.fun[[name.y]])
-      gg.fun$se.min = tr(gg.fun$se.min)
-      gg.fun$se.max = tr(gg.fun$se.max)
-      gg.points[[name.y]] = tr(gg.points[[name.y]])
-    }
-
-    # finally build the ggplot object(s)
-    pl.fun = ggplot(data = gg.fun)
-    pl.fun = pl.fun + geom_line(aes_string(x = names.x, y = name.y, linetype = "type"), size = line.size)
-
-    if (se & densregion) {
-      #gg.se = gg.fun[which(gg.fun$type == "yhat"), ]
-      pl.fun = pl.fun + geom_ribbon(aes_string(x = names.x, ymin = "se.min", ymax = "se.max"), alpha = 0.2)
-    }
-
-    pl.fun = pl.fun + geom_point(data = gg.points, aes_string(x = names.x, y = name.y, colour = "type",
-        shape = "type"), size = point.size)
-    pl.fun = pl.fun + xlab(NULL)
-
+    gg.fun = melt(evals, id.vars = c(getParamIds(opt.path$par.set), if (se) "se" else NULL))
+    if (se) gg.fun$se = gg.fun$se * se.factor
+    
     # if trafo for y is provided, indicate transformation on the y-axis
     ylab = name.y
     if (!is.null(trafo$y)) {
       ylab = paste(name.y, " (", attr(trafo$y, "name"), "-transformed)", sep = "")
     }
-    pl.fun = pl.fun + scale_y_continuous(name = ylab)
-    pl.fun = pl.fun + scale_colour_manual(values = colors)
+    #determine in wich pane (facet_grid) the points belong to
+    pane.names = c(ylab, name.crit)
+    gg.fun$pane = ifelse(gg.fun$variable %in% c(name.y, "yhat"), 1, 2)
+    gg.fun$pane = factor(gg.fun$pane, labels = pane.names)
+    
+    
+    # data frame with points of different type (initial design points, infill points, proposed points)
+    gg.points = buildPointsData(opt.path, iter)
+    gg.points$pane = pane.names[1]
 
+    # transform y and yhat values according to trafo function
+    if (!is.null(trafo$y)) {
+      tr = trafo$y
+      gg.fun[[name.y]] = tr(gg.fun[[name.y]])
+      gg.points[[name.y]] = tr(gg.points[[name.y]])
+    } else {
+      tr = identity
+    }
+    
+    # finally build the ggplot object(s)
+    g = ggplot(data = gg.fun)
+    next.aes = aes_string(x = names.x, y = "value", color = "as.factor(.multifid.lvl)", group = "paste(variable,.multifid.lvl)", linetype = "variable")
+    if (!control$multifid) {
+      next.aes = dropNamed(next.aes, c("group","colour"))
+    }
+    g = g + geom_line(next.aes, size = line.size)
+    g = g + facet_grid(pane~., scales = "free")
+    if (se & densregion) {
+      #FIXME: We might lose transformation information here tr()
+      next.aes = aes_string(x = names.x, ymin = "value-se", ymax = "value+se", group = ".multifid.lvl")
+      if (!control$multifid) {
+        next.aes = dropNamed(next.aes, "group")
+      }
+      g = g + geom_ribbon(data = gg.fun[gg.fun$variable == "yhat", ], next.aes, alpha = 0.2)
+    }
+    g = g + geom_point(data = gg.points, aes_string(x = names.x, y = name.y, colour = "type", shape = "type"), size = point.size)
+    if (control$multifid) {
+      palette = c("#f7fcf0","#e0f3db","#ccebc5","#a8ddb5","#7bccc4","#4eb3d3","#2b8cbe","#0868ac","#084081")
+      g.colors = c(tail(palette, length(control$multifid.lvls)), colors)
+    } else {
+      g.colors = colors
+    }
+    g = g + scale_colour_manual(values = g.colors, name = "type")
+    g = g + scale_linetype(name = "type")
 
     if (noisy) {
       if (!any(is.na(x$y.true))) {
@@ -197,41 +203,17 @@ renderExampleRunPlot1d = function(x, iter,
         gap = NA
       }
     } else {
-      gap = calculateGap(opt.path[idx.pastpresent, ], global.opt, control)
+      gap = calculateGap(convertOptPathToDf(opt.path, control)[idx.pastpresent, ], global.opt, control)
     }
 
-    pl.fun = pl.fun + ggtitle(
-      sprintf("Iter = %i, Gap = %.4e", iter, gap)
-    )
-
-    pl.fun = pl.fun + theme(
-      legend.position = "top",
-      legend.box = "horizontal",
-      axis.text.x = element_blank(),
-      panel.margin = grid::unit(0, "lines"),
+    g = g + ggtitle(sprintf("Iter = %i, Gap = %.4e", iter, gap))
+    g = g + ylab(NULL)
+    g = g + theme(
       plot.title = element_text(size = 11, face = "bold")
     )
 
-    gg.crit = evals
-    # transform cirterion if corresponding trafo function provided
-    if (!is.null(trafo$crit)) {
-      gg.fun[[name.crit]] = trafo$crit(gg.fun[[name.crit]])
-    }
-    pl.crit = ggplot(data = gg.crit, aes_string(x = names.x, y = name.crit))
-    pl.crit = pl.crit + geom_line(linetype = "dotted", colour = "black", size = line.size)
-    pl.crit = pl.crit + geom_vline(xintercept = opt.path[idx.proposed, names.x],
-      linetype = "dashed", colour = "darkgray", size = line.size)
-
-    # if trafo for criterion is provided, indicate transformation on the y-axis
-    ylab = name.crit
-    if (!is.null(trafo$crit)) {
-      ylab = paste(name.crit, " (", attr(trafo$crit, "name"), "-transformed)", sep = "")
-    }
-    pl.crit = pl.crit + scale_y_continuous(name = ylab)
-
     plots = list(
-      pl.fun = pl.fun,
-      pl.crit = pl.crit
+      pl.fun = g
     )
 
     # if (pause) {
@@ -242,7 +224,7 @@ renderExampleRunPlot1d = function(x, iter,
       stopf("Deterministic 1d function with a single factor parameter are not supported.")
     }
 
-    gg.points = buildPointsData(opt.path, names.x, name.y, idx, idx.init, idx.seq, idx.proposed)
+    gg.points = buildPointsData(opt.path, iter)
 
     if (se & densregion) {
       gg.points$se = -infillCritStandardError(gg.points[, names.x, drop = FALSE],
@@ -258,11 +240,10 @@ renderExampleRunPlot1d = function(x, iter,
     }
 
     pl.fun = pl.fun + xlab(names.x)
-    pl.fun = pl.fun + ylab(name.y)
     pl.fun = pl.fun + scale_colour_discrete(name = "type")
     pl.fun = pl.fun + ggtitle(
       sprintf("Iter = %i, Gap = %.4e", iter,
-      calculateGap(opt.path[idx.pastpresent,], global.opt, control))
+      calculateGap(convertOptPathToDf(opt.path, control)[idx.pastpresent,], global.opt, control))
     )
 
     pl.fun = pl.fun + theme(

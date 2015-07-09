@@ -119,10 +119,11 @@ exampleRun = function(fun, par.set, design = NULL, global.opt = NA_real_, learne
   }
   
   # # If noisy and we have the mean function, use it
-  f.eval = if(is.null(fun.mean)) fun else fun.mean
-  evals = evaluate(f.eval, par.set, n.params, par.types, noisy, noisy.evals, points.per.dim, names.x, name.y)
-  colnames(evals) = c(names.x, name.y)
-
+  if (is.null(fun.mean)) {
+    evals = evaluate(fun, par.set, n.params, par.types, noisy, noisy.evals, points.per.dim, names.x, name.y, control$multifid.lvls)
+  } else {
+    evals = evaluate(fun.mean, par.set, n.params, par.types, noisy = FALSE, noisy.evals = 1, points.per.dim, names.x, name.y, control$multifid.lvl)
+  }
   
   if (is.na(global.opt))
     global.opt.estim = ifelse(control$minimize, min(evals[, name.y]), max(evals[, name.y]))
@@ -143,9 +144,7 @@ exampleRun = function(fun, par.set, design = NULL, global.opt = NA_real_, learne
   # compute true y-values if deterministic function is known
   y.true = NA
   if (!is.null(fun.mean)) {
-    opt.path = as.data.frame(res$opt.path)
-    evals.x = opt.path[, names.x, drop = FALSE]
-    y.true = apply(evals.x, 1, function(x) fun.mean(as.list(x)))
+    y.true = apply(getOptPathX(res$opt.path), 1, function(x) fun.mean(as.list(x)))
   }
 
   makeS3Obj("MBOExampleRun",
@@ -186,7 +185,7 @@ print.MBOExampleRun = function(x, ...) {
   catf("Objective: %s = %.3e\n", op$y.names[1], mr$y)
 }
 
-getEvalsForNumeric = function(fun, par.set, noisy, noisy.evals, points.per.dim, names.x) {
+getEvalsForNumeric = function(fun, par.set, noisy, noisy.evals, points.per.dim, names.x, name.y) {
   lower = getLower(par.set)
   upper = getUpper(par.set)
   xs = seq(lower, upper, length.out = points.per.dim)
@@ -198,7 +197,22 @@ getEvalsForNumeric = function(fun, par.set, noisy, noisy.evals, points.per.dim, 
     }
   }, xs, simplify = TRUE)
   evals = data.frame(x = xs, y = ys)
+  colnames(evals) = c(names.x, name.y)
   return(evals)
+}
+
+getEvalsForMultifid = function(fun, par.set, noisy, noisy.evals, points.per.dim, names.x, name.y, multifid.lvls) {
+  eval.list = lapply(multifid.lvls, function(l){
+    force(l)
+    force(fun)
+    this.fun = function(x) {
+      x$.multifid.lvl = l
+      fun(x)
+    }
+    evals = getEvalsForNumeric(this.fun, par.set, noisy, noisy.evals, points.per.dim, names.x, name.y)
+    cbind.data.frame(.multifid.lvl = l, evals)
+  })
+  do.call("rbind", eval.list)
 }
 
 getEvalsFor2dNumeric = function(fun, par.set, noisy, noisy.evals, points.per.dim, names.x, name.y) {
@@ -224,25 +238,30 @@ getEvalsFor2dNumeric = function(fun, par.set, noisy, noisy.evals, points.per.dim
   return(evals)
 }
 
-getEvalsForDiscrete = function(fun, par.set, noisy, noisy.evals, names.x) {
+getEvalsForDiscrete = function(fun, par.set, noisy, noisy.evals, names.x, name.y) {
   xs = unlist(par.set$pars[[1]]$values)
   cat(xs, "\n")
   ys = parallelMap(function(x) {
     mean(replicate(noisy.evals, fun(namedList(names.x, x))))
   }, xs, simplify = TRUE)
   evals = data.frame(x = xs, y = ys)
+  colnames(evals) = c(names.x, name.y)
   return(evals)
 }
 
-evaluate = function(fun, par.set, n.params, par.types, noisy, noisy.evals, points.per.dim, names.x, name.y) {
+evaluate = function(fun, par.set, n.params, par.types, noisy, noisy.evals, points.per.dim, names.x, name.y, multifid.lvls = numeric(0)) {
   if (n.params == 1L) {
     if (par.types %in% c("numeric", "numericvector")) {
-      return(getEvalsForNumeric(fun, par.set, noisy, noisy.evals, points.per.dim, names.x))
+      if (length(multifid.lvls)) {
+        return(getEvalsForMultifid(fun, par.set, noisy, noisy.evals, points.per.dim, names.x, name.y, multifid.lvls))
+      } else {
+        return(getEvalsForNumeric(fun, par.set, noisy, noisy.evals, points.per.dim, names.x, name.y))
+      }
     } else if (par.types %in% c("discrete")) {
       if (!noisy) {
         stopf("ExampleRun does not make sense with a single deterministic discrete parameter.")
       }
-      return(getEvalsForDiscrete(fun, par.set, noisy, noisy.evals, names.x))
+      return(getEvalsForDiscrete(fun, par.set, noisy, noisy.evals, names.x, name.y))
     }
   } else if (n.params == 2L) {
     if (all(par.types %in% c("numeric", "numericvector"))) {

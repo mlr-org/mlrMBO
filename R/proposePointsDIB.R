@@ -24,7 +24,7 @@ proposePointsDIB = function(models, par.set, control, opt.path, iter) {
       control2 = z$controls[[i]]
       prop = proposePointsByInfillOptimization(models = models, control = control2,
         par.set = par.set, opt.path = opt.path2, iter = iter)
-      design = convertOptPathToDf(par.set, opt.path, control)
+      design = convertOptPathToDf(opt.path, control)
       lcb = evalCritFunForMultiCritModels(infillCritLCB, prop$prop.points, models, control2,
         par.set, design, iter)[1L, ]
       x = dfRowToList(prop$prop.points, par.set, 1)

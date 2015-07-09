@@ -12,9 +12,19 @@
 #   errors.models [character] : model errors, resulting in randomly proposed points.
 #                               length is one string PER PROPOSED POINT, not per element of <models>
 #                               NA if the model was Ok, or the (first) error message if some model crashed
-proposePoints = function(tasks, models, par.set, control, opt.path, iter) {
+proposePoints.TuningState = function(tuningState){ #tasks, models, par.set, control, opt.path, iter) {
+
+  tuningProblem = getTuningStateTuningProblem(tuningState)
+  control = getTuningProblemControl(tuningProblem)
+  tasks = getTuningStateTasks(tuningState)
+  models = getTuningStateModels(tuningState)$models
+  par.set = getTuningProblemParSet(tuningProblem)
+  opt.path = getTuningStateOptPath(tuningState)
+  iter = getTuningStateLoop(tuningState)
+
   m = control$number.of.targets
-  if (m == 1L) {
+  res = NULL
+  if (m == 1L && control$infill.crit != "random") {
     if (control$multifid) {
       res = proposePointsMultiFid(models[[1L]], par.set, control, opt.path, iter)
     } else if (is.null(control$multipoint.method)) {
@@ -28,47 +38,29 @@ proposePoints = function(tasks, models, par.set, control, opt.path, iter) {
         res = proposePointsMOIMBO(models, par.set, control, opt.path, iter)
       }
     }
-  } else {
-      if (control$multicrit.method == "parego") {
-        res = proposePointsParEGO(models, par.set, control, opt.path, iter, attr(tasks, "weight.mat"))
-      } else if (control$multicrit.method == "mspot") {
-        res = proposePointsMSPOT(models, par.set, control, opt.path, iter)
-      } else if (control$multicrit.method == "dib") {
-        res = proposePointsDIB(models, par.set, control, opt.path, iter)
-      }
+  } else if (control$infill.crit != "random"){
+    if (control$multicrit.method == "parego") {
+      res = proposePointsParEGO(models, par.set, control, opt.path, iter, attr(tasks, "weight.mat"))
+    } else if (control$multicrit.method == "mspot") {
+      res = proposePointsMSPOT(models, par.set, control, opt.path, iter)
+    } else if (control$multicrit.method == "dib") {
+      res = proposePointsDIB(models, par.set, control, opt.path, iter)
+    }
   }
-
-  if (control$interleave.random.points > 0L) {
+  
+  if (control$infill.crit == "random" || control$interleave.random.points > 0L) {
     add = proposePointsRandom(models, par.set, control, opt.path, iter)
-    res = joinProposedPoints(list(res, add))
+    if (!is.null(res))
+      res = joinProposedPoints(list(res, add))
+    else
+      res = add
   }
 
   if (!is.matrix(res$crit.vals))
     res$crit.vals = matrix(res$crit.vals, ncol = 1L)
-  return(res)
-}
-
-proposePoints.TuningState = function(tuningState) {
-  tuningProblem = getTuningStateTuningProblem(tuningState)
-  control = getTuningProblemControl(tuningProblem)
-
-  prop = proposePoints(
-    tasks = getTuningStateTasks(tuningState),
-    models = getTuningStateModels(tuningState)$models,
-    par.set = getTuningProblemParSet(tuningProblem),
-    control = control,
-    opt.path = getTuningStateOptPath(tuningState),
-    iter = getTuningStateLoop(tuningState)
-  )
-
+  
   if (control$filter.proposed.points) {
-    prop = filterProposedPoints(
-      prop = prop,
-      opt.path = getTuningStateOptPath(tuningState),
-      par.set = getTuningProblemParSet(tuningProblem),
-      control
-    )
+    res = filterProposedPoints(res, tuningState)
   }
-
-  prop
+  res
 }

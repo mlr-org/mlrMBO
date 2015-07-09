@@ -3,16 +3,14 @@
 # - only uses x and y columns of optpath
 # - converts data types for regr model
 # - imputes features
-#
-# @param par.set [\code{param.set}]\cr
-#   Parameter set.
+
 # @param opt.path [\code{\link[ParamHelpers]{optPath}}]\cr
 #   Optimization path.
 # @param control [\code{\link{MBOControl}}]\cr
 #   MBO control object.
 # @return [\code{\link[mlr]{SupervisedTask}}]
-makeTaskSingleObj = function(par.set, opt.path, control) {
-  data = convertOptPathToDf(par.set, opt.path, control)
+makeTaskSingleObj = function(opt.path, control) {
+  data = convertOptPathToDf(opt.path, control)
   data$dob = data$eol = NULL
 
   # user selected to (log)-transform the y-column

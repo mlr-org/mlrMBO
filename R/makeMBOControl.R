@@ -175,7 +175,7 @@ makeMBOControl = function(number.of.targets = 1L,
   assertCharacter(y.name, len = number.of.targets, any.missing = FALSE)
 
 
-  if (length(save.on.disk.at) > 0) {
+  if (length(save.on.disk.at) > 0 || is.finite(save.on.disk.at.time)) {
     save.on.disk.at = asInteger(save.on.disk.at, any.missing = FALSE, lower = 0 , upper = iters + 1)
     assertPathForOutput(save.file.path)
   }

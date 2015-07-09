@@ -15,8 +15,6 @@
 #'   Default is \code{NULL} which means that the cost will be predicted by a model build on the \code{exec.time} from the so far evaluated points.
 #' @param force.last.level.steps [\code{integer(1)}]
 #'   Force an evaluation on the highest fidelity level each i-th step.
-#' @param generate.plot.data [\code{boolean(1)}]
-#'   Should plot data be generated? Default ist \code{FALSE}.
 #' @template arg_showinfo
 #' @return [\code{\link{MBOControl}}].
 #' @note See the other setMBOControl... functions and \code{makeMBOControl} for referenced arguments.

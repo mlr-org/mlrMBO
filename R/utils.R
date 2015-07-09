@@ -53,3 +53,7 @@ combWithSum = function(n, k) {
   }
   matrix(unlist(fun(n, k)), ncol = k, byrow = TRUE)
 }
+
+getFileBackupName = function(fn) {
+  file.path(dirname(fn), sprintf(".~%s", basename(fn)))
+}

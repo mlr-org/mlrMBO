@@ -4,15 +4,13 @@
 # - converts data types for regr model
 # - imputes features
 #
-# @param par.set [\code{param.set}]\cr
-#   Parameter set.
 # @param opt.path [\code{\link[ParamHelpers]{optPath}}]\cr
 #   Optimization path.
 # @param control [\code{\link{MBOControl}}]\cr
 #   MBO control object.
 # @return [\code{list(\link[mlr]{SupervisedTask}})]
-makeTasksMultiCrit = function(par.set, opt.path, control) {
-  data = convertOptPathToDf(par.set, opt.path, control)
+makeTasksMultiCrit = function(opt.path, control) {
+  data = convertOptPathToDf(opt.path, control)
 
   # FIXME: trafo.y.fun should be a list of length y.name
   # user selected to (log)-transform the y-column

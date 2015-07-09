@@ -45,7 +45,7 @@ proposePointsMOIMBO = function(models, par.set, control, opt.path, iter, ...) {
 
   n = control$propose.points
   objective = control$multipoint.multicrit.objective
-  design = convertOptPathToDf(par.set, opt.path, control)
+  design = convertOptPathToDf(opt.path, control)
   model = models[[1L]]
 
   ch = checkFailedModels(models, par.set, n)

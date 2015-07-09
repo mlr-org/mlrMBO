@@ -14,9 +14,9 @@
 ##    Tells us in what state we are in text. So far we know: init, iter, iter.exceeded, time.exceeded and exec.time.exceeded.
 ##  @param opt.path \code{OptPath} \cr
 ##    Here we keep the opt.path. It delivers the data for the tasks and other usefull information.
-##  @param last.saved \code{POSIXct} \cr
+##  @param time.last.saved \code{POSIXct} \cr
 ##     The \code{Sys.time()} when the last save on disk was done.
-makeTuningState = function(tuningProblem, loop = 0L, tasks = NULL, models = NULL, tuningResult = NULL, state = "init", opt.path = NULL, last.saved = Sys.time()) {
+makeTuningState = function(tuningProblem, loop = 0L, tasks = NULL, models = NULL, tuningResult = NULL, state = "init", opt.path = NULL, time.last.saved = Sys.time()) {
 
   tuningState = new.env()
 
@@ -43,9 +43,10 @@ makeTuningState = function(tuningProblem, loop = 0L, tasks = NULL, models = NULL
   } else {
     tuningState$opt.path = opt.path
   }
-  tuningState$last.saved = last.saved
+  tuningState$time.last.saved = time.last.saved
 
   tuningState$random.seed = .Random.seed
+  tuningState$time.created = Sys.time()
   class(tuningState) = append(class(tuningState), "TuningState")
   tuningState
 }
@@ -55,7 +56,7 @@ getTuningStateTuningProblem = function(tuningState) {
 }
 
 getTuningStateModels = function(tuningState) {
-  if (getTuningStateLoop(tuningState) != tuningState$models.loop) {
+  if (is.null(tuningState$models) || getTuningStateLoop(tuningState) != tuningState$models.loop) {
     tuningProblem = getTuningStateTuningProblem(tuningState)
   	models = trainModels(
   	  learner = getTuningProblemLearner(tuningProblem), 
@@ -85,10 +86,9 @@ getTuningStateRandomSeed = function(tuningState) {
 
 
 getTuningStateTasks = function(tuningState) {
-	if (getTuningStateLoop(tuningState) != tuningState$tasks.loop) {
+	if (is.null(tuningState$tasks) || getTuningStateLoop(tuningState) != tuningState$tasks.loop) {
     tuningProblem = getTuningStateTuningProblem(tuningState)
     tasks = makeTasks(
-      par.set = getTuningProblemParSet(tuningProblem),
       opt.path = getTuningStateOptPath(tuningState),
       algo.init = getTuningProblemAlgoInit(tuningProblem),
       control = getTuningProblemControl(tuningProblem))
@@ -130,13 +130,13 @@ getTuningStateOptPath = function(tuningState) {
   tuningState$opt.path
 }
 
-setTuningStateLastSaved = function(tuningState, time) {
-  tuningState$last.saved = time
+setTuningStateTimeLastSaved = function(tuningState, time) {
+  tuningState$time.last.saved = time
   invisible()
 }
 
-getTuningStateLastSaved = function(tuningState) {
-  tuningState$last.saved
+getTuningStateTimeLastSaved = function(tuningState) {
+  tuningState$time.last.saved
 }
 
 getTuningStateShouldSave = function(tuningState) {
@@ -144,7 +144,7 @@ getTuningStateShouldSave = function(tuningState) {
   control = getTuningProblemControl(tuningProblem)
 
   getTuningStateLoop(tuningState) %in% control$save.on.disk.at ||
-    difftime(Sys.time(), getTuningStateLastSaved(tuningState), units = "secs") > control$save.on.disk.at.time
+    difftime(Sys.time(), getTuningStateTimeLastSaved(tuningState), units = "secs") > control$save.on.disk.at.time
   
 }
 
@@ -157,7 +157,7 @@ saveTuningState = function(tuningState) {
   save2(file = backup.fn, tuningState = tuningState)
   file.copy(backup.fn, fn, overwrite = TRUE)
   file.remove(backup.fn)
-  setTuningStateLastSaved(tuningState, Sys.time())
+  setTuningStateTimeLastSaved(tuningState, Sys.time())
   if (loop <= control$iters)
     showInfo(show.info, "Saved the current state after iteration %i in the file %s.",
       loop, control$save.file.path)
@@ -189,15 +189,10 @@ getTuningStateFinalPoints = function(tuningState, unify = FALSE) {
   opt.path = getTuningStateOptPath(tuningState)
 
   if (control$number.of.targets == 1L) {
-    final.index = chooseFinalPoint(
-      fun = getTuningProblemFun(tuningProblem), 
-      opt.path = opt.path, 
-      model = getTuningStateModels(tuningState)$models[[1L]], 
-      task = getTuningStateTasks(tuningState)[[1]], 
-      control = control)
+    final.index = chooseFinalPoint(tuningState)
     best = getOptPathEl(opt.path, final.index)
     list(
-      x = dropNamed(best$x, ".multifid.lvl"),
+      x = best$x,
       y = as.numeric(best$y),
       best.ind = final.index)
   } else {

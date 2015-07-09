@@ -11,10 +11,13 @@
 # @param control [\code{\link{MBOControl}}]\cr
 #   MBO control object.
 # @return [\code{integer(1)}] Index of the final point.
-chooseFinalPoint = function(fun, opt.path, model, task, control) {
+chooseFinalPoint = function(tuningState) {
+  tuningProblem =  getTuningStateTuningProblem(tuningState)
+  opt.path = getTuningStateOptPath(tuningState)
+  control = getTuningProblemControl(tuningProblem)
   switch (control$final.method,
     "last.proposed" = getOptPathLength(opt.path),
     "best.true.y" = getOptPathBestIndex(opt.path, ties = "random"),
     "best.predicted" = which(rank(ifelse(control$minimize, 1, -1) * 
-      predict(model, task = task)$data$response, ties.method = "random") == 1L))
+      predict(getTuningStateModels(tuningState)$models[[1L]], task = getTuningStateTasks(tuningState)[[1]])$data$response, ties.method = "random") == 1L))
 }
