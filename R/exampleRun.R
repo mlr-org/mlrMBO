@@ -119,8 +119,11 @@ exampleRun = function(fun, par.set, design = NULL, global.opt = NA_real_, learne
   }
   
   # # If noisy and we have the mean function, use it
-  f.eval = if(is.null(fun.mean)) fun else fun.mean
-  evals = evaluate(f.eval, par.set, n.params, par.types, noisy, noisy.evals, points.per.dim, names.x, name.y, control$multifid.lvls)
+  if (is.null(fun.mean)) {
+    evals = evaluate(fun, par.set, n.params, par.types, noisy, noisy.evals, points.per.dim, names.x, name.y, control$multifid.lvls)
+  } else {
+    evals = evaluate(fun.mean, par.set, n.params, par.types, noisy = FALSE, noisy.evals = 1, points.per.dim, names.x, name.y, control$multifid.lvl)
+  }
   
   if (is.na(global.opt))
     global.opt.estim = ifelse(control$minimize, min(evals[, name.y]), max(evals[, name.y]))
