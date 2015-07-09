@@ -172,20 +172,19 @@ renderExampleRunPlot1d = function(x, iter,
     g = ggplot(data = gg.fun)
     next.aes = aes_string(x = names.x, y = "value", color = "as.factor(.multifid.lvl)", group = "paste(variable,.multifid.lvl)", linetype = "variable")
     if (!control$multifid) {
-      next.aes = dropNamed(next.aes, "group")
+      next.aes = dropNamed(next.aes, c("group","colour"))
     }
     g = g + geom_line(next.aes, size = line.size)
     g = g + facet_grid(pane~., scales = "free")
     if (se & densregion) {
       #FIXME: We might lose transformation information here tr()
-      next.aes = aes_string(x = names.x, ymin = "value-se", ymax = "value+se*se", group = ".multifid.lvl")
+      next.aes = aes_string(x = names.x, ymin = "value-se", ymax = "value+se", group = ".multifid.lvl")
       if (!control$multifid) {
         next.aes = dropNamed(next.aes, "group")
       }
       g = g + geom_ribbon(data = gg.fun[gg.fun$variable == "yhat", ], next.aes, alpha = 0.2)
     }
     g = g + geom_point(data = gg.points, aes_string(x = names.x, y = name.y, colour = "type", shape = "type"), size = point.size)
-    g = g + scale_y_continuous(name = ylab)
     if (control$multifid) {
       palette = c("#f7fcf0","#e0f3db","#ccebc5","#a8ddb5","#7bccc4","#4eb3d3","#2b8cbe","#0868ac","#084081")
       g.colors = c(tail(palette, length(control$multifid.lvls)), colors)

@@ -29,9 +29,6 @@ the \code{param}.}
 \item{force.last.level.steps}{[\code{integer(1)}]
 Force an evaluation on the highest fidelity level each i-th step.}
 
-\item{generate.plot.data}{[\code{boolean(1)}]
-Should plot data be generated? Default ist \code{FALSE}.}
-
 \item{show.info}{[\code{logical(1)}]\cr
 Verbose output on console?
 Default is \code{TRUE}.}

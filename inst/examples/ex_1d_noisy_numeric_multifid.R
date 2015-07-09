@@ -1,11 +1,10 @@
 ##### optimizing a simple noisy sin(x) with mbo / EI
-library(checkmate)
-library(devtools)
-load_all()
+
+library(mlrMBO)
 library(ggplot2)
 set.seed(1)
 configureMlr(show.learner.output = FALSE)
-pause = FALSE
+pause = interactive()
 
 
 # function with noise
@@ -13,20 +12,20 @@ pause = FALSE
 obj.fun = function(x) {
   if (is.null(x$.multifid.lvl))
     x$multifid.lvl = 2
-  sin(x$x) + rnorm(1, 0, 0.1) - (x$.multifid.lvl - 2)*0.05*(x$x-7)^2 + 1
+  sin(x$x) + rnorm(1, 0, 0.1) - (x$.multifid.lvl - 2)*(0.05*(x$x-7)^2 + 1)
 }
 
 # here in this example we know the true, deterministic function
 obj.fun.mean = function(x) {
   if (is.null(x$.multifid.lvl))
     x$multifid.lvl = 2
-  sin(x$x) - (x$.multifid.lvl - 2)*0.05*(x$x-7)^2 + 1
+  sin(x$x) - (x$.multifid.lvl - 2)*(0.05*(x$x-7)^2 + 1)
 }
 
 par.set = makeNumericParamSet(lower = 3, upper = 13, len = 1L)
 
 ctrl = makeMBOControl(
-  init.design.points = 6L,
+  init.design.points = 10L,
   iters = 5L,
   propose.points = 1L,
   final.method = "best.predicted",
@@ -34,7 +33,7 @@ ctrl = makeMBOControl(
   noisy = TRUE
 )
 
-lrn = makeLearner("regr.km", predict.type = "se", nugget.estim = FALSE)
+lrn = makeLearner("regr.km", predict.type = "se", nugget.estim = TRUE)
 
 ctrl = setMBOControlInfill(ctrl, crit = "ei", opt = "focussearch",
   opt.focussearch.points = 500L)
