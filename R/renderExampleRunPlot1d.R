@@ -141,8 +141,8 @@ renderExampleRunPlot1d = function(x, iter,
   }
 
   if (isNumeric(par.set, include.int = FALSE)) {
-    gg.fun = melt(evals, id.vars = c(getParamIds(opt.path$par.set), "se"))
-    gg.fun$se = gg.fun$se * se.factor
+    gg.fun = melt(evals, id.vars = c(getParamIds(opt.path$par.set), if (se) "se" else NULL))
+    if (se) gg.fun$se = gg.fun$se * se.factor
     
     # if trafo for y is provided, indicate transformation on the y-axis
     ylab = name.y
