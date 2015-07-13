@@ -12,15 +12,15 @@
 #   errors.models [character] : model errors, resulting in randomly proposed points.
 #                               length is one string PER PROPOSED POINT, not per element of <models>
 #                               NA if the model was Ok, or the (first) error message if some model crashed
-proposePoints.TuningState = function(tuningState){ #tasks, models, par.set, control, opt.path, iter) {
+proposePoints.OptState = function(opt.state){ #tasks, models, par.set, control, opt.path, iter) {
 
-  tuningProblem = getTuningStateTuningProblem(tuningState)
-  control = getTuningProblemControl(tuningProblem)
-  tasks = getTuningStateTasks(tuningState)
-  models = getTuningStateModels(tuningState)$models
-  par.set = getTuningProblemParSet(tuningProblem)
-  opt.path = getTuningStateOptPath(tuningState)
-  iter = getTuningStateLoop(tuningState)
+  opt.problem = getOptStateOptProblem(opt.state)
+  control = getOptProblemControl(opt.problem)
+  tasks = getOptStateTasks(opt.state)
+  models = getOptStateModels(opt.state)$models
+  par.set = getOptProblemParSet(opt.problem)
+  opt.path = getOptStateOptPath(opt.state)
+  iter = getOptStateLoop(opt.state)
 
   m = control$number.of.targets
   res = NULL
@@ -60,7 +60,7 @@ proposePoints.TuningState = function(tuningState){ #tasks, models, par.set, cont
     res$crit.vals = matrix(res$crit.vals, ncol = 1L)
   
   if (control$filter.proposed.points) {
-    res = filterProposedPoints(res, tuningState)
+    res = filterProposedPoints(res, opt.state)
   }
   res
 }

@@ -117,17 +117,17 @@ evalTargetFun = function(fun, par.set, dobs, xs, opt.path, control, show.info, o
   extractSubList(res, "y")
 }
 
-evalTargetFun.TuningState = function(tuningState, xs, extras) {
-  tuningProblem = getTuningStateTuningProblem(tuningState)
+evalTargetFun.OptState = function(opt.state, xs, extras) {
+  opt.problem = getOptStateOptProblem(opt.state)
   evalTargetFun(
-    fun = getTuningProblemFun(tuningProblem), 
-    par.set = getTuningProblemParSet(tuningProblem), 
-    dobs = getTuningStateLoop(tuningState), 
+    fun = getOptProblemFun(opt.problem), 
+    par.set = getOptProblemParSet(opt.problem), 
+    dobs = getOptStateLoop(opt.state), 
     xs = xs,
-    opt.path = getTuningStateOptPath(tuningState), 
-    control = getTuningProblemControl(tuningProblem), 
-    show.info = getTuningProblemShowInfo(tuningProblem), 
-    oldopts = getTuningProblemOldopts(tuningProblem),
-    more.args = getTuningProblemMoreArgs(tuningProblem), 
+    opt.path = getOptStateOptPath(opt.state), 
+    control = getOptProblemControl(opt.problem), 
+    show.info = getOptProblemShowInfo(opt.problem), 
+    oldopts = getOptProblemOldopts(opt.problem),
+    more.args = getOptProblemMoreArgs(opt.problem), 
     extras = extras)
 }

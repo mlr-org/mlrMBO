@@ -1,4 +1,4 @@
-# The TuningProblem contains all the constants wich define a TuningProblem within our MBO Steps. It is an enviroment and is always pointed at by the TuningState.
+# The OptProblem contains all the constants wich define a OptProblem within our MBO Steps. It is an enviroment and is always pointed at by the OptState.
 # @param fun [\code{function(x, ...)}]\cr
 #   Fitness function to minimize. The first argument has to be a list of values.
 #   The function has to return a single numerical value.
@@ -21,109 +21,109 @@
 # @param more.args [list]\cr
 #   Further arguments passed to fitness function.
 # @return [\code{\link{MBOSingleObjResult}} | \code{\link{MBOMultiObjResult}}]
-makeTuningProblem = function(fun, par.set, design = NULL, learner, control, start.time = NULL, show.info = TRUE, more.args = list()) {
-  tuningProblem = new.env()
+makeOptProblem = function(fun, par.set, design = NULL, learner, control, start.time = NULL, show.info = TRUE, more.args = list()) {
+  opt.problem = new.env()
 
-  tuningProblem$fun = fun
-  tuningProblem$par.set = par.set
-  tuningProblem$design = design
-  tuningProblem$learner = learner
-  tuningProblem$control = control
+  opt.problem$fun = fun
+  opt.problem$par.set = par.set
+  opt.problem$design = design
+  opt.problem$learner = learner
+  opt.problem$control = control
   if (is.null(start.time))
-    tuningProblem$start.time = Sys.time()
+    opt.problem$start.time = Sys.time()
   else
-    tuningProblem$start.time = start.time
-  tuningProblem$show.info = show.info
-  tuningProblem$more.args = more.args
+    opt.problem$start.time = start.time
+  opt.problem$show.info = show.info
+  opt.problem$more.args = more.args
 
   #save old options
   oldopts = list(
     ole = getOption("mlr.on.learner.error"),
     slo = getOption("mlr.show.learner.output")
   )
-  tuningProblem$oldopts = oldopts
+  opt.problem$oldopts = oldopts
 
-  tuningProblem$algo.init = NULL
+  opt.problem$algo.init = NULL
 
-  class(tuningProblem) = append(class(tuningProblem), "TuningProblem")
+  class(opt.problem) = append(class(opt.problem), "OptProblem")
 
-  tuningProblem
+  opt.problem
 }
 
-getTuningProblemFun = function(tuningProblem) {
-  tuningProblem$fun
+getOptProblemFun = function(opt.problem) {
+  opt.problem$fun
 }
 
-getTuningProblemLearner = function(tuningProblem) {
-  tuningProblem$learner
+getOptProblemLearner = function(opt.problem) {
+  opt.problem$learner
 }
 
-getTuningProblemControl = function(tuningProblem) {
-  tuningProblem$control
+getOptProblemControl = function(opt.problem) {
+  opt.problem$control
 }
 
-getTuningProblemParSet = function(tuningProblem) {
-  tuningProblem$par.set
+getOptProblemParSet = function(opt.problem) {
+  opt.problem$par.set
 }
 
-getTuningProblemOldopts = function(tuningProblem) {
-  tuningProblem$oldopts
+getOptProblemOldopts = function(opt.problem) {
+  opt.problem$oldopts
 }
 
-getTuningProblemMoreArgs = function(tuningProblem) {
-  tuningProblem$more.args
+getOptProblemMoreArgs = function(opt.problem) {
+  opt.problem$more.args
 }
 
-setTuningProblemAlgoInit = function(tuningProblem, algo.init) {
-  tuningProblem$algo.init = algo.init
+setOptProblemAlgoInit = function(opt.problem, algo.init) {
+  opt.problem$algo.init = algo.init
   invisible()
 }
 
-getTuningProblemAlgoInit = function(tuningProblem) {
-  par.set = getTuningProblemParSet(tuningProblem)
-  control = getTuningProblemControl(tuningProblem)
-  if (is.null(tuningProblem$algo.init)) {
+getOptProblemAlgoInit = function(opt.problem) {
+  par.set = getOptProblemParSet(opt.problem)
+  control = getOptProblemControl(opt.problem)
+  if (is.null(opt.problem$algo.init)) {
     algo.init = mboAlgoInit(par.set = par.set, control = control)
-    setTuningProblemAlgoInit(tuningProblem, algo.init)
+    setOptProblemAlgoInit(opt.problem, algo.init)
   } else {
-    algo.init = tuningProblem$algo.init
+    algo.init = opt.problem$algo.init
   }
   algo.init
 }
 
-getTuningProblemStartTime = function(tuningProblem) {
-  tuningProblem$start.time
+getOptProblemStartTime = function(opt.problem) {
+  opt.problem$start.time
 }
 
-getTuningProblemShowInfo = function(tuningProblem) {
-  tuningProblem$show.info
+getOptProblemShowInfo = function(opt.problem) {
+  opt.problem$show.info
 }
 
-setTuningProblemDesign = function(tuningProblem, design) {
-  tuningProblem$design = design
+setOptProblemDesign = function(opt.problem, design) {
+  opt.problem$design = design
   invisible()
 }
 
-getTuningProblemDesign = function(tuningProblem) {
-  if (is.null(tuningProblem$design)) {
+getOptProblemDesign = function(opt.problem) {
+  if (is.null(opt.problem$design)) {
     #design = generateMBODesign(tuninProblem) #FIXME implement?
     design = NULL
-    #setTuningProblemDesign(tuningProblem, design)
+    #setOptProblemDesign(opt.problem, design)
   } else {
-    design = tuningProblem$design
+    design = opt.problem$design
   }
   design
 }
 
-getTuningProblemInitDesignPoints = function(tuningProblem) {
-  design = getTuningProblemDesign(tuningProblem)
+getOptProblemInitDesignPoints = function(opt.problem) {
+  design = getOptProblemDesign(opt.problem)
   if (is.null(design)) 
-    getTuningProblemControl(tuningProblem)$init.design.points
+    getOptProblemControl(opt.problem)$init.design.points
   else
     nrow(design)
 }
 
-getTuningProblemIsLcb = function(tuningProblem) {
-  control = getTuningProblemControl(tuningProblem)
+getOptProblemIsLcb = function(opt.problem) {
+  control = getOptProblemControl(opt.problem)
   control$propose.points > 1L && control$multipoint.method == "lcb"
 }

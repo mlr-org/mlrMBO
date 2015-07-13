@@ -28,18 +28,18 @@ loadPackages = function(control) {
     requirePackages("emoa", why = "proposePoints")
 }
 
-evalProposedPoints.TuningState = function(tuningState, prop) {
-  tuningProblem = getTuningStateTuningProblem(tuningState)
-  par.set = getTuningProblemParSet(tuningProblem)
+evalProposedPoints.OptState = function(opt.state, prop) {
+  opt.problem = getOptStateOptProblem(opt.state)
+  par.set = getOptProblemParSet(opt.problem)
   extras = getExtras(
     n = nrow(prop$prop.points),
     prop = prop,
-    train.time = getTuningStateModels(tuningState)$train.time,
-    control = getTuningProblemControl(tuningProblem)
+    train.time = getOptStateModels(opt.state)$train.time,
+    control = getOptProblemControl(opt.problem)
   )
   xs = dfRowsToList(prop$prop.points, par.set)
   xs = lapply(xs, repairPoint, par.set = par.set)
-  evalTargetFun.TuningState(tuningState, xs = xs, extras = extras)
+  evalTargetFun.OptState(opt.state, xs = xs, extras = extras)
 }
 
 # for Parego: calculate all integer vectors of length k with sum n

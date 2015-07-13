@@ -1,4 +1,4 @@
-# TuningState is the central component of the mbo iterations. This enviroment contains every necessary information we need during tuning in MBO. It links to the \code{TuningProblem} and to the \code{TuningResult}.
+# OptState is the central component of the mbo iterations. This enviroment contains every necessary information we need during tuning in MBO. It links to the \code{OptProblem} and to the \code{OptResult}.
 # @param loop \code{integer()} \cr
 #   Tells us in what loop we are at the moment. 0 means we are in the inital phase.
 #   The loop i should change to i+1 as soon as the i-th point is evaluated
@@ -8,156 +8,156 @@
 #  @param models \code{list()} \cr
 #    List of \code{WrappedModel} which are trained on the \code{tasks} and formulate the surrogate. 
 #    Caching is done as above.
-#  @param tuningResult \code{TuningResult} \cr
-#    Pointer to the TuningResult Object.
+#  @param opt.result \code{OptResult} \cr
+#    Pointer to the OptResult Object.
 #  @param state \code{character(1)} \cr
 #    Tells us in what state we are in text. So far we know: init, iter, iter.exceeded, time.exceeded and exec.time.exceeded.
 #  @param opt.path \code{OptPath} \cr
 #    Here we keep the opt.path. It delivers the data for the tasks and other usefull information.
 #  @param time.last.saved \code{POSIXct} \cr
 #     The \code{Sys.time()} when the last save on disk was done.
-makeTuningState = function(tuningProblem, loop = 0L, tasks = NULL, models = NULL, tuningResult = NULL, state = "init", opt.path = NULL, time.last.saved = Sys.time()) {
+makeOptState = function(opt.problem, loop = 0L, tasks = NULL, models = NULL, opt.result = NULL, state = "init", opt.path = NULL, time.last.saved = Sys.time()) {
 
-  tuningState = new.env()
+  opt.state = new.env()
 
-  tuningState$tuningProblem = tuningProblem
-  tuningState$loop = loop #the loop the state is IN, not the one it is finished
-  tuningState$tasks = tasks
-  tuningState$models = models
-  tuningState$models.loop = -1
-  tuningState$tasks.loop = -1
+  opt.state$opt.problem = opt.problem
+  opt.state$loop = loop #the loop the state is IN, not the one it is finished
+  opt.state$tasks = tasks
+  opt.state$models = models
+  opt.state$models.loop = -1
+  opt.state$tasks.loop = -1
 
-  if (is.null(tuningResult)) {
-    tuningState$tuningResult = makeTuningResult()
+  if (is.null(opt.result)) {
+    opt.state$opt.result = makeOptResult()
   } else {
-    tuningState$tuningResult = tuningResult
+    opt.state$opt.result = opt.result
   }
   
-  tuningState$state = state #states = init, iter, iter.exceeded, time.exceeded, exec.time.exceeded, 
+  opt.state$state = state #states = init, iter, iter.exceeded, time.exceeded, exec.time.exceeded, 
 
   if (is.null(opt.path)) {
-    tuningState$opt.path = makeMBOOptPath(
-      getTuningProblemParSet(tuningProblem),
-      getTuningProblemControl(tuningProblem)
+    opt.state$opt.path = makeMBOOptPath(
+      getOptProblemParSet(opt.problem),
+      getOptProblemControl(opt.problem)
     )  
   } else {
-    tuningState$opt.path = opt.path
+    opt.state$opt.path = opt.path
   }
-  tuningState$time.last.saved = time.last.saved
+  opt.state$time.last.saved = time.last.saved
 
-  tuningState$random.seed = .Random.seed
-  tuningState$time.created = Sys.time()
-  class(tuningState) = append(class(tuningState), "TuningState")
-  tuningState
+  opt.state$random.seed = .Random.seed
+  opt.state$time.created = Sys.time()
+  class(opt.state) = append(class(opt.state), "OptState")
+  opt.state
 }
 
-getTuningStateTuningProblem = function(tuningState) {
-  tuningState$tuningProblem
+getOptStateOptProblem = function(opt.state) {
+  opt.state$opt.problem
 }
 
-getTuningStateModels = function(tuningState) {
-  if (is.null(tuningState$models) || getTuningStateLoop(tuningState) != tuningState$models.loop) {
-    tuningProblem = getTuningStateTuningProblem(tuningState)
+getOptStateModels = function(opt.state) {
+  if (is.null(opt.state$models) || getOptStateLoop(opt.state) != opt.state$models.loop) {
+    opt.problem = getOptStateOptProblem(opt.state)
   	models = trainModels(
-  	  learner = getTuningProblemLearner(tuningProblem), 
-  	  tasks = getTuningStateTasks(tuningState),
-  	  control = getTuningProblemControl(tuningProblem))
-  	setTuningStateModels(tuningState, models)
+  	  learner = getOptProblemLearner(opt.problem), 
+  	  tasks = getOptStateTasks(opt.state),
+  	  control = getOptProblemControl(opt.problem))
+  	setOptStateModels(opt.state, models)
   } else {
-  	models = tuningState$models
+  	models = opt.state$models
   }
   models
 }
 
-setTuningStateModels = function(tuningState, models) {
-  tuningState$models = models
-  tuningState$models.loop = getTuningStateLoop(tuningState)
+setOptStateModels = function(opt.state, models) {
+  opt.state$models = models
+  opt.state$models.loop = getOptStateLoop(opt.state)
   invisible()
 }
 
-setTuningStateRandomSeed = function(tuningState) {
-  tuningState$random.seed = .Random.seed
+setOptStateRandomSeed = function(opt.state) {
+  opt.state$random.seed = .Random.seed
   invisible()
 }
 
-getTuningStateRandomSeed = function(tuningState) {
-  tuningState$random.seed
+getOptStateRandomSeed = function(opt.state) {
+  opt.state$random.seed
 }
 
 
-getTuningStateTasks = function(tuningState) {
-	if (is.null(tuningState$tasks) || getTuningStateLoop(tuningState) != tuningState$tasks.loop) {
-    tuningProblem = getTuningStateTuningProblem(tuningState)
+getOptStateTasks = function(opt.state) {
+	if (is.null(opt.state$tasks) || getOptStateLoop(opt.state) != opt.state$tasks.loop) {
+    opt.problem = getOptStateOptProblem(opt.state)
     tasks = makeTasks(
-      opt.path = getTuningStateOptPath(tuningState),
-      algo.init = getTuningProblemAlgoInit(tuningProblem),
-      control = getTuningProblemControl(tuningProblem))
-    setTuningStateTasks(tuningState, tasks)
+      opt.path = getOptStateOptPath(opt.state),
+      algo.init = getOptProblemAlgoInit(opt.problem),
+      control = getOptProblemControl(opt.problem))
+    setOptStateTasks(opt.state, tasks)
 	} else {
-    tasks = tuningState$tasks
+    tasks = opt.state$tasks
   }
   tasks
 }
 
-setTuningStateTasks = function(tuningState, tasks) {
-  tuningState$tasks = tasks
-  tuningState$tasks.loop = getTuningStateLoop(tuningState)
+setOptStateTasks = function(opt.state, tasks) {
+  opt.state$tasks = tasks
+  opt.state$tasks.loop = getOptStateLoop(opt.state)
   invisible()
 }
 
-getTuningStateTuningResult = function(tuningState) {
-  tuningState$tuningResult
+getOptStateOptResult = function(opt.state) {
+  opt.state$opt.result
 }
 
-setTuningStateLoop = function(tuningState, loop = NULL) {
-  tuningResult = getTuningStateTuningResult(tuningState)
-  setTuningResultResampleResults(tuningResult, tuningState)
-  setTuningResultStoredModels(tuningResult, tuningState)
+setOptStateLoop = function(opt.state, loop = NULL) {
+  opt.result = getOptStateOptResult(opt.state)
+  setOptResultResampleResults(opt.result, opt.state)
+  setOptResultStoredModels(opt.result, opt.state)
   if (is.null(loop))
-    tuningState$loop = tuningState$loop + 1
+    opt.state$loop = opt.state$loop + 1
   else
-    tuningState$loop = loop
+    opt.state$loop = loop
       # save resampling and models in result routine
-  setTuningStateRandomSeed(tuningState)
+  setOptStateRandomSeed(opt.state)
   invisible()
 }
 
-getTuningStateLoop = function(tuningState) {
-  tuningState$loop
+getOptStateLoop = function(opt.state) {
+  opt.state$loop
 }
 
-getTuningStateOptPath = function(tuningState) {
-  tuningState$opt.path
+getOptStateOptPath = function(opt.state) {
+  opt.state$opt.path
 }
 
-setTuningStateTimeLastSaved = function(tuningState, time) {
-  tuningState$time.last.saved = time
+setOptStateTimeLastSaved = function(opt.state, time) {
+  opt.state$time.last.saved = time
   invisible()
 }
 
-getTuningStateTimeLastSaved = function(tuningState) {
-  tuningState$time.last.saved
+getOptStateTimeLastSaved = function(opt.state) {
+  opt.state$time.last.saved
 }
 
-getTuningStateShouldSave = function(tuningState) {
-  tuningProblem = getTuningStateTuningProblem(tuningState)
-  control = getTuningProblemControl(tuningProblem)
+getOptStateShouldSave = function(opt.state) {
+  opt.problem = getOptStateOptProblem(opt.state)
+  control = getOptProblemControl(opt.problem)
 
-  getTuningStateLoop(tuningState) %in% control$save.on.disk.at ||
-    difftime(Sys.time(), getTuningStateTimeLastSaved(tuningState), units = "secs") > control$save.on.disk.at.time
+  getOptStateLoop(opt.state) %in% control$save.on.disk.at ||
+    difftime(Sys.time(), getOptStateTimeLastSaved(opt.state), units = "secs") > control$save.on.disk.at.time
   
 }
 
-saveTuningState = function(tuningState) {
-  loop = getTuningStateLoop(tuningState)
-  control = getTuningProblemControl(getTuningStateTuningProblem(tuningState))
-  show.info = getTuningProblemShowInfo(getTuningStateTuningProblem(tuningState))
+saveOptState = function(opt.state) {
+  loop = getOptStateLoop(opt.state)
+  control = getOptProblemControl(getOptStateOptProblem(opt.state))
+  show.info = getOptProblemShowInfo(getOptStateOptProblem(opt.state))
   fn = control$save.file.path
   backup.fn = getFileBackupName(fn)
-  save2(file = backup.fn, tuningState = tuningState)
+  save2(file = backup.fn, opt.state = opt.state)
   file.copy(backup.fn, fn, overwrite = TRUE)
   file.remove(backup.fn)
-  setTuningStateTimeLastSaved(tuningState, Sys.time())
+  setOptStateTimeLastSaved(opt.state, Sys.time())
   if (loop <= control$iters)
     showInfo(show.info, "Saved the current state after iteration %i in the file %s.",
       loop, control$save.file.path)
@@ -165,31 +165,31 @@ saveTuningState = function(tuningState) {
     showInfo(show.info, "Saved the final state in the file %s", control$save.file.path)
 }
 
-loadTuningState = function(obj) {
-  UseMethod("loadTuningState")
+loadOptState = function(obj) {
+  UseMethod("loadOptState")
 }
 
-loadTuningState.TuningProblem = function(obj) {
-  fn = getTuningProblemControl(obj)$save.file.path
-  loadTuningState(fn)
+loadOptState.OptProblem = function(obj) {
+  fn = getOptProblemControl(obj)$save.file.path
+  loadOptState(fn)
 }
 
-loadTuningState.character = function(obj) {
-  tuningState = load2(file = obj, "tuningState")
-  .Random.seed = getTuningStateRandomSeed(tuningState)
-  tuningState
+loadOptState.character = function(obj) {
+  opt.state = load2(file = obj, "opt.state")
+  .Random.seed = getOptStateRandomSeed(opt.state)
+  opt.state
 }
 
 
 # @param unify [\code{logical(1)}]
 #   Defines if in the case of multicriterial optimization we shoud try to make the output similar to the result of the normal optimization.
-getTuningStateFinalPoints = function(tuningState, unify = FALSE) {
-  tuningProblem = getTuningStateTuningProblem(tuningState)
-  control = getTuningProblemControl(tuningProblem)
-  opt.path = getTuningStateOptPath(tuningState)
+getOptStateFinalPoints = function(opt.state, unify = FALSE) {
+  opt.problem = getOptStateOptProblem(opt.state)
+  control = getOptProblemControl(opt.problem)
+  opt.path = getOptStateOptPath(opt.state)
 
   if (control$number.of.targets == 1L) {
-    final.index = chooseFinalPoint(tuningState)
+    final.index = chooseFinalPoint(opt.state)
     best = getOptPathEl(opt.path, final.index)
     list(
       x = best$x,
@@ -213,26 +213,26 @@ getTuningStateFinalPoints = function(tuningState, unify = FALSE) {
   }
 }
 
-setTuningStateState = function(tuningState, state) {
+setOptStateState = function(opt.state, state) {
   assertSubset(state, c("init", "iter", "iter.exceeded", "time.exceeded", "exec.time.exceeded"))
-  tuningState$state = state
+  opt.state$state = state
   invisible()
 }
 
-getTuningStateState = function(tuningState) {
-  tuningState$state
+getOptStateState = function(opt.state) {
+  opt.state$state
 }
 
-getTuningStateTermination = function(tuningState) {
-  terminate = shouldTerminate.TuningState(tuningState)
+getOptStateTermination = function(opt.state) {
+  terminate = shouldTerminate.OptState(opt.state)
   if (terminate == 0) {
-    setTuningStateState(tuningState, "iter.exceeded")
+    setOptStateState(opt.state, "iter.exceeded")
   } else if (terminate == 1) {
-    setTuningStateState(tuningState, "time.exceeded")
+    setOptStateState(opt.state, "time.exceeded")
   } else if (terminate == 2) {
-    setTuningStateState(tuningState, "exec.time.exceeded")
+    setOptStateState(opt.state, "exec.time.exceeded")
   } else if (terminate == -1) {
-    setTuningStateState(tuningState, "iter")
+    setOptStateState(opt.state, "iter")
   } else {
     stopf("shouldTerminate() gave unexpected result: %i", terminate)
   }

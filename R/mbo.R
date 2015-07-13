@@ -58,7 +58,7 @@ mbo = function(fun, par.set, design = NULL, learner, control,
     makeIntegerParam(".multifid.lvl", lower = 1L, upper = length(control$multifid.lvls))))
   }
 
-  tuningProblem = makeTuningProblem(
+  opt.problem = makeOptProblem(
     fun = fun, 
     par.set = par.set, 
     design = design,
@@ -67,22 +67,22 @@ mbo = function(fun, par.set, design = NULL, learner, control,
     show.info = show.info,
     more.args = more.args)
 
-  finalTuningState = mboTemplate(tuningProblem)
+  finalOptState = mboTemplate(opt.problem)
 
   # save final model if demanded
-  setTuningResultStoredModels(getTuningStateTuningResult(finalTuningState), finalTuningState)
+  setOptResultStoredModels(getOptStateOptResult(finalOptState), finalOptState)
 
-  mbo.result = makeMBOResult.TuningState(finalTuningState)
-  setTuningResultMboResult(getTuningStateTuningResult(finalTuningState), mbo.result)
+  mbo.result = makeMBOResult.OptState(finalOptState)
+  setOptResultMboResult(getOptStateOptResult(finalOptState), mbo.result)
 
   # save on disk routine
-  if (getTuningStateLoop(finalTuningState) %in% getTuningProblemControl(getTuningStateTuningProblem(finalTuningState))$save.on.disk.at || is.finite(getTuningProblemControl(getTuningStateTuningProblem(finalTuningState))$save.on.disk.at.time))
-    saveTuningState(finalTuningState)
+  if (getOptStateLoop(finalOptState) %in% getOptProblemControl(getOptStateOptProblem(finalOptState))$save.on.disk.at || is.finite(getOptProblemControl(getOptStateOptProblem(finalOptState))$save.on.disk.at.time))
+    saveOptState(finalOptState)
 
   # restore mlr configuration
   configureMlr(
-    on.learner.error = getTuningProblemOldopts(tuningProblem)[["ole"]], 
-    show.learner.output = getTuningProblemOldopts(tuningProblem)[["slo"]]
+    on.learner.error = getOptProblemOldopts(opt.problem)[["ole"]], 
+    show.learner.output = getOptProblemOldopts(opt.problem)[["slo"]]
   )
   mbo.result
 }

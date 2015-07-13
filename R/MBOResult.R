@@ -20,15 +20,15 @@
 #' @rdname MBOSingleObjResult
 NULL
 
-makeMBOResult.TuningState = function(tuningState) {
-  tuningProblem = getTuningStateTuningProblem(tuningState)
-  control = getTuningProblemControl(tuningProblem)
-  final.points = getTuningStateFinalPoints(tuningState)
-  tuningResult = getTuningStateTuningResult(tuningState)
+makeMBOResult.OptState = function(opt.state) {
+  opt.problem = getOptStateOptProblem(opt.state)
+  control = getOptProblemControl(opt.problem)
+  final.points = getOptStateFinalPoints(opt.state)
+  opt.result = getOptStateOptResult(opt.state)
 
   if (length(final.points$x)) {
-    if (getTuningProblemControl(tuningProblem)$final.evals > 0) {
-      ys = evalFinalPoint(tuningState, final.points)
+    if (getOptProblemControl(opt.problem)$final.evals > 0) {
+      ys = evalFinalPoint(opt.state, final.points)
       final.points$y = mean(ys)
     }
     makeS3Obj(
@@ -36,10 +36,10 @@ makeMBOResult.TuningState = function(tuningState) {
       x = dropNamed(final.points$x, ".multifid.lvl"),
       y = final.points$y, # strip name
       best.ind = final.points$best.ind,
-      opt.path = getTuningStateOptPath(tuningState),
-      resample.results = getTuningResultResampleResults(tuningResult),
-      final.state = getTuningStateState(tuningState),
-      models = getTuningResultStoredModels(tuningResult),
+      opt.path = getOptStateOptPath(opt.state),
+      resample.results = getOptResultResampleResults(opt.result),
+      final.state = getOptStateState(opt.state),
+      models = getOptResultStoredModels(opt.result),
       control = control
     )
   } else {
@@ -47,9 +47,9 @@ makeMBOResult.TuningState = function(tuningState) {
       pareto.front = final.points$pareto.front,
       pareto.set = final.points$pareto.set,
       pareto.inds = final.points$inds,
-      opt.path = getTuningStateOptPath(tuningState),
-      final.state = getTuningStateState(tuningState),
-      models = getTuningResultStoredModels(tuningResult),
+      opt.path = getOptStateOptPath(opt.state),
+      final.state = getOptStateState(opt.state),
+      models = getOptResultStoredModels(opt.result),
       control = control
     )
   }

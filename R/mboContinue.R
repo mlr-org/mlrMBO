@@ -11,11 +11,11 @@
 #' @export
 mboContinue = function(file) {
   assertCharacter(file, len = 1L)
-  tuningState = loadTuningState(file)
-  state = getTuningStateState(tuningState)
+  opt.state = loadOptState(file)
+  state = getOptStateState(opt.state)
   if (state %nin% c("init", "iter")) {
     warningf("Tuning ended with %s. No need to continue. Simply returning stored result.", state)
-    return(getTuningResultMboResult(getTuningStateTuningResult(tuningState)))
+    return(getOptResultMboResult(getOptStateOptResult(opt.state)))
   }
-  mboTemplate(tuningState)
+  mboTemplate(opt.state)
 }

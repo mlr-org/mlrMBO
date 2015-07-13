@@ -3,23 +3,23 @@
 # If no design is passed, create it. otherwise sanity-check it.
 # Either do y-evals or log points to opt.path manually.
 #
-# @param tuningState [\code{TuningState} | NULL]\cr
+# @param opt.state [\code{OptState} | NULL]\cr
 #   Initial Tuning State with empty design slot
 # @return [\code{NULL}]
 
-generateMBODesign.TuningState = function(tuningState) {
-  tuningProblem = getTuningStateTuningProblem(tuningState)
+generateMBODesign.OptState = function(opt.state) {
+  opt.problem = getOptStateOptProblem(opt.state)
   extras = getExtras(
-    n = getTuningProblemInitDesignPoints(tuningProblem), 
+    n = getOptProblemInitDesignPoints(opt.problem), 
     prop = NULL, 
     train.time = NA_real_, 
-    control = getTuningProblemControl(tuningProblem)
+    control = getOptProblemControl(opt.problem)
   )
 
-  design = getTuningProblemDesign(tuningProblem)
-  fun = getTuningProblemFun(tuningProblem)
-  par.set = getTuningProblemParSet(tuningProblem)
-  control = getTuningProblemControl(tuningProblem)
+  design = getOptProblemDesign(opt.problem)
+  fun = getOptProblemFun(opt.problem)
+  par.set = getOptProblemParSet(opt.problem)
+  control = getOptProblemControl(opt.problem)
 
   # shortcut names
   pids = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
@@ -61,12 +61,12 @@ generateMBODesign.TuningState = function(tuningState) {
   if (all(y.name %in% colnames(design))) {
     y = as.matrix(design[, y.name, drop = FALSE])
     lapply(seq_along(xs), function(i)
-      addOptPathEl(getTuningStateOptPath(tuningState), x = xs[[i]], y = y[i, ], dob = 0L,
+      addOptPathEl(getOptStateOptPath(opt.state), x = xs[[i]], y = y[i, ], dob = 0L,
         error.message = NA_character_, exec.time = NA_real_, extra = extras[[i]])
     )
   } else if (all(y.name %nin% colnames(design))) {
-    showInfo(getTuningProblemShowInfo(tuningProblem), "Computing y column(s) for design. Not provided.")
-    evalTargetFun.TuningState(tuningState, xs, extras)
+    showInfo(getOptProblemShowInfo(opt.problem), "Computing y column(s) for design. Not provided.")
+    evalTargetFun.OptState(opt.state, xs, extras)
   } else {
     stop("Only part of y-values are provided. Don't know what to do - provide either all or none.")
   }
