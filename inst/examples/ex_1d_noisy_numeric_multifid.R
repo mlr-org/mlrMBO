@@ -38,7 +38,7 @@ lrn = makeLearner("regr.km", predict.type = "se", nugget.estim = TRUE)
 ctrl = setMBOControlInfill(ctrl, crit = "ei", opt = "focussearch",
   opt.focussearch.points = 500L)
 
-ctrl = setMBOControlMultiFid(ctrl, lvls = 1:2, costs = c(1,4), param = ".multifid.lvl")
+ctrl = setMBOControlMultiFid(ctrl, lvls = c(0.1, 1), costs = c(1,4), param = "dw.perc", )
 
 
 run = exampleRun(obj.fun, par.set, global.opt = -1, learner = lrn,
@@ -52,4 +52,4 @@ print(run)
 # 
 # run.mf = run
 # run.mf$par.set = par.set.mf
-plotExampleRun(run, pause = pause, densregion = TRUE)
+res = plotExampleRun(run, pause = pause, densregion = TRUE)

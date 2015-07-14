@@ -120,9 +120,9 @@ exampleRun = function(fun, par.set, design = NULL, global.opt = NA_real_, learne
   
   # # If noisy and we have the mean function, use it
   if (is.null(fun.mean)) {
-    evals = evaluate(fun, par.set, n.params, par.types, noisy, noisy.evals, points.per.dim, names.x, name.y, control$multifid.lvls)
+    evals = evaluate(fun, par.set, n.params, par.types, noisy, noisy.evals, points.per.dim, names.x, name.y, seq_along(control$multifid.lvls))
   } else {
-    evals = evaluate(fun.mean, par.set, n.params, par.types, noisy = FALSE, noisy.evals = 1, points.per.dim, names.x, name.y, control$multifid.lvl)
+    evals = evaluate(fun.mean, par.set, n.params, par.types, noisy = FALSE, noisy.evals = 1, points.per.dim, names.x, name.y, seq_along(control$multifid.lvls))
   }
   
   if (is.na(global.opt))

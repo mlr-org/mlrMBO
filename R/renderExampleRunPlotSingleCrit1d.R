@@ -142,12 +142,20 @@ renderExampleRunPlot1d = function(x, iter,
 
   if (isNumeric(par.set, include.int = FALSE)) {
     gg.fun = melt(evals, id.vars = c(getParamIds(opt.path$par.set), if (se) "se" else NULL))
+    
+    if (control$multifid) {
+      #rename .multifid.lvl according to control object
+      repl = paste0(control$multifid.param, "=", control$multifid.lvls)
+      names(repl) = as.character(seq_along(control$multifid.lvls))
+      gg.fun$.multifid.lvl = plyr::revalue(as.factor(gg.fun$.multifid.lvl), replace = repl)  
+    }
+    
     if (se) gg.fun$se = gg.fun$se * se.factor
     
     # if trafo for y is provided, indicate transformation on the y-axis
     ylab = name.y
     if (!is.null(trafo$y)) {
-      ylab = paste(name.y, " (", attr(trafo$y, "name"), "-transformed)", sep = "")
+      ylab = paste0(name.y, " (", attr(trafo$y, "name"), "-transformed)")
     }
     #determine in wich pane (facet_grid) the points belong to
     pane.names = c(ylab, name.crit)
@@ -186,8 +194,7 @@ renderExampleRunPlot1d = function(x, iter,
     }
     g = g + geom_point(data = gg.points, aes_string(x = names.x, y = name.y, colour = "type", shape = "type"), size = point.size)
     if (control$multifid) {
-      palette = c("#f7fcf0","#e0f3db","#ccebc5","#a8ddb5","#7bccc4","#4eb3d3","#2b8cbe","#0868ac","#084081")
-      g.colors = c(tail(palette, length(control$multifid.lvls)), colors)
+      g.colors = c(tail(RColorBrewer::brewer.pal(n = length(control$multifid.lvls)+1, name = "PuBu"), -1), colors)
     } else {
       g.colors = colors
     }

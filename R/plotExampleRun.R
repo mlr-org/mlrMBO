@@ -82,14 +82,17 @@ plotExampleRun = function(object, iters, pause = TRUE,
   if (!is.null(ylim))
     assertNumeric(ylim, len = 2L, any.missing = FALSE)
 
-  requirePackages("gridExtra", why = "plotExampleRun")
-
   # Helper to arragne plot via gridExtra and pause process
   arrangePlots = function(plots) {
     plots = Filter(Negate(isScalarNA), plots)
     n.plots = length(plots)
-    n.row = if (n.plots <= 2) 2L else { if (n.plots <= 3) 1L else 2L }
-    do.call(grid.arrange, plots)
+    n.row = if (n.plots == 3) 1L else 2L
+    if (n.plots > 1) {
+      requirePackages("gridExtra", why = "plotExampleRun")
+      do.call(grid.arrange, plots, nrow = n.row)
+    } else {
+      print(plots[[1]])
+    }
     if (pause)
       pause()
   }
