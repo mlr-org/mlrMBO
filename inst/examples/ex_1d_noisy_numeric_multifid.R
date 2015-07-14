@@ -1,7 +1,7 @@
 ##### optimizing a simple noisy sin(x) with mbo / EI
 
-#library(mlrMBO)
-devtools::load_all()
+library(mlrMBO)
+#devtools::load_all()
 library(ggplot2)
 set.seed(1)
 configureMlr(show.learner.output = FALSE)
