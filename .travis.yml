@@ -12,7 +12,7 @@ install:
   - ./travis-tool.sh github_package berndbischl/BBmisc
   - ./travis-tool.sh github_package berndbischl/parallelMap
   - ./travis-tool.sh github_package berndbischl/ParamHelpers
-  - ./travis-tool.sh github_package berndbischl/mlr
+  - ./travis-tool.sh github_package mlr-org/mlr
   - ./travis-tool.sh install_deps
 branches:
   except:
