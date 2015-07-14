@@ -83,10 +83,10 @@ renderExampleRunPlot1d = function(x, iter,
   # if no iterations provided take the total number of iterations in optimization process
   assertInteger(iter, lower = 0, upper = length(models), len = 1L, any.missing = FALSE)
 
-  if (is.na(global.opt)) {
-    global.opt = x$global.opt.estim
-  } else {
+  if (!is.na(x$global.opt)) {
     global.opt = x$global.opt  
+  } else {
+    global.opt = x$global.opt.estim
   }
 
   evals = x$evals
