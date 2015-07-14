@@ -59,6 +59,7 @@ renderExampleRunPlot1d = function(x, iter,
   noisy = control$noisy
   mbo.res = x$mbo.res
   models = mbo.res$models
+  names(colors) = c("init", "prop", "seq")
   
   # check if standard error is available
   se = (x$learner$predict.type == "se")
@@ -72,20 +73,20 @@ renderExampleRunPlot1d = function(x, iter,
     critfun = getInfillCritFunction(name.crit)
   }
     
-  
-  opt.direction = 1
-
   # we need to maximize expected improvement
   if (name.crit %in% c("ei")) {
     opt.direction = -1
+  } else {
+    opt.direction = 1
   }
 
   # if no iterations provided take the total number of iterations in optimization process
   assertInteger(iter, lower = 0, upper = length(models), len = 1L, any.missing = FALSE)
 
-  global.opt = x$global.opt
   if (is.na(global.opt)) {
     global.opt = x$global.opt.estim
+  } else {
+    global.opt = x$global.opt  
   }
 
   evals = x$evals
@@ -102,7 +103,7 @@ renderExampleRunPlot1d = function(x, iter,
   }
   buildPointsData = function(opt.path, iter) {
     type = sapply(getOptPathDOB(opt.path), getType, iter = iter)
-    res = data.frame(
+    res = cbind.data.frame(
       convertOptPathToDf(opt.path, control),
       type = type
     )
@@ -120,7 +121,8 @@ renderExampleRunPlot1d = function(x, iter,
   if (!inherits(model, "FailureModel")) {
     evals$yhat = infillCritMeanResponse(evals.x, model,
       control, par.set, convertOptPathToDf(opt.path, control)[idx.past, ])
-
+    
+    #FIXME: We might want to replace the following by a helper function so that we can reuse it in buildPointsData()
     if (propose.points == 1L) {
       evals[[name.crit]] = opt.direction *
         critfun(evals.x, model, control, par.set, convertOptPathToDf(opt.path, control)[idx.past, ])
@@ -141,7 +143,7 @@ renderExampleRunPlot1d = function(x, iter,
   }
 
   if (isNumeric(par.set, include.int = FALSE)) {
-    gg.fun = melt(evals, id.vars = c(getParamIds(opt.path$par.set), if (se) "se" else NULL))
+    gg.fun = reshape2::melt(evals, id.vars = c(getParamIds(opt.path$par.set), if (se) "se" else NULL))
     
     if (control$multifid) {
       #rename .multifid.lvl according to control object
@@ -194,11 +196,12 @@ renderExampleRunPlot1d = function(x, iter,
     }
     g = g + geom_point(data = gg.points, aes_string(x = names.x, y = name.y, colour = "type", shape = "type"), size = point.size)
     if (control$multifid) {
-      g.colors = c(tail(RColorBrewer::brewer.pal(n = length(control$multifid.lvls)+1, name = "PuBu"), -1), colors)
+      mf.colors = tail(RColorBrewer::brewer.pal(n = length(control$multifid.lvls)+1, name = "PuBu"), -1)
+      names(mf.colors) = levels(gg.fun$.multifid.lvl)
     } else {
-      g.colors = colors
+      mf.colors = NULL
     }
-    g = g + scale_colour_manual(values = g.colors, name = "type")
+    g = g + scale_colour_manual(values = c(mf.colors, colors), name = "type")
     g = g + scale_linetype(name = "type")
 
     if (noisy) {

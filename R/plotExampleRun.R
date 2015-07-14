@@ -89,7 +89,7 @@ plotExampleRun = function(object, iters, pause = TRUE,
     n.row = if (n.plots == 3) 1L else 2L
     if (n.plots > 1) {
       requirePackages("gridExtra", why = "plotExampleRun")
-      do.call(grid.arrange, plots, nrow = n.row)
+      do.call(grid.arrange, c(plots, nrow = n.row))
     } else {
       print(plots[[1]])
     }

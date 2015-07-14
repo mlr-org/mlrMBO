@@ -1,6 +1,7 @@
 ##### optimizing a simple noisy sin(x) with mbo / EI
 
-library(mlrMBO)
+#library(mlrMBO)
+devtools::load_all()
 library(ggplot2)
 set.seed(1)
 configureMlr(show.learner.output = FALSE)
@@ -38,7 +39,7 @@ lrn = makeLearner("regr.km", predict.type = "se", nugget.estim = TRUE)
 ctrl = setMBOControlInfill(ctrl, crit = "ei", opt = "focussearch",
   opt.focussearch.points = 500L)
 
-ctrl = setMBOControlMultiFid(ctrl, lvls = c(0.1, 1), costs = c(1,4), param = "dw.perc", )
+ctrl = setMBOControlMultiFid(ctrl, lvls = c(0.1, 1), costs = c(1,4), param = "p")
 
 
 run = exampleRun(obj.fun, par.set, global.opt = -1, learner = lrn,
