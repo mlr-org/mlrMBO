@@ -214,7 +214,7 @@ getOptStateFinalPoints = function(opt.state, unify = FALSE) {
 }
 
 setOptStateState = function(opt.state, state) {
-  assertSubset(state, c("init", "iter", "iter.exceeded", "time.exceeded", "exec.time.exceeded", "finalized"))
+  assertSubset(state, c("init", "iter", "iter.exceeded", "time.exceeded", "exec.time.exceeded", "manual.exceeded"))
   opt.state$state = state
   invisible()
 }
@@ -240,16 +240,12 @@ getOptStateTermination = function(opt.state) {
 }
 
 # If we already have a mbo result we will return it, otherwise it will be generated
-getOptStateMboResult = function(opt.state) {
+makeOptStateMboResult = function(opt.state) {
   opt.result = getOptStateOptResult(opt.state)
   
   # save final model if demanded
   setOptResultStoredModels(opt.result, opt.state)
-
-  mbo.result = getOptResultMboResult(opt.result)
-  if (is.null(mbo.result)) {
-    mbo.result = makeMBOResult.OptState(opt.state)
-    setOptResultMboResult(opt.result, mbo.result)
-  }
+  mbo.result = makeMBOResult.OptState(opt.state)
+  setOptResultMboResult(opt.result, mbo.result)
   mbo.result
 }

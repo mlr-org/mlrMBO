@@ -69,7 +69,7 @@ mbo = function(fun, par.set, design = NULL, learner, control,
 
   final.opt.state = mboTemplate(opt.problem)
 
-  mbo.result = getOptStateMboResult(final.opt.state)
+  mbo.result = makeOptStateMboResult(final.opt.state)
 
   # save on disk routine
   if (getOptStateLoop(final.opt.state) %in% getOptProblemControl(getOptStateOptProblem(final.opt.state))$save.on.disk.at || is.finite(getOptProblemControl(getOptStateOptProblem(final.opt.state))$save.on.disk.at.time))
