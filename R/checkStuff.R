@@ -35,7 +35,9 @@ checkStuff = function(fun, par.set, design, learner, control) {
 
   if (hasRequires(par.set) && !hasProperties(learner, "missings"))
     stopf("The 'par.set' has dependent parameters, which will lead to missing values in X-space during modeling, but learner '%s' does not support handling of missing values (property 'missing')!", learner$id)
-
+  
+  if (control$number.of.targets > 1L & !is.null(control$target.fun.value))
+    stop("Specifying target.fun.value is only useful in single crit optimization.")
 
   # general infill stuff (relavant for single objective and parEGO)
   if (control$infill.crit %in% c("se", "ei", "aei", "lcb", "dib") && learner$predict.type != "se") {
