@@ -13,7 +13,7 @@ mboFinalize = function(file, save = FALSE) {
   opt.state = loadOptState(file)
   state = getOptStateState(opt.state)
   if (grepl(".exceeded", state)) {
-  warningf("Tuning ended with %s. No need to continue. Simply returning stored result.", state)
+  warningf("Optimization ended with %s. No need to continue. Simply returning stored result.", state)
   return(getOptResultMboResult(getOptStateOptResult(opt.state)))
   }
   state = setOptStateState(opt.state, "manual.exceeded")

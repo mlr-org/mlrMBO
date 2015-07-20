@@ -165,8 +165,10 @@ makeMBOControl = function(number.of.targets = 1L,
   
   if (is.null(target.fun.value)) {
     # If we minimize, target is -Inf, for maximize it is Inf
-    target.fun.value = if (minimize) -Inf else Inf
+    target.fun.value = if (minimize[1L]) -Inf else Inf
   } else {
+    if (number.of.targets > 1L)
+      stop("Specifying target.fun.value is only useful in single crit optimization.")
     assertNumber(target.fun.value, na.ok = FALSE)
   }
 

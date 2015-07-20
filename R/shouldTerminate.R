@@ -10,6 +10,10 @@
 #   Starting time of mbo agorithm (result of Sys.time() call).
 # @param exec.time.budget [\code{integer(1)}]\cr
 #   Time budget in seconds for execution (read from opt.path).
+# @param target.fun.value [\code{numeric(1)}]
+#   Optimal function value to reach
+# @param minimize [\code{logical}]
+#   Minimize value from control
 # @param opt.path [\code{OptPath}]\cr
 # @return [\code{integer(1)}] Negative value is no stopping criterion is satisfied. 0 if
 #   maximum number of iterations is reached, 1 if time budget is exceeded and 3 if
@@ -27,10 +31,13 @@ shouldTerminate = function(max.iters, iter, time.budget, start.time, exec.time.b
   if (isTimeBudgetExceeded(opt.path, exec.time.budget)) {
   	return(2L)
   }
-  opt.dir = if (minimize) 1L else -1L
-  current.best =  getOptPathEl(opt.path, getOptPathBestIndex((opt.path)))$y
-  if (current.best * opt.dir < target.fun.value * opt.dir) {
-    return(3L)
+  # target.fun.value only useful for single crit
+  if (length(minimize) == 1L) {
+    opt.dir = if (minimize) 1L else -1L
+    current.best =  getOptPathEl(opt.path, getOptPathBestIndex((opt.path)))$y
+    if (current.best * opt.dir < target.fun.value * opt.dir) {
+      return(3L)
+    }
   }
   return(-1L)
 }

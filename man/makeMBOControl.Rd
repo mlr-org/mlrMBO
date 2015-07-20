@@ -8,12 +8,12 @@
 makeMBOControl(number.of.targets = 1L, minimize = rep(TRUE,
   number.of.targets), noisy = FALSE, init.design.points = 20L,
   init.design.fun = maximinLHS, init.design.args = list(), iters = 10L,
-  time.budget = NULL, exec.time.budget = NULL, propose.points = 1L,
-  final.method = "best.true.y", final.evals = 0L, y.name = "y",
-  impute.y.fun = NULL, trafo.y.fun = NULL, suppress.eval.errors = TRUE,
-  save.on.disk.at = integer(0L), save.on.disk.at.time = Inf,
-  save.file.path = file.path(getwd(), "mlr_run.RData"),
-  store.model.at = iters + 1, resample.at = integer(0),
+  time.budget = NULL, exec.time.budget = NULL, target.fun.value = NULL,
+  propose.points = 1L, final.method = "best.true.y", final.evals = 0L,
+  y.name = "y", impute.y.fun = NULL, trafo.y.fun = NULL,
+  suppress.eval.errors = TRUE, save.on.disk.at = integer(0L),
+  save.on.disk.at.time = Inf, save.file.path = file.path(getwd(),
+  "mlr_run.RData"), store.model.at = iters + 1, resample.at = integer(0),
   resample.desc = makeResampleDesc("CV", iter = 10),
   resample.measures = list(mse), on.learner.error = "warn",
   show.learner.output = FALSE, output.num.format = "\%.3g")
@@ -59,8 +59,13 @@ Running time budget in seconds. Note that the actual mbo run can take more time 
 the condition is checked after each iteration.}
 
 \item{exec.time.budget}{[\code{integer(1)} | NULL]\cr
-Execution time (time spent executing the function passed to \code{mbo}) budget in seconds. Note that the actual mbo run can take more time since
+Execution time (time spent executing the function passed to \code{mbo})
+budget in seconds. Note that the actual mbo run can take more time since
 the condition is checked after each iteration.}
+
+\item{target.fun.value}{[\code{numeric(1)}] | NULL]\cr
+Stopping criterion for single crit optimization: Stop if a function evaluation
+is better than this given target.value.}
 
 \item{propose.points}{[\code{integer(1)}]\cr
 Number of proposed / really evaluated points each iteration.
