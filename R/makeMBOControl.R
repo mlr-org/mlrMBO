@@ -32,8 +32,12 @@
 #'   Running time budget in seconds. Note that the actual mbo run can take more time since
 #'   the condition is checked after each iteration.
 #' @param exec.time.budget [\code{integer(1)} | NULL]\cr
-#'   Execution time (time spent executing the function passed to \code{mbo}) budget in seconds. Note that the actual mbo run can take more time since
+#'   Execution time (time spent executing the function passed to \code{mbo})
+#'   budget in seconds. Note that the actual mbo run can take more time since
 #'   the condition is checked after each iteration.
+#' @param target.fun.value [\code{numeric(1)}] | NULL]\cr
+#'   Stopping criterion for single crit optimization: Stop if a function evaluation
+#'   is better than this given target.value.
 #' @param propose.points [\code{integer(1)}]\cr
 #'   Number of proposed / really evaluated points each iteration.
 #'   Default is 1.
@@ -112,7 +116,7 @@
 makeMBOControl = function(number.of.targets = 1L,
   minimize = rep(TRUE, number.of.targets), noisy = FALSE,
   init.design.points = 20L, init.design.fun = maximinLHS, init.design.args = list(),
-  iters = 10L, time.budget = NULL, exec.time.budget = NULL,
+  iters = 10L, time.budget = NULL, exec.time.budget = NULL, target.fun.value = NULL,
   propose.points = 1L,
   final.method = "best.true.y", final.evals = 0L,
   y.name = "y",
@@ -123,7 +127,9 @@ makeMBOControl = function(number.of.targets = 1L,
   save.on.disk.at.time = Inf,
   save.file.path = file.path(getwd(), "mlr_run.RData"),
   store.model.at = iters + 1,
-  resample.at = integer(0), resample.desc = makeResampleDesc("CV", iter = 10), resample.measures = list(mse),
+  resample.at = integer(0),
+  resample.desc = makeResampleDesc("CV", iter = 10),
+  resample.measures = list(mse),
   on.learner.error = "warn", show.learner.output = FALSE,
   output.num.format = "%.3g"
 ) {
@@ -155,6 +161,13 @@ makeMBOControl = function(number.of.targets = 1L,
     exec.time.budget = Inf
   } else {
     assertCount(exec.time.budget, na.ok = FALSE, positive = TRUE)
+  }
+  
+  if (is.null(target.fun.value)) {
+    # If we minimize, target is -Inf, for maximize it is Inf
+    target.fun.value = if (minimize) -Inf else Inf
+  } else {
+    assertNumber(target.fun.value, na.ok = FALSE)
   }
 
   propose.points = asInt(propose.points, lower = 1L)
@@ -207,6 +220,7 @@ makeMBOControl = function(number.of.targets = 1L,
     iters = iters,
     time.budget = time.budget,
     exec.time.budget = exec.time.budget,
+    target.fun.value = target.fun.value,
     propose.points = propose.points,
     final.method = final.method,
     final.evals = final.evals,

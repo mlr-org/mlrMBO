@@ -1,4 +1,6 @@
-# OptState is the central component of the mbo iterations. This enviroment contains every necessary information we need during tuning in MBO. It links to the \code{OptProblem} and to the \code{OptResult}.
+# OptState is the central component of the mbo iterations. This enviroment contains
+# every necessary information we need during tuning in MBO. It links to the \code{OptProblem}
+# and to the \code{OptResult}.
 # @param loop \code{integer()} \cr
 #   Tells us in what loop we are at the moment. 0 means we are in the inital phase.
 #   The loop i should change to i+1 as soon as the i-th point is evaluated
@@ -11,12 +13,14 @@
 #  @param opt.result \code{OptResult} \cr
 #    Pointer to the OptResult Object.
 #  @param state \code{character(1)} \cr
-#    Tells us in what state we are in text. So far we know: init, iter, iter.exceeded, time.exceeded and exec.time.exceeded.
+#    Tells us in what state we are in text. So far we know: init, iter,
+#    iter.exceeded, time.exceeded and exec.time.exceeded.
 #  @param opt.path \code{OptPath} \cr
 #    Here we keep the opt.path. It delivers the data for the tasks and other usefull information.
 #  @param time.last.saved \code{POSIXct} \cr
 #     The \code{Sys.time()} when the last save on disk was done.
-makeOptState = function(opt.problem, loop = 0L, tasks = NULL, models = NULL, opt.result = NULL, state = "init", opt.path = NULL, time.last.saved = Sys.time()) {
+makeOptState = function(opt.problem, loop = 0L, tasks = NULL, models = NULL,
+  opt.result = NULL, state = "init", opt.path = NULL, time.last.saved = Sys.time()) {
 
   opt.state = new.env()
 
@@ -24,8 +28,8 @@ makeOptState = function(opt.problem, loop = 0L, tasks = NULL, models = NULL, opt
   opt.state$loop = loop #the loop the state is IN, not the one it is finished
   opt.state$tasks = tasks
   opt.state$models = models
-  opt.state$models.loop = -1
-  opt.state$tasks.loop = -1
+  opt.state$models.loop = -1L
+  opt.state$tasks.loop = -1L
 
   if (is.null(opt.result)) {
     opt.state$opt.result = makeOptResult()
@@ -114,10 +118,10 @@ setOptStateLoop = function(opt.state, loop = NULL) {
   setOptResultResampleResults(opt.result, opt.state)
   setOptResultStoredModels(opt.result, opt.state)
   if (is.null(loop))
-    opt.state$loop = opt.state$loop + 1
+    opt.state$loop = opt.state$loop + 1L
   else
     opt.state$loop = loop
-      # save resampling and models in result routine
+  # save resampling and models in result routine
   setOptStateRandomSeed(opt.state)
   invisible()
 }
@@ -182,7 +186,8 @@ loadOptState.character = function(obj) {
 
 
 # @param unify [\code{logical(1)}]
-#   Defines if in the case of multicriterial optimization we shoud try to make the output similar to the result of the normal optimization.
+#   Defines if in the case of multicriterial optimization we shoud try to make
+#  the output similar to the result of the normal optimization.
 getOptStateFinalPoints = function(opt.state, unify = FALSE) {
   opt.problem = getOptStateOptProblem(opt.state)
   control = getOptProblemControl(opt.problem)
@@ -214,7 +219,8 @@ getOptStateFinalPoints = function(opt.state, unify = FALSE) {
 }
 
 setOptStateState = function(opt.state, state) {
-  assertSubset(state, c("init", "iter", "iter.exceeded", "time.exceeded", "exec.time.exceeded", "manual.exceeded"))
+  assertSubset(state, c("init", "iter", "iter.exceeded", "time.exceeded",
+    "exec.time.exceeded", "target.fun.value.reached", "manual.exceeded"))
   opt.state$state = state
   invisible()
 }
@@ -225,13 +231,15 @@ getOptStateState = function(opt.state) {
 
 getOptStateTermination = function(opt.state) {
   terminate = shouldTerminate.OptState(opt.state)
-  if (terminate == 0) {
+  if (terminate == 0L) {
     setOptStateState(opt.state, "iter.exceeded")
-  } else if (terminate == 1) {
+  } else if (terminate == 1L) {
     setOptStateState(opt.state, "time.exceeded")
-  } else if (terminate == 2) {
+  } else if (terminate == 2L) {
     setOptStateState(opt.state, "exec.time.exceeded")
-  } else if (terminate == -1) {
+  } else if (terminate == 3L) {
+    setOptStateState(opt.state, "target.fun.value.reached")
+  } else if (terminate == -1L) {
     setOptStateState(opt.state, "iter")
   } else {
     stopf("shouldTerminate() gave unexpected result: %i", terminate)
