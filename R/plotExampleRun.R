@@ -113,7 +113,7 @@ plotExampleRun = function(object, iters, pause = TRUE,
     plots = renderExampleRunPlot(object, iter = iter, densregion = densregion, se.factor = se.factor,
       single.prop.point.plots = single.prop.point.plots, xlim = xlim, ylim = ylim,
       point.size = point.size, line.size = line.size, trafo = trafo, colors = colors, ...)
-    if (!inherits(plots[[2L]], "ggplot")) {
+    if (!any(sapply(plots, inherits, what = "ggplot"))) {
       # in this case we have multicrit multipoint proposal: list of plots for each proposed point
       for (jter in 1:length(plots)) {
         arrangePlots(plots[[jter]], multi.crit)
