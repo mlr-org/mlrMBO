@@ -5,8 +5,9 @@
 \title{Renders plots for exampleRun objects and displays them.}
 \usage{
 plotExampleRun(object, iters, pause = TRUE, densregion = TRUE,
-  se.factor = 1, xlim = NULL, ylim = NULL, point.size = 3,
-  line.size = 1, trafo = NULL, colors = c("red", "blue", "green"), ...)
+  se.factor = 1, single.prop.point.plots = FALSE, xlim = NULL,
+  ylim = NULL, point.size = 3, line.size = 1, trafo = NULL,
+  colors = c("red", "blue", "green"), ...)
 }
 \arguments{
 \item{object}{[\code{function}]\cr
@@ -29,6 +30,11 @@ If the model provides local standard error estimation,
 in addition to the mean response \code{yhat(x) +- se.factor * se(x)}
 is plotted above and below.
 Default is 1.}
+
+\item{single.prop.point.plots}{[\code{logical(1)}]\cr
+Parameter for Multicrit Multipoint proposal: Should every proposed point
+be displayed in a single plot - or one plot per Iteration? Default is FALSE
+indicating single plots per proposed points.}
 
 \item{xlim}{[\code{numeric(2)}]\cr
 For 1D: \code{xlim} parameter for first and second plot.

@@ -72,6 +72,8 @@ makeXPlot = function(data.x, idx, idx.nsga2.paretofront, method, x.name, crit.na
   models, control, par.set, opt.path, points.per.dim, iter, propose.points, object) {
   
   pl.xspace = ggplot()
+  pl.xspace = pl.xspace + guides(colour = FALSE, shape = FALSE)
+  
   gg.points.xspace = getPlotData(data.x, idx, idx.nsga2.paretofront, x.name)
   # first, fill background if possible. note: 2 different plots for mspot since
   # we have 2 infill crits, one per model
@@ -81,8 +83,10 @@ makeXPlot = function(data.x, idx, idx.nsga2.paretofront, method, x.name, crit.na
     data.crit2 = getInfillCritGrid(crit.name, points.per.dim, models[[2]],
       control, par.set, opt.path[idx$past, ])
     
-    crit1.plot = fillBackgroundWithInfillCrit(pl.xspace, data.crit1, x.name, crit.name)
-    crit2.plot = fillBackgroundWithInfillCrit(pl.xspace, data.crit2, x.name, crit.name)
+    crit1.plot = fillBackgroundWithInfillCrit(pl.xspace, data.crit1, x.name, crit.name) + 
+      ggtitle("XSpace - model 1")
+    crit2.plot = fillBackgroundWithInfillCrit(pl.xspace, data.crit2, x.name, crit.name) + 
+      ggtitle("XSpace - model 2")
     
     pl.xspace = list(
       crit1 = createBasicSpacePlot(crit1.plot, gg.points.xspace, iter, object, x.name, 0.8, "x"),
@@ -93,7 +97,8 @@ makeXPlot = function(data.x, idx, idx.nsga2.paretofront, method, x.name, crit.na
     if (propose.points == 1L) {
       data.crit = getInfillCritGrid(crit.name, points.per.dim, models,
         control, par.set, opt.path[idx$past, ], iter)
-      pl.xspace = fillBackgroundWithInfillCrit(pl.xspace, data.crit, x.name, crit.name)
+      pl.xspace = fillBackgroundWithInfillCrit(pl.xspace, data.crit, x.name, crit.name) + 
+        ggtitle("XSpace")
     }
     pl.xspace = createBasicSpacePlot(pl.xspace, gg.points.xspace, iter, object, x.name, 0.8, "x")
   }
@@ -108,6 +113,7 @@ makeYPlot = function(data.y, idx, idx.nsga2.paretofront, method, y.name, opt.pat
   pl.yspace = createBasicSpacePlot(pl.yspace, gg.points.yspace, iter, object, y.name, 0.4, "y")
   if (method == "parego" && propose.points == 1L)
     pl.yspace = addParegoWeightLines(pl.yspace, data.y, idx, opt.path, 1L, control$multicrit.parego.rho)
+  pl.yspace = pl.yspace + ggtitle("YSpace")
   return(pl.yspace)
 }
 

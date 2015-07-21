@@ -29,6 +29,10 @@
 #'   in addition to the mean response \code{yhat(x) +- se.factor * se(x)}
 #'   is plotted above and below.
 #'   Default is 1.
+#' @param single.prop.point.plots [\code{logical(1)}]\cr
+#'   Parameter for Multicrit Multipoint proposal: Should every proposed point
+#'   be displayed in a single plot - or one plot per Iteration? Default is FALSE
+#'   indicating single plots per proposed points.
 #' @param xlim [\code{numeric(2)}]\cr
 #'   For 1D: \code{xlim} parameter for first and second plot.
 #'   Default is range of x-values evaluated in run object \code{x}.
@@ -61,7 +65,7 @@
 #' @return Nothing.
 #' @export
 plotExampleRun = function(object, iters, pause = TRUE,
-  densregion = TRUE, se.factor = 1,
+  densregion = TRUE, se.factor = 1, single.prop.point.plots = FALSE,
   xlim = NULL, ylim = NULL,
   point.size = 3, line.size = 1,
   trafo = NULL, colors = c("red", "blue", "green"), ...) {
@@ -95,9 +99,9 @@ plotExampleRun = function(object, iters, pause = TRUE,
           # for mspot first arrange the two plots for X-Space
           plots[[1L]] = do.call(arrangeGrob, c(plots[[1L]], nrow = 2))         
         } 
-        do.call(grid.arrange, c(plots, ncol = 2))
+        do.call(grid.arrange, c(plots, ncol = 2, main = "MBO Example Run"))
       } else {
-        do.call(grid.arrange, c(plots, nrow = 2))
+        do.call(grid.arrange, c(plots, nrow = 2, main = "MBO Example Run"))
       }
     } else {
       print(plots[[1]])
@@ -107,9 +111,9 @@ plotExampleRun = function(object, iters, pause = TRUE,
   for (iter in iters) {
     # get rendered plot data
     plots = renderExampleRunPlot(object, iter = iter, densregion = densregion, se.factor = se.factor,
-      xlim = xlim, ylim = ylim, point.size = point.size, line.size = line.size, trafo = trafo,
-      colors = colors, ...)
-    if (!inherits(plots[[1L]], "ggplot")) {
+      single.prop.point.plots = single.prop.point.plots, xlim = xlim, ylim = ylim,
+      point.size = point.size, line.size = line.size, trafo = trafo, colors = colors, ...)
+    if (!inherits(plots[[2L]], "ggplot")) {
       # in this case we have multicrit multipoint proposal: list of plots for each proposed point
       for (jter in 1:length(plots)) {
         arrangePlots(plots[[jter]], multi.crit)

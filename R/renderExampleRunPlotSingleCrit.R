@@ -1,8 +1,8 @@
 # single-objective
 #' @export
 renderExampleRunPlot.MBOExampleRun = function(object, iter, densregion = TRUE,
-  se.factor = 1, xlim = NULL, ylim = NULL, point.size = 3, line.size = 1, trafo = NULL, 
-  colors = c("red", "blue", "green"), ...) {
+  se.factor = 1, single.prop.point.plots = FALSE, xlim = NULL, ylim = NULL,
+  point.size = 3, line.size = 1, trafo = NULL, colors = c("red", "blue", "green"), ...) {
   
   iters.max = object$control$iters
   assertIntegerish(iter, lower = 0L, upper = iters.max, len = 1L, any.missing = FALSE)
