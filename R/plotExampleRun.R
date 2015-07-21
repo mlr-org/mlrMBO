@@ -93,9 +93,9 @@ plotExampleRun = function(object, iters, pause = TRUE,
       if (multi.crit) {
         if (!inherits(plots[[1L]], "ggplot")) {
           # for mspot first arrange the two plots for X-Space
-          plots[[1L]] = do.call(grid.arrange, c(plots[[1L]], nrow = 2))         
+          plots[[1L]] = do.call(arrangeGrob, c(plots[[1L]], nrow = 2))         
         } 
-          do.call(grid.arrange, c(plots, ncol = 2))
+        do.call(grid.arrange, c(plots, ncol = 2))
       } else {
         do.call(grid.arrange, c(plots, nrow = 2))
       }
@@ -110,7 +110,7 @@ plotExampleRun = function(object, iters, pause = TRUE,
       xlim = xlim, ylim = ylim, point.size = point.size, line.size = line.size, trafo = trafo,
       colors = colors, ...)
     if (!inherits(plots[[1L]], "ggplot")) {
-      # in this case we have multipoint proposal with parego: list of plots for each proposed point
+      # in this case we have multicrit multipoint proposal: list of plots for each proposed point
       for (jter in 1:length(plots)) {
         arrangePlots(plots[[jter]], multi.crit)
         if (pause && !(iter == getLast(iters) && jter == length(plots)))
