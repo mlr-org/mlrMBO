@@ -81,22 +81,29 @@ plotExampleRun = function(object, iters, pause = TRUE,
     assertNumeric(xlim, len = 2L, any.missing = FALSE)
   if (!is.null(ylim))
     assertNumeric(ylim, len = 2L, any.missing = FALSE)
+  
+  multi.crit = object$control$number.of.targets > 1
 
-  # Helper to arragne plot via gridExtra and pause process
-  arrangePlots = function(plots) {
+  # Helper to arrange plot via gridExtra and pause process
+  arrangePlots = function(plots, multi.crit) {
     plots = Filter(Negate(isScalarNA), plots)
     n.plots = length(plots)
-    n.row = if (n.plots == 3) 1L else 2L
     if (n.plots > 1) {
       requirePackages("gridExtra", why = "plotExampleRun")
-      do.call(grid.arrange, c(plots, nrow = n.row))
+      if (multi.crit) {
+        if (!inherits(plots[[1L]], "ggplot")) {
+          # for mspot first arrange the two plots for X-Space
+          plots[[1L]] = do.call(grid.arrange, c(plots[[1L]], nrow = 2))         
+        } 
+          do.call(grid.arrange, c(plots, ncol = 2))
+      } else {
+        do.call(grid.arrange, c(plots, nrow = 2))
+      }
     } else {
       print(plots[[1]])
     }
-    if (pause)
-      pause()
   }
-
+  
   for (iter in iters) {
     # get rendered plot data
     plots = renderExampleRunPlot(object, iter = iter, densregion = densregion, se.factor = se.factor,
@@ -105,10 +112,14 @@ plotExampleRun = function(object, iters, pause = TRUE,
     if (!inherits(plots[[1L]], "ggplot")) {
       # in this case we have multipoint proposal with parego: list of plots for each proposed point
       for (jter in 1:length(plots)) {
-        arrangePlots(plots[[jter]])
+        arrangePlots(plots[[jter]], multi.crit)
+        if (pause && !(iter == getLast(iters) && jter == length(plots)))
+          pause()
       }
     } else {
-      arrangePlots(plots)
+      arrangePlots(plots, multi.crit)
+      if (pause && iter != getLast(iters))
+        pause()
     }
   }
 }
