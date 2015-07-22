@@ -1,4 +1,5 @@
-# The OptProblem contains all the constants wich define a OptProblem within our MBO Steps. It is an enviroment and is always pointed at by the OptState.
+# The OptProblem contains all the constants wich define a OptProblem within our MBO Steps.
+# It is an enviroment and is always pointed at by the OptState.
 # @param fun [\code{function(x, ...)}]\cr
 #   Fitness function to minimize. The first argument has to be a list of values.
 #   The function has to return a single numerical value.
@@ -21,7 +22,8 @@
 # @param more.args [list]\cr
 #   Further arguments passed to fitness function.
 # @return [\code{\link{MBOSingleObjResult}} | \code{\link{MBOMultiObjResult}}]
-makeOptProblem = function(fun, par.set, design = NULL, learner, control, start.time = NULL, show.info = TRUE, more.args = list()) {
+makeOptProblem = function(fun, par.set, design = NULL, learner, control,
+  start.time = NULL, show.info = TRUE, more.args = list()) {
   opt.problem = new.env()
 
   opt.problem$fun = fun

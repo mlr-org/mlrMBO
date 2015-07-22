@@ -1,35 +1,31 @@
-context("mboContinue")
+context("mboFinalize")
 
 # Here we want to leave the debug-mode to test the saving
 options(mlrMBO.debug.mode = FALSE)
 
-test_that("mboContinue", {
+test_that("mboFinalize", {
   # make sure there is no or - object in the environment
   or = NULL
   assign(".counter", 0L, envir = .GlobalEnv)
   f = function(x) {
     .counter = get(".counter", envir = .GlobalEnv)
     assign(".counter", .counter + 1L, envir = .GlobalEnv)
-    if (.counter == 11)
+    if (.counter == 12)
       stop("foo")
     sum(x$x^2)
   }
 
   ps = makeNumericParamSet(len = 2L, lower = -2, upper = 1)
 
-  # First test sombo
+  # First test smbo
   learner = makeLearner("regr.rpart")
   save.file = tempfile("state", fileext=".RData")
   ctrl = makeMBOControl(iters = 3, save.on.disk.at = 0:4,
     save.file.path = save.file, init.design.points = 10L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10)
   expect_error(or <- mbo(f, ps, learner = learner, control = ctrl), "foo")
-  for (i in 1:20) {
-    try(or <- mboContinue(save.file), silent = F)
-    if (!is.null(or))
-      break
-  }
-  expect_equal(getOptPathLength(or$opt.path), 13)
+  or = mboFinalize(save.file)
+  expect_equal(getOptPathLength(or$opt.path), 12)
   unlink(save.file)
 
   # now test parEGO
@@ -47,18 +43,14 @@ test_that("mboContinue", {
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100)
   ctrl = setMBOControlMultiCrit(ctrl, method = "parego", parego.s = 100)
   or = NULL
-  try(or <- mbo(f, ps, learner = learner, control = ctrl), silent = TRUE)
-  for (i in 1:10) {
-    suppressWarnings(try(or <- mboContinue(save.file), silent = TRUE))
-    if (!is.null(or))
-      break
-  }
-  expect_equal(getOptPathLength(or$opt.path), 17)
+  expect_error(or <- mbo(f, ps, learner = learner, control = ctrl), "foo")
+  or = mboFinalize(save.file)
+  expect_equal(getOptPathLength(or$opt.path), 12)
   unlink(save.file)
 })
 
 
-test_that("mboContinue works when at end", {
+test_that("mboFinalize works when at end", {
   f = function(x) sum(x^2)
   f = makeMBOFunction(f)
   ps = makeNumericParamSet(len = 2L, lower = -2, upper = 1)
@@ -69,7 +61,7 @@ test_that("mboContinue works when at end", {
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10)
   or = mbo(makeMBOFunction(f), ps, learner = learner, control = ctrl)
   expect_equal(getOptPathLength(or$opt.path), 11L)
-  expect_warning({or = mboContinue(save.file)}, "No need to continue")
+  expect_warning({or = mboFinalize(save.file)}, "No need to continue")
   expect_equal(getOptPathLength(or$opt.path), 11L)
   unlink(save.file)
 })

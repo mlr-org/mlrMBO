@@ -26,6 +26,10 @@
 #'   in addition to the mean response \code{yhat(x) +- se.factor * se(x)}
 #'   is plotted above and below.
 #'   Default is 1.
+#' @param single.prop.point.plots [\code{logical(1)}]\cr
+#'   Parameter for Multicrit Multipoint proposal: Should every proposed point
+#'   be displayed in a single plot - or one plot per Iteration? Default is FALSE
+#'   indicating single plots per proposed points.
 #' @param xlim [\code{numeric(2)}]\cr
 #'   For 1D: \code{xlim} parameter for first and second plot.
 #'   Default is range of x-values evaluated in run object \code{object}.
@@ -59,7 +63,7 @@
 #'   the type of MBO problem. See the description for details.
 #' @export
 renderExampleRunPlot =  function(object, iter, densregion = TRUE,
-  se.factor = 1, xlim = NULL, ylim = NULL, point.size = 3, line.size = 1, trafo = NULL,
-  colors = c("red", "blue", "green"), ...) {
+  se.factor = 1, single.prop.point.plots = FALSE, xlim = NULL, ylim = NULL,
+  point.size = 3, line.size = 1, trafo = NULL, colors = c("red", "blue", "green"), ...) {
   UseMethod("renderExampleRunPlot")
 }

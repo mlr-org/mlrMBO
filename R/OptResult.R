@@ -1,7 +1,9 @@
 # The Tuning Result keeps all the things we want to later give back to the user
 # It is an enviroment and it is always pointed at by the OptState.
 # @param stored.models [\code{list()}]\cr
-#    A list of all models which we wanted to store during the tuning process. Be aware that the true model is in \code{getOptResultStoredModels[[i]]$model}. See \code{\link{trainModel}} for further details.
+#    A list of all models which we wanted to store during the tuning process.
+#    Be aware that the true model is in \code{getOptResultStoredModels[[i]]$model}.
+#    See \code{\link{trainModel}} for further details.
 # @param resample.results [\code{list()}]\cr
 #    Stores the resample result by mlr.
 # @param mbo.result [\code{MBOResult}]\cr.
@@ -26,7 +28,8 @@ setOptResultResampleResults = function(opt.result, opt.state) {
 
   doResample = function(tasks) {
     if (length(tasks) == 1L)
-      resample(learner, tasks[[1L]], control$resample.desc, measures = control$resample.measures, show.info = FALSE)
+      resample(learner, tasks[[1L]], control$resample.desc,
+        measures = control$resample.measures, show.info = FALSE)
     else
       lapply(tasks, resample, learner = learner, resampling = control$resample.desc,
         measures = control$resample.measures, show.info = FALSE)

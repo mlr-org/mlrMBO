@@ -27,21 +27,20 @@ checkStuff = function(fun, par.set, design, learner, control) {
   if (!hasFiniteBoxConstraints(par.set))
     stop("mbo requires finite box constraints!")
 
-  if (hasDiscrete(par.set) && !hasProperties(learner, "factors"))
+  if (hasDiscrete(par.set) && !hasLearnerProperties(learner, "factors"))
     stop("Provided learner does not support factor parameters.")
 
   if (learner$type != "regr")
     stop("mbo requires regression learner!")
 
-  if (hasRequires(par.set) && !hasProperties(learner, "missings"))
+  if (hasRequires(par.set) && !hasLearnerProperties(learner, "missings"))
     stopf("The 'par.set' has dependent parameters, which will lead to missing values in X-space during modeling, but learner '%s' does not support handling of missing values (property 'missing')!", learner$id)
-
 
   # general infill stuff (relavant for single objective and parEGO)
   if (control$infill.crit %in% c("se", "ei", "aei", "lcb", "dib") && learner$predict.type != "se") {
     stopf("For infill criterion '%s' predict.type of learner %s must be set to 'se'!%s",
       control$infill.crit, learner$id,
-      ifelse(hasProperties(learner, "se"), "",
+      ifelse(hasLearnerProperties(learner, "se"), "",
         "\nBut this learner does not seem to support prediction of standard errors! You could use the mlr wrapper makeBaggingWrapper to bootstrap the standard error estimator."))
   }
   
@@ -67,7 +66,7 @@ checkStuff = function(fun, par.set, design, learner, control) {
           ifelse(control$multipoint.method == "multicrit",
             sprintf(" with objective '%s'", control$multipoint.multicrit.obj), ""),
           learner$id,
-          ifelse(hasProperties(learner, "se"), "",
+          ifelse(hasLearnerProperties(learner, "se"), "",
             "\nBut this learner does not support prediction of standard errors!"))
       }
       if (control$multipoint.method == "cl" && control$infill.crit != "ei")

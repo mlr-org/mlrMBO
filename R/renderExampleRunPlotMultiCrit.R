@@ -1,197 +1,120 @@
 # multi-objective
 #' @export
 renderExampleRunPlot.MBOExampleRunMultiCrit = function(object, iter, densregion = TRUE,
-  se.factor = 1, xlim = NULL, ylim = NULL, point.size = 3, line.size = 1, trafo = NULL, 
-  colors = c("red", "blue", "green"), ...) {
+  se.factor = 1, single.prop.point.plots = FALSE, xlim = NULL, ylim = NULL, point.size = 3,
+  line.size = 1, trafo = NULL, colors = c("red", "blue", "green"), ...) {
   
-  iters.max = object$control$iters
-  assertIntegerish(iter, len = 1L, lower = 1L, upper = iters.max, any.missing = FALSE)
   
-  points.per.dim = asCount(object$points.per.dim)
-  assertCount(points.per.dim, na.ok = FALSE, positive = TRUE)
-  
-  # extract information from example run object
+  # extract variables and some short names
+  mbo.res = object$mbo.res
+  opt.path = as.data.frame(mbo.res$opt.path)
+  models = object$mbo.res$models[[iter]]
   par.set = object$par.set
   control = object$control
-  y.name = control$y.name
   x.name = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
-  propose.points = control$propose.points
-  rho = control$multicrit.parego.rho
-  mbo.res = object$mbo.res
-  nsga2.paretofront = object$nsga2.paretofront
-  nsga2.paretoset = object$nsga2.paretoset
-  opt.path = as.data.frame(mbo.res$opt.path)
-  isparego = control$multicrit.method == "parego"
-  issmspar = control$multicrit.method == "dib" && control$multicrit.dib.indicator == "sms" &&
-    control$propose.points > 1L
-  # build essential data frames for target values ...
-  data.y = getOptPathY(mbo.res$opt.path)
-  data.y = rbind(data.y, nsga2.paretofront)
+  y.name = control$y.name
+  crit.name = control$infill.crit
+  method = control$multicrit.method
+  points.per.dim = object$points.per.dim
   
-  # ... and for parameters
+  # get x space and y space data
+  data.y = as.data.frame(mbo.res$opt.path, include.x = FALSE, include.rest = FALSE)
+  data.y = setRowNames(rbind(data.y, object$nsga2.paretofront), NULL)
+  
   data.x = as.data.frame(mbo.res$opt.path, include.y = FALSE, include.rest = FALSE)
-  data.x = setRowNames(rbind(data.x, nsga2.paretoset), NULL)
+  data.x = setRowNames(rbind(data.x, object$nsga2.paretoset), NULL)
   
+  idx = getIDX(opt.path, iter)
   idx.nsga2.paretofront = (getOptPathLength(mbo.res$opt.path) + 1):nrow(data.y)
   
-  # We need the range for normalization. If no limits given, we use the ranges
-  # for plotting limits too
-  y1range = range(data.y[, 1L])
-  if (is.null(xlim))
-    y1lim = y1range
-  y2range = range(data.y[, 2L])
-  if (is.null(ylim))
-    y2lim = y2range
-  
-  name.crit = control$infill.crit
-  critfun = getInfillCritFunction(name.crit)
-  xgrid = generateGridDesign(par.set = par.set, resolution = points.per.dim)
-  xgrid2 = xgrid
-  opt.direction = 1
-  if (name.crit %in% c("ei"))
-    opt.direction = -1
-  
-  # save sequence of opt plots here
   plots = list()
-  
-  if (isparego) {
-    for (j in 1:propose.points) {
-      # if we propose 1 point, parego stores a list of models,
-      # otherwise a list of model-list (1 per parallel proposal)
-      model = if (propose.points == 1L)
-        mbo.res$models[[iter]]
-      else
-        mbo.res$models[[iter]][[j]]
-      idx = getIDX(opt.path, iter)
-      weights = as.numeric(opt.path[idx$proposed[j], c(".weight1", ".weight2")])
-      model.ok = !inherits(model, "FailureModel")
-      if (model.ok) {
-        xgrid2[[name.crit]] = opt.direction *
-          critfun(xgrid, model, control, par.set, opt.path[idx$past, ])
-      }
-      idx.all = c(idx$init, idx$seq, idx$proposed, idx.nsga2.paretofront)
-      
-      gg.points.front = getGGPointsFront(data.y, idx, idx.all, idx.nsga2.paretofront)
-      gg.points.set = getGGPointsSet(data.x, idx, idx.all, idx.nsga2.paretofront)
-      
-      
-      
-      # make dataframe for lines to show rho
-      m.seq = seq(y1lim[1], y1lim[2], length.out = 10000)
-      
-      # slope and intercept defined by lambda - a bit ugly due to normalization
-      slope  = weights[1L] * (y2range[2L] - y2range[1L]) /
-        weights[2L] / (y1range[2L] - y1range[1L])
-      intercept = y2range[1L] - y1range[1L] * slope
-      
-      # Function to get the values for the rho visualization
-      f = function(x, lambda, rho, const) {
-        x = (x - y1range[1L]) / (y1range[2L] - y1range[1L])
-        y.left = (const - lambda[1L] * x * (1 + rho)) / (rho * lambda[2L])
-        y.left = y.left * (y2range[2L] - y2range[1L]) + y2range[1L]
-        
-        y.right = (const - lambda[1L] * x * rho) / ((1 + rho) * lambda[2L])
-        y.right = y.right * (y2range[2L] - y2range[1L]) + y2range[1L]
-        pmin(y.left, y.right)
-      }
-      
-      # FIXME: find a good way to set this constant. I tried a lot and i found
-      # nothing that worked really good. this is the best i got ... it works somehow,
-      # but is far from perfect.
-      tmp.x = sqrt(slope ^ 2 / 4 + 1 - intercept) - slope / 2
-      tmp.y = tmp.x * slope + intercept
-      const = optimize(function(x) (f(tmp.x, weights, rho, x) - tmp.y) ^ 2, interval = c(0, 10))$minimum
-      gg.line = data.frame(
-        y1 = m.seq,
-        y2 = f(m.seq, weights, rho, const),
-        type = rep("init", 100)
-      )
-      
-      
-      pl.front = createPlFront(gg.points.front, iter, isparego, object, intercept, 
-        slope, gg.line, y.name, y1lim, y2lim)
-      pl.set = createPlSet(gg.points.set, iter, isparego, xgrid2, object, x.name, name.crit)
-      
-      plots[[j]] = list(pl.front = pl.front, pl.set = pl.set)
-    }
+  if (control$propose.points == 1L || single.prop.point.plots) {
+    # Render X Space Plot.
+    pl.xspace = makeXPlot(data.x, idx, idx.nsga2.paretofront, method, x.name, crit.name,
+      models, control, par.set, opt.path, points.per.dim, iter, control$propose.points,
+      object)
+    
+    # Render Y Space Plot
+    pl.yspace = makeYPlot(data.y, idx, idx.nsga2.paretofront, method, y.name,
+      opt.path, control, iter, control$propose.points, object) 
+    
+    plots = list(pl.set = pl.xspace, pl.front = pl.yspace)
+    
   } else {
-    # models = mbo.res$models[[iter]]
-    idx = getIDX(opt.path, iter)
-    # models.ok = !any(sapply(models, inherits, what = "FailureModel"))
-    # if (models.ok) {
-    # xgrid2[[name.crit]] = opt.direction *
-    # critfun(xgrid, model, control, par.set, opt.path[idx$past, ])
-    # }
-    idx.all = c(idx$init, idx$seq, idx$proposed, idx.nsga2.paretofront)
-    
-    gg.points.front = getGGPointsFront(data.y, idx, idx.all, idx.nsga2.paretofront)
-    gg.points.set = getGGPointsSet(data.x, idx, idx.all, idx.nsga2.paretofront)
-    
-    pl.front = createPlFront(gg.points.front, iter, isparego, object, intercept, 
-      slope, gg.line, y.name, y1lim, y2lim)
-    pl.set = createPlSet(gg.points.set, iter, isparego, xgrid2, object, x.name, name.crit)
-    
-    plots = list(pl.front = pl.front, pl.set = pl.set)
+    idx.propose = idx
+    for (propose.iter in seq_len(control$propose.points)) {
+      # set idx - add propose.iter - 1 to seq points, propose is only propose [propose.iter] 
+      idx.propose$seq = c(idx.propose$seq, idx$propose[propose.iter - 1])
+      idx.propose$past = c(idx.propose$past, idx$propose[propose.iter - 1])
+      idx.propose$proposed = idx$proposed[propose.iter]
+      
+      # Render X Space Plot.
+      if (method == "parego") {
+        prop.models = models[[propose.iter]]
+      } else {
+        prop.models = models
+      }
+      pl.xspace = makeXPlot(data.x, idx.propose, idx.nsga2.paretofront, method, x.name, crit.name,
+        prop.models, control, par.set, opt.path, points.per.dim, iter, 1L, object)
+      
+      # Render Y Space Plot
+      pl.yspace = makeYPlot(data.y, idx.propose, idx.nsga2.paretofront, method,
+        y.name, opt.path, control, iter, 1L, object) 
+      
+      plots[[propose.iter]] = list(pl.set = pl.xspace, pl.front = pl.yspace)
+    }
   }
   return(plots)
 }
 
 
-# create plot for Y-space
-createPlFront = function(gg.points.front, iter, isparego, object, intercept, 
-  slope, gg.line, y.name, y1lim, y2lim) {
+makeXPlot = function(data.x, idx, idx.nsga2.paretofront, method, x.name, crit.name,
+  models, control, par.set, opt.path, points.per.dim, iter, propose.points, object) {
   
-  pl.front = ggplot(data = gg.points.front, aes_string(x = "y1", y = "y2"))
+  pl.xspace = ggplot()
+  pl.xspace = pl.xspace + guides(colour = FALSE, shape = FALSE)
   
-  pl.front = pl.front + geom_point(
-    mapping = aes_string(colour = "type", shape = "type"),
-    data = gg.points.front[which(gg.points.front$type == "front"), ],
-    size = 2, alpha = 0.4)
-  pl.front = pl.front + geom_point(
-    mapping = aes_string(colour = "type", shape = "type"),
-    data = gg.points.front[which(gg.points.front$type != "front"), ],
-    size = 4)
-  pl.front = pl.front + xlab(y.name[1L])
-  pl.front = pl.front + ylab(y.name[2L])
-  pl.front = pl.front + xlim(y1lim) + ylim(y2lim)
-  #FIXME: this labels look very ugly and moreover overlap on scaling the plot
-  #pl.front = pl.front + geom_text(data = NULL, x = 3/12 * y1lim[2L], y = 24/24 * y2lim[2L],
-  #  label = paste("lambda[1] == ", round(weights[1L], 2), sep = ""), parse = TRUE, col = "black", size = 5)
-  #pl.front = pl.front + geom_text(data = NULL, x = 3/12 * y1lim[2L], y = 23/24 * y2lim[2L],
-  #  label = paste("lambda[2] == ", round(weights[2L], 2), sep = ""), parse = TRUE, col = "black", size = 5)
-  if (isparego) {
-    pl.front = pl.front + annotate("text", label = expression(paste(lambda[1], round(weights[1L], 2),
-      lambda[2], round(weights[2L], 2)), sep = ""), x = y1lim[2], y = y2lim[1])
-    pl.front = pl.front + geom_line(data = gg.line, col = "blue", shape = 1)
+  gg.points.xspace = getPlotData(data.x, idx, idx.nsga2.paretofront, x.name)
+  # first, fill background if possible. note: 2 different plots for mspot since
+  # we have 2 infill crits, one per model
+  if (method == "mspot") {
+    data.crit1 = getInfillCritGrid(crit.name, points.per.dim, models[[1]],
+      control, par.set, opt.path[idx$past, ])
+    data.crit2 = getInfillCritGrid(crit.name, points.per.dim, models[[2]],
+      control, par.set, opt.path[idx$past, ])
     
-    pl.front = pl.front + geom_abline(intercept = intercept, slope = slope)
+    crit1.plot = fillBackgroundWithInfillCrit(pl.xspace, data.crit1, x.name, crit.name) + 
+      ggtitle("XSpace - model 1")
+    crit2.plot = fillBackgroundWithInfillCrit(pl.xspace, data.crit2, x.name, crit.name) + 
+      ggtitle("XSpace - model 2")
+    
+    pl.xspace = list(
+      crit1 = createBasicSpacePlot(crit1.plot, gg.points.xspace, iter, object, x.name, 0.8, "x"),
+      crit2 = createBasicSpacePlot(crit2.plot, gg.points.xspace, iter, object, x.name, 0.8, "x")
+    )
+  } 
+  if (method %in% c("parego", "dib")) {
+    if (propose.points == 1L) {
+      data.crit = getInfillCritGrid(crit.name, points.per.dim, models,
+        control, par.set, opt.path[idx$past, ], iter)
+      pl.xspace = fillBackgroundWithInfillCrit(pl.xspace, data.crit, x.name, crit.name) + 
+        ggtitle("XSpace")
+    }
+    pl.xspace = createBasicSpacePlot(pl.xspace, gg.points.xspace, iter, object, x.name, 0.8, "x")
   }
-  pl.front = addApproxMBO(pl.front, object$mbo.pred.grid.mean[[iter]], c("y1", "y2"),
-    object$mbo.pred.grid.mean[[iter]]$.is.dom, "brown", "solid")
-  pl.front = addApproxMBO(pl.front, object$mbo.pred.grid.lcb[[iter]], c("y1", "y2"),
-    object$mbo.pred.grid.lcb[[iter]]$.is.dom, "brown", "dotted")
-  return(pl.front)
+  return(pl.xspace)
 }
 
 
-# create plot for X-space
-createPlSet = function(gg.points.set, iter, isparego, xgrid2, object, x.name, name.crit) {
-  pl.set = ggplot()
-  if (isparego) {
-    # only for parego, color background with scalar model / crit
-    brewer.palette = colorRampPalette(brewer.pal(11, "Spectral"), interpolate = "spline")
-    pl.set = pl.set + geom_tile(data = xgrid2, aes_string(x = x.name[1L], y = x.name[2L], fill = name.crit))
-    pl.set = pl.set + scale_fill_gradientn(colours = brewer.palette(200))
-  }
-  pl.set = pl.set +  geom_point(data = gg.points.set[which(gg.points.set$type == "front"), ],
-    aes_string(x = "x1", y = "x2", colour = "type", shape = "type"), size = 2, alpha = 0.8)
-  pl.set = pl.set + geom_point(data = gg.points.set[which(gg.points.set$type != "front"), ],
-    aes_string(x = "x1", y = "x2", colour = "type", shape = "type"), size = 4)
-  pl.set = addApproxMBO(pl.set, object$mbo.pred.grid.x, x.name,
-    object$mbo.pred.grid.mean[[iter]]$.is.dom, "brown", "solid")
-  pl.set = addApproxMBO(pl.set, object$mbo.pred.grid.x, x.name,
-    object$mbo.pred.grid.lcb[[iter]]$.is.dom, "brown", "dotted")
-  return(pl.set)
+makeYPlot = function(data.y, idx, idx.nsga2.paretofront, method, y.name, opt.path,
+  control, iter, propose.points, object) {
+  gg.points.yspace = getPlotData(data.y, idx, idx.nsga2.paretofront, y.name)
+  pl.yspace = ggplot()
+  pl.yspace = createBasicSpacePlot(pl.yspace, gg.points.yspace, iter, object, y.name, 0.4, "y")
+  if (method == "parego" && propose.points == 1L)
+    pl.yspace = addParegoWeightLines(pl.yspace, data.y, idx, opt.path, 1L, control$multicrit.parego.rho)
+  pl.yspace = pl.yspace + ggtitle("YSpace")
+  return(pl.yspace)
 }
 
 
@@ -205,39 +128,107 @@ getIDX = function(opt.path, i) {
   )
 }
 
-getGGPointsFront = function(data.y, idx, idx.all, idx.nsga2.paretofront) {
-  data.frame(
-    y1 = data.y[idx.all, 1L],
-    y2 = data.y[idx.all, 2L],
-    type = as.factor(c(
+# Get Dataset for Plotting 2D XSpace
+getPlotData = function(data, idx, idx.nsga2.paretofront, name) {
+  idx.all = c(idx$init, idx$seq, idx$proposed, idx.nsga2.paretofront)
+  df = data.frame(
+    data[idx.all, 1L],
+    data[idx.all, 2L],
+    as.factor(c(
       rep("init", length(idx$init)),
       rep("seq", length(idx$seq)),
       rep("prop", length(idx$proposed)),
       rep("front", length(idx.nsga2.paretofront))
     ))
   )
+  names(df) = c(name, "type")
+  return(df)
 }
 
-getGGPointsSet = function(data.x, idx, idx.all, idx.nsga2.paretofront) {
-  data.frame(
-    x1 = data.x[idx.all, 1L],
-    x2 = data.x[idx.all, 2L],
-    type = as.factor(c(
-      rep("init", length(idx$init)),
-      rep("seq", length(idx$seq)),
-      rep("prop", length(idx$proposed)),
-      rep("front", length(idx.nsga2.paretofront))
-    ))
-  )
+# get Dataset for fill background with infill.crit
+# Note: models is a single model for parego and mspot, for dib a list of models
+getInfillCritGrid = function(crit.name, points.per.dim, models, control, par.set, opt.path, iter) {
+  critfun = getInfillCritFunction(crit.name)
+  xgrid = generateGridDesign(par.set = par.set, resolution = points.per.dim)
+  opt.direction = if (crit.name %in% c("ei")) -1 else 1
+  if (inherits(models, "FailureModel"))
+    xgrid[[crit.name]] = NA
+  else 
+    xgrid[[crit.name]] = opt.direction * critfun(xgrid, models, control, par.set, opt.path, iter)
+  return(xgrid)
+}
+
+# create plot for X-space
+createBasicSpacePlot = function(pl, points, iter, object, name, alpha, space) {
+  pl = pl +  geom_point(data = points[which(points$type == "front"), ],
+    aes_string(x = name[1L], y = name[2L], colour = "type", shape = "type"), size = 2, alpha = alpha)
+  pl = pl + geom_point(data = points[which(points$type != "front"), ],
+    aes_string(x = name[1L], y = name[2L], colour = "type", shape = "type"), size = 4)
+  
+  # add appr. of non dominated model points
+  grid = if(space == "x") object$mbo.pred.grid.x else object$mbo.pred.grid.mean[[iter]]
+  pl = addApproxMBO(pl, grid, name, object$mbo.pred.grid.mean[[iter]]$.is.dom, "brown", "solid")
+  
+  # add appr. of lcb of non dominated model points
+  grid = if(space == "x") object$mbo.pred.grid.x else object$mbo.pred.grid.lcb[[iter]]
+  pl = addApproxMBO(pl, grid, name, object$mbo.pred.grid.lcb[[iter]]$.is.dom, "brown", "dotted")
+  return(pl)
 }
 
 # add pareto front estimated by model
-addApproxMBO = function(pl, gg.mbo, cols, isdom, colour, lty) {
-  if (!is.null(gg.mbo)) {
-    gg.mbo = setColNames(gg.mbo[!isdom, 1:2], cols)
-    gg.mbo = sortByCol(gg.mbo, cols)
-    pl = pl + geom_line(aes_string(x = cols[1L], y = cols[2L]), gg.mbo,
-      colour = colour, linetype = lty, alpha = 0.8)
+addApproxMBO = function(pl, points, col.names, isdom, colour, lty) {
+  if (!is.null(points)) {
+    points = setColNames(points[!isdom, 1:2, drop = FALSE], col.names)
+    points = sortByCol(points, col.names)
+    pl = pl + geom_line(aes_string(x = col.names[1L], y = col.names[2L]),
+      points, colour = colour, linetype = lty, alpha = 0.8)
   }
   return(pl)
 }
+
+fillBackgroundWithInfillCrit = function(pl, data, x.name, crit.name) {
+  brewer.palette = colorRampPalette(RColorBrewer::brewer.pal(11, "Spectral"), interpolate = "spline")
+  pl = pl + geom_tile(data = data, aes_string(x = x.name[1L], y = x.name[2L], fill = crit.name))
+  pl = pl + scale_fill_gradientn(colours = brewer.palette(200))
+  return(pl)
+}
+
+addParegoWeightLines = function(pl, data.y, idx, opt.path, proposed.counter, rho) {
+  y1range = range(data.y[idx$past, 1L])
+  y2range = range(data.y[idx$past, 2L])
+  weights = as.numeric(opt.path[idx$proposed[proposed.counter], c(".weight1", ".weight2")])
+  
+  slope  = weights[2L] * (y2range[2L] - y2range[1L]) /
+    (weights[1L] * (y1range[2L] - y1range[1L]))
+  intercept = y2range[1L] - y1range[1L] * slope
+  pl = pl + geom_abline(intercept = intercept, slope = slope)
+  
+  # now add visualization for rho
+  #   FIXME: Rethink this!
+  #   # make dataframe for lines to show rho
+  #   m.seq = seq(y1range[1], y1range[2], length.out = 10000)
+  #   # Function to get the values for the rho visualization
+  #   f = function(x, lambda, rho, const) {
+  #     x = (x - y1range[1L]) / (y1range[2L] - y1range[1L])
+  #     y.left = (const - lambda[2L] * x * (1 + rho)) / (rho * lambda[1L])
+  #     y.left = y.left * (y2range[2L] - y2range[1L]) + y2range[1L]
+  #     
+  #     y.right = (const - lambda[2L] * x * rho) / ((1 + rho) * lambda[1L])
+  #     y.right = y.right * (y2range[2L] - y2range[1L]) + y2range[1L]
+  #     pmin(y.left, y.right)
+  #   }
+  #   
+  #   # FIXME: find a good way to set this constant. I tried a lot and i found
+  #   # nothing that worked really good. this is the best i got ... it works somehow,
+  #   # but is far from perfect.
+  #   tmp.x = sqrt(slope ^ 2 / 4 + 1 - intercept) - slope / 2
+  #   tmp.y = tmp.x * slope + intercept
+  #   const = optimize(function(x) (f(tmp.x, weights, rho, x) - tmp.y) ^ 2, interval = c(0, 10))$minimum
+  #   gg.line = data.frame(
+  #     y1 = m.seq,
+  #     y2 = f(m.seq, weights, rho, const)
+  #   )
+  #   pl + geom_line(data = gg.line, aes(x = y1, y = y2), col = "blue", shape = 1)
+  pl
+}
+
