@@ -67,17 +67,13 @@ mbo = function(fun, par.set, design = NULL, learner, control,
     show.info = show.info,
     more.args = more.args)
 
-  finalOptState = mboTemplate(opt.problem)
+  final.opt.state = mboTemplate(opt.problem)
 
-  # save final model if demanded
-  setOptResultStoredModels(getOptStateOptResult(finalOptState), finalOptState)
-
-  mbo.result = makeMBOResult.OptState(finalOptState)
-  setOptResultMboResult(getOptStateOptResult(finalOptState), mbo.result)
+  mbo.result = getOptStateMboResult(final.opt.state)
 
   # save on disk routine
-  if (getOptStateLoop(finalOptState) %in% getOptProblemControl(getOptStateOptProblem(finalOptState))$save.on.disk.at || is.finite(getOptProblemControl(getOptStateOptProblem(finalOptState))$save.on.disk.at.time))
-    saveOptState(finalOptState)
+  if (getOptStateLoop(final.opt.state) %in% getOptProblemControl(getOptStateOptProblem(final.opt.state))$save.on.disk.at || is.finite(getOptProblemControl(getOptStateOptProblem(final.opt.state))$save.on.disk.at.time))
+    saveOptState(final.opt.state)
 
   # restore mlr configuration
   configureMlr(

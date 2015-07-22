@@ -238,3 +238,12 @@ getOptStateTermination = function(opt.state) {
   }
   terminate
 }
+
+getOptStateMboResult = function(opt.state) {
+  # save final model if demanded
+  setOptResultStoredModels(getOptStateOptResult(opt.state), opt.state)
+
+  mbo.result = makeMBOResult.OptState(opt.state)
+  setOptResultMboResult(getOptStateOptResult(opt.state), mbo.result)
+  mbo.result
+}
