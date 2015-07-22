@@ -21,7 +21,7 @@
 #' @seealso makeMBOControl
 #' @export
 setMBOControlMultiFid = function(control, param, lvls, costs = NULL, cor.grid.points = NULL,
-  force.last.level.steps = NULL, generate.plot.data = NULL, show.info = NULL) {
+  force.last.level.steps = NULL, show.info = NULL) {
 
   assertClass(control, "MBOControl")
   control$multifid.param = coalesce(param, control$multifid.param)
@@ -45,7 +45,6 @@ setMBOControlMultiFid = function(control, param, lvls, costs = NULL, cor.grid.po
     force.last.level.steps = asInt(force.last.level.steps, lower = 0L)
   control$multifid.force.last.level.steps = coalesce(force.last.level.steps, control$multifid.force.last.level.steps, 10L)
 
-  control$multifid.generate.plot.data = coalesce(generate.plot.data, control$multifid.generate.plot.data, FALSE)
   control$multifid.show.info = coalesce(show.info, control$multifid.show.info, FALSE)
 
   #FIXME check that control$final.evals == 0

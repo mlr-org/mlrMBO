@@ -5,8 +5,7 @@
 \title{Extends mbo control object with multiFid-algorithm specific options.}
 \usage{
 setMBOControlMultiFid(control, param, lvls, costs = NULL,
-  cor.grid.points = NULL, force.last.level.steps = NULL,
-  generate.plot.data = NULL, show.info = NULL)
+  cor.grid.points = NULL, force.last.level.steps = NULL, show.info = NULL)
 }
 \arguments{
 \item{control}{[\code{\link{MBOControl}}]\cr

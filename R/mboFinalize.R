@@ -6,6 +6,9 @@
 #' @param file [\code{character(1)}]\cr
 #'   File path of saved MBO state.
 #'   See \code{save.on.disk.at} argument of \code{\link{MBOControl}} object.
+#' @param save [\code{logical(1)}]\cr
+#'   Save the finalized state on hard disk? This will make continuation difficult.
+#'   Default is \code{FALSE}
 #' @return See \code{\link{mbo}}.
 #' @export
 mboFinalize = function(file, save = FALSE) {
