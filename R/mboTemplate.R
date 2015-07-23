@@ -32,7 +32,7 @@ mboTemplate.OptState = function(obj) {
     if (getOptStateShouldSave(opt.state))
       saveOptState(opt.state)
     terminate = getOptStateTermination(opt.state)
-    if (terminate >= 0)
+    if (terminate > 0L)
         break
   } 
   opt.state

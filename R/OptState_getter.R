@@ -98,18 +98,6 @@ getOptStateState = function(opt.state) {
 
 getOptStateTermination = function(opt.state) {
   terminate = shouldTerminate.OptState(opt.state)
-  if (terminate == 0L) {
-    setOptStateState(opt.state, "iter.exceeded")
-  } else if (terminate == 1L) {
-    setOptStateState(opt.state, "time.exceeded")
-  } else if (terminate == 2L) {
-    setOptStateState(opt.state, "exec.time.exceeded")
-  } else if (terminate == 3L) {
-    setOptStateState(opt.state, "target.fun.value.reached")
-  } else if (terminate == -1L) {
-    setOptStateState(opt.state, "iter")
-  } else {
-    stopf("shouldTerminate() gave unexpected result: %i", terminate)
-  }
+  setOptStateState(opt.state, getTerminateChars(terminate))
   terminate
 }

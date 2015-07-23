@@ -23,23 +23,23 @@ shouldTerminate = function(max.iters, iter, time.budget, start.time, exec.time.b
   target.fun.value, minimize, opt.path = NULL, show.info = FALSE) {
   if (iter > max.iters){
     showInfo(show.info, "max.iters %i reached with %i", max.iters, iter)
-  	return(0L)
-  }
-  if (isTimeBudgetExceeded(start.time, time.budget)) {
   	return(1L)
   }
-  if (isTimeBudgetExceeded(opt.path, exec.time.budget)) {
+  if (isTimeBudgetExceeded(start.time, time.budget)) {
   	return(2L)
+  }
+  if (isTimeBudgetExceeded(opt.path, exec.time.budget)) {
+  	return(3L)
   }
   # target.fun.value only useful for single crit
   if (length(minimize) == 1L) {
     opt.dir = if (minimize) 1L else -1L
     current.best =  getOptPathEl(opt.path, getOptPathBestIndex((opt.path)))$y
     if (current.best * opt.dir < target.fun.value * opt.dir) {
-      return(3L)
+      return(4L)
     }
   }
-  return(-1L)
+  return(0)
 }
 
 shouldTerminate.OptState = function(opt.state) {
@@ -57,4 +57,20 @@ shouldTerminate.OptState = function(opt.state) {
     show.info = getOptProblemShowInfo(opt.problem)
   )
 
+}
+
+# This function returns all the character which lead to an termination 
+# of the MBO Iteratio if x == NULL, otherwise the representative reason
+# according to the number returned in shouldTerminate()
+getTerminateChars = function(x = NULL) {
+  final.states = c(iter = "iter.exceeded", time = "time.exceeded", 
+    exec.time = "exec.time.exceeded", target = "target.fun.value.reached", 
+    manual = "manual.exceeded")
+  if (is.null(x)) {
+    return(final.states)
+  } else if (x == 0) {
+    return("iter")
+  } else {
+    return(as.character(final.states[x]))
+  } 
 }

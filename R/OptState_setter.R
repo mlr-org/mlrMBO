@@ -34,8 +34,7 @@ setOptStateTimeLastSaved = function(opt.state, time) {
 }
 
 setOptStateState = function(opt.state, state) {
-  assertSubset(state, c("init", "iter", "iter.exceeded", "time.exceeded",
-    "exec.time.exceeded", "target.fun.value.reached", "manual.exceeded"))
+  assertSubset(state, c("init", "iter", getTerminateChars()))
   opt.state$state = state
   invisible()
 }

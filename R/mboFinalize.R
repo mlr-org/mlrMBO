@@ -15,11 +15,11 @@ mboFinalize = function(file, save = FALSE) {
   assertCharacter(file, len = 1L)
   opt.state = loadOptState(file)
   state = getOptStateState(opt.state)
-  if (grepl(".exceeded", state)) {
+  if (state %in% getTerminateChars()) {
   warningf("Optimization ended with %s. No need to continue. Simply returning stored result.", state)
   return(getOptResultMboResult(getOptStateOptResult(opt.state)))
   }
-  state = setOptStateState(opt.state, "manual.exceeded")
+  state = setOptStateState(opt.state, getTerminateChars("manual"))
   mbo.res = makeOptStateMboResult(opt.state)
   if (save) {
     saveOptState(opt.state)

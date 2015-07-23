@@ -14,7 +14,7 @@
 #    Pointer to the OptResult Object.
 #  @param state \code{character(1)} \cr
 #    Tells us in what state we are in text. So far we know: init, iter,
-#    iter.exceeded, time.exceeded and exec.time.exceeded.
+#    iter.exceeded, time.exceeded, exec.time.exceeded, target.fun.value.reached, manual.exceeded
 #  @param opt.path \code{OptPath} \cr
 #    Here we keep the opt.path. It delivers the data for the tasks and other usefull information.
 #  @param time.last.saved \code{POSIXct} \cr
