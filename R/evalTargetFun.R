@@ -22,16 +22,20 @@
 #   List of extra information to be logged in \code{opt.path}.
 # @return [\code{numeric} | \code{matrix}] Numeric vector of y-vals or matrix
 #   (for multi-criteria problems).
-evalTargetFun = function(fun, par.set, dobs, xs, opt.path, control, show.info, oldopts,
-  more.args = list(), extras) {
+evalTargetFun.OptState = function(opt.state, xs, extras) {
+
+  opt.problem = getOptStateOptProblem(opt.state)
+  par.set = getOptProblemParSet(opt.problem)
+  opt.path = getOptStateOptPath(opt.state)
+  control = getOptProblemControl(opt.problem)
+  oldopts = getOptProblemOldopts(opt.problem)
 
   # short names and so on
-  y.name = control$y.name
   nevals = length(xs)
   ny = control$number.of.targets
   num.format = control$output.num.format
   num.format.string = paste("%s = ", num.format, sep = "")
-  dobs = ensureVector(asInteger(dobs), n = nevals, cl = "integer")
+  dobs = ensureVector(asInteger(getOptStateLoop(opt.state)), n = nevals, cl = "integer")
   imputeY = control$impute.y.fun
 
   # trafo - but we only want to use the Trafo for function eval, not for logging
@@ -40,7 +44,7 @@ evalTargetFun = function(fun, par.set, dobs, xs, opt.path, control, show.info, o
   # function to measure of fun call
     wrapFun = function(x) {
       st = proc.time()
-      y = do.call(fun, insert(list(x = x), more.args))
+      y = do.call(getOptProblemFun(opt.problem), insert(list(x = x), getOptProblemMoreArgs(opt.problem)))
       user.extras = list()
       # here we extract additional stuff which the user wants to log in the opt path
       if (hasAttributes(y, "extras")) {
@@ -95,11 +99,10 @@ evalTargetFun = function(fun, par.set, dobs, xs, opt.path, control, show.info, o
     }
 
     # showInfo - use the trafo'd value here!
-    showInfo(show.info, "[mbo] %i: %s : %s : %.1f secs%s", dob,
-      paramValueToString(par.set, x.trafo, num.format = num.format),
-      collapse(sprintf(num.format.string, y.name, y2), ", "),
-      ytime,
-      ifelse(y.valid, "", " (imputed)")
+    showInfo(getOptProblemShowInfo(opt.problem), "[mbo] %i: %s : %s : %.1f secs%s", 
+      dob, paramValueToString(par.set, x.trafo, num.format = num.format),
+      collapse(sprintf(num.format.string, control$y.name, y2), ", "),
+      ytime, ifelse(y.valid, "", " (imputed)")
     )
 
     # concatenate internal and user defined extras for logging in opt.path
@@ -115,19 +118,4 @@ evalTargetFun = function(fun, par.set, dobs, xs, opt.path, control, show.info, o
     show.learner.output = control$show.learner.output)
 
   extractSubList(res, "y")
-}
-
-evalTargetFun.OptState = function(opt.state, xs, extras) {
-  opt.problem = getOptStateOptProblem(opt.state)
-  evalTargetFun(
-    fun = getOptProblemFun(opt.problem), 
-    par.set = getOptProblemParSet(opt.problem), 
-    dobs = getOptStateLoop(opt.state), 
-    xs = xs,
-    opt.path = getOptStateOptPath(opt.state), 
-    control = getOptProblemControl(opt.problem), 
-    show.info = getOptProblemShowInfo(opt.problem), 
-    oldopts = getOptProblemOldopts(opt.problem),
-    more.args = getOptProblemMoreArgs(opt.problem), 
-    extras = extras)
 }
