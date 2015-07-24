@@ -26,7 +26,7 @@ proposePoints.OptState = function(opt.state){ #tasks, models, par.set, control, 
   res = NULL
   if (m == 1L && control$infill.crit != "random") {
     if (control$multifid) {
-      res = proposePointsMultiFid(models[[1L]], par.set, control, opt.path, iter)
+      res = proposePointsMultiFid(opt.state)
     } else if (is.null(control$multipoint.method)) {
       res = proposePointsByInfillOptimization(models[[1L]], par.set, control, opt.path, iter)
     } else {

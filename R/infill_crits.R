@@ -21,7 +21,14 @@
 
 # MEAN RESPONSE OF MODEL
 # (useful for deterministic and noisy)
-infillCritMeanResponse = function(points, model, control, par.set, design, iter) {
+infillCritMeanResponse = function(points, opt.state) {
+  opt.problem = getOptStateOptProblem(opt.state)
+  model = getOptStateModels(opt.state) #FIXME Correct model used here ??
+  control = getOptProblemControl(opt.problem)
+  par.set = getOptProblemParSet(opt.problem)
+  design = getOptStateDesign(opt.state) #FIXME not implemented, which design?
+  iter = getOptStateLoop(opt.state) #FIXME correct iter value?
+  
   ifelse(control$minimize, 1, -1) * predict(model, newdata = points)$data$response
 }
 

@@ -1,5 +1,12 @@
 # propose Points for each multifid level. return a list
-proposePointsMultiFid = function(model, par.set, control, opt.path, iter) {
+proposePointsMultiFid = function(opt.state) {
+  opt.problem = getOptStateOptProblem(opt.state)
+  model = getOptStateModels(opt.state)$models[[1L]]
+  par.set = getOptProblemParSet(opt.problem)
+  control = getOptProblemControl(opt.problem)
+  opt.path = getOptStateOptPath(opt.state)
+  iter = getOptStateLoop(opt.state)
+
   par.set.nomf = dropParams(par.set, ".multifid.lvl")
 
   design = convertOptPathToDf(opt.path = opt.path, control = control)
@@ -71,7 +78,11 @@ infillCritMultiFid2 = function(points, model, control, par.set, design, iter, lv
   alpha2 = 1 - (sigmas / sqrt(se^2 + sigmas^2))
 
   # ALPHA 3
-  alpha3 = getLast(control$multifid.costs) / control$multifid.costs[lvl]
+  if (!is.null(control$multifid.costs)) {
+    alpha3 = getLast(control$multifid.costs) / control$multifid.costs[lvl]
+  } else {
+    alpha3 = predict()
+  }
   crit = ei.last * alpha1 * alpha2 * alpha3
   list(crit = crit, ei = ei.last, se = se, alpha1 = alpha1, alpha2 = alpha2, alpha3 = alpha3, sd = sigmas)
 }
