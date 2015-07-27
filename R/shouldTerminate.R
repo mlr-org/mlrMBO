@@ -25,13 +25,8 @@ shouldTerminate.OptState = function(opt.state) {
   if (length(minimize) == 1L) {
     opt.dir = if (minimize) 1L else -1L
     current.best =  getOptPathEl(opt.path, getOptPathBestIndex((opt.path)))$y
-<<<<<<< HEAD
     if (current.best * opt.dir <= target.fun.value * opt.dir) {
-      return(3L)
-=======
-    if (current.best * opt.dir < target.fun.value * opt.dir) {
       return(4L)
->>>>>>> 3dd4007ec05664b9bfb36b498080a24d1dc3e634
     }
   }
   return(0)
