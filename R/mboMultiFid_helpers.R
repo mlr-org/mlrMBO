@@ -15,7 +15,7 @@ proposePointsMultiFid = function(opt.state) {
   lvl.cors = vnapply(seq_along(control$multifid.lvls), calcModelCor, model = model, grid = corgrid, nlvls = length(control$multifid.lvls))
 
   prop = lapply(seq_along(control$multifid.lvls), function(lvl) {
-    res = proposePointsByInfillOptimization(model, par.set.nomf, control, opt.path, iter = iter, lvl.cors = lvl.cors, lvl.sds = lvl.sds, lvl = lvl)
+    res = proposePointsByInfillOptimization(opt.state, par.set = par.set.nomf, lvl.cors = lvl.cors, lvl.sds = lvl.sds, lvl = lvl)
     res$prop.points$.multifid.lvl = lvl
     res
   })

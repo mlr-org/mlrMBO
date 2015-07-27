@@ -11,11 +11,18 @@
 #   errors.models [character] : model errors, resulting in randomly proposed points.
 #                               length is one string PER PROPOSED POINT, not per element of <models>
 #                               NA if the model was Ok, or the (first) error message if some model crashed
-proposePointsByInfillOptimization = function(models, par.set, control, opt.path, iter, ...) {
+proposePointsByInfillOptimization = function(opt.state, par.set = NULL, control = NULL, opt.path = NULL, models = NULL, ...) {
+  opt.problem = getOptStateOptProblem(opt.state)
+  models = if (inherits(models, "WrappedModel")) list(models) else models
+  models = coalesce(models, getOptStateModels(opt.state)$models)
+  par.set = coalesce(par.set, getOptProblemParSet(opt.problem))
+  control = coalesce(control, getOptProblemControl(opt.problem))
+  opt.path = coalesce(opt.path, getOptStateOptPath(opt.state))
+  iter = getOptStateLoop(opt.state)
+
   n = control$propose.points
   # ensure we have a list
-  models.list = if (inherits(models, "WrappedModel")) list(models) else models
-  ch = checkFailedModels(models.list, par.set, n, control = control)
+  ch = checkFailedModels(models, par.set, n, control = control)
   if (!ch$ok)
     return(ch$prop)
 
@@ -28,10 +35,10 @@ proposePointsByInfillOptimization = function(models, par.set, control, opt.path,
   infill.opt.fun = getInfillOptFunction(control$infill.opt)
   # store time to propose single point
   st = system.time({
-    prop.points = infill.opt.fun(infill.crit.fun, models, control, par.set, opt.path, design, iter, ...)
+    prop.points = infill.opt.fun(infill.crit.fun, model = models[[1L]], control = control, par.set = par.set, opt.path = opt.path, design = design, iter = iter, ...)
   })
   prop.points.converted = convertDataFrameCols(prop.points, ints.as.num = TRUE, logicals.as.factor = TRUE)
-  crit.vals = infill.crit.fun(prop.points.converted, models, control, par.set, design, iter, ...)
+  crit.vals = infill.crit.fun(prop.points.converted, models[[1L]], control, par.set, design, iter, ...)
   crit.vals = matrix(crit.vals, ncol = 1L)
   return(list(prop.points = prop.points, propose.time = st[3L], crit.vals = crit.vals, errors.model = NA_character_))
 }

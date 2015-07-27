@@ -1,4 +1,12 @@
-proposePointsMSPOT = function(models, par.set, control, opt.path, iter, ...) {
+proposePointsMSPOT = function(opt.state, ...) {
+  
+  opt.problem = getOptStateOptProblem(opt.state)
+  models = getOptStateModels(opt.state)$models
+  par.set = getOptProblemParSet(opt.problem)
+  control = getOptProblemControl(opt.problem)
+  opt.path = getOptStateOptPath(opt.state)
+  iter = getOptStateLoop(opt.state)
+
   n = control$propose.points
   ch = checkFailedModels(models, par.set, n, control = control)
   if (!ch$ok)
