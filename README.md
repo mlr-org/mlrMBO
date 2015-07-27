@@ -3,7 +3,7 @@
 
 Model-based optimization with mlr
 
-Travis CI: [![Build Status](https://travis-ci.org/berndbischl/mlrMBO.png)](https://travis-ci.org/berndbischl/mlrMBO)
+Travis CI: [![Build Status](https://travis-ci.org/berndbischl/mlrMBO.png?branch=master)](https://travis-ci.org/berndbischl/mlrMBO)
 
 The package will be released soon, so some links below are not working.
 
