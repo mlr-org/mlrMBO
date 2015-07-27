@@ -1,15 +1,12 @@
 context("multifid")
 
 test_that("basic multifid works", {
-  set.seed(21)
+  set.seed(1)
   objfun = function(x, fac = 0.5) {
-    lvl.par.val = x$.multifid.lvl / 3
+    lvl.par.val = x$.multifid.lvl
     x = x$x
     assertNumeric(x, len = 1, lower = 0, upper = 10)
-    res = -1 * sin(x) - exp(x/100) + 10
-    lvl.par.val = (1-lvl.par.val) * fac
-    add = lvl.par.val + lvl.par.val/10 * (x - lvl.par.val * 10)^2
-    res + add
+    3 - lvl.par.val + 0.5*x 
   }
 
   par.set = makeParamSet(
@@ -19,7 +16,7 @@ test_that("basic multifid works", {
   control = makeMBOControl(
     init.design.points = 9L,
     init.design.fun = maximinLHS,
-    iters = 10L,
+    iters = 5L,
     on.learner.error = "stop",
     show.learner.output = FALSE,
   )
@@ -28,7 +25,7 @@ test_that("basic multifid works", {
                                 opt = "focussearch",
                                 opt.restarts = 1L,
                                 opt.focussearch.maxit = 1L,
-                                opt.focussearch.points = 50L,
+                                opt.focussearch.points = 10L,
                                 filter.proposed.points = TRUE,
                                 filter.proposed.points.tol = 0.01
   )
@@ -38,8 +35,8 @@ test_that("basic multifid works", {
                                   lvls = c(0.1, 0.5, 1),
                                   cor.grid.points = 40L)
 
-  surrogat.learner = makeLearner("regr.km", nugget.estim = TRUE, jitter = TRUE, predict.type = "se")
+  surrogat.learner = makeLearner("regr.lm", predict.type = "se")
   result = mbo(fun = objfun, par.set = par.set, learner = surrogat.learner, control = control)
-  expect_true(abs(result$x$x - 7.864932) < 0.2)
+  expect_true(result$y < 0.5)
 })
 

@@ -1,36 +1,15 @@
 # Function for plotting 2d numeric respectively mixed discrete/numeric functions.
-#
-# @param x [\code{function}]\cr
-#  \code{MBOExampleRun} object.
-# @param iter [\code{integer}]\cr
-#   Selected iteration of \code{x} to render plots for.
-# @param densregion [\code{logical(1)}]\cr
-#   Should the background be shaded? Default ist \code{TRUE}.
-#   Only used if learner supports computation of standard error.
-# @param se.factor [\code{numeric(1)}]\cr
-#   If the model provides local standard error estimation,
-#   in addition to the mean response \code{yhat(x) +- se.factor * se(x)}
-#   is plotted above and below.
-#   Default is 1.
-# @param point.size [\code{numeric(1)}]\cr
-#   Size of the points in the plots.
-# @param line.size [\code{numeric(1)}]\cr
-#   Line width of the functions graphs plotted.
-# @param trafo [\code{list}]\cr
-#   List of transformation functions of type \code{\link[mlrMBO]{MBOTrafoFunction}} for
-#   the different plots.
-#   For 1D: The list elements should be named with "y" (applied to objective function and model) or "crit"
-#   (applied to the criterion). Only applied to plots with numeric parameters.
-#   For 2D: The list should contain at least one element "y", "yhat", "crit" or "se". This way one can
-#   specify different transformations for different plots. If a single function is provided, this function
-#    is used for all plots.
-# @param colors [\code{character(3)}]
-#   Specify colors for point in the plots. Must be a vector of length 3,
-#   each element a color for the type design, prop and seq respectivly.
-#   Default is red for the initial design, blue for allready proposed points
-#   and green for the actual iteration.
+# see plotExampleRun for details on each argument
+
+# @param xlim
+#  Not used
+# @param ylim
+#  Not used
+# @param denseregion
+#  Not used
 # @param ... [\code{list}]\cr
 #   Not used.
+
 # @return [\code{list}] List of ggplot2 objects.
 renderExampleRunPlot2d = function(x, iter,
   densregion = TRUE,

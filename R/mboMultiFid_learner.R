@@ -24,8 +24,7 @@ makeMultiFidWrapper = function(learner, control) {
     model.subclass = "MultiFidModel"
   )
   w$mbo.control = control
-  # FIXME: this is a ugly hack
-  return(addProperties(w, c("numerics")))
+  w
 }
 
 #' @export
@@ -96,3 +95,9 @@ isFailureModel.MultiFidModel = function(model) {
   any(vlapply(mods, isFailureModel))
 }
 
+#' @export
+getLearnerProperties.MultiFidWrapper = function(learner) {
+  #FIXME Not so nice workaround for the .multifid.lvl param
+  #FIXME - why does only this very direct call work?
+  union("numerics", mlr:::getLearnerProperties.Learner(learner$next.learner))
+}
