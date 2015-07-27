@@ -40,7 +40,14 @@ nds_1d_selection = function(values, n = 1, index = 1, ...) {
 # Currently only numerical paramaters are handled, for them pm_operator and
 # sbx_operator from emoa are used in the EA.
 #
-proposePointsMOIMBO = function(models, par.set, control, opt.path, iter, ...) {
+proposePointsMOIMBO = function(opt.state, ...) {
+
+  opt.problem = getOptStateOptProblem(opt.state)
+  models = getOptStateModels(opt.state)$models
+  par.set = getOptProblemParSet(opt.problem)
+  control = getOptProblemControl(opt.problem)
+  opt.path = getOptStateOptPath(opt.state)
+
   requirePackages("emoa", why = "multipointInfillOptMulticrit")
 
   n = control$propose.points

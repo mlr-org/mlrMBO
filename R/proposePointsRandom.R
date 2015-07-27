@@ -1,4 +1,8 @@
-proposePointsRandom = function(models, par.set, control, opt.path, iter) {
+proposePointsRandom = function(opt.state) {
+  opt.problem = getOptStateOptProblem(opt.state)
+  control = getOptProblemControl(opt.problem)
+  par.set = getOptProblemParSet(opt.problem)
+  
   if (control$infill.crit == "random")
     n = control$propose.points
   else

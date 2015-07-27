@@ -6,10 +6,17 @@
 # n-point proposal: we sample n random lcb-lambdas, then propose a point normally,
 #   then add it to the design (fake add) with the its lcb-vector as fake output. then iterate.
 
-proposePointsDIB = function(models, par.set, control, opt.path, iter) {
+proposePointsDIB = function(opt.state) {
+
+  opt.problem = getOptStateOptProblem(opt.state)
+  models = getOptStateModels(opt.state)$models
+  par.set = getOptProblemParSet(opt.problem)
+  control = getOptProblemControl(opt.problem)
+  opt.path = getOptStateOptPath(opt.state)
+  iter = getOptStateLoop(opt.state)
+
   if (control$propose.points == 1L) {
-    res = proposePointsByInfillOptimization(models = models, control = control,
-        par.set = par.set, opt.path = opt.path, iter = iter)
+    res = proposePointsByInfillOptimization(opt.state)
   } else {
     # draw lambdas from exp dist + create 1 control for each for single crit with lambda-LCB
     #FIXME: it is unclear whether we want also randomly sample lambdas here too
@@ -22,8 +29,7 @@ proposePointsDIB = function(models, par.set, control, opt.path, iter) {
     dob = max(getOptPathDOB(opt.path)) + 1
     for (i in 1:control$propose.points) {
       control2 = z$controls[[i]]
-      prop = proposePointsByInfillOptimization(models = models, control = control2,
-        par.set = par.set, opt.path = opt.path2, iter = iter)
+      prop = proposePointsByInfillOptimization(opt.state, control = control2, opt.path = opt.path2)
       design = convertOptPathToDf(opt.path, control)
       lcb = evalCritFunForMultiCritModels(infillCritLCB, prop$prop.points, models, control2,
         par.set, design, iter)[1L, ]
