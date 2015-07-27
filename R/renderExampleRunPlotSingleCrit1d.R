@@ -1,48 +1,9 @@
 # Function for plotting 1d numeric respectively discrete functions.
-#
-# @param x [\code{function}]\cr
-#  \code{MBOExampleRun} object.
-# @param iter [\code{integer}]\cr
-#   Selected iteration of \code{x} to render plots for.
-# @param densregion [\code{logical(1)}]\cr
-#   Should the background be shaded? Default ist \code{TRUE}.
-#   Only used if learner supports computation of standard error.
-# @param se.factor [\code{numeric(1)}]\cr
-#   If the model provides local standard error estimation,
-#   in addition to the mean response \code{yhat(x) +- se.factor * se(x)}
-#   is plotted above and below.
-#   Default is 1.
-# @param xlim [\code{numeric(2)}]\cr
-#   For 1D: \code{xlim} parameter for first and second plot.
-#   Default is range of x-values evaluated in run object \code{x}.
-# @param ylim [\code{numeric(2)}]\cr
-#   For 1D: \code{ylim} parameter for first plot, for the second plot \code{ylim} is always set
-#   automatically, depending on the range of the evaluated infill criterion.
-#   Default for the first plot is a heuristic to have the true function
-#   and \code{yhat(x) +- se.factor2 * se(x)} both in the plot. Note that this heuristic might
-#   change the \code{ylim} setting between plot iterations.
-# @param point.size [\code{numeric(1)}]\cr
-#   Size of the points in the plots.
-# @param line.size [\code{numeric(1)}]\cr
-#   Line width of the functions aphs plotted.
-# @param trafo [\code{list}]\cr
-#   List of transformation functions of type \code{\link[mlrMBO]{MBOTrafoFunction}} for
-#   the different plots.
-#   For 1D: The list elements should be named with "y" (applied to objective function and model) or "crit"
-#   (applied to the criterion). Only applied to plots with numeric parameters.
-#   For 2D: The list should contain at least one element "y", "yhat", "crit" or "se". This way one can
-#   specify different transformations for different plots. If a single function is provided, this function
-#    is used for all plots.
-# @param densregion [\code{logical(1)}]\cr
-#   Should the background be shaded by the density of the posterior distribution? Default ist \code{TRUE}.
-#   Only used if learner supports computation of standard error.
-# @param colors [\code{character(3)}]
-#   Specify colors for point in the plots. Must be a vector of length 3,
-#   each element a color for the type design, prop and seq respectivly.
-#   Default is red for the initial design, blue for allready proposed points
-#   and green for the actual iteration.
+# see plotExampleRun for details on each argument
+
 # @param ... [\code{list}]\cr
 #   Not used.
+
 # @return [\code{list}] List of ggplot2 objects.
 renderExampleRunPlot1d = function(x, iter,
   densregion = TRUE,
@@ -227,9 +188,6 @@ renderExampleRunPlot1d = function(x, iter,
       pl.fun = g
     )
 
-    # if (pause) {
-    #   do.call(grid.arrange, c(plots[[i]], nrow = 2))
-    # }
   } else if (isDiscrete(par.set)) {
     if (!noisy) {
       stopf("Deterministic 1d function with a single factor parameter are not supported.")
