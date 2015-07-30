@@ -9,6 +9,8 @@ renderExampleRunPlot.MBOExampleRunMultiCrit = function(object, iter, densregion 
   mbo.res = object$mbo.res
   opt.path = as.data.frame(mbo.res$opt.path)
   models = object$mbo.res$models[[iter]]
+  models = if (inherits(models, "WrappedModel")) list(models) else models
+  
   par.set = object$par.set
   control = object$control
   x.name = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
@@ -50,7 +52,7 @@ renderExampleRunPlot.MBOExampleRunMultiCrit = function(object, iter, densregion 
       
       # Render X Space Plot.
       if (method == "parego") {
-        prop.models = models[[propose.iter]]
+        prop.models = models[propose.iter]
       } else {
         prop.models = models
       }
@@ -78,9 +80,9 @@ makeXPlot = function(data.x, idx, idx.nsga2.paretofront, method, x.name, crit.na
   # first, fill background if possible. note: 2 different plots for mspot since
   # we have 2 infill crits, one per model
   if (method == "mspot") {
-    data.crit1 = getInfillCritGrid(crit.name, points.per.dim, models[[1]],
+    data.crit1 = getInfillCritGrid(crit.name, points.per.dim, models[1],
       control, par.set, opt.path[idx$past, ])
-    data.crit2 = getInfillCritGrid(crit.name, points.per.dim, models[[2]],
+    data.crit2 = getInfillCritGrid(crit.name, points.per.dim, models[2],
       control, par.set, opt.path[idx$past, ])
     
     crit1.plot = fillBackgroundWithInfillCrit(pl.xspace, data.crit1, x.name, crit.name) + 

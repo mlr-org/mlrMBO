@@ -14,7 +14,7 @@ infillOptMultiCritNSGA2 = function(infill.crit, models, control, par.set, opt.pa
     asMatrixRows(lapply(1:m, function(i) {
       # we need to make sure mininimize in control is a scalar, so we can multiply it in infill crits...
       control2$minimize = control$minimize[i]
-      infill.crit(points = newdata, model = models[[i]], control = control2,
+      infill.crit(points = newdata, models = models[i], control = control2,
         par.set = par.set, design = design, iter = iter, ...)
     }))
   }
@@ -38,7 +38,7 @@ infillOptMultiCritNSGA2 = function(infill.crit, models, control, par.set, opt.pa
 
     newdata = as.data.frame(res$par)
     colnames(newdata) = rep.pids
-    hv.contr.crit(points = newdata, model = models[[i]], control = control2,
+    hv.contr.crit(points = newdata, models = models[i], control = control2,
       par.set = par.set, design = design, iter = iter, ...)
   }))
 

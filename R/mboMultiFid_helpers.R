@@ -31,7 +31,8 @@ proposePointsMultiFid = function(opt.state) {
 }
 
 #this function allows for points including the .multifid.lvl columns
-infillCritMultiFid.external = function(points, model, control, par.set, design, iter, lvl.cors, lvl.sds, lvl) {
+infillCritMultiFid.external = function(points, models, control, par.set, design, iter, lvl.cors, lvl.sds, lvl) {
+  model = models[[1L]]
   if (".multifid.lvl" %in% getParamIds(par.set)) {
     par.set.nomf = dropParams(par.set, ".multifid.lvl")
   } else {

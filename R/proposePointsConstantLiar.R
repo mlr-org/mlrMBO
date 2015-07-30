@@ -1,7 +1,7 @@
 proposePointsConstantLiar = function(opt.state) {
 
   opt.problem = getOptStateOptProblem(opt.state)
-  model = getOptStateModels(opt.state)[[1L]]
+  model = getOptStateModels(opt.state)$models[[1L]]
   par.set = getOptProblemParSet(opt.problem)
   control = getOptProblemControl(opt.problem)
   opt.path = getOptStateOptPath(opt.state)
