@@ -197,7 +197,7 @@ renderExampleRunPlot1d = function(x, iter,
 
     if (se & densregion) {
       gg.points$se = -infillCritStandardError(gg.points[, names.x, drop = FALSE],
-        model, control, par.set, opt.path[idx.past, , drop = FALSE])
+        models, control, par.set, opt.path[idx.past, , drop = FALSE])
       gg.points$se.min = gg.points[[name.y]] - se.factor * gg.points$se
       gg.points$se.max = gg.points[[name.y]] + se.factor * gg.points$se
     }
