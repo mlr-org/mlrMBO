@@ -13,8 +13,8 @@
 #                               NA if the model was Ok, or the (first) error message if some model crashed
 proposePointsByInfillOptimization = function(opt.state, par.set = NULL, control = NULL, opt.path = NULL, models = NULL, ...) {
   opt.problem = getOptStateOptProblem(opt.state)
-  models = if (inherits(models, "WrappedModel")) list(models) else models
   models = coalesce(models, getOptStateModels(opt.state)$models)
+  models = if (inherits(models, "WrappedModel")) list(models) else models
   par.set = coalesce(par.set, getOptProblemParSet(opt.problem))
   control = coalesce(control, getOptProblemControl(opt.problem))
   opt.path = coalesce(opt.path, getOptStateOptPath(opt.state))
@@ -35,10 +35,10 @@ proposePointsByInfillOptimization = function(opt.state, par.set = NULL, control 
   infill.opt.fun = getInfillOptFunction(control$infill.opt)
   # store time to propose single point
   st = system.time({
-    prop.points = infill.opt.fun(infill.crit.fun, model = models[[1L]], control = control, par.set = par.set, opt.path = opt.path, design = design, iter = iter, ...)
+    prop.points = infill.opt.fun(infill.crit.fun, models = models, control = control, par.set = par.set, opt.path = opt.path, design = design, iter = iter, ...)
   })
   prop.points.converted = convertDataFrameCols(prop.points, ints.as.num = TRUE, logicals.as.factor = TRUE)
-  crit.vals = infill.crit.fun(prop.points.converted, models[[1L]], control, par.set, design, iter, ...)
+  crit.vals = infill.crit.fun(prop.points.converted, models, control, par.set, design, iter, ...)
   crit.vals = matrix(crit.vals, ncol = 1L)
   return(list(prop.points = prop.points, propose.time = st[3L], crit.vals = crit.vals, errors.model = NA_character_))
 }

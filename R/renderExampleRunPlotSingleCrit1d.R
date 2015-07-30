@@ -20,6 +20,7 @@ renderExampleRunPlot1d = function(x, iter,
   noisy = control$noisy
   mbo.res = x$mbo.res
   models = mbo.res$models
+  models = if (inherits(models, "WrappedModel")) list(models) else models
   names(colors) = c("init", "prop", "seq")
   
   # check if standard error is available
@@ -80,26 +81,26 @@ renderExampleRunPlot1d = function(x, iter,
 
   # compute model prediction for current iter
   if (!inherits(model, "FailureModel")) {
-    evals$yhat = infillCritMeanResponse(evals.x, model,
+    evals$yhat = infillCritMeanResponse(evals.x, list(model),
       control, par.set, convertOptPathToDf(opt.path, control)[idx.past, ])
     
     #FIXME: We might want to replace the following by a helper function so that we can reuse it in buildPointsData()
     if (propose.points == 1L) {
       evals[[name.crit]] = opt.direction *
-        critfun(evals.x, model, control, par.set, convertOptPathToDf(opt.path, control)[idx.past, ])
+        critfun(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past, ])
     } else {
       objective = control$multipoint.multicrit.objective
       if (objective == "mean.dist") {
-        evals[[name.crit]] = opt.direction * infillCritMeanResponse(evals.x, model, control, par.set, convertOptPathToDf(opt.path, control)[idx.past, ])
+        evals[[name.crit]] = opt.direction * infillCritMeanResponse(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past, ])
       } else if (objective == "ei.dist") {
-        evals[[name.crit]] = opt.direction * infillCritEI(evals.x, model, control, par.set, convertOptPathToDf(opt.path, control)[idx.past, ])
+        evals[[name.crit]] = opt.direction * infillCritEI(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past, ])
       } else if (objective %in% c("mean.se", "mean.se.dist")) {
-        evals[[name.crit]] = opt.direction * infillCritMeanResponse(evals.x, model, control, par.set, convertOptPathToDf(opt.path, control)[idx.past, ])
+        evals[[name.crit]] = opt.direction * infillCritMeanResponse(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past, ])
       }
     }
     # prepare drawing of standard error (confidence interval)
     if (se) {
-      evals$se = -infillCritStandardError(evals.x, model, control, par.set, convertOptPathToDf(opt.path, control)[idx.past, ])
+      evals$se = -infillCritStandardError(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past, ])
     }
   }
 

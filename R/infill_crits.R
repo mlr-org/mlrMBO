@@ -21,19 +21,20 @@
 
 # MEAN RESPONSE OF MODEL
 # (useful for deterministic and noisy)
-infillCritMeanResponse = function(points, model, control, par.set, design, iter) {
-  ifelse(control$minimize, 1, -1) * predict(model, newdata = points)$data$response
+infillCritMeanResponse = function(points, models, control, par.set, design, iter) {
+  ifelse(control$minimize, 1, -1) * predict(models[[1L]], newdata = points)$data$response
 }
 
 # MODEL UNCERTAINTY
 # (on its own not really useful for anything I suppose ...)
-infillCritStandardError = function(points, model, control, par.set, design, iter) {
-  -predict(model, newdata = points)$data$se
+infillCritStandardError = function(points, models, control, par.set, design, iter) {
+  -predict(models[[1L]], newdata = points)$data$se
 }
 
 # EXPECTED IMPROVEMENT
 # (useful for deterministic, for noisy only with reinterpolation)
-infillCritEI = function(points, model, control, par.set, design, iter) {
+infillCritEI = function(points, models, control, par.set, design, iter) {
+  model = models[[1L]]
   maximize.mult = ifelse(control$minimize, 1, -1)
   y = maximize.mult * design[, control$y.name]
   p = predict(model, newdata = points)$data
@@ -52,7 +53,8 @@ infillCritEI = function(points, model, control, par.set, design, iter) {
 
 # LOWER CONFIDENCE BOUND
 # (useful for deterministic and also naively for noisy)
-infillCritLCB = function(points, model, control, par.set, design, iter) {
+infillCritLCB = function(points, models, control, par.set, design, iter) {
+  model = models[[1L]]
   maximize.mult = ifelse(control$minimize, 1, -1)
   p = predict(model, newdata = points)$data
   if (control$infill.crit.lcb.inflate.se) {
@@ -75,7 +77,8 @@ infillCritLCB = function(points, model, control, par.set, design, iter) {
 
 # AUGMENTED EXPECTED IMPROVEMENT
 # (useful for noisy functions)
-infillCritAEI = function(points, model, control, par.set, design, iter) {
+infillCritAEI = function(points, models, control, par.set, design, iter) {
+  model = models[[1L]]
   maximize.mult = ifelse(control$minimize, 1, -1)
   p = predict(model, newdata = points)$data
   p.mu = maximize.mult * p$response
@@ -103,7 +106,8 @@ infillCritAEI = function(points, model, control, par.set, design, iter) {
 
 # EXPECTED QUANTILE IMPROVEMENT
 # (useful for noisy functions)
-infillCritEQI = function(points, model, control, par.set, design, iter) {
+infillCritEQI = function(points, models, control, par.set, design, iter) {
+  model = models[[1L]]
   maximize.mult = ifelse(control$minimize, 1, -1)
   # compute q.min
   design_x = design[, (colnames(design) %nin% control$y.name)]
