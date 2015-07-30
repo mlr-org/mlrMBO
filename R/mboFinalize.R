@@ -22,7 +22,7 @@ mboFinalize = function(file, save = FALSE) {
   state = setOptStateState(opt.state, getTerminateChars("manual"))
   mbo.res = makeOptStateMboResult(opt.state)
   if (save) {
-    saveOptState(opt.state)
+    saveOptState(opt.state, file = file)
   }
   mbo.res
 }
