@@ -48,18 +48,18 @@ infillCritMultiFid.external = function(points, models, control, par.set, design,
   lvls.inds = sort(unique(points$.multifid.lvl))
   pointsres = lapply(seq_along(lvls.inds), function(i) {
     points.lvl = dropNamed(pointssplit[[i]], ".multifid.lvl")
-    infillCritMultiFid2(points = points.lvl, model = model, control = control, par.set = par.set, design = design, iter = iter, lvl.cors = lvl.cors, lvl.sds = lvl.sds, lvl = lvls.inds[i])$crit
+    infillCritMultiFid2(points = points.lvl, models = models, control = control, par.set = par.set, design = design, iter = iter, lvl.cors = lvl.cors, lvl.sds = lvl.sds, lvl = lvls.inds[i])$crit
   })
   unsplit(pointsres, points$.multifid.lvl)
 }
 
 # return only crit vector
-infillCritMultiFid = function(points, model, control, par.set, design, iter, lvl.cors, lvl.sds, lvl) {
-  infillCritMultiFid2(points, model, control, par.set, design, iter, lvl.cors, lvl.sds, lvl)$crit
+infillCritMultiFid = function(points, models, control, par.set, design, iter, lvl.cors, lvl.sds, lvl) {
+  infillCritMultiFid2(points, models, control, par.set, design, iter, lvl.cors, lvl.sds, lvl)$crit
 }
 
 # return all crap so we can plot it later
-infillCritMultiFid2 = function(points, model, control, par.set, design, iter, lvl.cors, lvl.sds, lvl) {
+infillCritMultiFid2 = function(points, models, control, par.set, design, iter, lvl.cors, lvl.sds, lvl) {
   nlvls = length(control$multifid.lvls)
   points.current = cbind(points, .multifid.lvl = lvl)
   points.last = cbind(points, .multifid.lvl = nlvls) #points on most expensive level
@@ -67,11 +67,11 @@ infillCritMultiFid2 = function(points, model, control, par.set, design, iter, lv
   # note: mbo returns the negated EI (and SE), so have to later minimize the huang crit.
   # which is done by default by our optimizer anyway
   infill.crit.fun = getInfillCritFunction(control$infill.crit)
-  ei.last = infill.crit.fun(points.last, model, control, par.set, design.last, iter)
+  ei.last = infill.crit.fun(points.last, models, control, par.set, design.last, iter)
   alpha1 = lvl.cors[lvl]
 
   # ALPHA 2
-  se = -infillCritStandardError(points.current, model, control, par.set, NULL, iter)
+  se = -infillCritStandardError(points.current, models, control, par.set, NULL, iter)
   if (any(lvl.sds < 0.001)) { # FIXME: IF lvl.sd near 0 it will make alpha2 useless
     lvl.sds = lvl.sds + 0.001
   }
