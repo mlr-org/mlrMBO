@@ -55,14 +55,15 @@ makeOptState = function(opt.problem, loop = 0L, tasks = NULL, models = NULL,
   opt.state
 }
 
-
-
-
-saveOptState = function(opt.state) {
+saveOptState = function(opt.state, file = NULL) {
   loop = getOptStateLoop(opt.state)
   control = getOptProblemControl(getOptStateOptProblem(opt.state))
   show.info = getOptProblemShowInfo(getOptStateOptProblem(opt.state))
-  fn = control$save.file.path
+  if (is.null(file)) {
+    fn = control$save.file.path  
+  } else {
+    fn = file
+  }
   backup.fn = getFileBackupName(fn)
   save2(file = backup.fn, opt.state = opt.state)
   file.copy(backup.fn, fn, overwrite = TRUE)
