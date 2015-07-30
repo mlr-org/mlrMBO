@@ -20,7 +20,7 @@
 #  @param time.last.saved \code{POSIXct} \cr
 #     The \code{Sys.time()} when the last save on disk was done.
 makeOptState = function(opt.problem, loop = 0L, tasks = NULL, models = NULL, 
-  time.model = FALSE, opt.result = NULL, state = "init", opt.path = NULL, 
+  time.model = NULL, opt.result = NULL, state = "init", opt.path = NULL, 
   time.last.saved = Sys.time()) {
 
   opt.state = new.env()
