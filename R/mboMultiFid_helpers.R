@@ -6,6 +6,7 @@ proposePointsMultiFid = function(opt.state) {
   control = getOptProblemControl(opt.problem)
   opt.path = getOptStateOptPath(opt.state)
   iter = getOptStateLoop(opt.state)
+  time.model = getOptStateTimeModel(opt.state)
 
   par.set.nomf = dropParams(par.set, ".multifid.lvl")
 
@@ -15,7 +16,7 @@ proposePointsMultiFid = function(opt.state) {
   lvl.cors = vnapply(seq_along(control$multifid.lvls), calcModelCor, model = model, grid = corgrid, nlvls = length(control$multifid.lvls))
 
   prop = lapply(seq_along(control$multifid.lvls), function(lvl) {
-    res = proposePointsByInfillOptimization(opt.state, par.set = par.set.nomf, lvl.cors = lvl.cors, lvl.sds = lvl.sds, lvl = lvl)
+    res = proposePointsByInfillOptimization(opt.state, par.set = par.set.nomf, lvl.cors = lvl.cors, lvl.sds = lvl.sds, lvl = lvl, time.model = time.model)
     res$prop.points$.multifid.lvl = lvl
     res
   })
@@ -31,7 +32,7 @@ proposePointsMultiFid = function(opt.state) {
 }
 
 #this function allows for points including the .multifid.lvl columns
-infillCritMultiFid.external = function(points, models, control, par.set, design, iter, lvl.cors, lvl.sds, lvl) {
+infillCritMultiFid.external = function(points, models, control, par.set, design, iter, lvl.cors, lvl.sds, lvl, time.model) {
   model = models[[1L]]
   if (".multifid.lvl" %in% getParamIds(par.set)) {
     par.set.nomf = dropParams(par.set, ".multifid.lvl")
@@ -54,12 +55,12 @@ infillCritMultiFid.external = function(points, models, control, par.set, design,
 }
 
 # return only crit vector
-infillCritMultiFid = function(points, models, control, par.set, design, iter, lvl.cors, lvl.sds, lvl) {
-  infillCritMultiFid2(points, models, control, par.set, design, iter, lvl.cors, lvl.sds, lvl)$crit
+infillCritMultiFid = function(points, models, control, par.set, design, iter, lvl.cors, lvl.sds, lvl, time.model) {
+  infillCritMultiFid2(points, models, control, par.set, design, iter, lvl.cors, lvl.sds, lvl, time.model)$crit
 }
 
 # return all crap so we can plot it later
-infillCritMultiFid2 = function(points, models, control, par.set, design, iter, lvl.cors, lvl.sds, lvl) {
+infillCritMultiFid2 = function(points, models, control, par.set, design, iter, lvl.cors, lvl.sds, lvl, time.model) {
   nlvls = length(control$multifid.lvls)
   points.current = cbind(points, .multifid.lvl = lvl)
   points.last = cbind(points, .multifid.lvl = nlvls) #points on most expensive level
@@ -82,7 +83,7 @@ infillCritMultiFid2 = function(points, models, control, par.set, design, iter, l
   if (!is.null(control$multifid.costs)) {
     alpha3 = getLast(control$multifid.costs) / control$multifid.costs[lvl]
   } else {
-    alpha3 = predict()
+    alpha3 = getPredictionResponse(predict(time.model, newdata = points.last)) / getPredictionResponse(predict(time.model, newdata = points.current))
   }
   crit = ei.last * alpha1 * alpha2 * alpha3
   list(crit = crit, ei = ei.last, se = se, alpha1 = alpha1, alpha2 = alpha2, alpha3 = alpha3, sd = sigmas)

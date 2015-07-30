@@ -2,7 +2,7 @@ context("multifid")
 
 test_that("basic multifid works", {
   set.seed(1)
-  objfun = function(x, fac = 0.5) {
+  objfun = function(x) {
     lvl.par.val = x$.multifid.lvl
     x = x$x
     assertNumeric(x, len = 1, lower = 0, upper = 10)
@@ -38,5 +38,17 @@ test_that("basic multifid works", {
   surrogat.learner = makeLearner("regr.lm", predict.type = "se")
   result = mbo(fun = objfun, par.set = par.set, learner = surrogat.learner, control = control)
   expect_true(result$y < 0.5)
+
+  ### remove cots so time.model will be estimated
+  control$multifid.costs = NULL
+  objfun.delay = function(x) {
+    Sys.sleep(0.1 + x$.multifid.lvl/3)
+    objfun(x)
+  }
+  set.seed(1)
+  result.time = mbo(fun = objfun.delay, par.set = par.set, learner = surrogat.learner, control = control)
+  
+  #this is pretty hard and migh fail?
+  expect_equal(as.data.frame(result.time$opt.path)$.multifid.lvl, as.data.frame(result$opt.path)$.multifid.lvl)
 })
 
