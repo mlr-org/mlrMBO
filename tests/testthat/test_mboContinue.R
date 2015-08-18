@@ -23,13 +23,14 @@ test_that("mboContinue", {
   ctrl = makeMBOControl(iters = 3, save.on.disk.at = 0:4,
     save.file.path = save.file, init.design.points = 10L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10)
-  expect_error(or <- mbo(f, ps, learner = learner, control = ctrl), "foo")
+  expect_error({or = mbo(f, ps, learner = learner, control = ctrl)}, "foo")
   for (i in 1:20) {
-    try(or <- mboContinue(save.file), silent = F)
+    try({or = mboContinue(save.file)}, silent = TRUE)
     if (!is.null(or))
       break
   }
   expect_equal(getOptPathLength(or$opt.path), 13)
+  expect_class(or, c("MBOSingleObjResult", "MBOResult"))
   unlink(save.file)
 
   # now test parEGO
@@ -47,13 +48,14 @@ test_that("mboContinue", {
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100)
   ctrl = setMBOControlMultiCrit(ctrl, method = "parego", parego.s = 100)
   or = NULL
-  try(or <- mbo(f, ps, learner = learner, control = ctrl), silent = TRUE)
+  try({or = mbo(f, ps, learner = learner, control = ctrl)}, silent = TRUE)
   for (i in 1:10) {
-    suppressWarnings(try(or <- mboContinue(save.file), silent = TRUE))
+    suppressWarnings(try({or = mboContinue(save.file)}, silent = TRUE))
     if (!is.null(or))
       break
   }
   expect_equal(getOptPathLength(or$opt.path), 17)
+  expect_class(or, c("MBOMultiObjResult", "MBOResult"))
   unlink(save.file)
 })
 
