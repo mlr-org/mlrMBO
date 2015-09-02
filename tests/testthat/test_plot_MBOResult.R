@@ -11,6 +11,20 @@ test_that("plot single crit", {
   or = mbo(f, ps, learner = learner, control = ctrl)
   
   # FIXME: something is wrong here, daniel will look at it soon
-  #plotMBOResult(or, iters = 0:2, pause = FALSE)
+  plotMBOResult(or, iters = 0:2, pause = FALSE, y.over.time = "train.time")
 })
 
+test_that("plot multi crit", {
+  
+  f = makeMBOFunction(mco::zdt1)
+  ps = makeNumericParamSet(len = 5L, lower = 0, upper = 1)
+  learner = makeLearner("regr.km", predict.type = "se")
+  ctrl = makeMBOControl(iters = 2L, number.of.targets = 2L, init.design.points = 8L,
+    propose.points = 2L)
+  ctrl = setMBOControlInfill(ctrl, crit = "dib", opt.focussearch.points = 100L, 
+    opt.focussearch.maxit = 3L)
+  ctrl = setMBOControlMultiCrit(ctrl, method = "dib")
+  or = mbo(f, ps, learner = learner, control = ctrl)
+  
+  plotMBOResult(or, iters = 0:2, pause  = FALSE, y.over.time = list(c("y_1"), c("dib")))
+})
