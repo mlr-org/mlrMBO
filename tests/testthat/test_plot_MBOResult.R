@@ -10,8 +10,7 @@ test_that("plot single crit", {
     opt.focussearch.maxit = 3L)
   or = mbo(f, ps, learner = learner, control = ctrl)
   
-  # FIXME: something is wrong here, daniel will look at it soon
-  plotMBOResult(or, iters = 0:2, pause = FALSE, y.over.time = "train.time")
+  plot(or, iters = 0:2, pause = FALSE)
 })
 
 test_that("plot multi crit", {
@@ -21,10 +20,10 @@ test_that("plot multi crit", {
   learner = makeLearner("regr.km", predict.type = "se")
   ctrl = makeMBOControl(iters = 2L, number.of.targets = 2L, init.design.points = 8L,
     propose.points = 2L)
-  ctrl = setMBOControlInfill(ctrl, crit = "dib", opt.focussearch.points = 100L, 
-    opt.focussearch.maxit = 3L)
-  ctrl = setMBOControlMultiCrit(ctrl, method = "dib")
+  ctrl = setMBOControlInfill(ctrl, crit = "ei", opt.focussearch.points = 100L, 
+    opt.focussearch.maxit = 3L, opt = "nsga2")
+  ctrl = setMBOControlMultiCrit(ctrl, method = "mspot")
   or = mbo(f, ps, learner = learner, control = ctrl)
   
-  plotMBOResult(or, iters = 0:2, pause  = FALSE, y.over.time = list(c("y_1"), c("dib")))
+  plot(or, iters = 0:2, pause  = FALSE)
 })
