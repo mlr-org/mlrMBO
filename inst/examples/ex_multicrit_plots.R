@@ -17,4 +17,4 @@ ctrl = setMBOControlMultiCrit(ctrl, method = "parego")
 
 or = mbo(obj.fun, par.set, learner = lrn, control = ctrl, show.info = TRUE)
 
-plot(or, alpha = TRUE, infill.crit = "ei", log.infill.crit = FALSE, pause = pause)
+plot(or, pause = pause)
