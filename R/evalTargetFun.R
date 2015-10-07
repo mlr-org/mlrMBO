@@ -22,7 +22,7 @@
 #   List of extra information to be logged in \code{opt.path}.
 # @return [\code{numeric} | \code{matrix}] Numeric vector of y-vals or matrix
 #   (for multi-criteria problems).
-evalTargetFun.OptState = function(opt.state, xs, extras) {
+evalTargetFun.OptState = function(opt.state, xs, extras, xs.times = NULL) {
 
   opt.problem = getOptStateOptProblem(opt.state)
   par.set = getOptProblemParSet(opt.problem)
@@ -37,6 +37,26 @@ evalTargetFun.OptState = function(opt.state, xs, extras) {
   num.format.string = paste("%s = ", num.format, sep = "")
   dobs = ensureVector(asInteger(getOptStateLoop(opt.state)), n = nevals, cl = "integer")
   imputeY = control$impute.y.fun
+
+  #filter xs to smart scheduling rule (not for init.design)
+  if (!is.null(xs.times) && control$smart.schedule > 1L) {
+    # we suppose that xs is sorted after criteria value
+    occupied.time = integer(length = control$smart.schedule)
+    walltime = xs.times[1L]
+    i = 1L
+    del.xs = integer()
+    while(walltime - min(occupied.time) >= min(xs.times)) {
+      for (j in seq_along(control$smart.schedule)) {
+        if (walltime - occupied.time[j] >= xs.times[i]) {
+          occupied.time[j] = occupied.time[j] + xs.times[i]
+        } else {
+          del.xs = c(del.xs, i)
+        }
+      }
+      i = i + 1L
+    }
+    xs = xs[(-1) * del.xs]
+  }
 
   # trafo - but we only want to use the Trafo for function eval, not for logging
   xs.trafo = lapply(xs, trafoValue, par = par.set)

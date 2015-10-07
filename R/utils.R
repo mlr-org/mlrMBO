@@ -39,7 +39,7 @@ evalProposedPoints.OptState = function(opt.state, prop) {
   )
   xs = dfRowsToList(prop$prop.points, par.set)
   xs = lapply(xs, repairPoint, par.set = par.set)
-  evalTargetFun.OptState(opt.state, xs = xs, extras = extras)
+  evalTargetFun.OptState(opt.state, xs = xs, extras = extras, xs.times = prop$time.predictions)
 }
 
 # for Parego: calculate all integer vectors of length k with sum n

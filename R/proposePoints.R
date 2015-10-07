@@ -57,5 +57,11 @@ proposePoints.OptState = function(opt.state){
   if (control$filter.proposed.points) {
     res = filterProposedPoints(res, opt.state)
   }
+
+  if (control$smart.schedule > 1L) {
+    time.model = getOptStateTimeModel(opt.state)
+    time.predictions = getPredictionResponse(predict(time.model, newdata = res$prop.points))
+    res$time.predictions = time.predictions
+  }
   res
 }
