@@ -1,5 +1,13 @@
-# The Tuning Result keeps all the things we want to later give back to the user
-# It is an enviroment and it is always pointed at by the OptState.
+#' @title OptResult object.
+#' @decription
+#' The OptResult stores all entities which are not needed while optimizing but are needed to build the final result.
+#' It can contains fitted surrogate models at certain times as well as resample objects.
+#' When the optimization ended it will contain the [\code{MBOResult}].
+#' @name OptResult
+#' @rdname OptResult
+NULL
+
+
 # @param stored.models [\code{list()}]\cr
 #    A list of all models which we wanted to store during the tuning process.
 #    Be aware that the true model is in \code{getOptResultStoredModels[[i]]$model}.

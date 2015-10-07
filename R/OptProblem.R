@@ -1,5 +1,11 @@
-# The OptProblem contains all the constants wich define a OptProblem within our MBO Steps.
-# It is an enviroment and is always pointed at by the OptState.
+#' @title OptProblem object.
+#' @decription
+#' The OptProblem contains all the constants values wich define a OptProblem within our MBO Steps.
+#' It is an enviroment and is always pointed at by the OptState.
+#' @name OptProblem
+#' @rdname OptProblem
+NULL
+
 # @param fun [\code{function(x, ...)}]\cr
 #   Fitness function to minimize. The first argument has to be a list of values.
 #   The function has to return a single numerical value.
