@@ -110,6 +110,11 @@
 #'   Default is \code{FALSE}.
 #' @param output.num.format [\code{logical(1)}]\cr
 #'   Format string for the precision of the numeric output of mbo.
+#' @param smart.schedule [\code{integer(1)}]\cr
+#'   If > 1 we try to schedule the proposed points in a smart way on the given numbers of threads.
+#'   You need to set the value for \code{propose.points} higher then the number of available cores. 
+#'   Not all proposed points will be evaluated.
+#'   Default is \code{FALSE}.
 #' @return [\code{\link{MBOControl}}].
 #' @aliases MBOControl
 #' @export
@@ -131,7 +136,8 @@ makeMBOControl = function(number.of.targets = 1L,
   resample.desc = makeResampleDesc("CV", iter = 10),
   resample.measures = list(mse),
   on.learner.error = "warn", show.learner.output = FALSE,
-  output.num.format = "%.3g"
+  output.num.format = "%.3g",
+  smart.schedule = 1L
 ) {
 
   number.of.targets = asInt(number.of.targets, lower = 1L)
@@ -211,6 +217,7 @@ makeMBOControl = function(number.of.targets = 1L,
   assertChoice(on.learner.error, choices = c("warn", "quiet", "stop"))
   assertFlag(show.learner.output)
   assertString(output.num.format)
+  assertInteger(smart.schedule)
 
   control = makeS3Obj("MBOControl",
     minimize = minimize,
@@ -240,6 +247,7 @@ makeMBOControl = function(number.of.targets = 1L,
     on.learner.error = on.learner.error,
     show.learner.output = show.learner.output,
     output.num.format = output.num.format,
+    smart.schedule = smart.schedule,
     multifid = FALSE
   )
 
