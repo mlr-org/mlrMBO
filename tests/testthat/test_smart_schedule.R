@@ -1,6 +1,31 @@
-context("multifid")
+test_that("smart.schedule works", {
+  set.seed(1)
+  objfun = function(x) {
+    x = x$x
+    assertNumeric(x, len = 1, lower = 0, upper = 10)
+    Sys.sleep(0.5*sin(x)+0.5)
+    (x-3)^2 + 10*sin(x*2)
+  }
+  
+  par.set = makeParamSet(
+    makeNumericParam("x", lower = 0, upper = 10)
+  )
+  
+  control = makeMBOControl(
+    init.design.points = 3L,
+    iters = 4L,
+    propose.points = 12L,
+    smart.schedule = 4L,
+  )
+  
+  control = setMBOControlInfill(control = control, crit = "lcb")
+  
+  surrogat.learner = makeLearner("regr.randomForest", predict.type = "se")
+  result = mbo(fun = objfun, par.set = par.set, learner = surrogat.learner, control = control)
+  
+})
 
-test_that("basic multifid works", {
+test_that("multifid works with smart.scheduling", {
   set.seed(1)
   objfun = function(x) {
     lvl.par.val = x$.multifid.lvl
@@ -8,20 +33,22 @@ test_that("basic multifid works", {
     assertNumeric(x, len = 1, lower = 0, upper = 10)
     3 - lvl.par.val + 0.5*x 
   }
-
+  
   par.set = makeParamSet(
     makeNumericParam("x", lower = 0, upper = 10)
   )
-
+  
   control = makeMBOControl(
     init.design.points = 9L,
     init.design.fun = maximinLHS,
     iters = 5L,
     on.learner.error = "stop",
     show.learner.output = FALSE,
+    propose.points = 12L,
+    smart.schedule = 4L,
   )
   control = setMBOControlInfill(control = control, 
-                                crit = "ei",
+                                crit = "lcb",
                                 opt = "focussearch",
                                 opt.restarts = 1L,
                                 opt.focussearch.maxit = 1L,
@@ -34,11 +61,11 @@ test_that("basic multifid works", {
                                   costs = 1:3,
                                   lvls = c(0.1, 0.5, 1),
                                   cor.grid.points = 40L)
-
+  
   surrogat.learner = makeLearner("regr.lm", predict.type = "se")
   result = mbo(fun = objfun, par.set = par.set, learner = surrogat.learner, control = control)
   expect_true(result$y < 0.5)
-
+  
   ### remove cots so time.model will be estimated
   control$multifid.costs = NULL
   objfun.delay = function(x) {

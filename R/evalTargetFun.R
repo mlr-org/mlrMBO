@@ -42,20 +42,29 @@ evalTargetFun.OptState = function(opt.state, xs, extras, xs.times = NULL) {
   if (!is.null(xs.times) && control$smart.schedule > 1L) {
     # we suppose that xs is sorted after criteria value
     occupied.time = integer(length = control$smart.schedule)
-    walltime = xs.times[1L]
-    i = 1L
+    t.max = xs.times[1L]
+    print(xs.times)  
+    catf("t.max %f", t.max)
     del.xs = integer()
-    while(walltime - min(occupied.time) >= min(xs.times)) {
-      for (j in seq_along(control$smart.schedule)) {
-        if (walltime - occupied.time[j] >= xs.times[i]) {
+    for (i in seq_along(xs.times)) {
+      catf("Job %i", i)
+      print(occupied.time)
+      scheduled = FALSE
+      for (j in seq_len(control$smart.schedule)) {
+        if (t.max - occupied.time[j] >= xs.times[i]) {
+          catf("Schedule job %i on node %i", i, j)
           occupied.time[j] = occupied.time[j] + xs.times[i]
-        } else {
-          del.xs = c(del.xs, i)
+          scheduled = TRUE
+          break()
         }
       }
-      i = i + 1L
+      if (!scheduled) {
+        catf("Drop job %i with runtime %f", i, xs.times[i])
+        del.xs = c(del.xs, i)
+      }
     }
-    xs = xs[(-1) * del.xs]
+    xs = xs[setdiff(seq_along(xs),del.xs)]
+    nevals = length(xs)
   }
 
   # trafo - but we only want to use the Trafo for function eval, not for logging
