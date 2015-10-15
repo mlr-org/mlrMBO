@@ -5,7 +5,7 @@ getExtras = function(n, prop, train.time, control) {
   if (is.null(prop)) {
     k = ifelse(control$number.of.targets > 1L && control$multicrit.method == "mspot", control$number.of.targets + 1, 1L)
     prop = list(crit.vals = matrix(NA_real_, nrow = n, ncol = k), propose.time = NA_real_, errors.model = NA_character_,
-      filter.replace = rep(NA, n))
+      filter.replace = rep(NA, n), predicted.time = NA_real_)
   }
   exs = vector("list", n)
   errs = prop$errors.model
@@ -40,6 +40,10 @@ getExtras = function(n, prop, train.time, control) {
     # if we filtered proposed points, store flag
     if (control$filter.proposed.points) {
       ex$filter.replace = prop$filter.replace[i]
+    }
+    # if we use scheduling, store predicted train.times
+    if (control$schedule.method == "smartParallelMap") {
+      ex$predicted.time = prop$predicted.time[i]
     }
     ex$train.time = if (i == 1) train.time else NA_real_
     ex$propose.time = NA_real_
