@@ -60,8 +60,8 @@ proposePoints.OptState = function(opt.state){
 
   if (control$schedule.nodes > 1L) {
     time.model = getOptStateTimeModel(opt.state)
-    time.predictions = getPredictionResponse(predict(time.model, newdata = res$prop.points))
-    res$time.predictions = time.predictions
+    predicted.time = getPredictionResponse(predict(time.model, newdata = res$prop.points))
+    res$predicted.time = predicted.time
   }
   res
 }
