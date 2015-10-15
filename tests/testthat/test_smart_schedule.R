@@ -1,9 +1,9 @@
-test_that("smart.schedule works", {
+test_that("smart schedule works", {
   set.seed(1)
   objfun = function(x) {
     x = x$x
     assertNumeric(x, len = 1, lower = 0, upper = 10)
-    Sys.sleep(0.5*sin(x)+0.5)
+    Sys.sleep(0.1*(sin(x)+1))
     (x-3)^2 + 10*sin(x*2)
   }
   
@@ -13,24 +13,25 @@ test_that("smart.schedule works", {
   
   control = makeMBOControl(
     init.design.points = 3L,
-    iters = 4L,
-    propose.points = 12L,
-    smart.schedule = 4L,
+    iters = 3L,
+    propose.points = 9L,
+    schedule.nodes = 3L,
   )
   
   control = setMBOControlInfill(control = control, crit = "lcb")
   
-  surrogat.learner = makeLearner("regr.randomForest", predict.type = "se")
+  surrogat.learner = makeLearner("regr.randomForest", predict.type = "se", ntree = 50)
   result = mbo(fun = objfun, par.set = par.set, learner = surrogat.learner, control = control)
   
 })
 
-test_that("multifid works with smart.scheduling", {
+test_that("multifid works with smart scheduling", {
   set.seed(1)
   objfun = function(x) {
     lvl.par.val = x$.multifid.lvl
     x = x$x
     assertNumeric(x, len = 1, lower = 0, upper = 10)
+    Sys.sleep(0.1*(sin(x)+1))
     3 - lvl.par.val + 0.5*x 
   }
   
@@ -44,8 +45,8 @@ test_that("multifid works with smart.scheduling", {
     iters = 5L,
     on.learner.error = "stop",
     show.learner.output = FALSE,
-    propose.points = 12L,
-    smart.schedule = 4L,
+    propose.points = 2L,
+    schedule.nodes = 1L,
   )
   control = setMBOControlInfill(control = control, 
                                 crit = "lcb",

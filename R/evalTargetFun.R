@@ -1,28 +1,16 @@
 # Evaluates target fitness function on given set of points.
 #
-# @param fun [\code{function(x, ...)}}]\cr
-#   Fitness function to optimize.
-# @param par.set [\code{param.set}]\cr
-#   Parameter set.
-# @param dobs [\code{integer}]\cr
-#   Dob values (date of birth) for \code{xs}, same length or 1.
+# @param opt.state [\code{OptState}]\cr
 # @param xs [\code{list}]\cr
 #   List of points.
-# @param opt.path [\code{\link[ParamHelpers]{optPath}}]\cr
-#   Optimization path.
-# @param control [\code{\link{MBOControl}}]\cr
-#   MBO control object.
-# @param show.info [\code{logical(1)}]\cr
-#   Show info or not?
-# @param oldopts [\code{list}]\cr
-#   Old options for mlr.
-# @param more.args [\code{list}]\cr
-#   Further parameters for target function.
 # @param extras [\code{list}]\cr
 #   List of extra information to be logged in \code{opt.path}.
+# @param xs.times [\code{numeric}] \cr
+#   A vector of the same length as \code{xs} giving the estimated times for each evaluation of \code{x}.
+# @param xs.priorities [\code{numeric}] \cr
 # @return [\code{numeric} | \code{matrix}] Numeric vector of y-vals or matrix
 #   (for multi-criteria problems).
-evalTargetFun.OptState = function(opt.state, xs, extras, xs.times = NULL) {
+evalTargetFun.OptState = function(opt.state, xs, extras, xs.times = NULL, xs.priorities = NULL) {
 
   opt.problem = getOptStateOptProblem(opt.state)
   par.set = getOptProblemParSet(opt.problem)
@@ -31,74 +19,46 @@ evalTargetFun.OptState = function(opt.state, xs, extras, xs.times = NULL) {
   oldopts = getOptProblemOldopts(opt.problem)
 
   # short names and so on
-  nevals = length(xs)
   ny = control$number.of.targets
   num.format = control$output.num.format
   num.format.string = paste("%s = ", num.format, sep = "")
-  dobs = ensureVector(asInteger(getOptStateLoop(opt.state)), n = nevals, cl = "integer")
   imputeY = control$impute.y.fun
 
-  #filter xs to smart scheduling rule (not for init.design)
-  if (!is.null(xs.times) && control$smart.schedule > 1L) {
-    # we suppose that xs is sorted after criteria value
-    occupied.time = integer(length = control$smart.schedule)
-    t.max = xs.times[1L]
-    print(xs.times)  
-    catf("t.max %f", t.max)
-    del.xs = integer()
-    for (i in seq_along(xs.times)) {
-      catf("Job %i", i)
-      print(occupied.time)
-      scheduled = FALSE
-      for (j in seq_len(control$smart.schedule)) {
-        if (t.max - occupied.time[j] >= xs.times[i]) {
-          catf("Schedule job %i on node %i", i, j)
-          occupied.time[j] = occupied.time[j] + xs.times[i]
-          scheduled = TRUE
-          break()
-        }
-      }
-      if (!scheduled) {
-        catf("Drop job %i with runtime %f", i, xs.times[i])
-        del.xs = c(del.xs, i)
-      }
-    }
-    xs = xs[setdiff(seq_along(xs),del.xs)]
-    nevals = length(xs)
-  }
-
-  # trafo - but we only want to use the Trafo for function eval, not for logging
+    # trafo - but we only want to use the Trafo for function eval, not for logging
   xs.trafo = lapply(xs, trafoValue, par = par.set)
 
   # function to measure of fun call
-    wrapFun = function(x) {
-      st = proc.time()
-      y = do.call(getOptProblemFun(opt.problem), insert(list(x = x), getOptProblemMoreArgs(opt.problem)))
-      user.extras = list()
-      # here we extract additional stuff which the user wants to log in the opt path
-      if (hasAttributes(y, "extras")) {
-        user.extras = attr(y, "extras")
-        y = setAttribute(y, "extras", NULL)
-      }
-      st = proc.time() - st
-      list(y = y, time = st[3], user.extras = user.extras)
+  wrapFun = function(x) {
+    st = proc.time()
+    y = do.call(getOptProblemFun(opt.problem), insert(list(x = x), getOptProblemMoreArgs(opt.problem)))
+    user.extras = list()
+    # here we extract additional stuff which the user wants to log in the opt path
+    if (hasAttributes(y, "extras")) {
+      user.extras = attr(y, "extras")
+      y = setAttribute(y, "extras", NULL)
     }
+    st = proc.time() - st
+    list(y = y, time = st[3], user.extras = user.extras)
+  }
+
+  # restore mlr configuration
+  configureMlr(on.learner.error = oldopts[["ole"]], show.learner.output = oldopts[["slo"]])
+
+  scheduleFunction = switch(control$schedule.method,
+    smartParallelMap = evalScheduleSmartParallelMap,
+    evalScheduleParallelMap
+  )
+
+  res = scheduleFunction(wrapFun = wrapFun, xs = xs.trafo, xs.times = xs.times, xs.priorities = xs.priorities, opt.state = opt.state)
 
   # do we have a valid y object?
   isYValid = function(y) {
     !is.error(y) && is.numeric(y) && (length(y) == ny) && !any(is.na(y) | is.nan(y) | is.infinite(y))
   }
 
-  # restore mlr configuration
-  configureMlr(on.learner.error = oldopts[["ole"]], show.learner.output = oldopts[["slo"]])
-
-  # return error objects if we impute
-  res = parallelMap(wrapFun, xs.trafo, level = "mlrMBO.feval",
-    impute.error = if (is.null(imputeY)) NULL else identity)
-
   # loop evals and to some post-processing
-  for (i in 1:nevals) {
-    r = res[[i]]; x = xs[[i]]; x.trafo = xs.trafo[[i]]; dob = dobs[i]
+  for (i in seq_along(res)) {
+    r = res[[i]]; x = xs[[i]]; x.trafo = xs.trafo[[i]]; dob = asInteger(getOptStateLoop(opt.state))
     # y is now either error object or return val
     if (is.error(r)) {
       y = r; ytime = NA_real_; errmsg = r$message; user.extras = list()
