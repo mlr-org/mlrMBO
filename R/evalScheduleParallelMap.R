@@ -13,16 +13,18 @@
 #   List containing the results of \code{wrapFun} for each item in xs
 
 
-evalScheduleParallelMap = function(wrapFun, xs, xs.times = NULL, xs.priorities = NULL, opt.state) {
+evalScheduleParallelMap = function(wrapFun, xs, xs.times = NULL, xs.priorities = NULL, extras = NULL, opt.state) {
   # return error objects if we impute
   imputeY = getOptProblemControl(
     getOptStateOptProblem(opt.state))$impute.y.fun
-  parallelMap(wrapFun, xs, level = "mlrMBO.feval",
+  
+  funRes = parallelMap(wrapFun, xs, level = "mlrMBO.feval",
     impute.error = if (is.null(imputeY)) NULL else identity)
 
+  list(funRes = funRes, xs = xs, extras = extras, dob = asInteger(getOptStateLoop(opt.state)))
 }
 
-evalScheduleSmartParallelMap = function(wrapFun, xs, xs.times = NULL, xs.priorities = NULL, opt.state) {
+evalScheduleSmartParallelMap = function(wrapFun, xs, xs.times = NULL, xs.priorities = NULL, extras = NULL, opt.state) {
 
   schedule.nodes = getOptProblemControl(
     getOptStateOptProblem(opt.state))$schedule.nodes
@@ -50,8 +52,11 @@ evalScheduleSmartParallelMap = function(wrapFun, xs, xs.times = NULL, xs.priorit
       del.xs = c(del.xs, i)
     }
   }
-  xs = xs[setdiff(seq_along(xs),del.xs)]
 
-  evalScheduleParallelMap(wrapFun = wrapFun, xs = xs, xs.times = xs.times, xs.priorities = xs.priorities, opt.state = opt.state)
+  work.inds = setdiff(seq_along(xs),del.xs)
+  xs = xs[work.inds]
+  extras = extras[work.inds]
+
+  evalScheduleParallelMap(wrapFun = wrapFun, xs = xs, xs.times = xs.times, xs.priorities = xs.priorities, extras = extras, opt.state = opt.state)
 
 }

@@ -38,7 +38,7 @@ evalTargetFun.OptState = function(opt.state, xs, extras, xs.times = NULL, xs.pri
       y = setAttribute(y, "extras", NULL)
     }
     st = proc.time() - st
-    list(x = x, y = y, time = st[3], user.extras = user.extras)
+    list(y = y, time = st[3], user.extras = user.extras)
   }
 
   # restore mlr configuration
@@ -49,10 +49,12 @@ evalTargetFun.OptState = function(opt.state, xs, extras, xs.times = NULL, xs.pri
     evalScheduleParallelMap
   )
 
-  res = scheduleFunction(wrapFun = wrapFun, xs = xs.trafo, xs.times = xs.times, xs.priorities = xs.priorities, opt.state = opt.state)
+  res = scheduleFunction(wrapFun = wrapFun, xs = xs.trafo, xs.times = xs.times, xs.priorities = xs.priorities, extras = extras, opt.state = opt.state)
+
   #extract the treated x variables
-  xs = extractSubList(res, "x", simplify = FALSE)
+  xs = res$xs
   xs.trafo = lapply(xs, trafoValue, par = par.set)
+  extras = res$extras
 
   # do we have a valid y object?
   isYValid = function(y) {
@@ -60,8 +62,8 @@ evalTargetFun.OptState = function(opt.state, xs, extras, xs.times = NULL, xs.pri
   }
 
   # loop evals and to some post-processing
-  for (i in seq_along(res)) {
-    r = res[[i]]; x = xs[[i]]; x.trafo = xs.trafo[[i]]; dob = asInteger(getOptStateLoop(opt.state))
+  for (i in seq_along(res$funRes)) {
+    r = res$funRes[[i]]; x = xs[[i]]; x.trafo = xs.trafo[[i]]; dob = res$dob
     # y is now either error object or return val
     if (is.error(r)) {
       y = r; ytime = NA_real_; errmsg = r$message; user.extras = list()
@@ -109,5 +111,5 @@ evalTargetFun.OptState = function(opt.state, xs, extras, xs.times = NULL, xs.pri
   configureMlr(on.learner.error = control$on.learner.error,
     show.learner.output = control$show.learner.output)
 
-  extractSubList(res, "y")
+  extractSubList(res$funRes, "y")
 }
