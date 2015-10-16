@@ -116,7 +116,9 @@
 #'   If > 1 we try to schedule the proposed points in a smart way on the given numbers of threads.
 #'   You need to set the value for \code{propose.points} higher then the number of available cores. 
 #'   Not all proposed points will be evaluated.
-#'   Default is \code{FALSE}.
+#'   Default is \dQuote{1}.
+#' @param schedule.priority [\code{character(1)}]\cr
+#'    How should the sheduler priorotize points? The options are \dQuote{infill}, \dQuote{explore}, \dQuote{exploit} and \dQuote{balanced}. Currently this only makes sense together with \dQuote{lcb} as infill.crit.
 #' @return [\code{\link{MBOControl}}].
 #' @aliases MBOControl
 #' @export
@@ -140,7 +142,8 @@ makeMBOControl = function(number.of.targets = 1L,
   on.learner.error = "warn", show.learner.output = FALSE,
   output.num.format = "%.3g",
   schedule.method = "none",
-  schedule.nodes = 1L
+  schedule.nodes = 1L,
+  schedule.priority = "infill"
 ) {
 
   number.of.targets = asInt(number.of.targets, lower = 1L)
@@ -220,8 +223,9 @@ makeMBOControl = function(number.of.targets = 1L,
   assertChoice(on.learner.error, choices = c("warn", "quiet", "stop"))
   assertFlag(show.learner.output)
   assertString(output.num.format)
-  assertString(schedule.method)
-  assertInteger(schedule.nodes)
+  assertChoice(schedule.method, choices = c("none", "smartParallelMap"))
+  schedule.nodes = asInteger(schedule.nodes, upper = propose.points)
+  assertChoice(schedule.priority, choices = c("infill", "explore", "exploit", "balanced"))
 
   control = makeS3Obj("MBOControl",
     minimize = minimize,
@@ -253,6 +257,7 @@ makeMBOControl = function(number.of.targets = 1L,
     output.num.format = output.num.format,
     schedule.method = schedule.method,
     schedule.nodes = schedule.nodes,
+    schedule.priority = schedule.priority,
     multifid = FALSE
   )
 
