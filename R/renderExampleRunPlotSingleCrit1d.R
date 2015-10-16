@@ -36,7 +36,7 @@ renderExampleRunPlot1d = function(x, iter,
   }
     
   # we need to maximize expected improvement
-  if (name.crit %in% c("ei")) {
+  if (name.crit %in% c("ei", "aei", "mfEI")) {
     opt.direction = -1
   } else {
     opt.direction = 1
