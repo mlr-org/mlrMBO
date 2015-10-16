@@ -38,7 +38,7 @@ evalTargetFun.OptState = function(opt.state, xs, extras, xs.times = NULL, xs.pri
       y = setAttribute(y, "extras", NULL)
     }
     st = proc.time() - st
-    list(y = y, time = st[3], user.extras = user.extras)
+    list(x = x, y = y, time = st[3], user.extras = user.extras)
   }
 
   # restore mlr configuration
@@ -50,6 +50,9 @@ evalTargetFun.OptState = function(opt.state, xs, extras, xs.times = NULL, xs.pri
   )
 
   res = scheduleFunction(wrapFun = wrapFun, xs = xs.trafo, xs.times = xs.times, xs.priorities = xs.priorities, opt.state = opt.state)
+  #extract the treated x variables
+  xs = extractSubList(res, "x", simplify = FALSE)
+  xs.trafo = lapply(xs, trafoValue, par = par.set)
 
   # do we have a valid y object?
   isYValid = function(y) {
