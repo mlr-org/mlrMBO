@@ -1,3 +1,4 @@
+devtools::load_all("~/gits/mlr")
 devtools::load_all()
 #library(mlrMBO)
 library(parallelMap)
@@ -12,12 +13,14 @@ libsvm.read = function(file) {
   dataframe$Y = dataset$y
   dataframe
 }
-a9a = libsvm.read(file = "../data/a9a")
+a9a = libsvm.read(file = "../data/a4a")
 task = makeClassifTask(id = "a9a", data = a9a, target = "Y")
 
 learner = makeModelMultiplexer(list(
   makeLearner("classif.randomForest", id = "classif.randomForest"),
-  makeLearner("classif.svm", id = "classif.svm.radial", kernel = "radial")))
+  makeLearner("classif.svm", id = "classif.svm.radial", kernel = "radial"),
+  makeLearner("classif.fnn", id = "classif.fnn") #as soon as I add this (even without the ParamSet) it generates the generateDesign warning -- seems right
+))
 
 ps.hp1 = makeModelMultiplexerParamSet(
   learner, 
@@ -26,19 +29,21 @@ ps.hp1 = makeModelMultiplexerParamSet(
     makeNumericParam("gamma", lower = -15, upper = 15, trafo = function(x) 2^x)),
   classif.randomForest = makeParamSet(
     makeIntegerParam("mtry", lower = floor((getTaskNFeats(task)^1/4)), upper = ceiling((getTaskNFeats(task))^1/1.5)),
-    makeIntegerParam("nodesize", lower = 1, upper = 10)#,
-    #makeIntegerParam("sampsize", lower = floor(.3*getTaskDescription(task)$size), upper = floor(getTaskDescription(task)$size))
+    makeIntegerParam("nodesize", lower = 1, upper = 10)),
+  classif.fnn = makeParamSet(
+    makeIntegerParam("k", lower = 1, upper = 10)
   )
 )
 
 
 mbo.ctrl = makeMBOControl(
   noisy = TRUE, 
-  iters = 40, 
-  init.design.points = 20,
+  iters = 5, 
+  init.design.points = 10,
   final.method = "best.predicted",
-  propose.points = 10L,
-  schedule.nodes = 4L)
+  propose.points = 20L,
+  schedule.nodes = 3L,
+  schedule.method = "smartParallelMap")
 
 mbo.ctrl = setMBOControlInfill(
   mbo.ctrl, crit = "lcb",
@@ -48,16 +53,16 @@ mbo.ctrl = setMBOControlInfill(
 
 mbo.ctrl.unsmart = mbo.ctrl
 mbo.ctrl.unsmart$propose.points = mbo.ctrl.unsmart$schedule.nodes
-mbo.ctrl.unsmart$schedule.nodes = 1L
+mbo.ctrl.unsmart$schedule.method = "parallelMap"
 
-surrogate.learner = makeLearner("regr.randomForest", predict.type = "se")
+surrogate.learner = makeLearner("regr.btgp", predict.type = "se")
 surrogate.learner = makeImputeWrapper(surrogate.learner, classes = list(numeric = imputeConstant(10*2^15), factor = imputeConstant("NA"), integer = imputeConstant(10*2^15)))
 
 mlr.ctrl = mlr:::makeTuneControlMBO(same.resampling.instance = FALSE, learner = surrogate.learner, mbo.control = mbo.ctrl, mbo.keep.result = TRUE, continue = TRUE)
 mlr.ctrl.unsmart = mlr:::makeTuneControlMBO(same.resampling.instance = FALSE, learner = surrogate.learner, mbo.control = mbo.ctrl.unsmart, mbo.keep.result = TRUE, continue = TRUE)
 
 inner.rdesc = makeResampleDesc("Holdout")
-outer.rdesc = makeResampleDesc("CV", iter = 2)
+outer.rdesc = makeResampleDesc("CV", iter = 3)
 
 lrn.tuned = makeTuneWrapper(learner, inner.rdesc, par.set = ps.hp1, control = mlr.ctrl, show.info = TRUE)
 lrn.tuned.unsmart = makeTuneWrapper(learner, inner.rdesc, par.set = ps.hp1, control = mlr.ctrl.unsmart, show.info = TRUE)
@@ -65,7 +70,9 @@ lrn.tuned.unsmart = makeTuneWrapper(learner, inner.rdesc, par.set = ps.hp1, cont
 #r1 = resample(learner = setHyperPars(learner, selected.learner = "classif.randomForest"), task = task, resampling = inner.rdesc)
 #r2 = resample(learner = setHyperPars(learner, selected.learner = "classif.svm.radial"), task = task, resampling = inner.rdesc)
 
-parallelStartMulticore(cpus = 4L, level = "mlrMBO.feval")
+parallelStartMulticore(cpus = mbo.ctrl$schedule.nodes, level = "mlrMBO.feval")
+#parallelStartBatchJobs(bj.resources = list(walltime = 60^2, ppn = 2, memory = 8000), level = "mlrMBO.feval")
+#parallelStartMPI(level = "mlrMBO.feval", load.balancing = TRUE)
 set.seed(1)
 res = resample(lrn.tuned, task, outer.rdesc, measures = list(mmce, timetrain), extract = getTuneResult)
 set.seed(1)
