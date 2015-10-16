@@ -16,7 +16,9 @@ makeMBOControl(number.of.targets = 1L, minimize = rep(TRUE,
   "mlr_run.RData"), store.model.at = iters + 1, resample.at = integer(0),
   resample.desc = makeResampleDesc("CV", iter = 10),
   resample.measures = list(mse), on.learner.error = "warn",
-  show.learner.output = FALSE, output.num.format = "\%.3g")
+  show.learner.output = FALSE, output.num.format = "\%.3g",
+  schedule.method = "none", schedule.nodes = 1L,
+  schedule.priority = "infill")
 }
 \arguments{
 \item{number.of.targets}{[\code{integer(1)}]\cr
@@ -155,6 +157,18 @@ Default is \code{FALSE}.}
 
 \item{output.num.format}{[\code{logical(1)}]\cr
 Format string for the precision of the numeric output of mbo.}
+
+\item{schedule.method}{[\code{character(1)}]\cr
+Choose wich scheduling method for multipoint evaluation should be used. Default is none. Another option is smartParallelMap.}
+
+\item{schedule.nodes}{[\code{integer(1)}]\cr
+If > 1 we try to schedule the proposed points in a smart way on the given numbers of threads.
+You need to set the value for \code{propose.points} higher then the number of available cores.
+Not all proposed points will be evaluated.
+Default is \dQuote{1}.}
+
+\item{schedule.priority}{[\code{character(1)}]\cr
+How should the sheduler priorotize points? The options are \dQuote{infill}, \dQuote{explore}, \dQuote{exploit} and \dQuote{balanced}. Currently this only makes sense together with \dQuote{lcb} as infill.crit.}
 }
 \value{
 [\code{\link{MBOControl}}].
