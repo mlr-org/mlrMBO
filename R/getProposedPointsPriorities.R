@@ -8,7 +8,7 @@ getProposedPointsPriorities = function(prop, xs, opt.state) {
     prop$multipoint.lcb.lambdas[order(prop$multipoint.lcb.lambdas)]
   } else if (control$multipoint.method == "lcb" && control$schedule.priority == "balanced") {
     #highest priority for those with lambda close to 1
-    prop$multipoint.lcb.lambdas[order(abs(prop$multipoint.lcb.lambdas-1))]
+    prop$multipoint.lcb.lambdas[order(abs(log(prop$multipoint.lcb.lambdas)-log(1)))]
   } else if (control$schedule.priority == "infill"){
     prop$crit.vals
   } else {

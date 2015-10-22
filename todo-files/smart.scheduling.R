@@ -1,7 +1,17 @@
-devtools::load_all("~/gits/mlr")
-devtools::load_all()
-#library(mlrMBO)
+#devtools::load_all("~/gits/mlr")
+#devtools::load_all()
+library(mlrMBO)
 library(parallelMap)
+library(BatchExperiments)
+
+reg = makeExperimentRegistry(
+  id = "mbo_scheduling",
+  file.dir = "~/mbo_scheduling/",
+  packages = c("mlr", "mlrMBO", "parallelMap"),
+  multiple.result.files = FALSE,
+  seed = 54119
+)
+
 #task einlesen
 libsvm.read = function(file) {
   library("e1071")
@@ -13,7 +23,7 @@ libsvm.read = function(file) {
   dataframe$Y = dataset$y
   dataframe
 }
-a9a = libsvm.read(file = "../data/a4a")
+a9a = libsvm.read(file = "../data/a9a")
 task = makeClassifTask(id = "a9a", data = a9a, target = "Y")
 
 learner = makeModelMultiplexer(list(
@@ -38,11 +48,11 @@ ps.hp1 = makeModelMultiplexerParamSet(
 
 mbo.ctrl = makeMBOControl(
   noisy = TRUE, 
-  iters = 5, 
-  init.design.points = 10,
+  iters = 50, 
+  init.design.points = 30,
   final.method = "best.predicted",
-  propose.points = 20L,
-  schedule.nodes = 3L,
+  propose.points = 30L,
+  schedule.nodes = 7L,
   schedule.method = "smartParallelMap")
 
 mbo.ctrl = setMBOControlInfill(
@@ -51,34 +61,37 @@ mbo.ctrl = setMBOControlInfill(
   opt.focussearch.maxit = 3,
   opt.focussearch.points = 1000)
 
-mbo.ctrl.unsmart = mbo.ctrl
-mbo.ctrl.unsmart$propose.points = mbo.ctrl.unsmart$schedule.nodes
-mbo.ctrl.unsmart$schedule.method = "parallelMap"
+schedule.methods = c("none", rep("smartParallelMap", times = 4))
+schedule.priorities = c("infill", "infill", "explore", "exploit", "balanced")
 
-surrogate.learner = makeLearner("regr.btgp", predict.type = "se")
+surrogate.learner = makeLearner("regr.randomForest", predict.type = "se")
 surrogate.learner = makeImputeWrapper(surrogate.learner, classes = list(numeric = imputeConstant(10*2^15), factor = imputeConstant("NA"), integer = imputeConstant(10*2^15)))
 
 mlr.ctrl = mlr:::makeTuneControlMBO(same.resampling.instance = FALSE, learner = surrogate.learner, mbo.control = mbo.ctrl, mbo.keep.result = TRUE, continue = TRUE)
-mlr.ctrl.unsmart = mlr:::makeTuneControlMBO(same.resampling.instance = FALSE, learner = surrogate.learner, mbo.control = mbo.ctrl.unsmart, mbo.keep.result = TRUE, continue = TRUE)
 
-inner.rdesc = makeResampleDesc("Holdout")
-outer.rdesc = makeResampleDesc("CV", iter = 3)
+doExperiment = function(schedule.method, schedule.priority) {
+  this.mlr.ctrl = mlr.ctrl
+  this.mlr.ctrl$mbo.control$schedule.method = schedule.method
+  this.mlr.ctrl$mbo.control$schedule.priority= schedule.priority
+  
+  inner.rdesc = makeResampleDesc("Holdout")
+  outer.rdesc = makeResampleDesc("CV", iter = 3)
+  
+  lrn.tuned = makeTuneWrapper(learner, inner.rdesc, par.set = ps.hp1, control = this.mlr.ctrl, show.info = FALSE)
+  parallelStartMulticore(cpus = mbo.ctrl$schedule.nodes, level = "mlrMBO.feval")
+  set.seed(1)
+  res = resample(lrn.tuned, task, outer.rdesc, measures = list(mmce, timetrain), extract = getTuneResult)
+  parallelStop()
+  return(res)
+}
 
-lrn.tuned = makeTuneWrapper(learner, inner.rdesc, par.set = ps.hp1, control = mlr.ctrl, show.info = TRUE)
-lrn.tuned.unsmart = makeTuneWrapper(learner, inner.rdesc, par.set = ps.hp1, control = mlr.ctrl.unsmart, show.info = TRUE)
+batchMap(reg, fun = doExperiment, schedule.method = schedule.methods, schedule.priority = schedule.priorities)
 
-#r1 = resample(learner = setHyperPars(learner, selected.learner = "classif.randomForest"), task = task, resampling = inner.rdesc)
-#r2 = resample(learner = setHyperPars(learner, selected.learner = "classif.svm.radial"), task = task, resampling = inner.rdesc)
+submitJobs(reg, resources = list(walltime = 48*60^2, memory = 8000L, queue = "long_quad", ppn = 8))
+waitForJobs(reg)
 
-parallelStartMulticore(cpus = mbo.ctrl$schedule.nodes, level = "mlrMBO.feval")
-#parallelStartBatchJobs(bj.resources = list(walltime = 60^2, ppn = 2, memory = 8000), level = "mlrMBO.feval")
-#parallelStartMPI(level = "mlrMBO.feval", load.balancing = TRUE)
-set.seed(1)
-res = resample(lrn.tuned, task, outer.rdesc, measures = list(mmce, timetrain), extract = getTuneResult)
-set.seed(1)
-res.unsmart = resample(lrn.tuned.unsmart, task, outer.rdesc, measures = list(mmce, timetrain), extract = getTuneResult)
-parallelStop()
 
+stop("finished until here")
 ### Bilder machen
 
 trailingMin = function(x) {
