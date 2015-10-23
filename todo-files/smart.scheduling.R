@@ -4,13 +4,14 @@ library(mlrMBO)
 library(parallelMap)
 library(BatchExperiments)
 
-reg = makeExperimentRegistry(
+reg = makeRegistry(
   id = "mbo_scheduling",
   file.dir = "~/mbo_scheduling/",
   packages = c("mlr", "mlrMBO", "parallelMap"),
   multiple.result.files = FALSE,
   seed = 54119
 )
+#
 
 #task einlesen
 libsvm.read = function(file) {
@@ -69,7 +70,7 @@ surrogate.learner = makeImputeWrapper(surrogate.learner, classes = list(numeric 
 
 mlr.ctrl = mlr:::makeTuneControlMBO(same.resampling.instance = FALSE, learner = surrogate.learner, mbo.control = mbo.ctrl, mbo.keep.result = TRUE, continue = TRUE)
 
-doExperiment = function(schedule.method, schedule.priority) {
+doExperiment = function(schedule.method, schedule.priority, mlr.ctrl, learner, ps.hp1, mbo.ctrl, task) {
   this.mlr.ctrl = mlr.ctrl
   this.mlr.ctrl$mbo.control$schedule.method = schedule.method
   this.mlr.ctrl$mbo.control$schedule.priority= schedule.priority
@@ -85,7 +86,7 @@ doExperiment = function(schedule.method, schedule.priority) {
   return(res)
 }
 
-batchMap(reg, fun = doExperiment, schedule.method = schedule.methods, schedule.priority = schedule.priorities)
+batchMap(reg, fun = doExperiment, schedule.method = schedule.methods, schedule.priority = schedule.priorities, more.args = list(mlr.ctrl = mlr.ctrl, learner = learner, ps.hp1 = ps.hp1, mbo.ctrl = mbo.ctrl, task = task))
 
 submitJobs(reg, resources = list(walltime = 48*60^2, memory = 8000L, queue = "long_quad", ppn = 8))
 waitForJobs(reg)
