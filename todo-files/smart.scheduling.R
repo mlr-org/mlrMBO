@@ -65,13 +65,16 @@ mbo.ctrl = setMBOControlInfill(
 schedule.methods = c("none", rep("smartParallelMap", times = 4))
 schedule.priorities = c("infill", "infill", "explore", "exploit", "balanced")
 
-surrogate.learner = makeLearner("regr.randomForest", predict.type = "se")
+surrogate.learner = makeLearner("regr.randomForest", predict.type = "se", nr.of.bootstrap.samples = 20, nodesize = 2)
 surrogate.learner = makeImputeWrapper(surrogate.learner, classes = list(numeric = imputeConstant(10*2^15), factor = imputeConstant("NA"), integer = imputeConstant(10*2^15)))
 
 mlr.ctrl = mlr:::makeTuneControlMBO(same.resampling.instance = FALSE, learner = surrogate.learner, mbo.control = mbo.ctrl, mbo.keep.result = TRUE, continue = TRUE)
 
 doExperiment = function(schedule.method, schedule.priority, mlr.ctrl, learner, ps.hp1, mbo.ctrl, task) {
   this.mlr.ctrl = mlr.ctrl
+  if (schedule.method == "none") {
+    this.mlr.ctrl$mbo.control$propose.points = this.mlr.ctrl$mbo.control$schedule.nodes
+  }
   this.mlr.ctrl$mbo.control$schedule.method = schedule.method
   this.mlr.ctrl$mbo.control$schedule.priority= schedule.priority
   
