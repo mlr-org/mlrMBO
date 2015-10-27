@@ -83,7 +83,8 @@ doExperiment = function(schedule.method, schedule.priority, mlr.ctrl, learner, p
   
   lrn.tuned = makeTuneWrapper(learner, inner.rdesc, par.set = ps.hp1, control = this.mlr.ctrl, show.info = FALSE)
   parallelStartMulticore(cpus = mbo.ctrl$schedule.nodes, level = "mlrMBO.feval")
-  set.seed(1)
+  #options(mlr.debug.seed = 123L)
+  #set.seed(1)
   res = resample(lrn.tuned, task, outer.rdesc, measures = list(mmce, timetrain), extract = getTuneResult)
   parallelStop()
   return(res)
@@ -141,27 +142,56 @@ g + geom_vline(xintercept = 30 + 7 * 50) + geom_point(aes(color = schedule.prior
 g = ggplot(res.dt[dob != 0, ], aes(x = schedule.priority, fill = selected.learner))
 g + geom_hline(yintercept = 7*50) + geom_bar() + facet_grid(~iter) + ylab("runs")
 
+g = ggplot(res.dt, aes(x = dob, y = y, color = selected.learner))
+g + geom_point() + facet_grid(schedule.priority~iter)
+
 gph = function(sd) {
   diffs = sd$predicted.time - sd$exec.time
+  qs = c(0,.1,.5,.9,1)
+  quants = quantile(diffs, qs, na.rm = TRUE)
+  names(quants) = c("min","q10","median","q90","max")
   c(list(mean.diff = mean(diffs),
-         sd.diff = sd(diffs)),
-    as.list(quantile(diffs, c(0,.1,.5,.9,1), na.rm = TRUE)))
+         sd.diff = sd(diffs),
+         dob.n = nrow(sd)),
+    as.list(quants))
 }
-g = ggplot(res.dt[, gph(.SD), by = .(iter, task, schedule.method, schedule.priority, dob)], aes(x = dob, y = mean.diff, color = schedule.priority))
-g + geom_point() + geom_pointrange(aes_string(x = "dob", y = "50%", ymin = "10%", ymax = "")) facet_grid(schedule.priority~iter)
-### Bilder machen
 
-trailingMin = function(x) {
-  min.x = Inf
-  for(i in seq_along(x)){
-    if (x[i] < min.x) {
-      min.x = x[i]
-    } else {
-      x[i] = min.x
-    }
-  }
+res.dob = res.dt[, gph(.SD), by = .(iter, task, schedule.method, schedule.priority, dob, selected.learner)]
+g = ggplot(res.dob, aes(x = dob, y = mean.diff, color = selected.learner))
+g + geom_pointrange(aes(x = dob.n, y = median, ymin = q10, ymax = q90)) + facet_grid(schedule.priority~iter)
+
+g = ggplot(res.dt[, list(master.diff = (exec.time[1]-exec.time[-1])), by = .(iter, task, schedule.method, schedule.priority, dob, selected.learner)], aes(x = dob, y = master.diff, color = selected.learner))
+g + geom_point() + facet_grid(schedule.priority~iter)
+
+trailingMin = function(x, min.x = Inf) {
+  for (i in seq_along(x))
+    if (x[i] < min.x) {min.x = x[i]} else {x[i] = min.x}
   x
 }
+
+g.dt = res.dt[, list(max.exec = sum(exec.time), min.y = min(y)) , by = .(iter, task, schedule.method, schedule.priority, dob)]
+g.dt = g.dt[, list(cum.max.exec = cumsum(max.exec), min.y = trailingMin(min.y)), by = .(iter, task, schedule.method, schedule.priority)]
+g = ggplot(g.dt, aes(x = cum.max.exec, y = min.y, color = schedule.priority))
+g + geom_line() + facet_grid(.~iter)
+
+manualLoadBalancing = function(times, nodes = 7) {
+  slots = numeric(nodes)
+  slots[seq_len(nodes)] = times[seq_len(min(c(nodes, length(times))] #fill with first times
+  j = 1
+  for (i in seq_len(times)) {
+    ind = (j - 1) %% nodes + 1
+    slots[ind] = slots[ind] + times[i]
+  }
+  #maybe add another version which does not rely so much on the right order?
+  list(slot.maxtime = max(slots),
+       slot.mintime = min(slots),
+       slot.mean = mean(slots),
+       slot.freetime = sum(max(slots)-slots),
+       slot.overload = sum(slots-min(slots)))
+}
+### Bilder machen
+
+
 
 op.dfs = lapply(extractSubList(res$extract, c("mbo.result", "opt.path"), simplify = FALSE), as.data.frame)
 op.dfs.unsmart = lapply(extractSubList(res.unsmart$extract, c("mbo.result", "opt.path"), simplify = FALSE), as.data.frame)
