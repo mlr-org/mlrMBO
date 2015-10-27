@@ -96,6 +96,59 @@ waitForJobs(reg)
 
 
 stop("finished until here")
+
+### lokal einlesen
+library(data.table)
+library(BatchExperiments)
+reg = loadRegistry("~/lido/mbo_scheduling/")
+
+reducer = function(job, res) {
+  is = seq_row(res$measures.test)
+  r.dfs = lapply(is, function(i) {
+    tune.y = c(tune.y = res$extract[[i]]$mbo.result$y)
+    test.y = res$measures.test[i, -1]
+    x = res$extract[[i]]$x
+    names(x) = paste0("x.", names(x))
+    names(test.y) = paste0("test.", names(test.y))
+    op.dt = as.data.table(res$extract[[i]]$mbo.result$opt.path)
+    cbind(iter = res$measures.test[i, "iter"], op.dt, tune.y, test.y,
+          do.call(cbind, x),
+          schedule.method = res$extract[[i]]$mbo.result$control$schedule.method,
+          schedule.nodes = res$extract[[i]]$mbo.result$control$schedule.nodes,
+          schedule.priority = res$extract[[i]]$mbo.result$control$schedule.priority
+    )
+  })
+  r.dfs = rbindlist(r.dfs)
+  cbind(task = res$task.id, r.dfs)
+}
+res = reduceResultsList(reg, fun = reducer)
+res.dt = rbindlist(res)
+
+res.last.dt = res.dt[, cbind(.SD[.N, ], runs = .N), by = .(iter, task, schedule.method, schedule.priority)]
+
+g = ggplot(res.last.dt, aes(x = schedule.priority, fill = schedule.priority, y = test.mmce))
+g + geom_boxplot()
+
+g = ggplot(res.last.dt, aes(x = schedule.priority, fill = schedule.priority, y = tune.y))
+g + geom_boxplot()
+
+g = ggplot(res.last.dt, aes(x = test.timetrain, y = test.mmce))
+g + geom_point(aes(color = schedule.priority), size = 8) + geom_text(aes(label = iter))
+
+g = ggplot(res.last.dt, aes(x = runs, y = test.mmce))
+g + geom_vline(xintercept = 30 + 7 * 50) + geom_point(aes(color = schedule.priority, shape = x.selected.learner), size = 8) + geom_text(aes(label = iter))
+
+g = ggplot(res.dt[dob != 0, ], aes(x = schedule.priority, fill = selected.learner))
+g + geom_hline(yintercept = 7*50) + geom_bar() + facet_grid(~iter) + ylab("runs")
+
+gph = function(sd) {
+  diffs = sd$predicted.time - sd$exec.time
+  c(list(mean.diff = mean(diffs),
+         sd.diff = sd(diffs)),
+    as.list(quantile(diffs, c(0,.1,.5,.9,1), na.rm = TRUE)))
+}
+g = ggplot(res.dt[, gph(.SD), by = .(iter, task, schedule.method, schedule.priority, dob)], aes(x = dob, y = mean.diff, color = schedule.priority))
+g + geom_point() + geom_pointrange(aes_string(x = "dob", y = "50%", ymin = "10%", ymax = "")) facet_grid(schedule.priority~iter)
 ### Bilder machen
 
 trailingMin = function(x) {
