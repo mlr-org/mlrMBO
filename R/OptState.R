@@ -1,5 +1,5 @@
 #' @title OptState object.
-#' @decription
+#' @description
 #' The OptState is the central component of the mbo iterations. 
 #' This enviroment contains every necessary information needed during optimization in MBO. 
 #' It also links to the \code{\link{OptProblem}} and to the \code{\link{OptResult}}.
