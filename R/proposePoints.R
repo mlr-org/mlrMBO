@@ -12,44 +12,39 @@
 #   errors.models [character] : model errors, resulting in randomly proposed points.
 #                               length is one string PER PROPOSED POINT, not per element of <models>
 #                               NA if the model was Ok, or the (first) error message if some model crashed
-proposePoints.OptState = function(opt.state){ #tasks, models, par.set, control, opt.path, iter) {
+proposePoints.OptState = function(opt.state){
 
   opt.problem = getOptStateOptProblem(opt.state)
   control = getOptProblemControl(opt.problem)
-  tasks = getOptStateTasks(opt.state)
-  models = getOptStateModels(opt.state)$models
-  par.set = getOptProblemParSet(opt.problem)
-  opt.path = getOptStateOptPath(opt.state)
-  iter = getOptStateLoop(opt.state)
 
   m = control$number.of.targets
   res = NULL
   if (m == 1L && control$infill.crit != "random") {
     if (control$multifid) {
-      res = proposePointsMultiFid(models[[1L]], par.set, control, opt.path, iter)
+      res = proposePointsMultiFid(opt.state)
     } else if (is.null(control$multipoint.method)) {
-      res = proposePointsByInfillOptimization(models[[1L]], par.set, control, opt.path, iter)
+      res = proposePointsByInfillOptimization(opt.state)
     } else {
       if (control$multipoint.method == "lcb")
-        res = proposePointsParallelLCB(models, par.set, control, opt.path, iter)
+        res = proposePointsParallelLCB(opt.state)
       else if (control$multipoint.method == "cl")
-        res = proposePointsConstantLiar(models, par.set, control, opt.path, iter)
+        res = proposePointsConstantLiar(opt.state)
       else if (control$multipoint.method == "multicrit") {
-        res = proposePointsMOIMBO(models, par.set, control, opt.path, iter)
+        res = proposePointsMOIMBO(opt.state)
       }
     }
   } else if (control$infill.crit != "random"){
     if (control$multicrit.method == "parego") {
-      res = proposePointsParEGO(models, par.set, control, opt.path, iter, attr(tasks, "weight.mat"))
+      res = proposePointsParEGO(opt.state)
     } else if (control$multicrit.method == "mspot") {
-      res = proposePointsMSPOT(models, par.set, control, opt.path, iter)
+      res = proposePointsMSPOT(opt.state)
     } else if (control$multicrit.method == "dib") {
-      res = proposePointsDIB(models, par.set, control, opt.path, iter)
+      res = proposePointsDIB(opt.state)
     }
   }
   
   if (control$infill.crit == "random" || control$interleave.random.points > 0L) {
-    add = proposePointsRandom(models, par.set, control, opt.path, iter)
+    add = proposePointsRandom(opt.state)
     if (!is.null(res))
       res = joinProposedPoints(list(res, add))
     else

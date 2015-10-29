@@ -99,5 +99,5 @@ isFailureModel.MultiFidModel = function(model) {
 getLearnerProperties.MultiFidWrapper = function(learner) {
   #FIXME Not so nice workaround for the .multifid.lvl param
   #FIXME - why does only this very direct call work?
-  union("numerics", mlr:::getLearnerProperties.Learner(learner$next.learner))
+  union("numerics", mlr::getLearnerProperties(learner$next.learner))
 }

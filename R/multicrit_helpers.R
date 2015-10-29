@@ -56,7 +56,7 @@ evalCritFunForMultiCritModels = function(infill.crit.fun, points, models, contro
   crit.vals = asMatrixCols(lapply(seq_along(models), function(i) {
       # we need to make sure mininimize in control is a scalar, so we can multiply it in infill crits...
       control2$minimize = control$minimize[i]
-      infill.crit.fun(points, models[[i]], control2, par.set, design, iter)
+      infill.crit.fun(points, models[i], control2, par.set, design, iter)
   }))
 
   return(crit.vals)

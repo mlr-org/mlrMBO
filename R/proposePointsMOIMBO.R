@@ -40,13 +40,19 @@ nds_1d_selection = function(values, n = 1, index = 1, ...) {
 # Currently only numerical paramaters are handled, for them pm_operator and
 # sbx_operator from emoa are used in the EA.
 #
-proposePointsMOIMBO = function(models, par.set, control, opt.path, iter, ...) {
+proposePointsMOIMBO = function(opt.state, ...) {
+
+  opt.problem = getOptStateOptProblem(opt.state)
+  models = getOptStateModels(opt.state)$models
+  par.set = getOptProblemParSet(opt.problem)
+  control = getOptProblemControl(opt.problem)
+  opt.path = getOptStateOptPath(opt.state)
+
   requirePackages("emoa", why = "multipointInfillOptMulticrit")
 
   n = control$propose.points
   objective = control$multipoint.multicrit.objective
   design = convertOptPathToDf(opt.path, control)
-  model = models[[1L]]
 
   ch = checkFailedModels(models, par.set, n)
   if (!ch$ok) {
@@ -85,12 +91,12 @@ proposePointsMOIMBO = function(models, par.set, control, opt.path, iter, ...) {
   Y = matrix(NA, mu, y.dim)
   # mbo infill crits are always minimized
   if (objective == "mean.dist") {
-    Y[, 1] = infillCritMeanResponse(X, model, control, par.set, design)
+    Y[, 1] = infillCritMeanResponse(X, models, control, par.set, design)
   } else if (objective == "ei.dist") {
-    Y[, 1] = infillCritEI(X, model, control, par.set, design)
+    Y[, 1] = infillCritEI(X, models, control, par.set, design)
   } else if (objective %in% c("mean.se", "mean.se.dist")) {
-    Y[, 1] = infillCritMeanResponse(X, model, control, par.set, design)
-    Y[, 2] = infillCritStandardError(X, model, control, par.set, design)
+    Y[, 1] = infillCritMeanResponse(X, models, control, par.set, design)
+    Y[, 2] = infillCritStandardError(X, models, control, par.set, design)
   }
 
   # use first Y criterion to for nearest better
@@ -114,12 +120,12 @@ proposePointsMOIMBO = function(models, par.set, control, opt.path, iter, ...) {
       Y = rbind(Y, rep(NA, y.dim))
       # mbo infill crits are always minimized
       if (objective == "mean.dist") {
-        Y[nrow(Y), 1] = infillCritMeanResponse(child2, model, control, par.set, design)
+        Y[nrow(Y), 1] = infillCritMeanResponse(child2, models, control, par.set, design)
       } else if (objective == "ei.dist") {
-        Y[nrow(Y), 1] = infillCritEI(child2, model, control, par.set, design)
+        Y[nrow(Y), 1] = infillCritEI(child2, models, control, par.set, design)
       } else if (objective %in% c("mean.se", "mean.se.dist")) {
-        Y[nrow(Y), 1] = infillCritMeanResponse(child2, model, control, par.set, design)
-        Y[nrow(Y), 2] = infillCritStandardError(child2, model, control, par.set, design)
+        Y[nrow(Y), 1] = infillCritMeanResponse(child2, models, control, par.set, design)
+        Y[nrow(Y), 2] = infillCritStandardError(child2, models, control, par.set, design)
       }
       # use first Y criterion to for nearest better
       if (objective %in% c("mean.dist", "ei.dist", "mean.se.dist"))
