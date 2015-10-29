@@ -99,6 +99,7 @@ waitForJobs(reg)
 stop("finished until here")
 
 ### lokal einlesen
+
 library(data.table)
 library(BatchExperiments)
 reg = loadRegistry("~/lido/mbo_scheduling/")
@@ -192,8 +193,8 @@ dob.maxtime = res.scheduled[, list(slot.maxtime = max(.SD[, sum(exec.time) , by 
 dob.maxtime[, slot.endtime := cumsum(slot.maxtime), by = .(iter, task, schedule.method, schedule.priority)]
 setkey(res.scheduled, iter, task, schedule.method, schedule.priority, dob)
 res.scheduled = res.scheduled[dob.maxtime]
-g = ggplot(res.scheduled, aes(y = scheduled.on, x = slot.endtime - slot.maxtime, yend = scheduled.on, xend = slot.endtime - slot.maxtime + value, color = y)) ###HERE WORK ON
-g + geom_segment(size = 2) + facet_grid(schedule.priority~iter, scales = "free") + geom_vline(aes(xintercept = slot.endtime), alpha = 0.1)
+g = ggplot(res.scheduled[dob > 0,], aes(y = scheduled.on, x = slot.endtime - slot.maxtime + scheduled.at, yend = scheduled.on, xend = slot.endtime - slot.maxtime + scheduled.at + exec.time)) ###HERE WORK ON
+g + geom_segment(aes(color = selected.learner), size = 2) + facet_grid(schedule.priority~iter, scales = "free") + geom_vline(aes(xintercept = slot.endtime), alpha = 0.1)
 ### Bilder machen
 
 
