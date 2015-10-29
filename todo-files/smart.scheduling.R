@@ -175,20 +175,25 @@ g = ggplot(g.dt, aes(x = cum.max.exec, y = min.y, color = schedule.priority))
 g + geom_line() + facet_grid(.~iter)
 
 manualLoadBalancing = function(times, nodes = 7) {
+  scheduled.at = numeric(length(times))
+  scheduled.on = numeric(length(times))
   slots = numeric(nodes)
-  slots[seq_len(nodes)] = times[seq_len(min(c(nodes, length(times))] #fill with first times
-  j = 1
-  for (i in seq_len(times)) {
-    ind = (j - 1) %% nodes + 1
+  for (i in seq_along(times)) {
+    ind = which.min(slots)
+    scheduled.on[i] = ind
+    scheduled.at[i] = slots[ind]
     slots[ind] = slots[ind] + times[i]
   }
-  #maybe add another version which does not rely so much on the right order?
-  list(slot.maxtime = max(slots),
-       slot.mintime = min(slots),
-       slot.mean = mean(slots),
-       slot.freetime = sum(max(slots)-slots),
-       slot.overload = sum(slots-min(slots)))
+  data.table(scheduled.on = scheduled.on, scheduled.at = scheduled.at)  
 }
+
+res.scheduled = res.dt[, cbind(.SD, manualLoadBalancing(exec.time)), by = .(iter, task, schedule.method, schedule.priority, dob)]
+dob.maxtime = res.scheduled[, list(slot.maxtime = max(.SD[, sum(exec.time) , by = scheduled.on])), by = .(iter, task, schedule.method, schedule.priority, dob)]
+dob.maxtime[, slot.endtime := cumsum(slot.maxtime), by = .(iter, task, schedule.method, schedule.priority)]
+setkey(res.scheduled, iter, task, schedule.method, schedule.priority, dob)
+res.scheduled = res.scheduled[dob.maxtime]
+g = ggplot(res.scheduled, aes(y = scheduled.on, x = slot.endtime - slot.maxtime, yend = scheduled.on, xend = slot.endtime - slot.maxtime + value, color = y)) ###HERE WORK ON
+g + geom_segment(size = 2) + facet_grid(schedule.priority~iter, scales = "free") + geom_vline(aes(xintercept = slot.endtime), alpha = 0.1)
 ### Bilder machen
 
 
