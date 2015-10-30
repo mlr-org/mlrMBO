@@ -6,7 +6,13 @@ proposePointsMultiFid = function(opt.state) {
   control = getOptProblemControl(opt.problem)
   opt.path = getOptStateOptPath(opt.state)
   iter = getOptStateLoop(opt.state)
-  time.model = getOptStateTimeModel(opt.state)
+
+  #FIXME: We wouldn't need that, if we could pass the opt.state to the infillCrit* functions
+  if (is.null(control$multifid.costs)) {
+    time.model = getOptStateTimeModel(opt.state)
+  } else {
+    time.model = NULL
+  }
 
   par.set.nomf = dropParams(par.set, ".multifid.lvl")
 
