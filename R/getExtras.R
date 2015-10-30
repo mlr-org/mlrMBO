@@ -5,13 +5,30 @@ getExtras = function(n, prop, train.time, control) {
   if (is.null(prop)) {
     k = ifelse(control$number.of.targets > 1L && control$multicrit.method == "mspot", control$number.of.targets + 1, 1L)
     prop = list(crit.vals = matrix(NA_real_, nrow = n, ncol = k), propose.time = NA_real_, errors.model = NA_character_,
-      filter.replace = rep(NA, n), predicted.time = NA_real_)
+      filter.replace = rep(NA, n))
   }
   exs = vector("list", n)
   errs = prop$errors.model
+  
+  lams = prop$multipoint.lcb.lambdas
+  if (is.null(lams))
+    lams = rep(NA_real_, n)
+  
+  weight.mat = prop$weight.mat
+  if (is.null(weight.mat))
+    weight.mat = matrix(NA_real_, nrow = n, ncol = control$number.of.targets)
+
+  predicted.time = prop$predicted.time
+  predicted.time.se = prop$predicted.time.se
+  if (is.null(predicted.time)) {
+    predicted.time = rep(NA_real_, n)  
+    predicted.time.se = rep(NA_real_, n)
+  }
+
   # if we only have one msg, replicate it
   if (length(errs) == 1L)
     errs = rep(errs, n)
+
   for (i in 1:n) {
     # if we use mspot, store all crit.vals
     if (control$number.of.targets > 1L && control$multicrit.method == "mspot") {
@@ -31,9 +48,6 @@ getExtras = function(n, prop, train.time, control) {
     }
     # if we use parego, store weights
     if (control$number.of.targets > 1L && control$multicrit.method == "parego") {
-      weight.mat = prop$weight.mat
-      if (is.null(weight.mat))
-        weight.mat = matrix(NA_real_, nrow = n, ncol = control$number.of.targets)
       w = setNames(as.list(weight.mat[i, ]), paste0(".weight", 1:ncol(weight.mat)))
       ex = c(ex, w)
     }
@@ -41,9 +55,13 @@ getExtras = function(n, prop, train.time, control) {
     if (control$filter.proposed.points) {
       ex$filter.replace = prop$filter.replace[i]
     }
-    # if we use scheduling, store predicted train.times
-    if (control$schedule.method == "smartParallelMap") {
-      ex$predicted.time = prop$predicted.time[i]
+    # if we use scheduling, store predicted exec.times
+    if (control$schedule.method != "none") {
+      ex$predicted.time = predicted.time[i]
+      ex$predicted.time.se = predicted.time.se[i]
+      ex$scheduled.at = NA_real_
+      ex$scheduled.on = NA_real_
+      ex$scheduled.job = NA_real_
     }
     ex$train.time = if (i == 1) train.time else NA_real_
     ex$propose.time = NA_real_

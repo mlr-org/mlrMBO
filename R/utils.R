@@ -40,9 +40,7 @@ evalProposedPoints.OptState = function(opt.state, prop) {
   xs = dfRowsToList(prop$prop.points, par.set)
   xs = lapply(xs, repairPoint, par.set = par.set)
 
-  #calculate the priorities
-  xs.priorities = getProposedPointsPriorities(prop = prop, xs = xs, opt.state = opt.state)
-  evalTargetFun.OptState(opt.state, xs = xs, extras = extras, xs.times = prop$predicted.time, xs.priorities = xs.priorities)
+  evalTargetFun.OptState(opt.state, xs = xs, extras = extras, xs.schedule.info = makeScheduleInfo(prop, opt.state))
 }
 
 # for Parego: calculate all integer vectors of length k with sum n
