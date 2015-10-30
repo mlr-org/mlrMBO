@@ -5,12 +5,11 @@
 #   List of points.
 # @param extras [\code{list}]\cr
 #   List of extra information to be logged in \code{opt.path}.
-# @param xs.times [\code{numeric}] \cr
-#   A vector of the same length as \code{xs} giving the estimated times for each evaluation of \code{x}.
-# @param xs.priorities [\code{numeric}] \cr
+# @param xs.schedule.info [\code{list}] \cr
+#   A list containing vectors of the same length as \code{xs} giving the estimated times, priorities and times.se for each evaluation of \code{x}.
 # @return [\code{numeric} | \code{matrix}] Numeric vector of y-vals or matrix
 #   (for multi-criteria problems).
-evalTargetFun.OptState = function(opt.state, xs, extras, xs.times = NULL, xs.priorities = NULL) {
+evalTargetFun.OptState = function(opt.state, xs, extras, xs.schedule.info = NULL) {
 
   opt.problem = getOptStateOptProblem(opt.state)
   par.set = getOptProblemParSet(opt.problem)
@@ -49,7 +48,7 @@ evalTargetFun.OptState = function(opt.state, xs, extras, xs.times = NULL, xs.pri
     evalScheduleParallelMap
   )
 
-  res = scheduleFunction(wrapFun = wrapFun, xs = xs.trafo, xs.times = xs.times, xs.priorities = xs.priorities, extras = extras, opt.state = opt.state)
+  res = scheduleFunction(wrapFun = wrapFun, xs = xs.trafo, xs.schedule.info = xs.schedule.info, extras = extras, opt.state = opt.state)
 
   #extract the treated x variables
   xs = res$xs

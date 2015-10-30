@@ -3,7 +3,7 @@ test_that("smart schedule works", {
   objfun = function(x) {
     x = x$x
     assertNumeric(x, len = 1, lower = 0, upper = 10)
-    Sys.sleep(0.25*(sin(x)+1))
+    Sys.sleep(0.25*(sin(x)+1)+0.01)
     (x-3)^2 + 10*sin(x*2)
   }
   
@@ -23,7 +23,12 @@ test_that("smart schedule works", {
   
   surrogat.learner = makeLearner("regr.km", predict.type = "se")
   result = mbo(fun = objfun, par.set = par.set, learner = surrogat.learner, control = control)
-  expect_true(!is.null(as.data.frame(result$opt.path)$predicted.time))
+  op.df = as.data.frame(result$opt.path)
+  expect_true(!all(is.na(op.df$predicted.time)))
+  expect_true(!all(is.na(op.df$predicted.time.se)))
+  expect_true(!all(is.na(op.df$scheduled.at)))
+  expect_true(!all(is.na(op.df$scheduled.on)))
+  expect_true(!all(is.na(op.df$scheduled.job)))
 })
 
 # test_that("multifid works with smart scheduling", {

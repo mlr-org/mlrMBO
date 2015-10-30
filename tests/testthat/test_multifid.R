@@ -38,8 +38,9 @@ test_that("basic multifid works", {
   surrogat.learner = makeLearner("regr.lm", predict.type = "se")
   result = mbo(fun = objfun, par.set = par.set, learner = surrogat.learner, control = control)
   expect_true(result$y < 0.5)
+  op.df = as.data.frame(result$opt.path)
 
-  ### remove cots so time.model will be estimated
+  ### remove costs so time.model will be estimated
   control$multifid.costs = NULL
   objfun.delay = function(x) {
     Sys.sleep(0.1 + x$.multifid.lvl/3)
@@ -49,5 +50,6 @@ test_that("basic multifid works", {
   result.time = mbo(fun = objfun.delay, par.set = par.set, learner = surrogat.learner, control = control)
   
   #this is pretty hard and migh fail?
-  expect_equal(as.data.frame(result.time$opt.path)$.multifid.lvl, as.data.frame(result$opt.path)$.multifid.lvl)
+  op.df.time = as.data.frame(result.time$opt.path)
+  expect_equal(op.df.time$.multifid.lvl, op.df$.multifid.lvl)
 })
