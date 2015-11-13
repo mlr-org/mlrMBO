@@ -44,7 +44,6 @@ getOptStateTimeModel = function(opt.state) {
   exec.times = getOptPathExecTimes(opt.path)
   if (is.null(time.model) || getTaskSize(time.model) != length(na.omit(exec.times))) {
     opt.problem = getOptStateOptProblem(opt.state)
-    opt.path = getOptStateOptPath(opt.state)
     time.task = cbind(getOptPathX(opt.path), exec.time = getOptPathExecTimes(opt.path))
     time.task = time.task[!is.na(time.task$exec.time), ]
     time.task = makeRegrTask(id = "time.task", data = time.task, target = "exec.time")
