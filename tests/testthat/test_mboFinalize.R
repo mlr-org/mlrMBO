@@ -61,7 +61,7 @@ test_that("mboFinalize works when at end", {
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10)
   or = mbo(makeMBOFunction(f), ps, learner = learner, control = ctrl)
   expect_equal(getOptPathLength(or$opt.path), 11L)
-  expect_warning({or = mboFinalize(save.file)}, "No need to continue")
+  expect_warning({or = mboFinalize(save.file)}, "No need to finalize")
   expect_equal(getOptPathLength(or$opt.path), 11L)
   unlink(save.file)
 })
