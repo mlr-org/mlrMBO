@@ -17,6 +17,7 @@ setOptStateTasks = function(opt.state, tasks) {
 
 setOptStateTimeModel = function(opt.state, time.model) {
   opt.state$time.model = time.model
+  invisible()
 }
 
 setOptStateLoop = function(opt.state, loop = NULL) {
