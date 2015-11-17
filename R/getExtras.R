@@ -60,6 +60,7 @@ getExtras = function(n, prop, train.time, control) {
       ex$scheduled.at = NA_real_
       ex$scheduled.on = NA_real_
       ex$scheduled.job = NA_real_
+      ex$scheduled.prioritiy = NA_real_
     }
     ex$train.time = if (i == 1) train.time else NA_real_
     ex$propose.time = NA_real_
