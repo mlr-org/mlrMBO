@@ -60,6 +60,7 @@ evalScheduleSmartParallelMap = function(wrapFun, xs, xs.schedule.info = NULL, ex
       extras[[i]]$scheduled.job = scheduled.job[i]
       extras[[i]]$scheduled.on = scheduled.on[i]
       extras[[i]]$scheduled.at = scheduled.at[i]  
+      extras[[i]]$scheduled.priority = xs.schedule.info$priorities[scheduled.job[i]]
     }
   }
   evalScheduleParallelMap(wrapFun = wrapFun, xs = xs, xs.schedule.info = xs.schedule.info, extras = extras, opt.state = opt.state)
