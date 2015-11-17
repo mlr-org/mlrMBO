@@ -31,14 +31,17 @@ checkFailedModels = function(models, par.set, npoints, control) {
 
 # create control objects with random lamda values for parallel LCB multi-point
 createRandomLCBControls = function(control, crit, user.lambda = FALSE) {
-  lambdas = rexp(control$propose.points)
+  if (control$infill.crit.lcb.multiple == "static.quantiles") {
+    lambdas = qexp(head(seq(0,1,lengt.out = control$propose.points+2)[-1],-1))
+  } else if (control$infill.crit.lcb.multiple == "random") {
+    lambdas = rexp(control$propose.points)  
+  }
   controls = lapply(lambdas, function(lambda) {
-    ctrl = control;
-    ctrl$propose.points = 1L;
-    ctrl$infill.crit = crit
+    control$propose.points = 1L
+    control$infill.crit = crit
     if (!user.lambda)
-      ctrl$infill.crit.lcb.lambda = lambda
-    return(ctrl)
+      control$infill.crit.lcb.lambda = lambda
+    return(control)
   })
   list(lambdas = lambdas, controls = controls)
 }
