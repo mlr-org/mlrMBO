@@ -24,6 +24,11 @@
 #'   If you use \code{lcb} as a \code{MultiPoint}-Method, this value will be the Lambda-parameter for the exponetial distribution.
 #'   Only used if \code{crit == "lcb"}, ignored otherwise.
 #'   Default is 1.
+#' @param crit.lcb.multiple [\code{character(1)}]\cr
+#'   Method to generate multiple lambdas for multipoint proposals.
+#'   Possible parameter values are:
+#'   \dQuote{random}: lambdas will be drawn from an exponential distribution.
+#'   \dQuote{static.quantiles}: lambdas will be generated from a sequence of quantiles from the exponential distribution.
 # FIXME: does this only make sense for multicrit? or single crit too?
 #' @param crit.lcb.pi [\code{numeric(1)}]\cr
 #'   Probability-of-improvement value to determine the lambda parameter for lcb infill criterion.
@@ -137,6 +142,7 @@ setMBOControlInfill = function(control,
   interleave.random.points = 0L,
   crit.eqi.beta = 0.75,
   crit.lcb.lambda = 1,
+  crit.lcb.multiple = "random",
   crit.lcb.pi = NULL,
   crit.lcb.inflate.se = NULL,
   crit.aei.use.nugget = NULL,
@@ -180,6 +186,9 @@ setMBOControlInfill = function(control,
   
   control$infill.crit.lcb.inflate.se = coalesce(crit.lcb.inflate.se, control$infill.crit.lcb.inflate.se, FALSE)
   assertFlag(control$infill.crit.lcb.inflate.se)
+
+  control$infill.crit.lcb.multiple = coalesce(crit.lcb.multiple, control$infill.crit.lcb.multiple, "random")
+  assertChoice(control$infill.crit.lcb.multiple, choices = c("random", "static.quantiles"))
   
   control$infill.crit.aei.use.nugget = coalesce(crit.aei.use.nugget, control$infill.crit.aei.use.nugget, FALSE)
   assertFlag(control$infill.crit.aei.use.nugget)
