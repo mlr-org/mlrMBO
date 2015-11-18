@@ -1,3 +1,5 @@
+context("smart schedule")
+
 test_that("smart schedule works", {
   set.seed(1)
   objfun = function(x) {
@@ -29,6 +31,7 @@ test_that("smart schedule works", {
   expect_true(!all(is.na(op.df$scheduled.at)))
   expect_true(!all(is.na(op.df$scheduled.on)))
   expect_true(!all(is.na(op.df$scheduled.job)))
+  expect_true(!all(is.na(op.df$scheduled.priority)))
 })
 
 # test_that("multifid works with smart scheduling", {
