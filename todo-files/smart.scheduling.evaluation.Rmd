@@ -1,0 +1,30 @@
+---
+title: "smart scheduling"
+author: "Jakob Richter"
+date: "18.11.2015"
+output: html_document
+---
+
+```{r batchJobs}
+library(BatchExperiments)
+library(data.table)
+reg = loadRegistry("~/dump/ss")
+reducer = function(job, res){
+  res.dt = cbind(
+    prob = job$prob.id,
+    algo = job$algo.id,
+    repl = job$repl,
+    seed = job$seed,
+    setNames(job$prob.pars, paste0("probpar.", names(job$prob.pars))),
+    setNames(job$algo.pars, paste0("algopar.", names(job$algo.pars))),
+    t(setNames(res$performance, paste0("test.", names(res$performance)))),
+    tune.y = res$model$learner.model$opt.result$mbo.result$y,
+    do.call(cbind, setNames(res$model$learner.model$opt.result$mbo.result$x, paste0("x.", names(res$model$learner.model$opt.result$mbo.result$x)))),
+    as.data.frame(res$model$learner.model$opt.result$mbo.result$opt.path))
+}
+res.list = reduceResultsList(reg, fun = reducer)
+res.dt = rbindlist(res.list, fill = TRUE)
+head(res.dt)
+res.dt[dob == 0, .SD[1:2,] , by = .(prob, algo, repl, probpar.fold, algopar.infill.crit, algopar.infill.crit.lcb.multiple)]
+```
+
