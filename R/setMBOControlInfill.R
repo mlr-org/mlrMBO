@@ -29,6 +29,7 @@
 #'   Possible parameter values are:
 #'   \dQuote{random}: lambdas will be drawn from an exponential distribution.
 #'   \dQuote{static.quantiles}: lambdas will be generated from a sequence of quantiles from the exponential distribution.
+#'   \dQuote{random.quantiles}: lambdas will be generated from a sequence of quantiles from \code{propose.points*100} exponentialy distributed random numbers.
 # FIXME: does this only make sense for multicrit? or single crit too?
 #' @param crit.lcb.pi [\code{numeric(1)}]\cr
 #'   Probability-of-improvement value to determine the lambda parameter for lcb infill criterion.
@@ -188,7 +189,7 @@ setMBOControlInfill = function(control,
   assertFlag(control$infill.crit.lcb.inflate.se)
 
   control$infill.crit.lcb.multiple = coalesce(crit.lcb.multiple, control$infill.crit.lcb.multiple, "random")
-  assertChoice(control$infill.crit.lcb.multiple, choices = c("random", "static.quantiles"))
+  assertChoice(control$infill.crit.lcb.multiple, choices = c("random", "static.quantiles", "random.quantiles"))
   
   control$infill.crit.aei.use.nugget = coalesce(crit.aei.use.nugget, control$infill.crit.aei.use.nugget, FALSE)
   assertFlag(control$infill.crit.aei.use.nugget)

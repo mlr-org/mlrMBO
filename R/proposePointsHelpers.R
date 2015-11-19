@@ -33,8 +33,12 @@ checkFailedModels = function(models, par.set, npoints, control) {
 createRandomLCBControls = function(control, crit, user.lambda = FALSE) {
   if (control$infill.crit.lcb.multiple == "static.quantiles") {
     lambdas = qexp(head(seq(0,1,lengt.out = control$propose.points+2)[-1],-1), control$infill.crit.lcb.lambda)
+  } else if (control$infill.crit.lcb.multiple == "random.quantiles") {
+    lambdas = quantile(rexp(control$propose.points * 100),(seq(0,1,length.out = control$propose.points)))
   } else if (control$infill.crit.lcb.multiple == "random") {
     lambdas = rexp(control$propose.points, control$infill.crit.lcb.lambda)  
+  } else {
+    stopf("%s not known as setting for crit.lcb.multiple")
   }
   controls = lapply(lambdas, function(lambda) {
     control$propose.points = 1L

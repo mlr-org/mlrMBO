@@ -23,44 +23,55 @@ evalScheduleParallelMap = function(wrapFun, xs, xs.schedule.info = NULL, extras 
 }
 
 evalScheduleSmartParallelMap = function(wrapFun, xs, xs.schedule.info = NULL, extras = NULL, opt.state) {
-  xs.times = xs.schedule.info$times
-  if (!is.null(xs.times)) {
+
+  if (!is.null(xs.schedule.info$times)) {
     schedule.nodes = getOptProblemControl(
       getOptStateOptProblem(opt.state))$schedule.nodes
     #filter xs to smart scheduling rule (not for init.design)
     if (!is.null(xs.schedule.info$priorities)) {
-      order.idx = order(xs.schedule.info$priorities)
+      order.idx = order(xs.schedule.info$priorities, decreasing = TRUE)
+      xs.schedule.info = xs.schedule.info[order.idx,, drop = FALSE]
       xs = xs[order.idx]
-      xs.schedule.info = lapply(xs.schedule.info, function(x) x[order.idx])
     }
 
+    t.max = xs.schedule.info$times[1L] + 2 * xs.schedule.info$times.se[1L]
     
-    xs.times.se = xs.schedule.info$times.se
-    
+    if (getOptProblemControl(getOptStateOptProblem(opt.state))$schedule.priority.time) {
+      order.idx = order(xs.times, decreasing = TRUE)
+      xs.schedule.info = xs.schedule.info[order.idx,, drop = FALSE]
+      xs = xs[order.idx]
+    }
+
+    #maybe do it like this:
+    #t.max = 0
+    #i = 1L
+    #while (sum(xs.times < t.max) <= schedule.nodes && t.max < 2 * xs.times[1]) {
+    #  t.max = xs.times[i]
+    #  i = i + 1L
+    #}
     occupied.time = integer(length = schedule.nodes)
-    t.max = xs.times[1L] + 1.96 * xs.times.se[1L]
-    scheduled.job = integer() #which job got scheduled
-    scheduled.on = integer() #on which node is it scheduled
-    scheduled.at = integer() #at what time is is scheduled
-    for (i in seq_along(xs.times)) {
+    scheduled = data.frame(
+      job = integer(), #which job got scheduled
+      on = integer(), #on which node is it scheduled
+      at = integer() #at what time is is scheduled
+      )
+    for (i in seq_along(xs)) {
       for (j in seq_len(schedule.nodes)) {
-        if (t.max - occupied.time[j] >= xs.times[i]) {
-          scheduled.job = c(scheduled.job, i)
-          scheduled.on = c(scheduled.on, j)
-          scheduled.at = c(scheduled.at, occupied.time[j])
-          occupied.time[j] = occupied.time[j] + xs.times[i]
-          break()
+        if (t.max - occupied.time[j] >= xs.schedule.info$times[i]) {
+          scheduled = rbind(scheduled, list(job = i, on = j, at = occupied.time[j]))
+          occupied.time[j] = occupied.time[j] + xs.schedule.info$times[i]
+          break
         }
       }
     }
 
-    xs = xs[scheduled.job]
-    extras = extras[scheduled.job]
-    for (i in seq_along(scheduled.job)) {
-      extras[[i]]$scheduled.job = scheduled.job[i]
-      extras[[i]]$scheduled.on = scheduled.on[i]
-      extras[[i]]$scheduled.at = scheduled.at[i]  
-      extras[[i]]$scheduled.priority = xs.schedule.info$priorities[scheduled.job[i]]
+    xs = xs[scheduled$job]
+    extras = extras[scheduled$job]
+    for (i in seq_along(scheduled$job)) {
+      extras[[i]]$scheduled.job = scheduled$job[i]
+      extras[[i]]$scheduled.on = scheduled$on[i]
+      extras[[i]]$scheduled.at = scheduled$at[i]  
+      extras[[i]]$scheduled.priority = xs.schedule.info$priorities[scheduled$job[i]]
     }
   }
   evalScheduleParallelMap(wrapFun = wrapFun, xs = xs, xs.schedule.info = xs.schedule.info, extras = extras, opt.state = opt.state)
