@@ -7,11 +7,13 @@ library(BatchExperiments)
 # unlink("~/dump/ss", recursive = TRUE, force = TRUE)
 
 #suggested: Number of phsy. CPUs
-k = 2
+k = 4
 #suggested 30
 init.design.points = 30
 #suggested 70
 iters = 70
+#suggested 10
+cv.iters = 10
 
 #task einlesen
 libsvm.read = function(file) {
@@ -26,14 +28,14 @@ libsvm.read = function(file) {
 }
 
 ## Define Task
-#w7a = libsvm.read(file = "../data/w7a")
-#task = makeClassifTask(id = "w7a", data = w7a, target = "Y")
-task = sonar.task
+w7a = libsvm.read(file = "../data/w7a")
+task = makeClassifTask(id = "w7a", data = w7a, target = "Y")
+#task = sonar.task
 
 ## Define Registry
 reg = makeExperimentRegistry(
   id = "mbo_scheduling",
-  file.dir = "~/dump/ss",
+  file.dir = "~/nobackup/rambo",
   packages = c("mlr", "mlrMBO", "parallelMap"),
   multiple.result.files = FALSE,
   seed = 54119
@@ -54,11 +56,9 @@ ps.hp1 = makeModelMultiplexerParamSet(
     makeIntegerParam("mtry", lower = floor((getTaskNFeats(task)^1/4)), upper = ceiling((getTaskNFeats(task))^1/1.5)),
     makeIntegerParam("nodesize", lower = 1, upper = 10)),
   classif.glmboost = makeParamSet(
-    makeIntegerParam("mstop", lower = 10, upper = 500)
+    makeIntegerParam("mstop", lower = 10, upper = 300)
   )
 )
-
-
 
 mbo.ctrl = makeMBOControl(
   noisy = TRUE, 
@@ -69,20 +69,21 @@ mbo.ctrl = makeMBOControl(
 
 mbo.ctrl = setMBOControlInfill(mbo.ctrl,
   opt = "focussearch",
-  opt.focussearch.maxit = 3,
+  opt.focussearch.maxit = 5,
   opt.focussearch.points = 1000)
 
 #1 randomsearch
 #2,3 mbo k
-#4,5,6,7,8 mbo scheduled
+#4,5,6,7,8, 9 mbo scheduled
 experiment.configurations = data.frame(
-  propose.points = c(iters*k,k,k,rep(3*k, 5)),
-  iters = c(1, rep(iters, 7)),
-  infill.crit = c("random", rep("lcb", 7)),
-  multipoint.method = c("random", rep("lcb", 7)),
-  schedule.methods = c(rep("none",3), rep("smartParallelMap", times = 5)),
-  schedule.priorities = c(rep("infill", 5), "explore", "exploit", "balanced"),
-  infill.crit.lcb.multiple = c(rep("random",2), "static.quantiles", "random", rep("static.quantiles", times = 4))
+  propose.points = c(iters*k,k,k,rep(3*k, 6)),
+  iters = c(1, rep(iters, 8)),
+  infill.crit = c("random", rep("lcb", 8)),
+  multipoint.method = c("random", rep("lcb", 8)),
+  schedule.method = c(rep("none",3), rep("smartParallelMap", times = 6)),
+  schedule.priority = c(rep("infill", 5), "explore", "exploit", "balanced", "balanced"),
+  infill.crit.lcb.multiple = c(rep("random",2), "random.quantiles", "random", rep("random.quantiles", times = 5)),
+  schedule.priority.time = c(rep(FALSE, 8), TRUE)
 )
 
 surrogate.learner = makeLearner("regr.randomForest", predict.type = "se", nr.of.bootstrap.samples = 20, nodesize = 2)
@@ -91,7 +92,7 @@ surrogate.learner = makeImputeWrapper(surrogate.learner, classes = list(numeric 
 mlr.ctrl = mlr:::makeTuneControlMBO(same.resampling.instance = FALSE, learner = surrogate.learner, mbo.control = mbo.ctrl, mbo.keep.result = TRUE, continue = TRUE)
 
 inner.rdesc = makeResampleDesc("Holdout")
-outer.rdesc = makeResampleDesc("CV", iter = 5)
+outer.rdesc = makeResampleDesc("CV", iter = cv.iters)
 measures = list(mmce, timetrain, timepredict)
 lrn.tuned = makeTuneWrapper(learner, inner.rdesc, par.set = ps.hp1, control = mlr.ctrl, show.info = FALSE)
 
@@ -104,7 +105,9 @@ algoMBOWrapper = function(lrn.tuned, measures) {
     for (ctrl.name in names(mbo.pars)) {
       lrn.tuned$control$mbo.control[[ctrl.name]] = mbo.pars[[ctrl.name]]
     }
-    parallelStartMulticore(cpus = mbo.ctrl$schedule.nodes, level = "mlrMBO.feval")
+    lrn.tuned$control$mbo.control$init.design = dynamic$design
+    parallelStartMulticore(cpus = lrn.tuned$control$mbo.control$schedule.nodes, level = "mlrMBO.feval")
+    # set.seed(123 + dynamic$fold)
     mod = train(learner = lrn.tuned, task = static$task, subset = dynamic$train)
     pred = predict(mod, task = static$task, subset = dynamic$test)
     parallelStop()
@@ -113,10 +116,12 @@ algoMBOWrapper = function(lrn.tuned, measures) {
   }
 }
 
-dynamicResampling = function() {
+dynamicResampling = function(lrn.tuned) {
+  force(lrn.tuned)
   function(job, static, fold) {
     rin = makeResampleInstance(static$rdesc, task = static$task)
-    list(train = rin$train.inds[[fold]], test = rin$test.inds[[fold]], fold = fold)  
+    design = generateDesign(lrn.tuned$control$mbo.control$init.design.points, par.set = lrn.tuned$opt.pars)
+    list(train = rin$train.inds[[fold]], test = rin$test.inds[[fold]], fold = fold, design = design)
   }
 }
 
@@ -125,7 +130,7 @@ tasks = list(task)
 pdes = lapply(tasks, function(task) {
   addProblem(reg = reg, id = task$task.desc$id,
              static = list(task = task, rdesc = outer.rdesc),
-             dynamic = dynamicResampling(),
+             dynamic = dynamicResampling(lrn.tuned),
              seed = reg$seed
   )
   makeDesign(id = task$task.desc$id, design = data.frame(fold = seq_len(outer.rdesc$iters)))
@@ -139,6 +144,6 @@ ades = lapply(learners, function(learner) {
 
 addExperiments(reg, prob.designs = pdes, algo.designs = ades, repls = 1, skip.defined = FALSE)
 
-submitJobs(reg)
+submitJobs(reg, ids = sample(findExperiments(reg)), resources = list(walltime = 48*60^2, memory = 15000L, ppn = k))
 
 waitForJobs(reg)
