@@ -29,11 +29,11 @@ evalTargetFun.OptState = function(opt.state, xs, extras, xs.schedule.info = NULL
   # function to measure of fun call
   wrapFun = function(x) {
     st = proc.time()
-    y = do.call(getOptProblemFun(opt.problem), insert(list(x = x), getOptProblemMoreArgs(opt.problem)))
-    user.extras = list()
+    user.extras = list(exec.timestamp = as.integer(Sys.time()))
+    y = do.call(getOptProblemFun(opt.problem), insert(list(x = x), getOptProblemMoreArgs(opt.problem)))    
     # here we extract additional stuff which the user wants to log in the opt path
     if (hasAttributes(y, "extras")) {
-      user.extras = attr(y, "extras")
+      user.extras = c(user.extras, attr(y, "extras"))
       y = setAttribute(y, "extras", NULL)
     }
     st = proc.time() - st

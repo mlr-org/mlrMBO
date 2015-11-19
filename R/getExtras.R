@@ -63,12 +63,14 @@ getExtras = function(n, prop, train.time, control) {
       ex$scheduled.priority = NA_real_
     }
     ex$train.time = if (i == 1) train.time else NA_real_
-    ex$propose.time = NA_real_
     if (length(prop$propose.time) > 1L) {
       ex$propose.time = prop$propose.time[i]
+    } else if (i == 1) {
+      ex$propose.time = prop$propose.time
     } else {
-      ex$propose.time = if (i == 1) prop$propose.time else NA_real_
+      ex$propose.time = NA_real_
     }
+    ex$exec.timestamp = NA_integer_
     exs[[i]] = ex
   }
   return(exs)
