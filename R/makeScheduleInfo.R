@@ -15,7 +15,7 @@ makeScheduleInfo = function(prop, opt.state) {
   } else {
     stopf("Priority mehtod %s was not appliable!", control$schedule.priority)
   }
-  list(
+  data.frame(
     times = prop$predicted.time,
     priorities = priorities,
     times.se = prop$predicted.time.se)

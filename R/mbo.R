@@ -43,6 +43,7 @@ mbo = function(fun, par.set, design = NULL, learner, control,
 
   assertFlag(show.info)
   learner = checkLearner(learner, par.set, control)
+  design = coalesce(design, control$init.design)
   checkStuff(fun, par.set, design, learner, control)
 
   loadPackages(control)

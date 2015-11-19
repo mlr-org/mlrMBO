@@ -1,7 +1,7 @@
 context("smart schedule")
 
 test_that("smart schedule works", {
-  set.seed(1)
+  set.seed(2)
   objfun = function(x) {
     x = x$x
     assertNumeric(x, len = 1, lower = 0, upper = 10)
@@ -23,7 +23,7 @@ test_that("smart schedule works", {
   
   control = setMBOControlInfill(control = control, crit = "lcb")
   
-  surrogat.learner = makeLearner("regr.km", predict.type = "se")
+  surrogat.learner = makeLearner("regr.km", predict.type = "se", nugget.estim = TRUE)
   result = mbo(fun = objfun, par.set = par.set, learner = surrogat.learner, control = control)
   op.df = as.data.frame(result$opt.path)
   expect_true(!all(is.na(op.df$predicted.time)))
