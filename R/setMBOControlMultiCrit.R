@@ -1,6 +1,6 @@
 #FIXME: briefly explain multipoint proposal for all thre methods
 
-#' Extends mbo control object with multi-criteria specific options.
+#' @title Extends mbo control object with multi-criteria specific options.
 #'
 #' @template arg_control
 #' @param method [\code{character(1)}]\cr

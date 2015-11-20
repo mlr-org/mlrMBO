@@ -1,4 +1,4 @@
-#' Extends mbo control object with infill criteria and infill optimizer options.
+#' @title Extends mbo control object with infill criteria and infill optimizer options.
 #'
 #' @template arg_control
 #' @param crit [\code{character(1)}]\cr
