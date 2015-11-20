@@ -1,4 +1,4 @@
-#' Extends mbo control object with options for multipoint proposal.
+#' @title Extends mbo control object with options for multipoint proposal.
 #'
 #' @template arg_control
 #' @param method [\code{character(1)}]\cr

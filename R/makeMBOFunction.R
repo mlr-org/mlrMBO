@@ -1,5 +1,6 @@
-#' Create fitness function for MBO.
+#' @title Create fitness function for MBO.
 #' 
+#' @description
 #' Transforms a target/fitness function, which takes a vector as its first argument, into
 #' a function which takes a list of values (as required by \code{\link{mbo}}.   
 #'

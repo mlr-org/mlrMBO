@@ -1,6 +1,7 @@
-#' Renders plots for exampleRun objects, either in 1D or 2D, or
+#' @title Renders plots for exampleRun objects, either in 1D or 2D, or
 #' exampleRunMultiCrit objects.
 #'
+#' @description
 #' The graphical output depends on the target function at hand.
 #' - For 1D numeric functions the upper plot shows the true function (if known),
 #' the model and the (infill) points. The lower plot shows the infill criterion.

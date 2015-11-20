@@ -1,5 +1,6 @@
-#' MBO Result Plotting
+#' @title MBO Result Plotting
 #' 
+#' @description
 #' Plots any MBO result objects. Plots for X-Space, Y-Space and any coloumn in
 #' the optimization path are available. This function uses 
 #' \code{\link[ParamHelpers]{plotOptPath}} from package \code{ParamHelpers}.
@@ -20,10 +21,9 @@
 #'  function in package \code{ParamHelpers}.
 #'  
 NULL
-#'  
+
 #' @rdname plotMBOResult
 #' @export
-
 plot.MBOSingleObjResult = function(x, iters = NULL, pause = TRUE, ...) {
 
   # extract and set params
