@@ -33,11 +33,11 @@ head(res.dt)
 
 Analyze runtimes
 ```{r}
-end.res = res.dt[, .SD[1,], by = .(prob, algo, repl, probpar.fold, algopar.infill.crit, algopar.infill.crit.lcb.multiple, algopar.iters, algopar.multipoint.method, algopar.propose.points, algopar.schedule.method, algopar.schedule.priority, algopar.schedule.priority.time, fold)]
+end.res = res.dt[, .SD[1,], by = .(prob, algo, repl, probpar.fold, algopar.infill.crit, algopar.multipoint.lcb.multiple, algopar.iters, algopar.multipoint.method, algopar.propose.points, algopar.schedule.method, algopar.schedule.priority, algopar.schedule.priority.time, fold)]
 g = ggplot(res.dt, aes(x = exec.time , y = y, color = selected.learner))
 g = g + geom_point()
 g = g + geom_hline(data = end.res, mapping = aes(yintercept = test.mmce, color = x.selected.learner), alpha = 0.5)
-g = g + geom_text(data = end.res, mapping = aes(y = test.mmce, label = paste(algopar.infill.crit, algopar.infill.crit.lcb.multiple, algopar.iters, algopar.multipoint.method, algopar.propose.points, algopar.schedule.method, algopar.schedule.priority, algopar.schedule.priority.time)), size = 4, color = "black")
+g = g + geom_text(data = end.res, mapping = aes(y = test.mmce, label = paste(algopar.infill.crit, algopar.multipoint.lcb.multiple, algopar.iters, algopar.multipoint.method, algopar.propose.points, algopar.schedule.method, algopar.schedule.priority, algopar.schedule.priority.time)), size = 4, color = "black")
 g + scale_x_log10(breaks = c(1, 10, 100, 1000)) + facet_grid(~probpar.fold)
 ```
 

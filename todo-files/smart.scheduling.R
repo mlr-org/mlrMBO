@@ -89,7 +89,7 @@ experiment.configurations = data.frame(
   multipoint.method = c("random", rep("lcb", 8)),
   schedule.method = c(rep("none",3), rep("smartParallelMap", times = 6)),
   schedule.priority = c(rep("infill", 5), "explore", "exploit", "balanced", "balanced"),
-  infill.crit.lcb.multiple = c(rep("random",2), "random.quantiles", "random", rep("random.quantiles", times = 5)),
+  multipoint.lcb.multiple = c(rep("random",2), "random.quantiles", "random", rep("random.quantiles", times = 5)),
   schedule.priority.time = c(rep(FALSE, 8), TRUE),
   config.name = c("rs", "r.lcb", "q.lcb", "r.s.lcb", "q.s.lcb", "q.s.explore.lcb", "q.s.exploit.lcb", "q.s.balanced.lcb", "q.s.time.lcb"),
   stringsAsFactors = FALSE

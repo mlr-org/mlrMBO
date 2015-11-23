@@ -21,6 +21,12 @@
 #'   This lie is used to update the model in order to propose the subsequent point.
 #'   The procedure is applied until the number of best points achieves \code{propose.points}.
 #'   Default is \code{lcb}.
+#' @param lcb.multiple [\code{character(1)}]\cr
+#'   Method to generate multiple lambdas for multipoint proposals.
+#'   Possible parameter values are:
+#'   \dQuote{random}: lambdas will be drawn from an exponential distribution.
+#'   \dQuote{static.quantiles}: lambdas will be generated from a sequence of quantiles from the exponential distribution.
+#'   \dQuote{random.quantiles}: lambdas will be generated from a sequence of quantiles from \code{propose.points*100} exponentialy distributed random numbers.
 #' @param cl.lie [\code{function}]\cr
 #'   Function used by constant liar method for lying. Default is \code{min}.
 #' @param multicrit.objective [\code{character(1)}]\cr
@@ -62,6 +68,7 @@
 #' @export
 setMBOControlMultiPoint = function(control,
   method = NULL,
+  lcb.multiple = "random",
   cl.lie = NULL,
   multicrit.objective = NULL,
   multicrit.dist = NULL,
@@ -74,6 +81,9 @@ setMBOControlMultiPoint = function(control,
 
   control$multipoint.method = coalesce(method, control$multipoint.method, "lcb")
   assertChoice(control$multipoint.method, choices = getSupportedMultipointInfillOptFunctions())
+
+  control$multipoint.lcb.multiple = coalesce(lcb.multiple, control$multipoint.lcb.multiple, "random")
+  assertChoice(control$multipoint.lcb.multiple, choices = c("random", "static.quantiles", "random.quantiles"))
 
   # Workaround since coalesce cannot hande functions
   control$multipoint.cl.lie = if (!is.null(cl.lie)) {
