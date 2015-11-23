@@ -41,7 +41,7 @@ proposePointsDIB = function(opt.state) {
     # store extra info
     # DH: don't to this for now
     # FIXME: do we want to sample or adapt lamda here? decide
-    #res$multipoint.lcb.lambdas = z$lambdas
+    #res$lcb.lambdas = z$lambdas
   }
   return(res)
 }

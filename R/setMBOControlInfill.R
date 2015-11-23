@@ -21,6 +21,7 @@
 #'   Default is 0.75.
 #' @param crit.lcb.lambda [\code{numeric(1)}]\cr
 #'   Lambda parameter for lower confidence bound infill criterion.
+#'   If you use \code{lcb} as a \code{MultiPoint}-Method, this value will be the Lambda-parameter for the exponetial distribution.
 #'   Only used if \code{crit == "lcb"}, ignored otherwise.
 #'   Default is 1.
 # FIXME: does this only make sense for multicrit? or single crit too?

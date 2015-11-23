@@ -97,7 +97,7 @@ plotMBOExampleRun2DNumeric = function(x, iters, pause=TRUE,
     } else {
       # just display the first lcb crit fun
       ctrl2 = ctrl
-      ctrl2$infill.crit.lcb.lambda = mr$multipoint.lcb.lambdas[i, 1]
+      ctrl2$infill.crit.lcb.lambda = mr$lcb.lambdas[i, 1]
       evals[[name.crit]] = opt.direction * infillCritLCB(evals[, names.x, drop=FALSE],
         mod, ctrl, par.set, op[ind.pasdes, ])
     }

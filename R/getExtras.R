@@ -23,13 +23,11 @@ getExtras = function(n, prop, train.time, control) {
       names(ex)[1] = control$infill.crit
     }
     # if we use singlecrit parallel LCB store lambdas
-    if (control$propose.points > 1L &&
-        (control$number.of.targets == 1L && control$multipoint.method == "lcb")) {
-
-      lams = prop$multipoint.lcb.lambdas
+    if (!is.null(control$multipoint.method) && control$number.of.targets == 1L && control$multipoint.method == "lcb") {
+      lams = prop$lcb.lambdas
       if (is.null(lams))
         lams = rep(NA_real_, n)
-      ex$multipoint.lcb.lambda = lams[i]
+      ex$lcb.lambda = lams[i]
     }
     # if we use parego, store weights
     if (control$number.of.targets > 1L && control$multicrit.method == "parego") {
