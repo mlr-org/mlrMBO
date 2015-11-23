@@ -19,18 +19,5 @@ mboContinue = function(file) {
     return(getOptResultMboResult(getOptStateOptResult(opt.state)))
   }
   final.opt.state = mboTemplate(opt.state)
-  mbo.result = makeOptStateMboResult(final.opt.state)
-  
-  # FIXME: This is copy-paste code from the main mbo function
-  
-  # save on disk routine
-  if (getOptStateLoop(final.opt.state) %in% getOptProblemControl(getOptStateOptProblem(final.opt.state))$save.on.disk.at || is.finite(getOptProblemControl(getOptStateOptProblem(final.opt.state))$save.on.disk.at.time))
-    saveOptState(final.opt.state)
-  
-  # restore mlr configuration
-  configureMlr(
-    on.learner.error = getOptProblemOldopts(opt.problem)[["ole"]], 
-    show.learner.output = getOptProblemOldopts(opt.problem)[["slo"]]
-  )
-  mbo.result
+  mboFinalize2(final.opt.state)
 }

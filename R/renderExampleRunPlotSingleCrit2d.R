@@ -47,7 +47,8 @@ renderExampleRunPlot2d = function(x, iter,
   plots = list()
 
   # FIXME: what to plot if not infillcrit that uses se?
-  model = mbo.res$models[[iter]]
+  models = mbo.res$models[[iter]]
+  models = if (inherits(models, "WrappedModel")) list(models) else models
   evals.x = evals[, names.x, drop = FALSE]
 
   idx.seq = which(opt.path$dob > 0 & opt.path$dob < iter)
@@ -55,28 +56,26 @@ renderExampleRunPlot2d = function(x, iter,
   idx.past = which(opt.path$dob < iter)
   idx.pastpresent = which(opt.path$dob <= iter)
 
-  model.ok = !inherits(model, "FailureModel")
+  model.ok = !inherits(models[[1L]], "FailureModel")
 
   if (model.ok) {
-    evals$yhat = infillCritMeanResponse(evals.x, model, control, par.set, opt.path[idx.past, ])
+    evals$yhat = infillCritMeanResponse(evals.x, models, control, par.set, opt.path[idx.past, ])
     if (se) {
-      evals$se = -infillCritStandardError(evals.x,
-        model, control, par.set, opt.path[idx.past, ])
+      evals$se = -infillCritStandardError(evals.x, models, control, par.set, opt.path[idx.past, ])
     }
     if (proppoints == 1L) {
-      evals[[name.crit]] = opt.direction * critfun(evals.x,
-        model, control, par.set, opt.path[idx.past, ])
+      evals[[name.crit]] = opt.direction * critfun(evals.x, models, control, par.set, opt.path[idx.past, ])
     } else {
       objective = control$multipoint.multicrit.objective
       if (control$multipoint.method == "lcb") {
-        evals[[name.crit]] = opt.direction * infillCritMeanResponse(evals.x, model, control, par.set, opt.path[idx.past, ])
+        evals[[name.crit]] = opt.direction * infillCritMeanResponse(evals.x, models, control, par.set, opt.path[idx.past, ])
       } else {
         if (objective == "mean.dist") {
-          evals[[name.crit]] = opt.direction * infillCritMeanResponse(evals.x, model, control, par.set, opt.path[idx.past, ])
+          evals[[name.crit]] = opt.direction * infillCritMeanResponse(evals.x, models, control, par.set, opt.path[idx.past, ])
         } else if (objective == "ei.dist") {
-          evals[[name.crit]] = opt.direction * infillCritEI(evals.x, model, control, par.set, opt.path[idx.past, ])
+          evals[[name.crit]] = opt.direction * infillCritEI(evals.x, models, control, par.set, opt.path[idx.past, ])
         } else if (objective %in% c("mean.se", "mean.se.dist")) {
-          evals[[name.crit]] = opt.direction * infillCritMeanResponse(evals.x, model, control, par.set, opt.path[idx.past, ])
+          evals[[name.crit]] = opt.direction * infillCritMeanResponse(evals.x, models, control, par.set, opt.path[idx.past, ])
         }
       }
     }
@@ -180,7 +179,7 @@ renderExampleRunPlot2d = function(x, iter,
     # FIXME: the following ~ 15 lines is copy and paste stuff (see exampleRun_autplot_1d.R)
     if (se) {
       evals.x = evals[, names.x, drop = FALSE]
-      evals$se = -infillCritStandardError(evals.x, model, control, par.set, opt.path[idx.past, ])
+      evals$se = -infillCritStandardError(evals.x, models, control, par.set, opt.path[idx.past, ])
       evals$se.min = evals$yhat - se.factor * evals$se
       evals$se.max = evals$yhat + se.factor * evals$se
     }

@@ -1,6 +1,12 @@
-# OptState is the central component of the mbo iterations. This enviroment contains
-# every necessary information we need during tuning in MBO. It links to the \code{OptProblem}
-# and to the \code{OptResult}.
+#' @title OptState object.
+#' @description
+#' The OptState is the central component of the mbo iterations. 
+#' This enviroment contains every necessary information needed during optimization in MBO. 
+#' It also links to the \code{\link{OptProblem}} and to the \code{\link{OptResult}}.
+#' @name OptState
+#' @rdname OptState
+NULL
+
 # @param loop \code{integer()} \cr
 #   Tells us in what loop we are at the moment. 0 means we are in the inital phase.
 #   The loop i should change to i+1 as soon as the i-th point is evaluated
@@ -19,8 +25,10 @@
 #    Here we keep the opt.path. It delivers the data for the tasks and other usefull information.
 #  @param time.last.saved \code{POSIXct} \cr
 #     The \code{Sys.time()} when the last save on disk was done.
-makeOptState = function(opt.problem, loop = 0L, tasks = NULL, models = NULL,
-  opt.result = NULL, state = "init", opt.path = NULL, time.last.saved = Sys.time()) {
+
+makeOptState = function(opt.problem, loop = 0L, tasks = NULL, models = NULL, 
+  time.model = NULL, opt.result = NULL, state = "init", opt.path = NULL, 
+  time.last.saved = Sys.time()) {
 
   opt.state = new.env()
 
@@ -30,6 +38,7 @@ makeOptState = function(opt.problem, loop = 0L, tasks = NULL, models = NULL,
   opt.state$models = models
   opt.state$models.loop = -1L
   opt.state$tasks.loop = -1L
+  opt.state$time.model = time.model
 
   if (is.null(opt.result)) {
     opt.state$opt.result = makeOptResult()

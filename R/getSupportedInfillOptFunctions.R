@@ -1,4 +1,4 @@
-#' Get names of supported infill-criteria optimizers.
+#' @title Get names of supported infill-criteria optimizers.
 #'
 #' @return [\code{character}]
 #' @export

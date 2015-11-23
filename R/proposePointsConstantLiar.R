@@ -1,5 +1,11 @@
-proposePointsConstantLiar = function(models, par.set, control, opt.path, iter) {
-  model = models[[1L]]
+proposePointsConstantLiar = function(opt.state) {
+
+  opt.problem = getOptStateOptProblem(opt.state)
+  model = getOptStateModels(opt.state)$models[[1L]]
+  par.set = getOptProblemParSet(opt.problem)
+  control = getOptProblemControl(opt.problem)
+  opt.path = getOptStateOptPath(opt.state)
+
   npoints = control$propose.points
   liar = control$multipoint.cl.lie
   # copy control, and propose 1 point each
@@ -12,7 +18,7 @@ proposePointsConstantLiar = function(models, par.set, control, opt.path, iter) {
   props = list()
   for (i in 1:npoints) {
     # propose point, add to opt.path2 with y = lie, then update model
-    props[[i]] = proposePointsByInfillOptimization(model, par.set, control2, opt.path2)
+    props[[i]] = proposePointsByInfillOptimization(opt.state, control = control2, opt.path = opt.path2, models = list(model))
     x = dfRowToList(props[[i]]$prop.points, par.set, 1)
     addOptPathEl(opt.path2, x = x, y = lie, dob = dob)
     rt = makeTaskSingleObj(opt.path2, control)

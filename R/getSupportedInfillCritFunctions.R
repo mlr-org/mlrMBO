@@ -1,4 +1,4 @@
-#' Returns the names of all currently supported infill criteria.
+#' @title Returns the names of all currently supported infill criteria.
 #'
 #' @return [\code{character}]
 #' @export

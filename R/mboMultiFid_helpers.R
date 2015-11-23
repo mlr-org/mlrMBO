@@ -1,5 +1,19 @@
 # propose Points for each multifid level. return a list
-proposePointsMultiFid = function(model, par.set, control, opt.path, iter) {
+proposePointsMultiFid = function(opt.state) {
+  opt.problem = getOptStateOptProblem(opt.state)
+  model = getOptStateModels(opt.state)$models[[1L]]
+  par.set = getOptProblemParSet(opt.problem)
+  control = getOptProblemControl(opt.problem)
+  opt.path = getOptStateOptPath(opt.state)
+  iter = getOptStateLoop(opt.state)
+
+  #FIXME: We wouldn't need that, if we could pass the opt.state to the infillCrit* functions
+  if (is.null(control$multifid.costs)) {
+    time.model = getOptStateTimeModel(opt.state)
+  } else {
+    time.model = NULL
+  }
+
   par.set.nomf = dropParams(par.set, ".multifid.lvl")
 
   design = convertOptPathToDf(opt.path = opt.path, control = control)
@@ -8,7 +22,7 @@ proposePointsMultiFid = function(model, par.set, control, opt.path, iter) {
   lvl.cors = vnapply(seq_along(control$multifid.lvls), calcModelCor, model = model, grid = corgrid, nlvls = length(control$multifid.lvls))
 
   prop = lapply(seq_along(control$multifid.lvls), function(lvl) {
-    res = proposePointsByInfillOptimization(model, par.set.nomf, control, opt.path, iter = iter, lvl.cors = lvl.cors, lvl.sds = lvl.sds, lvl = lvl)
+    res = proposePointsByInfillOptimization(opt.state, par.set = par.set.nomf, lvl.cors = lvl.cors, lvl.sds = lvl.sds, lvl = lvl, time.model = time.model)
     res$prop.points$.multifid.lvl = lvl
     res
   })
@@ -24,7 +38,8 @@ proposePointsMultiFid = function(model, par.set, control, opt.path, iter) {
 }
 
 #this function allows for points including the .multifid.lvl columns
-infillCritMultiFid.external = function(points, model, control, par.set, design, iter, lvl.cors, lvl.sds, lvl) {
+infillCritMultiFid.external = function(points, models, control, par.set, design, iter, lvl.cors, lvl.sds, lvl, time.model) {
+  model = models[[1L]]
   if (".multifid.lvl" %in% getParamIds(par.set)) {
     par.set.nomf = dropParams(par.set, ".multifid.lvl")
   } else {
@@ -40,18 +55,18 @@ infillCritMultiFid.external = function(points, model, control, par.set, design, 
   lvls.inds = sort(unique(points$.multifid.lvl))
   pointsres = lapply(seq_along(lvls.inds), function(i) {
     points.lvl = dropNamed(pointssplit[[i]], ".multifid.lvl")
-    infillCritMultiFid2(points = points.lvl, model = model, control = control, par.set = par.set, design = design, iter = iter, lvl.cors = lvl.cors, lvl.sds = lvl.sds, lvl = lvls.inds[i])$crit
+    infillCritMultiFid2(points = points.lvl, models = models, control = control, par.set = par.set, design = design, iter = iter, lvl.cors = lvl.cors, lvl.sds = lvl.sds, lvl = lvls.inds[i])$crit
   })
   unsplit(pointsres, points$.multifid.lvl)
 }
 
 # return only crit vector
-infillCritMultiFid = function(points, model, control, par.set, design, iter, lvl.cors, lvl.sds, lvl) {
-  infillCritMultiFid2(points, model, control, par.set, design, iter, lvl.cors, lvl.sds, lvl)$crit
+infillCritMultiFid = function(points, models, control, par.set, design, iter, lvl.cors, lvl.sds, lvl, time.model) {
+  infillCritMultiFid2(points, models, control, par.set, design, iter, lvl.cors, lvl.sds, lvl, time.model)$crit
 }
 
 # return all crap so we can plot it later
-infillCritMultiFid2 = function(points, model, control, par.set, design, iter, lvl.cors, lvl.sds, lvl) {
+infillCritMultiFid2 = function(points, models, control, par.set, design, iter, lvl.cors, lvl.sds, lvl, time.model) {
   nlvls = length(control$multifid.lvls)
   points.current = cbind(points, .multifid.lvl = lvl)
   points.last = cbind(points, .multifid.lvl = nlvls) #points on most expensive level
@@ -59,11 +74,11 @@ infillCritMultiFid2 = function(points, model, control, par.set, design, iter, lv
   # note: mbo returns the negated EI (and SE), so have to later minimize the huang crit.
   # which is done by default by our optimizer anyway
   infill.crit.fun = getInfillCritFunction(control$infill.crit)
-  ei.last = infill.crit.fun(points.last, model, control, par.set, design.last, iter)
+  ei.last = infill.crit.fun(points.last, models, control, par.set, design.last, iter)
   alpha1 = lvl.cors[lvl]
 
   # ALPHA 2
-  se = -infillCritStandardError(points.current, model, control, par.set, NULL, iter)
+  se = -infillCritStandardError(points.current, models, control, par.set, NULL, iter)
   if (any(lvl.sds < 0.001)) { # FIXME: IF lvl.sd near 0 it will make alpha2 useless
     lvl.sds = lvl.sds + 0.001
   }
@@ -71,7 +86,11 @@ infillCritMultiFid2 = function(points, model, control, par.set, design, iter, lv
   alpha2 = 1 - (sigmas / sqrt(se^2 + sigmas^2))
 
   # ALPHA 3
-  alpha3 = getLast(control$multifid.costs) / control$multifid.costs[lvl]
+  if (!is.null(control$multifid.costs)) {
+    alpha3 = getLast(control$multifid.costs) / control$multifid.costs[lvl]
+  } else {
+    alpha3 = getPredictionResponse(predict(time.model, newdata = points.last)) / getPredictionResponse(predict(time.model, newdata = points.current))
+  }
   crit = ei.last * alpha1 * alpha2 * alpha3
   list(crit = crit, ei = ei.last, se = se, alpha1 = alpha1, alpha2 = alpha2, alpha3 = alpha3, sd = sigmas)
 }

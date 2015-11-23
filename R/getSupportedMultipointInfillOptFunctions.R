@@ -1,4 +1,4 @@
-#' Get names of supported multipoint infill-criteria opimizers.
+#' @title Get names of supported multipoint infill-criteria opimizers.
 #'
 #' @return [\code{character}]
 #' @export

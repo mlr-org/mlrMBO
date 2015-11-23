@@ -15,6 +15,11 @@ setOptStateTasks = function(opt.state, tasks) {
   invisible()
 }
 
+setOptStateTimeModel = function(opt.state, time.model) {
+  opt.state$time.model = time.model
+  invisible()
+}
+
 setOptStateLoop = function(opt.state, loop = NULL) {
   opt.result = getOptStateOptResult(opt.state)
   setOptResultResampleResults(opt.result, opt.state)

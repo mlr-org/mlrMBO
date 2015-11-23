@@ -1,4 +1,4 @@
-#' Creates a control object for MBO optimization.
+#' @title Creates a control object for MBO optimization.
 #'
 #' @param minimize [\code{logical}]\cr
 #'   Should target functions be minimized? One value par target function.

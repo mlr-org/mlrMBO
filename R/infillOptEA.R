@@ -2,7 +2,7 @@
 # kind of mimics our multicrit approach, so we can
 # compare more honestly.
 # See infillOptCMAES.R for interface explanation.
-infillOptEA = function(infill.crit, model, control, par.set, opt.path, design, iter, ...) {
+infillOptEA = function(infill.crit, models, control, par.set, opt.path, design, iter, ...) {
   requirePackages("emoa", why = "infillOptEA")
 
   # get constants and init shit
@@ -24,7 +24,7 @@ infillOptEA = function(infill.crit, model, control, par.set, opt.path, design, i
 
     # random inital population:
     X = generateDesign(mu, par.set, fun = randomLHS)
-    y = infill.crit(X, model, control, par.set, design, iter, ...)
+    y = infill.crit(X, models, control, par.set, design, iter, ...)
 
     for (i in 1:control$infill.opt.ea.maxit) {
       # Create new individual (mu + lambda)
@@ -45,7 +45,7 @@ infillOptEA = function(infill.crit, model, control, par.set, opt.path, design, i
         # Add new individual:
         X[nrow(X) + 1, ] = child1
         child2 = setColNames(as.data.frame(as.list(child1)), repids)
-        y[length(y) + 1] = infill.crit(child2, model, control, par.set, design, iter, ...)
+        y[length(y) + 1] = infill.crit(child2, models, control, par.set, design, iter, ...)
       }
 
       # get elements we want to remove from current population

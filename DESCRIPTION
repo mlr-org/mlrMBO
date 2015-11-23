@@ -15,7 +15,7 @@ URL: https://github.com/berndbischl/mlrMBO
 BugReports: https://github.com/berndbischl/mlrMBO/issues
 Depends:
     lhs,
-    mlr (>= 2.2),
+    mlr (>= 2.5),
     ParamHelpers (>= 1.4)
 Imports:
     BBmisc (>= 1.7),
@@ -48,3 +48,4 @@ Suggests:
 LazyData: yes
 ByteCompile: yes
 Version: 1.0
+RoxygenNote: 5.0.1

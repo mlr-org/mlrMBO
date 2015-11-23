@@ -1,4 +1,4 @@
-#' Create transformation function for MBOExampleRun.
+#' @title Create transformation function for MBOExampleRun.
 #'
 #' @param name [\code{character(1)}]\cr
 #'   Name of the transformation.
