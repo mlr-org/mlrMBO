@@ -13,25 +13,37 @@ test_that("smart schedule works", {
     makeNumericParam("x", lower = 0, upper = 10)
   )
   
-  control = makeMBOControl(
-    init.design.points = 10L,
-    iters = 3L,
-    propose.points = 9L,
-    schedule.method = "smartParallelMap",
-    schedule.nodes = 3L,
-  )
-  
-  control = setMBOControlInfill(control = control, crit = "lcb")
+  setups = expand.grid(
+    schedule.priority = c("infill", "explore", "balanced"),
+    multipoint.lcb.multiple = c("random", "random.quantiles"),
+    schedule.priority.time = c(FALSE, TRUE),
+    stringsAsFactors = FALSE
+    )
   
   surrogat.learner = makeLearner("regr.km", predict.type = "se", nugget.estim = TRUE)
-  result = mbo(fun = objfun, par.set = par.set, learner = surrogat.learner, control = control)
-  op.df = as.data.frame(result$opt.path)
-  expect_true(!all(is.na(op.df$predicted.time)))
-  expect_true(!all(is.na(op.df$predicted.time.se)))
-  expect_true(!all(is.na(op.df$scheduled.at)))
-  expect_true(!all(is.na(op.df$scheduled.on)))
-  expect_true(!all(is.na(op.df$scheduled.job)))
-  expect_true(!all(is.na(op.df$scheduled.priority)))
+  ors = rowLapply(setups, function(x) {
+    control = makeMBOControl(
+      init.design.points = 5L,
+      iters = 2L,
+      propose.points = 3L,
+      schedule.method = "smartParallelMap",
+      schedule.nodes = 3L,
+      schedule.priority = x$schedule.priority,
+      schedule.priority.time = x$schedule.priority.time
+    )
+    control = setMBOControlInfill(control = control, crit = "lcb")
+    control = setMBOControlMultiPoint(control = control, lcb.multiple = x$multipoint.lcb.multiple)
+    or = mbo(fun = objfun, par.set = par.set, learner = surrogat.learner, control = control)
+    op.df = as.data.frame(or$opt.path)
+    expect_true(!all(is.na(op.df$predicted.time)))
+    expect_true(!all(is.na(op.df$predicted.time.se)))
+    expect_true(!all(is.na(op.df$scheduled.at)))
+    expect_true(!all(is.na(op.df$scheduled.on)))
+    expect_true(!all(is.na(op.df$scheduled.job)))
+    expect_true(!all(is.na(op.df$scheduled.priority)))
+    expect_true(!all(is.na(op.df$lcb.lambda)))
+    or
+  })
 })
 
 # test_that("multifid works with smart scheduling", {
