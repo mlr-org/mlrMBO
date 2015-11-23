@@ -72,7 +72,7 @@ mbo.ctrl = makeMBOControl(
   schedule.nodes = k, 
   time.budget = walltime*60^2*0.97,
   save.on.disk.at.time = 60*30,
-  save.file.path = paste0(reg$file.dir,"mboState.RData"))
+  save.file.path = file.path(reg$file.dir,"mboState.RData"))
 
 mbo.ctrl = setMBOControlInfill(mbo.ctrl,
   opt = "focussearch",
