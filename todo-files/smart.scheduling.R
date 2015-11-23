@@ -14,6 +14,9 @@ init.design.points = 30
 iters = 70
 #suggested 10
 cv.iters = 10
+#walltime in hours 48 or Inf
+walltime = 8
+
 
 #task einlesen
 libsvm.read = function(file) {
@@ -28,8 +31,8 @@ libsvm.read = function(file) {
 }
 
 ## Define Task
-w7a = libsvm.read(file = "../data/w7a")
-task = makeClassifTask(id = "w7a", data = w7a, target = "Y")
+a6a = libsvm.read(file = "../data/a6a")
+task = makeClassifTask(id = "a6a", data = a6a, target = "Y")
 #task = sonar.task
 
 ## Define Registry
@@ -54,9 +57,10 @@ ps.hp1 = makeModelMultiplexerParamSet(
     makeNumericParam("gamma", lower = -15, upper = 15, trafo = function(x) 2^x)),
   classif.randomForest = makeParamSet(
     makeIntegerParam("mtry", lower = floor((getTaskNFeats(task)^1/4)), upper = ceiling((getTaskNFeats(task))^1/1.5)),
-    makeIntegerParam("nodesize", lower = 1, upper = 10)),
+    makeIntegerParam("nodesize", lower = 1, upper = 10),
+    makeIntegerParam("ntree", lower = 50, upper = 1000)),
   classif.glmboost = makeParamSet(
-    makeIntegerParam("mstop", lower = 10, upper = 300)
+    makeIntegerParam("mstop", lower = 50, upper = 500)
   )
 )
 
@@ -65,7 +69,10 @@ mbo.ctrl = makeMBOControl(
   init.design.points = init.design.points,
   final.method = "best.predicted",
   propose.points = k,
-  schedule.nodes = k)
+  schedule.nodes = k, 
+  time.budget = walltime*60^2*0.97,
+  save.on.disk.at.time = 60*30,
+  save.file.path = paste0(reg$file.dir,"mboState.RData"))
 
 mbo.ctrl = setMBOControlInfill(mbo.ctrl,
   opt = "focussearch",
@@ -83,7 +90,9 @@ experiment.configurations = data.frame(
   schedule.method = c(rep("none",3), rep("smartParallelMap", times = 6)),
   schedule.priority = c(rep("infill", 5), "explore", "exploit", "balanced", "balanced"),
   infill.crit.lcb.multiple = c(rep("random",2), "random.quantiles", "random", rep("random.quantiles", times = 5)),
-  schedule.priority.time = c(rep(FALSE, 8), TRUE)
+  schedule.priority.time = c(rep(FALSE, 8), TRUE),
+  config.name = c("rs", "r.lcb", "q.lcb", "r.s.lcb", "q.s.lcb", "q.s.explore.lcb", "q.s.exploit.lcb", "q.s.balanced.lcb", "q.s.time.lcb"),
+  stringsAsFactors = FALSE
 )
 
 surrogate.learner = makeLearner("regr.randomForest", predict.type = "se", nr.of.bootstrap.samples = 20, nodesize = 2)
@@ -106,6 +115,7 @@ algoMBOWrapper = function(lrn.tuned, measures) {
       lrn.tuned$control$mbo.control[[ctrl.name]] = mbo.pars[[ctrl.name]]
     }
     lrn.tuned$control$mbo.control$init.design = dynamic$design
+    lrn.tuned$control$mbo.control$save.file.path = gsub(".RData", sprintf("_%i.RData", job$id) , lrn.tuned$control$mbo.control$save.file.path)
     parallelStartMulticore(cpus = lrn.tuned$control$mbo.control$schedule.nodes, level = "mlrMBO.feval")
     # set.seed(123 + dynamic$fold)
     mod = train(learner = lrn.tuned, task = static$task, subset = dynamic$train)
@@ -144,6 +154,6 @@ ades = lapply(learners, function(learner) {
 
 addExperiments(reg, prob.designs = pdes, algo.designs = ades, repls = 1, skip.defined = FALSE)
 
-submitJobs(reg, ids = sample(findExperiments(reg)), resources = list(walltime = 48*60^2, memory = 15000L, ppn = k))
+submitJobs(reg, ids = sample(findExperiments(reg)), resources = list(walltime = walltime*60^2, memory = 8000L, ppn = k*2))
 
 waitForJobs(reg)
