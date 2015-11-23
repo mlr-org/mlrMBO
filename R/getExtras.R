@@ -10,7 +10,7 @@ getExtras = function(n, prop, train.time, control) {
   exs = vector("list", n)
   errs = prop$errors.model
   
-  lams = prop$multipoint.lcb.lambdas
+  lams = prop$lcb.lambdas
   if (is.null(lams))
     lams = rep(NA_real_, n)
   
@@ -41,9 +41,6 @@ getExtras = function(n, prop, train.time, control) {
     }
     # if we use singlecrit parallel LCB store lambdas
     if (!is.null(control$multipoint.method) && control$number.of.targets == 1L && control$multipoint.method == "lcb") {
-      lams = prop$lcb.lambdas
-      if (is.null(lams))
-        lams = rep(NA_real_, n)
       ex$lcb.lambda = lams[i]
     }
     # if we use parego, store weights
