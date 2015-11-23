@@ -113,7 +113,7 @@ renderExampleRunPlot2d = function(x, iter,
 
     # sometimes contour lines cannot be plotted for EI
     if (name.z != "ei") {
-      pl = pl + stat_contour(aes_string(fill = name.z), binwidth = 5, colour = "gray", alpha = 0.8)
+      pl = pl + stat_contour(aes_string(fill = name.z), bins = 10, colour = "gray", alpha = 0.8)
     }
 
     # Keep in mind, that for the points the z value is always "name.y"
