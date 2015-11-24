@@ -27,17 +27,35 @@ res.dt = rbindlist(res.list, fill = TRUE)
 head(res.dt)
 ```
 
-```{r buildIdString}
+```{r initial design the same?}
+length(unique(res.dt[dob == 0 & probpar.fold == 1 & selected.learner == "classif.svm.radial", .SD[1,] ,by = algopar.config.name]$classif.svm.radial.gamma)) == 1
+```
 
+```{r laufzeiten einbauen}
+res.dt[, ':='(cumsum.exec.time = cumsum(exec.time), cummin.y = cummin(y)), by = .(prob, algo, repl, probpar.fold, algopar.config.name)]
 ```
 
 Analyze runtimes
 ```{r}
-end.res = res.dt[, .SD[1,], by = .(prob, algo, repl, probpar.fold, algopar.infill.crit, algopar.multipoint.lcb.multiple, algopar.iters, algopar.multipoint.method, algopar.propose.points, algopar.schedule.method, algopar.schedule.priority, algopar.schedule.priority.time, fold)]
-g = ggplot(res.dt, aes(x = exec.time , y = y, color = selected.learner))
+end.res = res.dt[, .SD[.N,], by = .(prob, algo, repl, probpar.fold, algopar.infill.crit, algopar.multipoint.lcb.multiple, algopar.iters, algopar.multipoint.method, algopar.propose.points, algopar.schedule.method, algopar.schedule.priority, algopar.schedule.priority.time, probpar.fold)]
+g = ggplot(res.dt, aes(x = dob , y = y, color = selected.learner))
 g = g + geom_point()
 g = g + geom_hline(data = end.res, mapping = aes(yintercept = test.mmce, color = x.selected.learner), alpha = 0.5)
-g = g + geom_text(data = end.res, mapping = aes(y = test.mmce, label = paste(algopar.infill.crit, algopar.multipoint.lcb.multiple, algopar.iters, algopar.multipoint.method, algopar.propose.points, algopar.schedule.method, algopar.schedule.priority, algopar.schedule.priority.time)), size = 4, color = "black")
-g + scale_x_log10(breaks = c(1, 10, 100, 1000)) + facet_grid(~probpar.fold)
+g = g + geom_text(data = end.res, mapping = aes(y = test.mmce, label = algopar.config.name), size = 4, color = "black")
+g + facet_grid(probpar.fold~.)
+
+g = ggplot(res.dt[dob >= 1], aes(x = exec.time, y = y, color = selected.learner, shape = dob == 0))
+g + geom_point(alpha = 0.5) + facet_wrap(~algopar.config.name) + scale_shape_manual(values = c(16,1)) + scale_x_log10()
 ```
 
+Performance
+```{r}
+g = ggplot(end.res, aes(x = algopar.config.name, y = cumsum.exec.time, fill = algopar.config.name))
+g + geom_boxplot()
+```
+
+Zeitverlauf
+```{r}
+g = ggplot(res.dt[dob >= 1], aes(y = cummin.y, x = cumsum.exec.time, color = algopar.config.name))
+g + geom_line() + facet_wrap(~probpar.fold)
+```

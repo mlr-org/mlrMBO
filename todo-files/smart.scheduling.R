@@ -11,7 +11,7 @@ k = 4
 #suggested 30
 init.design.points = 30
 #suggested 70
-iters = 70
+iters = 100
 #suggested 10
 cv.iters = 10
 #walltime in hours 48 or Inf
@@ -31,9 +31,19 @@ libsvm.read = function(file) {
 }
 
 ## Define Task
-a6a = libsvm.read(file = "../data/a6a")
-task = makeClassifTask(id = "a6a", data = a6a, target = "Y")
-#task = sonar.task
+#a6a = libsvm.read(file = "../data/a6a")
+w5a = libsvm.read(file = "../data/w5a")
+tasks = list(
+ # a6a = makeClassifTask(id = "a6a", data = a6a, target = "Y",
+  w5a = makeClassifTask(id = "w5a", data = w5a, target = "Y")
+)
+
+# Wanna shortcut?
+# k = 3
+# init.design.points = 3
+# iters = 3
+# cv.iters = 2
+# task = sonar.task
 
 ## Define Registry
 reg = makeExperimentRegistry(
@@ -56,11 +66,11 @@ ps.hp1 = makeModelMultiplexerParamSet(
     makeNumericParam("cost", lower = -15, upper = 15, trafo = function(x) 2^x),
     makeNumericParam("gamma", lower = -15, upper = 15, trafo = function(x) 2^x)),
   classif.randomForest = makeParamSet(
-    makeIntegerParam("mtry", lower = floor((getTaskNFeats(task)^1/4)), upper = ceiling((getTaskNFeats(task))^1/1.5)),
+    makeIntegerParam("mtry", lower = floor((getTaskNFeats(tasks[[1]])^1/4)), upper = ceiling((getTaskNFeats(tasks[[1]]))^1/1.5)),
     makeIntegerParam("nodesize", lower = 1, upper = 10),
     makeIntegerParam("ntree", lower = 50, upper = 1000)),
   classif.glmboost = makeParamSet(
-    makeIntegerParam("mstop", lower = 50, upper = 500)
+    makeIntegerParam("mstop", lower = 50, upper = 1000)
   )
 )
 
@@ -79,23 +89,23 @@ mbo.ctrl = setMBOControlInfill(mbo.ctrl,
   opt.focussearch.maxit = 5,
   opt.focussearch.points = 1000)
 
-#1 randomsearch
-#2,3 mbo k
-#4,5,6,7,8, 9 mbo scheduled
+#rs, randomSearch
+#r.lcb, randomLCB ohne scheduling
+#r.s.lcb ~ mit scheduling
+#r.s.time.lcb ~ mit Zeitsortierung
 experiment.configurations = data.frame(
-  propose.points = c(iters*k,k,k,rep(3*k, 6)),
-  iters = c(1, rep(iters, 8)),
-  infill.crit = c("random", rep("lcb", 8)),
-  multipoint.method = c("random", rep("lcb", 8)),
-  schedule.method = c(rep("none",3), rep("smartParallelMap", times = 6)),
-  schedule.priority = c(rep("infill", 5), "explore", "exploit", "balanced", "balanced"),
-  multipoint.lcb.multiple = c(rep("random",2), "random.quantiles", "random", rep("random.quantiles", times = 5)),
-  schedule.priority.time = c(rep(FALSE, 8), TRUE),
-  config.name = c("rs", "r.lcb", "q.lcb", "r.s.lcb", "q.s.lcb", "q.s.explore.lcb", "q.s.exploit.lcb", "q.s.balanced.lcb", "q.s.time.lcb"),
+  propose.points = c(iters*k, k, rep(3*k, 2)),
+  iters = c(1, rep(iters, 3)),
+  infill.crit = c("random", rep("lcb", 3)),
+  multipoint.method = c("random", rep("lcb", 3)),
+  schedule.method = c(rep("none", 2), rep("smartParallelMap", 2)),
+  multipoint.lcb.multiple = c(rep("random", 4)),
+  schedule.priority.time = c(rep(FALSE, 3), TRUE),
+  config.name = c("rs", "r.lcb", "r.s.lcb", "r.s.time.lcb"),
   stringsAsFactors = FALSE
 )
 
-surrogate.learner = makeLearner("regr.randomForest", predict.type = "se", nr.of.bootstrap.samples = 20, nodesize = 2)
+surrogate.learner = makeLearner("regr.randomForest", predict.type = "se", nr.of.bootstrap.samples = 20, nodesize = ceiling(init.design.points/(2*length(ps.hp1$pars$selected.learner$values))), mtry = floor(getParamNr(ps.hp1)*6/7), ntree = 250)
 surrogate.learner = makeImputeWrapper(surrogate.learner, classes = list(numeric = imputeConstant(10*2^15), factor = imputeConstant("NA"), integer = imputeConstant(10*2^15)))
 
 mlr.ctrl = mlr:::makeTuneControlMBO(same.resampling.instance = FALSE, learner = surrogate.learner, mbo.control = mbo.ctrl, mbo.keep.result = TRUE, continue = TRUE)
@@ -117,7 +127,7 @@ algoMBOWrapper = function(lrn.tuned, measures) {
     lrn.tuned$control$mbo.control$init.design = dynamic$design
     lrn.tuned$control$mbo.control$save.file.path = gsub(".RData", sprintf("_%i.RData", job$id) , lrn.tuned$control$mbo.control$save.file.path)
     parallelStartMulticore(cpus = lrn.tuned$control$mbo.control$schedule.nodes, level = "mlrMBO.feval")
-    # set.seed(123 + dynamic$fold)
+    set.seed(123 + dynamic$fold + job$repl)
     mod = train(learner = lrn.tuned, task = static$task, subset = dynamic$train)
     pred = predict(mod, task = static$task, subset = dynamic$test)
     parallelStop()
@@ -136,7 +146,6 @@ dynamicResampling = function(lrn.tuned) {
 }
 
 ## BatchExp Generate Stuff ####
-tasks = list(task)
 pdes = lapply(tasks, function(task) {
   addProblem(reg = reg, id = task$task.desc$id,
              static = list(task = task, rdesc = outer.rdesc),
@@ -155,5 +164,5 @@ ades = lapply(learners, function(learner) {
 addExperiments(reg, prob.designs = pdes, algo.designs = ades, repls = 1, skip.defined = FALSE)
 
 submitJobs(reg, ids = sample(findExperiments(reg)), resources = list(walltime = walltime*60^2, memory = 8000L, ppn = k*2))
-
 waitForJobs(reg)
+
