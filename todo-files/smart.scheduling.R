@@ -34,7 +34,7 @@ libsvm.read = function(file) {
 #a6a = libsvm.read(file = "../data/a6a")
 w5a = libsvm.read(file = "../data/w5a")
 tasks = list(
- # a6a = makeClassifTask(id = "a6a", data = a6a, target = "Y",
+#  a6a = makeClassifTask(id = "a6a", data = a6a, target = "Y",
   w5a = makeClassifTask(id = "w5a", data = w5a, target = "Y")
 )
 
@@ -68,9 +68,9 @@ ps.hp1 = makeModelMultiplexerParamSet(
   classif.randomForest = makeParamSet(
     makeIntegerParam("mtry", lower = floor((getTaskNFeats(tasks[[1]])^1/4)), upper = ceiling((getTaskNFeats(tasks[[1]]))^1/1.5)),
     makeIntegerParam("nodesize", lower = 1, upper = 10),
-    makeIntegerParam("ntree", lower = 50, upper = 1000)),
+    makeIntegerParam("ntree", lower = 50, upper = 300)),
   classif.glmboost = makeParamSet(
-    makeIntegerParam("mstop", lower = 50, upper = 1000)
+    makeIntegerParam("mstop", lower = 100, upper = 2000)
   )
 )
 
@@ -80,7 +80,7 @@ mbo.ctrl = makeMBOControl(
   final.method = "best.predicted",
   propose.points = k,
   schedule.nodes = k, 
-  time.budget = walltime*60^2*0.97,
+  time.budget = walltime*60^2*0.93,
   save.on.disk.at.time = 60*30,
   save.file.path = file.path(reg$file.dir,"mboState.RData"))
 
