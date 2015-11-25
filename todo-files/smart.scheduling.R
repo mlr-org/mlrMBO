@@ -43,7 +43,7 @@ tasks = list(
 # init.design.points = 3
 # iters = 3
 # cv.iters = 2
-# task = sonar.task
+# tasks = list(sonar = sonar.task)
 
 ## Define Registry
 reg = makeExperimentRegistry(
@@ -94,14 +94,15 @@ mbo.ctrl = setMBOControlInfill(mbo.ctrl,
 #r.s.lcb ~ mit scheduling
 #r.s.time.lcb ~ mit Zeitsortierung
 experiment.configurations = data.frame(
-  propose.points = c(iters*k, k, rep(3*k, 2)),
-  iters = c(1, rep(iters, 3)),
-  infill.crit = c("random", rep("lcb", 3)),
-  multipoint.method = c("random", rep("lcb", 3)),
-  schedule.method = c(rep("none", 2), rep("smartParallelMap", 2)),
-  multipoint.lcb.multiple = c(rep("random", 4)),
-  schedule.priority.time = c(rep(FALSE, 3), TRUE),
-  config.name = c("rs", "r.lcb", "r.s.lcb", "r.s.time.lcb"),
+  propose.points = c(iters*k, k, rep(3*k, 3)),
+  iters = c(1, rep(iters, 4)),
+  infill.crit = c("random", rep("lcb", 4)),
+  multipoint.method = c("random", rep("lcb", 4)),
+  schedule.method = c(rep("none", 2), rep("smartParallelMap", 3)),
+  multipoint.lcb.multiple = c(rep("random", 5)),
+  schedule.priority.time = c(rep(FALSE, 3), TRUE, FALSE),
+  config.name = c("rs", "r.lcb", "r.s.lcb", "r.s.time.lcb", "r.s.lcb"),
+  infill.crit.lcb.lambda = c(rep(1, 4), 2),
   stringsAsFactors = FALSE
 )
 
