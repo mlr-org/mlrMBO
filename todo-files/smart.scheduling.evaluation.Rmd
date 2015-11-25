@@ -8,7 +8,7 @@ output: html_document
 ```{r batchJobs}
 library(BatchExperiments)
 library(data.table)
-reg = loadRegistry("~/lido_nobackup/rambo/")
+reg = loadRegistry("~/lido_nobackup/old_rambo")
 reducer = function(job, res){
   res.dt = cbind(
     prob = job$prob.id,
@@ -32,7 +32,8 @@ length(unique(res.dt[dob == 0 & probpar.fold == 1 & selected.learner == "classif
 ```
 
 ```{r laufzeiten einbauen}
-res.dt[, ':='(cumsum.exec.time = cumsum(exec.time), cummin.y = cummin(y)), by = .(prob, algo, repl, probpar.fold, algopar.config.name)]
+res.dt[, ':='(cumsum.exec.time = cumsum(exec.time), cummin.y = cummin(y), exec.timestamp.rel = exec.timestamp - min(exec.timestamp)), by = .(prob, algo, repl, probpar.fold, algopar.config.name)]
+res.dt[, ':='(dob.exec.timestamp.rel = min(exec.timestamp.rel)), by = .(prob, algo, repl, probpar.fold, algopar.config.name, dob)]
 ```
 
 Analyze runtimes
@@ -42,7 +43,7 @@ g = ggplot(res.dt, aes(x = dob , y = y, color = selected.learner))
 g = g + geom_point()
 g = g + geom_hline(data = end.res, mapping = aes(yintercept = test.mmce, color = x.selected.learner), alpha = 0.5)
 g = g + geom_text(data = end.res, mapping = aes(y = test.mmce, label = algopar.config.name), size = 4, color = "black")
-g + facet_grid(probpar.fold~.)
+g + facet_grid(probpar.fold~algopar.config.name)
 
 g = ggplot(res.dt[dob >= 1], aes(x = exec.time, y = y, color = selected.learner, shape = dob == 0))
 g + geom_point(alpha = 0.5) + facet_wrap(~algopar.config.name) + scale_shape_manual(values = c(16,1)) + scale_x_log10()
@@ -50,12 +51,23 @@ g + geom_point(alpha = 0.5) + facet_wrap(~algopar.config.name) + scale_shape_man
 
 Performance
 ```{r}
-g = ggplot(end.res, aes(x = algopar.config.name, y = cumsum.exec.time, fill = algopar.config.name))
+g = ggplot(end.res, aes(x = algopar.config.name, y = cummin.y, fill = algopar.config.name))
+g + geom_boxplot()
+
+g = ggplot(end.res, aes(x = algopar.config.name, y = test.mmce, fill = algopar.config.name))
 g + geom_boxplot()
 ```
 
 Zeitverlauf
 ```{r}
-g = ggplot(res.dt[dob >= 1], aes(y = cummin.y, x = cumsum.exec.time, color = algopar.config.name))
+g = ggplot(res.dt[dob >= 1 & algopar.config.name %in% c("r.lcb", "q.lcb")], aes(y = cummin.y, x = cumsum.exec.time, color = algopar.config.name))
 g + geom_line() + facet_wrap(~probpar.fold)
+```
+
+Scheduling Analyse
+```{r}
+#how it was planned
+g = ggplot(res.dt[dob > 0], aes(y = scheduled.on, x = dob.exec.timestamp.rel + scheduled.at, color = selected.learner))
+g = g + geom_segment(aes(yend = scheduled.on, xend = dob.exec.timestamp.rel + scheduled.at + predicted.time))
+g + facet_grid(probpar.fold~algopar.config.name)
 ```
