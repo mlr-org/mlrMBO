@@ -69,7 +69,7 @@ test_that("infill crits", {
                              opt.focussearch.points = 300L, crit.lcb.lambda = 4)
   ctrl = setMBOControlMultiPoint(ctrl, method = "lcb")
   or = mbo(f, ps, NULL, makeLearner("regr.km", predict.type = "se"), ctrl)
-  abs(mean(as.data.frame(or$opt.path)$lcb.lambda, na.rm = TRUE) - 4) < 1
+  expect_true(abs(mean(as.data.frame(or$opt.path)$lcb.lambda, na.rm = TRUE) - 4) < 1)
 
   # check beta for eqi
   expect_error(setMBOControlInfill(ctrl, crit = "eqi", opt = "focussearch", opt.restarts = 1L,

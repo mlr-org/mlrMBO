@@ -17,6 +17,7 @@ test_that("smart schedule works", {
     schedule.priority = c("infill", "explore", "balanced"),
     multipoint.lcb.multiple = c("random", "random.quantiles"),
     schedule.priority.time = c(FALSE, TRUE),
+    crit.lcb.lambda = c(1,4),
     stringsAsFactors = FALSE
     )
   
@@ -25,13 +26,13 @@ test_that("smart schedule works", {
     control = makeMBOControl(
       init.design.points = 5L,
       iters = 2L,
-      propose.points = 3L,
+      propose.points = 9L,
       schedule.method = "smartParallelMap",
       schedule.nodes = 3L,
       schedule.priority = x$schedule.priority,
       schedule.priority.time = x$schedule.priority.time
     )
-    control = setMBOControlInfill(control = control, crit = "lcb")
+    control = setMBOControlInfill(control = control, crit = "lcb", crit.lcb.lambda = x$crit.lcb.lambda)
     control = setMBOControlMultiPoint(control = control, lcb.multiple = x$multipoint.lcb.multiple)
     or = mbo(fun = objfun, par.set = par.set, learner = surrogat.learner, control = control)
     op.df = as.data.frame(or$opt.path)
@@ -42,6 +43,7 @@ test_that("smart schedule works", {
     expect_true(!all(is.na(op.df$scheduled.job)))
     expect_true(!all(is.na(op.df$scheduled.priority)))
     expect_true(!all(is.na(op.df$lcb.lambda)))
+    expect_true(abs(mean(op.df$lcb.lambda, na.rm = TRUE) - x$crit.lcb.lambda) < 2)
     or
   })
 })
