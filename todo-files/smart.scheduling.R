@@ -55,7 +55,7 @@ reg = makeExperimentRegistry(
 )
 
 learner = makeModelMultiplexer(list(
-  makeLearner("classif.randomForest", id = "classif.randomForest"),
+  makeLearner("classif.ranger", id = "classif.ranger"),
   makeLearner("classif.svm", id = "classif.svm.radial", kernel = "radial"),
   makeLearner("classif.glmboost", id = "classif.glmboost")
 ))
@@ -65,10 +65,10 @@ ps.hp1 = makeModelMultiplexerParamSet(
   classif.svm.radial = makeParamSet(
     makeNumericParam("cost", lower = -15, upper = 15, trafo = function(x) 2^x),
     makeNumericParam("gamma", lower = -15, upper = 15, trafo = function(x) 2^x)),
-  classif.randomForest = makeParamSet(
+  classif.ranger = makeParamSet(
     makeIntegerParam("mtry", lower = floor((getTaskNFeats(tasks[[1]])^1/4)), upper = ceiling((getTaskNFeats(tasks[[1]]))^1/1.5)),
-    makeIntegerParam("nodesize", lower = 1, upper = 10),
-    makeIntegerParam("ntree", lower = 50, upper = 300)),
+    makeIntegerParam("min.node.size", lower = 1, upper = 10),
+    makeIntegerParam("num.trees", lower = 50, upper = 500)),
   classif.glmboost = makeParamSet(
     makeIntegerParam("mstop", lower = 100, upper = 2000)
   )
