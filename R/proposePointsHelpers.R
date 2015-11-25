@@ -38,7 +38,7 @@ createRandomLCBControls = function(control, crit, user.lambda = FALSE) {
   } else if (control$multipoint.lcb.multiple == "random.quantiles") {
     lambdas = quantile(rexp(control$propose.points * 100),(seq(0,1,length.out = control$propose.points)))
   } else if (control$multipoint.lcb.multiple == "random") {
-    lambdas = rexp(control$propose.points, control$infill.crit.lcb.lambda)  
+    lambdas = rexp(control$propose.points, 1/control$infill.crit.lcb.lambda)  
   } else {
     stopf("%s not known as setting for multicrit.lcb.multiple")
   }
