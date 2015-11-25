@@ -34,9 +34,11 @@ createRandomLCBControls = function(control, crit, user.lambda = FALSE) {
   if (user.lambda) {
     lambdas = rep(control$infill.crit.lcb.lambda, times = control$propose.points)
   } else if (control$multipoint.lcb.multiple == "static.quantiles") {
-    lambdas = qexp(head(seq(0,1,lengt.out = control$propose.points+2)[-1],-1), control$infill.crit.lcb.lambda)
+    lambdas = qexp(head(seq(0,1,lengt.out = control$propose.points+2)[-1],-1), 1/control$infill.crit.lcb.lambda)
   } else if (control$multipoint.lcb.multiple == "random.quantiles") {
-    lambdas = quantile(rexp(control$propose.points * 100),(seq(0,1,length.out = control$propose.points)))
+    lambdas = quantile(
+      rexp(control$propose.points * 100, 1/control$infill.crit.lcb.lambda),
+      seq(0,1,length.out = control$propose.points))
   } else if (control$multipoint.lcb.multiple == "random") {
     lambdas = rexp(control$propose.points, 1/control$infill.crit.lcb.lambda)  
   } else {
