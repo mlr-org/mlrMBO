@@ -8,7 +8,7 @@ output: html_document
 ```{r batchJobs}
 library(BatchExperiments)
 library(data.table)
-reg = loadRegistry("~/lido_nobackup/old_rambo")
+reg = loadRegistry("~/lido_nobackup/rambo")
 reducer = function(job, res){
   res.dt = cbind(
     prob = job$prob.id,
@@ -32,13 +32,21 @@ length(unique(res.dt[dob == 0 & probpar.fold == 1 & selected.learner == "classif
 ```
 
 ```{r laufzeiten einbauen}
-res.dt[, ':='(cumsum.exec.time = cumsum(exec.time), cummin.y = cummin(y), exec.timestamp.rel = exec.timestamp - min(exec.timestamp)), by = .(prob, algo, repl, probpar.fold, algopar.config.name)]
-res.dt[, ':='(dob.exec.timestamp.rel = min(exec.timestamp.rel)), by = .(prob, algo, repl, probpar.fold, algopar.config.name, dob)]
+res.dt[algopar.infill.crit.lcb.lambda == 2 & algopar.config.name == "r.s.lcb", algopar.config.name := "r.s.lcb.2"]
+#naive laufzeitaddierung
+res.dt[, ':='(cumsum.exec.time = cumsum(exec.time), cummin.y = cummin(y)), by = .(prob, algo, repl, probpar.fold, algopar.config.name)]
+res.dt[, ':='(exec.timestamp.dob = as.integer(exec.timestamp) - min(exec.timestamp), cummin.y = cummin(y)), by = .(prob, algo, repl, probpar.fold, algopar.config.name, dob)]
+#wie lange braucht ein dob-schritt
+res.dt.dobs = res.dt[, list(dob.exec.time = max(exec.timestamp + as.integer(exec.time)) - min(exec.timestamp)), by = .(prob, algo, repl, probpar.fold, algopar.config.name, dob)]
+#summiere dob schritte auf
+res.dt.dobs[, dob.endtime := cumsum(dob.exec.time)]
+res.dt = res.dt[res.dt.dobs, , on = c("prob", "algo", "repl", "probpar.fold", "algopar.config.name", "dob")]
 ```
 
 Analyze runtimes
 ```{r}
-end.res = res.dt[, .SD[.N,], by = .(prob, algo, repl, probpar.fold, algopar.infill.crit, algopar.multipoint.lcb.multiple, algopar.iters, algopar.multipoint.method, algopar.propose.points, algopar.schedule.method, algopar.schedule.priority, algopar.schedule.priority.time, probpar.fold)]
+end.res = res.dt[, .SD[.N,], by = .(prob, algo, repl, probpar.fold, algopar.infill.crit, algopar.multipoint.lcb.multiple, algopar.iters, algopar.multipoint.method, algopar.propose.points, algopar.schedule.method, algopar.schedule.priority.time, probpar.fold)]
+
 g = ggplot(res.dt, aes(x = dob , y = y, color = selected.learner))
 g = g + geom_point()
 g = g + geom_hline(data = end.res, mapping = aes(yintercept = test.mmce, color = x.selected.learner), alpha = 0.5)
@@ -46,7 +54,7 @@ g = g + geom_text(data = end.res, mapping = aes(y = test.mmce, label = algopar.c
 g + facet_grid(probpar.fold~algopar.config.name)
 
 g = ggplot(res.dt[dob >= 1], aes(x = exec.time, y = y, color = selected.learner, shape = dob == 0))
-g + geom_point(alpha = 0.5) + facet_wrap(~algopar.config.name) + scale_shape_manual(values = c(16,1)) + scale_x_log10()
+g + geom_point(alpha = 0.5) + facet_wrap(~algopar.config.name) + scale_shape_manual(values = c(16,1))
 ```
 
 Performance
@@ -60,14 +68,26 @@ g + geom_boxplot()
 
 Zeitverlauf
 ```{r}
-g = ggplot(res.dt[dob >= 1 & algopar.config.name %in% c("r.lcb", "q.lcb")], aes(y = cummin.y, x = cumsum.exec.time, color = algopar.config.name))
+g = ggplot(res.dt[dob >= 1], aes(y = cummin.y, x = cumsum.exec.time, color = algopar.config.name))
 g + geom_line() + facet_wrap(~probpar.fold)
 ```
 
 Scheduling Analyse
 ```{r}
 #how it was planned
-g = ggplot(res.dt[dob > 0], aes(y = scheduled.on, x = dob.exec.timestamp.rel + scheduled.at, color = selected.learner))
+g = ggplot(res.dt[dob > 0 & probpar.fold == 5], aes(y = scheduled.on, x = dob.exec.timestamp.rel + scheduled.at, color = selected.learner))
 g = g + geom_segment(aes(yend = scheduled.on, xend = dob.exec.timestamp.rel + scheduled.at + predicted.time))
-g + facet_grid(probpar.fold~algopar.config.name)
+g + facet_wrap(~algopar.config.name)
+```
+
+Paretofront
+```{r}
+#how it was planned
+g = ggplot(end.res, aes(y = exec.time, x = test.mmce, color = algopar.config.name))
+g = g + geom_point(size = 5) + facet_wrap(~probpar.fold)
+g
+```
+
+```{r}
+res.dt[algopar.config.name == "r.s.lcb" & probpar.fold == 6]
 ```
