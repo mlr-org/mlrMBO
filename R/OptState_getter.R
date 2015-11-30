@@ -57,6 +57,14 @@ getOptStateLoop = function(opt.state) {
   opt.state$loop
 }
 
+getOptStateLoopStarttime = function(opt.state) {
+  opt.state$loop.starttime
+}
+
+getOptStateTimeUsed = function(opt.state) {
+  opt.state$time.used
+}
+
 getOptStateOptPath = function(opt.state) {
   opt.state$opt.path
 }

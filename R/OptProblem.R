@@ -22,14 +22,11 @@ NULL
 # @param learner [\code{\link[mlr]{Learner}}]\cr
 #   Regression learner to model \code{fun}.
 # @template arg_control
-# @param start.time [\code{POSIXct}] \cr
-#   Starting time of Tuning defined as an output from \code[Sys.time()].
 # @template arg_showinfo
 # @param more.args [list]\cr
 #   Further arguments passed to fitness function.
 # @return [\code{\link{MBOSingleObjResult}} | \code{\link{MBOMultiObjResult}}]
-makeOptProblem = function(fun, par.set, design = NULL, learner, control,
-  start.time = NULL, show.info = TRUE, more.args = list()) {
+makeOptProblem = function(fun, par.set, design = NULL, learner, control, show.info = TRUE, more.args = list()) {
   opt.problem = new.env()
 
   opt.problem$fun = fun
@@ -37,10 +34,6 @@ makeOptProblem = function(fun, par.set, design = NULL, learner, control,
   opt.problem$design = design
   opt.problem$learner = learner
   opt.problem$control = control
-  if (is.null(start.time))
-    opt.problem$start.time = Sys.time()
-  else
-    opt.problem$start.time = start.time
   opt.problem$show.info = show.info
   opt.problem$more.args = more.args
 
@@ -97,10 +90,6 @@ getOptProblemAlgoInit = function(opt.problem) {
     algo.init = opt.problem$algo.init
   }
   algo.init
-}
-
-getOptProblemStartTime = function(opt.problem) {
-  opt.problem$start.time
 }
 
 getOptProblemShowInfo = function(opt.problem) {
