@@ -11,7 +11,7 @@ k = 4
 #suggested 30
 init.design.points = 30
 #suggested 70
-iters = 10000
+iters = 1000
 #suggested 10
 cv.iters = 10
 #walltime in hours 48 or Inf
@@ -71,7 +71,7 @@ ps.hp1 = makeModelMultiplexerParamSet(
     makeNumericParam("cost", lower = -15, upper = 15, trafo = function(x) 2^x),
     makeNumericParam("gamma", lower = -15, upper = 15, trafo = function(x) 2^x)),
   classif.ranger = makeParamSet(
-    makeIntegerParam("mtry", lower = floor((getTaskNFeats(tasks[[1]])^1/4)), upper = ceiling((getTaskNFeats(tasks[[1]]))^1/1.5)),
+    makeIntegerParam("mtry", lower = floor(getTaskNFeats(tasks[[1]])^(1/4)), upper = ceiling(getTaskNFeats(tasks[[1]])^(3/4))),
     makeIntegerParam("min.node.size", lower = 1, upper = 10),
     makeIntegerParam("num.trees", lower = 50, upper = 500)),
   classif.glmboost = makeParamSet(
@@ -102,8 +102,8 @@ mbo.ctrl = setMBOControlMultiPoint(mbo.ctrl, lcb.multiple = "random")
 #r.s.lcb ~ mit scheduling
 #r.s.time.lcb ~ mit Zeitsortierung
 experiment.configurations = data.frame(
-  propose.points = c(iters*k, k, rep(3*k, 2)),
-  iters = c(1, rep(iters, 3)),
+  propose.points = c(3*k, k, rep(3*k, 2)),
+  iters = c(iters/3, rep(iters, 3)),
   infill.crit = c("random", rep("lcb", 3)),
   multipoint.method = c("random", rep("lcb", 3)),
   schedule.method = c(rep("none", 2), rep("smartParallelMap", 2)),
@@ -131,12 +131,11 @@ algoMBOWrapper = function(lrn.tuned, measures) {
     for (ctrl.name in names(mbo.pars)) {
       lrn.tuned$control$mbo.control[[ctrl.name]] = mbo.pars[[ctrl.name]]
     }
-    lrn.tuned$control$mbo.control$init.design = dynamic$design
     lrn.tuned$control$mbo.control$save.file.path = gsub(".RData", sprintf("_%i.RData", job$id) , lrn.tuned$control$mbo.control$save.file.path)
     #set mtry to task specific values
     if (!is.null(lrn.tuned$opt.pars$pars$classif.ranger.mtry)) {
-      lrn.tuned$opt.pars$pars$classif.ranger.mtry$lower = as.integer(floor((getTaskNFeats(static$task)^1/4)))
-      lrn.tuned$opt.pars$pars$classif.ranger.mtry$upper =  as.integer(ceiling((getTaskNFeats(static$task))^1/1.5))
+      lrn.tuned$opt.pars$pars$classif.ranger.mtry$lower = as.integer(floor(getTaskNFeats(static$task)^(1/4)))
+      lrn.tuned$opt.pars$pars$classif.ranger.mtry$upper =  as.integer(ceiling(getTaskNFeats(static$task))^(3/4))
     }
     parallelStartMulticore(cpus = lrn.tuned$control$mbo.control$schedule.nodes, level = "mlrMBO.feval")
     set.seed(123 + dynamic$fold + job$repl)
@@ -152,8 +151,7 @@ dynamicResampling = function(lrn.tuned) {
   force(lrn.tuned)
   function(job, static, fold) {
     rin = makeResampleInstance(static$rdesc, task = static$task)
-    design = generateDesign(lrn.tuned$control$mbo.control$init.design.points, par.set = lrn.tuned$opt.pars)
-    list(train = rin$train.inds[[fold]], test = rin$test.inds[[fold]], fold = fold, design = design)
+    list(train = rin$train.inds[[fold]], test = rin$test.inds[[fold]], fold = fold)
   }
 }
 
