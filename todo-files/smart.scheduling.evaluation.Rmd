@@ -31,60 +31,76 @@ head(res.dt)
 length(unique(res.dt[dob == 0 & probpar.fold == 1 & selected.learner == "classif.svm.radial", .SD[1,] ,by = algopar.config.name]$classif.svm.radial.gamma)) == 1
 ```
 
+```{r randomSearch normalisieren}
+#TODO?
+#res.rs = res.dt[algopar.config.name == "rs", ]
+```
+
 ```{r laufzeiten einbauen}
-res.dt[algopar.infill.crit.lcb.lambda == 2 & algopar.config.name == "r.s.lcb", algopar.config.name := "r.s.lcb.2"]
-#naive laufzeitaddierung
-res.dt[, ':='(cumsum.exec.time = cumsum(exec.time), cummin.y = cummin(y)), by = .(prob, algo, repl, probpar.fold, algopar.config.name)]
 res.dt[, ':='(exec.timestamp.dob = as.integer(exec.timestamp) - min(exec.timestamp), cummin.y = cummin(y)), by = .(prob, algo, repl, probpar.fold, algopar.config.name, dob)]
-#wie lange braucht ein dob-schritt
-res.dt.dobs = res.dt[, list(dob.exec.time = max(exec.timestamp + as.integer(exec.time)) - min(exec.timestamp)), by = .(prob, algo, repl, probpar.fold, algopar.config.name, dob)]
+#wie lange braucht ein dob-schritt und welches ymin erreicht er
+res.dt.dobs = res.dt[, list(dob.ymin = min(y), dob.exec.time = max(exec.timestamp + as.integer(exec.time)) - min(exec.timestamp)), by = .(prob, algo, repl, probpar.fold, algopar.config.name, dob)]
 #summiere dob schritte auf
-res.dt.dobs[, dob.endtime := cumsum(dob.exec.time)]
+res.dt.dobs[, ':='(dob.endtime = cumsum(dob.exec.time), dob.cummin.y = cummin(dob.ymin)), by = .(algo, prob, repl, probpar.fold, algopar.config.name)]
 res.dt = res.dt[res.dt.dobs, , on = c("prob", "algo", "repl", "probpar.fold", "algopar.config.name", "dob")]
+#find out where a job was actaully executed
+getExecOn = function(exec.times, exec.endtimes, ncpus) {
+  used.time = numeric(ncpus)
+  exec.on = numeric(length(exec.times))
+  for (i in seq_along(exec.times)) {
+    exec.on[i] = which.min(used.time) 
+    used.time[exec.on[i]] = exec.endtimes[i]
+  }
+  exec.on
+}
+res.dt[, ':='(exec.on = getExecOn(exec.timestamp.dob, exec.timestamp.dob+exec.time, max(res.dt$scheduled.on, na.rm = TRUE))), by = .(prob, algo, probpar.fold, algopar.config.name, dob)]
+
+#end results
+end.res = res.dt[, .SD[.N,], by = .(prob, algo, repl, probpar.fold, algopar.config.name)]
+end.res.fold = end.res[, lapply(.SD[, list(cummin.y, dob.endtime, test.mmce)], mean), by = .(prob, algo, repl, algopar.config.name)]
 ```
 
 Analyze runtimes
 ```{r}
-end.res = res.dt[, .SD[.N,], by = .(prob, algo, repl, probpar.fold, algopar.infill.crit, algopar.multipoint.lcb.multiple, algopar.iters, algopar.multipoint.method, algopar.propose.points, algopar.schedule.method, algopar.schedule.priority.time, probpar.fold)]
-
 g = ggplot(res.dt, aes(x = dob , y = y, color = selected.learner))
 g = g + geom_point()
 g = g + geom_hline(data = end.res, mapping = aes(yintercept = test.mmce, color = x.selected.learner), alpha = 0.5)
 g = g + geom_text(data = end.res, mapping = aes(y = test.mmce, label = algopar.config.name), size = 4, color = "black")
-g + facet_grid(probpar.fold~algopar.config.name)
+g + facet_grid(prob+probpar.fold~algopar.config.name)
 
-g = ggplot(res.dt[dob >= 1], aes(x = exec.time, y = y, color = selected.learner, shape = dob == 0))
-g + geom_point(alpha = 0.5) + facet_wrap(~algopar.config.name) + scale_shape_manual(values = c(16,1))
+g = ggplot(res.dt, aes(x = exec.time, y = y, color = selected.learner, shape = dob == 0))
+g + geom_point(alpha = 0.5) + facet_wrap(~prob, scales = "free") + scale_shape_manual(values = c(16,1)) + scale_x_log10()
 ```
 
-Performance
+Performance, relativ naiv einfach am ende
 ```{r}
 g = ggplot(end.res, aes(x = algopar.config.name, y = cummin.y, fill = algopar.config.name))
-g + geom_boxplot()
+g + geom_boxplot() + facet_wrap(~prob, scales = "free")
 
 g = ggplot(end.res, aes(x = algopar.config.name, y = test.mmce, fill = algopar.config.name))
-g + geom_boxplot()
+g + geom_boxplot() + facet_wrap(~prob, scales = "free")
 ```
 
 Zeitverlauf
 ```{r}
-g = ggplot(res.dt[dob >= 1], aes(y = cummin.y, x = cumsum.exec.time, color = algopar.config.name))
-g + geom_line() + facet_wrap(~probpar.fold)
+res.dt
+g = ggplot(res.dt[dob > 0,], aes(y = dob.cummin.y, x = dob.endtime, color = algopar.config.name))
+g + geom_line() + facet_wrap(prob~probpar.fold, scales = "free")
 ```
 
 Scheduling Analyse
 ```{r}
 #how it was planned
-g = ggplot(res.dt[dob > 0 & probpar.fold == 5], aes(y = scheduled.on, x = dob.exec.timestamp.rel + scheduled.at, color = selected.learner))
-g = g + geom_segment(aes(yend = scheduled.on, xend = dob.exec.timestamp.rel + scheduled.at + predicted.time))
-g + facet_wrap(~algopar.config.name)
+g = ggplot(res.dt[probpar.fold == 1], aes(y = exec.on, x = dob.endtime - dob.exec.time + exec.timestamp.dob, color = selected.learner))
+g = g + geom_segment(aes(yend = exec.on, xend = dob.endtime - dob.exec.time + exec.timestamp.dob + exec.time), lwd = 2, alpha = 0.8)
+g = g + geom_vline(aes(xintercept = dob.endtime), alpha = 0.2)
+g + facet_grid(algopar.config.name~prob, scales = "free") + theme_bw()
 ```
 
 Paretofront
 ```{r}
-#how it was planned
-g = ggplot(end.res, aes(y = exec.time, x = test.mmce, color = algopar.config.name))
-g = g + geom_point(size = 5) + facet_wrap(~probpar.fold)
+g = ggplot(end.res, aes(y = dob.endtime, x = test.mmce, color = algopar.config.name))
+g = g + geom_point(size = 5) + facet_wrap(~prob, scales = "free") + stat_summary(fun.y = mean, fun.x = mean, geom="point")
 g
 ```
 
