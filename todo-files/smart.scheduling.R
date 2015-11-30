@@ -103,7 +103,7 @@ mbo.ctrl = setMBOControlMultiPoint(mbo.ctrl, lcb.multiple = "random")
 #r.s.time.lcb ~ mit Zeitsortierung
 experiment.configurations = data.frame(
   propose.points = c(3*k, k, rep(3*k, 2)),
-  iters = c(iters/3, rep(iters, 3)),
+  iters = c(floor(iters/3), rep(iters, 3)),
   infill.crit = c("random", rep("lcb", 3)),
   multipoint.method = c("random", rep("lcb", 3)),
   schedule.method = c(rep("none", 2), rep("smartParallelMap", 2)),
