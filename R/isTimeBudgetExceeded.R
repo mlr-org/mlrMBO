@@ -12,19 +12,6 @@ isTimeBudgetExceeded = function(x, time.budget, show.info = FALSE) {
 	UseMethod("isTimeBudgetExceeded")
 }
 
-isTimeBudgetExceeded.POSIXct = function(x, time.budget, show.info = FALSE) {
-  if (is.null(time.budget) || is.infinite(time.budget))
-    return(FALSE)
-  current.time = Sys.time()
-  time.difference = as.numeric(difftime(current.time, x, units = "secs"))
-  if (time.difference > time.budget) {
-    showInfo(show.info, "time.budget %i reached with %.1f", time.budget, time.difference)
-  	return(TRUE)
-  } else {
-  	return(FALSE)
-  }
-}
-
 isTimeBudgetExceeded.OptPath = function(x, time.budget, show.info = FALSE) {
   if (is.null(time.budget) || is.infinite(time.budget))
     return(FALSE)
@@ -37,4 +24,18 @@ isTimeBudgetExceeded.OptPath = function(x, time.budget, show.info = FALSE) {
   } 
 }
 
+isTimeBudgetExceeded.difftime = function(x, time.budget, show.info = FALSE) {
+  x = as.numeric(x, units = "secs")
+  isTimeBudgetExceeded(x, time.budget = time.budget, show.info = show.info)
+}
 
+isTimeBudgetExceeded.numeric = function(x, time.budget, show.info = FALSE) {
+  if (is.null(time.budget) || is.infinite(time.budget))
+    return(FALSE)
+  if (x > time.budget) {
+    showInfo(show.info, "time.budget %i reached with %.1f", time.budget, x)
+    return(TRUE)
+  } else {
+    return(FALSE)
+  }
+}

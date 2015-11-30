@@ -23,6 +23,7 @@ mboTemplate.OptProblem = function(obj) {
 # Runs the mbo iterations on any given OptState until termination criterion is fulfilled
 mboTemplate.OptState = function(obj) {
   opt.state = obj
+  setOptStateLoopStarttime(opt.state)
   repeat {
     prop = proposePoints.OptState(opt.state) 
     evalProposedPoints.OptState(opt.state, prop)

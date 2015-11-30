@@ -6,7 +6,7 @@ shouldTerminate.OptState = function(opt.state) {
   opt.problem = getOptStateOptProblem(opt.state)
   control = getOptProblemControl(opt.problem)
   iter = getOptStateLoop(opt.state)
-  start.time = getOptProblemStartTime(opt.problem)
+  time.used = getOptStateTimeUsed(opt.state)
   target.fun.value = control$target.fun.value
   minimize = control$minimize
   opt.path = getOptStateOptPath(opt.state)
@@ -15,7 +15,7 @@ shouldTerminate.OptState = function(opt.state) {
     showInfo(getOptProblemShowInfo(opt.problem), "max.iters %i reached with %i", control$iters, iter)
     return(1L)
   }
-  if (isTimeBudgetExceeded(start.time, control$time.budget)) {
+  if (isTimeBudgetExceeded(time.used, control$time.budget)) {
     return(2L)
   }
   if (isTimeBudgetExceeded(opt.path, control$exec.time.budget)) {
@@ -29,7 +29,7 @@ shouldTerminate.OptState = function(opt.state) {
       return(4L)
     }
   }
-  return(0)
+  return(0L)
 }
 
 # This function returns all the character which lead to an termination 

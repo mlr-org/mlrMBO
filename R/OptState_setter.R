@@ -30,11 +30,29 @@ setOptStateLoop = function(opt.state, loop = NULL) {
     opt.state$loop = loop
   # save resampling and models in result routine
   setOptStateRandomSeed(opt.state)
+  setOptStateTimeUsed(opt.state)
   invisible()
 }
 
 setOptStateTimeLastSaved = function(opt.state, time) {
   opt.state$time.last.saved = time
+  invisible()
+}
+
+setOptStateLoopStarttime = function(opt.state) {
+  opt.state$loop.starttime = Sys.time()
+  invisible()
+}
+
+setOptStateTimeUsed = function(opt.state, time.used = NULL, time.add = NULL) {
+  if (!is.null(time.used)) {
+    opt.state$time.used = time.used
+  } else if (!is.null(time.add)) {
+    opt.state$time.used = getOptStateTimeUsed(opt.state) + time.add
+  } else {
+    opt.state$time.used = getOptStateTimeUsed(opt.state) + difftime(Sys.time(), getOptStateLoopStarttime(opt.state), units = "secs")
+    setOptStateLoopStarttime(opt.state)
+  }
   invisible()
 }
 
