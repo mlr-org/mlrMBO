@@ -46,6 +46,7 @@ createRandomLCBControls = function(control, crit, user.lambda = FALSE) {
   }
   controls = lapply(lambdas, function(lambda) {
     control$propose.points = 1L
+    control$infill.crit.lcb.lambda = lambda
     control$infill.crit = crit
     return(control)
   })
