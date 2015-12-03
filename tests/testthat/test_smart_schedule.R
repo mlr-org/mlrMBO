@@ -15,10 +15,11 @@ test_that("smart schedule works", {
   setups = expand.grid(
     schedule.priority = c("infill", "explore", "balanced"),
     multipoint.lcb.multiple = c("random", "random.quantiles"),
-    schedule.priority.time = c(FALSE, TRUE),
+    schedule.priority.time = FALSE,
     crit.lcb.lambda = c(1,4),
     stringsAsFactors = FALSE
     )
+  setups = rbind(setups, data.frame(schedule.priority = "infill", multipoint.lcb.multiple = "static.quantiles", schedule.priority.time = TRUE, crit.lcb.lambda = 2))
   
   surrogat.learner = makeLearner("regr.randomForest", predict.type = "se", ntree = 10)
   ors = rowLapply(setups, function(x) {

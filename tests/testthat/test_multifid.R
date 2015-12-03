@@ -16,7 +16,7 @@ test_that("basic multifid works", {
   control = makeMBOControl(
     init.design.points = 9L,
     init.design.fun = maximinLHS,
-    iters = 5L,
+    iters = 3L,
     on.learner.error = "stop",
     show.learner.output = FALSE,
   )
@@ -24,8 +24,8 @@ test_that("basic multifid works", {
                                 crit = "ei",
                                 opt = "focussearch",
                                 opt.restarts = 1L,
-                                opt.focussearch.maxit = 1L,
-                                opt.focussearch.points = 10L,
+                                opt.focussearch.maxit = 2L,
+                                opt.focussearch.points = 100L,
                                 filter.proposed.points = TRUE,
                                 filter.proposed.points.tol = 0.01
   )
@@ -39,12 +39,14 @@ test_that("basic multifid works", {
   result = mbo(fun = objfun, par.set = par.set, learner = surrogat.learner, control = control)
   expect_true(result$y < 0.5)
   op.df = as.data.frame(result$opt.path)
+  expect_true(is.null(op.df$predicted.time))
 
   ### remove costs so time.model will be estimated
   control$multifid.costs = NULL
   objfun.delay = function(x) {
-    Sys.sleep(0.1 + x$.multifid.lvl/3)
-    objfun(x)
+    res = objfun(x)
+    attr(res, "exec.time") =  x$.multifid.lvl
+    return(res)
   }
   set.seed(1)
   result.time = mbo(fun = objfun.delay, par.set = par.set, learner = surrogat.learner, control = control)
