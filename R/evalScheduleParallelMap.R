@@ -37,7 +37,7 @@ evalScheduleSmartParallelMap = function(wrapFun, xs, xs.schedule.info = NULL, ex
     t.max = xs.schedule.info$times[1L] + 2 * xs.schedule.info$times.se[1L]
     
     if (control$schedule.priority.time) {
-      order.idx = order(xs.schedule.info$times, decreasing = TRUE)
+      order.idx = c(1, 1 + order(tail(xs.schedule.info$times, -1), decreasing = TRUE))
       xs.schedule.info = xs.schedule.info[order.idx,, drop = FALSE]
       xs = xs[order.idx]
     }
