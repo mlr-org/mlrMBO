@@ -19,7 +19,8 @@ makeMBOControl(number.of.targets = 1L, minimize = rep(TRUE,
   resample.measures = list(mse), on.learner.error = "warn",
   show.learner.output = FALSE, output.num.format = "\%.3g",
   schedule.method = "none", schedule.nodes = 1L,
-  schedule.priority = "infill", schedule.priority.time = FALSE)
+  schedule.priority = "infill", schedule.priority.time = FALSE,
+  schedule.fill.random = TRUE)
 }
 \arguments{
 \item{number.of.targets}{[\code{integer(1)}]\cr
@@ -176,6 +177,9 @@ How should the sheduler priorotize points? The options are \dQuote{infill}, \dQu
 
 \item{schedule.priority.time}{[\code{logical(1)}]\cr
 Priorize by time? Meaning short predicted jobs will run first. Default is \code{FALSE}.}
+
+\item{schedule.fill.random}{[\code{logical(1)}]\cr
+If scheduling does not fill all nodes, should we fill it with random points which have fast enough runtime? Default is \code{TRUE}.}
 }
 \value{
 [\code{\link{MBOControl}}].

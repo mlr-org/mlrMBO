@@ -123,6 +123,8 @@
 #'    How should the sheduler priorotize points? The options are \dQuote{infill}, \dQuote{explore}, \dQuote{exploit} and \dQuote{balanced}. Currently this only makes sense together with \dQuote{lcb} as infill.crit.
 #' @param schedule.priority.time [\code{logical(1)}]\cr
 #'    Priorize by time? Meaning short predicted jobs will run first. Default is \code{FALSE}.
+#' @param schedule.fill.random [\code{logical(1)}]\cr
+#'    If scheduling does not fill all nodes, should we fill it with random points which have fast enough runtime? Default is \code{TRUE}.
 #' @return [\code{\link{MBOControl}}].
 #' @aliases MBOControl
 #' @export
@@ -148,7 +150,8 @@ makeMBOControl = function(number.of.targets = 1L,
   schedule.method = "none",
   schedule.nodes = 1L,
   schedule.priority = "infill",
-  schedule.priority.time = FALSE
+  schedule.priority.time = FALSE,
+  schedule.fill.random = TRUE
 ) {
 
   number.of.targets = asInt(number.of.targets, lower = 1L)
@@ -266,6 +269,7 @@ makeMBOControl = function(number.of.targets = 1L,
     schedule.nodes = schedule.nodes,
     schedule.priority = schedule.priority,
     schedule.priority.time = schedule.priority.time,
+    schedule.fill.random = schedule.fill.random,
     multifid = FALSE
   )
 

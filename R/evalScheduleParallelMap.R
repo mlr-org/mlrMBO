@@ -25,8 +25,8 @@ evalScheduleParallelMap = function(wrapFun, xs, xs.schedule.info = NULL, extras 
 evalScheduleSmartParallelMap = function(wrapFun, xs, xs.schedule.info = NULL, extras = NULL, opt.state) {
 
   if (!is.null(xs.schedule.info$times)) {
-    schedule.nodes = getOptProblemControl(
-      getOptStateOptProblem(opt.state))$schedule.nodes
+    control = getOptProblemControl(getOptStateOptProblem(opt.state))
+    schedule.nodes = control$schedule.nodes
     #filter xs to smart scheduling rule (not for init.design)
     if (!is.null(xs.schedule.info$priorities)) {
       order.idx = order(xs.schedule.info$priorities, decreasing = TRUE)
@@ -36,7 +36,7 @@ evalScheduleSmartParallelMap = function(wrapFun, xs, xs.schedule.info = NULL, ex
 
     t.max = xs.schedule.info$times[1L] + 2 * xs.schedule.info$times.se[1L]
     
-    if (getOptProblemControl(getOptStateOptProblem(opt.state))$schedule.priority.time) {
+    if (control$schedule.priority.time) {
       order.idx = order(xs.schedule.info$times, decreasing = TRUE)
       xs.schedule.info = xs.schedule.info[order.idx,, drop = FALSE]
       xs = xs[order.idx]
@@ -70,8 +70,8 @@ evalScheduleSmartParallelMap = function(wrapFun, xs, xs.schedule.info = NULL, ex
 
     #fill empty nodes with random jobs below time threashold
     #FIXME dirty hack to fill stuff
-    if ((empty.slots = schedule.nodes - nrow(scheduled))>0) {
-      control2 = getOptProblemControl(getOptStateOptProblem(opt.state))
+    if (control$schedule.fill.random &&(empty.slots = schedule.nodes - nrow(scheduled))>0) {
+      control2 = control
       control2$infill.crit = "random"
       control2$propose.points = empty.slots * 50
       prop = proposePoints.OptState(opt.state, control2)
