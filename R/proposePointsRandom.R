@@ -1,6 +1,6 @@
-proposePointsRandom = function(opt.state) {
+proposePointsRandom = function(opt.state, control = NULL) {
   opt.problem = getOptStateOptProblem(opt.state)
-  control = getOptProblemControl(opt.problem)
+  control = coalesce(control, getOptProblemControl(opt.problem))
   par.set = getOptProblemParSet(opt.problem)
   
   if (control$infill.crit == "random")

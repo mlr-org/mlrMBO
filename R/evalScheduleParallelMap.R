@@ -67,6 +67,35 @@ evalScheduleSmartParallelMap = function(wrapFun, xs, xs.schedule.info = NULL, ex
 
     xs = xs[scheduled$job]
     extras = extras[scheduled$job]
+
+    #fill empty nodes with random jobs below time threashold
+    #FIXME dirty hack to fill stuff
+    if ((empty.slots = schedule.nodes - nrow(scheduled))>0) {
+      control2 = getOptProblemControl(getOptStateOptProblem(opt.state))
+      control2$infill.crit = "random"
+      control2$propose.points = empty.slots * 50
+      prop = proposePoints.OptState(opt.state, control2)
+      time.model = getOptStateTimeModel(opt.state)
+      time.prediction = predict(time.model, newdata = prob$prop.points)
+      predicted.time = getPredictionResponse(time.prediction)
+      #partly taken from evalProposedPoints.OptState
+      extras2 = getExtras(
+        n = nrow(prop$prop.points),
+        prop = c(prop, list(
+          predicted.time = predicted.time,
+          predicted.time.se = getPredictionSE(time.prediction))),
+        train.time = NA_real_,
+        control = control2)
+      xs2 = dfRowsToList(prop$prop.points, par.set)
+      xs2 = lapply(xs, repairPoint, par.set = par.set)
+      #narrow down everything to what we have free
+      inds = which(predicted.time < t.max)
+      inds = head(inds, empty.slots)
+      scheduled = rbind(scheduled, list(job = length(xs) + seq_along(inds), on = max(scheduled$on) + seq_along(inds), at = occupied.time[max(scheduled$on) + seq_along(inds)]))
+      extras = c(extras, extras2[inds])
+      xs = c(xs, xs2[inds])
+    }
+
     for (i in seq_along(scheduled$job)) {
       extras[[i]]$scheduled.job = scheduled$job[i]
       extras[[i]]$scheduled.on = scheduled$on[i]
