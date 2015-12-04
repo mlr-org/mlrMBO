@@ -10,3 +10,4 @@ bench/mlr/modelsel-files
 src/*.o
 src/*.so
 plots
+tests/testthat/Rplots.pdf
