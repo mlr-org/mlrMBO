@@ -75,8 +75,9 @@ evalScheduleSmartParallelMap = function(wrapFun, xs, xs.schedule.info = NULL, ex
       control2$infill.crit = "random"
       control2$propose.points = empty.slots * 50
       prop = proposePoints.OptState(opt.state, control2)
+      par.set = getOptProblemParSet(getOptStateOptProblem(opt.state))
       time.model = getOptStateTimeModel(opt.state)
-      time.prediction = predict(time.model, newdata = prob$prop.points)
+      time.prediction = predict(time.model, newdata = prop$prop.points)
       predicted.time = getPredictionResponse(time.prediction)
       #partly taken from evalProposedPoints.OptState
       extras2 = getExtras(
