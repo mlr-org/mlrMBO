@@ -70,7 +70,7 @@ evalScheduleSmartParallelMap = function(wrapFun, xs, xs.schedule.info = NULL, ex
 
     #fill empty nodes with random jobs below time threashold
     #FIXME dirty hack to fill stuff
-    if (control$schedule.fill.random &&(empty.slots = schedule.nodes - nrow(scheduled))>0) {
+    if (control$schedule.fill.random && (empty.slots = schedule.nodes - nrow(scheduled))>0) {
       control2 = control
       control2$infill.crit = "random"
       control2$propose.points = empty.slots * 50
@@ -87,8 +87,12 @@ evalScheduleSmartParallelMap = function(wrapFun, xs, xs.schedule.info = NULL, ex
           predicted.time.se = getPredictionSE(time.prediction))),
         train.time = NA_real_,
         control = control2)
+      for (i in seq_along(extras2)) {
+         #fixme not very safe
+        names(extras2[[i]]) = names(extras[[1]])
+      }
       xs2 = dfRowsToList(prop$prop.points, par.set)
-      xs2 = lapply(xs, repairPoint, par.set = par.set)
+      xs2 = lapply(xs2, repairPoint, par.set = par.set)
       #narrow down everything to what we have free
       inds = which(predicted.time < t.max)
       inds = head(inds, empty.slots)
