@@ -43,6 +43,7 @@ Default is 0.75.}
 
 \item{crit.lcb.lambda}{[\code{numeric(1)}]\cr
 Lambda parameter for lower confidence bound infill criterion.
+If you use \code{lcb} as a \code{MultiPoint} method, this value will be the expected value of the exponential distribution from which the multiple lambda parameters will be drawn.
 Only used if \code{crit == "lcb"}, ignored otherwise.
 Default is 1.}
 
