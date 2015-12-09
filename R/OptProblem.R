@@ -59,6 +59,10 @@ getOptProblemLearner = function(opt.problem) {
   opt.problem$learner
 }
 
+getOptProblemTimeLearner = function(opt.problem) {
+  makeTrafoWrapper(opt.problem$learner, log, exp)
+}
+
 getOptProblemControl = function(opt.problem) {
   opt.problem$control
 }

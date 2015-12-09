@@ -47,7 +47,7 @@ getOptStateTimeModel = function(opt.state) {
     time.task = cbind(getOptPathX(opt.path), exec.time = getOptPathExecTimes(opt.path))
     time.task = time.task[!is.na(time.task$exec.time), ]
     time.task = makeRegrTask(id = "time.task", data = time.task, target = "exec.time")
-    time.model = train(learner = getOptProblemLearner(opt.problem), task = time.task)
+    time.model = train(learner = getOptProblemTimeLearner(opt.problem), task = time.task)
     setOptStateTimeModel(opt.state, time.model)
   }
   time.model
