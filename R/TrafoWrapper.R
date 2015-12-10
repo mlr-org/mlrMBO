@@ -19,6 +19,7 @@ makeTrafoWrapper = function(learner, trafo, trafo.inverse, trafo.se = identity, 
   return(x)
 }
 
+#' @export
 trainLearner.TrafoWrapper = function(.learner, .task, .subset, ...) {
   data = getTaskData(.task, .subset, target.extra = TRUE)
   y = .learner$trafo(data$target)
@@ -30,7 +31,7 @@ trainLearner.TrafoWrapper = function(.learner, .task, .subset, ...) {
   return(x)
 }
 
-
+#' @export
 predictLearner.TrafoWrapper = function(.learner, .model, .newdata, ...) {
   p = predict(.model$learner.model$next.model, newdata = .newdata)
   y = getPredictionResponse(p)
@@ -43,6 +44,7 @@ predictLearner.TrafoWrapper = function(.learner, .model, .newdata, ...) {
   }
 }
 
+#' @export
 isFailureModel.TrafoModel = function(model) {
   mod = model$learner.model$next.model
   mlr:::isFailureModel(mod)
