@@ -1,7 +1,7 @@
 context("smart schedule")
 
 test_that("smart schedule works", {
-  set.seed(2)
+  set.seed(3)
   objfun = function(x) {
     x = (x$x-5)^2
     attr(x,"exec.time") = 10L
@@ -22,7 +22,9 @@ test_that("smart schedule works", {
   setups = rbind(setups, data.frame(schedule.priority = "infill", multipoint.lcb.multiple = "static.quantiles", schedule.priority.time = TRUE, crit.lcb.lambda = 2))
   
   surrogat.learner = makeLearner("regr.randomForest", predict.type = "se", ntree = 10)
-  ors = rowLapply(setups, function(x) {
+  #ors = rowLapply(setups, function(x) {
+  for (i in seq_row(setups)) {
+    x = as.list(setups[i,])
     control = makeMBOControl(
       init.design.points = 5L,
       iters = 2L,
@@ -46,7 +48,7 @@ test_that("smart schedule works", {
     expect_true(!all(is.na(op.df$lcb.lambda)))
     expect_true(abs(mean(op.df$lcb.lambda, na.rm = TRUE) - x$crit.lcb.lambda) < sd(op.df$lcb.lambda, na.rm = TRUE))
     or
-  })
+  }
 })
 
 # test_that("multifid works with smart scheduling", {

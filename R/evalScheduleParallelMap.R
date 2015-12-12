@@ -27,33 +27,22 @@ evalScheduleSmartParallelMap = function(wrapFun, xs, xs.schedule.info = NULL, ex
   if (!is.null(xs.schedule.info$times)) {
     control = getOptProblemControl(getOptStateOptProblem(opt.state))
     schedule.nodes = control$schedule.nodes
+    
     #filter xs to smart scheduling rule (not for init.design)
     if (!is.null(xs.schedule.info$priorities)) {
       order.idx = order(xs.schedule.info$priorities, decreasing = TRUE)
-      xs.schedule.info = xs.schedule.info[order.idx,, drop = FALSE]
       xs = xs[order.idx]
+      xs.schedule.info = xs.schedule.info[order.idx,, drop = FALSE]
+      extras = extras[order.idx]
     }
 
     t.max = xs.schedule.info$times[1L] + 2 * xs.schedule.info$times.se[1L]
     
-    if (control$schedule.priority.time) {
-      order.idx = c(1, 1 + order(tail(xs.schedule.info$times, -1), decreasing = TRUE))
-      xs.schedule.info = xs.schedule.info[order.idx,, drop = FALSE]
-      xs = xs[order.idx]
-    }
-
-    #maybe do it like this:
-    #t.max = 0
-    #i = 1L
-    #while (sum(xs.times < t.max) <= schedule.nodes && t.max < 2 * xs.times[1]) {
-    #  t.max = xs.times[i]
-    #  i = i + 1L
-    #}
-    occupied.time = integer(length = schedule.nodes)
+    occupied.time = double(length = schedule.nodes)
     scheduled = data.frame(
       job = integer(), #which job got scheduled
       on = integer(), #on which node is it scheduled
-      at = integer() #at what time is is scheduled
+      at = double() #at what time is is scheduled
       )
     for (i in seq_along(xs)) {
       for (j in seq_len(schedule.nodes)) {
@@ -65,7 +54,11 @@ evalScheduleSmartParallelMap = function(wrapFun, xs, xs.schedule.info = NULL, ex
       }
     }
 
+    load.balance.order = order(scheduled$at, decreasing = FALSE)
+    scheduled = scheduled[load.balance.order,]
+
     xs = xs[scheduled$job]
+    xs.schedule.info[scheduled$job,]
     extras = extras[scheduled$job]
 
     #fill empty nodes with random jobs below time threashold
@@ -101,11 +94,11 @@ evalScheduleSmartParallelMap = function(wrapFun, xs, xs.schedule.info = NULL, ex
       xs = c(xs, xs2[inds])
     }
 
-    for (i in seq_along(scheduled$job)) {
+    for (i in seq_row(scheduled)) {
       extras[[i]]$scheduled.job = scheduled$job[i]
       extras[[i]]$scheduled.on = scheduled$on[i]
       extras[[i]]$scheduled.at = scheduled$at[i]  
-      extras[[i]]$scheduled.priority = xs.schedule.info$priorities[scheduled$job[i]]
+      extras[[i]]$scheduled.priority = xs.schedule.info$priorities[i]
     }
   }
   evalScheduleParallelMap(wrapFun = wrapFun, xs = xs, xs.schedule.info = xs.schedule.info, extras = extras, opt.state = opt.state)

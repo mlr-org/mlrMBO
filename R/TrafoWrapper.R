@@ -1,8 +1,9 @@
-makeTrafoWrapper = function(learner, trafo, trafo.inverse, trafo.se = identity, par.set = makeParamSet(), par.vals = list()) {
+makeTrafoWrapper = function(learner, trafo = identity, trafo.inverse = identity, trafo.se = function(se, y) se , par.set = makeParamSet(), par.vals = list()) {
   learner = checkLearner(learner)
   assertFunction(trafo)
   assertFunction(trafo.inverse)
-  if (! all(trafo.inverse(trafo(c(0.2,0.5))) == c(0.2,0.5))) {
+  assertFunction(trafo.se, args = c("se", "y"))
+  if (! all(trafo.inverse(trafo(c(0.2,0.5,0.7))) == c(0.2,0.5,0.7))) {
     stop("Either trafo does not work on vectors or they trafo.inverse(trafo(x)) != x")
   }
   assertClass(par.set, classes = "ParamSet")
@@ -37,19 +38,9 @@ predictLearner.TrafoWrapper = function(.learner, .model, .newdata, ...) {
   y = getPredictionResponse(p)
   y = .learner$trafo.inverse(y)
   if (.model$learner$predict.type == "se") {
-    se = .learner$trafo.se(getPredictionSE(p))
+    se = .learner$trafo.se(se = getPredictionSE(p), y = getPredictionResponse(p))
     return(matrix(c(y, se), ncol = 2))
   } else {
     return(y)
   }
 }
-
-#' @export
-isFailureModel.TrafoModel = function(model) {
-  mod = model$learner.model$next.model
-  mlr:::isFailureModel(mod)
-}
-
-# getLearnerProperties.MultiFidWrapper = function(learner) {
-#   mlr::getLearnerProperties(learner$next.learner))
-# }

@@ -6,14 +6,20 @@ makeScheduleInfo = function(prop, opt.state) {
     priorities = prop$lcb.lambdas
   } else if (control$multipoint.method == "lcb" && control$schedule.priority == "exploit") {
     #highest priority for those with small lambda
-    priorities = prop$lcb.lambdas[order(prop$lcb.lambdas)]
+    priorities = -prop$lcb.lambdas
   } else if (control$multipoint.method == "lcb" && control$schedule.priority == "balanced") {
     #highest priority for those with lambda close to 1
-    priorities =  prop$lcb.lambdas[order(abs(log(prop$lcb.lambdas)-log(1)))]
+    priorities =  -abs(log(prop$lcb.lambdas) - log(control$infill.crit.lcb.lambda))
   } else if (control$schedule.priority == "infill"){
-    priorities = prop$crit.vals
+    #highest priority for those with lowest crit.val
+    priorities = -prop$crit.vals
   } else {
     stopf("Priority mehtod %s was not appliable!", control$schedule.priority)
+  }
+  if (control$schedule.priority.time) {
+    first.id = which.max(priorities)
+    priorities = -prop$predicted.time
+    priorities[first.id] = max(priorities) + 1
   }
   data.frame(
     times = prop$predicted.time,

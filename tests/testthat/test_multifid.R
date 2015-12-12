@@ -18,7 +18,7 @@ test_that("basic multifid works", {
     init.design.fun = maximinLHS,
     iters = 3L,
     on.learner.error = "stop",
-    show.learner.output = FALSE,
+    show.learner.output = FALSE
   )
   control = setMBOControlInfill(control = control, 
                                 crit = "ei",
