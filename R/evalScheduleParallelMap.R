@@ -28,7 +28,7 @@ evalScheduleSmartParallelMap = function(wrapFun, xs, xs.schedule.info = NULL, ex
     control = getOptProblemControl(getOptStateOptProblem(opt.state))
     schedule.nodes = control$schedule.nodes
     
-    #filter xs to smart scheduling rule (not for init.design)
+    # order everything according to priorities in xs.schedule.info
     if (!is.null(xs.schedule.info$priorities)) {
       order.idx = order(xs.schedule.info$priorities, decreasing = TRUE)
       xs = xs[order.idx]
@@ -38,6 +38,7 @@ evalScheduleSmartParallelMap = function(wrapFun, xs, xs.schedule.info = NULL, ex
 
     t.max = xs.schedule.info$times[1L] + 0.05 * xs.schedule.info$times[1L]
     
+    # schedule where(on) which job(job) will be executed at which time(at)
     occupied.time = double(length = schedule.nodes)
     scheduled = data.frame(
       job = integer(), #which job got scheduled
@@ -54,9 +55,9 @@ evalScheduleSmartParallelMap = function(wrapFun, xs, xs.schedule.info = NULL, ex
       }
     }
 
+    # reorder jobs to suit the load balancer
     load.balance.order = order(scheduled$at, decreasing = FALSE)
     scheduled = scheduled[load.balance.order,]
-
     xs = xs[scheduled$job]
     xs.schedule.info[scheduled$job,]
     extras = extras[scheduled$job]
@@ -86,14 +87,16 @@ evalScheduleSmartParallelMap = function(wrapFun, xs, xs.schedule.info = NULL, ex
       }
       xs2 = dfRowsToList(prop$prop.points, par.set)
       xs2 = lapply(xs2, repairPoint, par.set = par.set)
-      #narrow down everything to what we have free
+      #narrow down to fit inside of t.max
       inds = which(predicted.time < t.max)
+      #narrow down to one job for each free node
       inds = head(inds, empty.slots)
       scheduled = rbind(scheduled, list(job = length(xs) + seq_along(inds), on = max(scheduled$on) + seq_along(inds), at = occupied.time[max(scheduled$on) + seq_along(inds)]))
       extras = c(extras, extras2[inds])
       xs = c(xs, xs2[inds])
     }
 
+    #put scheduling information into extras
     for (i in seq_row(scheduled)) {
       extras[[i]]$scheduled.job = scheduled$job[i]
       extras[[i]]$scheduled.on = scheduled$on[i]
