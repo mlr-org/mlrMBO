@@ -36,7 +36,7 @@ evalScheduleSmartParallelMap = function(wrapFun, xs, xs.schedule.info = NULL, ex
       extras = extras[order.idx]
     }
 
-    t.max = xs.schedule.info$times[1L] + 2 * xs.schedule.info$times.se[1L]
+    t.max = xs.schedule.info$times[1L] + 0.05 * xs.schedule.info$times[1L]
     
     occupied.time = double(length = schedule.nodes)
     scheduled = data.frame(

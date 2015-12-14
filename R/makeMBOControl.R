@@ -120,7 +120,11 @@
 #'   Not all proposed points will be evaluated.
 #'   Default is \dQuote{1}.
 #' @param schedule.priority [\code{character(1)}]\cr
-#'    How should the sheduler priorotize points? The options are \dQuote{infill}, \dQuote{explore}, \dQuote{exploit} and \dQuote{balanced}. Currently this only makes sense together with \dQuote{lcb} as infill.crit.
+#'    How should the sheduler priorotize points? The options are 
+#'    \dQuote{infill}: Priorize points with promising infill criterion vlaue.
+#'    \dQuote{explore}: Priorize points with high lambda part of the lcb.
+#'    \dQuote{exploit}: Priorize points with a low lambda part of the lcb.
+#'    \dQuote{balanced}: Priorize points with a lambda part of the lcb which is close to the given \code{crit.lcb.lambda} value in \code{setMBOControlInfill}.
 #' @param schedule.priority.time [\code{logical(1)}]\cr
 #'    Priorize by time? Meaning short predicted jobs will run first. Default is \code{FALSE}.
 #' @param schedule.fill.random [\code{logical(1)}]\cr
