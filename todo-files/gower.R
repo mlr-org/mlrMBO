@@ -169,7 +169,7 @@ calcGowerLocalUncertainty = function(traindata, y, newdata, ...) {
   R = calcGowerCovMat(data.x = traindata, ...)
   rs = calcGowerCovMat(data.x = traindata, data.y = newdata, ...) # n x m
   o = rep(1, n)
-  print(y)
+  # print(y)
   a1 = solve(R, y)                 # R^-1 y
   a2 = solve(R, o)                 # R^-1 1
   a3 = crossprod(o, a2)            # 1^T R^-1 1
@@ -186,52 +186,60 @@ calcGowerLocalUncertainty = function(traindata, y, newdata, ...) {
   return(s)
 }
 
-# set.seed(1L)
-# # td = generateRandomDesign(2, ps)
-# # nd = generateRandomDesign(3, ps) # this drops levels, fix now!!!!
-# # y = c(0, 1)
-# # levels(nd$b) = levels(td$b)
-# # print(td)
-# # print(nd)
-# # s = calcGowerLocalUncertainty(td, y, nd, par.set = ps)
-# # print(s)
+set.seed(1L)
+# td = generateRandomDesign(2, ps)
+# nd = generateRandomDesign(3, ps) # this drops levels, fix now!!!!
+# y = c(0, 1)
+# levels(nd$b) = levels(td$b)
+# print(td)
+# print(nd)
+# s = calcGowerLocalUncertainty(td, y, nd, par.set = ps)
+# print(s)
 
-# f = function(x) x^2
+f = function(x) x^2
 
-# library(ParamHelpers)
-# library(checkmate)
-# ps = makeParamSet(
-#   # makeNumericParam("a", lower = 1, upper = 3),
-#   # makeDiscreteParam("b", values = c("v", "w"))
-#   makeNumericParam("x1", lower = -5, upper = 5)
-#   # makeDiscreteVectorParam("d", len = 2L, values = c("v", "w"))
-# )
+test.function.zhou2011 = function(x, category) {
+  if (category == "a") return(cos(6.8*pi*(x/2)))
+  if (category == "b") return(-cos(7*pi*(x/2)))
+  if (category == "c") return(cos(7.2*pi*(x/2)))
+}
 
-# # data.x = generateRandomDesign(2, ps)
-# # K = calcGowerCovMat(data.x = data.x, par.set = ps, dist2cov = "matern3_2")
-# # print(K)
+tf = Vectorize(test.function.zhou2011, vectorize.args = c("x", "category"))
 
-# x1 = -5; x2 = 5
-# xseq.train = seq(x1, x2, length.out = 5)
-# xseq.test = seq(x1, x2, length.out = 1000)
-# traindata = data.frame(x1 = xseq.train)
-# y.train = f(xseq.train)
-# y.test = f(xseq.test)
-# newdata = data.frame(x1 = xseq.test)
+library(ParamHelpers)
+library(checkmate)
+ps = makeParamSet(
+  # makeNumericParam("a", lower = 1, upper = 3),
+  makeNumericParam("x", lower = 0, upper = 1),
+  makeDiscreteParam("category", values = c(a = "a",  b = "b"))
+  # makeDiscreteVectorParam("d", len = 2L, values = c("v", "w"))
+)
 
-# s = calcGowerLocalUncertainty(traindata, y.train, newdata, par.set = ps, theta = c(0.01))
+data.x.train = generateRandomDesign(5, ps)
+data.x.test = generateGridDesign(ps, 500)
 
-# library(ggplot2)
+y.train = unlist(BBmisc::rowLapply(data.x.train, do.call, what = test.function.zhou2011))
+y.test = unlist(BBmisc::rowLapply(data.x.test, do.call, what = test.function.zhou2011))
 
-# ggdat = data.frame(
-#   x = xseq.test,
-#   y = f(xseq.test),
-#   yse = f(xseq.test) + s
-# )
-# pl = ggplot(ggdat)
-# pl = pl + geom_line(mapping = aes(x = x, y = y))
-# pl = pl + geom_line(mapping = aes(x = x, y = yse))
-# print(pl)
+s = calcGowerLocalUncertainty(traindata = data.x.train, newdata = data.x.test, y = y.train, par.set = ps, theta = c(0.1, 0.05))
+
+library(ggplot2)
+
+ggdat = cbind.data.frame(
+  data.x.test,
+  y = y.test,
+  yse = y.test - s
+)
+ggdat.train = cbind.data.frame(
+  data.x.train,
+  y = y.train
+)
+pl = ggplot(ggdat)
+pl = pl + geom_point(data = ggdat.train, mapping = aes(x = x, y = y))
+pl = pl + geom_line(mapping = aes(x = x, y = y))
+pl = pl + geom_line(mapping = aes(x = x, y = yse), color = "green")
+pl + facet_wrap(~category)
+#print(pl)
 
 
 
