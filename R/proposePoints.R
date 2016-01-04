@@ -25,12 +25,14 @@ proposePoints.OptState = function(opt.state, control = NULL){
     } else if (is.null(control$multipoint.method)) {
       res = proposePointsByInfillOptimization(opt.state)
     } else {
-      if (control$multipoint.method == "lcb")
+      if (control$multipoint.method == "lcb") {
         res = proposePointsParallelLCB(opt.state)
-      else if (control$multipoint.method == "cl")
+      } else if (control$multipoint.method == "cl") {
         res = proposePointsConstantLiar(opt.state)
-      else if (control$multipoint.method == "multicrit") {
+      } else if (control$multipoint.method == "multicrit") {
         res = proposePointsMOIMBO(opt.state)
+      } else if (control$multipoint.method == "infilldistributed") {
+        res = proposePointsInfillDistributed(opt.state)
       }
     }
   } else if (control$infill.crit != "random"){

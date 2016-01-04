@@ -23,9 +23,6 @@ evalTargetFun.OptState = function(opt.state, xs, extras, xs.schedule.info = NULL
   num.format.string = paste("%s = ", num.format, sep = "")
   imputeY = control$impute.y.fun
 
-    # trafo - but we only want to use the Trafo for function eval, not for logging
-  xs.trafo = lapply(xs, trafoValue, par = par.set)
-
   # function to measure of fun call
   wrapFun = function(x) {
     st = proc.time()
@@ -51,12 +48,15 @@ evalTargetFun.OptState = function(opt.state, xs, extras, xs.schedule.info = NULL
     smartParallelMap = evalScheduleSmartParallelMap,
     evalScheduleParallelMap
   )
+  
+  # trafo - but we only want to use the Trafo for function eval, not for logging
+  xs.trafo = lapply(xs, trafoValue, par = par.set)
 
-  res = scheduleFunction(wrapFun = wrapFun, xs = xs.trafo, xs.schedule.info = xs.schedule.info, extras = extras, opt.state = opt.state)
+  res = scheduleFunction(wrapFun = wrapFun, xs = xs, xs.trafo = xs.trafo, xs.schedule.info = xs.schedule.info, extras = extras, opt.state = opt.state)
 
   #extract the treated x variables
   xs = res$xs
-  xs.trafo = lapply(xs, trafoValue, par = par.set)
+  xs.trafo = res$xs.trafo
   extras = res$extras
 
   # do we have a valid y object?

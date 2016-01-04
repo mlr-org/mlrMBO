@@ -11,18 +11,18 @@
 #   List containing the results of \code{wrapFun} for each item in xs
 
 
-evalScheduleParallelMap = function(wrapFun, xs, xs.schedule.info = NULL, extras = NULL, opt.state) {
+evalScheduleParallelMap = function(wrapFun, xs, xs.trafo, xs.schedule.info = NULL, extras = NULL, opt.state) {
   # return error objects if we impute
   imputeY = getOptProblemControl(
     getOptStateOptProblem(opt.state))$impute.y.fun
   
-  funRes = parallelMap(wrapFun, xs, level = "mlrMBO.feval",
+  funRes = parallelMap(wrapFun, xs.trafo, level = "mlrMBO.feval",
     impute.error = if (is.null(imputeY)) NULL else identity)
 
-  list(funRes = funRes, xs = xs, extras = extras, dob = asInteger(getOptStateLoop(opt.state)))
+  list(funRes = funRes, xs = xs, xs.trafo = xs.trafo, extras = extras, dob = asInteger(getOptStateLoop(opt.state)))
 }
 
-evalScheduleSmartParallelMap = function(wrapFun, xs, xs.schedule.info = NULL, extras = NULL, opt.state) {
+evalScheduleSmartParallelMap = function(wrapFun, xs, xs.trafo, xs.schedule.info = NULL, extras = NULL, opt.state) {
 
   if (!is.null(xs.schedule.info$times)) {
     control = getOptProblemControl(getOptStateOptProblem(opt.state))
@@ -32,6 +32,7 @@ evalScheduleSmartParallelMap = function(wrapFun, xs, xs.schedule.info = NULL, ex
     if (!is.null(xs.schedule.info$priorities)) {
       order.idx = order(xs.schedule.info$priorities, decreasing = TRUE)
       xs = xs[order.idx]
+      xs.trafo = xs.trafo[order.idx]
       xs.schedule.info = xs.schedule.info[order.idx,, drop = FALSE]
       extras = extras[order.idx]
     }
@@ -59,6 +60,7 @@ evalScheduleSmartParallelMap = function(wrapFun, xs, xs.schedule.info = NULL, ex
     load.balance.order = order(scheduled$at, decreasing = FALSE)
     scheduled = scheduled[load.balance.order,]
     xs = xs[scheduled$job]
+    xs.trafo = xs.trafo[scheduled$job]
     xs.schedule.info[scheduled$job,]
     extras = extras[scheduled$job]
 
@@ -94,6 +96,8 @@ evalScheduleSmartParallelMap = function(wrapFun, xs, xs.schedule.info = NULL, ex
       scheduled = rbind(scheduled, list(job = length(xs) + seq_along(inds), on = max(scheduled$on) + seq_along(inds), at = occupied.time[max(scheduled$on) + seq_along(inds)]))
       extras = c(extras, extras2[inds])
       xs = c(xs, xs2[inds])
+      x2.trafo = apply(xs2[inds], trafoValue, par = getOptProblemParSet(getOptStateOptProblem(opt.state)))
+      xs.trafo = c(xs.trafo, xs2.trafo)
     }
 
     #put scheduling information into extras
@@ -104,6 +108,6 @@ evalScheduleSmartParallelMap = function(wrapFun, xs, xs.schedule.info = NULL, ex
       extras[[i]]$scheduled.priority = xs.schedule.info$priorities[i]
     }
   }
-  evalScheduleParallelMap(wrapFun = wrapFun, xs = xs, xs.schedule.info = xs.schedule.info, extras = extras, opt.state = opt.state)
+  evalScheduleParallelMap(wrapFun = wrapFun, xs = xs, xs.trafo = xs.trafo, xs.schedule.info = xs.schedule.info, extras = extras, opt.state = opt.state)
 
 }
