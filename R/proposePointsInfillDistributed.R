@@ -6,6 +6,7 @@ proposePointsInfillDistributed = function(opt.state, ...) {
   models = if (inherits(models, "WrappedModel")) list(models) else models
   opt.path = getOptStateOptPath(opt.state)
   iter = getOptStateLoop(opt.state)
+  design = convertOptPathToDf(opt.path, control)
   n = control$propose.points
   
   infill.crit.fun = getInfillCritFunction(control$infill.crit)

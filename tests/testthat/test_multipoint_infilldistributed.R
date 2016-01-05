@@ -26,4 +26,23 @@ test_that("multipoint infilldistributed", {
   expect_true(mean(op[op$cat == "b" & op$dob > 0, "x2"]) %btwn% c(-3,-1))
   expect_true(res$y < -0.9)
   expect_equal(getOptPathLength(res$opt.path), 20L)
+  
+  lrn = makeLearner("regr.randomForest", predict.type = "se")
+  ctrl = makeMBOControl(init.design.points = 10L, iters = 5L, propose.points = 4L)
+  ctrl = setMBOControlInfill(ctrl, crit = "mean", opt = "focussearch", opt.focussearch.points = 100L, opt.focussearch.maxit = 2L, crit.lcb.lambda = 2)
+  ctrl = setMBOControlMultiPoint(ctrl, method = "infilldistributed")
+  objfun = function(x) {
+    x$cat = "a"
+    if (x$cat == "a") {
+      return(-1 * (-1 * x$x^2 + 1) * x$x %btwn% c(-1,1))
+    } else if (x$cat == "b") {
+      return(sin(4*x$x/pi)/2 - 0.5)
+    }
+  }
+  ps = makeParamSet(
+    #makeDiscreteParam(id = "cat", values = c("a", "b")),
+    makeNumericParam(id = "x", lower = -5, upper = 5)
+  )
+  er = exampleRun(objfun, ps, learner = lrn, control = ctrl)
+  plotExampleRun(er)
 })

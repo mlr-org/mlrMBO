@@ -54,7 +54,6 @@ renderExampleRunPlot2d = function(x, iter,
   idx.seq = which(opt.path$dob > 0 & opt.path$dob < iter)
   idx.proposed = which(opt.path$dob == iter)
   idx.past = which(opt.path$dob < iter)
-  idx.pastpresent = which(opt.path$dob <= iter)
 
   model.ok = !inherits(models[[1L]], "FailureModel")
 
@@ -63,20 +62,16 @@ renderExampleRunPlot2d = function(x, iter,
     if (se) {
       evals$se = -infillCritStandardError(evals.x, models, control, par.set, opt.path[idx.past, ])
     }
-    if (proppoints == 1L) {
+    if (proppoints == 1L || control$multipoint.multicrit.objective == "none") {
       evals[[name.crit]] = opt.direction * critfun(evals.x, models, control, par.set, opt.path[idx.past, ])
     } else {
       objective = control$multipoint.multicrit.objective
-      if (control$multipoint.method == "lcb") {
+      if (objective == "mean.dist") {
         evals[[name.crit]] = opt.direction * infillCritMeanResponse(evals.x, models, control, par.set, opt.path[idx.past, ])
-      } else {
-        if (objective == "mean.dist") {
-          evals[[name.crit]] = opt.direction * infillCritMeanResponse(evals.x, models, control, par.set, opt.path[idx.past, ])
-        } else if (objective == "ei.dist") {
-          evals[[name.crit]] = opt.direction * infillCritEI(evals.x, models, control, par.set, opt.path[idx.past, ])
-        } else if (objective %in% c("mean.se", "mean.se.dist")) {
-          evals[[name.crit]] = opt.direction * infillCritMeanResponse(evals.x, models, control, par.set, opt.path[idx.past, ])
-        }
+      } else if (objective == "ei.dist") {
+        evals[[name.crit]] = opt.direction * infillCritEI(evals.x, models, control, par.set, opt.path[idx.past, ])
+      } else if (objective %in% c("mean.se", "mean.se.dist")) {
+        evals[[name.crit]] = opt.direction * infillCritMeanResponse(evals.x, models, control, par.set, opt.path[idx.past, ])
       }
     }
   }

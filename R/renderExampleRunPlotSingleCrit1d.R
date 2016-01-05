@@ -85,7 +85,7 @@ renderExampleRunPlot1d = function(x, iter,
       control, par.set, convertOptPathToDf(opt.path, control)[idx.past, ])
     
     #FIXME: We might want to replace the following by a helper function so that we can reuse it in buildPointsData()
-    if (propose.points == 1L) {
+    if (propose.points == 1L || control$multipoint.multicrit.objective == "none") {
       evals[[name.crit]] = opt.direction *
         critfun(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past, ])
     } else {

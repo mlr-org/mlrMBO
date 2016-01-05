@@ -96,8 +96,8 @@ setMBOControlMultiPoint = function(control,
   }
   assertFunction(control$multipoint.cl.lie)
 
-  control$multipoint.multicrit.objective = coalesce(multicrit.objective, control$multipoint.multicrit.objective, "ei.dist")
-  assertChoice(control$multipoint.multicrit.objective, choices = c("mean.dist", "ei.dist", "mean.se", "mean.se.dist"))
+  control$multipoint.multicrit.objective = coalesce(multicrit.objective, control$multipoint.multicrit.objective, "none")
+  assertChoice(control$multipoint.multicrit.objective, choices = c("mean.dist", "ei.dist", "mean.se", "mean.se.dist", "none"))
 
   control$multipoint.multicrit.dist = coalesce(multicrit.dist, control$multipoint.multicrit.dist, "nearest.better")
   assertChoice(control$multipoint.multicrit.dist, choices = c("nearest.neighbor", "nearest.better"))
