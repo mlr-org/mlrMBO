@@ -24,7 +24,7 @@ mboFinalize2 = function(opt.state) {
   mbo.result = makeOptStateMboResult(opt.state)
   opt.problem = getOptStateOptProblem(opt.state)
   # save on disk routine
-  if (getOptStateLoop(opt.state) %in% getOptProblemControl(getOptStateOptProblem(opt.state))$save.on.disk.at || is.finite(getOptProblemControl(getOptStateOptProblem(opt.state))$save.on.disk.at.time))
+  if (getOptStateLoop(opt.state) %in% getOptProblemControl(opt.problem)$save.on.disk.at || is.finite(getOptProblemControl(opt.problem)$save.on.disk.at.time))
     saveOptState(opt.state)
   
   # restore mlr configuration

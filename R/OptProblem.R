@@ -103,24 +103,10 @@ setOptProblemDesign = function(opt.problem, design) {
 
 getOptProblemDesign = function(opt.problem) {
   if (is.null(opt.problem$design)) {
-    #design = generateMBODesign(tuninProblem) #FIXME implement?
-    design = NULL
-    #setOptProblemDesign(opt.problem, design)
+    design = generateMBODesign.OptProblem(opt.problem)
+    setOptProblemDesign(opt.problem, design)
   } else {
     design = opt.problem$design
   }
   design
-}
-
-getOptProblemInitDesignPoints = function(opt.problem) {
-  design = getOptProblemDesign(opt.problem)
-  if (is.null(design)) 
-    getOptProblemControl(opt.problem)$init.design.points
-  else
-    nrow(design)
-}
-
-getOptProblemIsLcb = function(opt.problem) {
-  control = getOptProblemControl(opt.problem)
-  control$propose.points > 1L && control$multipoint.method == "lcb"
 }
