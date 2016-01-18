@@ -26,11 +26,7 @@ getOptStateModels = function(opt.state) {
 
 getOptStateTasks = function(opt.state) {
   if (is.null(opt.state$tasks) || getOptStateLoop(opt.state) != opt.state$tasks.loop) {
-    opt.problem = getOptStateOptProblem(opt.state)
-    tasks = makeTasks(
-      opt.path = getOptStateOptPath(opt.state),
-      algo.init = getOptProblemAlgoInit(opt.problem),
-      control = getOptProblemControl(opt.problem))
+    tasks = makeTasks(opt.state)
     setOptStateTasks(opt.state, tasks)
   } else {
     tasks = opt.state$tasks

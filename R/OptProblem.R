@@ -44,7 +44,7 @@ makeOptProblem = function(fun, par.set, design = NULL, learner, control, show.in
   )
   opt.problem$oldopts = oldopts
 
-  opt.problem$algo.init = NULL
+  opt.problem$all.possible.weights = NULL
 
   class(opt.problem) = append(class(opt.problem), "OptProblem")
 
@@ -75,21 +75,26 @@ getOptProblemMoreArgs = function(opt.problem) {
   opt.problem$more.args
 }
 
-setOptProblemAlgoInit = function(opt.problem, algo.init) {
-  opt.problem$algo.init = algo.init
+setOptProblemAllPossibleWeights = function(opt.problem, all.possible.weights) {
+  opt.problem$all.possible.weights = all.possible.weights
   invisible()
 }
 
-getOptProblemAlgoInit = function(opt.problem) {
+getOptProblemAllPossibleWeights = function(opt.problem) {
   par.set = getOptProblemParSet(opt.problem)
   control = getOptProblemControl(opt.problem)
-  if (is.null(opt.problem$algo.init)) {
-    algo.init = mboAlgoInit(par.set = par.set, control = control)
-    setOptProblemAlgoInit(opt.problem, algo.init)
+  if (is.null(opt.problem$all.possible.weights) && control$number.of.targets > 1L && control$multicrit.method == "parego") {
+    # calculate all possible weight vectors and save them
+    all.possible.weights = combWithSum(control$multicrit.parego.s, control$number.of.targets) / control$multicrit.parego.s
+    # rearrange them a bit - we want to have the margin weights on top of the matrix
+    # tricky: all margin weights have maximal variance
+    vars = apply(all.possible.weights, 1, var)
+    all.possible.weights = rbind(diag(control$number.of.targets), all.possible.weights[!vars == max(vars),])
+    setOptProblemAllPossibleWeights(opt.problem, all.possible.weights)
   } else {
-    algo.init = opt.problem$algo.init
+    all.possible.weights = opt.problem$all.possible.weights
   }
-  algo.init
+  all.possible.weights
 }
 
 getOptProblemShowInfo = function(opt.problem) {
