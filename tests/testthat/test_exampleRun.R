@@ -18,9 +18,9 @@ test_that("renderExampleRunPlot produces list of ggplot2 objects", {
   }
 
   ### 1D NUMERIC
-  obj.fn = function(x) sum(x*x)
+  obj.fn = function(x) {if (abs(x) <= 2) sum(x*x) else stop("trafo failed")}
   par.set = makeParamSet(
-    makeNumericParam("x", lower = -2, upper = 2)
+    makeNumericParam("x", lower = -20, upper = 20, trafo = function(x) x/10)
   )
 
   checkPlotList = function(plot.list) {
@@ -45,7 +45,9 @@ test_that("renderExampleRunPlot produces list of ggplot2 objects", {
 
   ### 2d MIXED
   obj.fn = function(x) {
-    if (x$foo == "a")
+    if (abs(x$x) > 3)
+      stop("trafo failed")
+    else if (x$foo == "a")
       sum(x$x^2)
     else if (x$foo == "b")
       sum(x$x^2) + 10
@@ -55,7 +57,7 @@ test_that("renderExampleRunPlot produces list of ggplot2 objects", {
 
   par.set = makeParamSet(
     makeDiscreteParam("foo", values = letters[1:3]),
-    makeNumericVectorParam("x", len = 1, lower = -2, upper = 3)
+    makeNumericVectorParam("x", len = 1, lower = -20, upper = 30, trafo = function(x) x/10)
   )
 
   plot.list = doRun(obj.fn, par.set, "se", "ei", "regr.randomForest", has.simple.signature = FALSE)
@@ -63,10 +65,12 @@ test_that("renderExampleRunPlot produces list of ggplot2 objects", {
 
   ### 2D NUMERIC (MULTIPOINT)
   obj.fun = function(x) {
-    sum(x^2)
+    if (any(abs(x) > 5)) stop("trafo failed") else sum(x^2)
   }
 
-  par.set = makeNumericParamSet("x", len = 2L, lower = -5, upper = 5)
+  par.set = makeParamSet(
+    makeNumericVectorParam("x", len = 2L, lower = -50, upper = 50, trafo = function(x) x/10)
+  )
 
   ctrl = makeMBOControl(init.design.points = 5, iters = n.iters, propose.points = 3)
   ctrl = setMBOControlMultiPoint(ctrl,

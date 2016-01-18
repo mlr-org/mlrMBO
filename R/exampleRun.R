@@ -118,14 +118,14 @@ exampleRun = function(fun, par.set, design = NULL, global.opt = NA_real_, learne
   if (soobench::is_soo_function(fun)) {
     fun = makeMBOFunction(fun)
   }
-  
+
   # # If noisy and we have the mean function, use it
   if (is.null(fun.mean)) {
     evals = evaluate(fun, par.set, n.params, par.types, noisy, noisy.evals, points.per.dim, names.x, name.y, seq_along(control$multifid.lvls))
   } else {
     evals = evaluate(fun.mean, par.set, n.params, par.types, noisy = FALSE, noisy.evals = 1, points.per.dim, names.x, name.y, seq_along(control$multifid.lvls))
   }
-  
+
   if (is.na(global.opt))
     global.opt.estim = ifelse(control$minimize, min(evals[, name.y]), max(evals[, name.y]))
   else
@@ -186,18 +186,17 @@ print.MBOExampleRun = function(x, ...) {
   catf("Objective: %s = %.3e\n", op$y.names[1], mr$y)
 }
 
-getEvalsForNumeric = function(fun, par.set, noisy, noisy.evals, points.per.dim, names.x, name.y) {
-  lower = getLower(par.set)
-  upper = getUpper(par.set)
-  xs = seq(lower, upper, length.out = points.per.dim)
+getEvals = function(fun, par.set, noisy, noisy.evals, points.per.dim, names.x, name.y) {
+  xs.trafo = generateGridDesign(par.set, points.per.dim, trafo = TRUE)
+  xs.trafo.list = convertRowsToList(xs.trafo, name.list = TRUE, name.vector = TRUE)
   ys = parallelMap(function(x) {
     if (noisy) {
-      mean(replicate(noisy.evals, fun(namedList(names.x, x))))
+      mean(replicate(noisy.evals, fun(x)))
     } else {
-      fun(namedList(names.x, x))
+      fun(x)
     }
-  }, xs, simplify = TRUE)
-  evals = data.frame(x = xs, y = ys)
+  }, xs.trafo.list, simplify = TRUE)
+  evals = cbind(xs.trafo, y = ys)
   colnames(evals) = c(names.x, name.y)
   return(evals)
 }
@@ -210,88 +209,20 @@ getEvalsForMultifid = function(fun, par.set, noisy, noisy.evals, points.per.dim,
       x$.multifid.lvl = l
       fun(x)
     }
-    evals = getEvalsForNumeric(this.fun, par.set, noisy, noisy.evals, points.per.dim, names.x, name.y)
+    evals = getEvals(this.fun, par.set, noisy, noisy.evals, points.per.dim, names.x, name.y)
     cbind.data.frame(.multifid.lvl = l, evals)
   })
   do.call("rbind", eval.list)
 }
 
-getEvalsFor2dNumeric = function(fun, par.set, noisy, noisy.evals, points.per.dim, names.x, name.y) {
-  lower = getLower(par.set)
-  upper = getUpper(par.set)
-  evals.x = NULL
-  eval.x = expand.grid(
-    x1 = seq(lower[1], upper[1], length.out = points.per.dim),
-    x2 = seq(lower[2], upper[2], length.out = points.per.dim)
-  )
-  names(eval.x) = names.x
-  #print(head(eval.x))
-  xs = dfRowsToList(eval.x, par.set)
-  ys = parallelMap(function(x) {
-    if(noisy) {
-      mean(replicate(noisy.evals, fun(x)))
-    } else {
-      fun(x)
-    }
-  }, xs, simplify = TRUE)
-  evals = cbind(eval.x, y = ys)
-  colnames(evals) = c(names.x, name.y)
-  return(evals)
-}
-
-getEvalsForDiscrete = function(fun, par.set, noisy, noisy.evals, names.x, name.y) {
-  xs = unlist(par.set$pars[[1]]$values)
-  cat(xs, "\n")
-  ys = parallelMap(function(x) {
-    mean(replicate(noisy.evals, fun(namedList(names.x, x))))
-  }, xs, simplify = TRUE)
-  evals = data.frame(x = xs, y = ys)
-  colnames(evals) = c(names.x, name.y)
-  return(evals)
-}
-
 evaluate = function(fun, par.set, n.params, par.types, noisy, noisy.evals, points.per.dim, names.x, name.y, multifid.lvls = numeric(0)) {
-  if (n.params == 1L) {
-    if (par.types %in% c("numeric", "numericvector")) {
-      if (length(multifid.lvls)) {
-        return(getEvalsForMultifid(fun, par.set, noisy, noisy.evals, points.per.dim, names.x, name.y, multifid.lvls))
-      } else {
-        return(getEvalsForNumeric(fun, par.set, noisy, noisy.evals, points.per.dim, names.x, name.y))
-      }
-    } else if (par.types %in% c("discrete")) {
-      if (!noisy) {
-        stopf("ExampleRun does not make sense with a single deterministic discrete parameter.")
-      }
-      return(getEvalsForDiscrete(fun, par.set, noisy, noisy.evals, names.x, name.y))
-    }
-  } else if (n.params == 2L) {
-    if (all(par.types %in% c("numeric", "numericvector"))) {
-      return(getEvalsFor2dNumeric(fun, par.set, noisy, noisy.evals, points.per.dim, names.x, name.y))
+  if (!noisy && n.params == 1L && par.types == "discrete")
+    stopf("ExampleRun does not make sense with a single deterministic discrete parameter.")
+  if (n.params %in% c(1L, 2L) && all(par.types %in% c("numeric", "numericvector", "discrete"))) {
+    if (length(multifid.lvls)) {
+      return(getEvalsForMultifid(fun, par.set, noisy, noisy.evals, points.per.dim, names.x, name.y, multifid.lvls))
     } else {
-      idx.numeric = which(par.types != "discrete")
-      lower = getLower(par.set)
-      upper = getUpper(par.set)
-      x2 = seq(lower, upper, length.out = points.per.dim)
-
-      # get discrete parameter
-      idx.discrete = which(par.types == "discrete")
-      x1 = unlist(par.set$pars[[idx.discrete]]$values)
-
-      eval.x = expand.grid(x1, x2)
-
-      names(eval.x) = names.x
-      xs = dfRowsToList(eval.x, par.set)
-      ys = parallelMap(function(x) {
-        if(noisy) {
-          # do replicates if noisy
-          mean(replicate(noisy.evals, fun(x)))
-        } else {
-          fun(x)
-        }
-      }, xs, simplify = TRUE)
-      evals = cbind(eval.x, y = ys)
-      colnames(evals) = c(names.x, name.y)
-      return(evals)
+      return(getEvals(fun, par.set, noisy, noisy.evals, points.per.dim, names.x, name.y))
     }
   }
 }
