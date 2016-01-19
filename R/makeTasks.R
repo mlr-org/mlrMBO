@@ -1,11 +1,14 @@
 #FIXME: Doku
 
-makeTasks = function(opt.path, algo.init, control) {
+makeTasks = function(opt.state) {
+  opt.problem = getOptStateOptProblem(opt.state)
+  control = getOptProblemControl(opt.problem)
+  opt.path = getOptStateOptPath(opt.state)
   if (control$number.of.targets == 1L) {
     tasks = list(makeTaskSingleObj(opt.path, control))
   } else {
     if (control$multicrit.method == "parego")
-      tasks = makeTasksParEGO(opt.path, control, algo.init$all.possible.weights)
+      tasks = makeTasksParEGO(opt.path, control, all.possible.weights = getOptProblemAllPossibleWeights(opt.problem))
     else
       tasks = makeTasksMultiCrit(opt.path, control)
   }
