@@ -58,6 +58,7 @@ mbo = function(fun, par.set, design = NULL, learner, control,
     makeIntegerParam(".multifid.lvl", lower = 1L, upper = length(control$multifid.lvls))))
   }
 
+  # generate an OptProblem which gathers all necessary information to define the optimization problem in one environment.
   opt.problem = makeOptProblem(
     fun = fun, 
     par.set = par.set, 
@@ -67,6 +68,8 @@ mbo = function(fun, par.set, design = NULL, learner, control,
     show.info = show.info,
     more.args = more.args)
 
+  # we call the magic mboTemplate where everything happens
   final.opt.state = mboTemplate(opt.problem)
+
   mboFinalize2(final.opt.state)
 }

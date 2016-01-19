@@ -1,8 +1,7 @@
 # Propose infill points - simple dispatcher to real methods
 #
 # input:
-#   tasks [list]              : list of gnerated tasks
-#   models [list]             : list of models, fitted to tasks
+#   opt.state
 #
 # output:
 #   prop.points [data.frame]  : the proposed points, 1 per row, with n rows

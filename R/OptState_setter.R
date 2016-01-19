@@ -21,9 +21,6 @@ setOptStateTimeModel = function(opt.state, time.model) {
 }
 
 setOptStateLoop = function(opt.state, loop = NULL) {
-  opt.result = getOptStateOptResult(opt.state)
-  setOptResultResampleResults(opt.result, opt.state)
-  setOptResultStoredModels(opt.result, opt.state)
   if (is.null(loop))
     opt.state$loop = opt.state$loop + 1L
   else
