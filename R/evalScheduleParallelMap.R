@@ -108,6 +108,8 @@ evalScheduleSmartParallelMap = function(wrapFun, xs, xs.trafo, xs.schedule.info 
       extras[[i]]$scheduled.priority = xs.schedule.info$priorities[i]
     }
   }
+
+  #FIXME: xs.schedule.info auch noch sortieren?
   evalScheduleParallelMap(wrapFun = wrapFun, xs = xs, xs.trafo = xs.trafo, xs.schedule.info = xs.schedule.info, extras = extras, opt.state = opt.state)
 
 }
