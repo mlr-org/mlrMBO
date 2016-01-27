@@ -123,13 +123,12 @@ renderExampleRunPlot1d = function(x, iter,
     }
     #determine in wich pane (facet_grid) the points belong to
     pane.names = c(ylab, name.crit)
-    gg.fun$pane = ifelse(gg.fun$variable %in% c(name.y, "yhat"), 1, 2)
-    gg.fun$pane = factor(gg.fun$pane, labels = pane.names)
+    gg.fun$pane = factor(pane.names[ifelse(gg.fun$variable %in% c(name.y, "yhat"), 1, 2)], levels = pane.names)
     
     
     # data frame with points of different type (initial design points, infill points, proposed points)
     gg.points = buildPointsData(opt.path, iter)
-    gg.points$pane = pane.names[1]
+    gg.points$pane = factor(pane.names[1], levels = pane.names)
 
     # transform y and yhat values according to trafo function
     if (!is.null(trafo$y)) {
