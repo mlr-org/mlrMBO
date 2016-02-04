@@ -14,8 +14,8 @@ test_that("multipoint lcb", {
 
   res = mbo(makeMBOFunction(objfun), par.set = ps, learner = lrn, control = ctrl)
   op = as.data.frame(res$opt.path)
-  expect_true(all(is.na(op$multipoint.lcb.lambda[1:30])))
-  expect_true(all(!is.na(op$multipoint.lcb.lambda[31:35])))
+  expect_true(all(is.na(op$lcb.lambda[1:30])))
+  expect_true(all(!is.na(op$lcb.lambda[31:35])))
   expect_is(res, "MBOResult")
   expect_true(res$y < 0.1)
 

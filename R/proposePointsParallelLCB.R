@@ -10,7 +10,7 @@ proposePointsParallelLCB = function(opt.state) {
     more.args = list(opt.state = opt.state))
 
   res = joinProposedPoints(props)
-  res$multipoint.lcb.lambdas = z$lambdas
+  res$lcb.lambdas = z$lambdas
   return(res)
 }
 
