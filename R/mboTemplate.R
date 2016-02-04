@@ -16,7 +16,7 @@ mboTemplate = function(obj) {
 # Creates the initial OptState and then runs the template on it
 mboTemplate.OptProblem = function(obj) {
   opt.state = makeOptState(obj)
-  # evalMBODesign will evaluate the given initial design (and create it if necessary) and write the obtained y-values in the OptPath which is also pointed at from the OptState. 
+  # evalMBODesign will evaluate the given initial design (and create it if necessary) and write the obtained y-values in the OptPath which is also pointed at from the OptState.
   # If y-values are present in the design, they will be taken instead.
   evalMBODesign.OptState(opt.state)
   finalizeMboLoop(opt.state)
@@ -28,13 +28,13 @@ mboTemplate.OptState = function(obj) {
   opt.state = obj
   setOptStateLoopStarttime(opt.state)
   repeat {
-    prop = proposePoints.OptState(opt.state) 
+    prop = proposePoints.OptState(opt.state)
     evalProposedPoints.OptState(opt.state, prop)
-    finalizeMboLoop(opt.state)   
+    finalizeMboLoop(opt.state)
     terminate = getOptStateTermination(opt.state)
     if (terminate > 0L)
-        break
-  } 
+      break
+  }
   opt.state
 }
 

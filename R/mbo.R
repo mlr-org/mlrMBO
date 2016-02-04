@@ -24,7 +24,6 @@
 #'   in the optimization path. To achieve this, simply append the attribute \dQuote{extras}
 #'   to the return value of the target function. This has to be a named list of scalar values.
 #'   Each of these values will be stored additionally in the optimization path.
-#' @template arg_parset
 #' @param design [\code{data.frame} | NULL]\cr
 #'   Initial design as data frame.
 #'   If the parameters have corresponding trafo functions,
@@ -38,12 +37,15 @@
 #'   Further arguments passed to fitness function.
 #' @return [\code{\link{MBOSingleObjResult}} | \code{\link{MBOMultiObjResult}}]
 #' @export
-mbo = function(fun, par.set, design = NULL, learner, control,
+mbo = function(fun, design = NULL, learner, control,
   show.info = getOption("mlrMBO.show.info", TRUE), more.args = list()) {
 
   assertFlag(show.info)
+  control$noisy = isNoisy(fun)
+  control$minimize = shouldBeMinimized(fun)
+  par.set = smoof::getParamSet(fun)
   learner = checkLearner(learner, par.set, control)
-  checkStuff(fun, par.set, design, learner, control)
+  control = checkStuff(fun, par.set, design, learner, control)
 
   loadPackages(control)
 
@@ -60,8 +62,8 @@ mbo = function(fun, par.set, design = NULL, learner, control,
 
   # generate an OptProblem which gathers all necessary information to define the optimization problem in one environment.
   opt.problem = makeOptProblem(
-    fun = fun, 
-    par.set = par.set, 
+    fun = fun,
+    par.set = par.set,
     design = design,
     learner = learner,
     control = control,

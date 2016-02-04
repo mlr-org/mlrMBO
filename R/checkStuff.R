@@ -20,6 +20,11 @@ checkStuff = function(fun, par.set, design, learner, control) {
 
   pids = getParamIds(par.set)
 
+  if (getNumberOfObjectives(fun) != control$number.of.targets) {
+    stopf("Objective function has %i objectives, but the control object assumes %i.",
+      getNumberOfObjectives(fun), control$number.of.targets)
+  }
+
   # general parameter and learner checks
   if (any(sapply(par.set$pars, inherits, what = "LearnerParam")))
     stop("No parameter can be of class 'LearnerParam'! Use basic parameters instead to describe you region of interest!")
@@ -43,7 +48,7 @@ checkStuff = function(fun, par.set, design, learner, control) {
       ifelse(hasLearnerProperties(learner, "se"), "",
         "\nBut this learner does not seem to support prediction of standard errors! You could use the mlr wrapper makeBaggingWrapper to bootstrap the standard error estimator."))
   }
-  
+
   # If nugget estimation should be used, make sure learner is a km model with activated nugget estim
   if (control$infill.crit.aei.use.nugget) {
     if (learner$short.name != "km" || !isTRUE(getHyperPars(learner)$nugget.estim)) {
@@ -53,6 +58,13 @@ checkStuff = function(fun, par.set, design, learner, control) {
   # compatibility of optimizers and parameters
   if (control$infill.opt %in% c("cmaes", "ea") && !isNumeric(par.set))
     stopf("Optimizer '%s' can only be applied to numeric, integer, numericvector, integervector parameters!", control$infill.opt)
+
+  if (is.null(control$target.fun.value)) {
+    # If we minimize, target is -Inf, for maximize it is Inf
+    control$target.fun.value = if (control$minimize[1L]) -Inf else Inf
+  } else {
+    assertNumber(control$target.fun.value, na.ok = FALSE)
+  }
 
   #  single objective
   if (control$number.of.targets == 1L) {
@@ -95,4 +107,5 @@ checkStuff = function(fun, par.set, design, learner, control) {
   # FIXME: implement something that works for integer and discrte params
   if (control$filter.proposed.points && hasDiscrete(par.set))
     stop("Filtering proposed points currently not implemented for discrete parameters!")
+  return(control)
 }

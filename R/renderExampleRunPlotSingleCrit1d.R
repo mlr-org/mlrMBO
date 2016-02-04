@@ -10,7 +10,7 @@ renderExampleRunPlot1d = function(x, iter,
   se.factor = 1,
   xlim = NULL, ylim = NULL,
   point.size, line.size,
-  trafo = NULL, 
+  trafo = NULL,
   colors = c("red", "blue", "green"), ...)  {
   # extract relevant data from MBOExampleRun
   par.set = x$par.set
@@ -22,7 +22,7 @@ renderExampleRunPlot1d = function(x, iter,
   models = mbo.res$models
   models = if (inherits(models, "WrappedModel")) list(models) else models
   names(colors) = c("init", "prop", "seq")
-  
+
   # check if standard error is available
   se = (x$learner$predict.type == "se")
 
@@ -34,7 +34,7 @@ renderExampleRunPlot1d = function(x, iter,
   } else {
     critfun = getInfillCritFunction(name.crit)
   }
-    
+
   # we need to maximize expected improvement
   if (name.crit %in% c("ei")) {
     opt.direction = -1
@@ -46,7 +46,7 @@ renderExampleRunPlot1d = function(x, iter,
   assertInteger(iter, lower = 0, upper = length(models), len = 1L, any.missing = FALSE)
 
   if (!is.na(x$global.opt)) {
-    global.opt = x$global.opt  
+    global.opt = x$global.opt
   } else {
     global.opt = x$global.opt.estim
   }
@@ -58,11 +58,16 @@ renderExampleRunPlot1d = function(x, iter,
   # helper function for building up data frame of different points
   # i.e., initial design points, infilled points, proposed points for ggplot
   getType = function(x, iter) {
-    if(x==0) return("init") else 
-    if(x>0 && x<iter) return("seq") else
-    if(x==iter) return("prop") else
+    if(x == 0)
+      return("init")
+    else if(x > 0 && x < iter)
+      return("seq")
+    else if(x == iter)
+      return("prop")
+    else
       return ("future")
   }
+
   buildPointsData = function(opt.path, iter) {
     type = sapply(getOptPathDOB(opt.path), getType, iter = iter)
     res = cbind.data.frame(
@@ -83,7 +88,7 @@ renderExampleRunPlot1d = function(x, iter,
   if (!inherits(model, "FailureModel")) {
     evals$yhat = infillCritMeanResponse(evals.x, list(model),
       control, par.set, convertOptPathToDf(opt.path, control)[idx.past, ])
-    
+
     #FIXME: We might want to replace the following by a helper function so that we can reuse it in buildPointsData()
     if (propose.points == 1L) {
       evals[[name.crit]] = opt.direction *
@@ -106,16 +111,16 @@ renderExampleRunPlot1d = function(x, iter,
 
   if (isNumeric(par.set, include.int = FALSE)) {
     gg.fun = reshape2::melt(evals, id.vars = c(getParamIds(opt.path$par.set), if (se) "se" else NULL))
-    
+
     if (control$multifid) {
       #rename .multifid.lvl according to control object
       repl = paste0(control$multifid.param, "=", control$multifid.lvls)
       names(repl) = as.character(seq_along(control$multifid.lvls))
-      gg.fun$.multifid.lvl = plyr::revalue(as.factor(gg.fun$.multifid.lvl), replace = repl)  
+      gg.fun$.multifid.lvl = plyr::revalue(as.factor(gg.fun$.multifid.lvl), replace = repl)
     }
-    
+
     if (se) gg.fun$se = gg.fun$se * se.factor
-    
+
     # if trafo for y is provided, indicate transformation on the y-axis
     ylab = name.y
     if (!is.null(trafo$y)) {
@@ -124,8 +129,8 @@ renderExampleRunPlot1d = function(x, iter,
     #determine in wich pane (facet_grid) the points belong to
     pane.names = c(ylab, name.crit)
     gg.fun$pane = factor(pane.names[ifelse(gg.fun$variable %in% c(name.y, "yhat"), 1, 2)], levels = pane.names)
-    
-    
+
+
     # data frame with points of different type (initial design points, infill points, proposed points)
     gg.points = buildPointsData(opt.path, iter)
     gg.points$pane = factor(pane.names[1], levels = pane.names)
@@ -138,7 +143,7 @@ renderExampleRunPlot1d = function(x, iter,
     } else {
       tr = identity
     }
-    
+
     # finally build the ggplot object(s)
     g = ggplot(data = gg.fun)
     next.aes = aes_string(x = names.x, y = "value", color = "as.factor(.multifid.lvl)", group = "paste(variable,.multifid.lvl)", linetype = "variable")

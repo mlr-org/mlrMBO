@@ -4,7 +4,7 @@
 \alias{mbo}
 \title{Optimizes a function with sequential model based optimization.}
 \usage{
-mbo(fun, par.set, design = NULL, learner, control,
+mbo(fun, design = NULL, learner, control,
   show.info = getOption("mlrMBO.show.info", TRUE), more.args = list())
 }
 \arguments{
@@ -15,9 +15,6 @@ In fact it is possible to return even more information which will be stored
 in the optimization path. To achieve this, simply append the attribute \dQuote{extras}
 to the return value of the target function. This has to be a named list of scalar values.
 Each of these values will be stored additionally in the optimization path.}
-
-\item{par.set}{[\code{\link[ParamHelpers]{ParamSet}}]\cr
-See \code{\link{mbo}}.}
 
 \item{design}{[\code{data.frame} | NULL]\cr
 Initial design as data frame.

@@ -2,27 +2,25 @@
 
 library(mlrMBO)
 library(ggplot2)
-library(soobench)
+library(smoof)
 set.seed(2) # FIXME: does not work for seed == 1
 configureMlr(show.learner.output = FALSE)
 pause = interactive()
 
-obj.fun = branin_function()
+obj.fun = makeBraninFunction()
 
-par.set = extractParamSetFromSooFunction(obj.fun)
-
-ctrl = makeMBOControl(init.design.points = 10, iters = 10, propose.points = 5)
+ctrl = makeMBOControl(init.design.points = 10L, iters = 10L, propose.points = 5L)
 ctrl = setMBOControlMultiPoint(ctrl,
   method = "multicrit",
   multicrit.objective = "ei.dist",
   multicrit.dist = "nearest.neighbor",
-  multicrit.maxit = 200
+  multicrit.maxit = 200L
 )
 
 lrn = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
 
-run = exampleRun(obj.fun, par.set = par.set, learner = lrn, control = ctrl,
-	points.per.dim = 50, show.info = TRUE)
+run = exampleRun(obj.fun, learner = lrn, control = ctrl,
+	points.per.dim = 50L, show.info = TRUE)
 
 print(run)
 
