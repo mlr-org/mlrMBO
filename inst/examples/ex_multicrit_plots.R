@@ -1,5 +1,6 @@
 library(mlrMBO)
 library(smoof)
+library(ggplot2)
 
 set.seed(1)
 configureMlr(show.learner.output = FALSE)

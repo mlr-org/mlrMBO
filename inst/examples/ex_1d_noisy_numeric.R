@@ -2,7 +2,7 @@
 
 library(mlrMBO)
 library(ggplot2)
-load_all()
+library(smoof)
 set.seed(1)
 configureMlr(show.learner.output = FALSE)
 pause = interactive()
