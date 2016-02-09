@@ -29,6 +29,7 @@ Imports:
     reshape2,
     scales
 Suggests:
+    akima,
     cmaes,
     DiceKriging,
     DiceOptim,
