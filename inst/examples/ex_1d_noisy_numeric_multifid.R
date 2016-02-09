@@ -3,7 +3,6 @@
 library(mlrMBO)
 library(ggplot2)
 library(smoof)
-load_all()
 set.seed(1)
 configureMlr(show.learner.output = FALSE)
 pause = interactive()
