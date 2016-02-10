@@ -59,7 +59,7 @@ renderExampleRunPlot2d = function(x, iter,
   model.ok = !inherits(models[[1L]], "FailureModel")
 
   if (model.ok) {
-    evals$yhat = infillCritMeanResponse(evals.x, models, control, par.set, opt.path[idx.past, ])
+    evals$yhat = ifelse(control$minimize, 1, -1) * infillCritMeanResponse(evals.x, models, control, par.set, opt.path[idx.past, ])
     if (se) {
       evals$se = -infillCritStandardError(evals.x, models, control, par.set, opt.path[idx.past, ])
     }
