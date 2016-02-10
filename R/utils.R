@@ -28,19 +28,6 @@ loadPackages = function(control) {
     requirePackages("emoa", why = "proposePoints")
 }
 
-evalProposedPoints.OptState = function(opt.state, prop) {
-  opt.problem = getOptStateOptProblem(opt.state)
-  par.set = getOptProblemParSet(opt.problem)
-  extras = getExtras(
-    n = nrow(prop$prop.points),
-    prop = prop,
-    train.time = getOptStateModels(opt.state)$train.time,
-    control = getOptProblemControl(opt.problem)
-  )
-  xs = dfRowsToList(prop$prop.points, par.set)
-  xs = lapply(xs, repairPoint, par.set = par.set)
-  evalTargetFun.OptState(opt.state, xs = xs, extras = extras)
-}
 
 # for Parego: calculate all integer vectors of length k with sum n
 combWithSum = function(n, k) {
