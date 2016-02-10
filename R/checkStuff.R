@@ -59,10 +59,11 @@ checkStuff = function(fun, par.set, design, learner, control) {
   if (control$infill.opt %in% c("cmaes", "ea") && !isNumeric(par.set))
     stopf("Optimizer '%s' can only be applied to numeric, integer, numericvector, integervector parameters!", control$infill.opt)
 
-  # set default mu parameter for ea
-  if (control$infill.opt == "ea" && !is.null(control$infill.opt.ea.mu.set.by.user) && control$infill.opt.ea.mu.set.by.user) {
-    control$infill.opt.ea.mu = getNumberOfParameters(fun) * 10L
+  # set default mu parameter for ea infill optimizer
+  if (control$infill.opt == "ea") {
+    control$infill.opt.ea.mu = coalesce(control$infill.opt.ea.mu, getNumberOfParameters(fun) * 10L)
   }
+  assertNumber(control$infill.opt.ea.mu, na.ok = FALSE, lower = 0)
 
   if (is.null(control$target.fun.value)) {
     # If we minimize, target is -Inf, for maximize it is Inf

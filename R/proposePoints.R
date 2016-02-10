@@ -18,7 +18,7 @@ proposePoints.OptState = function(opt.state){
 
   m = control$number.of.targets
   res = NULL
-  if (m == 1L && control$infill.crit != "random") {
+  if (m == 1L) {
     if (control$multifid) {
       res = proposePointsMultiFid(opt.state)
     } else if (is.null(control$multipoint.method)) {
@@ -32,7 +32,7 @@ proposePoints.OptState = function(opt.state){
         res = proposePointsMOIMBO(opt.state)
       }
     }
-  } else if (control$infill.crit != "random"){
+  } else {
     if (control$multicrit.method == "parego") {
       res = proposePointsParEGO(opt.state)
     } else if (control$multicrit.method == "mspot") {
@@ -42,12 +42,9 @@ proposePoints.OptState = function(opt.state){
     }
   }
   
-  if (control$infill.crit == "random" || control$interleave.random.points > 0L) {
+  if (control$interleave.random.points > 0L) {
     add = proposePointsRandom(opt.state)
-    if (!is.null(res))
-      res = joinProposedPoints(list(res, add))
-    else
-      res = add
+    res = joinProposedPoints(list(res, add))
   }
 
   if (!is.matrix(res$crit.vals))

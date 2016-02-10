@@ -8,7 +8,6 @@
 #'   \dQuote{aei}: Augmented expected improvement.
 #'   \dQuote{eqi}: Expected quantile improvement.
 #'   \dQuote{lcb}: Lower confidence bound.
-#'   \dQuote{random}: Random infill point. Optimization of this criteria won't be performed.
 #'   Alternatively, you may pass a function name as string.
 #' @param interleave.random.points [\code{integer(1)}]\cr
 #'   Add \code{interleave.random.points} uniformly sampled points additionally to the
@@ -86,7 +85,7 @@
 #' @param opt.ea.mu [\code{integer(1)}]\cr
 #'   For \code{opt = "ea"}:
 #'   Population size of EA.
-#'   Default is 10.
+#'   The default is 10 times the number of parameters of the function to optimize.
 #' @param opt.ea.pm.eta [\code{numeric(1)}]\cr
 #'   For \code{opt = "ea"}:
 #'   Distance parameter of mutation distribution, see \code{\link[emoa]{pm_operator}}.
@@ -212,10 +211,10 @@ setMBOControlInfill = function(control,
   control$infill.opt.ea.maxit = asCount(control$infill.opt.ea.maxit)
   assertCount(control$infill.opt.ea.maxit, na.ok = FALSE, positive = TRUE)
 
+  # cannot use coalsece here since we set the default later in checkstuff
   if (!is.null(opt.ea.mu)) {
     control$infill.opt.ea.mu = opt.ea.mu
   }
-  control$infill.opt.ea.mu.set.by.user = !is.null(opt.ea.mu) || !is.null(control$infill.opt.ea.mu)
 
   control$infill.opt.ea.sbx.eta = coalesce(opt.ea.sbx.eta, control$infill.opt.ea.sbx.eta, 15)
   assertNumber(control$infill.opt.ea.sbx.eta, na.ok = FALSE, lower = 0)

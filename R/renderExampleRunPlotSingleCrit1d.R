@@ -86,9 +86,8 @@ renderExampleRunPlot1d = function(x, iter,
 
   # compute model prediction for current iter
   if (!inherits(model, "FailureModel")) {
-    evals$yhat = infillCritMeanResponse(evals.x, list(model),
-      control, par.set, convertOptPathToDf(opt.path, control)[idx.past, ])
-
+    evals$yhat = ifelse(control$minimize, 1, -1) * infillCritMeanResponse(evals.x, list(model), control)
+    
     #FIXME: We might want to replace the following by a helper function so that we can reuse it in buildPointsData()
     if (propose.points == 1L) {
       evals[[name.crit]] = opt.direction *
