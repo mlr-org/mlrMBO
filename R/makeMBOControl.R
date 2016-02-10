@@ -96,12 +96,6 @@
 #' @param resample.measures [list of \code{\link[mlr]{Measure}}]\cr
 #'   Performance measures to assess model with during resampling.
 #'   Default is \code{\link[mlr]{mse}}.
-#' @param on.learner.error [\code{character(1)}]\cr
-#'   See [\code{\link[mlr]{configureMlr}}].
-#'   Default is \dQuote{warn}.
-#' @param show.learner.output [\code{logical(1)}]\cr
-#'   See [\code{\link[mlr]{configureMlr}}].
-#'   Default is \code{FALSE}.
 #' @param output.num.format [\code{logical(1)}]\cr
 #'   Format string for the precision of the numeric output of mbo.
 #' @return [\code{\link{MBOControl}}].

@@ -60,9 +60,6 @@ evalTargetFun.OptState = function(opt.state, xs, extras) {
     !is.error(y) && is.numeric(y) && (length(y) == ny) && !any(is.na(y) | is.nan(y) | is.infinite(y))
   }
 
-  # restore mlr configuration
-  configureMlr(on.learner.error = oldopts[["ole"]], show.learner.output = oldopts[["slo"]])
-
   # return error objects if we impute
   res = parallelMap(wrapFun, xs.trafo, level = "mlrMBO.feval",
     impute.error = if (is.null(imputeY)) NULL else identity)
@@ -99,7 +96,7 @@ evalTargetFun.OptState = function(opt.state, xs, extras) {
     }
 
     # showInfo - use the trafo'd value here!
-    showInfo(getOptProblemShowInfo(opt.problem), "[mbo] %i: %s : %s : %.1f secs%s", 
+    showInfo(getOptProblemShowInfo(opt.problem), "[mbo] %i: %s : %s : %.1f secs%s",
       dob, paramValueToString(par.set, x.trafo, num.format = num.format),
       collapse(sprintf(num.format.string, control$y.name, y2), ", "),
       ytime, ifelse(y.valid, "", " (imputed)")
@@ -112,10 +109,6 @@ evalTargetFun.OptState = function(opt.state, xs, extras) {
     addOptPathEl(opt.path, x = x, y = y2, dob = dob,
       error.message = errmsg, exec.time = ytime, extra = extras[[i]])
   }
-
-  # FIXME: See issue
-  configureMlr(on.learner.error = control$on.learner.error,
-    show.learner.output = control$show.learner.output)
 
   extractSubList(res, "y")
 }

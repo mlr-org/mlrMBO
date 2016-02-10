@@ -70,12 +70,11 @@ test_that("mbo works with impute and failure model", {
   y  = sapply(1:nrow(des), function(i) f(as.list(des[i, ])))
   y[length(y)] = 123
   des$y = y
-  learner = makeLearner("regr.km")
+  # make sure model does not break, and we get a failure model
+  learner = makeLearner("regr.km", config = list(on.learner.error = "quiet"))
   ctrl = makeMBOControl(iters = 2L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10L)
-  suppressWarnings({
-    or = mbo(f, des, learner = learner, control = ctrl)
-  })
+  or = mbo(f, des, learner = learner, control = ctrl)
   expect_equal(getOptPathLength(or$opt.path), 14)
   op = as.data.frame(or$opt.path)
   expect_true(!is.na(op$error.model[13L]))
