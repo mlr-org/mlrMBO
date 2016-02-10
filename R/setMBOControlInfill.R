@@ -84,7 +84,7 @@
 #' @param opt.ea.mu [\code{integer(1)}]\cr
 #'   For \code{opt = "ea"}:
 #'   Population size of EA.
-#'   Default is 10.
+#'   The default is 10 times the number of parameters of the function to optimize.
 #' @param opt.ea.pm.eta [\code{numeric(1)}]\cr
 #'   For \code{opt = "ea"}:
 #'   Distance parameter of mutation distribution, see \code{\link[emoa]{pm_operator}}.
