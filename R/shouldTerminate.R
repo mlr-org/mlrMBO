@@ -32,12 +32,12 @@ shouldTerminate.OptState = function(opt.state) {
   return(0L)
 }
 
-# This function returns all the character which lead to an termination 
+# This function returns all the character which lead to an termination
 # of the MBO Iteratio if x == NULL, otherwise the representative reason
 # according to the number returned in shouldTerminate()
 getTerminateChars = function(x = NULL) {
-  final.states = c(iter = "iter.exceeded", time = "time.exceeded", 
-    exec.time = "exec.time.exceeded", target = "target.fun.value.reached", 
+  final.states = c(iter = "iter.exceeded", time = "time.exceeded",
+    exec.time = "exec.time.exceeded", target = "target.fun.value.reached",
     manual = "manual.exceeded")
   if (is.null(x)) {
     return(final.states)
@@ -45,5 +45,5 @@ getTerminateChars = function(x = NULL) {
     return("iter")
   } else {
     return(as.character(final.states[x]))
-  } 
+  }
 }

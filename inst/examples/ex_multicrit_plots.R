@@ -1,12 +1,12 @@
-library(mco)
 library(mlrMBO)
+library(smoof)
+library(ggplot2)
 
 set.seed(1)
 configureMlr(show.learner.output = FALSE)
 pause = interactive()
 
-obj.fun = makeMBOFunction(mco::zdt1)
-par.set = makeNumericParamSet(len = 5L, lower = 0, upper = 1)
+obj.fun = makeZDT1Function(dimensions = 5L)
 
 lrn = makeLearner("regr.km", predict.type = "se")
 ctrl = makeMBOControl(iters = 10L, number.of.targets = 2L, init.design.points = 8L,
@@ -15,6 +15,6 @@ ctrl = setMBOControlInfill(ctrl, crit = "ei", opt.focussearch.points = 1000L,
   opt.focussearch.maxit = 3L)
 ctrl = setMBOControlMultiCrit(ctrl, method = "parego")
 
-or = mbo(obj.fun, par.set, learner = lrn, control = ctrl, show.info = TRUE)
+res = mbo(obj.fun, learner = lrn, control = ctrl, show.info = TRUE)
 
-plot(or, pause = pause)
+plot(res, pause = pause)

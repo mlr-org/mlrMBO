@@ -10,6 +10,7 @@
 #' @import plyr
 #' @import reshape2
 #' @import scales
+#' @import smoof
 #' @useDynLib mlrMBO c_sms_indicator c_eps_indicator
 NULL
 

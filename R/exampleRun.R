@@ -23,7 +23,6 @@
 #' @param fun [\code{function}]\cr
 #'   Target function. See \code{\link{mbo}} for details. It is also possible to
 #'   provide a function from the \code{soobench} package.
-#' @template arg_parset
 #' @param design [\code{data.frame} | NULL]\cr
 #'   Initial design as data frame.
 #'   If the parameters have corresponding trafo functions,
@@ -59,28 +58,30 @@
 #'   Further arguments passed to the learner.
 #' @return [\code{MBOExampleRun}]
 #' @export
-exampleRun = function(fun, par.set, design = NULL, global.opt = NA_real_, learner, control,
+exampleRun = function(fun, design = NULL, global.opt = NA_real_, learner, control,
   points.per.dim = 50, noisy.evals = 10, show.info = NULL, fun.mean = NULL, ...) {
 
-  assertFunction(fun)
+  if (!isSmoofFunction(fun)) {
+    stopf("You need to pass a smoof function.")
+  }
+  par.set = smoof::getParamSet(fun)
+
   if (!is.null(fun.mean)) {
     assertFunction(fun.mean)
   }
   assertClass(control, "MBOControl")
 
-  if (missing(par.set) && soobench::is_soo_function(fun)) {
-    par.set = extractParamSetFromSooFunction(fun)
-  }
-  assertClass(par.set, "ParamSet")
-
-  if (missing(global.opt) && soobench::is_soo_function(fun)) {
-    global.opt = soobench::global_minimum(fun)$val
+  if (missing(global.opt) && smoof::hasGlobalOptimum(fun)) {
+    global.opt = smoof::getGlobalOptimum(fun)$value
   }
   assertNumber(global.opt, na.ok = TRUE)
 
   par.types = getParamTypes(par.set)
 
-  noisy = control$noisy
+  noisy = isNoisy(fun)
+  control$noisy = noisy
+  control$minimize = shouldBeMinimized(fun)
+
   learner = checkLearner(learner, par.set, control, ...)
 
   points.per.dim = asCount(points.per.dim)
@@ -115,9 +116,9 @@ exampleRun = function(fun, par.set, design = NULL, global.opt = NA_real_, learne
     )
   }
 
-  if (soobench::is_soo_function(fun)) {
-    fun = makeMBOFunction(fun)
-  }
+  # if (soobench::is_soo_function(fun)) {
+  #   fun = makeMBOFunction(fun)
+  # }
 
   # # If noisy and we have the mean function, use it
   if (is.null(fun.mean)) {
@@ -127,7 +128,7 @@ exampleRun = function(fun, par.set, design = NULL, global.opt = NA_real_, learne
   }
 
   if (is.na(global.opt))
-    global.opt.estim = ifelse(control$minimize, min(evals[, name.y]), max(evals[, name.y]))
+    global.opt.estim = ifelse(shouldBeMinimized(fun), min(evals[, name.y]), max(evals[, name.y]))
   else
     global.opt.estim = NA_real_
 
@@ -140,7 +141,7 @@ exampleRun = function(fun, par.set, design = NULL, global.opt = NA_real_, learne
   }
 
   # run optimizer now
-  res = mbo(fun, par.set, design = design, learner = learner, control = control, show.info = show.info)
+  res = mbo(fun, design = design, learner = learner, control = control, show.info = show.info)
 
   # compute true y-values if deterministic function is known
   y.true = NA

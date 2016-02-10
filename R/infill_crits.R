@@ -90,14 +90,14 @@ infillCritAEI = function(points, models, control, par.set, design, iter) {
   xcr = d / p.se
   xcr.prob = pnorm(xcr)
   xcr.dens = dnorm(xcr)
-  
-  
+
+
   # noise estimation
   pure.noise.var = if (control$infill.crit.aei.use.nugget)
     pure.noise.var = model$learner.model@covariance@nugget
   else
     estimateResidualVariance(model, data = design, target = control$y.name)
-  
+
   tau = sqrt(pure.noise.var)
   aei = ifelse(p.se < 1e-06, 0,
     (d * xcr.prob + p.se * xcr.dens) * (1 - tau / sqrt(tau^2 + p.se^2)))

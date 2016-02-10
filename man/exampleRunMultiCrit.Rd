@@ -4,15 +4,12 @@
 \alias{exampleRunMultiCrit}
 \title{Perform an MBO run on a multi-criteria test function and and visualize what happens.}
 \usage{
-exampleRunMultiCrit(fun, par.set, learner, control, points.per.dim = 50,
+exampleRunMultiCrit(fun, learner, control, points.per.dim = 50,
   show.info = NULL, nsga2.args = list(), ref.point = NULL, ...)
 }
 \arguments{
 \item{fun}{[\code{function}]\cr
 Target function. See \code{\link{mbo}} for details.}
-
-\item{par.set}{[\code{\link[ParamHelpers]{ParamSet}}]\cr
-See \code{\link{mbo}}.}
 
 \item{learner}{[\code{\link[mlr]{Learner}}]\cr
 See \code{\link{mbo}}.

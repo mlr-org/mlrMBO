@@ -1,11 +1,5 @@
 #' @title Creates a control object for MBO optimization.
 #'
-#' @param minimize [\code{logical}]\cr
-#'   Should target functions be minimized? One value par target function.
-#'   Default is \code{TRUE} for ever target function.
-#' @param noisy [\code{logical(1)}]\cr
-#'   Is the target function noisy?
-#'   Default is \code{FALSE}.
 #' @param number.of.targets [\code{integer(1)}]\cr
 #'   How many objectives are to be optimized? \code{number.of.targets = 1} implies normal single
 #'   criteria optimization, \code{number.of.targets > 1} implies multicriteria optimization.
@@ -114,7 +108,6 @@
 #' @aliases MBOControl
 #' @export
 makeMBOControl = function(number.of.targets = 1L,
-  minimize = rep(TRUE, number.of.targets), noisy = FALSE,
   init.design.points = 20L, init.design.fun = maximinLHS, init.design.args = list(),
   iters = 10L, time.budget = NULL, exec.time.budget = NULL, target.fun.value = NULL,
   propose.points = 1L,
@@ -135,8 +128,6 @@ makeMBOControl = function(number.of.targets = 1L,
 ) {
 
   number.of.targets = asInt(number.of.targets, lower = 1L)
-  assertLogical(minimize, len = number.of.targets, any.missing = FALSE)
-  assertFlag(noisy)
 
   init.design.points = asInt(init.design.points)
   assertFunction(init.design.fun)
@@ -162,14 +153,9 @@ makeMBOControl = function(number.of.targets = 1L,
   } else {
     assertCount(exec.time.budget, na.ok = FALSE, positive = TRUE)
   }
-  
-  if (is.null(target.fun.value)) {
-    # If we minimize, target is -Inf, for maximize it is Inf
-    target.fun.value = if (minimize[1L]) -Inf else Inf
-  } else {
-    if (number.of.targets > 1L)
-      stop("Specifying target.fun.value is only useful in single crit optimization.")
-    assertNumber(target.fun.value, na.ok = FALSE)
+
+  if (number.of.targets > 1L & !is.null(target.fun.value)) {
+    stop("Specifying target.fun.value is only useful in single crit optimization.")
   }
 
   propose.points = asInt(propose.points, lower = 1L)
@@ -213,8 +199,6 @@ makeMBOControl = function(number.of.targets = 1L,
   assertString(output.num.format)
 
   control = makeS3Obj("MBOControl",
-    minimize = minimize,
-    noisy = noisy,
     number.of.targets = number.of.targets,
     init.design.points = init.design.points,
     init.design.fun = init.design.fun,
@@ -260,9 +244,7 @@ makeMBOControl = function(number.of.targets = 1L,
 #'   Not used.
 #' @export
 print.MBOControl = function(x, ...) {
-  catf("Objectives                    : %s",
-    collapsef("%s = %s!", x$y.name, ifelse(x$minimize, "min", "max"), sep = "; "))
-  catf("Function type                 : %s",  ifelse(x$noisy, "noisy", "deterministic"))
+  catf("Objectives                    : %s", x$number.of.targets)
   catf("Init. design                  : %i points", x$init.design.points)
   catf("Iterations                    : %i", x$iters)
   catf("Points proposed per iter      : %i", x$propose.points)

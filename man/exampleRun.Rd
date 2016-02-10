@@ -4,17 +4,14 @@
 \alias{exampleRun}
 \title{Perform an mbo run on a test function and and visualize what happens.}
 \usage{
-exampleRun(fun, par.set, design = NULL, global.opt = NA_real_, learner,
-  control, points.per.dim = 50, noisy.evals = 10, show.info = NULL,
+exampleRun(fun, design = NULL, global.opt = NA_real_, learner, control,
+  points.per.dim = 50, noisy.evals = 10, show.info = NULL,
   fun.mean = NULL, ...)
 }
 \arguments{
 \item{fun}{[\code{function}]\cr
 Target function. See \code{\link{mbo}} for details. It is also possible to
 provide a function from the \code{soobench} package.}
-
-\item{par.set}{[\code{\link[ParamHelpers]{ParamSet}}]\cr
-See \code{\link{mbo}}.}
 
 \item{design}{[\code{data.frame} | NULL]\cr
 Initial design as data frame.

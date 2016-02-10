@@ -5,8 +5,7 @@
 \alias{makeMBOControl}
 \title{Creates a control object for MBO optimization.}
 \usage{
-makeMBOControl(number.of.targets = 1L, minimize = rep(TRUE,
-  number.of.targets), noisy = FALSE, init.design.points = 20L,
+makeMBOControl(number.of.targets = 1L, init.design.points = 20L,
   init.design.fun = maximinLHS, init.design.args = list(), iters = 10L,
   time.budget = NULL, exec.time.budget = NULL, target.fun.value = NULL,
   propose.points = 1L, final.method = "best.true.y", final.evals = 0L,
@@ -23,14 +22,6 @@ makeMBOControl(number.of.targets = 1L, minimize = rep(TRUE,
 How many objectives are to be optimized? \code{number.of.targets = 1} implies normal single
 criteria optimization, \code{number.of.targets > 1} implies multicriteria optimization.
 Default is 1.}
-
-\item{minimize}{[\code{logical}]\cr
-Should target functions be minimized? One value par target function.
-Default is \code{TRUE} for ever target function.}
-
-\item{noisy}{[\code{logical(1)}]\cr
-Is the target function noisy?
-Default is \code{FALSE}.}
 
 \item{init.design.points}{[\code{integer(1)}]\cr
 Number of points to generate for initial design via \code{\link[ParamHelpers]{generateDesign}}.
