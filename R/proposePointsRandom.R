@@ -1,9 +1,9 @@
-# This function emulates the behaviour of all proposePoints* functions
-# The return value is a list with specific NAs so that the opt.path can be written
+# Proposes n points randomly by calling generateRandomDesign.
+# crit.vals, propose.time and errors.model are all set to NA
 proposePointsRandom = function(opt.state) {
   opt.problem = getOptStateOptProblem(opt.state)
   control = getOptProblemControl(opt.problem)
-  par.set = getOptProblemParSet(opt.problem)  
+  par.set = getOptProblemParSet(opt.problem)
   n = control$interleave.random.points
   list(
     prop.points = generateRandomDesign(par.set = par.set, n = n),
