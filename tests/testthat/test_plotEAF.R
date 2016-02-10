@@ -10,7 +10,8 @@ test_that("plotEAF works", {
 
   # Test normal run
   learner = makeLearner("regr.km", nugget.estim = TRUE)
-  ctrl = makeMBOControl(iters = 2, init.design.points = 5L, number.of.targets = 2L)
+  ctrl = makeMBOControl(init.design.points = 5L, number.of.targets = 2L)
+  ctrl = setMBOControlTermination(ctrl, iters = 2L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10)
   ctrl = setMBOControlMultiCrit(ctrl, method = "parego", parego.s = 100)
 

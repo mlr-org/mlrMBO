@@ -14,7 +14,7 @@ getOptStateModels = function(opt.state) {
   if (is.null(opt.state$models) || getOptStateLoop(opt.state) != opt.state$models.loop) {
     opt.problem = getOptStateOptProblem(opt.state)
     models = trainModels(
-      learner = getOptProblemLearner(opt.problem), 
+      learner = getOptProblemLearner(opt.problem),
       tasks = getOptStateTasks(opt.state),
       control = getOptProblemControl(opt.problem))
     setOptStateModels(opt.state, models)
@@ -76,7 +76,7 @@ getOptStateShouldSave = function(opt.state) {
 
   getOptStateLoop(opt.state) %in% control$save.on.disk.at ||
     difftime(Sys.time(), getOptStateTimeLastSaved(opt.state), units = "secs") > control$save.on.disk.at.time
-  
+
 }
 
 # @param unify [\code{logical(1)}]
@@ -101,14 +101,14 @@ getOptStateFinalPoints = function(opt.state, unify = FALSE) {
       list(
         x = do.call(rbind.data.frame ,pareto.set),
         y = getOptPathParetoFront(opt.path),
-        best.ind = inds)  
+        best.ind = inds)
     } else {
       list(
         pareto.front = getOptPathY(opt.path)[inds, , drop = FALSE],
         pareto.set = pareto.set,
         inds = inds
         )
-    }   
+    }
   }
 }
 
@@ -118,6 +118,8 @@ getOptStateState = function(opt.state) {
 
 getOptStateTermination = function(opt.state) {
   terminate = shouldTerminate.OptState(opt.state)
-  setOptStateState(opt.state, getTerminateChars(terminate))
+  # update only if termination condition is met
+  #if (terminate$code > 0L)
+  setOptStateState(opt.state, getTerminateChars(terminate$code))
   terminate
 }

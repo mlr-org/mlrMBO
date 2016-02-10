@@ -5,8 +5,9 @@ test_that("exampleRunMulticrit", {
   doRun = function(fun, method, crit, prop.points, indicator = "sms") {
     # set nugget effect to small value for num stability in this unit test
     learner = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2", nugget = 0.001)
-    control = makeMBOControl(init.design.points = 10, iters = 1L, number.of.targets = 2L,
+    control = makeMBOControl(init.design.points = 10, number.of.targets = 2L,
       propose.points = prop.points)
+    control = setMBOControlTermination(control, iters = 1L)
     if (method == "mspot")
       control = setMBOControlInfill(control, crit = crit, opt = "nsga2", opt.nsga2.popsize = 4L,
         opt.nsga2.generations = 1L)

@@ -21,8 +21,9 @@ test_that("mboFinalize", {
   # First test smbo
   learner = makeLearner("regr.rpart")
   save.file = tempfile("state", fileext=".RData")
-  ctrl = makeMBOControl(iters = 3, save.on.disk.at = 0:4,
+  ctrl = makeMBOControl(save.on.disk.at = 0:4,
     save.file.path = save.file, init.design.points = 10L)
+  ctrl = setMBOControlTermination(ctrl, iters = 3L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10L)
   expect_error(or <- mbo(f, learner = learner, control = ctrl), "foo")
   or = mboFinalize(save.file)
@@ -42,8 +43,9 @@ test_that("mboFinalize", {
     par.set = makeNumericParamSet(len = 2L, lower = -2, upper = 1)
   )
 
-  ctrl = makeMBOControl(iters = 7L, save.on.disk.at = 0:8,
+  ctrl = makeMBOControl(save.on.disk.at = 0:8,
     save.file.path = save.file, init.design.points = 10L, number.of.targets = 2L)
+  ctrl = setMBOControlTermination(ctrl, iters = 7L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100L)
   ctrl = setMBOControlMultiCrit(ctrl, method = "parego", parego.s = 100L)
   or = NULL
@@ -61,8 +63,9 @@ test_that("mboFinalize works when at end", {
   )
   learner = makeLearner("regr.rpart")
   save.file = tempfile(fileext = ".RData")
-  ctrl = makeMBOControl(iters = 1L, save.on.disk.at = 0:2,
+  ctrl = makeMBOControl(save.on.disk.at = 0:2,
     save.file.path = save.file, init.design.points = 10L)
+  ctrl = setMBOControlTermination(ctrl, iters = 1L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10L)
   or = mbo(f, learner = learner, control = ctrl)
   expect_equal(getOptPathLength(or$opt.path), 11L)

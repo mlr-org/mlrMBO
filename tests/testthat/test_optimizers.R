@@ -4,7 +4,8 @@ test_that("infill optimizers", {
   f = makeSphereFunction(2L)
 
   mycontrol = function(opt, restarts) {
-    ctrl = makeMBOControl(init.design.points = 20L, iters = 5L)
+    ctrl = makeMBOControl(init.design.points = 20L)
+    ctrl = setMBOControlTermination(ctrl, iters = 5L)
     ctrl = setMBOControlInfill(ctrl, crit = "mean", opt = opt,
       opt.cmaes.control = list(maxit = 10L))
   }

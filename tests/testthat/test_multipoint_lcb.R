@@ -10,7 +10,8 @@ test_that("multipoint lcb", {
   )
   lrn = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
 
-  ctrl = makeMBOControl(init.design.points = 30L, iters = 1L, propose.points = 5L)
+  ctrl = makeMBOControl(init.design.points = 30L, propose.points = 5L)
+  ctrl = setMBOControlTermination(ctrl, iters = 1L)
   ctrl = setMBOControlInfill(ctrl, crit = "lcb", opt = "focussearch", opt.focussearch.points = 100L,
     opt.focussearch.maxit = 2L)
   ctrl = setMBOControlMultiPoint(ctrl, method = "lcb")
@@ -24,7 +25,8 @@ test_that("multipoint lcb", {
 
   # FIXME: this test must be generalized
   # now check min dist, set to "inf" so we can only propose 1 new point, not 5
-  ctrl = makeMBOControl(init.design.points = 30L, iters = 1L, propose.points = 5L)
+  ctrl = makeMBOControl(init.design.points = 30L, propose.points = 5L)
+  ctrl = setMBOControlTermination(ctrl, iters = 1L)
   ctrl = setMBOControlInfill(ctrl, crit = "lcb", opt = "focussearch", opt.focussearch.points = 100L,
     opt.focussearch.maxit = 2L)
   ctrl = setMBOControlMultiPoint(ctrl, method = "lcb")
@@ -45,7 +47,8 @@ test_that("multipoint lcb with random interleaved points", {
   )
   lrn = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
 
-  ctrl = makeMBOControl(init.design.points = 30L, iters = 1L, propose.points = 5L)
+  ctrl = makeMBOControl(init.design.points = 30L, propose.points = 5L)
+  ctrl = setMBOControlTermination(ctrl, iters = 1L)
   ctrl = setMBOControlInfill(ctrl, crit = "lcb", opt = "focussearch", opt.focussearch.points = 100L,
     opt.focussearch.maxit = 2L, interleave.random.points = 5L)
   ctrl = setMBOControlMultiPoint(ctrl, method = "lcb")
@@ -70,7 +73,8 @@ test_that("multipoint lcb with random interleaved points", {
 
   lrn = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
 
-  ctrl = makeMBOControl(init.design.points = 30L, iters = 1L, propose.points = 1L)
+  ctrl = makeMBOControl(init.design.points = 30L, propose.points = 1L)
+  ctrl = setMBOControlTermination(ctrl, iters = 1L)
   ctrl = setMBOControlInfill(ctrl, crit = "lcb", opt = "focussearch", opt.focussearch.points = 100L,
     opt.focussearch.maxit = 2L, interleave.random.points = 1L)
   ctrl = setMBOControlMultiPoint(ctrl, method = "lcb")

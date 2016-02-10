@@ -13,7 +13,8 @@ test_that("mbo works with Kriging reinterpolation method ", {
   y  = sapply(1:nrow(des), function(i) f(as.list(des[i, ])))
   des$y = y
   learner = makeLearner("regr.kmforrester", predict.type = "se")
-  ctrl = makeMBOControl(iters = 5L)
+  ctrl = makeMBOControl()
+  ctrl = setMBOControlTermination(ctrl, iters = 5L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100L)
   or = mbo(f, des, learner = learner, control = ctrl)
   expect_true(!is.na(or$y))

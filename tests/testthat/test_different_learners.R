@@ -25,7 +25,9 @@ test_that("mbo works with different learners", {
     has.simple.signature = FALSE
   )
 
-  ctrl = makeMBOControl(iters = 1L, init.design.points = 12L)
+  ctrl = makeMBOControl(init.design.points = 12L)
+  ctrl = setMBOControlTermination(ctrl, iters = 1L)
+
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100L,
     opt.restarts = 1L, opt.focussearch.maxit = 1L)
 

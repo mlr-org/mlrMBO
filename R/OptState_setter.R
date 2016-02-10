@@ -54,7 +54,7 @@ setOptStateTimeUsed = function(opt.state, time.used = NULL, time.add = NULL) {
 }
 
 setOptStateState = function(opt.state, state) {
-  assertSubset(state, c("init", "iter", getTerminateChars()))
+  #assertSubset(state, c("init", "iter", getTerminateChars()))
   opt.state$state = state
   invisible()
 }

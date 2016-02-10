@@ -15,7 +15,8 @@ test_that("multicrit dib works", {
 
   # Test normal run
   learner = makeLearner("regr.km", nugget.estim = TRUE, predict.type = "se")
-  ctrl = makeMBOControl(iters = 5L, init.design.points = 5L, number.of.targets = 2L)
+  ctrl = makeMBOControl(init.design.points = 5L, number.of.targets = 2L)
+  ctrl = setMBOControlTermination(ctrl, iters = 5L)
   ctrl = setMBOControlInfill(ctrl, crit = "dib", opt.focussearch.points = 10L,
     opt.focussearch.maxit = 5L)
   ctrl = setMBOControlMultiCrit(ctrl, method = "dib")

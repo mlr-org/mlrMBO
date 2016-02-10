@@ -4,7 +4,8 @@ test_that("infillopt ea", {
 
   obj.fun = smoof::makeSphereFunction(2L)
 
-  ctrl = makeMBOControl(init.design.points = 20L, iters = 4L, propose.points = 1L)
+  ctrl = makeMBOControl(init.design.points = 20L, propose.points = 1L)
+  ctrl = setMBOControlTermination(ctrl, iters = 4L)
   ctrl = setMBOControlInfill(ctrl, crit = "ei", opt = "ea", opt.restarts = 2L,
     opt.ea.maxit = 75L, opt.ea.lambda = 1L)
 

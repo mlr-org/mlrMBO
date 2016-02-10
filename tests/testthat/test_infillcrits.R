@@ -11,8 +11,8 @@ test_that("infill crits", {
   niters = 3L
 
   mycontrol = function(minimize, crit) {
-    ctrl = makeMBOControl(init.design.points = ninit,
-      iters = niters, final.evals = 10L)
+    ctrl = makeMBOControl(init.design.points = ninit, final.evals = 10L)
+    ctrl = setMBOControlTermination(ctrl, iters = niters)
     ctrl = setMBOControlInfill(ctrl, crit = crit, opt = "focussearch", opt.restarts = 1L,
       opt.focussearch.points = 300L)
     return(ctrl)
@@ -54,8 +54,8 @@ test_that("infill crits", {
   }
 
   # check lambda and pi for lcb
-  ctrl = makeMBOControl(init.design.points = 8L,
-    iters = niters, final.evals = 10L)
+  ctrl = makeMBOControl(init.design.points = 8L, final.evals = 10L)
+  ctrl = setMBOControlTermination(ctrl, iters = niters)
   ctrl = setMBOControlInfill(ctrl, crit = "lcb", opt = "focussearch", opt.restarts = 1L,
     opt.focussearch.points = 300L, crit.lcb.lambda = 2)
   mbo(f1, learner = makeLearner("regr.km", predict.type = "se"), control = ctrl)

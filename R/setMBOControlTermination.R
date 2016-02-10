@@ -26,7 +26,7 @@
 #' @note See the other setMBOControl... functions and \code{makeMBOControl} for referenced arguments.
 #' @seealso makeMBOControl
 #' @export
-setMBOControlTermination = function(control
+setMBOControlTermination = function(control,
   iters = 10L, time.budget = NULL, exec.time.budget = NULL, target.fun.value = NULL, ...) {
 
   stop.conds = list(...)
@@ -37,68 +37,34 @@ setMBOControlTermination = function(control
   }
 
   if (!is.null(iters)) {
-    stop.conds = c(stop.conds, makeMBOMaxIterTermination(max.iter))
+    stop.conds = c(stop.conds, makeMBOMaxIterTermination(iters))
   }
 
   if (!is.null(time.budget)) {
-    stop.conds = c(stop.conds, makeMBOTimeBudgetTermination(time.budget))
+    stop.conds = c(stop.conds, makeMBOMaxBudgetTermination(time.budget))
   }
 
   if (!is.null(exec.time.budget)) {
-    stop.conds = c(stop.conds, makeMBOTimeBudgetTermination(exec.time.budget))
+    stop.conds = c(stop.conds, makeMBOMaxExecBudgetTermination(exec.time.budget))
   }
 
-  if (control$number.of.targets > 1L & !is.null(target.fun.value)) {
-    stop("Specifying target.fun.value is only useful in single crit optimization.")
-  } else {
+  if (!is.null(target.fun.value)) {
+    if (control$number.of.targets > 1L)
+      stop("Specifying target.fun.value is only useful in single crit optimization.")
     stop.conds = c(stop.conds, makeMBOTargetFunValueTermination(target.fun.value))
   }
 
+  # sanity check stopping conditions
   sapply(stop.conds, function(stop.on) {
     assertFunction(stop.on, args = "opt.state")
   })
 
   control$stop.conds = stop.conds
 
+  # store stuff in control object since it is needed internally
+  control$iters = coalesce(iters, control$iters, Inf)
+  control$time.budget = coalesce(time.budget, control$time.budget, Inf)
+  control$exec.time.budget = coalesce(exec.time.budget, control$exec.time.budget, Inf)
+
   return(control)
 }
-
-makeMBOMaxIterTermination = function(max.iter) {
-  assertCount(max.iter, na.ok = FALSE, positive = TRUE)
-  force(max.iter)
-  function(opt.state) {
-    iter = getOptStateLoop(opt.state)
-    term = iter > max.iter
-    message = if (!term) NA_character_ else sprintf("Maximum number of iterations %i reached with.", max.iter, iter)
-    return(list(term = term, message = message))
-  )
-}
-
-makeMBOTargetFunValueTermination = function(target.fun.value) {
-  assertNumber(target.fun.value, na.ok = FALSE)
-  force(target.fun.value)
-  function(opt.state) {
-    control = getOptStateControl(opt.state)
-    opt.path = getOptStateOptPath(opt.state)
-    opt.dir = if (control$minimize) 1L else -1L
-    current.best = getOptPathEl(opt.path, getOptPathBestIndex((opt.path)))$y
-    term = (current.best * opt.dir <= target.fun.value * opt.dir)
-    message = if (!term) NA_character_ else sprintf("Target function value %f reached.", target.fun.value)
-    return(list(term = term, message = message))
-  )
-}
-
-makeMBOMaxBudgetTermination = function(time.budget) {
-  assertNumber(time.budget, na.ok = FALSE)
-  force(time.budget)
-  function(opt.state) {
-    time.used = as.numeric(getOptStateTimeUsed(opt.state), units = "secs")
-    term = (time.used > time.budget)
-    if (term) {
-      showInfo(show.info, "time.budget %i reached with %.1f", time.budget, time.used)
-    }
-    message = if (!term) NA_character_ else sprintf("Time budged %f reached.", time.budget)
-    return(list(term = term, message = message))
-  )
-}
-

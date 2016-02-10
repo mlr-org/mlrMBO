@@ -14,7 +14,8 @@ obj.fun = makeSingleObjectiveFunction(
   par.set = makeNumericParamSet(lower = 3, upper = 13, len = 1)
 )
 
-ctrl = makeMBOControl(init.design.points = 6, iters = 10, propose.points = 1)
+ctrl = makeMBOControl(init.design.points = 6, propose.points = 1)
+ctrl = setMBOControlTermination(ctrl, iters = 10L)
 ctrl = setMBOControlInfill(ctrl, crit = "ei", opt = "focussearch", opt.focussearch.points = 500L)
 
 lrn = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")

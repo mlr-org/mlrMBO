@@ -13,7 +13,9 @@ obj.fun = makeSingleObjectiveFunction(
   par.set = makeNumericParamSet(lower = 3, upper = 13, len = 1L)
 )
 
-ctrl = makeMBOControl(init.design.points = 4L, iters = 10L, propose.points = 2L)
+ctrl = makeMBOControl(init.design.points = 4L, propose.points = 2L)
+ctrl = setMBOControlTermination(ctrl, iters = 10L)
+
 ctrl = setMBOControlMultiPoint(
 	ctrl,
   	method = "multicrit",

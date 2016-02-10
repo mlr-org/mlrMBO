@@ -32,8 +32,10 @@ mboTemplate.OptState = function(obj) {
     evalProposedPoints.OptState(opt.state, prop)
     finalizeMboLoop(opt.state)
     terminate = getOptStateTermination(opt.state)
-    if (terminate > 0L)
+    if (terminate$code > 0L) {
+      opt.state$terminate = terminate
       break
+    }
   }
   opt.state
 }

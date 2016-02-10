@@ -8,7 +8,8 @@ test_that("filter proposed points", {
   lrn = makeLearner("regr.km", predict.type = "se")
 
   # check that flag is not in optpath if not enabled
-  ctrl = makeMBOControl(init.design.points = 4, iters = 1L)
+  ctrl = makeMBOControl(init.design.points = 4)
+  ctrl = setMBOControlTermination(ctrl, iters = 1L)
   ctrl = setMBOControlInfill(ctrl, filter.proposed.points = FALSE, opt = "focussearch",
     opt.focussearch.points = 5L, opt.focussearch.maxit = 1L, opt.restarts = 1L)
   res = mbo(obj.fun, learner = lrn, control = ctrl)
@@ -16,7 +17,8 @@ test_that("filter proposed points", {
   expect_true("filter.replace" %nin% colnames(op))
 
   # now check min dist, set to "inf" so we always replace
-  ctrl = makeMBOControl(init.design.points = 30L, iters = 1L, propose.points = 2L)
+  ctrl = makeMBOControl(init.design.points = 30L, propose.points = 2L)
+  ctrl = setMBOControlTermination(ctrl, iters = 1L)
   ctrl = setMBOControlInfill(ctrl, crit = "lcb",
     filter.proposed.points = TRUE, filter.proposed.points.tol = 1000,
     opt = "focussearch", opt.focussearch.points = 100L, opt.focussearch.maxit = 1L)
