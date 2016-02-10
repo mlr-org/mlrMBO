@@ -12,7 +12,7 @@
 #'   Alternatively, you may pass a function name as string.
 #' @param interleave.random.points [\code{integer(1)}]\cr
 #'   Add \code{interleave.random.points} uniformly sampled points additionally to the
-#'   regular proposed points in each step. 
+#'   regular proposed points in each step.
 #'   If \code{crit="random"} this value will be neglected.
 #'   Default is 0.
 #' @param crit.eqi.beta [\code{numeric(1)}]\cr
@@ -37,7 +37,7 @@
 #'   Default is \code{FALSE}.
 #' @param crit.aei.use.nugget [\code{logical(1)}]\cr
 #'   Only used if \code{crit == "aei"}. Should the nugget effect be used for the
-#'   pure variance estimation? Default is \code{FALSE}. 
+#'   pure variance estimation? Default is \code{FALSE}.
 #' @param filter.proposed.points [\code{logical(1)}]\cr
 #'   Design points located too close to each other can lead to
 #'   numerical problems when using e.g. kriging as a surrogate model.
@@ -176,13 +176,13 @@ setMBOControlInfill = function(control,
     crit.lcb.lambda = -qnorm(0.5 * crit.lcb.pi^(1 / control$number.of.targets))
   }
   control$infill.crit.lcb.lambda = coalesce(crit.lcb.lambda, control$infill.crit.lcb.lambda, 1)
-  
+
   control$infill.crit.lcb.inflate.se = coalesce(crit.lcb.inflate.se, control$infill.crit.lcb.inflate.se, FALSE)
   assertFlag(control$infill.crit.lcb.inflate.se)
-  
+
   control$infill.crit.aei.use.nugget = coalesce(crit.aei.use.nugget, control$infill.crit.aei.use.nugget, FALSE)
   assertFlag(control$infill.crit.aei.use.nugget)
-  
+
   control$filter.proposed.points = coalesce(filter.proposed.points, control$filter.proposed.points, FALSE)
   assertFlag(control$filter.proposed.points)
 
@@ -212,9 +212,10 @@ setMBOControlInfill = function(control,
   control$infill.opt.ea.maxit = asCount(control$infill.opt.ea.maxit)
   assertCount(control$infill.opt.ea.maxit, na.ok = FALSE, positive = TRUE)
 
-  control$infill.opt.ea.mu = coalesce(opt.ea.mu, control$infill.opt.ea.mu, 10L)
-  control$infill.opt.ea.mu = asCount(control$infill.opt.ea.mu)
-  assertCount(control$infill.opt.ea.mu, na.ok = FALSE, positive = TRUE)
+  if (!is.null(opt.ea.mu)) {
+    control$infill.opt.ea.mu = opt.ea.mu
+  }
+  control$infill.opt.ea.mu.set.by.user = !is.null(opt.ea.mu) || !is.null(control$infill.opt.ea.mu)
 
   control$infill.opt.ea.sbx.eta = coalesce(opt.ea.sbx.eta, control$infill.opt.ea.sbx.eta, 15)
   assertNumber(control$infill.opt.ea.sbx.eta, na.ok = FALSE, lower = 0)

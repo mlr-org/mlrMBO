@@ -32,7 +32,7 @@ Alternatively, you may pass a function name as string.}
 
 \item{interleave.random.points}{[\code{integer(1)}]\cr
 Add \code{interleave.random.points} uniformly sampled points additionally to the
-regular proposed points in each step. 
+regular proposed points in each step.
 If \code{crit="random"} this value will be neglected.
 Default is 0.}
 
