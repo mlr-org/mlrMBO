@@ -31,7 +31,8 @@ Alternatively, you may pass a function name as string.}
 
 \item{interleave.random.points}{[\code{integer(1)}]\cr
 Add \code{interleave.random.points} uniformly sampled points additionally to the
-regular proposed points in each step. 
+regular proposed points in each step.
+If \code{crit="random"} this value will be neglected.
 Default is 0.}
 
 \item{crit.eqi.beta}{[\code{numeric(1)}]\cr
@@ -117,7 +118,7 @@ Default is 500.}
 \item{opt.ea.mu}{[\code{integer(1)}]\cr
 For \code{opt = "ea"}:
 Population size of EA.
-Default is 10.}
+The default is 10 times the number of parameters of the function to optimize.}
 
 \item{opt.ea.sbx.eta}{[\code{numeric(1)}]\cr
 For \code{opt = "ea"}:
