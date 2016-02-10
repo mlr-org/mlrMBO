@@ -19,19 +19,6 @@
 #'   List of further arguments passed to \code{init.design.fun}.
 #'   Only used if no design is given in \code{mbo} function.
 #'   Default is empty list.
-#' @param iters [\code{integer(1)}]\cr
-#'   Number of sequential optimization steps.
-#'   Default is 10.
-#' @param time.budget [\code{integer(1)} | NULL]\cr
-#'   Running time budget in seconds. Note that the actual mbo run can take more time since
-#'   the condition is checked after each iteration.
-#' @param exec.time.budget [\code{integer(1)} | NULL]\cr
-#'   Execution time (time spent executing the function passed to \code{mbo})
-#'   budget in seconds. Note that the actual mbo run can take more time since
-#'   the condition is checked after each iteration.
-#' @param target.fun.value [\code{numeric(1)}] | NULL]\cr
-#'   Stopping criterion for single crit optimization: Stop if a function evaluation
-#'   is better than this given target.value.
 #' @param propose.points [\code{integer(1)}]\cr
 #'   Number of proposed / really evaluated points each iteration.
 #'   Default is 1.
@@ -103,7 +90,6 @@
 #' @export
 makeMBOControl = function(number.of.targets = 1L,
   init.design.points = 20L, init.design.fun = maximinLHS, init.design.args = list(),
-  iters = 10L, time.budget = NULL, exec.time.budget = NULL, target.fun.value = NULL,
   propose.points = 1L,
   final.method = "best.true.y", final.evals = 0L,
   y.name = "y",
@@ -126,31 +112,6 @@ makeMBOControl = function(number.of.targets = 1L,
   init.design.points = asInt(init.design.points)
   assertFunction(init.design.fun)
   assertList(init.design.args)
-
-  if (is.null(iters) && is.null(time.budget) && is.null(exec.time.budget))
-    stopf("You need to specify a maximal number of iteration, a time budget or both, but you provided neither.")
-
-  if (is.null(iters)) {
-    iters = Inf
-  } else {
-    assertCount(iters, na.ok = FALSE, positive = TRUE)
-  }
-
-  if (is.null(time.budget)) {
-    time.budget = Inf
-  } else {
-    assertCount(time.budget, na.ok = FALSE, positive = TRUE)
-  }
-
-  if (is.null(exec.time.budget)) {
-    exec.time.budget = Inf
-  } else {
-    assertCount(exec.time.budget, na.ok = FALSE, positive = TRUE)
-  }
-
-  if (number.of.targets > 1L & !is.null(target.fun.value)) {
-    stop("Specifying target.fun.value is only useful in single crit optimization.")
-  }
 
   propose.points = asInt(propose.points, lower = 1L)
 
@@ -197,10 +158,6 @@ makeMBOControl = function(number.of.targets = 1L,
     init.design.points = init.design.points,
     init.design.fun = init.design.fun,
     init.design.args = init.design.args,
-    iters = iters,
-    time.budget = time.budget,
-    exec.time.budget = exec.time.budget,
-    target.fun.value = target.fun.value,
     propose.points = propose.points,
     final.method = final.method,
     final.evals = final.evals,
