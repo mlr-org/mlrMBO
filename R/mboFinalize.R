@@ -26,11 +26,6 @@ mboFinalize2 = function(opt.state) {
   # save on disk routine
   if (getOptStateLoop(opt.state) %in% getOptProblemControl(opt.problem)$save.on.disk.at || is.finite(getOptProblemControl(opt.problem)$save.on.disk.at.time))
     saveOptState(opt.state)
-  
-  # restore mlr configuration
-  configureMlr(
-    on.learner.error = getOptProblemOldopts(opt.problem)[["ole"]], 
-    show.learner.output = getOptProblemOldopts(opt.problem)[["slo"]]
-  )
-  mbo.result
+
+  return(mbo.result)
 }

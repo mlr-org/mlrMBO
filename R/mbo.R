@@ -49,10 +49,6 @@ mbo = function(fun, design = NULL, learner, control,
 
   loadPackages(control)
 
-  # configure mlr in an appropriate way
-  configureMlr(on.learner.error = control$on.learner.error,
-    show.learner.output = control$show.learner.output)
-
   if(control$multifid) {
     if(learner$predict.type!="se")
       learner = setPredictType(learner, "se")
