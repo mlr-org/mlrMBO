@@ -1,27 +1,20 @@
 # Evaluates target fitness function on given set of points.
 #
-# @param fun [\code{function(x, ...)}}]\cr
-#   Fitness function to optimize.
-# @param par.set [\code{param.set}]\cr
-#   Parameter set.
-# @param dobs [\code{integer}]\cr
-#   Dob values (date of birth) for \code{xs}, same length or 1.
-# @param xs [\code{list}]\cr
-#   List of points.
-# @param opt.path [\code{\link[ParamHelpers]{optPath}}]\cr
-#   Optimization path.
-# @param control [\code{\link{MBOControl}}]\cr
-#   MBO control object.
-# @param show.info [\code{logical(1)}]\cr
-#   Show info or not?
-# @param oldopts [\code{list}]\cr
-#   Old options for mlr.
-# @param more.args [\code{list}]\cr
-#   Further parameters for target function.
-# @param extras [\code{list}]\cr
-#   List of extra information to be logged in \code{opt.path}.
+# @param opt.state
+# @param xs: list of list of points to evaluate
+# @param extras: list of extra stuff from getExtras, list of list of entries. same length as xs.
 # @return [\code{numeric} | \code{matrix}] Numeric vector of y-vals or matrix
 #   (for multi-criteria problems).
+#
+# Does this:
+# 1) trafo X points
+# 2) evaluate the objective call, measure execution time
+#    retrieve y vector(nr.of.targets) + "extras" attribute
+#    eval is done with parallelMap, level=mlrMBO.feval
+# 3) potentially impute y-values in case of problems, see error_handling.R
+# 4) possibly log to console
+# 5) log untrafoed x-points, evaluated y-values, passed extras and eval extras to  opt.path in opt.state
+
 evalTargetFun.OptState = function(opt.state, xs, extras) {
 
   opt.problem = getOptStateOptProblem(opt.state)
@@ -38,7 +31,7 @@ evalTargetFun.OptState = function(opt.state, xs, extras) {
   dobs = ensureVector(asInteger(getOptStateLoop(opt.state)), n = nevals, cl = "integer")
   imputeY = control$impute.y.fun
 
-  # trafo - but we only want to use the Trafo for function eval, not for logging
+  # trafo X points
   xs.trafo = lapply(xs, trafoValue, par = par.set)
 
   # function to measure of fun call
