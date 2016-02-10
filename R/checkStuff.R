@@ -62,8 +62,8 @@ checkStuff = function(fun, par.set, design, learner, control) {
   # set default mu parameter for ea infill optimizer
   if (control$infill.opt == "ea") {
     control$infill.opt.ea.mu = coalesce(control$infill.opt.ea.mu, getNumberOfParameters(fun) * 10L)
+    assertNumber(control$infill.opt.ea.mu, na.ok = FALSE, lower = 0)
   }
-  assertNumber(control$infill.opt.ea.mu, na.ok = FALSE, lower = 0)
 
   if (is.null(control$target.fun.value)) {
     # If we minimize, target is -Inf, for maximize it is Inf
