@@ -31,7 +31,7 @@ Alternatively, you may pass a function name as string.}
 
 \item{interleave.random.points}{[\code{integer(1)}]\cr
 Add \code{interleave.random.points} uniformly sampled points additionally to the
-regular proposed points in each step. 
+regular proposed points in each step.
 Default is 0.}
 
 \item{crit.eqi.beta}{[\code{numeric(1)}]\cr
