@@ -23,5 +23,5 @@ run = exampleRun(obj.fun, learner = lrn, control = ctrl,
 	points.per.dim = 50L, show.info = TRUE)
 
 print(run)
-
+plotYTraces(list(run = run$mbo.res$opt.path))
 plotExampleRun(run, pause = pause)

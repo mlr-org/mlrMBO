@@ -22,4 +22,5 @@ lrn = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
 run = exampleRun(obj.fun, global.opt = -1, learner = lrn,
   control = ctrl, points.per.dim = 100, show.info = TRUE)
 
+plotYTraces(list(run = run$mbo.res$opt.path))
 plotExampleRun(run, pause = pause, densregion = TRUE)
