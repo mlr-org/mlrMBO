@@ -73,6 +73,7 @@ Please note the following things:
 - The true objective function (and later everything which is predicted from our surrogate model)
   is evaluated on a regular spaced grid. These evaluations are stored in the result object.
   You can control the resultion of this grid via \code{points.per.dim}.
+  Parallelization of these evaluations is possible with the R package parallelMap and on the level \code{mlrMBO.true.fevals}.
 - In every iteration the fitted, approximating surrogate model is stored in the result object
   (via \code{store.model.at} in \code{control}) so we can later visualize it quicky.
 - To save a few lines of code, you can also pass a test function from package
