@@ -26,6 +26,12 @@ NULL
 # @param more.args [list]\cr
 #   Further arguments passed to fitness function.
 # @return [\code{\link{MBOSingleObjResult}} | \code{\link{MBOMultiObjResult}}]
+
+# IMPORTANT NOTE:
+# See this as a constructor and it's variables as member variables.
+# All variables in this Object should be documented here.
+# Think of it, when you implement new ones!
+# Unfortunately in R we cannot hinder you from putting other values in this object, but please: Don't! 
 makeOptProblem = function(fun, par.set, design = NULL, learner, control, show.info = TRUE, more.args = list()) {
   opt.problem = new.env()
 
@@ -36,14 +42,6 @@ makeOptProblem = function(fun, par.set, design = NULL, learner, control, show.in
   opt.problem$control = control
   opt.problem$show.info = show.info
   opt.problem$more.args = more.args
-
-  #save old options
-  oldopts = list(
-    ole = getOption("mlr.on.learner.error"),
-    slo = getOption("mlr.show.learner.output")
-  )
-  opt.problem$oldopts = oldopts
-
   opt.problem$all.possible.weights = NULL
 
   class(opt.problem) = append(class(opt.problem), "OptProblem")
@@ -65,10 +63,6 @@ getOptProblemControl = function(opt.problem) {
 
 getOptProblemParSet = function(opt.problem) {
   opt.problem$par.set
-}
-
-getOptProblemOldopts = function(opt.problem) {
-  opt.problem$oldopts
 }
 
 getOptProblemMoreArgs = function(opt.problem) {
