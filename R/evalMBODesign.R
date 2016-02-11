@@ -1,30 +1,21 @@
-# Helper which generates an initial design (if none provided).
-#
-# If no design is passed, create it. otherwise sanity-check it.
-# Either do y-evals or log points to opt.path manually.
-#
-# @param opt.state [\code{OptState} | NULL]\cr
-#   Initial Tuning State with empty design slot
-# @return [\code{NULL}]
+# eval mbo design (if no y was passed by user)
+# the following is done:
+# 1) design is sanity checked a bit
+# - do column names match par.set names + y names?
+# - has the design been X-transformed?
+# 2) if y-values are there, just log all points to optpath
+# 3) if y-values are not there, eval points and log them to optpath
 
-evalMBODesign.OptState = function(opt.state) {
+evalMBODesign.OptState = function(opt.state, design) {
   opt.problem = getOptStateOptProblem(opt.state)
-  design = getOptProblemDesign(opt.problem) #generates Design or returns supplied one
   control = getOptProblemControl(opt.problem)
-
-  extras = getExtras(
-    n = nrow(design),
-    prop = NULL, 
-    train.time = NA_real_, 
-    control = control
-  )
-
   fun = getOptProblemFun(opt.problem)
   par.set = getOptProblemParSet(opt.problem)
-  
-  # shortcut names
   pids = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
   y.name = control$y.name
+
+  # get dummy "extras object" for init design
+  extras = getExtras(n = nrow(design), prop = NULL, train.time = NA_real_, control = control)
 
   # check that the provided design one seems ok
   # sanity check: are paramter values and colnames of design consistent?
@@ -59,20 +50,5 @@ evalMBODesign.OptState = function(opt.state) {
   } else {
     stop("Only part of y-values are provided. Don't know what to do - provide either all or none.")
   }
-
-}
-
-generateMBODesign.OptProblem = function(opt.problem) {
-  control = getOptProblemControl(opt.problem)
-  par.set = getOptProblemParSet(opt.problem)
-  design.x = generateDesign(control$init.design.points, par.set, fun = control$init.design.fun, fun.args = control$init.design.args, trafo = FALSE)
-  points.diff = control$init.design.points - nrow(design.x)
-  if (points.diff > 0L) {
-    warningf("Could not generate enough points for init design: Only got %i / %i. Augmenting with %i random points now!",
-      nrow(design.x), control$init.design.points, points.diff)
-    design.x.rand = generateRandomDesign(points.diff, par.set, trafo = FALSE)
-    design.x = rbind(design.x, design.x.rand)
-  }
-  return(design.x)
 }
 

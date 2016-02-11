@@ -23,11 +23,11 @@
 #'   in the optimization path. To achieve this, simply append the attribute \dQuote{extras}
 #'   to the return value of the target function. This has to be a named list of scalar values.
 #'   Each of these values will be stored additionally in the optimization path.
-#' @param design [\code{data.frame} | NULL]\cr
-#'   Initial design as data frame.
+#' @param design [\code{data.frame}]\cr
+#'   Initial design as data frame. If the y-values are not already present in design,
+#'   mbo will evaluate the points.
 #'   If the parameters have corresponding trafo functions,
 #'   the design must not be transformed before it is passed!
-#'   If \code{NULL}, one is constructed from the settings in \code{control}.
 #' @param learner [\code{\link[mlr]{Learner}}]\cr
 #'   Regression learner to model \code{fun}.
 #' @template arg_control
@@ -36,7 +36,7 @@
 #'   Further arguments passed to fitness function.
 #' @return [\code{\link{MBOSingleObjResult}} | \code{\link{MBOMultiObjResult}}]
 #' @export
-mbo = function(fun, design = NULL, learner, control,
+mbo = function(fun, design, learner, control,
   show.info = getOption("mlrMBO.show.info", TRUE), more.args = list()) {
 
   assertFlag(show.info)
