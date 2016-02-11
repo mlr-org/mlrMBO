@@ -21,7 +21,6 @@ evalTargetFun.OptState = function(opt.state, xs, extras) {
   par.set = getOptProblemParSet(opt.problem)
   opt.path = getOptStateOptPath(opt.state)
   control = getOptProblemControl(opt.problem)
-  oldopts = getOptProblemOldopts(opt.problem)
 
   # short names and so on
   nevals = length(xs)
