@@ -15,7 +15,8 @@ test_that("multicrit mspot works", {
 
   # Test normal run
   learner = makeLearner("regr.km", nugget.estim = TRUE, predict.type = "se")
-  ctrl = makeMBOControl(iters = 5, init.design.points = 5L, number.of.targets = 2L)
+  ctrl = makeMBOControl(init.design.points = 5L, number.of.targets = 2L)
+  ctrl = setMBOControlTermination(ctrl, iters = 5L)
   ctrl = setMBOControlInfill(ctrl, crit = "ei", opt = "nsga2", opt.nsga2.generations = 1L, opt.nsga2.popsize = 12L)
   ctrl = setMBOControlMultiCrit(ctrl, method = "mspot")
   or = mbo(f, learner = learner, control = ctrl)

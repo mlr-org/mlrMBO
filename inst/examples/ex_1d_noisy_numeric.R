@@ -22,11 +22,12 @@ obj.fun.mean = function(x) {
 
 ctrl = makeMBOControl(
   init.design.points = 6L,
-  iters = 5L,
   propose.points = 1L,
   final.method = "best.predicted",
   final.evals = 10L
 )
+ctrl = setMBOControlTermination(ctrl, iters = 5L)
+
 
 lrn = makeLearner("regr.km", predict.type = "se", nugget.estim = TRUE)
 

@@ -10,7 +10,8 @@ test_that("multipoint constant liar", {
 
   lrn = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
 
-  ctrl = makeMBOControl(init.design.points = 30L, iters = 1L, propose.points = 5L)
+  ctrl = makeMBOControl(init.design.points = 30L, propose.points = 5L)
+  ctrl = setMBOControlTermination(ctrl, iters = 1L)
   ctrl = setMBOControlInfill(ctrl, crit = "ei")
   ctrl = setMBOControlMultiPoint(ctrl, method = "cl")
 

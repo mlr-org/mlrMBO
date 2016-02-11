@@ -21,7 +21,8 @@ obj.fun = makeSingleObjectiveFunction(
   has.simple.signature = FALSE
 )
 
-ctrl = makeMBOControl(init.design.points = 4L, iters = 10L, propose.points = 1L)
+ctrl = makeMBOControl(init.design.points = 4L, propose.points = 1L)
+ctrl = setMBOControlTermination(ctrl, iters = 10L)
 ctrl = setMBOControlInfill(ctrl, crit = "ei", opt = "focussearch", opt.focussearch.points = 500L)
 
 lrn = makeLearner("regr.randomForest", predict.type = "se")

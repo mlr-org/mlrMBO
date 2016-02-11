@@ -7,7 +7,8 @@ test_that("renderExampleRunPlot produces list of ggplot2 objects", {
 
   doRun = function(obj.fn, predict.type, crit, learner = "regr.km") {
     learner = makeLearner(learner, predict.type = predict.type)
-    control = makeMBOControl(init.design.points = 10, iters = n.iters)
+    control = makeMBOControl(init.design.points = 10)
+    control = setMBOControlTermination(control, iters = n.iters)
     control = setMBOControlInfill(control, crit = crit, opt = "focussearch", opt.focussearch.points = 10)
 
     run = exampleRun(obj.fn, global.opt = 0L, learner = learner, control = control)
@@ -75,7 +76,8 @@ test_that("renderExampleRunPlot produces list of ggplot2 objects", {
     )
   )
 
-  ctrl = makeMBOControl(init.design.points = 5, iters = n.iters, propose.points = 3)
+  ctrl = makeMBOControl(init.design.points = 5, propose.points = 3)
+  ctrl = setMBOControlTermination(ctrl, iters = n.iters)
   ctrl = setMBOControlMultiPoint(ctrl,
     method = "multicrit",
     multicrit.objective = "ei.dist",

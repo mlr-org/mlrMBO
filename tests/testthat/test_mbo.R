@@ -13,7 +13,8 @@ test_that("mbo works with rf", {
   y  = sapply(1:nrow(des), function(i) f(as.list(des[i,])))
   des$y = y
   learner = makeLearner("regr.randomForest")
-  ctrl = makeMBOControl(iters = 5L, store.model.at = c(1,5))
+  ctrl = makeMBOControl(store.model.at = c(1,5))
+  ctrl = setMBOControlTermination(ctrl, iters = 5L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100L)
   or = mbo(f, des, learner, ctrl, show.info = TRUE)
   expect_true(!is.na(or$y))
@@ -25,16 +26,19 @@ test_that("mbo works with rf", {
   expect_equal(length(or$models[[2]]$subset), 14) #In the 15th step we used a model based on 14
 
   # check errors
-  ctrl = makeMBOControl(iters = 5)
+  ctrl = makeMBOControl()
+  ctrl = setMBOControlTermination(ctrl, iters = 5L)
   ctrl = setMBOControlInfill(ctrl, crit = "ei", opt.focussearch.points = 100L)
   expect_error(mbo(f, des, learner, ctrl), "must be set to 'se'")
-  ctrl = makeMBOControl(iters = 5)
+  ctrl = makeMBOControl()
+  ctrl = setMBOControlTermination(ctrl, iters = 5L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100L)
 
   # f2 = makeMBOFunction(function(x) x^2)
   # expect_error(mbo(f2, des, learner, ctrl), "wrong length")
 
-  ctrl = makeMBOControl(iters = 5)
+  ctrl = makeMBOControl()
+  ctrl = setMBOControlTermination(ctrl, iters = 5L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100L)
   learner = makeLearner("classif.randomForest")
   expect_error(mbo(f, des, learner, ctrl), "mbo requires regression learner")
@@ -77,7 +81,8 @@ test_that("mbo works with rf", {
   y  = sapply(1:nrow(des), function(i) f(as.list(des[i,])))
   des$y = y
   learner = makeLearner("regr.randomForest")
-  ctrl = makeMBOControl(iters = 5)
+  ctrl = makeMBOControl()
+  ctrl = setMBOControlTermination(ctrl, iters = 5L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100)
   or = mbo(f, des, learner, ctrl)
   expect_true(!is.na(or$y))
@@ -91,13 +96,15 @@ test_that("mbo works with rf", {
   expect_equal(names(or$x), names(par.set$pars))
 
   # check best.predicted
-  ctrl = makeMBOControl(iters = 5, final.method = "best.predicted")
+  ctrl = makeMBOControl(final.method = "best.predicted")
+  ctrl = setMBOControlTermination(ctrl, iters = 5L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100)
   or = mbo(f, des, learner, ctrl)
   expect_true(!is.na(or$y))
   expect_equal(getOptPathLength(or$opt.path), 15)
 
-  ctrl = makeMBOControl(init.design.points = 10, iters = 5)
+  ctrl = makeMBOControl(init.design.points = 10)
+  ctrl = setMBOControlTermination(ctrl, iters = 5L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100)
   or = mbo(f, des = NULL, learner, ctrl)
   expect_true(!is.na(or$y))
@@ -115,12 +122,14 @@ test_that("mbo works with rf", {
   )
 
   learner = makeLearner("regr.randomForest")
-  ctrl = makeMBOControl(init.design.points = 10L, iters = 3L)
+  ctrl = makeMBOControl(init.design.points = 10L)
+  ctrl = setMBOControlTermination(ctrl, iters = 3L)
   ctrl = setMBOControlInfill(ctrl, opt = "cmaes", opt.cmaes.control = list(maxit = 2L))
   or = mbo(f, des = NULL, learner, ctrl)
   expect_true(!is.na(or$y))
   expect_equal(getOptPathLength(or$opt.path), 10 + 3)
-  ctrl = makeMBOControl(init.design.points = 10L, iters = 3L, final.method = "best.predicted")
+  ctrl = makeMBOControl(init.design.points = 10L, final.method = "best.predicted")
+  ctrl = setMBOControlTermination(ctrl, iters = 3L)
   ctrl = setMBOControlInfill(ctrl, opt = "cmaes", opt.cmaes.control = list(maxit = 2L))
   or = mbo(f, des = NULL, learner, ctrl)
   expect_equal(getOptPathLength(or$opt.path), 10 + 3)
@@ -139,7 +148,8 @@ test_that("mbo works with rf", {
   )
 
   learner = makeLearner("regr.randomForest")
-  ctrl = makeMBOControl(iters = 5L)
+  ctrl = makeMBOControl()
+  ctrl = setMBOControlTermination(ctrl, iters = 5L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100L)
   or = mbo(f, des = NULL, learner, ctrl, more.args = list(shift = 0))
   expect_true(!is.na(or$y))
@@ -155,7 +165,8 @@ test_that("mbo works with rf", {
     par.set = par.set
   )
 
-  ctrl = makeMBOControl(iters = 2L, trafo.y.fun = trafoLog(handle.violations = "error"))
+  ctrl = makeMBOControl(trafo.y.fun = trafoLog(handle.violations = "error"))
+  ctrl = setMBOControlTermination(ctrl, iters = 2L)
   expect_error(mbo(f, control = ctrl, more.args = list(shift = -1)))
   or = mbo(f, control = ctrl, more.args = list(shift = 0))
   expect_true(!is.na(or$y))

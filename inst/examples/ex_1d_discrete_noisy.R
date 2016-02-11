@@ -27,7 +27,8 @@ obj.fun = makeSingleObjectiveFunction(
   noisy = TRUE
 )
 
-ctrl = makeMBOControl(init.design.points = 20L, iters = 10L)
+ctrl = makeMBOControl(init.design.points = 20L)
+ctrl = setMBOControlTermination(ctrl, iters = 10L)
 
 # we can basically do an exhaustive search in 3 values
 ctrl = setMBOControlInfill(ctrl, crit = "ei",

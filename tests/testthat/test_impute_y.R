@@ -29,11 +29,13 @@ test_that("impute y", {
   learner = makeLearner("regr.randomForest")
 
   n.focus.points = 100L
-  ctrl = makeMBOControl(iters = 20)
+  ctrl = makeMBOControl()
+  ctrl = setMBOControlTermination(ctrl, iters = 20L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = n.focus.points)
   expect_error(mbo(f1, des = NULL, learner, ctrl), "must be a numeric of length 1")
 
-  ctrl = makeMBOControl(iters = 20, impute.y.fun = function(x, y, opt.path) 0)
+  ctrl = makeMBOControl(impute.y.fun = function(x, y, opt.path) 0)
+  ctrl = setMBOControlTermination(ctrl, iters = 20L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = n.focus.points)
   res = mbo(f1, des = NULL, learner, ctrl)
 
@@ -46,10 +48,12 @@ test_that("impute y", {
       expect_equal(NA_character_, getOptPathErrorMessages(res$opt.path)[ind])
   }
 
-  ctrl = makeMBOControl(iters = 50)
+  ctrl = makeMBOControl()
+  ctrl = setMBOControlTermination(ctrl, iters = 50L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = n.focus.points)
   expect_error(mbo(f2, des = NULL, learner, ctrl), "foo")
-  ctrl = makeMBOControl(iters = 50, impute.y.fun = function(x, y, opt.path) 0)
+  ctrl = makeMBOControl(impute.y.fun = function(x, y, opt.path) 0)
+  ctrl = setMBOControlTermination(ctrl, iters = 50L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = n.focus.points)
   res = mbo(f2, des = NULL, learner, ctrl)
   # Check for correct error messages
@@ -77,8 +81,9 @@ test_that("impute y parego", {
     n.objectives = 2L
   )
   learner = makeLearner("regr.rpart")
-  ctrl = makeMBOControl(init.design.points = 10L, iters = 5, number.of.targets = 2L,
+  ctrl = makeMBOControl(init.design.points = 10L, number.of.targets = 2L,
     impute.y.fun = function(x, y, opt.path) c(100, 100))
+  ctrl = setMBOControlTermination(ctrl, iters = 5L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10)
   ctrl = setMBOControlMultiCrit(ctrl, method = "parego", parego.s = 100)
   or = mbo(f1, learner = learner, control = ctrl)

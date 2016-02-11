@@ -18,10 +18,11 @@ test_that("basic multifid works", {
   control = makeMBOControl(
     init.design.points = 9L,
     init.design.fun = maximinLHS,
-    iters = 5L,
     on.learner.error = "stop",
     show.learner.output = FALSE,
   )
+  control = setMBOControlTermination(control, iters = 5L)
+
   control = setMBOControlInfill(control = control,
                                 crit = "ei",
                                 opt = "focussearch",

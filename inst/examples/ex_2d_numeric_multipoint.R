@@ -9,7 +9,8 @@ pause = interactive()
 
 obj.fun = makeBraninFunction()
 
-ctrl = makeMBOControl(init.design.points = 10L, iters = 10L, propose.points = 5L)
+ctrl = makeMBOControl(init.design.points = 10L, propose.points = 5L)
+ctrl = setMBOControlTermination(ctrl, iters = 10L)
 ctrl = setMBOControlMultiPoint(ctrl,
   method = "multicrit",
   multicrit.objective = "ei.dist",

@@ -72,6 +72,15 @@ checkStuff = function(fun, par.set, design, learner, control) {
     assertNumber(control$target.fun.value, na.ok = FALSE)
   }
 
+  if (length(control$save.on.disk.at) > 0L && (control$iters + 1) %nin% control$save.on.disk.at)
+    warningf("You turned off the final saving of the optimization result at (iter + 1)! Do you really want this?")
+  if (length(control$save.on.disk.at) > 0 || is.finite(control$save.on.disk.at.time)) {
+    control$save.on.disk.at = asInteger(control$save.on.disk.at, any.missing = FALSE, lower = 0 , upper = control$iters + 1)
+    assertPathForOutput(control$save.file.path)
+  }
+  control$store.model.at = coalesce(control$store.model.at, control$iters + 1)
+  control$resample.at = coalesce(control$resample.at, integer(0))
+
   #  single objective
   if (control$number.of.targets == 1L) {
     if (control$propose.points == 1L) { # single point

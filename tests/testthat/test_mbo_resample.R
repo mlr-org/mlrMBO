@@ -8,7 +8,8 @@ test_that("mbo works with resampling", {
     )
   )
   learner = makeLearner("regr.randomForest")
-  ctrl = makeMBOControl(iters = 5L, resample.at = c(1, 3))
+  ctrl = makeMBOControl(resample.at = c(1, 3))
+  ctrl = setMBOControlTermination(ctrl, iters = 5L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10L)
   or = mbo(f, des = NULL, learner, ctrl)
   x = or$resample.results

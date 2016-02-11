@@ -27,13 +27,24 @@ mboTemplate.OptProblem = function(obj) {
 mboTemplate.OptState = function(obj) {
   opt.state = obj
   setOptStateLoopStarttime(opt.state)
+  # check if budget is already exceeded after intitial design creation
+  terminate = getOptStateTermination(opt.state)
+  if (terminate$term) {
+    opt.problem = getOptStateOptProblem(opt.state)
+    showInfo(getOptProblemShowInfo(opt.problem), "%s. The stopping conditions
+      was satisfied right after the creation of the initial design!", terminate$message)
+    opt.state$terminate = terminate
+    return(opt.state)
+  }
   repeat {
     prop = proposePoints.OptState(opt.state)
     evalProposedPoints.OptState(opt.state, prop)
     finalizeMboLoop(opt.state)
     terminate = getOptStateTermination(opt.state)
-    if (terminate > 0L)
+    if (terminate$term) {
+      opt.state$terminate = terminate
       break
+    }
   }
   opt.state
 }

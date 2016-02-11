@@ -13,7 +13,8 @@ test_that("mbo works with km", {
   y = sapply(1:nrow(des), function(i) f(as.list(des[i, ])))
   des$y = y
   learner = makeLearner("regr.km", nugget.estim = TRUE)
-  ctrl = makeMBOControl(iters = 5L)
+  ctrl = makeMBOControl()
+  ctrl = setMBOControlTermination(ctrl, iters = 5L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100L)
   or = mbo(f, des, learner = learner, control = ctrl)
   expect_true(!is.na(or$y))
@@ -43,7 +44,8 @@ test_that("mbo works with km", {
   expect_equal(names(or$x), names(par.set$pars))
 
   learner = setPredictType(learner, "se")
-  ctrl = makeMBOControl(iters = 5L)
+  ctrl = makeMBOControl()
+  ctrl = setMBOControlTermination(ctrl, iters = 5L)
   ctrl = setMBOControlInfill(ctrl, crit = "ei", opt.focussearch.points = 100L)
   or = mbo(f, des, learner, ctrl)
   expect_true(!is.na(or$y))
@@ -72,7 +74,8 @@ test_that("mbo works with impute and failure model", {
   des$y = y
   # make sure model does not break, and we get a failure model
   learner = makeLearner("regr.km", config = list(on.learner.error = "quiet"))
-  ctrl = makeMBOControl(iters = 2L)
+  ctrl = makeMBOControl()
+  ctrl = setMBOControlTermination(ctrl, iters = 2L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10L)
   or = mbo(f, des, learner = learner, control = ctrl)
   expect_equal(getOptPathLength(or$opt.path), 14)

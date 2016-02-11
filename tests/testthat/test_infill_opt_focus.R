@@ -20,7 +20,8 @@ test_that("simple random search, no dependencies, no focussing", {
   )
 
   learner = makeLearner("regr.randomForest")
-  ctrl = makeMBOControl(init.design.points = 20L, iters = 2L)
+  ctrl = makeMBOControl(init.design.points = 20L)
+  ctrl = setMBOControlTermination(ctrl, iters = 2L)
   ctrl = setMBOControlInfill(ctrl, opt = "focussearch",
     opt.restarts = 1L, opt.focussearch.maxit = 1L, opt.focussearch.points = 30L)
   or = mbo(obj.fun, learner = learner, control = ctrl)
@@ -44,7 +45,8 @@ test_that("dependent params, but no focussing", {
 
   learner = makeLearner("regr.randomForest")
   learner = makeImputeWrapper(learner, classes = list(numeric = imputeMedian(), factor = imputeMode()))
-  ctrl = makeMBOControl(init.design.points = 20L, iters = 2L)
+  ctrl = makeMBOControl(init.design.points = 20L)
+  ctrl = setMBOControlTermination(ctrl, iters = 2L)
   ctrl = setMBOControlInfill(ctrl, opt = "focussearch", opt.restarts = 1L, opt.focussearch.maxit = 1L,
     opt.focussearch.points = 500L)
   or = mbo(obj.fun, learner = learner, control = ctrl)
@@ -88,7 +90,8 @@ test_that("complex param space, dependencies, focussing, restarts", {
     has.simple.signature = FALSE
   )
 
-  ctrl = makeMBOControl(init.design.points = 20L, iters = 2L)
+  ctrl = makeMBOControl(init.design.points = 20L)
+  ctrl = setMBOControlTermination(ctrl, iters = 2L)
   ctrl = setMBOControlInfill(ctrl, crit = "ei", opt = "focussearch",
     opt.restarts = 2L, opt.focussearch.maxit = 2L, opt.focussearch.points = 100L)
   learner = makeLearner("regr.randomForest", predict.type = "se")

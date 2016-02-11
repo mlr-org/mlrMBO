@@ -9,8 +9,9 @@ pause = interactive()
 obj.fun = makeZDT1Function(dimensions = 5L)
 
 lrn = makeLearner("regr.km", predict.type = "se")
-ctrl = makeMBOControl(iters = 10L, number.of.targets = 2L, init.design.points = 8L,
+ctrl = makeMBOControl(number.of.targets = 2L, init.design.points = 8L,
   propose.points = 2L)
+ctrl = setMBOControlTermination(ctrl, iters = 10L)
 ctrl = setMBOControlInfill(ctrl, crit = "ei", opt.focussearch.points = 1000L,
   opt.focussearch.maxit = 3L)
 ctrl = setMBOControlMultiCrit(ctrl, method = "parego")

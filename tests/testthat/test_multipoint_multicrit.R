@@ -10,7 +10,8 @@ test_that("multipoint multicrit", {
     for (dist in c("nearest.better", "nearest.neighbor")) {
       for (sel in c("hypervolume", "crowdingdist", "first", "last")) {
 
-        ctrl = makeMBOControl(init.design.points = 10L, iters = 1L, propose.points = 4L)
+        ctrl = makeMBOControl(init.design.points = 10L, propose.points = 4L)
+        ctrl = setMBOControlTermination(ctrl, iters = 1L)
         ctrl = setMBOControlMultiPoint(ctrl,
           method = "multicrit",
           multicrit.objective = obj,
