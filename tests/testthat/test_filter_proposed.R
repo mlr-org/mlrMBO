@@ -19,10 +19,10 @@ test_that("filter proposed points", {
   # now check min dist, set to "inf" so we always replace
   ctrl = makeMBOControl(init.design.points = 30L, propose.points = 2L)
   ctrl = setMBOControlTermination(ctrl, iters = 1L)
-  ctrl = setMBOControlInfill(ctrl, crit = "lcb",
+  ctrl = setMBOControlInfill(ctrl, crit = "cb",
     filter.proposed.points = TRUE, filter.proposed.points.tol = 1000,
     opt = "focussearch", opt.focussearch.points = 100L, opt.focussearch.maxit = 1L)
-  ctrl = setMBOControlMultiPoint(ctrl, method = "lcb")
+  ctrl = setMBOControlMultiPoint(ctrl, method = "cb")
 
   res = mbo(obj.fun, learner = lrn, control = ctrl)
   op = as.data.frame(res$opt.path)

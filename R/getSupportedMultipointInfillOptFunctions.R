@@ -3,5 +3,5 @@
 #' @return [\code{character}]
 #' @export
 getSupportedMultipointInfillOptFunctions = function() {
-  c("cl", "lcb", "multicrit")
+  c("cl", "cb", "multicrit")
 }

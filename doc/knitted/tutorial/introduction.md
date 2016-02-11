@@ -197,9 +197,9 @@ At the moment four possibilities are implemented:
 * ``mean``: mean response of the surrogate model,
 * ``ei``: expected improvement of the surrogate model,
 * ``aei``: augmented expected improvement, which is especially useful for the noisy functions,
-* ``lcb``: lower confidence bound which is the additive combination of mean response and mean standard error estimation
+* ``cb``: confidence bound which is the additive combination of mean response and mean standard error estimation
 of the surrogate model (response - lambda * standard.error). The default value of lambda is 1, but it can be easily changed by
-the ``infill.crit.lcb`` attribute.
+the ``infill.crit.cb`` attribute.
 
 
 Attribute ``infill.opt.fun``
@@ -326,7 +326,7 @@ mbo2 = mbo(objfun2, par.set2, design = NULL, learner = learner_rf, control = con
 mbo2$y
 ```
 
-In contrast, if one will apply ``ei`` or ``lcb`` infill criteria,
+In contrast, if one will apply ``ei`` or ``cb`` infill criteria,
 the ``predict.type`` attribute of the learner have be set to ``se``, if possible. A list of regression learners which support it can be viewed by:
 
 

@@ -16,10 +16,10 @@ buildTrafoList = function(n.params, input.trafo) {
     assertSubset(names(input.trafo), choices = c("y", "yhat", "crit", "se"))
     trafo.defaults = list("y" = NULL, "yhat" = NULL, "crit" = NULL, "se" = NULL)
   }
-  
+
   if (is.null(input.trafo))
     return(trafo.defaults)
-  
+
   # if single function provided, apply it to all plots
   if (c("MBOTrafoFunction") %in% class(input.trafo)) {
     if (n.params == 1) {
@@ -41,7 +41,7 @@ buildTrafoList = function(n.params, input.trafo) {
 
 getIDX = function(opt.path, i) {
   list(
-    init = which(opt.path$dob == 0), 
+    init = which(opt.path$dob == 0),
     seq = which(opt.path$dob > 0 & opt.path$dob < i),
     proposed = which(opt.path$dob == i),
     past = which(opt.path$dob < i),
@@ -76,7 +76,7 @@ getInfillCritGrid = function(crit.name, points.per.dim, models, control, par.set
   opt.direction = if (crit.name %in% c("ei")) -1 else 1
   if (inherits(models, "FailureModel"))
     xgrid[[crit.name]] = NA
-  else 
+  else
     xgrid[[crit.name]] = opt.direction * critfun(xgrid, models, control, par.set, opt.path, iter)
   return(xgrid)
 }
@@ -94,10 +94,10 @@ createBasicSpacePlot = function(pl, points, iter, object, name, alpha, space, co
   # add appr. of non dominated model points
   grid = if(space == "x") object$mbo.pred.grid.x else object$mbo.pred.grid.mean[[iter]]
   pl = addApproxMBO(pl, grid, name, object$mbo.pred.grid.mean[[iter]]$.is.dom, "brown", "solid")
-  
-  # add appr. of lcb of non dominated model points
-  grid = if(space == "x") object$mbo.pred.grid.x else object$mbo.pred.grid.lcb[[iter]]
-  pl = addApproxMBO(pl, grid, name, object$mbo.pred.grid.lcb[[iter]]$.is.dom, "brown", "dotted")
+
+  # add appr. of cb of non dominated model points
+  grid = if(space == "x") object$mbo.pred.grid.x else object$mbo.pred.grid.cb[[iter]]
+  pl = addApproxMBO(pl, grid, name, object$mbo.pred.grid.cb[[iter]]$.is.dom, "brown", "dotted")
   return(pl)
 }
 
@@ -126,12 +126,12 @@ addParegoWeightLines = function(pl, data.y, idx, opt.path, proposed.counter, rho
   y1range = range(data.y[idx$past, 1L])
   y2range = range(data.y[idx$past, 2L])
   weights = as.numeric(opt.path[idx$proposed[proposed.counter], c(".weight1", ".weight2")])
-  
+
   slope  = weights[2L] * (y2range[2L] - y2range[1L]) /
     (weights[1L] * (y1range[2L] - y1range[1L]))
   intercept = y2range[1L] - y1range[1L] * slope
   pl = pl + geom_abline(intercept = intercept, slope = slope)
-  
+
   # now add visualization for rho
   #   FIXME: Rethink this!
   #   # make dataframe for lines to show rho
@@ -141,12 +141,12 @@ addParegoWeightLines = function(pl, data.y, idx, opt.path, proposed.counter, rho
   #     x = (x - y1range[1L]) / (y1range[2L] - y1range[1L])
   #     y.left = (const - lambda[2L] * x * (1 + rho)) / (rho * lambda[1L])
   #     y.left = y.left * (y2range[2L] - y2range[1L]) + y2range[1L]
-  #     
+  #
   #     y.right = (const - lambda[2L] * x * rho) / ((1 + rho) * lambda[1L])
   #     y.right = y.right * (y2range[2L] - y2range[1L]) + y2range[1L]
   #     pmin(y.left, y.right)
   #   }
-  #   
+  #
   #   # FIXME: find a good way to set this constant. I tried a lot and i found
   #   # nothing that worked really good. this is the best i got ... it works somehow,
   #   # but is far from perfect.

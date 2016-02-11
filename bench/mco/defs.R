@@ -14,7 +14,7 @@ FOCUSSEARCH_MAXIT = 3L
 FOCUSSEARCH_RESTARTS =  3L
 
 # general algo stuff
-LCB_PI = 0.5    # mspot_lcb + dib (all)
+CB_PI = 0.5    # mspot_cb + dib (all)
 MULTICRIT_REFPOINT = "all" # mspot (all) + dib.sms
 MULTICRIT_REFPOINT_OFFSET = 1 # mspot (all) + dib.sms
 FILTER_PROPOSED_POINTS = TRUE

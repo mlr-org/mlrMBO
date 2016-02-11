@@ -20,7 +20,7 @@
 #                                             replicated for all n points, if only one errmsg was passed
 # filter.replace          logical(1)          if point filtering was enabled, we store whether the point
 #                                             was replaced by a random one.
-# multipoint.lcb.lambda   numeric(1)          random lambda-value used in q-LCB point proposal
+# multipoint.cb.lambda   numeric(1)          random lambda-value used in q-CB point proposal
 #                                             one lambda for each point in that case
 # .weight<j>              numeric(1)          weight vector sampled for multipoint ParEGO
 
@@ -47,14 +47,14 @@ getExtras = function(n, prop, train.time, control) {
       ex = list(prop$crit.vals[i, 1L], error.model = errs[i])
       names(ex)[1] = control$infill.crit
     }
-    # if we use singlecrit parallel LCB store lambdas
+    # if we use singlecrit parallel CB store lambdas
     if (control$propose.points > 1L &&
-        (control$number.of.targets == 1L && control$multipoint.method == "lcb")) {
+        (control$number.of.targets == 1L && control$multipoint.method == "cb")) {
 
-      lams = prop$multipoint.lcb.lambdas
+      lams = prop$multipoint.cb.lambdas
       if (is.null(lams))
         lams = rep(NA_real_, n)
-      ex$multipoint.lcb.lambda = lams[i]
+      ex$multipoint.cb.lambda = lams[i]
     }
     # if we use parego, store weights
     if (control$number.of.targets > 1L && control$multicrit.method == "parego") {

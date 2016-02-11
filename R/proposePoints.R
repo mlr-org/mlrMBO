@@ -24,8 +24,8 @@ proposePoints.OptState = function(opt.state){
     } else if (is.null(control$multipoint.method)) {
       res = proposePointsByInfillOptimization(opt.state)
     } else {
-      if (control$multipoint.method == "lcb")
-        res = proposePointsParallelLCB(opt.state)
+      if (control$multipoint.method == "cb")
+        res = proposePointsParallelCB(opt.state)
       else if (control$multipoint.method == "cl")
         res = proposePointsConstantLiar(opt.state)
       else if (control$multipoint.method == "multicrit") {
@@ -41,7 +41,7 @@ proposePoints.OptState = function(opt.state){
       res = proposePointsDIB(opt.state)
     }
   }
-  
+
   if (control$interleave.random.points > 0L) {
     add = proposePointsRandom(opt.state)
     res = joinProposedPoints(list(res, add))
@@ -49,7 +49,7 @@ proposePoints.OptState = function(opt.state){
 
   if (!is.matrix(res$crit.vals))
     res$crit.vals = matrix(res$crit.vals, ncol = 1L)
-  
+
   if (control$filter.proposed.points) {
     res = filterProposedPoints(res, opt.state)
   }

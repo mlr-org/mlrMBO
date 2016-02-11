@@ -106,7 +106,7 @@ exampleRunMultiCrit= function(fun, learner, control, points.per.dim = 50,
   # if we have 1 model per obj, predict whole space and approx pareto front, so we can see effect of model
   mbo.pred.grid.x = NULL
   mbo.pred.grid.mean = NULL
-  mbo.pred.grid.lcb = NULL
+  mbo.pred.grid.cb = NULL
   if (control$multicrit.method %in% c("dib", "mspot")) {
     mbo.pred.grid.x = generateGridDesign(par.set, resolution = points.per.dim)
     mbo.pred.grid.mean = vector("list", control$iters)
@@ -117,15 +117,15 @@ exampleRunMultiCrit= function(fun, learner, control, points.per.dim = 50,
       y2 = setColNames(as.data.frame(y1), names.y)
       y2$.is.dom = isDominated(y1, minimize)
       mbo.pred.grid.mean[[iter]] = y2
-      # if we have se estim, also calc LCB front
+      # if we have se estim, also calc cb front
       if (mods[[1]]$learner$predict.type == "se") {
         z1 = extractSubList(ps, c("data", "se"), simplify = "cols")
         z1 = y1 - z1 %*% diag(mults)
         z2 = setColNames(as.data.frame(z1), names.y)
         z2$.is.dom = isDominated(z1, minimize)
-        mbo.pred.grid.lcb[[iter]] = z2
+        mbo.pred.grid.cb[[iter]] = z2
       } else {
-        mbo.pred.grid.lcb = NULL
+        mbo.pred.grid.cb = NULL
       }
     }
   }
@@ -145,7 +145,7 @@ exampleRunMultiCrit= function(fun, learner, control, points.per.dim = 50,
     points.per.dim = points.per.dim,
     mbo.pred.grid.x = mbo.pred.grid.x,
     mbo.pred.grid.mean = mbo.pred.grid.mean,
-    mbo.pred.grid.lcb = mbo.pred.grid.lcb
+    mbo.pred.grid.cb = mbo.pred.grid.cb
   )
 }
 

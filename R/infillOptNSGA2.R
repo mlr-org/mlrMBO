@@ -30,7 +30,7 @@ infillOptMultiCritNSGA2 = function(infill.crit, models, control, par.set, opt.pa
   # do this greedy - select the point with max. hv.contr, add it and select
   # the best point wrt to the new front
   candidate.points = res$par
-  # Use the mean/lcb response of the model to calculate the hv.contr, not the nsga2-val
+  # Use the mean/cb response of the model to calculate the hv.contr, not the nsga2-val
   hv.contr.crit = getInfillCritFunction(control$mspot.select.crit)
   candidate.vals = asMatrixCols(lapply(1:m, function(i) {
     # we need to make sure mininimize in control is a scalar, so we can multiply it in infill crits...

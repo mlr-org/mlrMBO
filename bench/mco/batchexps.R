@@ -59,7 +59,7 @@ runMBO = function(static, dynamic, method, crit, opt, prop.points, indicator = "
   ctrl = setMBOControlInfill(ctrl, crit = crit, opt = opt,
     filter.proposed.points = FILTER_PROPOSED_POINTS,
     filter.proposed.points.tol = FILTER_PROPOSED_POINTS_TOL,
-    crit.lcb.lambda = NULL, crit.lcb.pi = LCB_PI,
+    crit.cb.lambda = NULL, crit.cb.pi = CB_PI,
     opt.focussearch.points = FOCUSSEARCH_POINTS,
     opt.restarts = FOCUSSEARCH_RESTARTS,
     opt.focussearch.maxit = FOCUSSEARCH_MAXIT,
@@ -98,12 +98,12 @@ addAlgorithm(reg, "nsga2", fun = function(static, budget) {
     minimize = rep(TRUE, static$dimy), include.error.message = TRUE, include.exec.time = TRUE)
 
   gens = if (budget == "normal") BASELINE_NSGA2_GENERATIONS1 else BASELINE_NSGA2_GENERATIONS2
-  
+
   dimx = static$dimx
   res = nsga2(static$objective, idim = dimx,
     odim = static$dimy, lower.bounds = getLower(static$par.set), upper.bounds = getUpper(static$par.set),
     popsize = BASELINE_NSGA2_POPSIZE(dimx), generations = 1:gens(dimx),
-    cprob = BASELINE_NSGA2_cprob(dimx), cdist = BASELINE_NSGA2_cdist(dimx), 
+    cprob = BASELINE_NSGA2_cprob(dimx), cdist = BASELINE_NSGA2_cdist(dimx),
     mprob = BASELINE_NSGA2_mprob(dimx), mdist = BASELINE_NSGA2_mdist(dimx))
   # add all elements to op.path
   lapply(seq_along(res), function(i) {
@@ -117,12 +117,12 @@ addAlgorithm(reg, "nsga2", fun = function(static, budget) {
 # Add NSGA2 with really high number of FEvals to calc the "exact" front
 addAlgorithm(reg, "nsga2-ref", fun = function(static) {
   opt.path = makeOptPathDF(static$par.set, paste("y", 1:static$dimy, sep = "_"),
-    minimize = rep(TRUE, static$dimy), include.error.message = TRUE, include.exec.time = TRUE)  
+    minimize = rep(TRUE, static$dimy), include.error.message = TRUE, include.exec.time = TRUE)
   dimx = static$dimx
   res = nsga2(static$objective, idim = dimx,
     odim = static$dimy, lower.bounds = getLower(static$par.set), upper.bounds = getUpper(static$par.set),
     popsize = EXACT_NSGA2_POPSIZE(dimx), generations =EXACT_NSGA2_GENERATIONS(dimx),
-    cprob = BASELINE_NSGA2_cprob(dimx), cdist = BASELINE_NSGA2_cdist(dimx), 
+    cprob = BASELINE_NSGA2_cprob(dimx), cdist = BASELINE_NSGA2_cdist(dimx),
     mprob = BASELINE_NSGA2_mprob(dimx), mdist = BASELINE_NSGA2_mdist(dimx))
   # add all elements to op.path
   for (j in seq_row(res$par))
@@ -150,7 +150,7 @@ des2 = makeDesign("nsga2", exhaustive = list(
 ))
 des3 = makeDesign("parego", exhaustive = list(
   prop.points = PARALLEL_PROP_POINTS,
-  crit = c("lcb", "ei")
+  crit = c("cb", "ei")
 ))
 des4 = makeDesign("dib", exhaustive = list(
   prop.points = PARALLEL_PROP_POINTS,
@@ -158,7 +158,7 @@ des4 = makeDesign("dib", exhaustive = list(
 ))
 des5 = makeDesign("mspot", exhaustive = list(
   prop.points = PARALLEL_PROP_POINTS,
-  crit = c("mean", "lcb", "ei")
+  crit = c("mean", "cb", "ei")
 ))
 des6 = makeDesign("nsga2-ref")
 

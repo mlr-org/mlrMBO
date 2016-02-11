@@ -5,8 +5,8 @@
 \title{Extends mbo control object with infill criteria and infill optimizer options.}
 \usage{
 setMBOControlInfill(control, crit = NULL, interleave.random.points = 0L,
-  crit.eqi.beta = 0.75, crit.lcb.lambda = 1, crit.lcb.pi = NULL,
-  crit.lcb.inflate.se = NULL, crit.aei.use.nugget = NULL,
+  crit.eqi.beta = 0.75, crit.cb.lambda = 1, crit.cb.pi = NULL,
+  crit.cb.inflate.se = NULL, crit.aei.use.nugget = NULL,
   filter.proposed.points = NULL, filter.proposed.points.tol = NULL,
   opt = "focussearch", opt.restarts = NULL, opt.focussearch.maxit = NULL,
   opt.focussearch.points = NULL, opt.cmaes.control = NULL,
@@ -26,7 +26,7 @@ How should infill points be rated. Possible parameter values are:
 \dQuote{ei}: Expected improvement.
 \dQuote{aei}: Augmented expected improvement.
 \dQuote{eqi}: Expected quantile improvement.
-\dQuote{lcb}: Lower confidence bound.
+\dQuote{cb}: Confidence bound.
 Alternatively, you may pass a function name as string.}
 
 \item{interleave.random.points}{[\code{integer(1)}]\cr
@@ -40,19 +40,19 @@ Beta parameter for expected quantile improvement criterion.
 Only used if \code{crit == "eqi"}, ignored otherwise.
 Default is 0.75.}
 
-\item{crit.lcb.lambda}{[\code{numeric(1)}]\cr
-Lambda parameter for lower confidence bound infill criterion.
-Only used if \code{crit == "lcb"}, ignored otherwise.
+\item{crit.cb.lambda}{[\code{numeric(1)}]\cr
+Lambda parameter for confidence bound infill criterion.
+Only used if \code{crit == "cb"}, ignored otherwise.
 Default is 1.}
 
-\item{crit.lcb.pi}{[\code{numeric(1)}]\cr
-Probability-of-improvement value to determine the lambda parameter for lcb infill criterion.
+\item{crit.cb.pi}{[\code{numeric(1)}]\cr
+Probability-of-improvement value to determine the lambda parameter for cb infill criterion.
 It is an alternative to set the trade-off between \dQuote{mean} and \dQuote{se}.
-Only used if \code{crit == "lcb"}, ignored otherwise.
-If specified, \code{crit.lcb.lambda == NULL} must hold.
+Only used if \code{crit == "cb"}, ignored otherwise.
+If specified, \code{crit.cb.lambda == NULL} must hold.
 Default is \code{NULL}.}
 
-\item{crit.lcb.inflate.se}{[\code{logical(1)}]\cr
+\item{crit.cb.inflate.se}{[\code{logical(1)}]\cr
 Try to inflate or deflate the estimated standard error to get to the same scale as the mean?
 Calculates the range of the mean and standard error and multiplies the standard error
 with the quotient of theses ranges.

@@ -1,6 +1,6 @@
-context("multipoint lcb")
+context("multipoint cb")
 
-test_that("multipoint lcb", {
+test_that("multipoint cb", {
   par.set = makeNumericParamSet(len = 1L, lower = -1, upper = 1)
   f = makeSingleObjectiveFunction(
     fn = function(x) {
@@ -12,14 +12,14 @@ test_that("multipoint lcb", {
 
   ctrl = makeMBOControl(init.design.points = 30L, propose.points = 5L)
   ctrl = setMBOControlTermination(ctrl, iters = 1L)
-  ctrl = setMBOControlInfill(ctrl, crit = "lcb", opt = "focussearch", opt.focussearch.points = 100L,
+  ctrl = setMBOControlInfill(ctrl, crit = "cb", opt = "focussearch", opt.focussearch.points = 100L,
     opt.focussearch.maxit = 2L)
-  ctrl = setMBOControlMultiPoint(ctrl, method = "lcb")
+  ctrl = setMBOControlMultiPoint(ctrl, method = "cb")
 
   res = mbo(f, learner = lrn, control = ctrl)
   op = as.data.frame(res$opt.path)
-  expect_true(all(is.na(op$multipoint.lcb.lambda[1:30])))
-  expect_true(all(!is.na(op$multipoint.lcb.lambda[31:35])))
+  expect_true(all(is.na(op$multipoint.cb.lambda[1:30])))
+  expect_true(all(!is.na(op$multipoint.cb.lambda[31:35])))
   expect_is(res, "MBOResult")
   expect_true(res$y < 0.1)
 
@@ -27,17 +27,17 @@ test_that("multipoint lcb", {
   # now check min dist, set to "inf" so we can only propose 1 new point, not 5
   ctrl = makeMBOControl(init.design.points = 30L, propose.points = 5L)
   ctrl = setMBOControlTermination(ctrl, iters = 1L)
-  ctrl = setMBOControlInfill(ctrl, crit = "lcb", opt = "focussearch", opt.focussearch.points = 100L,
+  ctrl = setMBOControlInfill(ctrl, crit = "cb", opt = "focussearch", opt.focussearch.points = 100L,
     opt.focussearch.maxit = 2L)
-  ctrl = setMBOControlMultiPoint(ctrl, method = "lcb")
-  ctrl$lcb.min.dist = 10000
+  ctrl = setMBOControlMultiPoint(ctrl, method = "cb")
+  ctrl$cb.min.dist = 10000
 
   res = mbo(f, learner = lrn, control = ctrl)
   expect_equal(getOptPathLength(res$opt.path), 35L)
 })
 
 
-test_that("multipoint lcb with random interleaved points", {
+test_that("multipoint cb with random interleaved points", {
   par.set = makeNumericParamSet(len = 1L, lower = -1, upper = 1)
   f = makeSingleObjectiveFunction(
     fn = function(x) {
@@ -49,9 +49,9 @@ test_that("multipoint lcb with random interleaved points", {
 
   ctrl = makeMBOControl(init.design.points = 30L, propose.points = 5L)
   ctrl = setMBOControlTermination(ctrl, iters = 1L)
-  ctrl = setMBOControlInfill(ctrl, crit = "lcb", opt = "focussearch", opt.focussearch.points = 100L,
+  ctrl = setMBOControlInfill(ctrl, crit = "cb", opt = "focussearch", opt.focussearch.points = 100L,
     opt.focussearch.maxit = 2L, interleave.random.points = 5L)
-  ctrl = setMBOControlMultiPoint(ctrl, method = "lcb")
+  ctrl = setMBOControlMultiPoint(ctrl, method = "cb")
 
   res = mbo(f, learner = lrn, control = ctrl)
   op = as.data.frame(res$opt.path)
@@ -63,9 +63,9 @@ test_that("multipoint lcb with random interleaved points", {
   # no error messages
   expect_true(all(is.na(op$error.message)))
 
-  # lcb should be NA for random points
-  expect_true(all(!is.na(head(op$lcb, 5))))
-  expect_true(all(is.na(tail(op$lcb, 5))))
+  # cb should be NA for random points
+  expect_true(all(!is.na(head(op$cb, 5))))
+  expect_true(all(is.na(tail(op$cb, 5))))
 
   # propose.time is NA for random points
   expect_true(all(!is.na(head(op$propose.time, 5))))
@@ -75,13 +75,13 @@ test_that("multipoint lcb with random interleaved points", {
 
   ctrl = makeMBOControl(init.design.points = 30L, propose.points = 1L)
   ctrl = setMBOControlTermination(ctrl, iters = 1L)
-  ctrl = setMBOControlInfill(ctrl, crit = "lcb", opt = "focussearch", opt.focussearch.points = 100L,
+  ctrl = setMBOControlInfill(ctrl, crit = "cb", opt = "focussearch", opt.focussearch.points = 100L,
     opt.focussearch.maxit = 2L, interleave.random.points = 1L)
-  ctrl = setMBOControlMultiPoint(ctrl, method = "lcb")
+  ctrl = setMBOControlMultiPoint(ctrl, method = "cb")
 
   res = mbo(f, learner = lrn, control = ctrl)
   op = as.data.frame(res$opt.path)
   op = tail(op, 2)
-  expect_identical(is.na(op$lcb), c(FALSE, TRUE))
+  expect_identical(is.na(op$cb), c(FALSE, TRUE))
   expect_identical(is.na(op$train.time), c(FALSE, TRUE))
 })

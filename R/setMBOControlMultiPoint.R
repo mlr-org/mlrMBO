@@ -4,9 +4,9 @@
 #' @param method [\code{character(1)}]\cr
 #'   Method used for proposal of multiple infill points, for parallel batch evaluation.
 #'   Possible values are:
-#'   \dQuote{lcb}: Proposes points by optimizing the lower confidence bound \dQuote{lcb} criterion,
-#'   \code{propose.points} times. Each lambda value for \dQuote{lcb} is drawn randomly from an
-#'   exp(1)-distribution, so do not define \code{infill.opt.lcb.lambda}.
+#'   \dQuote{cb}: Proposes points by optimizing the confidence bound \dQuote{cb} criterion,
+#'   \code{propose.points} times. Each lambda value for \dQuote{cb} is drawn randomly from an
+#'   exp(1)-distribution, so do not define \code{infill.opt.cb.lambda}.
 #'   The optimizer for each proposal is configured in the same way as for the single point case,
 #'   i. e., by specifying \code{infill.opt} and related stuff.
 #'   \dQuote{multicrit}: Proposes points by evolutionary multicriteria optimization.
@@ -14,13 +14,13 @@
 #'   The population size is set to \code{propose.points}.
 #'   The selection criterion is \code{multicrit.selection}.
 #'   \dQuote{cl}: Proposes points by constant liar strategy.
-#'   Only meaningfull if \code{infill.crit == "lcb"}
+#'   Only meaningfull if \code{infill.crit == "cb"}
 #'   In the first step the kriging model is fitted based on the real data and the best point is calculated
 #'   according to the regular EI-criterion.
 #'   Then, the function value of the best point is simply guessed by the worst seen function evaluation.
 #'   This lie is used to update the model in order to propose the subsequent point.
 #'   The procedure is applied until the number of best points achieves \code{propose.points}.
-#'   Default is \code{lcb}.
+#'   Default is \code{cb}.
 #' @param cl.lie [\code{function}]\cr
 #'   Function used by constant liar method for lying. Default is \code{min}.
 #' @param multicrit.objective [\code{character(1)}]\cr
@@ -72,7 +72,7 @@ setMBOControlMultiPoint = function(control,
 
   assertClass(control, "MBOControl")
 
-  control$multipoint.method = coalesce(method, control$multipoint.method, "lcb")
+  control$multipoint.method = coalesce(method, control$multipoint.method, "cb")
   assertChoice(control$multipoint.method, choices = getSupportedMultipointInfillOptFunctions())
 
   # Workaround since coalesce cannot hande functions
@@ -112,8 +112,8 @@ setMBOControlMultiPoint = function(control,
   control$multipoint.multicrit.pm.p = coalesce(multicrit.pm.p, control$multipoint.multicrit.pm.p, 1)
   assertNumber(control$multipoint.multicrit.pm.p, na.ok = FALSE, lower = 0, upper = 1)
 
-  # FIXME: this is currently a hidden option, also see multipoint_lcb.R
-  control$lcb.min.dist = 1e-5
+  # FIXME: this is currently a hidden option, also see multipoint_cb.R
+  control$cb.min.dist = 1e-5
 
   return(control)
 }

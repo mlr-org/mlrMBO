@@ -42,7 +42,7 @@ checkStuff = function(fun, par.set, design, learner, control) {
     stopf("The 'par.set' has dependent parameters, which will lead to missing values in X-space during modeling, but learner '%s' does not support handling of missing values (property 'missing')!", learner$id)
 
   # general infill stuff (relavant for single objective and parEGO)
-  if (control$infill.crit %in% c("se", "ei", "aei", "lcb", "dib") && learner$predict.type != "se") {
+  if (control$infill.crit %in% c("se", "ei", "aei", "cb", "dib") && learner$predict.type != "se") {
     stopf("For infill criterion '%s' predict.type of learner %s must be set to 'se'!%s",
       control$infill.crit, learner$id,
       ifelse(hasLearnerProperties(learner, "se"), "",
@@ -85,7 +85,7 @@ checkStuff = function(fun, par.set, design, learner, control) {
   if (control$number.of.targets == 1L) {
     if (control$propose.points == 1L) { # single point
     } else {                            # multi point
-      if ((control$multipoint.method %in% c("lcb", "cl", "lcb") ||
+      if ((control$multipoint.method %in% c("cb", "cl", "cb") ||
           control$multipoint.method == "multicrit" && control$multipoint.multicrit.objective != "mean.dist" )
         && learner$predict.type != "se") {
         stopf("For multipoint method '%s'%s, predict.type of learner %s must be set to 'se'!%s",
@@ -98,8 +98,8 @@ checkStuff = function(fun, par.set, design, learner, control) {
       }
       if (control$multipoint.method == "cl" && control$infill.crit != "ei")
         stopf("Multipoint proposal using constant liar needs the infill criterion 'ei' (expected improvement), but you used '%s'!", control$infill.crit)
-      if (control$multipoint.method == "lcb" && control$infill.crit != "lcb")
-        stopf("Multipoint proposal using parallel LCB needs the infill criterion 'lcb' (lower confidence bound), but you used '%s'!", control$infill.crit)
+      if (control$multipoint.method == "cb" && control$infill.crit != "cb")
+        stopf("Multipoint proposal using parallel cb needs the infill criterion 'cb' (confidence bound), but you used '%s'!", control$infill.crit)
     }
   }
 

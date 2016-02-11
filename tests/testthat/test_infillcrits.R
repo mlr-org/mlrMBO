@@ -53,16 +53,16 @@ test_that("infill crits", {
     }
   }
 
-  # check lambda and pi for lcb
+  # check lambda and pi for cb
   ctrl = makeMBOControl(init.design.points = 8L, final.evals = 10L)
   ctrl = setMBOControlTermination(ctrl, iters = niters)
-  ctrl = setMBOControlInfill(ctrl, crit = "lcb", opt = "focussearch", opt.restarts = 1L,
-    opt.focussearch.points = 300L, crit.lcb.lambda = 2)
+  ctrl = setMBOControlInfill(ctrl, crit = "cb", opt = "focussearch", opt.restarts = 1L,
+    opt.focussearch.points = 300L, crit.cb.lambda = 2)
   mbo(f1, learner = makeLearner("regr.km", predict.type = "se"), control = ctrl)
-  expect_error(setMBOControlInfill(ctrl, crit = "lcb", opt = "focussearch", opt.restarts = 1L,
-    opt.focussearch.points = 300L, crit.lcb.lambda = 2, crit.lcb.pi = 0.5))
-  ctrl = setMBOControlInfill(ctrl, crit = "lcb", opt = "focussearch", opt.restarts = 1L,
-    opt.focussearch.points = 300L, crit.lcb.lambda = NULL, crit.lcb.pi = 0.5)
+  expect_error(setMBOControlInfill(ctrl, crit = "cb", opt = "focussearch", opt.restarts = 1L,
+    opt.focussearch.points = 300L, crit.cb.lambda = 2, crit.cb.pi = 0.5))
+  ctrl = setMBOControlInfill(ctrl, crit = "cb", opt = "focussearch", opt.restarts = 1L,
+    opt.focussearch.points = 300L, crit.cb.lambda = NULL, crit.cb.pi = 0.5)
   or = mbo(f1, learner = makeLearner("regr.km", predict.type = "se"), control = ctrl)
   expect_true(or$y < 50)
 
