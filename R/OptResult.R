@@ -16,6 +16,12 @@ NULL
 #    Stores the resample result by mlr.
 # @param mbo.result [\code{MBOResult}]\cr.
 #    Will store one MBOResult. Usually the one created in \code{mbo()}, when all iterations are done.
+
+# IMPORTANT NOTE:
+# See this as a constructor and it's variables as member variables.
+# All variables in this Object should be documented here.
+# Think of it, when you implement new ones!
+# Unfortunately in R we cannot hinder you from putting other values in this object, but please: Don't! 
 makeOptResult = function(stored.models = list(), resample.results = list(), mbo.result = NULL) {
   opt.result = new.env()
 
