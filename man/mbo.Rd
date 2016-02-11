@@ -40,18 +40,6 @@ Further arguments passed to fitness function.}
 }
 \description{
 It is possible to parallelize the evaluation of the target function to speed up the computation.
-Internally the evaluation of the target function is realized with the R package parallelMap.
-See the mlrMBO tutorial and the Github project pages of parallelMap for instructions
-on how to set up parallelization.
-The different levels of parallelization can be specified in \code{parallelStart*} and are given for the following operations:
-\itemize{
-\item{Evaluation of the objective function in cases multiple points are to be evaluated at once. These are: evaluation of the initial design and multiple proposed points per iteration. (Level: \code{mlrMBO.feval})}
-\item{Model fitting / point proposal - in some cases where independent, expensive operations are performed. (Level: \code{mlrMBO.propose.points})}
-}
-Details regarding the latter:
-\describe{
-\item{Singlecrit MBO with LCB multipoint}{Parallel optimization of LCBs for the lambda-values.}
-\item{Multicrit MBO with ParEGO}{Parallel optimization of scalarization functions.}
-}
+See \link{mbo_parallel} for further information.
 }
 
