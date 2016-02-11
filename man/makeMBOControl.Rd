@@ -136,14 +136,6 @@ Default is 10-fold CV.}
 Performance measures to assess model with during resampling.
 Default is \code{\link[mlr]{mse}}.}
 
-\item{on.learner.error}{[\code{character(1)}]\cr
-See [\code{\link[mlr]{configureMlr}}].
-Default is \dQuote{warn}.}
-
-\item{show.learner.output}{[\code{logical(1)}]\cr
-See [\code{\link[mlr]{configureMlr}}].
-Default is \code{FALSE}.}
-
 \item{output.num.format}{[\code{logical(1)}]\cr
 Format string for the precision of the numeric output of mbo.}
 }
