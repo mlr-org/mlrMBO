@@ -119,7 +119,11 @@ getOptStateState = function(opt.state) {
 getOptStateTermination = function(opt.state) {
   terminate = shouldTerminate.OptState(opt.state)
   # update only if termination condition is met
-  #if (terminate$code > 0L)
-  setOptStateState(opt.state, getTerminateChars(terminate$code))
+  if (terminate$term) {
+    # custom stopping conditions have no code. We assign 5 here manually, which
+    # means manual.exceeded (see getTerminateChars(...))
+    code = if (is.null(terminate$code)) 5L else terminate$code
+    setOptStateState(opt.state, getTerminateChars(code))
+  }
   terminate
 }

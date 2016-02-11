@@ -6,13 +6,12 @@
 \title{Creates a control object for MBO optimization.}
 \usage{
 makeMBOControl(number.of.targets = 1L, init.design.points = 20L,
-  init.design.fun = maximinLHS, init.design.args = list(), iters = 10L,
-  time.budget = NULL, exec.time.budget = NULL, target.fun.value = NULL,
+  init.design.fun = maximinLHS, init.design.args = list(),
   propose.points = 1L, final.method = "best.true.y", final.evals = 0L,
   y.name = "y", impute.y.fun = NULL, trafo.y.fun = NULL,
   suppress.eval.errors = TRUE, save.on.disk.at = integer(0L),
   save.on.disk.at.time = Inf, save.file.path = file.path(getwd(),
-  "mlr_run.RData"), store.model.at = iters + 1, resample.at = integer(0),
+  "mlr_run.RData"), store.model.at = NULL, resample.at = integer(0),
   resample.desc = makeResampleDesc("CV", iter = 10),
   resample.measures = list(mse), on.learner.error = "warn",
   show.learner.output = FALSE, output.num.format = "\%.3g")
@@ -40,23 +39,6 @@ Default is \code{maximinLHS}.}
 List of further arguments passed to \code{init.design.fun}.
 Only used if no design is given in \code{mbo} function.
 Default is empty list.}
-
-\item{iters}{[\code{integer(1)}]\cr
-Number of sequential optimization steps.
-Default is 10.}
-
-\item{time.budget}{[\code{integer(1)} | NULL]\cr
-Running time budget in seconds. Note that the actual mbo run can take more time since
-the condition is checked after each iteration.}
-
-\item{exec.time.budget}{[\code{integer(1)} | NULL]\cr
-Execution time (time spent executing the function passed to \code{mbo})
-budget in seconds. Note that the actual mbo run can take more time since
-the condition is checked after each iteration.}
-
-\item{target.fun.value}{[\code{numeric(1)}] | NULL]\cr
-Stopping criterion for single crit optimization: Stop if a function evaluation
-is better than this given target.value.}
 
 \item{propose.points}{[\code{integer(1)}]\cr
 Number of proposed / really evaluated points each iteration.
@@ -135,14 +117,6 @@ Default is 10-fold CV.}
 \item{resample.measures}{[list of \code{\link[mlr]{Measure}}]\cr
 Performance measures to assess model with during resampling.
 Default is \code{\link[mlr]{mse}}.}
-
-\item{on.learner.error}{[\code{character(1)}]\cr
-See [\code{\link[mlr]{configureMlr}}].
-Default is \dQuote{warn}.}
-
-\item{show.learner.output}{[\code{logical(1)}]\cr
-See [\code{\link[mlr]{configureMlr}}].
-Default is \code{FALSE}.}
 
 \item{output.num.format}{[\code{logical(1)}]\cr
 Format string for the precision of the numeric output of mbo.}

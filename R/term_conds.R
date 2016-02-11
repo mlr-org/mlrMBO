@@ -5,7 +5,7 @@
 # and returns a list with the following three components
 # * term: logical indicating whether the stopping condition is met.
 # * message: String indicating the reason for termination.
-# * code: integer code of stopping condition.
+# * code: integer code of stopping condition (only for build-in stopping conditions!)
 
 # @title
 # Maximum iteration stopping condition.
@@ -34,9 +34,6 @@ makeMBOMaxBudgetTermination = function(time.budget) {
   function(opt.state) {
     time.used = as.numeric(getOptStateTimeUsed(opt.state), units = "secs")
     term = (time.used > time.budget)
-    if (term) {
-      showInfo(show.info, "time.budget %i reached with %.1f", time.budget, time.used)
-    }
     message = if (!term) NA_character_ else sprintf("Time budged %f reached.", time.budget)
     return(list(term = term, message = message, code = 2L))
   }
@@ -55,9 +52,6 @@ makeMBOMaxExecBudgetTermination = function(time.budget) {
     time.used = sum(getOptPathExecTimes(opt.path))
 
     term = (time.used > time.budget)
-    if (term) {
-      showInfo(show.info, "time.budget %i reached with %.1f", time.budget, time.used)
-    }
     message = if (!term) NA_character_ else sprintf("Time budged %f reached.", time.budget)
     return(list(term = term, message = message, code = 3L))
   }
@@ -75,7 +69,7 @@ makeMBOTargetFunValueTermination = function(target.fun.value) {
   force(target.fun.value)
   function(opt.state) {
     opt.problem = getOptStateOptProblem(opt.state)
-    control = getOptProblemControl(opt.state)
+    control = getOptProblemControl(opt.problem)
     opt.path = getOptStateOptPath(opt.state)
     opt.dir = if (control$minimize) 1L else -1L
     current.best = getOptPathEl(opt.path, getOptPathBestIndex((opt.path)))$y
