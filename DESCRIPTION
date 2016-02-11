@@ -16,7 +16,8 @@ BugReports: https://github.com/berndbischl/mlrMBO/issues
 Depends:
     lhs,
     mlr (>= 2.5),
-    ParamHelpers (>= 1.4)
+    ParamHelpers (>= 1.4),
+    smoof (>= 1.2)
 Imports:
     BBmisc (>= 1.7),
     checkmate (>= 1.4),
@@ -25,7 +26,6 @@ Imports:
     gridExtra,
     parallelMap (>= 1.1),
     plyr,
-    smoof (>= 1.2),
     reshape2,
     scales
 Suggests:
