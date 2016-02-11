@@ -1,8 +1,7 @@
 #' @title Optimizes a function with sequential model based optimization.
 #'
 #' @description
-#' It is possible to parallelize the evaluation of the target function to speed up the computation.
-#' See \link{mbo_parallel} for further information.
+#' See \link{mbo_parallel} for all parallelization options.
 #'
 #' @param fun [\code{function(x, ...)}]\cr
 #'   Fitness function to minimize. The first argument has to be a list of values.
