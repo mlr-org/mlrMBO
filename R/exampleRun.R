@@ -14,7 +14,7 @@
 #' - The true objective function (and later everything which is predicted from our surrogate model)
 #'   is evaluated on a regular spaced grid. These evaluations are stored in the result object.
 #'   You can control the resultion of this grid via \code{points.per.dim}.
-#'   Parallelization of these evaluations is possible with the R package parallelMap on the level \code{mlrMBO.fevals}.
+#'   Parallelization of these evaluations is possible with the R package parallelMap on the level \code{mlrMBO.feval}.
 #' - In every iteration the fitted, approximating surrogate model is stored in the result object
 #'   (via \code{store.model.at} in \code{control}) so we can later visualize it quickly.
 #' - The global optimum of the function (if defined) is extracted from the passed smoof function.
@@ -155,7 +155,7 @@ getEvals = function(fun, par.set, noisy, noisy.evals, points.per.dim, names.x, n
     } else {
       fun(x)
     }
-  }, xs.trafo.list, level = "mlrMBO.fevals", simplify = TRUE)
+  }, xs.trafo.list, level = "mlrMBO.feval", simplify = TRUE)
   evals = cbind(xs.trafo, y = ys)
   colnames(evals) = c(names.x, name.y)
   return(evals)
