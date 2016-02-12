@@ -25,12 +25,9 @@ renderExampleRunPlot2d = function(x, iter,
   name.x2 = names.x[2]
   name.y = x$name.y
   evals = x$evals
-  global.opt = x$global.opt
   control = x$control
   proppoints = control$propose.points
   mbo.res = x$mbo.res
-  x1 = unique(evals[, name.x1])
-  x2 = unique(evals[, name.x2])
   name.crit = control$infill.crit
   critfun = getInfillCritFunction(name.crit)
   se = (x$learner$predict.type == "se")
@@ -43,9 +40,6 @@ renderExampleRunPlot2d = function(x, iter,
 
   idx.init = which(opt.path$dob == 0)
 
-  # save sequence of opt plots here
-  plots = list()
-
   # FIXME: what to plot if not infillcrit that uses se?
   models = mbo.res$models[[iter]]
   models = if (inherits(models, "WrappedModel")) list(models) else models
@@ -54,7 +48,6 @@ renderExampleRunPlot2d = function(x, iter,
   idx.seq = which(opt.path$dob > 0 & opt.path$dob < iter)
   idx.proposed = which(opt.path$dob == iter)
   idx.past = which(opt.path$dob < iter)
-  idx.pastpresent = which(opt.path$dob <= iter)
 
   model.ok = !inherits(models[[1L]], "FailureModel")
 
@@ -206,16 +199,12 @@ renderExampleRunPlot2d = function(x, iter,
   }
   pl.crit = plotSingleFun(gg.fun, gg.points, name.x1, name.x2, name.crit, trafo = trafo[["crit"]])
 
-  title = sprintf("Iter %i, x-axis: %s, y-axis: %s", iter, name.x1, name.x2)
-
-  plots = list(
+  list(
     pl.fun = pl.fun,
     pl.mod = pl.mod,
     pl.crit = pl.crit,
     pl.se = pl.se
   )
-
-  return(plots)
 }
 
 # Helper for nice alignment of multiple ggplots.

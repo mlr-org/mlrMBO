@@ -10,7 +10,6 @@ evalMBODesign.OptState = function(opt.state) {
   opt.problem = getOptStateOptProblem(opt.state)
   design = getOptProblemDesign(opt.problem)
   control = getOptProblemControl(opt.problem)
-  fun = getOptProblemFun(opt.problem)
   par.set = getOptProblemParSet(opt.problem)
   pids = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
   y.name = control$y.name

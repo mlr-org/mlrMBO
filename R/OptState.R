@@ -96,9 +96,7 @@ loadOptState.OptProblem = function(obj) {
 }
 
 loadOptState.character = function(obj) {
-  opt.state = load2(file = obj, "opt.state")
-  .Random.seed = getOptStateRandomSeed(opt.state)
-  opt.state
+  load2(file = obj, "opt.state")
 }
 
 # If we already have a mbo result we will return it, otherwise it will be generated and stored in the opt.result

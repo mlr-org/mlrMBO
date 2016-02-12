@@ -13,7 +13,6 @@ mboContinue = function(file) {
   assertCharacter(file, len = 1L)
   opt.state = loadOptState(file)
   state = getOptStateState(opt.state)
-  opt.problem = getOptStateOptProblem(opt.state)
   if (state %nin% c("init", "iter")) {
     warningf("Tuning ended with %s. No need to continue. Simply returning stored result.", state)
     return(getOptResultMboResult(getOptStateOptResult(opt.state)))

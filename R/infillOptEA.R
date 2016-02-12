@@ -7,7 +7,6 @@ infillOptEA = function(infill.crit, models, control, par.set, opt.path, design, 
 
   # get constants and init shit
   repids = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
-  d = sum(getParamLengths(par.set))
 
   # (mu + lambda) strategy
   mu = control$infill.opt.ea.mu

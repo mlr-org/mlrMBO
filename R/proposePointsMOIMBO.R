@@ -59,22 +59,8 @@ proposePointsMOIMBO = function(opt.state, ...) {
     return(ch$prop)
   }
 
-  if (objective == "mean.dist") {
-    y.dim = 2
-    y.names = c("mean", "dist")
-  } else if (objective == "ei.dist") {
-    y.dim = 2
-    y.names = c("ei", "dist")
-  } else if (objective == "mean.se") {
-    y.dim = 2
-    y.names = c("mean", "se")
-  } else if (objective == "mean.se.dist") {
-    y.dim = 3
-    y.names = c("mean", "se", "dist")
-  }
-
+  y.dim = if(objective == "mean.se.dist") 3L else 2L
   repids = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
-  d = sum(getParamLengths(par.set))
   mu = n
   # FIXME: what are good defaults?
   mutate =  emoa::pm_operator(control$multipoint.multicrit.pm.eta, control$multipoint.multicrit.pm.p,

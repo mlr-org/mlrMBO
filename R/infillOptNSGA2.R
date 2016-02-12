@@ -7,14 +7,13 @@ infillOptMultiCritNSGA2 = function(infill.crit, models, control, par.set, opt.pa
   # build target function for vectorized nsga2 and run it
   rep.pids = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
   m = control$number.of.targets
-  control2 = control
   fun.tmp = function(x) {
     newdata = as.data.frame(x)
     colnames(newdata) = rep.pids
     asMatrixRows(lapply(1:m, function(i) {
       # we need to make sure mininimize in control is a scalar, so we can multiply it in infill crits...
-      control2$minimize = control$minimize[i]
-      infill.crit(points = newdata, models = models[i], control = control2,
+      control$minimize = control$minimize[i]
+      infill.crit(points = newdata, models = models[i], control = control,
         par.set = par.set, design = design, iter = iter, ...)
     }))
   }
@@ -34,11 +33,11 @@ infillOptMultiCritNSGA2 = function(infill.crit, models, control, par.set, opt.pa
   hv.contr.crit = getInfillCritFunction(control$mspot.select.crit)
   candidate.vals = asMatrixCols(lapply(1:m, function(i) {
     # we need to make sure mininimize in control is a scalar, so we can multiply it in infill crits...
-    control2$minimize = control$minimize[i]
+    control$minimize = control$minimize[i]
 
     newdata = as.data.frame(res$par)
     colnames(newdata) = rep.pids
-    hv.contr.crit(points = newdata, models = models[i], control = control2,
+    hv.contr.crit(points = newdata, models = models[i], control = control,
       par.set = par.set, design = design, iter = iter, ...)
   }))
 
