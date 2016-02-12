@@ -10,7 +10,8 @@ test_that("multipoint multicrit", {
     for (dist in c("nearest.better", "nearest.neighbor")) {
       for (sel in c("hypervolume", "crowdingdist", "first", "last")) {
 
-        ctrl = makeMBOControl(init.design.points = 10L, propose.points = 4L)
+        des = generateDesign(10L, smoof::getParamSet(f))
+        ctrl = makeMBOControl(propose.points = 4L)
         ctrl = setMBOControlTermination(ctrl, iters = 1L)
         ctrl = setMBOControlMultiPoint(ctrl,
           method = "multicrit",
@@ -20,7 +21,7 @@ test_that("multipoint multicrit", {
           multicrit.maxit = 30L
         )
 
-        res = mbo(f, learner = lrn, control = ctrl)
+        res = mbo(f, des, learner = lrn, control = ctrl)
 
         gap = res$y - 0.3979
         #expect_true(gap < 0.1)

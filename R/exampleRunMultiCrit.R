@@ -7,17 +7,7 @@
 #' For visualization, run \code{plotExampleRun} on the resulting object.
 #' What is displayed is documented here: \code{\link{plotExampleRun}}.
 #'
-#' @param fun [\code{function}]\cr
-#'   Target function. See \code{\link{mbo}} for details.
-#' @param learner [\code{\link[mlr]{Learner}}]\cr
-#'   See \code{\link{mbo}}.
-#'   Default is mlr learner \dQuote{regr.km}, which is kriging from package
-#'   DiceKriging, if all parameters are numeric. \code{nugget.estim} is set
-#'   to \code{TRUE} depending on whether we have noisy observations or not.
-#'   If a least one parameter is discrete the mlr learner \dQuote{regr.randomForest}
-#'   from package RandomForest is used as the default.
-#' @param control [\code{\link{MBOControl}}]\cr
-#'   See \code{\link{mbo}}.
+#' @inheritParams mbo
 #' @param  points.per.dim [\code{integer}]\cr
 #'   Number of (regular spaced) locations at which to
 #'   sample the \code{fun} function per dimension.
@@ -33,25 +23,25 @@
 #'   Further arguments passed to the learner.
 #' @return [\code{MBOExampleRunMultiCrit}]
 #' @export
-exampleRunMultiCrit= function(fun, learner, control, points.per.dim = 50,
+exampleRunMultiCrit= function(fun, design = NULL, learner, control, points.per.dim = 50,
   show.info = NULL, nsga2.args = list(), ref.point = NULL, ...) {
 
-  if (!isSmoofFunction(fun)) {
-    stopf("You need to pass a smoof function.")
-  }
-  assertClass(control, "MBOControl")
+  assertClass(fun, "smoof_multi_objective_function")
   par.set = smoof::getParamSet(fun)
+  par.types = getParamTypes(par.set)
+  n.params = sum(getParamLengths(par.set))
+  if (is.null(design))
+    design = generateDesign(4 * n.params, par.set)
+
+  learner = checkLearner(learner, par.set, control)
+  assertClass(control, "MBOControl")
   minimize = shouldBeMinimized(fun)
   control$noisy = isNoisy(fun)
   control$minimize = minimize
 
-  assertClass(par.set, "ParamSet")
   if (!is.null(ref.point))
     assertNumeric(ref.point, lower = 0, finite = TRUE, any.missing = FALSE, len = 2L)
-  par.types = getParamTypes(par.set)
-  n.params = sum(getParamLengths(par.set))
 
-  learner = checkLearner(learner, par.set, control, ...)
 
   if (is.null(show.info)) {
     show.info = getOption("mlrMBO.show.info", TRUE)
@@ -100,7 +90,7 @@ exampleRunMultiCrit= function(fun, learner, control, points.per.dim = 50,
   showInfo(show.info, "Learner: %s. Settings:\n%s", learner$id, mlr:::getHyperParsString(learner))
 
   # run optimizer now
-  res = mbo(fun, learner = learner, control = control, show.info = show.info)
+  res = mbo(fun, design, learner = learner, control = control, show.info = show.info)
   mbo.hypervolume = getDominatedHV(res$pareto.front, ref.point, minimize)
 
   # if we have 1 model per obj, predict whole space and approx pareto front, so we can see effect of model

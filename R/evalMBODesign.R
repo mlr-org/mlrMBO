@@ -6,8 +6,9 @@
 # 2) if y-values are there, just log all points to optpath
 # 3) if y-values are not there, eval points and log them to optpath
 
-evalMBODesign.OptState = function(opt.state, design) {
+evalMBODesign.OptState = function(opt.state) {
   opt.problem = getOptStateOptProblem(opt.state)
+  design = getOptProblemDesign(opt.problem)
   control = getOptProblemControl(opt.problem)
   fun = getOptProblemFun(opt.problem)
   par.set = getOptProblemParSet(opt.problem)

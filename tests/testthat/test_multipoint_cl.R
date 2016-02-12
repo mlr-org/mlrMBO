@@ -10,12 +10,13 @@ test_that("multipoint constant liar", {
 
   lrn = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
 
-  ctrl = makeMBOControl(init.design.points = 30L, propose.points = 5L)
+  des = generateDesign(30L, smoof::getParamSet(f))
+  ctrl = makeMBOControl(propose.points = 5L)
   ctrl = setMBOControlTermination(ctrl, iters = 1L)
   ctrl = setMBOControlInfill(ctrl, crit = "ei")
   ctrl = setMBOControlMultiPoint(ctrl, method = "cl")
 
-  res = mbo(f, learner = lrn, control = ctrl)
+  res = mbo(f, des, learner = lrn, control = ctrl)
   expect_is(res, "MBOResult")
   expect_true(res$y < 0.1)
 })

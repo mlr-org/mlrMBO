@@ -29,15 +29,18 @@ test_that("impute y", {
   learner = makeLearner("regr.randomForest")
 
   n.focus.points = 100L
+  des1 = generateDesign(10L, smoof::getParamSet(f1))
+  des2 = generateDesign(10L, smoof::getParamSet(f2))
+
   ctrl = makeMBOControl()
   ctrl = setMBOControlTermination(ctrl, iters = 20L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = n.focus.points)
-  expect_error(mbo(f1, des = NULL, learner, ctrl), "must be a numeric of length 1")
+  expect_error(mbo(f1, des1, learner, ctrl), "must be a numeric of length 1")
 
   ctrl = makeMBOControl(impute.y.fun = function(x, y, opt.path) 0)
   ctrl = setMBOControlTermination(ctrl, iters = 20L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = n.focus.points)
-  res = mbo(f1, des = NULL, learner, ctrl)
+  res = mbo(f1, des2, learner, ctrl)
 
   # Check for correct error messages
   na.inds = which(getOptPathY(res$opt.path) == 0)
@@ -51,11 +54,11 @@ test_that("impute y", {
   ctrl = makeMBOControl()
   ctrl = setMBOControlTermination(ctrl, iters = 50L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = n.focus.points)
-  expect_error(mbo(f2, des = NULL, learner, ctrl), "foo")
+  expect_error(mbo(f2, des2, learner, ctrl), "foo")
   ctrl = makeMBOControl(impute.y.fun = function(x, y, opt.path) 0)
   ctrl = setMBOControlTermination(ctrl, iters = 50L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = n.focus.points)
-  res = mbo(f2, des = NULL, learner, ctrl)
+  res = mbo(f2, des2, learner, ctrl)
   # Check for correct error messages
   na.inds = which(getOptPathY(res$opt.path) == 0)
   for (ind in 1:getOptPathLength(res$opt.path)) {
@@ -80,13 +83,14 @@ test_that("impute y parego", {
     par.set = makeNumericParamSet(len = 2L, lower = 0, upper = 3),
     n.objectives = 2L
   )
+  des1 = generateDesign(10L, smoof::getParamSet(f1))
   learner = makeLearner("regr.rpart")
-  ctrl = makeMBOControl(init.design.points = 10L, number.of.targets = 2L,
+  ctrl = makeMBOControl(number.of.targets = 2L,
     impute.y.fun = function(x, y, opt.path) c(100, 100))
   ctrl = setMBOControlTermination(ctrl, iters = 5L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10)
   ctrl = setMBOControlMultiCrit(ctrl, method = "parego", parego.s = 100)
-  or = mbo(f1, learner = learner, control = ctrl)
+  or = mbo(f1, des1, learner = learner, control = ctrl)
   op = as.data.frame(or$opt.path)
   expect_equal(nrow(op), 10 + 5)
   expect_true(all(is.na(op$error.message) | op$y1 == 100))

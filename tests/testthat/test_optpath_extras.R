@@ -14,14 +14,15 @@ test_that("extras are logged a expected", {
       makeNumericParam("x", lower = -2, upper = 2)
     )
   )
+  des = generateDesign(10L, smoof::getParamSet(f))
 
   learner = makeLearner("regr.km", predict.type = "se")
-  control = makeMBOControl(init.design.points = 5L)
+  control = makeMBOControl()
   control = setMBOControlTermination(control, iters = 2L)
   control = setMBOControlInfill(control, crit = "ei", opt = "focussearch")
 
   # run mbo and convert opt path to data frame
-  result = mbo(f, learner = learner, control = control)
+  result = mbo(f, des, learner = learner, control = control)
 
   extras.names = c("extra1", "extra2")
 

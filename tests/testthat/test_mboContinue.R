@@ -22,11 +22,12 @@ test_that("mboContinue", {
   # First test sombo
   learner = makeLearner("regr.rpart")
   save.file = tempfile("state", fileext=".RData")
+  des = generateDesign(10L, smoof::getParamSet(f))
   ctrl = makeMBOControl(save.on.disk.at = 0:4,
-    save.file.path = save.file, init.design.points = 10L)
+    save.file.path = save.file)
   ctrl = setMBOControlTermination(ctrl, iters = 3L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10L)
-  expect_error({or = mbo(f, learner = learner, control = ctrl)}, "foo")
+  expect_error({or = mbo(f, des, learner = learner, control = ctrl)}, "foo")
   for (i in 1:20) {
     try({or = mboContinue(save.file)}, silent = TRUE)
     if (!is.null(or))
@@ -49,13 +50,14 @@ test_that("mboContinue", {
     n.objectives = 2L
   )
 
+  des = generateDesign(10L, smoof::getParamSet(f))
   ctrl = makeMBOControl(save.on.disk.at = 0:8,
-    save.file.path = save.file, init.design.points = 10L, number.of.targets = 2L)
+    save.file.path = save.file, number.of.targets = 2L)
   ctrl = setMBOControlTermination(ctrl, iters = 7L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100)
   ctrl = setMBOControlMultiCrit(ctrl, method = "parego", parego.s = 100)
   or = NULL
-  try({or = mbo(f, learner = learner, control = ctrl)}, silent = TRUE)
+  try({or = mbo(f, des, learner = learner, control = ctrl)}, silent = TRUE)
   for (i in 1:10) {
     suppressWarnings(try({or = mboContinue(save.file)}, silent = TRUE))
     if (!is.null(or))
@@ -74,11 +76,12 @@ test_that("mboContinue works when at end", {
   )
   learner = makeLearner("regr.rpart")
   save.file = tempfile(fileext = ".RData")
+  des = generateDesign(10L, smoof::getParamSet(f))
   ctrl = makeMBOControl(save.on.disk.at = 0:2,
-    save.file.path = save.file, init.design.points = 10L)
+    save.file.path = save.file)
   ctrl = setMBOControlTermination(ctrl, iters = 1L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10L)
-  or = mbo(f, learner = learner, control = ctrl)
+  or = mbo(f, des, learner = learner, control = ctrl)
   expect_equal(getOptPathLength(or$opt.path), 11L)
   expect_warning({or = mboContinue(save.file)}, "No need to continue")
   expect_equal(getOptPathLength(or$opt.path), 11L)

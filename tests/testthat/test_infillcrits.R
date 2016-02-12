@@ -1,17 +1,18 @@
 context("infill crits")
 
 test_that("infill crits", {
+  ninit = 20L
+  niters = 3L
   f1 = smoof::makeSphereFunction(2L)
   f2 = smoof::makeSingleObjectiveFunction(
     fn = function(x) sum(x^2) + rnorm(1, 0, 0.03),
     par.set = smoof::getParamSet(f1)
   )
+  des = generateDesign(ninit, smoof::getParamSet(f1))
 
-  ninit = 20L
-  niters = 3L
 
   mycontrol = function(minimize, crit) {
-    ctrl = makeMBOControl(init.design.points = ninit, final.evals = 10L)
+    ctrl = makeMBOControl(final.evals = 10L)
     ctrl = setMBOControlTermination(ctrl, iters = niters)
     ctrl = setMBOControlInfill(ctrl, crit = crit, opt = "focussearch", opt.restarts = 1L,
       opt.focussearch.points = 300L)
@@ -32,6 +33,7 @@ test_that("infill crits", {
     makeLearner("regr.randomForest", ntree = 10L, predict.type = "se")
   )
 
+
   # FIXME: we see a problem with crit = "mean" here.
   # at some point we will always eval the same point.
   # kriging will then produce numerical errors, but the real problem is that
@@ -46,7 +48,7 @@ test_that("infill crits", {
           ctrl = mycontrol(crit)
           f = if (!noisy) f1 else f2
           f = if (!minimize) setAttribute(f, "minimize", FALSE) else f
-          or = mbo(f, learner = lrn, control = ctrl)
+          or = mbo(f, des, learner = lrn, control = ctrl)
           mycheck(or, minimize)
         }
       }
@@ -54,16 +56,16 @@ test_that("infill crits", {
   }
 
   # check lambda and pi for cb
-  ctrl = makeMBOControl(init.design.points = 8L, final.evals = 10L)
+  ctrl = makeMBOControl(final.evals = 10L)
   ctrl = setMBOControlTermination(ctrl, iters = niters)
   ctrl = setMBOControlInfill(ctrl, crit = "cb", opt = "focussearch", opt.restarts = 1L,
     opt.focussearch.points = 300L, crit.cb.lambda = 2)
-  mbo(f1, learner = makeLearner("regr.km", predict.type = "se"), control = ctrl)
+  mbo(f1, des, learner = makeLearner("regr.km", predict.type = "se"), control = ctrl)
   expect_error(setMBOControlInfill(ctrl, crit = "cb", opt = "focussearch", opt.restarts = 1L,
     opt.focussearch.points = 300L, crit.cb.lambda = 2, crit.cb.pi = 0.5))
   ctrl = setMBOControlInfill(ctrl, crit = "cb", opt = "focussearch", opt.restarts = 1L,
     opt.focussearch.points = 300L, crit.cb.lambda = NULL, crit.cb.pi = 0.5)
-  or = mbo(f1, learner = makeLearner("regr.km", predict.type = "se"), control = ctrl)
+  or = mbo(f1, des, learner = makeLearner("regr.km", predict.type = "se"), control = ctrl)
   expect_true(or$y < 50)
 
   # check beta for eqi
@@ -71,7 +73,7 @@ test_that("infill crits", {
                                    opt.focussearch.points = 300L, crit.eqi.beta = 2))
   ctrl = setMBOControlInfill(ctrl, crit = "eqi", opt = "focussearch", opt.restarts = 1L,
                              opt.focussearch.points = 300L, crit.eqi.beta = 0.6)
-  or = mbo(f1, learner = makeLearner("regr.km", predict.type = "se", nugget.estim = TRUE), control = ctrl)
+  or = mbo(f1, des, learner = makeLearner("regr.km", predict.type = "se", nugget.estim = TRUE), control = ctrl)
   expect_true(or$y < 50)
 })
 

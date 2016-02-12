@@ -4,14 +4,15 @@ test_that("infillopt ea", {
 
   obj.fun = smoof::makeSphereFunction(2L)
 
-  ctrl = makeMBOControl(init.design.points = 20L, propose.points = 1L)
+  ctrl = makeMBOControl(propose.points = 1L)
   ctrl = setMBOControlTermination(ctrl, iters = 4L)
   ctrl = setMBOControlInfill(ctrl, crit = "ei", opt = "ea", opt.restarts = 2L,
     opt.ea.maxit = 75L, opt.ea.lambda = 1L)
 
   lrn = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
 
-  res = mbo(obj.fun, learner = lrn, control = ctrl)
+  des = generateDesign(20L, smoof::getParamSet(obj.fun))
+  res = mbo(obj.fun, des, learner = lrn, control = ctrl)
   expect_true(res$y < 1e-1)
 
   obj.fun = smoof::makeSingleObjectiveFunction(
@@ -23,7 +24,8 @@ test_that("infillopt ea", {
     has.simple.signature = FALSE
   )
 
-  res = mbo(obj.fun, learner = lrn, control = ctrl)
+  des = generateDesign(10L, smoof::getParamSet(obj.fun))
+  res = mbo(obj.fun, des, learner = lrn, control = ctrl)
   expect_true(res$y < 1e-1)
 })
 

@@ -15,8 +15,14 @@
 #'   mbo will evaluate the points.
 #'   If the parameters have corresponding trafo functions,
 #'   the design must not be transformed before it is passed!
+#'   Default is \code{NULL}, which means \code{\link{generateDesign}} is called and a design
+#'   of size 4 times number of all parameters is created.
 #' @param learner [\code{\link[mlr]{Learner}}]\cr
-#'   Regression learner to model \code{fun}.
+#'   Default is mlr learner \dQuote{regr.km}, which is kriging from package
+#'   DiceKriging, if all parameters are numeric. \code{nugget.estim} is set
+#'   to \code{TRUE} depending on whether we have noisy observations or not.
+#'   If a least one parameter is discrete the mlr learner \dQuote{regr.randomForest}
+#'   from package RandomForest is used as the default.
 #' @template arg_control
 #' @template arg_showinfo
 #' @param more.args [list]\cr
@@ -26,21 +32,20 @@
 mbo = function(fun, design, learner, control,
   show.info = getOption("mlrMBO.show.info", TRUE), more.args = list()) {
 
-  assertFlag(show.info)
+  assertClass(fun, "smoof_function")
+  par.set = smoof::getParamSet(fun)
+  n.params = sum(getParamLengths(par.set))
   control$noisy = isNoisy(fun)
   control$minimize = shouldBeMinimized(fun)
-  par.set = smoof::getParamSet(fun)
+  assertFlag(show.info)
+  if (is.null(design))
+    design = generateDesign(n.params * 4L, par.set)
+  else
+    assertDataFrame(design, min.rows = 1L, min.cols = 1L)
   learner = checkLearner(learner, par.set, control)
   control = checkStuff(fun, par.set, design, learner, control)
 
   loadPackages(control)
-
-  if(control$multifid) {
-    if(learner$predict.type!="se")
-      learner = setPredictType(learner, "se")
-    par.set = c(par.set, makeParamSet(
-    makeIntegerParam(".multifid.lvl", lower = 1L, upper = length(control$multifid.lvls))))
-  }
 
   # generate an OptProblem which gathers all necessary information to define the optimization problem in one environment.
   opt.problem = makeOptProblem(

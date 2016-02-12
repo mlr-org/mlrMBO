@@ -31,7 +31,7 @@ NULL
 # See this as a constructor and it's variables as member variables.
 # All variables in this Object should be documented here.
 # Think of it, when you implement new ones!
-# Unfortunately in R we cannot hinder you from putting other values in this object, but please: Don't! 
+# Unfortunately in R we cannot hinder you from putting other values in this object, but please: Don't!
 makeOptProblem = function(fun, par.set, design = NULL, learner, control, show.info = TRUE, more.args = list()) {
   opt.problem = new.env()
 
@@ -101,11 +101,5 @@ setOptProblemDesign = function(opt.problem, design) {
 }
 
 getOptProblemDesign = function(opt.problem) {
-  if (is.null(opt.problem$design)) {
-    design = generateMBODesign.OptProblem(opt.problem)
-    setOptProblemDesign(opt.problem, design)
-  } else {
-    design = opt.problem$design
-  }
-  design
+  opt.problem$design
 }

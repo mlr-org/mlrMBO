@@ -10,13 +10,14 @@ test_that("multipoint cb", {
   )
   lrn = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
 
-  ctrl = makeMBOControl(init.design.points = 30L, propose.points = 5L)
+  des = generateDesign(30L, smoof::getParamSet(f))
+  ctrl = makeMBOControl(propose.points = 5L)
   ctrl = setMBOControlTermination(ctrl, iters = 1L)
   ctrl = setMBOControlInfill(ctrl, crit = "cb", opt = "focussearch", opt.focussearch.points = 100L,
     opt.focussearch.maxit = 2L)
   ctrl = setMBOControlMultiPoint(ctrl, method = "cb")
 
-  res = mbo(f, learner = lrn, control = ctrl)
+  res = mbo(f, des, learner = lrn, control = ctrl)
   op = as.data.frame(res$opt.path)
   expect_true(all(is.na(op$multipoint.cb.lambda[1:30])))
   expect_true(all(!is.na(op$multipoint.cb.lambda[31:35])))
@@ -25,14 +26,15 @@ test_that("multipoint cb", {
 
   # FIXME: this test must be generalized
   # now check min dist, set to "inf" so we can only propose 1 new point, not 5
-  ctrl = makeMBOControl(init.design.points = 30L, propose.points = 5L)
+  des = generateDesign(30L, smoof::getParamSet(f))
+  ctrl = makeMBOControl(propose.points = 5L)
   ctrl = setMBOControlTermination(ctrl, iters = 1L)
   ctrl = setMBOControlInfill(ctrl, crit = "cb", opt = "focussearch", opt.focussearch.points = 100L,
     opt.focussearch.maxit = 2L)
   ctrl = setMBOControlMultiPoint(ctrl, method = "cb")
   ctrl$cb.min.dist = 10000
 
-  res = mbo(f, learner = lrn, control = ctrl)
+  res = mbo(f, des, learner = lrn, control = ctrl)
   expect_equal(getOptPathLength(res$opt.path), 35L)
 })
 
@@ -47,13 +49,14 @@ test_that("multipoint cb with random interleaved points", {
   )
   lrn = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
 
-  ctrl = makeMBOControl(init.design.points = 30L, propose.points = 5L)
+  des = generateDesign(30L, smoof::getParamSet(f))
+  ctrl = makeMBOControl(propose.points = 5L)
   ctrl = setMBOControlTermination(ctrl, iters = 1L)
   ctrl = setMBOControlInfill(ctrl, crit = "cb", opt = "focussearch", opt.focussearch.points = 100L,
     opt.focussearch.maxit = 2L, interleave.random.points = 5L)
   ctrl = setMBOControlMultiPoint(ctrl, method = "cb")
 
-  res = mbo(f, learner = lrn, control = ctrl)
+  res = mbo(f, des, learner = lrn, control = ctrl)
   op = as.data.frame(res$opt.path)
   op = tail(op, 10)
 
@@ -73,13 +76,14 @@ test_that("multipoint cb with random interleaved points", {
 
   lrn = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
 
-  ctrl = makeMBOControl(init.design.points = 30L, propose.points = 1L)
+  des = generateDesign(30L, smoof::getParamSet(f))
+  ctrl = makeMBOControl(propose.points = 1L)
   ctrl = setMBOControlTermination(ctrl, iters = 1L)
   ctrl = setMBOControlInfill(ctrl, crit = "cb", opt = "focussearch", opt.focussearch.points = 100L,
     opt.focussearch.maxit = 2L, interleave.random.points = 1L)
   ctrl = setMBOControlMultiPoint(ctrl, method = "cb")
 
-  res = mbo(f, learner = lrn, control = ctrl)
+  res = mbo(f, des, learner = lrn, control = ctrl)
   op = as.data.frame(res$opt.path)
   op = tail(op, 2)
   expect_identical(is.na(op$cb), c(FALSE, TRUE))

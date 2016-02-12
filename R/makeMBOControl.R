@@ -4,21 +4,6 @@
 #'   How many objectives are to be optimized? \code{number.of.targets = 1} implies normal single
 #'   criteria optimization, \code{number.of.targets > 1} implies multicriteria optimization.
 #'   Default is 1.
-#' @param init.design.points [\code{integer(1)}]\cr
-#'   Number of points to generate for initial design via \code{\link[ParamHelpers]{generateDesign}}.
-#'   Only used if no design is given in \code{mbo} function.
-#'   If for any reason not enough points could be generated, the missing ones are generated randomly.
-#'   Default is 20.
-#' @param init.design.fun [\code{function}]\cr
-#'   Function from package lhs for the sequential design.
-#'   Possible are: \code{maximinLHS}, \code{randomLHS}, \code{geneticLHS},
-#'   \code{improvedLHS}, \code{optAugmentLHS}, \code{optimumLHS}.
-#'   Only used if no design is given in \code{mbo} function.
-#'   Default is \code{maximinLHS}.
-#' @param init.design.args [\code{list}]\cr
-#'   List of further arguments passed to \code{init.design.fun}.
-#'   Only used if no design is given in \code{mbo} function.
-#'   Default is empty list.
 #' @param propose.points [\code{integer(1)}]\cr
 #'   Number of proposed / really evaluated points each iteration.
 #'   Default is 1.
@@ -89,7 +74,6 @@
 #' @aliases MBOControl
 #' @export
 makeMBOControl = function(number.of.targets = 1L,
-  init.design.points = 20L, init.design.fun = maximinLHS, init.design.args = list(),
   propose.points = 1L,
   final.method = "best.true.y", final.evals = 0L,
   y.name = "y",
@@ -108,10 +92,6 @@ makeMBOControl = function(number.of.targets = 1L,
 ) {
 
   number.of.targets = asInt(number.of.targets, lower = 1L)
-
-  init.design.points = asInt(init.design.points)
-  assertFunction(init.design.fun)
-  assertList(init.design.args)
 
   propose.points = asInt(propose.points, lower = 1L)
 
@@ -144,9 +124,6 @@ makeMBOControl = function(number.of.targets = 1L,
 
   control = makeS3Obj("MBOControl",
     number.of.targets = number.of.targets,
-    init.design.points = init.design.points,
-    init.design.fun = init.design.fun,
-    init.design.args = init.design.args,
     propose.points = propose.points,
     final.method = final.method,
     final.evals = final.evals,
@@ -186,7 +163,6 @@ makeMBOControl = function(number.of.targets = 1L,
 #' @export
 print.MBOControl = function(x, ...) {
   catf("Objectives                    : %s", x$number.of.targets)
-  catf("Init. design                  : %i points", x$init.design.points)
   catf("Points proposed per iter      : %i", x$propose.points)
   if (!is.null(x$trafo.y.fun)) {
     catf("y transformed before modelling: %s", attr(x$trafo.y.fun, "name"))

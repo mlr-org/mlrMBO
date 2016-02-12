@@ -5,7 +5,7 @@ test_that("exampleRunMulticrit", {
   doRun = function(fun, method, crit, prop.points, indicator = "sms") {
     # set nugget effect to small value for num stability in this unit test
     learner = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2", nugget = 0.001)
-    control = makeMBOControl(init.design.points = 10, number.of.targets = 2L,
+    control = makeMBOControl(number.of.targets = 2L,
       propose.points = prop.points)
     control = setMBOControlTermination(control, iters = 1L)
     if (method == "mspot")
@@ -16,12 +16,10 @@ test_that("exampleRunMulticrit", {
         opt.focussearch.points = 10L, opt.focussearch.maxit = 1L)
     control = setMBOControlMultiCrit(control, method = method, dib.indicator = indicator)
 
-    run = exampleRunMultiCrit(fun, learner, control, points.per.dim = 4L,
+    run = exampleRunMultiCrit(testf.zdt1.2d, testd.zdt1.2d, learner = learner, control = control, points.per.dim = 4L,
       nsga2.args = list(popsize = 4L, generations = 2L), ref.point = c(11, 11))
     res = renderExampleRunPlot(run, iter = 1L)
   }
-
-  fun1 = smoof::makeZDT1Function(2L)
 
   doRun(fun1, method = "parego", crit = "ei", prop.points = 1L)
   doRun(fun1, method = "parego", crit = "ei", prop.points = 2L)

@@ -16,16 +16,10 @@ test_that("mbo works with different learners", {
     has.simple.signature = FALSE
   )
 
-  ps2 = makeParamSet(
-    makeNumericParam("num1", lower = 0, upper = 1)
-  )
-  f2 = smoof::makeSingleObjectiveFunction(
-    fn = function(x) x$num1^2,
-    par.set = ps2,
-    has.simple.signature = FALSE
-  )
+  ps2 = testp.fsphere.2d
+  f2 = testf.fsphere.2d
 
-  ctrl = makeMBOControl(init.design.points = 12L)
+  ctrl = makeMBOControl()
   ctrl = setMBOControlTermination(ctrl, iters = 1L)
 
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100L,
@@ -39,7 +33,8 @@ test_that("mbo works with different learners", {
       lrn = setPredictType(lrn, "se")
       ctrl$infill.crit = "ei"
     }
-    mbo(fun, learner = lrn, control = ctrl)
+    des = generateDesign(10L, smoof::getParamSet(fun))
+    mbo(fun, des, learner = lrn, control = ctrl)
   }
 
   # and now a huge number of runs

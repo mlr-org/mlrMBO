@@ -1,27 +1,16 @@
 context("mbo")
 
 test_that("mbo works with rf", {
-  par.set = makeParamSet(
-    makeNumericParam("x1", lower = -2, upper = 1),
-    makeNumericParam("x2", lower = -1, upper = 2)
-  )
-  f = makeSingleObjectiveFunction(
-    fn = function(x) sum(x^2),
-    par.set = par.set
-  )
-  des = generateDesign(10L, par.set = par.set)
-  y  = sapply(1:nrow(des), function(i) f(as.list(des[i,])))
-  des$y = y
   learner = makeLearner("regr.randomForest")
   ctrl = makeMBOControl(store.model.at = c(1,5))
   ctrl = setMBOControlTermination(ctrl, iters = 5L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100L)
-  or = mbo(f, des, learner, ctrl, show.info = TRUE)
+  or = mbo(testf.fsphere.2d, testd.fsphere.2d, learner, ctrl, show.info = TRUE)
   expect_true(!is.na(or$y))
-  expect_equal(or$y, f(or$x))
+  expect_equal(or$y, testf.fsphere.2d(or$x))
   expect_equal(getOptPathLength(or$opt.path), 15)
   expect_true(is.list(or$x))
-  expect_equal(names(or$x), names(par.set$pars))
+  expect_equal(names(or$x), names(testp.fsphere.2d$pars))
   expect_equal(length(or$models[[1]]$subset), 10)
   expect_equal(length(or$models[[2]]$subset), 14) #In the 15th step we used a model based on 14
 
@@ -29,7 +18,7 @@ test_that("mbo works with rf", {
   ctrl = makeMBOControl()
   ctrl = setMBOControlTermination(ctrl, iters = 5L)
   ctrl = setMBOControlInfill(ctrl, crit = "ei", opt.focussearch.points = 100L)
-  expect_error(mbo(f, des, learner, ctrl), "must be set to 'se'")
+  expect_error(mbo(testf.fsphere.2d, testd.fsphere.2d, learner, ctrl), "must be set to 'se'")
   ctrl = makeMBOControl()
   ctrl = setMBOControlTermination(ctrl, iters = 5L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100L)
@@ -41,7 +30,7 @@ test_that("mbo works with rf", {
   ctrl = setMBOControlTermination(ctrl, iters = 5L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100L)
   learner = makeLearner("classif.randomForest")
-  expect_error(mbo(f, des, learner, ctrl), "mbo requires regression learner")
+  expect_error(mbo(testf.fsphere.2d, testd.fsphere.2d, learner, ctrl), "mbo requires regression learner")
   learner = makeLearner("regr.randomForest")
   # check trafo
   par.set = makeParamSet(
@@ -103,10 +92,11 @@ test_that("mbo works with rf", {
   expect_true(!is.na(or$y))
   expect_equal(getOptPathLength(or$opt.path), 15)
 
-  ctrl = makeMBOControl(init.design.points = 10)
+  des = generateDesign(10L, smoof::getParamSet(f))
+  ctrl = makeMBOControl()
   ctrl = setMBOControlTermination(ctrl, iters = 5L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100)
-  or = mbo(f, des = NULL, learner, ctrl)
+  or = mbo(f, des, learner, ctrl)
   expect_true(!is.na(or$y))
   expect_equal(getOptPathLength(or$opt.path), 15)
   expect_equal(names(or$x), names(par.set$pars))
@@ -122,16 +112,18 @@ test_that("mbo works with rf", {
   )
 
   learner = makeLearner("regr.randomForest")
-  ctrl = makeMBOControl(init.design.points = 10L)
+  des = generateDesign(10L, smoof::getParamSet(f))
+  ctrl = makeMBOControl()
   ctrl = setMBOControlTermination(ctrl, iters = 3L)
   ctrl = setMBOControlInfill(ctrl, opt = "cmaes", opt.cmaes.control = list(maxit = 2L))
-  or = mbo(f, des = NULL, learner, ctrl)
+  or = mbo(f, des, learner, ctrl)
   expect_true(!is.na(or$y))
   expect_equal(getOptPathLength(or$opt.path), 10 + 3)
-  ctrl = makeMBOControl(init.design.points = 10L, final.method = "best.predicted")
+  des = generateDesign(10L, smoof::getParamSet(f))
+  ctrl = makeMBOControl(final.method = "best.predicted")
   ctrl = setMBOControlTermination(ctrl, iters = 3L)
   ctrl = setMBOControlInfill(ctrl, opt = "cmaes", opt.cmaes.control = list(maxit = 2L))
-  or = mbo(f, des = NULL, learner, ctrl)
+  or = mbo(f, des, learner, ctrl)
   expect_equal(getOptPathLength(or$opt.path), 10 + 3)
 
   # check more.args
@@ -148,10 +140,11 @@ test_that("mbo works with rf", {
   )
 
   learner = makeLearner("regr.randomForest")
+  des = generateDesign(10L, smoof::getParamSet(f))
   ctrl = makeMBOControl()
   ctrl = setMBOControlTermination(ctrl, iters = 5L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100L)
-  or = mbo(f, des = NULL, learner, ctrl, more.args = list(shift = 0))
+  or = mbo(f, des, learner, ctrl, more.args = list(shift = 0))
   expect_true(!is.na(or$y))
 
   # check y transformation before modelling
@@ -165,10 +158,11 @@ test_that("mbo works with rf", {
     par.set = par.set
   )
 
+  des = generateDesign(10L, smoof::getParamSet(f))
   ctrl = makeMBOControl(trafo.y.fun = trafoLog(handle.violations = "error"))
   ctrl = setMBOControlTermination(ctrl, iters = 2L)
   expect_error(mbo(f, control = ctrl, more.args = list(shift = -1)))
-  or = mbo(f, control = ctrl, more.args = list(shift = 0))
+  or = mbo(f, des, control = ctrl, more.args = list(shift = 0))
   expect_true(!is.na(or$y))
   # negative function values not allowed when log-transforming y-values before modelling
   expect_error(mbo(f, control = ctrl, more.args = list(shift = -1)))
