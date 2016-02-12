@@ -40,7 +40,7 @@ setMBOControlMultiFid = function(control, param, lvls, costs = NULL, cor.grid.po
   control$multifid.costs = costs
 
   if (!is.null(cor.grid.points))
-    cor.grid.point = asInt(cor.grid.points, lower = 2L)
+    cor.grid.points = asInt(cor.grid.points, lower = 2L)
   control$multifid.cor.grid.points = coalesce(cor.grid.points, control$multifid.cor.grid.points, 50L)
 
   if (!is.null(force.last.level.steps))

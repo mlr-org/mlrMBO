@@ -75,7 +75,6 @@ setOptProblemAllPossibleWeights = function(opt.problem, all.possible.weights) {
 }
 
 getOptProblemAllPossibleWeights = function(opt.problem) {
-  par.set = getOptProblemParSet(opt.problem)
   control = getOptProblemControl(opt.problem)
   if (is.null(opt.problem$all.possible.weights) && control$number.of.targets > 1L && control$multicrit.method == "parego") {
     # calculate all possible weight vectors and save them

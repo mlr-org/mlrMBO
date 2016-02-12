@@ -65,8 +65,6 @@ trainLearner.MultiFidWrapper = function(.learner, .task, .subset, .weights = NUL
 #' @export
 predictLearner.MultiFidWrapper = function(.learner, .model, .newdata, ...) {
   models = .model$learner.model$next.model
-  control = .learner$mbo.control   # control object
-  fid.lvls = control$multifid.lvls # numeric vector of levels, in ascending order, e.g. c(0.3, 0.7)
 
   # we ignore the given perf.val in (newdata, task) and calcuate it for all
   lvls = .newdata$.multifid.lvl

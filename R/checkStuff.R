@@ -18,8 +18,6 @@ checkStuff = function(fun, par.set, design, learner, control) {
   assertClass(control, "MBOControl")
   assertClass(learner, "Learner")
 
-  pids = getParamIds(par.set)
-
   if (getNumberOfObjectives(fun) != control$number.of.targets) {
     stopf("Objective function has %i objectives, but the control object assumes %i.",
       getNumberOfObjectives(fun), control$number.of.targets)
