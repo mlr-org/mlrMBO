@@ -1,5 +1,7 @@
-#' @title Create transformation function for MBOExampleRun.
+#' @title Create a transformation function for MBOExampleRun.
 #'
+#' @description
+#' Creates a transformation function for MBOExampleRun.
 #' @param name [\code{character(1)}]\cr
 #'   Name of the transformation.
 #' @param fun [\code{function}]\cr

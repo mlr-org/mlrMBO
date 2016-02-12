@@ -2,7 +2,7 @@
 % Please edit documentation in R/setMBOControlMultiCrit.R
 \name{setMBOControlMultiCrit}
 \alias{setMBOControlMultiCrit}
-\title{Extends mbo control object with multi-criteria specific options.}
+\title{Set multi-criteria options.}
 \usage{
 setMBOControlMultiCrit(control, method = NULL, ref.point.method = NULL,
   ref.point.offset = NULL, ref.point.val = NULL, parego.s = NULL,
@@ -81,6 +81,9 @@ Possible values are \dQuote{mean} and \dQuote{cb}, default ist \dQuote{mean}}
 }
 \value{
 [\code{\link{MBOControl}}].
+}
+\description{
+Extends MBO control object with multi-criteria specific options.
 }
 \note{
 See the other setMBOControl... functions and \code{makeMBOControl} for referenced arguments.

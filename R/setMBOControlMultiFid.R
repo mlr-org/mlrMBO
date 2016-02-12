@@ -1,6 +1,8 @@
 #FIXME: document breifly in mbo how multifid is enabled
 
-#' @title Extends mbo control object with multiFid-algorithm specific options.
+#' @title Set multi-fidelity options.
+#' @description
+#' Extends an MBO control object with multi-fidelity specific options.
 #'
 #' @template arg_control
 #' @param param [\code{character(1)}]\cr
