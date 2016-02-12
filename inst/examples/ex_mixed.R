@@ -18,16 +18,19 @@ obj.fun = makeSingleObjectiveFunction(
     makeDiscreteParam("cat", values = c("a", "b")),
     makeNumericParam("num", lower = -5, upper = 5)
   ),
-  has.simple.signature = FALSE
+  has.simple.signature = FALSE,
+  global.opt.value = -1
 )
 
-ctrl = makeMBOControl(init.design.points = 4L, propose.points = 1L)
+ctrl = makeMBOControl(propose.points = 1L)
 ctrl = setMBOControlTermination(ctrl, iters = 10L)
 ctrl = setMBOControlInfill(ctrl, crit = "ei", opt = "focussearch", opt.focussearch.points = 500L)
 
 lrn = makeLearner("regr.randomForest", predict.type = "se")
 
-run = exampleRun(obj.fun, global.opt = -1, learner = lrn,
+design = generateTestDesign(4L, getParamSet(obj.fun), fun = lhs::maximinLHS)
+
+run = exampleRun(obj.fun, design = design, learner = lrn,
   control = ctrl, points.per.dim = 100L, show.info = TRUE)
 
 print(run)

@@ -9,7 +9,7 @@ pause = interactive()
 
 obj.fun = makeBraninFunction()
 
-ctrl = makeMBOControl(init.design.points = 10L, propose.points = 5L)
+ctrl = makeMBOControl(propose.points = 5L)
 ctrl = setMBOControlTermination(ctrl, iters = 10L)
 ctrl = setMBOControlMultiPoint(ctrl,
   method = "multicrit",
@@ -20,7 +20,9 @@ ctrl = setMBOControlMultiPoint(ctrl,
 
 lrn = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
 
-run = exampleRun(obj.fun, learner = lrn, control = ctrl,
+design = generateTestDesign(10L, getParamSet(obj.fun), fun = lhs::maximinLHS)
+
+run = exampleRun(obj.fun, design = design, learner = lrn, control = ctrl,
 	points.per.dim = 50L, show.info = TRUE)
 
 print(run)
