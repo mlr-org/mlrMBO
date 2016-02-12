@@ -22,5 +22,3 @@ test_that("infill optimizers", {
   or = mbo(testf.fsphere.2d, testd.fsphere.2d, learner, ctrl)
   mycheck(or)
 })
-
-

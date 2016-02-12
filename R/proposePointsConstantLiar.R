@@ -26,4 +26,3 @@ proposePointsConstantLiar = function(opt.state) {
   }
   joinProposedPoints(props)
 }
-

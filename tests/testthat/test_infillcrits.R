@@ -76,5 +76,3 @@ test_that("infill crits", {
   or = mbo(f1, des, learner = makeLearner("regr.km", predict.type = "se", nugget.estim = TRUE), control = ctrl)
   expect_true(or$y < 50)
 })
-
-

@@ -8,4 +8,3 @@ getSupportedInfillCritFunctions = function() {
   c("mean", "se", "ei", "aei", "eqi", "cb", "dib")
   #c("mean", "se", "ei","cb", "dib", "multiFid")
 }
-

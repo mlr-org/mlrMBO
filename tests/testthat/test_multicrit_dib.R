@@ -30,4 +30,3 @@ test_that("multicrit dib works", {
   or = mbo(testfmco1, testdesmco1, learner = learner, control = ctrl)
   expect_true(!any(is.na(or$pareto.front)))
 })
-

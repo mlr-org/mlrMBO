@@ -25,7 +25,3 @@ test_that("filter proposed points", {
   expect_true(all(is.na(op$filter.replace[seq_row(testd.fsphere.1d)])))
   expect_true(all(op$filter.replace[-seq_row(testd.fsphere.1d)]))
 })
-
-
-
-

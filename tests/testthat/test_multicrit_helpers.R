@@ -17,6 +17,3 @@ test_that("multicrit helpers", {
   e = getWorstExtremePoint(m, minimize = c(FALSE, FALSE))
   expect_equal(e, c(-10, 2))
 })
-
-
-

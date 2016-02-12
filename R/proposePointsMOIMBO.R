@@ -148,5 +148,3 @@ proposePointsMOIMBO = function(opt.state, ...) {
   rownames(X) = NULL
   return(list(prop.points = X, propose.time = st[3L], crit.vals = Y, errors.model = NA_character_))
 }
-
-

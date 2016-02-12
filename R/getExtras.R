@@ -79,4 +79,3 @@ getExtras = function(n, prop, train.time, control) {
   }
   return(exs)
 }
-

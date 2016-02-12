@@ -23,4 +23,3 @@ testfmco2 = makeMultiObjectiveFunction(
   par.set = makeNumericParamSet(len = 2L, lower = -2, upper = 1)
 )
 testdesmco2 = generateDesign(10L, smoof::getParamSet(testfmco2))
-

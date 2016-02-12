@@ -18,6 +18,6 @@ chooseFinalPoint = function(opt.state) {
   switch (control$final.method,
     "last.proposed" = getOptPathLength(opt.path),
     "best.true.y" = getOptPathBestIndex(opt.path, ties = "random"),
-    "best.predicted" = which(rank(ifelse(control$minimize, 1, -1) * 
+    "best.predicted" = which(rank(ifelse(control$minimize, 1, -1) *
       predict(getOptStateModels(opt.state)$models[[1L]], task = getOptStateTasks(opt.state)[[1]])$data$response, ties.method = "random") == 1L))
 }
