@@ -81,8 +81,8 @@ renderExampleRunPlot1d = function(x, iter,
 
   model = models[[iter]]
   type = vcapply(getOptPathDOB(opt.path), getType, iter = iter)
-  idx.past = which(type %in% c("init", "seq"))
-  idx.pastpresent = which(type %in% c("init", "seq", "prop"))
+  idx.past = type %in% c("init", "seq")
+  idx.pastpresent = type %in% c("init", "seq", "prop")
 
   # compute model prediction for current iter
   if (!inherits(model, "FailureModel")) {
