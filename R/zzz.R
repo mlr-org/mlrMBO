@@ -10,5 +10,5 @@
 NULL
 
 .onAttach = function(libname, pkgname) {
-  parallelRegisterLevels(package = "mlrMBO", levels = c("propose.points", "feval", "true.fevals"))
+  parallelRegisterLevels(package = "mlrMBO", levels = c("propose.points", "feval"))
 }
