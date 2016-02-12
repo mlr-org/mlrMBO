@@ -1,6 +1,7 @@
 #' @title Returns the names of all currently supported infill criteria.
-#'
-#' @return [\code{character}]
+#' @description
+#' None.
+#' @return [\code{character}].
 #' @export
 getSupportedInfillCritFunctions = function() {
   # FIXME: DH: Noisy infill crits not supported atm!

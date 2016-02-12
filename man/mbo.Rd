@@ -4,8 +4,8 @@
 \alias{mbo}
 \title{Optimizes a function with sequential model based optimization.}
 \usage{
-mbo(fun, design = NULL, learner, control,
-  show.info = getOption("mlrMBO.show.info", TRUE), more.args = list())
+mbo(fun, design, learner, control, show.info = getOption("mlrMBO.show.info",
+  TRUE), more.args = list())
 }
 \arguments{
 \item{fun}{[\code{function(x, ...)}]\cr
@@ -16,14 +16,17 @@ in the optimization path. To achieve this, simply append the attribute \dQuote{e
 to the return value of the target function. This has to be a named list of scalar values.
 Each of these values will be stored additionally in the optimization path.}
 
-\item{design}{[\code{data.frame} | NULL]\cr
-Initial design as data frame.
+\item{design}{[\code{data.frame}]\cr
+Initial design as data frame. If the y-values are not already present in design,
+mbo will evaluate the points.
 If the parameters have corresponding trafo functions,
 the design must not be transformed before it is passed!
-If \code{NULL}, one is constructed from the settings in \code{control}.}
+Default is \code{NULL}, which means \code{\link{generateDesign}} is called and a design
+of size 4 times number of all parameters is created.}
 
 \item{learner}{[\code{\link[mlr]{Learner}}]\cr
-Regression learner to model \code{fun}.}
+Regression learner from mlr, which is used as a surrogate to model our fitness function.
+The used default learner is described here: \link{mbo_default_learner}.}
 
 \item{control}{[\code{\link{MBOControl}}]\cr
 Control object for mbo.}
@@ -39,7 +42,6 @@ Further arguments passed to fitness function.}
 [\code{\link{MBOSingleObjResult}} | \code{\link{MBOMultiObjResult}}]
 }
 \description{
-It is possible to parallelize the evaluation of the target function to speed up the computation.
-See \link{mbo_parallel} for further information.
+See \link{mbo_parallel} for all parallelization options.
 }
 

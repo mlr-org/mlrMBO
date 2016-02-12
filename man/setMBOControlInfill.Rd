@@ -174,6 +174,12 @@ nsga2 param. Default is 10.}
 \value{
 [\code{\link{MBOControl}}].
 }
+\description{
+Please note that internally all infill criteria are minimized. So for some of them,
+we internally compute their negated version, eg., for EI or also for CB when the objective is to
+be maximized. In the latter case mlrMBO actually computes the negative upper confidence bound and
+minimizes that.
+}
 \note{
 See the other setMBOControl... functions and \code{makeMBOControl} for referenced arguments.
 }

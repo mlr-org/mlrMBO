@@ -7,6 +7,9 @@
 getSupportedInfillCritFunctions()
 }
 \value{
-[\code{character}]
+[\code{character}].
+}
+\description{
+None.
 }
 

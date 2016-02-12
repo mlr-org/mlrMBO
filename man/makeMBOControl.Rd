@@ -5,40 +5,20 @@
 \alias{makeMBOControl}
 \title{Creates a control object for MBO optimization.}
 \usage{
-makeMBOControl(number.of.targets = 1L, init.design.points = 20L,
-  init.design.fun = maximinLHS, init.design.args = list(),
-  propose.points = 1L, final.method = "best.true.y", final.evals = 0L,
-  y.name = "y", impute.y.fun = NULL, trafo.y.fun = NULL,
-  suppress.eval.errors = TRUE, save.on.disk.at = integer(0L),
-  save.on.disk.at.time = Inf, save.file.path = file.path(getwd(),
-  "mlr_run.RData"), store.model.at = NULL, resample.at = integer(0),
+makeMBOControl(number.of.targets = 1L, propose.points = 1L,
+  final.method = "best.true.y", final.evals = 0L, y.name = "y",
+  impute.y.fun = NULL, trafo.y.fun = NULL, suppress.eval.errors = TRUE,
+  save.on.disk.at = integer(0L), save.on.disk.at.time = Inf,
+  save.file.path = file.path(getwd(), "mlr_run.RData"),
+  store.model.at = NULL, resample.at = integer(0),
   resample.desc = makeResampleDesc("CV", iter = 10),
-  resample.measures = list(mse), on.learner.error = "warn",
-  show.learner.output = FALSE, output.num.format = "\%.3g")
+  resample.measures = list(mse), output.num.format = "\%.3g")
 }
 \arguments{
 \item{number.of.targets}{[\code{integer(1)}]\cr
 How many objectives are to be optimized? \code{number.of.targets = 1} implies normal single
 criteria optimization, \code{number.of.targets > 1} implies multicriteria optimization.
 Default is 1.}
-
-\item{init.design.points}{[\code{integer(1)}]\cr
-Number of points to generate for initial design via \code{\link[ParamHelpers]{generateDesign}}.
-Only used if no design is given in \code{mbo} function.
-If for any reason not enough points could be generated, the missing ones are generated randomly.
-Default is 20.}
-
-\item{init.design.fun}{[\code{function}]\cr
-Function from package lhs for the sequential design.
-Possible are: \code{maximinLHS}, \code{randomLHS}, \code{geneticLHS},
-\code{improvedLHS}, \code{optAugmentLHS}, \code{optimumLHS}.
-Only used if no design is given in \code{mbo} function.
-Default is \code{maximinLHS}.}
-
-\item{init.design.args}{[\code{list}]\cr
-List of further arguments passed to \code{init.design.fun}.
-Only used if no design is given in \code{mbo} function.
-Default is empty list.}
 
 \item{propose.points}{[\code{integer(1)}]\cr
 Number of proposed / really evaluated points each iteration.

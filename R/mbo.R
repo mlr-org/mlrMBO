@@ -18,11 +18,8 @@
 #'   Default is \code{NULL}, which means \code{\link{generateDesign}} is called and a design
 #'   of size 4 times number of all parameters is created.
 #' @param learner [\code{\link[mlr]{Learner}}]\cr
-#'   Default is mlr learner \dQuote{regr.km}, which is kriging from package
-#'   DiceKriging, if all parameters are numeric. \code{nugget.estim} is set
-#'   to \code{TRUE} depending on whether we have noisy observations or not.
-#'   If a least one parameter is discrete the mlr learner \dQuote{regr.randomForest}
-#'   from package RandomForest is used as the default.
+#'   Regression learner from mlr, which is used as a surrogate to model our fitness function.
+#'   The used default learner is described here: \link{mbo_default_learner}.
 #' @template arg_control
 #' @template arg_showinfo
 #' @param more.args [list]\cr

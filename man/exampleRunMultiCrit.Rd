@@ -4,23 +4,33 @@
 \alias{exampleRunMultiCrit}
 \title{Perform an MBO run on a multi-criteria test function and and visualize what happens.}
 \usage{
-exampleRunMultiCrit(fun, learner, control, points.per.dim = 50,
-  show.info = NULL, nsga2.args = list(), ref.point = NULL, ...)
+exampleRunMultiCrit(fun, design = NULL, learner, control,
+  points.per.dim = 50, show.info = NULL, nsga2.args = list(),
+  ref.point = NULL, ...)
 }
 \arguments{
-\item{fun}{[\code{function}]\cr
-Target function. See \code{\link{mbo}} for details.}
+\item{fun}{[\code{function(x, ...)}]\cr
+Fitness function to minimize. The first argument has to be a list of values.
+The function has to return a single numerical value.
+In fact it is possible to return even more information which will be stored
+in the optimization path. To achieve this, simply append the attribute \dQuote{extras}
+to the return value of the target function. This has to be a named list of scalar values.
+Each of these values will be stored additionally in the optimization path.}
+
+\item{design}{[\code{data.frame}]\cr
+Initial design as data frame. If the y-values are not already present in design,
+mbo will evaluate the points.
+If the parameters have corresponding trafo functions,
+the design must not be transformed before it is passed!
+Default is \code{NULL}, which means \code{\link{generateDesign}} is called and a design
+of size 4 times number of all parameters is created.}
 
 \item{learner}{[\code{\link[mlr]{Learner}}]\cr
-See \code{\link{mbo}}.
-Default is mlr learner \dQuote{regr.km}, which is kriging from package
-DiceKriging, if all parameters are numeric. \code{nugget.estim} is set
-to \code{TRUE} depending on whether we have noisy observations or not.
-If a least one parameter is discrete the mlr learner \dQuote{regr.randomForest}
-from package RandomForest is used as the default.}
+Regression learner from mlr, which is used as a surrogate to model our fitness function.
+The used default learner is described here: \link{mbo_default_learner}.}
 
 \item{control}{[\code{\link{MBOControl}}]\cr
-See \code{\link{mbo}}.}
+Control object for mbo.}
 
 \item{points.per.dim}{[\code{integer}]\cr
 Number of (regular spaced) locations at which to

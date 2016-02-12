@@ -9,4 +9,7 @@ getSupportedInfillOptFunctions()
 \value{
 [\code{character}]
 }
+\description{
+None.
+}
 

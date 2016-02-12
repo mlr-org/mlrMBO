@@ -87,7 +87,6 @@ makeMBOControl = function(number.of.targets = 1L,
   resample.at = integer(0),
   resample.desc = makeResampleDesc("CV", iter = 10),
   resample.measures = list(mse),
-  on.learner.error = "warn", show.learner.output = FALSE,
   output.num.format = "%.3g"
 ) {
 
@@ -118,8 +117,6 @@ makeMBOControl = function(number.of.targets = 1L,
   assertClass(resample.desc, "ResampleDesc")
   assertList(resample.measures, types = "Measure")
 
-  assertChoice(on.learner.error, choices = c("warn", "quiet", "stop"))
-  assertFlag(show.learner.output)
   assertString(output.num.format)
 
   control = makeS3Obj("MBOControl",
@@ -138,8 +135,6 @@ makeMBOControl = function(number.of.targets = 1L,
     resample.desc = resample.desc,
     resample.at = resample.at,
     resample.measures = resample.measures,
-    on.learner.error = on.learner.error,
-    show.learner.output = show.learner.output,
     output.num.format = output.num.format,
     multifid = FALSE
   )
