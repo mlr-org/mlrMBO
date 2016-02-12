@@ -84,9 +84,9 @@ getInfillCritGrid = function(crit.name, points.per.dim, models, control, par.set
 
 # create basic plot for X or Y space
 createBasicSpacePlot = function(pl, points, iter, object, name, alpha, space, colors) {
-  pl = pl +  geom_point(data = points[which(points$type == "front"), ],
+  pl = pl +  geom_point(data = points[points$type == "front", ],
     aes_string(x = name[1L], y = name[2L], colour = "type", shape = "type"), size = 2, alpha = alpha)
-  pl = pl + geom_point(data = points[which(points$type != "front"), ],
+  pl = pl + geom_point(data = points[points$type != "front", ],
     aes_string(x = name[1L], y = name[2L], colour = "type", shape = "type"), size = 4)
   pl = pl + scale_colour_manual(values = c("black", colors))
   pl = pl + scale_shape_manual(values = c(16, 16, 17, 15))

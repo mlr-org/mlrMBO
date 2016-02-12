@@ -63,6 +63,6 @@ infillOptMultiCritNSGA2 = function(infill.crit, models, control, par.set, opt.pa
 
   # FIXME: cleanup - i'm reall unsure how to set the names of prop.points technically
   prop.points = as.data.frame(prop.points)
-  colnames(prop.points) = names(design[, which(colnames(design) %nin% control$y.name)])
+  colnames(prop.points) = names(design[, colnames(design) %nin% control$y.name])
   list(prop.points = prop.points, prop.hv.contrs = prop.hv.contrs)
 }
