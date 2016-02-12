@@ -10,7 +10,7 @@ test_that("multipoint cb", {
   )
   lrn = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
 
-  des = generateDesign(30L, smoof::getParamSet(f))
+  des = generateTestDesign(30L, smoof::getParamSet(f))
   ctrl = makeMBOControl(propose.points = 5L)
   ctrl = setMBOControlTermination(ctrl, iters = 1L)
   ctrl = setMBOControlInfill(ctrl, crit = "cb", opt = "focussearch", opt.focussearch.points = 100L,
@@ -26,7 +26,7 @@ test_that("multipoint cb", {
 
   # FIXME: this test must be generalized
   # now check min dist, set to "inf" so we can only propose 1 new point, not 5
-  des = generateDesign(30L, smoof::getParamSet(f))
+  des = generateTestDesign(30L, smoof::getParamSet(f))
   ctrl = makeMBOControl(propose.points = 5L)
   ctrl = setMBOControlTermination(ctrl, iters = 1L)
   ctrl = setMBOControlInfill(ctrl, crit = "cb", opt = "focussearch", opt.focussearch.points = 100L,
@@ -49,7 +49,7 @@ test_that("multipoint cb with random interleaved points", {
   )
   lrn = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
 
-  des = generateDesign(30L, smoof::getParamSet(f))
+  des = generateTestDesign(30L, smoof::getParamSet(f))
   ctrl = makeMBOControl(propose.points = 5L)
   ctrl = setMBOControlTermination(ctrl, iters = 1L)
   ctrl = setMBOControlInfill(ctrl, crit = "cb", opt = "focussearch", opt.focussearch.points = 100L,
@@ -76,7 +76,7 @@ test_that("multipoint cb with random interleaved points", {
 
   lrn = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
 
-  des = generateDesign(30L, smoof::getParamSet(f))
+  des = generateTestDesign(30L, smoof::getParamSet(f))
   ctrl = makeMBOControl(propose.points = 1L)
   ctrl = setMBOControlTermination(ctrl, iters = 1L)
   ctrl = setMBOControlInfill(ctrl, crit = "cb", opt = "focussearch", opt.focussearch.points = 100L,

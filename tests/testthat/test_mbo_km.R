@@ -9,7 +9,7 @@ test_that("mbo works with km", {
     fn = function(x) sum(x^2),
     par.set = par.set
   )
-  des = generateDesign(10, par.set = smoof::getParamSet(f))
+  des = generateTestDesign(10, par.set = smoof::getParamSet(f))
   y = sapply(1:nrow(des), function(i) f(as.list(des[i, ])))
   des$y = y
   learner = makeLearner("regr.km", nugget.estim = TRUE)
@@ -32,7 +32,7 @@ test_that("mbo works with km", {
   )
   f = setAttribute(f, "par.set", par.set)
 
-  des = generateDesign(10L, par.set = smoof::getParamSet(f))
+  des = generateTestDesign(10L, par.set = smoof::getParamSet(f))
   des$y  = sapply(1:nrow(des), function(i) f(as.list(des[i, ])))
   or = mbo(f, des, learner, ctrl)
   expect_true(!is.na(or$y))
@@ -66,7 +66,7 @@ test_that("mbo works with impute and failure model", {
       makeNumericParam("x2", lower = -1, upper = 2)
     )
   )
-  des = generateDesign(10, par.set = smoof::getParamSet(f))
+  des = generateTestDesign(10, par.set = smoof::getParamSet(f))
   # add same point twice with differnent y-vals - will crash km without nugget for sure
   des = rbind(des, data.frame(x1 = c(0, 0), x2 = c(0, 0)))
   y  = sapply(1:nrow(des), function(i) f(as.list(des[i, ])))

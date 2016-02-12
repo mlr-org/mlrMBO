@@ -10,7 +10,7 @@ test_that("multipoint multicrit", {
     for (dist in c("nearest.better", "nearest.neighbor")) {
       for (sel in c("hypervolume", "crowdingdist", "first", "last")) {
 
-        des = generateDesign(10L, smoof::getParamSet(f))
+        des = generateTestDesign(10L, smoof::getParamSet(f))
         ctrl = makeMBOControl(propose.points = 4L)
         ctrl = setMBOControlTermination(ctrl, iters = 1L)
         ctrl = setMBOControlMultiPoint(ctrl,

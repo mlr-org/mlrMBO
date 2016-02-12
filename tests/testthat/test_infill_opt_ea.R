@@ -11,7 +11,7 @@ test_that("infillopt ea", {
 
   lrn = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
 
-  des = generateDesign(20L, smoof::getParamSet(obj.fun))
+  des = generateTestDesign(20L, smoof::getParamSet(obj.fun))
   res = mbo(obj.fun, des, learner = lrn, control = ctrl)
   expect_true(res$y < 1e-1)
 
@@ -24,7 +24,7 @@ test_that("infillopt ea", {
     has.simple.signature = FALSE
   )
 
-  des = generateDesign(10L, smoof::getParamSet(obj.fun))
+  des = generateTestDesign(10L, smoof::getParamSet(obj.fun))
   res = mbo(obj.fun, des, learner = lrn, control = ctrl)
   expect_true(res$y < 1e-1)
 })

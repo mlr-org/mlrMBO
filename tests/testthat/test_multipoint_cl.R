@@ -10,7 +10,7 @@ test_that("multipoint constant liar", {
 
   lrn = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
 
-  des = generateDesign(30L, smoof::getParamSet(f))
+  des = generateTestDesign(30L, smoof::getParamSet(f))
   ctrl = makeMBOControl(propose.points = 5L)
   ctrl = setMBOControlTermination(ctrl, iters = 1L)
   ctrl = setMBOControlInfill(ctrl, crit = "ei")

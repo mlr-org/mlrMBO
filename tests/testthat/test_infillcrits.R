@@ -8,7 +8,7 @@ test_that("infill crits", {
     fn = function(x) sum(x^2) + rnorm(1, 0, 0.03),
     par.set = smoof::getParamSet(f1)
   )
-  des = generateDesign(ninit, smoof::getParamSet(f1))
+  des = generateTestDesign(ninit, smoof::getParamSet(f1))
 
 
   mycontrol = function(minimize, crit) {

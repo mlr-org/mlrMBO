@@ -36,7 +36,7 @@
 #                                   cor.grid.points = 40L)
 
 #   surrogat.learner = makeLearner("regr.lm", predict.type = "se")
-#   des = generateDesign(10L, getParamSet(f))
+#   des = generateTestDesign(10L, getParamSet(f))
 #   result = mbo(f, des, learner = surrogat.learner, control = control)
 #   expect_true(result$y < 0.5)
 
