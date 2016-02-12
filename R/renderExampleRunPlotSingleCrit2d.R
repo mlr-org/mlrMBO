@@ -97,7 +97,7 @@ renderExampleRunPlot2d = function(x, iter,
     }
 
     # set up nice colour palette
-    brewer.palette = colorRampPalette(brewer.pal(11, "Spectral"), interpolate = "spline")
+    brewer.palette = colorRampPalette(RColorBrewer::brewer.pal(11, "Spectral"), interpolate = "spline")
 
     pl = ggplot(data = data, aes_string(x = name.x1, y = name.x2, z = name.z))
     pl = pl + geom_tile(aes_string(fill = name.z))
@@ -218,7 +218,7 @@ arrangeAndPrintPlots = function(plot.list, title) {
   plot.list = Filter(Negate(isScalarNA), plot.list)
   n.plots = length(plot.list)
   n.row = if (n.plots <= 3) 1L else 2L
-  do.call("grid.arrange", c(plot.list, nrow = n.row, main = title))
+  do.call(gridExtra::grid.arrange, c(plot.list, nrow = n.row, main = title))
   pause()
 }
 
