@@ -61,4 +61,3 @@ evalCritFunForMultiCritModels = function(infill.crit.fun, points, models, contro
 
   return(crit.vals)
 }
-

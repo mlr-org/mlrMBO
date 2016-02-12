@@ -151,5 +151,3 @@ print.MBOExampleRunMultiCrit = function(x, ...) {
   catf("Hypervolume                   : %.4e", x$mbo.hypervolume)
   catf("NSGA2 Hypervolume (6000 FEs)  : %.4e", x$nsga2.hypervolume)
 }
-
-

@@ -54,4 +54,3 @@ deepCopyOptPath = function(op) {
   op2$env$eol = op$env$eol
   return(op2)
 }
-

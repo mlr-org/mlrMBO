@@ -22,4 +22,3 @@ evalProposedPoints.OptState = function(opt.state, prop) {
   xs = lapply(xs, repairPoint, par.set = par.set)
   evalTargetFun.OptState(opt.state, xs = xs, extras = extras)
 }
-

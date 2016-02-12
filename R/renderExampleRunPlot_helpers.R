@@ -160,4 +160,3 @@ addParegoWeightLines = function(pl, data.y, idx, opt.path, proposed.counter, rho
   #   pl + geom_line(data = gg.line, aes(x = y1, y = y2), col = "blue", shape = 1)
   pl
 }
-

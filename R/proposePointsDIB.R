@@ -45,6 +45,3 @@ proposePointsDIB = function(opt.state) {
   }
   return(res)
 }
-
-
-

@@ -21,7 +21,7 @@ isTimeBudgetExceeded.OptPath = function(x, time.budget, show.info = FALSE) {
   	return(TRUE)
   } else {
   	return(FALSE)
-  } 
+  }
 }
 
 isTimeBudgetExceeded.difftime = function(x, time.budget, show.info = FALSE) {

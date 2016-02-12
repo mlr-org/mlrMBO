@@ -46,7 +46,7 @@ filterProposedPoints = function(prop, opt.state) {
     # FIXME: we might want to do something smarter here. how about augmenting the current design?
     prop$prop.points[to.delete, ] = generateRandomDesign(n.replace, par.set)
   }
-  
+
   if (control$multifid) {
     prop$prop.points = cbind(prop$prop.points, .multifid.lvl)
   }

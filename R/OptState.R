@@ -28,16 +28,16 @@ NULL
 #  @param time.last.saved \code{POSIXct} \cr
 #    The \code{Sys.time()} when the last save on disk was done.
 #  @param loop.starttime \code{POSIXct} \cr
-#    The \code{Sys.time()} when the mbo iteration was started. 
+#    The \code{Sys.time()} when the mbo iteration was started.
 #  @param time.used \code{integer(1)} \cr
-#    The time in seconds we are alrady used for optimization since the verry start. 
+#    The time in seconds we are alrady used for optimization since the verry start.
 #    This counts all iterations together and is necessary for continuation with a given time budget.
 
 # IMPORTANT NOTE:
 # See this as a constructor and it's variables as member variables.
 # All variables in this Object should be documented here.
 # Think of it, when you implement new ones!
-# Unfortunately in R we cannot hinder you from putting other values in this object, but please: Don't! 
+# Unfortunately in R we cannot hinder you from putting other values in this object, but please: Don't!
 
 makeOptState = function(opt.problem, loop = 0L, tasks = NULL, models = NULL,
   time.model = NULL, opt.result = NULL, state = "init", opt.path = NULL,

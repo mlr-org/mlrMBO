@@ -52,4 +52,3 @@ evalMBODesign.OptState = function(opt.state) {
     stop("Only part of y-values are provided. Don't know what to do - provide either all or none.")
   }
 }
-

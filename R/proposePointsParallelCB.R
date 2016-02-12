@@ -13,4 +13,3 @@ proposePointsParallelCB = function(opt.state) {
   res$multipoint.cb.lambdas = z$lambdas
   return(res)
 }
-

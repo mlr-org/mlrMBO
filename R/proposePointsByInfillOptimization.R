@@ -42,4 +42,3 @@ proposePointsByInfillOptimization = function(opt.state, par.set = NULL, control 
   crit.vals = matrix(crit.vals, ncol = 1L)
   return(list(prop.points = prop.points, propose.time = st[3L], crit.vals = crit.vals, errors.model = NA_character_))
 }
-

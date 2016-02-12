@@ -28,4 +28,3 @@ test_that("infillopt ea", {
   res = mbo(obj.fun, des, learner = lrn, control = ctrl)
   expect_true(res$y < 1e-1)
 })
-

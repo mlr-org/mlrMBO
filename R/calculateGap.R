@@ -1,5 +1,5 @@
 # Calculates gap between best point and global optimum.
-# 
+#
 # Used in the exampleRun functions and printed in plots.
 #
 # @param design [\code{data.frame}]\cr

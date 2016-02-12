@@ -1,5 +1,5 @@
 proposePointsMSPOT = function(opt.state, ...) {
-  
+
   opt.problem = getOptStateOptProblem(opt.state)
   models = getOptStateModels(opt.state)$models
   par.set = getOptProblemParSet(opt.problem)
@@ -28,5 +28,3 @@ proposePointsMSPOT = function(opt.state, ...) {
 
   return(list(prop.points = ppoints, propose.time = st[3L], crit.vals = crit.vals, errors.model = NA_character_))
 }
-
-

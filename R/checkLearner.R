@@ -32,4 +32,3 @@ checkLearner = function(learner, par.set, control) {
 
   return(learner)
 }
-

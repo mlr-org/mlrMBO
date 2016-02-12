@@ -43,4 +43,3 @@ test_that("init design", {
   des = data.frame(x1 = c(-0.49, 0.24, -1.47), z = c(-0.70, 1.29, 0.73))
   expect_error(mbo(obj.fun, des, learner, ctrl))
 })
-

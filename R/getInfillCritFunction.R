@@ -22,4 +22,3 @@ getInfillCritFunction = function(infill.crit) {
     match.fun(infill.crit)
   )
 }
-
