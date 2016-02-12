@@ -11,7 +11,7 @@
 #' The different levels of parallelization can be specified in \code{parallelStart*}.
 #' Details for the levels mentioned above are given below:
 #' \itemize{
-#' \item{Evaluation of the objective function can be parallelized in cases multiple points are to be evaluated at once. These are: evaluation of the initial design and multiple proposed points per iteration. (Level: \code{mlrMBO.feval})}
+#' \item{Evaluation of the objective function can be parallelized in cases multiple points are to be evaluated at once. These are: evaluation of the initial design, multiple proposed points per iteration and evaluation of the target function in \code{\link{exampleRun}}. (Level: \code{mlrMBO.feval})}
 #' \item{Model fitting / point proposal - in some cases where independent, expensive operations are performed. (Level: \code{mlrMBO.propose.points})}
 #' }
 #' Details regarding the latter:
