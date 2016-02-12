@@ -98,11 +98,11 @@ plotExampleRun = function(object, iters, pause = TRUE,
       if (multi.crit) {
         if (!inherits(plots[[1L]], "ggplot")) {
           # for mspot first arrange the two plots for X-Space
-          plots[[1L]] = do.call(arrangeGrob, c(plots[[1L]], nrow = 2))
+          plots[[1L]] = do.call(gridExtra::arrangeGrob, c(plots[[1L]], nrow = 2))
         }
-        do.call(grid.arrange, c(plots, ncol = 2))
+        do.call(gridExtra::grid.arrange, c(plots, ncol = 2))
       } else {
-        do.call(grid.arrange, c(plots, nrow = 2))
+        do.call(gridExtra::grid.arrange, c(plots, nrow = 2))
       }
     } else {
       print(plots[[1]])
