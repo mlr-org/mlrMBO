@@ -7,22 +7,15 @@
 # returns a list of n sublists. each inner element looks like this:
 # (k = nr.of.targets)
 #
-# <crit.vals>                                 criteria values for all proposed points
-# train.time              numeric(1)          Time to train the model(s) that produced the points
-#                                             only first slot of vector is used (if we have multiple points)
-#                                             rest are NA
-# propose.time            numeric(1)          time needed to propose the point
-#                                             if we have indivual timings from the proposal mechanism,
-#                                             we have one differrent value per point here.
-#                                             if all were generated in one go, we only have 1 timing,
-#                                             we store it in the slot for the first point, rest are NA
-# errors.model            character(1)        possible err msgs, if point-producing model(s) crashed
-#                                             replicated for all n points, if only one errmsg was passed
-# filter.replace          logical(1)          if point filtering was enabled, we store whether the point
-#                                             was replaced by a random one.
-# multipoint.cb.lambda   numeric(1)          random lambda-value used in q-CB point proposal
-#                                             one lambda for each point in that case
-# .weight<j>              numeric(1)          weight vector sampled for multipoint ParEGO
+# <crit.vals>
+# train.time              numeric(1)
+# propose.time            numeric(1)
+# errors.model            character(1)
+# filter.replace          logical(1)
+# multipoint.cb.lambda    numeric(1)
+# .weight<j>              numeric(1)
+#
+# Please document the content in doc_mbo_OptPath.R
 
 getExtras = function(n, prop, train.time, control) {
   # this happens in init design

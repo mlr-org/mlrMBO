@@ -9,7 +9,7 @@
 #'     if those were greater than 0.}
 #'     \item{best.ind [\code{numeric(1)}]}{Index of \code{x} in the opt.path.}
 #'   \item{opt.path [\code{\link[ParamHelpers]{OptPath}}]}{Optimization path.
-#'     Includes all evaluated points and additional information.
+#'     Includes all evaluated points and additional information as documented in \link{mbo_OptPath}.
 #'     You can convert it via \code{as.data.frame}.}
 #'   \item{resample.results [List of \code{\link[mlr]{ResampleResult}}]}{List of the desired \code{resample.results} if \code{resample.at} is set in \code{makeMBOControl}.}
 #'   \item{final.state [\code{character}] The final termination state. Gives information why the optimization ended}
@@ -78,7 +78,7 @@ print.MBOResult = function(x, ...) {
 #'   \item{pareto.set [\code{list} of \code{list}s]}{Pareto set of all evaluated points.}
 #'   \item{pareto.inds [\code{numeric}]}{Indizes of the Pareto-optimal points in the opt.path}
 #'   \item{opt.path [\code{\link[ParamHelpers]{OptPath}}]}{Optimization path.
-#'     Includes all evaluated points and additional information.
+#'     Includes all evaluated points and additional information as documented in \link{mbo_OptPath}.
 #'     You can convert it via \code{as.data.frame}.}
 #'   \item{final.state [\code{character}] The final termination state. Gives information why the optimization ended}
 #'   \item{models [List of \code{\link[mlr]{WrappedModel}}]}{List of saved regression models.}
