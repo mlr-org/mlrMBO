@@ -28,7 +28,7 @@ ctrl = setMBOControlInfill(ctrl, crit = "ei", opt = "focussearch", opt.focussear
 
 lrn = makeLearner("regr.randomForest", predict.type = "se")
 
-design = generateTestDesign(4L, getParamSet(obj.fun), fun = lhs::maximinLHS)
+design = generateDesign(4L, getParamSet(obj.fun), fun = lhs::maximinLHS)
 
 run = exampleRun(obj.fun, design = design, learner = lrn,
   control = ctrl, points.per.dim = 100L, show.info = TRUE)

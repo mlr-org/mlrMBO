@@ -34,7 +34,7 @@ lrn = makeLearner("regr.km", predict.type = "se", nugget.estim = TRUE)
 ctrl = setMBOControlInfill(ctrl, crit = "ei", opt = "focussearch",
   opt.focussearch.points = 500L)
 
-design = generateTestDesign(6L, getParamSet(obj.fun), fun = lhs::maximinLHS)
+design = generateDesign(6L, getParamSet(obj.fun), fun = lhs::maximinLHS)
 
 run = exampleRun(obj.fun, design = design, learner = lrn,
   control = ctrl, points.per.dim = 200L, noisy.evals = 50L, fun.mean = obj.fun.mean,

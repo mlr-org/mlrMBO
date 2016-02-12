@@ -27,7 +27,7 @@ ctrl = setMBOControlMultiPoint(
 
 lrn = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
 
-design = generateTestDesign(4L, getParamSet(obj.fun), fun = lhs::maximinLHS)
+design = generateDesign(4L, getParamSet(obj.fun), fun = lhs::maximinLHS)
 
 run = exampleRun(obj.fun, design = design, learner = lrn,
   control = ctrl, points.per.dim = 100, show.info = TRUE)

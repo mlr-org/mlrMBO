@@ -17,7 +17,7 @@ ctrl = setMBOControlInfill(ctrl, crit = "ei", opt = "focussearch", opt.focussear
 
 lrn = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
 
-design = generateTestDesign(10L, getParamSet(obj.fun), fun = lhs::maximinLHS)
+design = generateDesign(10L, getParamSet(obj.fun), fun = lhs::maximinLHS)
 
 run = exampleRun(obj.fun, design = design, learner = lrn, control = ctrl,
 	points.per.dim = 50L, show.info = TRUE)

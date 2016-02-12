@@ -16,7 +16,7 @@ ctrl = setMBOControlInfill(ctrl, crit = "ei", opt.focussearch.points = 1000L,
   opt.focussearch.maxit = 3L)
 ctrl = setMBOControlMultiCrit(ctrl, method = "parego")
 
-design = generateTestDesign(8L, getParamSet(obj.fun), fun = lhs::maximinLHS)
+design = generateDesign(8L, getParamSet(obj.fun), fun = lhs::maximinLHS)
 
 res = mbo(obj.fun, design = design, learner = lrn, control = ctrl, show.info = TRUE)
 
