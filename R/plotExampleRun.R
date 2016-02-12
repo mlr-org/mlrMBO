@@ -70,7 +70,7 @@ plotExampleRun = function(object, iters, pause = TRUE,
   xlim = NULL, ylim = NULL,
   point.size = 3, line.size = 1,
   trafo = NULL, colors = c("red", "blue", "green"), ...) {
-  
+
   iters.max = object$control$iters
   if (missing(iters)) {
     iters = 1:iters.max
@@ -86,7 +86,7 @@ plotExampleRun = function(object, iters, pause = TRUE,
     assertNumeric(xlim, len = 2L, any.missing = FALSE)
   if (!is.null(ylim))
     assertNumeric(ylim, len = 2L, any.missing = FALSE)
-  
+
   multi.crit = object$control$number.of.targets > 1
 
   # Helper to arrange plot via gridExtra and pause process
@@ -98,8 +98,8 @@ plotExampleRun = function(object, iters, pause = TRUE,
       if (multi.crit) {
         if (!inherits(plots[[1L]], "ggplot")) {
           # for mspot first arrange the two plots for X-Space
-          plots[[1L]] = do.call(arrangeGrob, c(plots[[1L]], nrow = 2))         
-        } 
+          plots[[1L]] = do.call(arrangeGrob, c(plots[[1L]], nrow = 2))
+        }
         do.call(grid.arrange, c(plots, ncol = 2))
       } else {
         do.call(grid.arrange, c(plots, nrow = 2))
@@ -108,13 +108,13 @@ plotExampleRun = function(object, iters, pause = TRUE,
       print(plots[[1]])
     }
   }
-  
+
   for (iter in iters) {
     # get rendered plot data
     plots = renderExampleRunPlot(object, iter = iter, densregion = densregion, se.factor = se.factor,
       single.prop.point.plots = single.prop.point.plots, xlim = xlim, ylim = ylim,
       point.size = point.size, line.size = line.size, trafo = trafo, colors = colors, ...)
-    if (!any(sapply(plots, inherits, what = "ggplot"))) {
+    if (!any(vlapply(plots, inherits, what = "ggplot"))) {
       # in this case we have multicrit multipoint proposal: list of plots for each proposed point
       for (jter in 1:length(plots)) {
         arrangePlots(plots[[jter]], multi.crit)

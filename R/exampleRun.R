@@ -104,7 +104,7 @@ exampleRun = function(fun, design = NULL, learner = NULL, control,
   # compute true y-values if deterministic function is known
   y.true = NA
   if (!is.null(fun.mean)) {
-    y.true = sapply(convertRowsToList(getOptPathX(res$opt.path), name.list = TRUE, name.vector = TRUE), fun.mean)
+    y.true = vnapply(convertRowsToList(getOptPathX(res$opt.path), name.list = TRUE, name.vector = TRUE), fun.mean)
   }
 
   makeS3Obj("MBOExampleRun",
