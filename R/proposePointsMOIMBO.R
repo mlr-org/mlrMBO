@@ -17,7 +17,7 @@ distToNN = function(X, ...) {
 # @return [\code{numeric(n)}]. Distances to nearest better neighbor.
 distToNB = function(X, y) {
   d = as.matrix(dist(X))
-  sapply(seq_col(d), function(i) {
+  vnapply(seq_col(d), function(i) {
     better = y < y[i]
     #FIXME the emoa wont work with Infs
     if (sum(better) == 0)

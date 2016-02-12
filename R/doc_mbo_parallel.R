@@ -19,6 +19,6 @@
 #' \item{Singlecrit MBO with LCB multipoint}{Parallel optimization of LCBs for the lambda-values.}
 #' \item{Multicrit MBO with ParEGO}{Parallel optimization of scalarization functions.}
 #' }
-#' 
+#'
 #' @name mbo_parallel
 NULL

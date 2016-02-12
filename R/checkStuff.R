@@ -26,7 +26,7 @@ checkStuff = function(fun, par.set, design, learner, control) {
   }
 
   # general parameter and learner checks
-  if (any(sapply(par.set$pars, inherits, what = "LearnerParam")))
+  if (any(vlapply(par.set$pars, inherits, what = "LearnerParam")))
     stop("No parameter can be of class 'LearnerParam'! Use basic parameters instead to describe you region of interest!")
 
   if (!hasFiniteBoxConstraints(par.set))

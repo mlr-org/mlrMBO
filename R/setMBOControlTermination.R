@@ -78,7 +78,7 @@ setMBOControlTermination = function(control,
   }
 
   # sanity check stopping conditions
-  sapply(stop.conds, function(stop.on) {
+  lapply(stop.conds, function(stop.on) {
     assertFunction(stop.on, args = "opt.state")
   })
 

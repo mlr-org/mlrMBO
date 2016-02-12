@@ -69,7 +69,7 @@ renderExampleRunPlot1d = function(x, iter,
   }
 
   buildPointsData = function(opt.path, iter) {
-    type = sapply(getOptPathDOB(opt.path), getType, iter = iter)
+    type = vcapply(getOptPathDOB(opt.path), getType, iter = iter)
     res = cbind.data.frame(
       convertOptPathToDf(opt.path, control),
       type = type
@@ -80,14 +80,14 @@ renderExampleRunPlot1d = function(x, iter,
   plots = list()
 
   model = models[[iter]]
-  type = sapply(getOptPathDOB(opt.path), getType, iter = iter)
+  type = vcapply(getOptPathDOB(opt.path), getType, iter = iter)
   idx.past = which(type %in% c("init", "seq"))
   idx.pastpresent = which(type %in% c("init", "seq", "prop"))
 
   # compute model prediction for current iter
   if (!inherits(model, "FailureModel")) {
     evals$yhat = ifelse(control$minimize, 1, -1) * infillCritMeanResponse(evals.x, list(model), control)
-    
+
     #FIXME: We might want to replace the following by a helper function so that we can reuse it in buildPointsData()
     if (propose.points == 1L) {
       evals[[name.crit]] = opt.direction *
