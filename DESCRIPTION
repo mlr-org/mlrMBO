@@ -15,12 +15,12 @@ URL: https://github.com/berndbischl/mlrMBO
 BugReports: https://github.com/berndbischl/mlrMBO/issues
 Depends:
     lhs,
-    mlr (>= 2.5),
+    mlr (>= 2.7),
     ParamHelpers (>= 1.4),
     smoof (>= 1.2)
 Imports:
     BBmisc (>= 1.7),
-    checkmate (>= 1.4),
+    checkmate (>= 1.7.1),
     ggplot2,
     RColorBrewer,
     gridExtra,
