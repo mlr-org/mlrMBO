@@ -19,8 +19,7 @@
 #'   Force an evaluation on the highest fidelity level each i-th step.
 #' @template arg_showinfo
 #' @return [\code{\link{MBOControl}}].
-#' @note See the other setMBOControl... functions and \code{makeMBOControl} for referenced arguments.
-#' @seealso makeMBOControl
+#' @family MBOControl
 #' @export
 setMBOControlMultiFid = function(control, param, lvls, costs = NULL, cor.grid.points = NULL,
   force.last.level.steps = NULL, show.info = NULL) {

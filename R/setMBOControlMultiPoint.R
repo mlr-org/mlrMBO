@@ -58,8 +58,7 @@
 #'   Probability of 1-point mutation, see \code{\link[emoa]{pm_operator}}.
 #'   Default is 1.
 #' @return [\code{\link{MBOControl}}].
-#' @note See the other setMBOControl... functions and \code{makeMBOControl} for referenced arguments.
-#' @seealso makeMBOControl
+#' @family MBOControl
 #' @export
 setMBOControlMultiPoint = function(control,
   method = NULL,

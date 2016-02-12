@@ -133,8 +133,7 @@
 #'   For \code{opt.multicrit.method = "nsga2"}.
 #'   nsga2 param. Default is 10.
 #' @return [\code{\link{MBOControl}}].
-#' @note See the other setMBOControl... functions and \code{makeMBOControl} for referenced arguments.
-#' @seealso makeMBOControl
+#' @family MBOControl
 #' @export
 setMBOControlInfill = function(control,
   crit = NULL,

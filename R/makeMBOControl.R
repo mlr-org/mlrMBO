@@ -75,6 +75,7 @@
 #'   Format string for the precision of the numeric output of mbo.
 #' @return [\code{\link{MBOControl}}].
 #' @aliases MBOControl
+#' @family MBOControl
 #' @export
 makeMBOControl = function(number.of.targets = 1L,
   propose.points = 1L,

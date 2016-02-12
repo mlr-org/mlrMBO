@@ -180,10 +180,11 @@ we internally compute their negated version, eg., for EI or also for CB when the
 be maximized. In the latter case mlrMBO actually computes the negative upper confidence bound and
 minimizes that.
 }
-\note{
-See the other setMBOControl... functions and \code{makeMBOControl} for referenced arguments.
-}
 \seealso{
-makeMBOControl
+Other MBOControl: \code{\link{makeMBOControl}},
+  \code{\link{setMBOControlMultiCrit}},
+  \code{\link{setMBOControlMultiFid}},
+  \code{\link{setMBOControlMultiPoint}},
+  \code{\link{setMBOControlTermination}}
 }
 

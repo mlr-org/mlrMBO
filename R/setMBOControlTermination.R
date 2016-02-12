@@ -46,8 +46,7 @@
 #' # assign custom stopping condition
 #' ctrl = setMBOControlTermination(ctrl, more.stop.conds = list(yTargetValueTerminator(0.05)))
 #' res = mbo(fn, control = ctrl)
-#' @note See the other setMBOControl... functions and \code{makeMBOControl} for referenced arguments.
-#' @seealso makeMBOControl
+#' @family MBOControl
 #' @export
 setMBOControlTermination = function(control,
   iters = 10L, time.budget = NULL, exec.time.budget = NULL, target.fun.value = NULL, more.stop.conds = list()) {

@@ -45,9 +45,6 @@ return a list with the following elements:
 \description{
 Extends an MBO control object with infill criteria and infill optimizer options.
 }
-\note{
-See the other setMBOControl... functions and \code{makeMBOControl} for referenced arguments.
-}
 \examples{
 fn = smoof::makeSphereFunction(1L)
 ctrl = makeMBOControl()
@@ -70,6 +67,10 @@ ctrl = setMBOControlTermination(ctrl, more.stop.conds = list(yTargetValueTermina
 res = mbo(fn, control = ctrl)
 }
 \seealso{
-makeMBOControl
+Other MBOControl: \code{\link{makeMBOControl}},
+  \code{\link{setMBOControlInfill}},
+  \code{\link{setMBOControlMultiCrit}},
+  \code{\link{setMBOControlMultiFid}},
+  \code{\link{setMBOControlMultiPoint}}
 }
 
