@@ -19,14 +19,14 @@
 #'   of size 4 times number of all parameters is created.
 #' @param learner [\code{\link[mlr]{Learner}}]\cr
 #'   Regression learner from mlr, which is used as a surrogate to model our fitness function.
-#'   The used default learner is described here: \link{mbo_default_learner}.
+#'   If \code{NULL} (default), the default learner is determined as described here: \link{mbo_default_learner}.
 #' @template arg_control
 #' @template arg_showinfo
 #' @param more.args [list]\cr
 #'   Further arguments passed to fitness function.
 #' @return [\code{\link{MBOSingleObjResult}} | \code{\link{MBOMultiObjResult}}]
 #' @export
-mbo = function(fun, design, learner, control,
+mbo = function(fun, design = NULL, learner = NULL, control,
   show.info = getOption("mlrMBO.show.info", TRUE), more.args = list()) {
 
   assertClass(fun, "smoof_function")

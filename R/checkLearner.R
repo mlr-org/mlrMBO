@@ -13,7 +13,7 @@ NULL
 
 # check and create default learner
 checkLearner = function(learner, par.set, control) {
-  if (missing(learner)) {
+  if (missing(learner) || is.null(learner)) {
     if (hasDiscrete(par.set))
       learner = makeLearner("regr.randomForest", predict.type = "se")
     else
@@ -24,11 +24,5 @@ checkLearner = function(learner, par.set, control) {
   }
   # so we dont run into problems with focus search et al
   learner$fix.factors.prediction = TRUE
-
-  if (control$multifid) {
-    par.set = c(par.set, makeParamSet(
-    makeIntegerParam(".multifid.lvl", lower = 1L, upper = length(control$multifid.lvls))))
-  }
-
   return(learner)
 }

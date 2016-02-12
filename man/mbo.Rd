@@ -4,8 +4,8 @@
 \alias{mbo}
 \title{Optimizes a function with sequential model based optimization.}
 \usage{
-mbo(fun, design, learner, control, show.info = getOption("mlrMBO.show.info",
-  TRUE), more.args = list())
+mbo(fun, design = NULL, learner = NULL, control,
+  show.info = getOption("mlrMBO.show.info", TRUE), more.args = list())
 }
 \arguments{
 \item{fun}{[\code{function(x, ...)}]\cr
@@ -26,7 +26,7 @@ of size 4 times number of all parameters is created.}
 
 \item{learner}{[\code{\link[mlr]{Learner}}]\cr
 Regression learner from mlr, which is used as a surrogate to model our fitness function.
-The used default learner is described here: \link{mbo_default_learner}.}
+If \code{NULL} (default), the default learner is determined as described here: \link{mbo_default_learner}.}
 
 \item{control}{[\code{\link{MBOControl}}]\cr
 Control object for mbo.}
