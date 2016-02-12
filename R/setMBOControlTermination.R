@@ -1,4 +1,6 @@
-#' @title Extends mbo control object with infill criteria and infill optimizer options.
+#' @title Set termination options.
+#' @description
+#' Extends an MBO control object with infill criteria and infill optimizer options.
 #'
 #' @template arg_control
 #' @param iters [\code{integer(1)}]\cr

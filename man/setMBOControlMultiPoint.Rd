@@ -2,7 +2,7 @@
 % Please edit documentation in R/setMBOControlMultiPoint.R
 \name{setMBOControlMultiPoint}
 \alias{setMBOControlMultiPoint}
-\title{Extends mbo control object with options for multipoint proposal.}
+\title{Set multipoint proposal options.}
 \usage{
 setMBOControlMultiPoint(control, method = NULL, cl.lie = NULL,
   multicrit.objective = NULL, multicrit.dist = NULL,
@@ -80,6 +80,9 @@ Default is 1.}
 }
 \value{
 [\code{\link{MBOControl}}].
+}
+\description{
+Extends an MBO control object with options for multipoint proposal.
 }
 \note{
 See the other setMBOControl... functions and \code{makeMBOControl} for referenced arguments.

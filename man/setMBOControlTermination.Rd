@@ -2,7 +2,7 @@
 % Please edit documentation in R/setMBOControlTermination.R
 \name{setMBOControlTermination}
 \alias{setMBOControlTermination}
-\title{Extends mbo control object with infill criteria and infill optimizer options.}
+\title{Set termination options.}
 \usage{
 setMBOControlTermination(control, iters = 10L, time.budget = NULL,
   exec.time.budget = NULL, target.fun.value = NULL,
@@ -41,6 +41,9 @@ return a list with the following elements:
 }
 \value{
 [\code{\link{MBOControl}}].
+}
+\description{
+Extends an MBO control object with infill criteria and infill optimizer options.
 }
 \note{
 See the other setMBOControl... functions and \code{makeMBOControl} for referenced arguments.

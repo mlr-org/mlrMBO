@@ -1,4 +1,7 @@
-#' @title Creates a control object for MBO optimization.
+#' @title Set MBO options.
+#'
+#' @description
+#' Creates a control object for MBO optimization.
 #'
 #' @param number.of.targets [\code{integer(1)}]\cr
 #'   How many objectives are to be optimized? \code{number.of.targets = 1} implies normal single

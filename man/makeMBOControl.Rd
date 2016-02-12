@@ -3,7 +3,7 @@
 \name{makeMBOControl}
 \alias{MBOControl}
 \alias{makeMBOControl}
-\title{Creates a control object for MBO optimization.}
+\title{Set MBO options.}
 \usage{
 makeMBOControl(number.of.targets = 1L, propose.points = 1L,
   final.method = "best.true.y", final.evals = 0L, y.name = "y",
@@ -103,5 +103,8 @@ Format string for the precision of the numeric output of mbo.}
 }
 \value{
 [\code{\link{MBOControl}}].
+}
+\description{
+Creates a control object for MBO optimization.
 }
 
