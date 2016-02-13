@@ -1,21 +1,27 @@
 # Evaluates target fitness function on given set of points.
 #
-# @param opt.state [\code{OptState}]\cr
-# @param xs [\code{list}]\cr
-#   List of points.
-# @param extras [\code{list}]\cr
-#   List of extra information to be logged in \code{opt.path}.
+# @param opt.state
+# @param xs: list of list of points to evaluate
+# @param extras: list of extra stuff from getExtras, list of list of entries. same length as xs.
 # @param xs.schedule.info [\code{list}] \cr
 #   A list containing vectors of the same length as \code{xs} giving the estimated times, priorities and times.se for each evaluation of \code{x}.
 # @return [\code{numeric} | \code{matrix}] Numeric vector of y-vals or matrix
 #   (for multi-criteria problems).
-evalTargetFun.OptState = function(opt.state, xs, extras, xs.schedule.info = NULL) {
+#
+# Does this:
+# 1) trafo X points
+# 2) evaluate the objective call, measure execution time
+#    retrieve y vector(nr.of.targets) + "extras" attribute
+#    eval is done with parallelMap, level=mlrMBO.feval
+# 3) potentially impute y-values in case of problems, see error_handling.R
+# 4) possibly log to console
+# 5) log untrafoed x-points, evaluated y-values, passed extras and eval extras to  opt.path in opt.state
+
 
   opt.problem = getOptStateOptProblem(opt.state)
   par.set = getOptProblemParSet(opt.problem)
   opt.path = getOptStateOptPath(opt.state)
   control = getOptProblemControl(opt.problem)
-  oldopts = getOptProblemOldopts(opt.problem)
 
   # short names and so on
   ny = control$number.of.targets
@@ -23,6 +29,7 @@ evalTargetFun.OptState = function(opt.state, xs, extras, xs.schedule.info = NULL
   num.format.string = paste("%s = ", num.format, sep = "")
   imputeY = control$impute.y.fun
 
+  # trafo X points
   # function to measure of fun call
   wrapFun = function(x) {
     st = proc.time()
@@ -40,9 +47,6 @@ evalTargetFun.OptState = function(opt.state, xs, extras, xs.schedule.info = NULL
     }
     list(y = y, time = st, user.extras = user.extras)
   }
-
-  # restore mlr configuration
-  configureMlr(on.learner.error = oldopts[["ole"]], show.learner.output = oldopts[["slo"]])
 
   scheduleFunction = switch(control$schedule.method,
     smartParallelMap = evalScheduleSmartParallelMap,
@@ -96,7 +100,7 @@ evalTargetFun.OptState = function(opt.state, xs, extras, xs.schedule.info = NULL
     }
 
     # showInfo - use the trafo'd value here!
-    showInfo(getOptProblemShowInfo(opt.problem), "[mbo] %i: %s : %s : %.1f secs%s", 
+    showInfo(getOptProblemShowInfo(opt.problem), "[mbo] %i: %s : %s : %.1f secs%s",
       dob, paramValueToString(par.set, x.trafo, num.format = num.format),
       collapse(sprintf(num.format.string, control$y.name, y2), ", "),
       ytime, ifelse(y.valid, "", " (imputed)")
@@ -109,10 +113,6 @@ evalTargetFun.OptState = function(opt.state, xs, extras, xs.schedule.info = NULL
     addOptPathEl(opt.path, x = x, y = y2, dob = dob,
       error.message = errmsg, exec.time = ytime, extra = extras[[i]])
   }
-
-  # FIXME: See issue
-  configureMlr(on.learner.error = control$on.learner.error,
-    show.learner.output = control$show.learner.output)
 
   extractSubList(res$funRes, "y")
 }

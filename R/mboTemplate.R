@@ -1,22 +1,24 @@
 # magic mboTemplate - in this function the mbo magic for all our mbo approaches
-# does happen - model fitting und point proposal in a generall way. the respective
+# does happen - model fitting and point proposal in a generall way. the respective
 # mbo algorithms differ in the subfunctions.
-# Everything happens respective to the three objects
-# - the OptProblem: See OptProblem.R
-# - the OptState: See OptState.R OptState_getter.R OptState_setter.R
-# - the OptResult: See OptResult.R
-# We cann call the mboTemplate on an OptProblem or continue mboTemplate on a given OptState
-
+# - usually the mboTemplate is started from an OptProblem which is an environment.
+# - mboTemplate can also be called from mboContinue from a saved OptState
+# - The opt.state is also en environment linking to the main Objects
+#    - OptProblem (constant; stores the information which define the problem)
+#    - OptPath (stores all information about function evaluations)
+#    - OptResult (stores information which should be part of the later constructed mboResult)
+#    - (see respective source files for further information)
 
 mboTemplate = function(obj) {
   UseMethod("mboTemplate")
 }
 
-# Creates the initial OptState and runs the template on it
+# Creates the initial OptState and then runs the template on it
 mboTemplate.OptProblem = function(obj) {
   opt.state = makeOptState(obj)
-  generateMBODesign.OptState(opt.state)
-  setOptStateLoop(opt.state) #loop + 1
+  # evaluate initial design (if y not given) and log to optpath
+  evalMBODesign.OptState(opt.state)
+  finalizeMboLoop(opt.state)
   mboTemplate(opt.state)
 }
 
@@ -24,22 +26,38 @@ mboTemplate.OptProblem = function(obj) {
 mboTemplate.OptState = function(obj) {
   opt.state = obj
   setOptStateLoopStarttime(opt.state)
+  # check if budget is already exceeded after intitial design creation
+  terminate = getOptStateTermination(opt.state)
+  if (terminate$term) {
+    opt.problem = getOptStateOptProblem(opt.state)
+    showInfo(getOptProblemShowInfo(opt.problem), "%s. The stopping conditions
+      was satisfied right after the creation of the initial design!", terminate$message)
+    opt.state$terminate = terminate
+    return(opt.state)
+  }
   repeat {
-    prop = proposePoints.OptState(opt.state) 
+    prop = proposePoints.OptState(opt.state)
     evalProposedPoints.OptState(opt.state, prop)
-
-    # we are ready with the loop and can count + 1
-    # and save everything we used
-    setOptStateLoop(opt.state)
-
-    # save on disk routine
-    # save with increased loop so we can directly start from here again
-    if (getOptStateShouldSave(opt.state))
-      saveOptState(opt.state)
-
+    finalizeMboLoop(opt.state)
     terminate = getOptStateTermination(opt.state)
-    if (terminate > 0L)
-        break
-  } 
+    if (terminate$term) {
+      opt.state$terminate = terminate
+      break
+    }
+  }
   opt.state
+}
+
+finalizeMboLoop = function(opt.state) {
+  # put resampling of surrogate learner and the model itself in the result environment
+  opt.result = getOptStateOptResult(opt.state)
+  setOptResultResampleResults(opt.result, opt.state)
+  setOptResultStoredModels(opt.result, opt.state)
+  # Indicate, that we are finished by increasing the loop by one
+  setOptStateLoop(opt.state)
+  # save on disk routine
+  # save with increased loop so we can directly start from here again
+  if (getOptStateShouldSave(opt.state))
+    saveOptState(opt.state)
+  invisible()
 }

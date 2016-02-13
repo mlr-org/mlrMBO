@@ -1,6 +1,8 @@
 #FIXME: document breifly in mbo how multifid is enabled
 
-#' @title Extends mbo control object with multiFid-algorithm specific options.
+#' @title Set multi-fidelity options.
+#' @description
+#' Extends an MBO control object with multi-fidelity specific options.
 #'
 #' @template arg_control
 #' @param param [\code{character(1)}]\cr
@@ -17,8 +19,7 @@
 #'   Force an evaluation on the highest fidelity level each i-th step.
 #' @template arg_showinfo
 #' @return [\code{\link{MBOControl}}].
-#' @note See the other setMBOControl... functions and \code{makeMBOControl} for referenced arguments.
-#' @seealso makeMBOControl
+#' @family MBOControl
 #' @export
 setMBOControlMultiFid = function(control, param, lvls, costs = NULL, cor.grid.points = NULL,
   force.last.level.steps = NULL, show.info = NULL) {
@@ -38,7 +39,7 @@ setMBOControlMultiFid = function(control, param, lvls, costs = NULL, cor.grid.po
   control$multifid.costs = costs
 
   if (!is.null(cor.grid.points))
-    cor.grid.point = asInt(cor.grid.points, lower = 2L)
+    cor.grid.points = asInt(cor.grid.points, lower = 2L)
   control$multifid.cor.grid.points = coalesce(cor.grid.points, control$multifid.cor.grid.points, 50L)
 
   if (!is.null(force.last.level.steps))

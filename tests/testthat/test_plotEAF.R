@@ -2,12 +2,17 @@ context("plotEAF")
 
 test_that("plotEAF works", {
 
-  obj.fun = makeMBOFunction(function(x) c(1, -1) * x^2)
-  par.set = makeNumericParamSet(len = 2L, lower = -2, upper = 1)
+  f = makeMultiObjectiveFunction(
+    fn = function(x) c(1, -1) * x^2,
+    par.set = makeNumericParamSet(len = 2L, lower = -2, upper = 1),
+    n.objectives = 2L
+  )
+  des = generateTestDesign(5L, smoof::getParamSet(f))
 
   # Test normal run
   learner = makeLearner("regr.km", nugget.estim = TRUE)
-  ctrl = makeMBOControl(iters = 2, number.of.targets = 2L, init.design.points = 5L)
+  ctrl = makeMBOControl(number.of.targets = 2L)
+  ctrl = setMBOControlTermination(ctrl, iters = 2L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10)
   ctrl = setMBOControlMultiCrit(ctrl, method = "parego", parego.s = 100)
 
@@ -15,7 +20,7 @@ test_that("plotEAF works", {
   n.reps = 3L
   opt.pathes = lapply(seq(n.reps), function(i) {
     set.seed(i)
-    res = mbo(obj.fun, par.set, learner = learner, control = ctrl)
+    res = mbo(f, des, learner = learner, control = ctrl)
     return(res$opt.path)
   })
   opt.pathes = list("algo1" = opt.pathes, "algo2" = opt.pathes)

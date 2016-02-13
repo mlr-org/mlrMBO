@@ -23,5 +23,4 @@ test_that("test checks for initial design and new design", {
   new.design = data.frame(x = c("a", "c", "b", "d", "a", NA))
   expect_equal(checkPredictionData(new.design, design),
     c(TRUE, FALSE, TRUE, FALSE, TRUE, FALSE))
-
 })

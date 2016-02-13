@@ -15,4 +15,3 @@ trainModels = function(learner, tasks, control) {
     train.time = sum(extractSubList(z, "train.time"))
   )
 }
-

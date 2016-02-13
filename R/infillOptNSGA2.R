@@ -7,14 +7,13 @@ infillOptMultiCritNSGA2 = function(infill.crit, models, control, par.set, opt.pa
   # build target function for vectorized nsga2 and run it
   rep.pids = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
   m = control$number.of.targets
-  control2 = control
   fun.tmp = function(x) {
     newdata = as.data.frame(x)
     colnames(newdata) = rep.pids
     asMatrixRows(lapply(1:m, function(i) {
       # we need to make sure mininimize in control is a scalar, so we can multiply it in infill crits...
-      control2$minimize = control$minimize[i]
-      infill.crit(points = newdata, models = models[i], control = control2,
+      control$minimize = control$minimize[i]
+      infill.crit(points = newdata, models = models[i], control = control,
         par.set = par.set, design = design, iter = iter, ...)
     }))
   }
@@ -30,15 +29,15 @@ infillOptMultiCritNSGA2 = function(infill.crit, models, control, par.set, opt.pa
   # do this greedy - select the point with max. hv.contr, add it and select
   # the best point wrt to the new front
   candidate.points = res$par
-  # Use the mean/lcb response of the model to calculate the hv.contr, not the nsga2-val
+  # Use the mean/cb response of the model to calculate the hv.contr, not the nsga2-val
   hv.contr.crit = getInfillCritFunction(control$mspot.select.crit)
   candidate.vals = asMatrixCols(lapply(1:m, function(i) {
     # we need to make sure mininimize in control is a scalar, so we can multiply it in infill crits...
-    control2$minimize = control$minimize[i]
+    control$minimize = control$minimize[i]
 
     newdata = as.data.frame(res$par)
     colnames(newdata) = rep.pids
-    hv.contr.crit(points = newdata, models = models[i], control = control2,
+    hv.contr.crit(points = newdata, models = models[i], control = control,
       par.set = par.set, design = design, iter = iter, ...)
   }))
 
@@ -63,6 +62,6 @@ infillOptMultiCritNSGA2 = function(infill.crit, models, control, par.set, opt.pa
 
   # FIXME: cleanup - i'm reall unsure how to set the names of prop.points technically
   prop.points = as.data.frame(prop.points)
-  colnames(prop.points) = names(design[, which(colnames(design) %nin% control$y.name)])
+  colnames(prop.points) = names(design[, colnames(design) %nin% control$y.name])
   list(prop.points = prop.points, prop.hv.contrs = prop.hv.contrs)
 }

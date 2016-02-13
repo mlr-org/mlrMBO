@@ -18,10 +18,13 @@ checkStuff = function(fun, par.set, design, learner, control) {
   assertClass(control, "MBOControl")
   assertClass(learner, "Learner")
 
-  pids = getParamIds(par.set)
+  if (getNumberOfObjectives(fun) != control$number.of.targets) {
+    stopf("Objective function has %i objectives, but the control object assumes %i.",
+      getNumberOfObjectives(fun), control$number.of.targets)
+  }
 
   # general parameter and learner checks
-  if (any(sapply(par.set$pars, inherits, what = "LearnerParam")))
+  if (any(vlapply(par.set$pars, inherits, what = "LearnerParam")))
     stop("No parameter can be of class 'LearnerParam'! Use basic parameters instead to describe you region of interest!")
 
   if (!hasFiniteBoxConstraints(par.set))
@@ -37,13 +40,13 @@ checkStuff = function(fun, par.set, design, learner, control) {
     stopf("The 'par.set' has dependent parameters, which will lead to missing values in X-space during modeling, but learner '%s' does not support handling of missing values (property 'missing')!", learner$id)
 
   # general infill stuff (relavant for single objective and parEGO)
-  if (control$infill.crit %in% c("se", "ei", "aei", "lcb", "dib") && learner$predict.type != "se") {
+  if (control$infill.crit %in% c("se", "ei", "aei", "cb", "dib") && learner$predict.type != "se") {
     stopf("For infill criterion '%s' predict.type of learner %s must be set to 'se'!%s",
       control$infill.crit, learner$id,
       ifelse(hasLearnerProperties(learner, "se"), "",
         "\nBut this learner does not seem to support prediction of standard errors! You could use the mlr wrapper makeBaggingWrapper to bootstrap the standard error estimator."))
   }
-  
+
   # If nugget estimation should be used, make sure learner is a km model with activated nugget estim
   if (control$infill.crit.aei.use.nugget) {
     if (learner$short.name != "km" || !isTRUE(getHyperPars(learner)$nugget.estim)) {
@@ -54,11 +57,33 @@ checkStuff = function(fun, par.set, design, learner, control) {
   if (control$infill.opt %in% c("cmaes", "ea") && !isNumeric(par.set))
     stopf("Optimizer '%s' can only be applied to numeric, integer, numericvector, integervector parameters!", control$infill.opt)
 
+  # set default mu parameter for ea infill optimizer
+  if (control$infill.opt == "ea") {
+    control$infill.opt.ea.mu = coalesce(control$infill.opt.ea.mu, getNumberOfParameters(fun) * 10L)
+    assertNumber(control$infill.opt.ea.mu, na.ok = FALSE, lower = 0)
+  }
+
+  if (is.null(control$target.fun.value)) {
+    # If we minimize, target is -Inf, for maximize it is Inf
+    control$target.fun.value = if (control$minimize[1L]) -Inf else Inf
+  } else {
+    assertNumber(control$target.fun.value, na.ok = FALSE)
+  }
+
+  if (length(control$save.on.disk.at) > 0L && (control$iters + 1) %nin% control$save.on.disk.at)
+    warningf("You turned off the final saving of the optimization result at (iter + 1)! Do you really want this?")
+  if (length(control$save.on.disk.at) > 0 || is.finite(control$save.on.disk.at.time)) {
+    control$save.on.disk.at = asInteger(control$save.on.disk.at, any.missing = FALSE, lower = 0 , upper = control$iters + 1)
+    assertPathForOutput(control$save.file.path)
+  }
+  control$store.model.at = coalesce(control$store.model.at, control$iters + 1)
+  control$resample.at = coalesce(control$resample.at, integer(0))
+
   #  single objective
   if (control$number.of.targets == 1L) {
     if (control$propose.points == 1L) { # single point
     } else {                            # multi point
-      if ((control$multipoint.method %in% c("lcb", "cl", "lcb") ||
+      if ((control$multipoint.method %in% c("cb", "cl", "cb") ||
           control$multipoint.method == "multicrit" && control$multipoint.multicrit.objective != "mean.dist" )
         && learner$predict.type != "se") {
         stopf("For multipoint method '%s'%s, predict.type of learner %s must be set to 'se'!%s",
@@ -71,8 +96,8 @@ checkStuff = function(fun, par.set, design, learner, control) {
       }
       if (control$multipoint.method == "cl" && control$infill.crit != "ei")
         stopf("Multipoint proposal using constant liar needs the infill criterion 'ei' (expected improvement), but you used '%s'!", control$infill.crit)
-      if (control$multipoint.method == "lcb" && control$infill.crit != "lcb")
-        stopf("Multipoint proposal using parallel LCB needs the infill criterion 'lcb' (lower confidence bound), but you used '%s'!", control$infill.crit)
+      if (control$multipoint.method == "cb" && control$infill.crit != "cb")
+        stopf("Multipoint proposal using parallel cb needs the infill criterion 'cb' (confidence bound), but you used '%s'!", control$infill.crit)
       if (control$multipoint.method == "random" && control$infill.crit != "random") {
         stopf("Multipoint proposal method %s is not compatible with infill crit %s!", control$multipoint.method, control$infill.crit)
   }
@@ -98,4 +123,5 @@ checkStuff = function(fun, par.set, design, learner, control) {
   # FIXME: implement something that works for integer and discrte params
   if (control$filter.proposed.points && hasDiscrete(par.set))
     stop("Filtering proposed points currently not implemented for discrete parameters!")
+  return(control)
 }

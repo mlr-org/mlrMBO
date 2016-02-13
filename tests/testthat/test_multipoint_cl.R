@@ -1,17 +1,22 @@
 context("multipoint constant liar")
 
 test_that("multipoint constant liar", {
-  objfun = function(x) {
-    y = sum(x^2)
-  }
-  ps = makeNumericParamSet(len = 1L, lower = -1, upper = 1)
+  f = makeSingleObjectiveFunction(
+    fn = function(x) {
+      sum(x^2)
+    },
+    par.set = makeNumericParamSet(len = 1L, lower = -1, upper = 1)
+  )
+
   lrn = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
 
-  ctrl = makeMBOControl(init.design.points = 30L, iters = 1L, propose.points = 5L)
+  des = generateTestDesign(30L, smoof::getParamSet(f))
+  ctrl = makeMBOControl(propose.points = 5L)
+  ctrl = setMBOControlTermination(ctrl, iters = 1L)
   ctrl = setMBOControlInfill(ctrl, crit = "ei")
   ctrl = setMBOControlMultiPoint(ctrl, method = "cl")
 
-  res = mbo(makeMBOFunction(objfun), par.set = ps, learner = lrn, control = ctrl)
+  res = mbo(f, des, learner = lrn, control = ctrl)
   expect_is(res, "MBOResult")
   expect_true(res$y < 0.1)
 })

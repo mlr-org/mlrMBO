@@ -12,7 +12,7 @@ getInfillCritFunction = function(infill.crit) {
     se = infillCritStandardError,
     ei = infillCritEI,
     aei = infillCritAEI,
-    lcb = infillCritLCB,
+    cb = infillCritCB,
     # akg = infillCritAKG,
      eqi = infillCritEQI,
     # mq  = infillCritMQ,
@@ -22,4 +22,3 @@ getInfillCritFunction = function(infill.crit) {
     match.fun(infill.crit)
   )
 }
-

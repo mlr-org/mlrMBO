@@ -21,12 +21,12 @@ Iterations to be plotted, 0 indicates the initial design. Default is all iterati
 Should the process be paused after each iteration?
 Default is \code{TRUE}.}
 
-\item{...}{Additional parameters for the \code{\link[ParamHelpers]{plotOptPath}} 
+\item{...}{Additional parameters for the \code{\link[ParamHelpers]{plotOptPath}}
 function in package \code{ParamHelpers}.}
 }
 \description{
 Plots any MBO result objects. Plots for X-Space, Y-Space and any coloumn in
-the optimization path are available. This function uses 
+the optimization path are available. This function uses
 \code{\link[ParamHelpers]{plotOptPath}} from package \code{ParamHelpers}.
 }
 

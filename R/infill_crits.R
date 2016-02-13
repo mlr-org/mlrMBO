@@ -53,11 +53,11 @@ infillCritEI = function(points, models, control, par.set, design, iter) {
 
 # LOWER CONFIDENCE BOUND
 # (useful for deterministic and also naively for noisy)
-infillCritLCB = function(points, models, control, par.set, design, iter) {
+infillCritCB = function(points, models, control, par.set, design, iter) {
   model = models[[1L]]
   maximize.mult = ifelse(control$minimize, 1, -1)
   p = predict(model, newdata = points)$data
-  if (control$infill.crit.lcb.inflate.se) {
+  if (control$infill.crit.cb.inflate.se) {
     r.response = diff(range(p$response))
     r.se = diff(range(p$se))
     tol = .Machine$double.eps^0.5
@@ -70,7 +70,7 @@ infillCritLCB = function(points, models, control, par.set, design, iter) {
     inflate = 1
   }
 
-  maximize.mult * p$response - inflate * control$infill.crit.lcb.lambda * p$se
+  maximize.mult * p$response - inflate * control$infill.crit.cb.lambda * p$se
 }
 
 ######################  Noisy criteria ###########################################################
@@ -90,14 +90,14 @@ infillCritAEI = function(points, models, control, par.set, design, iter) {
   xcr = d / p.se
   xcr.prob = pnorm(xcr)
   xcr.dens = dnorm(xcr)
-  
-  
+
+
   # noise estimation
   pure.noise.var = if (control$infill.crit.aei.use.nugget)
     pure.noise.var = model$learner.model@covariance@nugget
   else
     estimateResidualVariance(model, data = design, target = control$y.name)
-  
+
   tau = sqrt(pure.noise.var)
   aei = ifelse(p.se < 1e-06, 0,
     (d * xcr.prob + p.se * xcr.dens) * (1 - tau / sqrt(tau^2 + p.se^2)))
@@ -144,14 +144,14 @@ infillCritEQI = function(points, models, control, par.set, design, iter) {
 # direct.eps: LOWER CONFIDENCE BOUND of points, then epsilon indicator contribution of these wrt to design
 # (useful for deterministic and stochastic MCO)
 infillCritDIB = function(points, models, control, par.set, design, iter) {
-  # get ys and lcb-value-matrix for new points, minimize version
+  # get ys and cb-value-matrix for new points, minimize version
   maximize.mult = ifelse(control$minimize, 1, -1)
   ys = as.matrix(design[, control$y.name]) %*% diag(maximize.mult)
   ps = lapply(models, predict, newdata = points)
   means = extractSubList(ps, c("data", "response"), simplify = "cols")
   ses = extractSubList(ps, c("data", "se"), simplify = "cols")
-  lcbs = means %*% diag(maximize.mult) - control$infill.crit.lcb.lambda * ses
-  # from here on ys and lcbs are ALWAYS minimized
+  cbs = means %*% diag(maximize.mult) - control$infill.crit.cb.lambda * ses
+  # from here on ys and cbs are ALWAYS minimized
   all.mini = rep(TRUE, control$number.of.targets)
 
   ys.front = getNonDominatedPoints(ys, minimize = all.mini)
@@ -173,9 +173,9 @@ infillCritDIB = function(points, models, control, par.set, design, iter) {
     ys.front = as.matrix(ys.front)
     # allocate mem for adding points to front for HV calculation in C
     front2 = t(rbind(ys.front, 0))
-    crit.vals = .Call("c_sms_indicator", PACKAGE = "mlrMBO", as.matrix(lcbs), ys.front, front2, eps, ref.point)
+    crit.vals = .Call("c_sms_indicator", PACKAGE = "mlrMBO", as.matrix(cbs), ys.front, front2, eps, ref.point)
   } else {
-    crit.vals = .Call("c_eps_indicator", PACKAGE = "mlrMBO", as.matrix(lcbs), as.matrix(ys.front))
+    crit.vals = .Call("c_eps_indicator", PACKAGE = "mlrMBO", as.matrix(cbs), as.matrix(ys.front))
   }
   return(crit.vals)
 }

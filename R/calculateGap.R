@@ -1,5 +1,5 @@
 # Calculates gap between best point and global optimum.
-# 
+#
 # Used in the exampleRun functions and printed in plots.
 #
 # @param design [\code{data.frame}]\cr
@@ -10,9 +10,6 @@
 #   MBO control object.
 # @return [\code{numeric(1)}]
 calculateGap = function(design, global.opt, control) {
-  best.y = if (control$minimize)
-    min(design[, control$y.name])
-  else
-    max(design[, control$y.name])
-  gap = abs(best.y - global.opt)
+  best.y = if (control$minimize) min(design[, control$y.name]) else max(design[, control$y.name])
+  abs(best.y - global.opt)
 }

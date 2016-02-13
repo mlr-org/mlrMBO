@@ -1,6 +1,8 @@
 #FIXME: briefly explain multipoint proposal for all thre methods
 
-#' @title Extends mbo control object with multi-criteria specific options.
+#' @title Set multi-criteria options.
+#' @description
+#' Extends MBO control object with multi-criteria specific options.
 #'
 #' @template arg_control
 #' @param method [\code{character(1)}]\cr
@@ -52,12 +54,11 @@
 #'   Epsilon for epsilon-dominance for \code{dib.indicator = "sms"}.
 #'   Default is \code{NULL}, in this case it is adaptively set.
 #' @param mspot.select.crit [\code{character(1)}]\cr
-#'   Which infill.crit to use in the candidate selection. After the NSGA2 
+#'   Which infill.crit to use in the candidate selection. After the NSGA2
 #'   proposed a set of candidates, \dQuote{propose.points} are selected via
-#'   the hypervoume contribution of this infill.crit. 
-#'   Possible values are \dQuote{mean} and \dQuote{lcb}, default ist \dQuote{mean}
+#'   the hypervoume contribution of this infill.crit.
+#'   Possible values are \dQuote{mean} and \dQuote{cb}, default ist \dQuote{mean}
 #' @return [\code{\link{MBOControl}}].
-#' @note See the other setMBOControl... functions and \code{makeMBOControl} for referenced arguments.
 #'
 #' @references
 #' For more information on the implemented multi-criteria procedures the following
@@ -93,7 +94,7 @@
 #' Evolutionary Computation (CEC 2005), Edinburgh, UK, Corne, D.;
 #' et al. (eds.), IEEE, 2005, ISBN 0-7803-9363-5, pp. 2138-2145
 #'
-#' @seealso makeMBOControl
+#' @family MBOControl
 #' @export
 setMBOControlMultiCrit = function(control,
   method = NULL,
@@ -185,9 +186,9 @@ setMBOControlMultiCrit = function(control,
       control$multicrit.dib.sms.eps = dib.sms.eps
     }
   }
-  
+
   control$mspot.select.crit = coalesce(mspot.select.crit, control$mspot.select.crit, "mean")
-  assertChoice(control$mspot.select.crit, choices = c("mean", "lcb"))
+  assertChoice(control$mspot.select.crit, choices = c("mean", "cb"))
 
   return(control)
 }

@@ -1,7 +1,7 @@
 #' @title OptState object.
 #' @description
-#' The OptState is the central component of the mbo iterations. 
-#' This enviroment contains every necessary information needed during optimization in MBO. 
+#' The OptState is the central component of the mbo iterations.
+#' This enviroment contains every necessary information needed during optimization in MBO.
 #' It also links to the \code{\link{OptProblem}} and to the \code{\link{OptResult}}.
 #' @name OptState
 #' @rdname OptState
@@ -14,8 +14,10 @@ NULL
 #   List of \code{RegrTask} which together formulate data neccessary for the surrogate.
 #   Caching is done to not neccessarly regenerate tasks if the \code{loop} has not changed yes
 #  @param models \code{list()} \cr
-#    List of \code{WrappedModel} which are trained on the \code{tasks} and formulate the surrogate. 
+#    List of \code{WrappedModel} which are trained on the \code{tasks} and formulate the surrogate.
 #    Caching is done as above.
+#  @param time.model \code{WrappedModel} \cr
+#    Models the evaluation time given the function values.
 #  @param opt.result \code{OptResult} \cr
 #    Pointer to the OptResult Object.
 #  @param state \code{character(1)} \cr
@@ -24,11 +26,22 @@ NULL
 #  @param opt.path \code{OptPath} \cr
 #    Here we keep the opt.path. It delivers the data for the tasks and other usefull information.
 #  @param time.last.saved \code{POSIXct} \cr
-#     The \code{Sys.time()} when the last save on disk was done.
+#    The \code{Sys.time()} when the last save on disk was done.
+#  @param loop.starttime \code{POSIXct} \cr
+#    The \code{Sys.time()} when the mbo iteration was started.
+#  @param time.used \code{integer(1)} \cr
+#    The time in seconds we are alrady used for optimization since the verry start.
+#    This counts all iterations together and is necessary for continuation with a given time budget.
 
-makeOptState = function(opt.problem, loop = 0L, tasks = NULL, models = NULL, 
-  time.model = NULL, opt.result = NULL, state = "init", opt.path = NULL, 
-  time.last.saved = Sys.time(), loop.starttime = Sys.time(), time.used = 0L) {
+# IMPORTANT NOTE:
+# See this as a constructor and it's variables as member variables.
+# All variables in this Object should be documented here.
+# Think of it, when you implement new ones!
+# Unfortunately in R we cannot hinder you from putting other values in this object, but please: Don't!
+
+makeOptState = function(opt.problem, loop = 0L, tasks = NULL, models = NULL,
+  time.model = NULL, opt.result = NULL, state = "init", opt.path = NULL,
+  time.last.saved = Sys.time(), loop.starttime = Sys.time(), time.used = 0L, time.created = Sys.time()) {
 
   opt.state = new.env()
 
@@ -36,32 +49,18 @@ makeOptState = function(opt.problem, loop = 0L, tasks = NULL, models = NULL,
   opt.state$loop = loop #the loop the state is IN, not the one it is finished
   opt.state$tasks = tasks
   opt.state$models = models
-  opt.state$models.loop = -1L
-  opt.state$tasks.loop = -1L
+  opt.state$models.loop = -1L #the loop the models where generated
+  opt.state$tasks.loop = -1L #the loop the tasks where generated
   opt.state$time.model = time.model
-
-  if (is.null(opt.result)) {
-    opt.state$opt.result = makeOptResult()
-  } else {
-    opt.state$opt.result = opt.result
-  }
-  
-  opt.state$state = state #states = init, iter, iter.exceeded, time.exceeded, exec.time.exceeded, 
-
-  if (is.null(opt.path)) {
-    opt.state$opt.path = makeMBOOptPath(
-      getOptProblemParSet(opt.problem),
-      getOptProblemControl(opt.problem)
-    )  
-  } else {
-    opt.state$opt.path = opt.path
-  }
+  opt.state$opt.result = coalesce(opt.result, makeOptResult())
+  opt.state$state = state #possible states: init, iter, iter.exceeded, time.exceeded, exec.time.exceeded
+  opt.state$opt.path = coalesce(opt.path, makeMBOOptPath(opt.problem))
   opt.state$time.last.saved = time.last.saved
   opt.state$loop.starttime = loop.starttime
   opt.state$time.used = time.used
 
   opt.state$random.seed = .Random.seed
-  opt.state$time.created = Sys.time()
+  opt.state$time.created = time.created
   class(opt.state) = append(class(opt.state), "OptState")
   opt.state
 }
@@ -71,7 +70,7 @@ saveOptState = function(opt.state, file = NULL) {
   control = getOptProblemControl(getOptStateOptProblem(opt.state))
   show.info = getOptProblemShowInfo(getOptStateOptProblem(opt.state))
   if (is.null(file)) {
-    fn = control$save.file.path  
+    fn = control$save.file.path
   } else {
     fn = file
   }
@@ -97,15 +96,13 @@ loadOptState.OptProblem = function(obj) {
 }
 
 loadOptState.character = function(obj) {
-  opt.state = load2(file = obj, "opt.state")
-  .Random.seed = getOptStateRandomSeed(opt.state)
-  opt.state
+  load2(file = obj, "opt.state")
 }
 
 # If we already have a mbo result we will return it, otherwise it will be generated and stored in the opt.result
 makeOptStateMboResult = function(opt.state) {
   opt.result = getOptStateOptResult(opt.state)
-  
+
   # save final model if demanded
   setOptResultStoredModels(opt.result, opt.state)
   mbo.result = makeMBOResult.OptState(opt.state)

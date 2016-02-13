@@ -2,7 +2,7 @@
 % Please edit documentation in R/makeMBOTrafoFunction.R
 \name{makeMBOTrafoFunction}
 \alias{makeMBOTrafoFunction}
-\title{Create transformation function for MBOExampleRun.}
+\title{Create a transformation function for MBOExampleRun.}
 \usage{
 makeMBOTrafoFunction(name, fun)
 }
@@ -15,6 +15,9 @@ R function which expects a numeric vector.}
 }
 \value{
 Object of type MBOTrafoFunction.
+}
+\description{
+Creates a transformation function for MBOExampleRun.
 }
 \seealso{
 \link{trafos}

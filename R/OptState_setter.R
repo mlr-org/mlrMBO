@@ -21,9 +21,6 @@ setOptStateTimeModel = function(opt.state, time.model) {
 }
 
 setOptStateLoop = function(opt.state, loop = NULL) {
-  opt.result = getOptStateOptResult(opt.state)
-  setOptResultResampleResults(opt.result, opt.state)
-  setOptResultStoredModels(opt.result, opt.state)
   if (is.null(loop))
     opt.state$loop = opt.state$loop + 1L
   else
@@ -57,7 +54,7 @@ setOptStateTimeUsed = function(opt.state, time.used = NULL, time.add = NULL) {
 }
 
 setOptStateState = function(opt.state, state) {
-  assertSubset(state, c("init", "iter", getTerminateChars()))
+  #assertSubset(state, c("init", "iter", getTerminateChars()))
   opt.state$state = state
   invisible()
 }

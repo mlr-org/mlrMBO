@@ -34,22 +34,19 @@ proposePointsMultiFid = function(opt.state) {
     min.index = length(control$multifid.lvls)
   else
     min.index = getMinIndex(infill.vals)
-  
+
   prop[[min.index]]
 }
 
 #this function allows for points including the .multifid.lvl columns
 infillCritMultiFid.external = function(points, models, control, par.set, design, iter, lvl.cors, lvl.sds, lvl, time.model) {
   model = models[[1L]]
-  if (".multifid.lvl" %in% getParamIds(par.set)) {
-    par.set.nomf = dropParams(par.set, ".multifid.lvl")
-  } else {
-    par.set.nomf = par.set
+  if (".multifid.lvl" %nin% getParamIds(par.set)) {
     par.set = c(par.set, makeParamSet(
       makeIntegerParam(".multifid.lvl", lower = 1L, upper = length(control$multifid.lvls))))
   }
   lvl.sds = vnapply(seq_along(control$multifid.lvls), calcModelSD, model = model, control = control, design = design)
-  
+
   corgrid = generateDesign(n = control$multifid.cor.grid.points, par.set = dropParams(par.set, ".multifid.lvl"))
   lvl.cors = vnapply(seq_along(control$multifid.lvls), calcModelCor, model = model, grid = corgrid, nlvls = length(control$multifid.lvls))
   pointssplit = split(points, points$.multifid.lvl)
@@ -110,7 +107,7 @@ calcModelCor = function(lvl, model, grid, nlvls) {
   p = predict(model, newdata = new.grid)$data$response
   p1 = p[new.grid$.multifid.lvl == lvl]
   p2 = p[new.grid$.multifid.lvl == nlvls]
-  
+
   # check whether vectors are constant, cor = NA then
   if (diff(range(p1)) < sqrt(.Machine$double.eps) || diff(range(p2)) < sqrt(.Machine$double.eps))
     0

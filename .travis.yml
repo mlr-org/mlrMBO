@@ -1,26 +1,15 @@
-# travis config, based on https://github.com/craigcitro/r-travis
+language: R
+sudo: false
+cache: packages
+env:
+  global:
+    - _R_CHECK_TIMINGS_=0
+    - secure: "e2QLomaUqNvpHnGNdBXS4VO2/UWokrKl9UgYrqWo+fhpXaJiJuONNPNL44BuWZR2Cy7noTHrevVbTKBkGpqJR42mkjzcjd6qyR1Ctiveir+84/HTtmexouIUn5OFRH5dgyt/gquld31RlHlSYoKho3nZ7D7SnVExov9tp2FGRhU="
 
-language: c
-script: ./travis-tool.sh run_tests
-before_install:
-  - curl -OL http://raw.github.com/craigcitro/r-travis/master/scripts/travis-tool.sh
-  - chmod 755 ./travis-tool.sh
-  - ./travis-tool.sh bootstrap
-install:
-  - ./travis-tool.sh github_package hadley/testthat
-  - ./travis-tool.sh github_package hadley/assertthat
-  - ./travis-tool.sh github_package berndbischl/BBmisc
-  - ./travis-tool.sh github_package berndbischl/parallelMap
-  - ./travis-tool.sh github_package berndbischl/ParamHelpers
-  - ./travis-tool.sh github_package mlr-org/mlr
-  - ./travis-tool.sh install_deps
-branches:
-  except:
-   - /-expt$/
-after_failure:
-  - cat mlrMBO.Rcheck/00install.out
-  - cat mlrMBO.Rcheck/00check.log
-  - cat mlrMBO.Rcheck/tests/run-all.Rout.fail
+r_github_packages:
+  - jakobbossek/smoof
+  - mlr-org/mlr
+
 notifications:
   email:
     recipients:

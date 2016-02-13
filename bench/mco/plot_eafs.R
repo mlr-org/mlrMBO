@@ -14,7 +14,7 @@ job.info$algo2 = paste(job.info$algo, job.info$budget, job.info$prop.points,
 job.info$algo2 = str_replace_all(job.info$algo2, "-NA", "")
 
 pids = c("GOMOP3_3D2M", "GOMOP_2D2M", "GOMOP_5D2M", "dtlz2_5D2M", "zdt1_5D2M", "zdt2_5D2M", "zdt3_5D2M")
-aids = c("nsga2-normal", "dib-1-eps", "dib-1-sms", "parego-1-ei", "parego-4-lcb", "mspot-1-mean", "mspot-4-lcb")
+aids = c("nsga2-normal", "dib-1-eps", "dib-1-sms", "parego-1-ei", "parego-4-cb", "mspot-1-mean", "mspot-4-cb")
 
 getOptPaths = function(job.info, pids, aids) {
   ops = list()

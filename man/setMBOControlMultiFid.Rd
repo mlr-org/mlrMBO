@@ -2,7 +2,7 @@
 % Please edit documentation in R/setMBOControlMultiFid.R
 \name{setMBOControlMultiFid}
 \alias{setMBOControlMultiFid}
-\title{Extends mbo control object with multiFid-algorithm specific options.}
+\title{Set multi-fidelity options.}
 \usage{
 setMBOControlMultiFid(control, param, lvls, costs = NULL,
   cor.grid.points = NULL, force.last.level.steps = NULL, show.info = NULL)
@@ -35,10 +35,14 @@ Default is \code{TRUE}.}
 \value{
 [\code{\link{MBOControl}}].
 }
-\note{
-See the other setMBOControl... functions and \code{makeMBOControl} for referenced arguments.
+\description{
+Extends an MBO control object with multi-fidelity specific options.
 }
 \seealso{
-makeMBOControl
+Other MBOControl: \code{\link{makeMBOControl}},
+  \code{\link{setMBOControlInfill}},
+  \code{\link{setMBOControlMultiCrit}},
+  \code{\link{setMBOControlMultiPoint}},
+  \code{\link{setMBOControlTermination}}
 }
 

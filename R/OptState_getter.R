@@ -14,7 +14,7 @@ getOptStateModels = function(opt.state) {
   if (is.null(opt.state$models) || getOptStateLoop(opt.state) != opt.state$models.loop) {
     opt.problem = getOptStateOptProblem(opt.state)
     models = trainModels(
-      learner = getOptProblemLearner(opt.problem), 
+      learner = getOptProblemLearner(opt.problem),
       tasks = getOptStateTasks(opt.state),
       control = getOptProblemControl(opt.problem))
     setOptStateModels(opt.state, models)
@@ -26,11 +26,7 @@ getOptStateModels = function(opt.state) {
 
 getOptStateTasks = function(opt.state) {
   if (is.null(opt.state$tasks) || getOptStateLoop(opt.state) != opt.state$tasks.loop) {
-    opt.problem = getOptStateOptProblem(opt.state)
-    tasks = makeTasks(
-      opt.path = getOptStateOptPath(opt.state),
-      algo.init = getOptProblemAlgoInit(opt.problem),
-      control = getOptProblemControl(opt.problem))
+    tasks = makeTasks(opt.state)
     setOptStateTasks(opt.state, tasks)
   } else {
     tasks = opt.state$tasks
@@ -79,7 +75,7 @@ getOptStateShouldSave = function(opt.state) {
 
   getOptStateLoop(opt.state) %in% control$save.on.disk.at ||
     difftime(Sys.time(), getOptStateTimeLastSaved(opt.state), units = "secs") > control$save.on.disk.at.time
-  
+
 }
 
 # @param unify [\code{logical(1)}]
@@ -104,14 +100,14 @@ getOptStateFinalPoints = function(opt.state, unify = FALSE) {
       list(
         x = do.call(rbind.data.frame ,pareto.set),
         y = getOptPathParetoFront(opt.path),
-        best.ind = inds)  
+        best.ind = inds)
     } else {
       list(
         pareto.front = getOptPathY(opt.path)[inds, , drop = FALSE],
         pareto.set = pareto.set,
         inds = inds
         )
-    }   
+    }
   }
 }
 
@@ -121,6 +117,12 @@ getOptStateState = function(opt.state) {
 
 getOptStateTermination = function(opt.state) {
   terminate = shouldTerminate.OptState(opt.state)
-  setOptStateState(opt.state, getTerminateChars(terminate))
+  # update only if termination condition is met
+  if (terminate$term) {
+    # custom stopping conditions have no code. We assign 5 here manually, which
+    # means manual.exceeded (see getTerminateChars(...))
+    code = if (is.null(terminate$code)) 5L else terminate$code
+    setOptStateState(opt.state, getTerminateChars(code))
+  }
   terminate
 }

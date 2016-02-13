@@ -77,4 +77,3 @@ infillOptCMAES = function(infill.crit, models, control, par.set, opt.path, desig
 #     lower = low, upper = upp, parinit = start)$par)
 #   as.data.frame(design)
 # }
-

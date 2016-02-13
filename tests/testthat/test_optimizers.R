@@ -1,28 +1,24 @@
 context("infill optimizers")
 
 test_that("infill optimizers", {
-  f = makeMBOFunction(function(x) sum(x^2))
-  ps = makeParamSet(
-    makeNumericVectorParam("x", len = 2, lower = -10, upper = 10)
-  )
+
   mycontrol = function(opt, restarts) {
-    ctrl = makeMBOControl(init.design.points = 20, iters = 5)
+    ctrl = makeMBOControl()
+    ctrl = setMBOControlTermination(ctrl, iters = 5L)
     ctrl = setMBOControlInfill(ctrl, crit = "mean", opt = opt,
-      opt.cmaes.control = list(maxit = 10))
+      opt.cmaes.control = list(maxit = 10L))
   }
   mycheck = function(or) {
-    expect_equal(getOptPathLength(or$opt.path), 25)
+    expect_equal(getOptPathLength(or$opt.path), nrow(testd.fsphere.2d) + 5L)
     expect_true(!is.na(or$y))
     expect_true(or$y < 1)
   }
 
   learner = makeLearner("regr.km", nugget.estim = TRUE)
-  ctrl = mycontrol("cmaes", 1)
-  or = mbo(f, ps, des = NULL, learner, ctrl)
+  ctrl = mycontrol("cmaes", 1L)
+  or = mbo(testf.fsphere.2d, testd.fsphere.2d, learner, ctrl)
   mycheck(or)
-  ctrl = mycontrol("cmaes", 2)
-  or = mbo(f, ps, des = NULL, learner, ctrl)
+  ctrl = mycontrol("cmaes", 2L)
+  or = mbo(testf.fsphere.2d, testd.fsphere.2d, learner, ctrl)
   mycheck(or)
 })
-
-

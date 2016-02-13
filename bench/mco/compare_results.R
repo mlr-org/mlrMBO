@@ -56,25 +56,25 @@ compareGroup = function(res, expr, indicator, digits = NULL, ref.algo = NULL,
   # join algo name and params
   d$algo2 = paste(d$algo, d$budget, d$prop.points, d$indicator, d$crit, sep = "-")
   d$algo2 = str_replace_all(d$algo2, "-NA", "")
-  
+
   maximize = indicator == "hv"
-  
+
   # Test versus ref.algo if one is specified
   if (!is.null(ref.algo)) {
     ref.test.res = makeTest(d, indicator, ref.algo, maximize = maximize)
   }
-  
+
   # Test versus randomSearch and nsga2?
   if (include.baseline) {
     baseline.rs = subset(res, res$algo == "randomSearch" & res$budget == "normal")
     baseline.rs$algo2 = "rs"
     rs.test.res = makeTest(rbind(baseline.rs, d), indicator, "rs", maximize = maximize)
-    
+
     baseline.nsga2 = subset(res, res$algo == "nsga2" & res$budget == "normal")
     baseline.nsga2$algo2 = "nsga2"
     nsga2.test.res = makeTest(rbind(baseline.nsga2, d), indicator, "nsga2", maximize = maximize)
   }
-  
+
   # some conversions
   d = dcast(d, d$prob ~ d$algo2, fun.aggregate = mean, value.var = indicator)
   d.full.precision = d[, -1]
@@ -83,12 +83,12 @@ compareGroup = function(res, expr, indicator, digits = NULL, ref.algo = NULL,
   d = as.matrix(d)
   rownames(d) = d[, "d$prob"]
   d = d[, -1]
-  
+
   # the xtable
   xtab = d
   nc = ncol(xtab)
   nr = nrow(xtab)
-  
+
   # mark best algo for each row. bit tricky, since we have to calc the best
   # in d, but mark it in xtab
   for (i in seq_row(xtab)) {
@@ -104,9 +104,9 @@ compareGroup = function(res, expr, indicator, digits = NULL, ref.algo = NULL,
   if (!is.null(ref.algo)) {
     ref.test.res = ref.test.res[, setdiff(colnames(xtab), ref.algo)]
     ref.algo.ind = which(colnames(xtab) == ref.algo)
-    xtab[, -ref.algo.ind][ref.test.res == "better"] = 
+    xtab[, -ref.algo.ind][ref.test.res == "better"] =
       paste(xtab[, -ref.algo.ind][ref.test.res == "better"], "^{++}", sep = "")
-    xtab[, -ref.algo.ind][ref.test.res == "not_worse"] = 
+    xtab[, -ref.algo.ind][ref.test.res == "not_worse"] =
       paste(xtab[, -ref.algo.ind][ref.test.res == "not_worse"], "^{+}", sep = "")
   }
   # mark test versus baseline algos and add baseline algos
@@ -114,9 +114,9 @@ compareGroup = function(res, expr, indicator, digits = NULL, ref.algo = NULL,
     rs.test.res = rs.test.res[, colnames(xtab)]
     nsga2.test.res = nsga2.test.res[, colnames(xtab)]
     xtab[1:nr, 1:nc] = paste(xtab, "_{", sep = "")
-    xtab[rs.test.res == "better"] = 
+    xtab[rs.test.res == "better"] =
       paste(xtab[rs.test.res == "better"], "r", sep = "")
-    xtab[nsga2.test.res == "better"] = 
+    xtab[nsga2.test.res == "better"] =
       paste(xtab[nsga2.test.res == "better"], "n", sep = "")
     xtab[1:nr, 1:nc] = paste(xtab, "}", sep = "")
   }
@@ -131,7 +131,7 @@ compareGroup = function(res, expr, indicator, digits = NULL, ref.algo = NULL,
     b = as.matrix(b)
     colnames(b) = c("", "nsga2", "rs")
     # exclude for now
-    # xtab = cbind(xtab, b[, -1])    
+    # xtab = cbind(xtab, b[, -1])
   }
   # some layout polishing
   label = label
@@ -144,8 +144,8 @@ compareGroup = function(res, expr, indicator, digits = NULL, ref.algo = NULL,
   if (!is.null(col.sorting))
     xtab = xtab[, col.sorting]
   xtab = xtable(xtab, caption = caption, label = label, align = align)
-  
-  # output for the console   
+
+  # output for the console
   d = t(apply(d, 1, function(x) {
     if (maximize)
       j = which.max(x)
@@ -156,11 +156,11 @@ compareGroup = function(res, expr, indicator, digits = NULL, ref.algo = NULL,
   }))
   d = as.data.frame(d)
   if (include.baseline) {
-   d = cbind(d, b[, -1]) 
+   d = cbind(d, b[, -1])
   }
   if (!is.null(col.sorting))
     d = d[, col.sorting]
-  
+
   return(list(d = as.data.frame(d), xtab = xtab))
 }
 
@@ -169,9 +169,9 @@ compareGroup = function(res, expr, indicator, digits = NULL, ref.algo = NULL,
 # ParEGO Analyse
 tab.parego.ei = compareGroup(res = res, expr = res$algo == "parego" & res$crit == "ei", indicator = "r2",
   digits = 3, ref.algo = "parego-1-ei", include.baseline = TRUE, label = "parego.table")
- 
-tab.parego.lcb = compareGroup(res = res, expr = res$algo == "parego" & res$crit == "lcb", indicator = "r2",
-  digits = 3, ref.algo = "parego-1-lcb", include.baseline = TRUE, label = "parego.table")
+
+tab.parego.cb = compareGroup(res = res, expr = res$algo == "parego" & res$crit == "cb", indicator = "r2",
+  digits = 3, ref.algo = "parego-1-cb", include.baseline = TRUE, label = "parego.table")
 
 # DIB - sms Analyse
 tab.sms = compareGroup(res = res, expr = res$algo == "dib" & res$indicator %in% c(NA, "sms"),
@@ -188,15 +188,15 @@ tab.mspot.mean = compareGroup(res = res, expr = res$algo == "mspot" & res$crit =
 tab.mspot.ei = compareGroup(res = res, expr = res$algo == "mspot" & res$crit == "ei", indicator = "hv",
   digits = 3, ref.algo = "mspot-1-ei", include.baseline = TRUE, label = "mspot.table")
 
-tab.mspot.lcb = compareGroup(res = res, expr = res$algo == "mspot" & res$crit == "lcb", indicator = "hv",
-  digits = 3, ref.algo = "mspot-1-lcb", include.baseline = TRUE, label = "mspot.table")
+tab.mspot.cb = compareGroup(res = res, expr = res$algo == "mspot" & res$crit == "cb", indicator = "hv",
+  digits = 3, ref.algo = "mspot-1-cb", include.baseline = TRUE, label = "mspot.table")
 
 
 # best algo tables
 expr.single = res$prop.points == 1 & ((res$algo == "dib"& res$indicator == "sms") |
-    (res$algo == "parego" & res$crit == "lcb")) 
-expr.mult = res$prop.points == 4 & (res$algo == "dib" | (res$algo =="parego" & res$crit == "lcb") |
-    (res$algo == "mspot" & res$crit == "lcb"))
+    (res$algo == "parego" & res$crit == "cb"))
+expr.mult = res$prop.points == 4 & (res$algo == "dib" | (res$algo =="parego" & res$crit == "cb") |
+    (res$algo == "mspot" & res$crit == "cb"))
 
 all.cmp.eps = compareGroup(res = res, expr = expr.single | expr.mult, indicator = "eps", digits = 3,
   col.sorting = c(1, 5, 2, 3, 4, 6))
@@ -208,12 +208,12 @@ all.cmp.hv = compareGroup(res = res, expr = expr.single | expr.mult, indicator =
 # write tables on disk
 write(x = print(tab.parego.ei$xtab, type = "latex",
   sanitize.text.function = function(x){x}), file= "tableParegoEi.tex")
-write(x = print(tab.paregollcb$xtab, type = "latex",
-   sanitize.text.function = function(x){x}), file= "tableParegoLcb.tex")
+write(x = print(tab.paregocb$xtab, type = "latex",
+   sanitize.text.function = function(x){x}), file= "tableParegocb.tex")
 write(x = print(tab.mspot.mean$xtab, type = "latex",
   sanitize.text.function = function(x){x}), file= "tableMspotMean.tex")
-write(x = print(tab.mspot.lcb$xtab, type = "latex",
-  sanitize.text.function = function(x){x}), file= "tableMspotLcb.tex")
+write(x = print(tab.mspot.cb$xtab, type = "latex",
+  sanitize.text.function = function(x){x}), file= "tableMspotcb.tex")
 write(x = print(tab.mspot.ei$xtab, type = "latex",
   sanitize.text.function = function(x){x}), file= "tableMspotEi.tex")
 write(x = print(tab.eps$xtab, type = "latex",

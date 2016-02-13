@@ -1,27 +1,31 @@
 context("different learner")
 
 test_that("mbo works with different learners", {
-  
+
   # Test some possible learner on a simple problem with discrete and
   # numeric parameters
-  f1 = function(x)
-    ifelse(x$disc1 == "a", x$num1 * 2 - 1, 1 - x$num1)
   ps1 = makeParamSet(
     makeDiscreteParam("disc1", values = c("a", "b")),
     makeNumericParam("num1", lower = 0, upper = 1)
   )
-  
-  f2 = function(x)
-    x$num1^2
-  ps2 = makeParamSet(
-    makeNumericParam("num1", lower = 0, upper = 1)
+  f1 = smoof::makeSingleObjectiveFunction(
+    fn = function(x) {
+      ifelse(x$disc1 == "a", x$num1 * 2 - 1, 1 - x$num1)
+    },
+    par.set = ps1,
+    has.simple.signature = FALSE
   )
-  
-  ctrl = makeMBOControl(iters = 1, init.design.points = 12)
-  ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100,
-    opt.restarts = 1, opt.focussearch.maxit = 1)
-  
-  testit = function(fun, p.set, lrn, se, bagging = TRUE) {
+
+  ps2 = testp.fsphere.2d
+  f2 = testf.fsphere.2d
+
+  ctrl = makeMBOControl()
+  ctrl = setMBOControlTermination(ctrl, iters = 1L)
+
+  ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100L,
+    opt.restarts = 1L, opt.focussearch.maxit = 1L)
+
+  testit = function(fun, lrn, se, bagging = TRUE) {
     lrn = makeLearner(lrn)
     if (se) {
       if (bagging)
@@ -29,48 +33,49 @@ test_that("mbo works with different learners", {
       lrn = setPredictType(lrn, "se")
       ctrl$infill.crit = "ei"
     }
-    mbo(fun, p.set,learner = lrn, control = ctrl)
+    des = generateTestDesign(10L, smoof::getParamSet(fun))
+    mbo(fun, des, learner = lrn, control = ctrl)
   }
-  
+
   # and now a huge number of runs
-  testit(f1, ps1, "regr.lm", TRUE)
-  testit(f1, ps1, "regr.lm", FALSE)
-  testit(f2, ps2, "regr.lm", TRUE)
-  testit(f2, ps2, "regr.lm", FALSE)
-  testit(f2, ps2, "regr.km", TRUE, FALSE)
-  testit(f2, ps2, "regr.km", FALSE)
-  testit(f1, ps1, "regr.lm", TRUE, FALSE)
-  testit(f1, ps1, "regr.lm", FALSE)
-  testit(f2, ps2, "regr.lm", TRUE, FALSE)
-  testit(f2, ps2, "regr.lm", FALSE)
-  testit(f1, ps1, "regr.rpart", TRUE)
-  testit(f1, ps1, "regr.rpart", FALSE)
-  testit(f2, ps2, "regr.rpart", TRUE)
-  testit(f2, ps2, "regr.rpart", FALSE)
-  testit(f1, ps1, "regr.mob", TRUE)
-  testit(f1, ps1, "regr.mob", FALSE)
-  testit(f2, ps2, "regr.mob", TRUE)
-  testit(f2, ps2, "regr.mob", FALSE)
-  testit(f1, ps1, "regr.kknn", TRUE)
-  testit(f1, ps1, "regr.kknn", FALSE)
-  testit(f2, ps2, "regr.kknn", TRUE)
-  testit(f2, ps2, "regr.kknn", FALSE)
-  testit(f1, ps1, "regr.ksvm", TRUE)
-  testit(f1, ps1, "regr.ksvm", FALSE)
-  testit(f2, ps2, "regr.ksvm", TRUE)
-  testit(f2, ps2, "regr.ksvm", FALSE)
-  testit(f1, ps1, "regr.earth", TRUE)
-  testit(f1, ps1, "regr.earth", FALSE)
-  testit(f2, ps2, "regr.earth", TRUE)
-  testit(f2, ps2, "regr.earth", FALSE)
-  testit(f1, ps1, "regr.nnet", TRUE)
-  testit(f1, ps1, "regr.nnet", FALSE)
-  testit(f2, ps2, "regr.nnet", TRUE)
-  testit(f2, ps2, "regr.nnet", FALSE)
-  
+  testit(f1, "regr.lm", TRUE)
+  testit(f1, "regr.lm", FALSE)
+  testit(f2, "regr.lm", TRUE)
+  testit(f2, "regr.lm", FALSE)
+  testit(f2, "regr.km", TRUE, FALSE)
+  testit(f2, "regr.km", FALSE)
+  testit(f1, "regr.lm", TRUE, FALSE)
+  testit(f1, "regr.lm", FALSE)
+  testit(f2, "regr.lm", TRUE, FALSE)
+  testit(f2, "regr.lm", FALSE)
+  testit(f1, "regr.rpart", TRUE)
+  testit(f1, "regr.rpart", FALSE)
+  testit(f2, "regr.rpart", TRUE)
+  testit(f2, "regr.rpart", FALSE)
+  testit(f1, "regr.mob", TRUE)
+  testit(f1, "regr.mob", FALSE)
+  testit(f2, "regr.mob", TRUE)
+  testit(f2, "regr.mob", FALSE)
+  testit(f1, "regr.kknn", TRUE)
+  testit(f1, "regr.kknn", FALSE)
+  testit(f2, "regr.kknn", TRUE)
+  testit(f2, "regr.kknn", FALSE)
+  testit(f1, "regr.ksvm", TRUE)
+  testit(f1, "regr.ksvm", FALSE)
+  testit(f2, "regr.ksvm", TRUE)
+  testit(f2, "regr.ksvm", FALSE)
+  testit(f1, "regr.earth", TRUE)
+  testit(f1, "regr.earth", FALSE)
+  testit(f2, "regr.earth", TRUE)
+  testit(f2, "regr.earth", FALSE)
+  testit(f1, "regr.nnet", TRUE)
+  testit(f1, "regr.nnet", FALSE)
+  testit(f2, "regr.nnet", TRUE)
+  testit(f2, "regr.nnet", FALSE)
+
   # FIXME: I disable the folowing tests .. I think the tests above should be
   # enough ...
-  
+
   #ps = makeParamSet(
   #  makeNumericVectorParam("x", len = 2, lower = 0, upper = 1),
   #  makeDiscreteParam("z", values = 1:5)

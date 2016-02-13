@@ -26,6 +26,12 @@ NULL
 # @param more.args [list]\cr
 #   Further arguments passed to fitness function.
 # @return [\code{\link{MBOSingleObjResult}} | \code{\link{MBOMultiObjResult}}]
+
+# IMPORTANT NOTE:
+# See this as a constructor and it's variables as member variables.
+# All variables in this Object should be documented here.
+# Think of it, when you implement new ones!
+# Unfortunately in R we cannot hinder you from putting other values in this object, but please: Don't!
 makeOptProblem = function(fun, par.set, design = NULL, learner, control, show.info = TRUE, more.args = list()) {
   opt.problem = new.env()
 
@@ -36,15 +42,7 @@ makeOptProblem = function(fun, par.set, design = NULL, learner, control, show.in
   opt.problem$control = control
   opt.problem$show.info = show.info
   opt.problem$more.args = more.args
-
-  #save old options
-  oldopts = list(
-    ole = getOption("mlr.on.learner.error"),
-    slo = getOption("mlr.show.learner.output")
-  )
-  opt.problem$oldopts = oldopts
-
-  opt.problem$algo.init = NULL
+  opt.problem$all.possible.weights = NULL
 
   class(opt.problem) = append(class(opt.problem), "OptProblem")
 
@@ -80,29 +78,29 @@ getOptProblemParSet = function(opt.problem) {
   opt.problem$par.set
 }
 
-getOptProblemOldopts = function(opt.problem) {
-  opt.problem$oldopts
-}
-
 getOptProblemMoreArgs = function(opt.problem) {
   opt.problem$more.args
 }
 
-setOptProblemAlgoInit = function(opt.problem, algo.init) {
-  opt.problem$algo.init = algo.init
+setOptProblemAllPossibleWeights = function(opt.problem, all.possible.weights) {
+  opt.problem$all.possible.weights = all.possible.weights
   invisible()
 }
 
-getOptProblemAlgoInit = function(opt.problem) {
-  par.set = getOptProblemParSet(opt.problem)
+getOptProblemAllPossibleWeights = function(opt.problem) {
   control = getOptProblemControl(opt.problem)
-  if (is.null(opt.problem$algo.init)) {
-    algo.init = mboAlgoInit(par.set = par.set, control = control)
-    setOptProblemAlgoInit(opt.problem, algo.init)
+  if (is.null(opt.problem$all.possible.weights) && control$number.of.targets > 1L && control$multicrit.method == "parego") {
+    # calculate all possible weight vectors and save them
+    all.possible.weights = combWithSum(control$multicrit.parego.s, control$number.of.targets) / control$multicrit.parego.s
+    # rearrange them a bit - we want to have the margin weights on top of the matrix
+    # tricky: all margin weights have maximal variance
+    vars = apply(all.possible.weights, 1, var)
+    all.possible.weights = rbind(diag(control$number.of.targets), all.possible.weights[!vars == max(vars),])
+    setOptProblemAllPossibleWeights(opt.problem, all.possible.weights)
   } else {
-    algo.init = opt.problem$algo.init
+    all.possible.weights = opt.problem$all.possible.weights
   }
-  algo.init
+  all.possible.weights
 }
 
 getOptProblemShowInfo = function(opt.problem) {
@@ -115,25 +113,5 @@ setOptProblemDesign = function(opt.problem, design) {
 }
 
 getOptProblemDesign = function(opt.problem) {
-  if (is.null(opt.problem$design)) {
-    #design = generateMBODesign(tuninProblem) #FIXME implement?
-    design = NULL
-    #setOptProblemDesign(opt.problem, design)
-  } else {
-    design = opt.problem$design
-  }
-  design
-}
-
-getOptProblemInitDesignPoints = function(opt.problem) {
-  design = getOptProblemDesign(opt.problem)
-  if (is.null(design)) 
-    getOptProblemControl(opt.problem)$init.design.points
-  else
-    nrow(design)
-}
-
-getOptProblemIsLcb = function(opt.problem) {
-  control = getOptProblemControl(opt.problem)
-  control$propose.points > 1L && control$multipoint.method == "lcb"
+  opt.problem$design
 }

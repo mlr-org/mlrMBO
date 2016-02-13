@@ -5,29 +5,42 @@ test_that("impute y", {
   # silent mode
   options(parallelMap.suppress.local.errors = TRUE)
 
-  f1 = makeMBOFunction(function(x) {
-    y = sum(x^2)
-    if (y < 5)
-      return(NA)
-    return(y)
-  })
-  f2 = makeMBOFunction(function(x) {
-    y = sum(x^2)
-    if (y < 5)
-      stop("foo")
-    return(y)
-  })
-  ps = makeNumericParamSet(len = 2L, lower = 0, upper = 3)
+  par.set = makeNumericParamSet(len = 2L, lower = 0, upper = 3)
+  f1 = smoof::makeSingleObjectiveFunction(
+    fn = function(x) {
+      y = sum(x^2)
+      if (y < 5)
+        return(NA)
+      return(y)
+    },
+    par.set = par.set
+  )
+
+  f2 = smoof::makeSingleObjectiveFunction(
+    fn = function(x) {
+      y = sum(x^2)
+      if (y < 5)
+        stop("foo")
+      return(y)
+    },
+    par.set = par.set
+  )
+
   learner = makeLearner("regr.randomForest")
 
   n.focus.points = 100L
-  ctrl = makeMBOControl(iters = 20)
-  ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = n.focus.points)
-  expect_error(mbo(f1, ps, des = NULL, learner, ctrl), "must be a numeric of length 1")
+  des1 = generateTestDesign(10L, smoof::getParamSet(f1))
+  des2 = generateTestDesign(10L, smoof::getParamSet(f2))
 
-  ctrl = makeMBOControl(iters = 20, impute.y.fun = function(x, y, opt.path) 0)
+  ctrl = makeMBOControl()
+  ctrl = setMBOControlTermination(ctrl, iters = 20L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = n.focus.points)
-  res = mbo(f1, ps, des = NULL, learner, ctrl)
+  expect_error(mbo(f1, des1, learner, ctrl), "must be a numeric of length 1")
+
+  ctrl = makeMBOControl(impute.y.fun = function(x, y, opt.path) 0)
+  ctrl = setMBOControlTermination(ctrl, iters = 20L)
+  ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = n.focus.points)
+  res = mbo(f1, des2, learner, ctrl)
 
   # Check for correct error messages
   na.inds = which(getOptPathY(res$opt.path) == 0)
@@ -38,12 +51,14 @@ test_that("impute y", {
       expect_equal(NA_character_, getOptPathErrorMessages(res$opt.path)[ind])
   }
 
-  ctrl = makeMBOControl(iters = 50)
+  ctrl = makeMBOControl()
+  ctrl = setMBOControlTermination(ctrl, iters = 50L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = n.focus.points)
-  expect_error(mbo(f2, ps, des = NULL, learner, ctrl), "foo")
-  ctrl = makeMBOControl(iters = 50, impute.y.fun = function(x, y, opt.path) 0)
+  expect_error(mbo(f2, des2, learner, ctrl), "foo")
+  ctrl = makeMBOControl(impute.y.fun = function(x, y, opt.path) 0)
+  ctrl = setMBOControlTermination(ctrl, iters = 50L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = n.focus.points)
-  res = mbo(f2, ps, des = NULL, learner, ctrl)
+  res = mbo(f2, des2, learner, ctrl)
   # Check for correct error messages
   na.inds = which(getOptPathY(res$opt.path) == 0)
   for (ind in 1:getOptPathLength(res$opt.path)) {
@@ -60,17 +75,22 @@ test_that("impute y", {
 test_that("impute y parego", {
 
   # Test impute
-  f1 = makeMBOFunction(function(x) {
-    y = x^2
-    ifelse(y < 2, NA, y)
-  })
-  ps = makeNumericParamSet(len = 2L, lower = 0, upper = 3)
+  f1 = smoof::makeMultiObjectiveFunction(
+    fn = function(x) {
+      y = x^2
+      ifelse(y < 2, NA, y)
+    },
+    par.set = makeNumericParamSet(len = 2L, lower = 0, upper = 3),
+    n.objectives = 2L
+  )
+  des1 = generateTestDesign(10L, smoof::getParamSet(f1))
   learner = makeLearner("regr.rpart")
-  ctrl = makeMBOControl(init.design.points = 10L, iters = 5,
-    number.of.targets = 2, impute.y.fun = function(x, y, opt.path) c(100, 100))
+  ctrl = makeMBOControl(number.of.targets = 2L,
+    impute.y.fun = function(x, y, opt.path) c(100, 100))
+  ctrl = setMBOControlTermination(ctrl, iters = 5L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10)
   ctrl = setMBOControlMultiCrit(ctrl, method = "parego", parego.s = 100)
-  or = mbo(f1, ps, learner = learner, control = ctrl)
+  or = mbo(f1, des1, learner = learner, control = ctrl)
   op = as.data.frame(or$opt.path)
   expect_equal(nrow(op), 10 + 5)
   expect_true(all(is.na(op$error.message) | op$y1 == 100))

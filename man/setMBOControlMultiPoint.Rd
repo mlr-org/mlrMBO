@@ -2,7 +2,7 @@
 % Please edit documentation in R/setMBOControlMultiPoint.R
 \name{setMBOControlMultiPoint}
 \alias{setMBOControlMultiPoint}
-\title{Extends mbo control object with options for multipoint proposal.}
+\title{Set multipoint proposal options.}
 \usage{
 setMBOControlMultiPoint(control, method = NULL, lcb.multiple = "random",
   cl.lie = NULL, multicrit.objective = NULL, multicrit.dist = NULL,
@@ -17,9 +17,9 @@ Control object for mbo.}
 \item{method}{[\code{character(1)}]\cr
 Method used for proposal of multiple infill points, for parallel batch evaluation.
 Possible values are:
-\dQuote{lcb}: Proposes points by optimizing the lower confidence bound \dQuote{lcb} criterion,
-\code{propose.points} times. Each lambda value for \dQuote{lcb} is drawn randomly from an
-exp(1)-distribution, so do not define \code{infill.opt.lcb.lambda}.
+\dQuote{cb}: Proposes points by optimizing the confidence bound \dQuote{cb} criterion,
+\code{propose.points} times. Each lambda value for \dQuote{cb} is drawn randomly from an
+exp(1)-distribution, so do not define \code{infill.opt.cb.lambda}.
 The optimizer for each proposal is configured in the same way as for the single point case,
 i. e., by specifying \code{infill.opt} and related stuff.
 \dQuote{multicrit}: Proposes points by evolutionary multicriteria optimization.
@@ -27,13 +27,13 @@ The EA is a (mu+1) type of algorithm and runs for \code{multicrit.maxit} generat
 The population size is set to \code{propose.points}.
 The selection criterion is \code{multicrit.selection}.
 \dQuote{cl}: Proposes points by constant liar strategy.
-Only meaningfull if \code{infill.crit == "lcb"}
+Only meaningfull if \code{infill.crit == "cb"}
 In the first step the kriging model is fitted based on the real data and the best point is calculated
 according to the regular EI-criterion.
 Then, the function value of the best point is simply guessed by the worst seen function evaluation.
 This lie is used to update the model in order to propose the subsequent point.
 The procedure is applied until the number of best points achieves \code{propose.points}.
-Default is \code{lcb}.}
+Default is \code{cb}.}
 
 \item{lcb.multiple}{[\code{character(1)}]\cr
 Method to generate multiple lambdas for multipoint proposals.
@@ -88,10 +88,14 @@ Default is 1.}
 \value{
 [\code{\link{MBOControl}}].
 }
-\note{
-See the other setMBOControl... functions and \code{makeMBOControl} for referenced arguments.
+\description{
+Extends an MBO control object with options for multipoint proposal.
 }
 \seealso{
-makeMBOControl
+Other MBOControl: \code{\link{makeMBOControl}},
+  \code{\link{setMBOControlInfill}},
+  \code{\link{setMBOControlMultiCrit}},
+  \code{\link{setMBOControlMultiFid}},
+  \code{\link{setMBOControlTermination}}
 }
 

@@ -2,28 +2,34 @@
 
 library(mlrMBO)
 library(ggplot2)
+library(smoof)
 set.seed(1)
 configureMlr(show.learner.output = FALSE)
 pause = interactive()
 
-obj.fun = function(x) {
-  sin(x$x)
-}
+obj.fun = makeSingleObjectiveFunction(
+  name = "Sine",
+  fn = function(x) sin(x),
+  par.set = makeNumericParamSet(lower = 3, upper = 13, len = 1L),
+  global.opt.value = -1
+)
 
-par.set = makeNumericParamSet(lower = 3, upper = 13, len = 1)
+ctrl = makeMBOControl(propose.points = 2L)
+ctrl = setMBOControlTermination(ctrl, iters = 10L)
 
-ctrl = makeMBOControl(init.design.points = 4, iters = 10, propose.points = 2)
 ctrl = setMBOControlMultiPoint(
 	ctrl,
   	method = "multicrit",
   	multicrit.objective = "ei.dist",
   	multicrit.dist = "nearest.neighbor",
-  	multicrit.maxit = 200
+  	multicrit.maxit = 200L
 )
 
 lrn = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
 
-run = exampleRun(obj.fun, par.set, global.opt = -1, learner = lrn,
+design = generateDesign(4L, getParamSet(obj.fun), fun = lhs::maximinLHS)
+
+run = exampleRun(obj.fun, design = design, learner = lrn,
   control = ctrl, points.per.dim = 100, show.info = TRUE)
 
 print(run)

@@ -2,7 +2,7 @@
 % Please edit documentation in R/setMBOControlMultiCrit.R
 \name{setMBOControlMultiCrit}
 \alias{setMBOControlMultiCrit}
-\title{Extends mbo control object with multi-criteria specific options.}
+\title{Set multi-criteria options.}
 \usage{
 setMBOControlMultiCrit(control, method = NULL, ref.point.method = NULL,
   ref.point.offset = NULL, ref.point.val = NULL, parego.s = NULL,
@@ -74,16 +74,16 @@ Epsilon for epsilon-dominance for \code{dib.indicator = "sms"}.
 Default is \code{NULL}, in this case it is adaptively set.}
 
 \item{mspot.select.crit}{[\code{character(1)}]\cr
-Which infill.crit to use in the candidate selection. After the NSGA2 
+Which infill.crit to use in the candidate selection. After the NSGA2
 proposed a set of candidates, \dQuote{propose.points} are selected via
-the hypervoume contribution of this infill.crit. 
-Possible values are \dQuote{mean} and \dQuote{lcb}, default ist \dQuote{mean}}
+the hypervoume contribution of this infill.crit.
+Possible values are \dQuote{mean} and \dQuote{cb}, default ist \dQuote{mean}}
 }
 \value{
 [\code{\link{MBOControl}}].
 }
-\note{
-See the other setMBOControl... functions and \code{makeMBOControl} for referenced arguments.
+\description{
+Extends MBO control object with multi-criteria specific options.
 }
 \references{
 For more information on the implemented multi-criteria procedures the following
@@ -120,6 +120,10 @@ Evolutionary Computation (CEC 2005), Edinburgh, UK, Corne, D.;
 et al. (eds.), IEEE, 2005, ISBN 0-7803-9363-5, pp. 2138-2145
 }
 \seealso{
-makeMBOControl
+Other MBOControl: \code{\link{makeMBOControl}},
+  \code{\link{setMBOControlInfill}},
+  \code{\link{setMBOControlMultiFid}},
+  \code{\link{setMBOControlMultiPoint}},
+  \code{\link{setMBOControlTermination}}
 }
 

@@ -7,18 +7,7 @@
 #' For visualization, run \code{plotExampleRun} on the resulting object.
 #' What is displayed is documented here: \code{\link{plotExampleRun}}.
 #'
-#' @param fun [\code{function}]\cr
-#'   Target function. See \code{\link{mbo}} for details.
-#' @template arg_parset
-#' @param learner [\code{\link[mlr]{Learner}}]\cr
-#'   See \code{\link{mbo}}.
-#'   Default is mlr learner \dQuote{regr.km}, which is kriging from package
-#'   DiceKriging, if all parameters are numeric. \code{nugget.estim} is set
-#'   to \code{TRUE} depending on whether we have noisy observations or not.
-#'   If a least one parameter is discrete the mlr learner \dQuote{regr.randomForest}
-#'   from package RandomForest is used as the default.
-#' @param control [\code{\link{MBOControl}}]\cr
-#'   See \code{\link{mbo}}.
+#' @inheritParams mbo
 #' @param  points.per.dim [\code{integer}]\cr
 #'   Number of (regular spaced) locations at which to
 #'   sample the \code{fun} function per dimension.
@@ -34,24 +23,31 @@
 #'   Further arguments passed to the learner.
 #' @return [\code{MBOExampleRunMultiCrit}]
 #' @export
-exampleRunMultiCrit= function(fun, par.set, learner, control, points.per.dim = 50,
+exampleRunMultiCrit= function(fun, design = NULL, learner, control, points.per.dim = 50,
   show.info = NULL, nsga2.args = list(), ref.point = NULL, ...) {
 
-  assertFunction(fun)
-  assertClass(control, "MBOControl")
-  assertClass(par.set, "ParamSet")
-  if (!is.null(ref.point))
-    assertNumeric(ref.point, lower = 0, finite = TRUE, any.missing = FALSE, len = 2L)
+  assertClass(fun, "smoof_multi_objective_function")
+  par.set = smoof::getParamSet(fun)
   par.types = getParamTypes(par.set)
   n.params = sum(getParamLengths(par.set))
+  if (is.null(design))
+    design = generateDesign(4 * n.params, par.set)
 
-  learner = checkLearner(learner, par.set, control, ...)
+  learner = checkLearner(learner, par.set, control)
+  assertClass(control, "MBOControl")
+  minimize = shouldBeMinimized(fun)
+  control$noisy = isNoisy(fun)
+  control$minimize = minimize
+
+  if (!is.null(ref.point))
+    assertNumeric(ref.point, lower = 0, finite = TRUE, any.missing = FALSE, len = 2L)
+
 
   if (is.null(show.info)) {
     show.info = getOption("mlrMBO.show.info", TRUE)
   }
   assertLogical(show.info, len = 1L, any.missing = FALSE)
-  ny = control$number.of.targets
+  ny = getNumberOfObjectives(fun)
 
   # only allow 2D -> 2D for the moment, since the plot function can only handle this case
   if (ny != 2L)
@@ -66,8 +62,8 @@ exampleRunMultiCrit= function(fun, par.set, learner, control, points.per.dim = 5
   showInfo(show.info, "Running NSGA2 to approximate pareto front.")
 
   # nsga2 interface does not allow maximization. fuck.
-  mults = ifelse(control$minimize, 1, -1)
-  if (!all(control$minimize)) {
+  mults = ifelse(minimize, 1, -1)
+  if (!all(minimize)) {
     fun2 = function(x) fun(x) * mults
   } else {
     fun2 = fun
@@ -87,20 +83,20 @@ exampleRunMultiCrit= function(fun, par.set, learner, control, points.per.dim = 5
   # front: and back to orginal scale ...
   nsga2.paretofront = nsga2.paretofront %*% diag(mults)
   nsga2.paretofront = setColNames(as.data.frame(nsga2.paretofront), names.y)
-  nsga2.hypervolume = getDominatedHV(nsga2.paretofront, ref.point, control$minimize)
+  nsga2.hypervolume = getDominatedHV(nsga2.paretofront, ref.point, minimize)
 
   showInfo(show.info, "Performing MBO on function.")
   showInfo(show.info, "Initial design: %i. Sequential iterations: %i.", control$init.design.points, control$iters)
   showInfo(show.info, "Learner: %s. Settings:\n%s", learner$id, mlr:::getHyperParsString(learner))
 
   # run optimizer now
-  res = mbo(fun, par.set, learner = learner, control = control, show.info = show.info)
-  mbo.hypervolume = getDominatedHV(res$pareto.front, ref.point, control$minimize)
+  res = mbo(fun, design, learner = learner, control = control, show.info = show.info)
+  mbo.hypervolume = getDominatedHV(res$pareto.front, ref.point, minimize)
 
   # if we have 1 model per obj, predict whole space and approx pareto front, so we can see effect of model
   mbo.pred.grid.x = NULL
   mbo.pred.grid.mean = NULL
-  mbo.pred.grid.lcb = NULL
+  mbo.pred.grid.cb = NULL
   if (control$multicrit.method %in% c("dib", "mspot")) {
     mbo.pred.grid.x = generateGridDesign(par.set, resolution = points.per.dim)
     mbo.pred.grid.mean = vector("list", control$iters)
@@ -109,17 +105,17 @@ exampleRunMultiCrit= function(fun, par.set, learner, control, points.per.dim = 5
       ps = lapply(mods, predict, newdata = mbo.pred.grid.x)
       y1 = extractSubList(ps, c("data", "response"), simplify = "cols")
       y2 = setColNames(as.data.frame(y1), names.y)
-      y2$.is.dom = isDominated(y1, control$minimize)
+      y2$.is.dom = isDominated(y1, minimize)
       mbo.pred.grid.mean[[iter]] = y2
-      # if we have se estim, also calc LCB front
+      # if we have se estim, also calc cb front
       if (mods[[1]]$learner$predict.type == "se") {
         z1 = extractSubList(ps, c("data", "se"), simplify = "cols")
         z1 = y1 - z1 %*% diag(mults)
         z2 = setColNames(as.data.frame(z1), names.y)
-        z2$.is.dom = isDominated(z1, control$minimize)
-        mbo.pred.grid.lcb[[iter]] = z2
+        z2$.is.dom = isDominated(z1, minimize)
+        mbo.pred.grid.cb[[iter]] = z2
       } else {
-        mbo.pred.grid.lcb = NULL
+        mbo.pred.grid.cb = NULL
       }
     }
   }
@@ -139,7 +135,7 @@ exampleRunMultiCrit= function(fun, par.set, learner, control, points.per.dim = 5
     points.per.dim = points.per.dim,
     mbo.pred.grid.x = mbo.pred.grid.x,
     mbo.pred.grid.mean = mbo.pred.grid.mean,
-    mbo.pred.grid.lcb = mbo.pred.grid.lcb
+    mbo.pred.grid.cb = mbo.pred.grid.cb
   )
 }
 
@@ -155,5 +151,3 @@ print.MBOExampleRunMultiCrit = function(x, ...) {
   catf("Hypervolume                   : %.4e", x$mbo.hypervolume)
   catf("NSGA2 Hypervolume (6000 FEs)  : %.4e", x$nsga2.hypervolume)
 }
-
-
