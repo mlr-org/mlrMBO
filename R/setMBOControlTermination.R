@@ -52,9 +52,7 @@
 #' @family MBOControl
 #' @export
 setMBOControlTermination = function(control,
-  iters = 10L, time.budget = NULL, exec.time.budget = NULL,
-  target.fun.value = NULL, max.evals = NULL,
-  more.stop.conds = list()) {
+  iters = 10L, time.budget = NULL, exec.time.budget = NULL, target.fun.value = NULL, max.evals = NULL, more.stop.conds = list()) {
 
   assertList(more.stop.conds)
 

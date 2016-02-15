@@ -85,7 +85,7 @@ makeMBOTargetFunValueTermination = function(target.fun.value) {
 # @param max.evals [integer(1)]
 #   Maximal number of function evaluations.
 makeMBOMaxEvalsTermination = function(max.evals) {
-  assertInt(max.evals, na.ok = FALSE)
+  assertInt(max.evals, na.ok = FALSE, lower = 1L)
   force(max.evals)
   function(opt.state) {
     opt.path = getOptStateOptPath(opt.state)
