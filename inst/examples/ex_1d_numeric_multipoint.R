@@ -10,10 +10,11 @@ pause = interactive()
 obj.fun = makeSingleObjectiveFunction(
   name = "Sine",
   fn = function(x) sin(x),
-  par.set = makeNumericParamSet(lower = 3, upper = 13, len = 1L)
+  par.set = makeNumericParamSet(lower = 3, upper = 13, len = 1L),
+  global.opt.value = -1
 )
 
-ctrl = makeMBOControl(init.design.points = 4L, propose.points = 2L)
+ctrl = makeMBOControl(propose.points = 2L)
 ctrl = setMBOControlTermination(ctrl, iters = 10L)
 
 ctrl = setMBOControlMultiPoint(
@@ -26,7 +27,9 @@ ctrl = setMBOControlMultiPoint(
 
 lrn = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
 
-run = exampleRun(obj.fun, global.opt = -1, learner = lrn,
+design = generateDesign(4L, getParamSet(obj.fun), fun = lhs::maximinLHS)
+
+run = exampleRun(obj.fun, design = design, learner = lrn,
   control = ctrl, points.per.dim = 100, show.info = TRUE)
 
 print(run)

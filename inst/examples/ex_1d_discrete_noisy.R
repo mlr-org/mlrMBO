@@ -27,16 +27,18 @@ obj.fun = makeSingleObjectiveFunction(
   noisy = TRUE
 )
 
-ctrl = makeMBOControl(init.design.points = 20L)
+ctrl = makeMBOControl()
 ctrl = setMBOControlTermination(ctrl, iters = 10L)
 
 # we can basically do an exhaustive search in 3 values
 ctrl = setMBOControlInfill(ctrl, crit = "ei",
   opt.restarts = 1L, opt.focussearch.points = 3L, opt.focussearch.maxit = 1L)
 
+design = generateDesign(20L, getParamSet(obj.fun), fun = lhs::maximinLHS)
+
 lrn = makeLearner("regr.randomForest", predict.type = "se")
 
-run = exampleRun(obj.fun, learner = lrn, control = ctrl,
+run = exampleRun(obj.fun, design = design, learner = lrn, control = ctrl,
 	points.per.dim = 50L, show.info = TRUE)
 
 print(run)

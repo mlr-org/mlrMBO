@@ -59,7 +59,6 @@
 #'   the hypervoume contribution of this infill.crit.
 #'   Possible values are \dQuote{mean} and \dQuote{cb}, default ist \dQuote{mean}
 #' @return [\code{\link{MBOControl}}].
-#' @note See the other setMBOControl... functions and \code{makeMBOControl} for referenced arguments.
 #'
 #' @references
 #' For more information on the implemented multi-criteria procedures the following
@@ -95,7 +94,7 @@
 #' Evolutionary Computation (CEC 2005), Edinburgh, UK, Corne, D.;
 #' et al. (eds.), IEEE, 2005, ISBN 0-7803-9363-5, pp. 2138-2145
 #'
-#' @seealso makeMBOControl
+#' @family MBOControl
 #' @export
 setMBOControlMultiCrit = function(control,
   method = NULL,

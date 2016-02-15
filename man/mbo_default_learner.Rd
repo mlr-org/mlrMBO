@@ -2,13 +2,15 @@
 % Please edit documentation in R/checkLearner.R
 \name{mbo_default_learner}
 \alias{mbo_default_learner}
-\title{Default learner.}
+\title{Default learner used in mbo.}
 \description{
-If only numerical and/or integer parameters are present, we use
-\dQuote{regr.km}, which is kriging / a gaussian process from package DiceKriging.
-If the objective is noisy, we \code{nugget.estim} is set to \code{TRUE}.
-If the objective is deterministic, we set nugget = 10^-3 for numerical stabiloity.
-depending on whether we have noisy observations or not.
-If a least one parameter is discrete, we use \dQuote{regr.randomForest}.
+If only numerical and/or integer parameters are present, we use mlr learner
+\dQuote{regr.km}, which is kriging / a gaussian process from package DiceKriging, with
+the covariance kernel \code{covtype = "matern5_2"}.
+If the objective is noisy, we set \code{nugget.estim} to \code{TRUE}.
+If the objective is deterministic, we set \code{nugget = 10^-4} for numerical stability.
+
+If a least one parameter is discrete, we use mlr learner \dQuote{regr.randomForest}, a random
+regression forest from package randomForest. The default se estimator of the forest in mlr is used.
 }
 

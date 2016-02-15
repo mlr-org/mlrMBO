@@ -84,10 +84,11 @@ Default is 1.}
 \description{
 Extends an MBO control object with options for multipoint proposal.
 }
-\note{
-See the other setMBOControl... functions and \code{makeMBOControl} for referenced arguments.
-}
 \seealso{
-makeMBOControl
+Other MBOControl: \code{\link{makeMBOControl}},
+  \code{\link{setMBOControlInfill}},
+  \code{\link{setMBOControlMultiCrit}},
+  \code{\link{setMBOControlMultiFid}},
+  \code{\link{setMBOControlTermination}}
 }
 

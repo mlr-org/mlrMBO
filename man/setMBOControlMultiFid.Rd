@@ -38,10 +38,11 @@ Default is \code{TRUE}.}
 \description{
 Extends an MBO control object with multi-fidelity specific options.
 }
-\note{
-See the other setMBOControl... functions and \code{makeMBOControl} for referenced arguments.
-}
 \seealso{
-makeMBOControl
+Other MBOControl: \code{\link{makeMBOControl}},
+  \code{\link{setMBOControlInfill}},
+  \code{\link{setMBOControlMultiCrit}},
+  \code{\link{setMBOControlMultiPoint}},
+  \code{\link{setMBOControlTermination}}
 }
 

@@ -107,4 +107,11 @@ Format string for the precision of the numeric output of mbo.}
 \description{
 Creates a control object for MBO optimization.
 }
+\seealso{
+Other MBOControl: \code{\link{setMBOControlInfill}},
+  \code{\link{setMBOControlMultiCrit}},
+  \code{\link{setMBOControlMultiFid}},
+  \code{\link{setMBOControlMultiPoint}},
+  \code{\link{setMBOControlTermination}}
+}
 

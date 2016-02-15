@@ -4,7 +4,7 @@ context("focus search")
 #FIXME it would better if we had a better model and would test that we have reached
 # the region of the optimum.
 
-test_that("simple random search, no dependencies, no focussing", {
+test_that("simple random search, no dependencies, no focusing", {
   obj.fun = smoof::makeSingleObjectiveFunction(
     fn = function(x) {
       x$x0 + (x$x2 == "v1") + sum(x$x4^2)
@@ -29,7 +29,7 @@ test_that("simple random search, no dependencies, no focussing", {
   expect_true(!is.na(or$y))
 })
 
-test_that("dependent params, but no focussing", {
+test_that("dependent params, but no focusing", {
   obj.fun = smoof::makeSingleObjectiveFunction(
     fn = function(x) {
       x = removeMissingValues(x)
@@ -56,7 +56,7 @@ test_that("dependent params, but no focussing", {
   expect_true(!is.na(or$y))
 })
 
-test_that("complex param space, dependencies, focussing, restarts", {
+test_that("complex param space, dependencies, focusing, restarts", {
 
   obj.fun = smoof::makeSingleObjectiveFunction(
     fn = function(x) {
@@ -92,7 +92,8 @@ test_that("complex param space, dependencies, focussing, restarts", {
     has.simple.signature = FALSE
   )
 
-  des = generateTestDesign(20L, smoof::getParamSet(obj.fun))
+  # FIXME: This is too small?
+  des = generateDesign(20L, smoof::getParamSet(obj.fun))
   ctrl = makeMBOControl()
   ctrl = setMBOControlTermination(ctrl, iters = 2L)
   ctrl = setMBOControlInfill(ctrl, crit = "ei", opt = "focussearch",

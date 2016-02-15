@@ -85,9 +85,6 @@ Possible values are \dQuote{mean} and \dQuote{cb}, default ist \dQuote{mean}}
 \description{
 Extends MBO control object with multi-criteria specific options.
 }
-\note{
-See the other setMBOControl... functions and \code{makeMBOControl} for referenced arguments.
-}
 \references{
 For more information on the implemented multi-criteria procedures the following
 sources might be helpful:
@@ -123,6 +120,10 @@ Evolutionary Computation (CEC 2005), Edinburgh, UK, Corne, D.;
 et al. (eds.), IEEE, 2005, ISBN 0-7803-9363-5, pp. 2138-2145
 }
 \seealso{
-makeMBOControl
+Other MBOControl: \code{\link{makeMBOControl}},
+  \code{\link{setMBOControlInfill}},
+  \code{\link{setMBOControlMultiFid}},
+  \code{\link{setMBOControlMultiPoint}},
+  \code{\link{setMBOControlTermination}}
 }
 
