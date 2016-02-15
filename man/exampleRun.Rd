@@ -5,8 +5,7 @@
 \title{Perform an mbo run on a test function and and visualize what happens.}
 \usage{
 exampleRun(fun, design = NULL, learner = NULL, control,
-  points.per.dim = 50, noisy.evals = 10, show.info = NULL,
-  fun.mean = NULL)
+  points.per.dim = 50, noisy.evals = 10, show.info = NULL)
 }
 \arguments{
 \item{fun}{[\code{function(x, ...)}]\cr
@@ -44,10 +43,6 @@ Default is 10.}
 \item{show.info}{[\code{logical(1)}]\cr
 Verbose output on console?
 Default is \code{TRUE}.}
-
-\item{fun.mean}{[\code{function}]\cr
-True, unnoisy objective fun if \code{fun} is noisy. If not provided some features
-will not be displayed (for example the gap between the best point so far and the global optimum).}
 }
 \value{
 [\code{MBOExampleRun}]
@@ -63,12 +58,13 @@ Rendering the plots without displaying them is possible via the function
 
 Please note the following things:
 - The true objective function (and later everything which is predicted from our surrogate model)
-- The true objective function (and later everything which is predicted from our surrogate model)
   is evaluated on a regular spaced grid. These evaluations are stored in the result object.
   You can control the resultion of this grid via \code{points.per.dim}.
   Parallelization of these evaluations is possible with the R package parallelMap on the level \code{mlrMBO.feval}.
 - In every iteration the fitted, approximating surrogate model is stored in the result object
   (via \code{store.model.at} in \code{control}) so we can later visualize it quickly.
 - The global optimum of the function (if defined) is extracted from the passed smoof function.
+- If the passed objective function \code{fun} does not provide the true, unnoisy objective function
+  some features will not be displayed (for example the gap between the best point so far and the global optimum).
 }
 
