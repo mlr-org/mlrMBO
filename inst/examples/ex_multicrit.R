@@ -23,6 +23,6 @@ ctrl = setMBOControlMultiCrit(ctrl, parego.s = 100)
 design = generateDesign(5L, getParamSet(obj.fun), fun = lhs::maximinLHS)
 
 run = exampleRunMultiCrit(obj.fun, design = design, learner = learner, ctrl, points.per.dim = 50L,
-  show.info = TRUE, nsga2.args = list(), ref.point = c(11, 11))
+  show.info = TRUE, nsga2.args = list())
 
 plotExampleRun(run, pause = pause)
