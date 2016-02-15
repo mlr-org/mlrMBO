@@ -1,4 +1,5 @@
 #' @title Set termination options.
+#'
 #' @description
 #' Extends an MBO control object with infill criteria and infill optimizer options.
 #'
@@ -16,6 +17,8 @@
 #' @param target.fun.value [\code{numeric(1)}] | NULL]\cr
 #'   Stopping criterion for single crit optimization: Stop if a function evaluation
 #'   is better than this given target.value.
+#' @param max.evals [\code{integer(1) | NULL}]\cr
+#'   Maximal number of function evaluations.
 #' @param more.stop.conds [\code{list}]\cr
 #'   Optional list of termination conditions. Each condition needs to be a function
 #'   of a single argument \code{opt.state} of type \code{\link{OptState}} and should
@@ -49,7 +52,9 @@
 #' @family MBOControl
 #' @export
 setMBOControlTermination = function(control,
-  iters = 10L, time.budget = NULL, exec.time.budget = NULL, target.fun.value = NULL, more.stop.conds = list()) {
+  iters = 10L, time.budget = NULL, exec.time.budget = NULL,
+  target.fun.value = NULL, max.evals = NULL,
+  more.stop.conds = list()) {
 
   assertList(more.stop.conds)
 
@@ -72,6 +77,10 @@ setMBOControlTermination = function(control,
     stop.conds = c(stop.conds, makeMBOMaxExecBudgetTermination(exec.time.budget))
   }
 
+  if (!is.null(max.evals)) {
+    stop.conds = c(stop.conds, makeMBOMaxEvalsTermination(max.evals))
+  }
+
   if (!is.null(target.fun.value)) {
     if (control$number.of.targets > 1L)
       stop("Specifying target.fun.value is only useful in single crit optimization.")
@@ -89,6 +98,7 @@ setMBOControlTermination = function(control,
   control$iters = coalesce(iters, control$iters, Inf)
   control$time.budget = coalesce(time.budget, control$time.budget, Inf)
   control$exec.time.budget = coalesce(exec.time.budget, control$exec.time.budget, Inf)
+  control$max.evals = coalesce(max.evals, Inf)
 
   return(control)
 }
