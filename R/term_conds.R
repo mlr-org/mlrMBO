@@ -12,7 +12,7 @@
 #
 # @param max.iter [integer(1)]
 #   Maximum number of iterations.
-makeMBOMaxIterTermination = function(max.iter) {
+makeMBOTerminationMaxIter = function(max.iter) {
   assertCount(max.iter, na.ok = FALSE, positive = TRUE)
   force(max.iter)
   function(opt.state) {
@@ -28,7 +28,7 @@ makeMBOMaxIterTermination = function(max.iter) {
 #
 # @param time.budget [numeric(1)]
 #   Time budget in seconds.
-makeMBOMaxBudgetTermination = function(time.budget) {
+makeMBOTerminationMaxBudget = function(time.budget) {
   assertNumber(time.budget, na.ok = FALSE)
   force(time.budget)
   function(opt.state) {
@@ -44,7 +44,7 @@ makeMBOMaxBudgetTermination = function(time.budget) {
 #
 # @param time.budget [numeric(1)]
 #   Exceution time budget in seconds.
-makeMBOMaxExecBudgetTermination = function(time.budget) {
+makeMBOTerminationMaxExecBudget = function(time.budget) {
   assertNumber(time.budget, na.ok = FALSE)
   force(time.budget)
   function(opt.state) {
@@ -64,7 +64,7 @@ makeMBOMaxExecBudgetTermination = function(time.budget) {
 #   Traget function value.
 #
 # @note: only for single-criteria functions.
-makeMBOTargetFunValueTermination = function(target.fun.value) {
+makeMBOTerminationTargetFunValue = function(target.fun.value) {
   assertNumber(target.fun.value, na.ok = FALSE)
   force(target.fun.value)
   function(opt.state) {
@@ -84,7 +84,7 @@ makeMBOTargetFunValueTermination = function(target.fun.value) {
 #
 # @param max.evals [integer(1)]
 #   Maximal number of function evaluations.
-makeMBOMaxEvalsTermination = function(max.evals) {
+makeMBOTerminationMaxEvals = function(max.evals) {
   assertInt(max.evals, na.ok = FALSE, lower = 1L)
   force(max.evals)
   function(opt.state) {
