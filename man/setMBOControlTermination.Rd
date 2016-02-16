@@ -5,7 +5,7 @@
 \title{Set termination options.}
 \usage{
 setMBOControlTermination(control, iters = 10L, time.budget = NULL,
-  exec.time.budget = NULL, target.fun.value = NULL,
+  exec.time.budget = NULL, target.fun.value = NULL, max.evals = NULL,
   more.stop.conds = list())
 }
 \arguments{
@@ -28,6 +28,9 @@ the condition is checked after each iteration.}
 \item{target.fun.value}{[\code{numeric(1)}] | NULL]\cr
 Stopping criterion for single crit optimization: Stop if a function evaluation
 is better than this given target.value.}
+
+\item{max.evals}{[\code{integer(1) | NULL}]\cr
+Maximal number of function evaluations.}
 
 \item{more.stop.conds}{[\code{list}]\cr
 Optional list of termination conditions. Each condition needs to be a function

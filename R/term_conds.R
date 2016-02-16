@@ -78,3 +78,20 @@ makeMBOTargetFunValueTermination = function(target.fun.value) {
     return(list(term = term, message = message, code = 4L))
   }
 }
+
+# @title
+# Maximal function evaluations stopping condition.
+#
+# @param max.evals [integer(1)]
+#   Maximal number of function evaluations.
+makeMBOMaxEvalsTermination = function(max.evals) {
+  assertInt(max.evals, na.ok = FALSE, lower = 1L)
+  force(max.evals)
+  function(opt.state) {
+    opt.path = getOptStateOptPath(opt.state)
+    evals = getOptPathLength(opt.path)
+    term = (evals >= max.evals)
+    message = if (!term) NA_character_ else sprintf("Maximal number of function evaluations %i reached.", max.evals)
+    return(list(term = term, message = message, code = 5L))
+  }
+}

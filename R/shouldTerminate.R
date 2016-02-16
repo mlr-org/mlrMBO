@@ -23,7 +23,7 @@ shouldTerminate.OptState = function(opt.state) {
 getTerminateChars = function(x = NULL) {
   final.states = c(iter = "iter.exceeded", time = "time.exceeded",
     exec.time = "exec.time.exceeded", target = "target.fun.value.reached",
-    manual = "manual.exceeded")
+    evals = "max.evals.reached", manual = "manual.exceeded")
   if (is.null(x)) {
     return(final.states)
   } else if (x == 0) {
