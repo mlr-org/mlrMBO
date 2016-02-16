@@ -23,7 +23,7 @@ test_that("smart schedule works", {
     )
   setups = rbind(setups, data.frame(schedule.priority = "infill", multipoint.cb.multiple = "static.quantiles", schedule.priority.time = TRUE, crit.cb.lambda = 2))
   
-  surrogat.learner = makeLearner("regr.randomForest", predict.type = "se", ntree = 10)
+  surrogat.learner = makeLearner("regr.lm", predict.type = "se")
   #ors = rowLapply(setups, function(x) {
   for (i in seq_row(setups)) {
     x = as.list(setups[i,])
@@ -36,7 +36,7 @@ test_that("smart schedule works", {
     )
     control = setMBOControlTermination(control, iters = 2L)
 
-    control = setMBOControlInfill(control = control, crit = "cb", crit.cb.lambda = x$crit.cb.lambda, opt.focussearch.maxit = 2L, opt.focussearch.points = 200L)
+    control = setMBOControlInfill(control = control, crit = "cb", crit.cb.lambda = x$crit.cb.lambda, opt.focussearch.maxit = 2L, opt.focussearch.points = 50L)
     control = setMBOControlMultiPoint(control = control, cb.multiple = x$multipoint.cb.multiple)
     des = generateTestDesign(5L, smoof::getParamSet(objfun))
     or = mbo(fun = objfun, design = des, learner = surrogat.learner, control = control)
