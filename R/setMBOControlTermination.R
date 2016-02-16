@@ -10,15 +10,19 @@
 #' @param time.budget [\code{integer(1)} | NULL]\cr
 #'   Running time budget in seconds. Note that the actual mbo run can take more time since
 #'   the condition is checked after each iteration.
+#'   The default \code{NULL} means: There is no time budget.
 #' @param exec.time.budget [\code{integer(1)} | NULL]\cr
 #'   Execution time (time spent executing the function passed to \code{mbo})
 #'   budget in seconds. Note that the actual mbo run can take more time since
 #'   the condition is checked after each iteration.
+#'   The default \code{NULL} means: There is no execution time budget.
 #' @param target.fun.value [\code{numeric(1)}] | NULL]\cr
 #'   Stopping criterion for single crit optimization: Stop if a function evaluation
 #'   is better than this given target.value.
+#'   The default \code{NULL} means: The function value won't be taken into account for stopping.
 #' @param max.evals [\code{integer(1) | NULL}]\cr
 #'   Maximal number of function evaluations.
+#'   The default \code{NULL} means: The total number of evaluations won't be taken into account for stopping.
 #' @param more.stop.conds [\code{list}]\cr
 #'   Optional list of termination conditions. Each condition needs to be a function
 #'   of a single argument \code{opt.state} of type \code{\link{OptState}} and should
@@ -64,25 +68,25 @@ setMBOControlTermination = function(control,
   }
 
   if (!is.null(iters)) {
-    stop.conds = c(stop.conds, makeMBOMaxIterTermination(iters))
+    stop.conds = c(stop.conds, makeMBOTerminationMaxIter(iters))
   }
 
   if (!is.null(time.budget)) {
-    stop.conds = c(stop.conds, makeMBOMaxBudgetTermination(time.budget))
+    stop.conds = c(stop.conds, makeMBOTerminationMaxBudget(time.budget))
   }
 
   if (!is.null(exec.time.budget)) {
-    stop.conds = c(stop.conds, makeMBOMaxExecBudgetTermination(exec.time.budget))
+    stop.conds = c(stop.conds, makeMBOTerminationMaxExecBudget(exec.time.budget))
   }
 
   if (!is.null(max.evals)) {
-    stop.conds = c(stop.conds, makeMBOMaxEvalsTermination(max.evals))
+    stop.conds = c(stop.conds, makeMBOTerminationMaxEvals(max.evals))
   }
 
   if (!is.null(target.fun.value)) {
     if (control$number.of.targets > 1L)
       stop("Specifying target.fun.value is only useful in single crit optimization.")
-    stop.conds = c(stop.conds, makeMBOTargetFunValueTermination(target.fun.value))
+    stop.conds = c(stop.conds, makeMBOTerminationTargetFunValue(target.fun.value))
   }
 
   # sanity check stopping conditions
