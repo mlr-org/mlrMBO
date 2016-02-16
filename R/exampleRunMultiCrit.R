@@ -7,6 +7,10 @@
 #' For visualization, run \code{plotExampleRun} on the resulting object.
 #' What is displayed is documented here: \code{\link{plotExampleRun}}.
 #'
+#' @note
+#' If the passed objective function has no associated reference point max(y_i) + 1
+#' of the nsga2 front is used.
+#'
 #' @inheritParams mbo
 #' @param  points.per.dim [\code{integer}]\cr
 #'   Number of (regular spaced) locations at which to
@@ -16,15 +20,12 @@
 #' @param nsga2.args [\code{list}]\cr
 #'   Further arguments passed to the nsga2 call.
 #'   Default is \code{list()}.
-#' @param ref.point [\code{numeric(2)}]\cr
-#'   Reference point to calculate the dominated hypervolume for the fronts of nsga2 and mbo.
-#'   Default is \code{NULL}, which means max(y_i) + 1 of the nsga2 front.
 #' @param ... [any]\cr
 #'   Further arguments passed to the learner.
 #' @return [\code{MBOExampleRunMultiCrit}]
 #' @export
 exampleRunMultiCrit= function(fun, design = NULL, learner, control, points.per.dim = 50,
-  show.info = NULL, nsga2.args = list(), ref.point = NULL, ...) {
+  show.info = NULL, nsga2.args = list(), ...) {
 
   assertClass(fun, "smoof_multi_objective_function")
   par.set = smoof::getParamSet(fun)
@@ -38,10 +39,7 @@ exampleRunMultiCrit= function(fun, design = NULL, learner, control, points.per.d
   minimize = shouldBeMinimized(fun)
   control$noisy = isNoisy(fun)
   control$minimize = minimize
-
-  if (!is.null(ref.point))
-    assertNumeric(ref.point, lower = 0, finite = TRUE, any.missing = FALSE, len = 2L)
-
+  ref.point = smoof::getRefPoint(fun)
 
   if (is.null(show.info)) {
     show.info = getOption("mlrMBO.show.info", TRUE)

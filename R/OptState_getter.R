@@ -121,7 +121,7 @@ getOptStateTermination = function(opt.state) {
   if (terminate$term) {
     # custom stopping conditions have no code. We assign 5 here manually, which
     # means manual.exceeded (see getTerminateChars(...))
-    code = if (is.null(terminate$code)) 5L else terminate$code
+    code = if (is.null(terminate$code)) 6L else terminate$code
     setOptStateState(opt.state, getTerminateChars(code))
   }
   terminate

@@ -17,7 +17,7 @@ test_that("exampleRunMulticrit", {
     control = setMBOControlMultiCrit(control, method = method, dib.indicator = indicator)
 
     run = exampleRunMultiCrit(testf.zdt1.2d, testd.zdt1.2d, learner = learner, control = control, points.per.dim = 4L,
-      nsga2.args = list(popsize = 4L, generations = 2L), ref.point = c(11, 11))
+      nsga2.args = list(popsize = 4L, generations = 2L))
     res = renderExampleRunPlot(run, iter = 1L)
   }
 

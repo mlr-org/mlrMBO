@@ -11,13 +11,14 @@
 #'
 #' Please note the following things:
 #' - The true objective function (and later everything which is predicted from our surrogate model)
-#' - The true objective function (and later everything which is predicted from our surrogate model)
 #'   is evaluated on a regular spaced grid. These evaluations are stored in the result object.
 #'   You can control the resultion of this grid via \code{points.per.dim}.
 #'   Parallelization of these evaluations is possible with the R package parallelMap on the level \code{mlrMBO.feval}.
 #' - In every iteration the fitted, approximating surrogate model is stored in the result object
 #'   (via \code{store.model.at} in \code{control}) so we can later visualize it quickly.
 #' - The global optimum of the function (if defined) is extracted from the passed smoof function.
+#' - If the passed objective function \code{fun} does not provide the true, unnoisy objective function
+#'   some features will not be displayed (for example the gap between the best point so far and the global optimum).
 #'
 #' @inheritParams mbo
 #' @param points.per.dim [\code{integer}]\cr
@@ -27,13 +28,10 @@
 #' @param noisy.evals [\code{integer(1)}]\cr
 #'   Number of function evaluations per point if \code{fun} is noisy.
 #'   Default is 10.
-#' @param fun.mean [\code{function}]\cr
-#'   True, unnoisy objective fun if \code{fun} is noisy. If not provided some features
-#'   will not be displayed (for example the gap between the best point so far and the global optimum).
 #' @return [\code{MBOExampleRun}]
 #' @export
 exampleRun = function(fun, design = NULL, learner = NULL, control,
-  points.per.dim = 50, noisy.evals = 10, show.info = NULL, fun.mean = NULL) {
+  points.per.dim = 50, noisy.evals = 10, show.info = NULL) {
 
   assertClass(fun, "smoof_single_objective_function")
   par.set = smoof::getParamSet(fun)
@@ -44,11 +42,10 @@ exampleRun = function(fun, design = NULL, learner = NULL, control,
   assertClass(control, "MBOControl")
   points.per.dim = asCount(points.per.dim, positive = TRUE)
   noisy.evals = asCount(noisy.evals, positive = TRUE)
+  fun.mean = smoof::getMeanFunction(fun)
   if (is.null(show.info))
     show.info = getOption("mlrMBO.show.info", TRUE)
   assertLogical(show.info, len = 1L, any.missing = FALSE)
-  if (!is.null(fun.mean))
-    assertFunction(fun.mean)
 
   if (smoof::hasGlobalOptimum(fun))
     global.opt = smoof::getGlobalOptimum(fun)$value

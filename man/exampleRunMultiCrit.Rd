@@ -5,8 +5,7 @@
 \title{Perform an MBO run on a multi-criteria test function and and visualize what happens.}
 \usage{
 exampleRunMultiCrit(fun, design = NULL, learner, control,
-  points.per.dim = 50, show.info = NULL, nsga2.args = list(),
-  ref.point = NULL, ...)
+  points.per.dim = 50, show.info = NULL, nsga2.args = list(), ...)
 }
 \arguments{
 \item{fun}{[\code{function(x, ...)}]\cr
@@ -22,7 +21,8 @@ Initial design as data frame. If the y-values are not already present in design,
 mbo will evaluate the points.
 If the parameters have corresponding trafo functions,
 the design must not be transformed before it is passed!
-Default is \code{NULL}, which means \code{\link{generateDesign}} is called and a design
+Functions to generate designs are available in \code{ParamHelpers}: \code{\link[ParamHelpers]{generateDesign}}, \code{\link[ParamHelpers]{generateGridDesign}}, \code{\link[ParamHelpers]{generateRandomDesign}}.
+Default is \code{NULL}, which means \code{\link[ParamHelpers]{generateDesign}} is called and a design
 of size 4 times number of all parameters is created.}
 
 \item{learner}{[\code{\link[mlr]{Learner}}]\cr
@@ -45,10 +45,6 @@ Default is \code{TRUE}.}
 Further arguments passed to the nsga2 call.
 Default is \code{list()}.}
 
-\item{ref.point}{[\code{numeric(2)}]\cr
-Reference point to calculate the dominated hypervolume for the fronts of nsga2 and mbo.
-Default is \code{NULL}, which means max(y_i) + 1 of the nsga2 front.}
-
 \item{...}{[any]\cr
 Further arguments passed to the learner.}
 }
@@ -61,5 +57,9 @@ useful for figuring out how stuff works and for teaching purposes.
 Currently only parameter spaces with numerical parameters are supported.
 For visualization, run \code{plotExampleRun} on the resulting object.
 What is displayed is documented here: \code{\link{plotExampleRun}}.
+}
+\note{
+If the passed objective function has no associated reference point max(y_i) + 1
+of the nsga2 front is used.
 }
 

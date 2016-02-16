@@ -1,6 +1,7 @@
 language: R
 sudo: false
 cache: packages
+warnings_are_errors: false
 env:
   global:
     - _R_CHECK_TIMINGS_=0
