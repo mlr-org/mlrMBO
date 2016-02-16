@@ -17,7 +17,7 @@
 # 4) possibly log to console
 # 5) log untrafoed x-points, evaluated y-values, passed extras and eval extras to  opt.path in opt.state
 
-
+evalTargetFun.OptState = function(opt.state, xs, extras, xs.schedule.info = NULL) {
   opt.problem = getOptStateOptProblem(opt.state)
   par.set = getOptProblemParSet(opt.problem)
   opt.path = getOptStateOptPath(opt.state)

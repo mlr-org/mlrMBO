@@ -98,9 +98,6 @@ checkStuff = function(fun, par.set, design, learner, control) {
         stopf("Multipoint proposal using constant liar needs the infill criterion 'ei' (expected improvement), but you used '%s'!", control$infill.crit)
       if (control$multipoint.method == "cb" && control$infill.crit != "cb")
         stopf("Multipoint proposal using parallel cb needs the infill criterion 'cb' (confidence bound), but you used '%s'!", control$infill.crit)
-      if (control$multipoint.method == "random" && control$infill.crit != "random") {
-        stopf("Multipoint proposal method %s is not compatible with infill crit %s!", control$multipoint.method, control$infill.crit)
-  }
     }
   }
 

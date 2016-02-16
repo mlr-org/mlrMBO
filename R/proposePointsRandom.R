@@ -1,12 +1,10 @@
-proposePointsRandom = function(opt.state, control = NULL) {
+# Proposes n points randomly by calling generateRandomDesign.
+# crit.vals, propose.time and errors.model are all set to NA
+proposePointsRandom = function(opt.state) {
   opt.problem = getOptStateOptProblem(opt.state)
-  control = coalesce(control, getOptProblemControl(opt.problem))
+  control = getOptProblemControl(opt.problem)
   par.set = getOptProblemParSet(opt.problem)
-  
-  if (control$infill.crit == "random")
-    n = control$propose.points
-  else
-    n = control$interleave.random.points
+  n = control$interleave.random.points
   list(
     prop.points = generateRandomDesign(par.set = par.set, n = n),
     crit.vals = matrix(rep.int(NA_real_, n), nrow = n, ncol = 1L),

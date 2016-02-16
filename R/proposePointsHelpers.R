@@ -29,24 +29,24 @@ checkFailedModels = function(models, par.set, npoints, control) {
 }
 
 
-# create control objects with random lamda values for parallel LCB multi-point
-createRandomLCBControls = function(control, crit, user.lambda = FALSE) {
+# create control objects with random lamda values for parallel cb multi-point
+createRandomCBControls = function(control, crit, user.lambda = FALSE) {
   if (user.lambda) {
-    lambdas = rep(control$infill.crit.lcb.lambda, times = control$propose.points)
-  } else if (control$multipoint.lcb.multiple == "static.quantiles") {
-    lambdas = qexp(head(seq(0, 1, length.out = control$propose.points+2)[-1],-1), 1/control$infill.crit.lcb.lambda)
-  } else if (control$multipoint.lcb.multiple == "random.quantiles") {
+    lambdas = rep(control$infill.crit.cb.lambda, times = control$propose.points)
+  } else if (control$multipoint.cb.multiple == "static.quantiles") {
+    lambdas = qexp(head(seq(0, 1, length.out = control$propose.points+2)[-1],-1), 1/control$infill.crit.cb.lambda)
+  } else if (control$multipoint.cb.multiple == "random.quantiles") {
     lambdas = quantile(
-      rexp(control$propose.points * 100, 1/control$infill.crit.lcb.lambda),
+      rexp(control$propose.points * 100, 1/control$infill.crit.cb.lambda),
       seq(0,1,length.out = control$propose.points))
-  } else if (control$multipoint.lcb.multiple == "random") {
-    lambdas = rexp(control$propose.points, 1/control$infill.crit.lcb.lambda)  
+  } else if (control$multipoint.cb.multiple == "random") {
+    lambdas = rexp(control$propose.points, 1/control$infill.crit.cb.lambda)  
   } else {
-    stopf("%s not known as setting for multicrit.lcb.multiple")
+    stopf("%s not known as setting for multicrit.cb.multiple")
   }
   controls = lapply(lambdas, function(lambda) {
     control$propose.points = 1L
-    control$infill.crit.lcb.lambda = lambda
+    control$infill.crit.cb.lambda = lambda
     control$infill.crit = crit
     return(control)
   })
@@ -64,4 +64,3 @@ deepCopyOptPath = function(op) {
   op2$env$eol = op$env$eol
   return(op2)
 }
-

@@ -36,7 +36,7 @@ renderExampleRunPlot1d = function(x, iter,
   }
 
   # we need to maximize expected improvement
-  if (name.crit %in% c("ei", "aei", "mfEI")) {
+  if (name.crit %in% c("ei")) {
     opt.direction = -1
   } else {
     opt.direction = 1
@@ -89,7 +89,7 @@ renderExampleRunPlot1d = function(x, iter,
     evals$yhat = ifelse(control$minimize, 1, -1) * infillCritMeanResponse(evals.x, list(model), control)
 
     #FIXME: We might want to replace the following by a helper function so that we can reuse it in buildPointsData()
-    if (propose.points == 1L || control$multipoint.multicrit.objective == "none") {
+    if (propose.points == 1L) {
       evals[[name.crit]] = opt.direction *
         critfun(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past, ])
     } else {

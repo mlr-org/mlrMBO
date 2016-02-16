@@ -25,12 +25,9 @@ renderExampleRunPlot2d = function(x, iter,
   name.x2 = names.x[2]
   name.y = x$name.y
   evals = x$evals
-  global.opt = x$global.opt
   control = x$control
   proppoints = control$propose.points
   mbo.res = x$mbo.res
-  x1 = unique(evals[, name.x1])
-  x2 = unique(evals[, name.x2])
   name.crit = control$infill.crit
   critfun = getInfillCritFunction(name.crit)
   se = (x$learner$predict.type == "se")
@@ -42,9 +39,6 @@ renderExampleRunPlot2d = function(x, iter,
   opt.path = as.data.frame(mbo.res$opt.path)
 
   idx.init = which(opt.path$dob == 0)
-
-  # save sequence of opt plots here
-  plots = list()
 
   # FIXME: what to plot if not infillcrit that uses se?
   models = mbo.res$models[[iter]]
@@ -58,20 +52,24 @@ renderExampleRunPlot2d = function(x, iter,
   model.ok = !inherits(models[[1L]], "FailureModel")
 
   if (model.ok) {
-    evals$yhat = infillCritMeanResponse(evals.x, models, control, par.set, opt.path[idx.past, ])
+    evals$yhat = ifelse(control$minimize, 1, -1) * infillCritMeanResponse(evals.x, models, control, par.set, opt.path[idx.past, ])
     if (se) {
       evals$se = -infillCritStandardError(evals.x, models, control, par.set, opt.path[idx.past, ])
     }
-    if (proppoints == 1L || control$multipoint.multicrit.objective == "none") {
+    if (proppoints == 1L) {
       evals[[name.crit]] = opt.direction * critfun(evals.x, models, control, par.set, opt.path[idx.past, ])
     } else {
       objective = control$multipoint.multicrit.objective
-      if (objective == "mean.dist") {
+      if (control$multipoint.method == "cb") {
         evals[[name.crit]] = opt.direction * infillCritMeanResponse(evals.x, models, control, par.set, opt.path[idx.past, ])
-      } else if (objective == "ei.dist") {
-        evals[[name.crit]] = opt.direction * infillCritEI(evals.x, models, control, par.set, opt.path[idx.past, ])
-      } else if (objective %in% c("mean.se", "mean.se.dist")) {
-        evals[[name.crit]] = opt.direction * infillCritMeanResponse(evals.x, models, control, par.set, opt.path[idx.past, ])
+      } else {
+        if (objective == "mean.dist") {
+          evals[[name.crit]] = opt.direction * infillCritMeanResponse(evals.x, models, control, par.set, opt.path[idx.past, ])
+        } else if (objective == "ei.dist") {
+          evals[[name.crit]] = opt.direction * infillCritEI(evals.x, models, control, par.set, opt.path[idx.past, ])
+        } else if (objective %in% c("mean.se", "mean.se.dist")) {
+          evals[[name.crit]] = opt.direction * infillCritMeanResponse(evals.x, models, control, par.set, opt.path[idx.past, ])
+        }
       }
     }
   }
@@ -99,7 +97,7 @@ renderExampleRunPlot2d = function(x, iter,
     }
 
     # set up nice colour palette
-    brewer.palette = colorRampPalette(brewer.pal(11, "Spectral"), interpolate = "spline")
+    brewer.palette = colorRampPalette(RColorBrewer::brewer.pal(11, "Spectral"), interpolate = "spline")
 
     pl = ggplot(data = data, aes_string(x = name.x1, y = name.x2, z = name.z))
     pl = pl + geom_tile(aes_string(fill = name.z))
@@ -201,16 +199,12 @@ renderExampleRunPlot2d = function(x, iter,
   }
   pl.crit = plotSingleFun(gg.fun, gg.points, name.x1, name.x2, name.crit, trafo = trafo[["crit"]])
 
-  title = sprintf("Iter %i, x-axis: %s, y-axis: %s", iter, name.x1, name.x2)
-
-  plots = list(
+  list(
     pl.fun = pl.fun,
     pl.mod = pl.mod,
     pl.crit = pl.crit,
     pl.se = pl.se
   )
-
-  return(plots)
 }
 
 # Helper for nice alignment of multiple ggplots.
@@ -224,7 +218,7 @@ arrangeAndPrintPlots = function(plot.list, title) {
   plot.list = Filter(Negate(isScalarNA), plot.list)
   n.plots = length(plot.list)
   n.row = if (n.plots <= 3) 1L else 2L
-  do.call("grid.arrange", c(plot.list, nrow = n.row, main = title))
+  do.call(gridExtra::grid.arrange, c(plot.list, nrow = n.row, main = title))
   pause()
 }
 

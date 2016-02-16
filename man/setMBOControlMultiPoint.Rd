@@ -4,7 +4,7 @@
 \alias{setMBOControlMultiPoint}
 \title{Set multipoint proposal options.}
 \usage{
-setMBOControlMultiPoint(control, method = NULL, lcb.multiple = "random",
+setMBOControlMultiPoint(control, method = NULL, cb.multiple = NULL,
   cl.lie = NULL, multicrit.objective = NULL, multicrit.dist = NULL,
   multicrit.selection = NULL, multicrit.maxit = NULL,
   multicrit.sbx.eta = NULL, multicrit.sbx.p = NULL,
@@ -33,9 +33,10 @@ according to the regular EI-criterion.
 Then, the function value of the best point is simply guessed by the worst seen function evaluation.
 This lie is used to update the model in order to propose the subsequent point.
 The procedure is applied until the number of best points achieves \code{propose.points}.
+\dQuote{infilldistributed}: Uses the infill criterion as a density from which random param settings are drawn.
 Default is \code{cb}.}
 
-\item{lcb.multiple}{[\code{character(1)}]\cr
+\item{cb.multiple}{[\code{character(1)}]\cr
 Method to generate multiple lambdas for multipoint proposals.
 Possible parameter values are:
 \dQuote{random}: lambdas will be drawn from an exponential distribution.

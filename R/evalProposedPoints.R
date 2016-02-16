@@ -20,5 +20,6 @@ evalProposedPoints.OptState = function(opt.state, prop) {
   )
   xs = dfRowsToList(prop$prop.points, par.set)
   xs = lapply(xs, repairPoint, par.set = par.set)
-  evalTargetFun.OptState(opt.state, xs = xs, extras = extras)
+  evalTargetFun.OptState(opt.state, xs = xs, extras = extras, xs.schedule.info = makeScheduleInfo(prop, opt.state))
+
 }

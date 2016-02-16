@@ -70,7 +70,7 @@ plotMBOExampleRun1DNumeric = function(x, iters, pause=TRUE,
           for (j in 1:proppoints) {
             #FIXME works only for lcb
             ctrl2 = ctrl
-            ctrl2$infill.crit.lcb.lambda = mr$lcb.lambdas[i, j]
+            ctrl2$infill.crit.lcb.lambda = mr$multipoint.lcb.lambdas[i, j]
             evals[[sprintf("%s_%i", "lcb", j)]] =
               opt.direction * infillCritLCB(evals.x,
                 mod, ctrl2, par.set, op[ind.pasdes, ])

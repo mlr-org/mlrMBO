@@ -1,5 +1,27 @@
 # helper to get extras-list for opt.path logging
-
+#
+# @param n: nr of points
+# @param prop: result of proposePoints,
+# @param train.time: scalar numeric, time it took to train the models
+#
+# returns a list of n sublists. each inner element looks like this:
+# (k = nr.of.targets)
+#
+# <crit.vals>
+# train.time              numeric(1)
+# propose.time            numeric(1)
+# errors.model            character(1)
+# filter.replace          logical(1)
+# multipoint.cb.lambdas   numeric(1)
+# .weight<j>              numeric(1)
+# predicted.time          numeric(1) - predicted running time
+# predicted.time.se       numeric(1) - se of predicted running time
+# scheduled.at            numeric(1) - time this job is believed to run after fist one of batch started
+# scheduled.on            integer(1) - cpu this job is beliefed to run on
+# scheduled.job           integer(1) - job number of generated jobs
+# scheduled.priority      numeric(1) - proiority value
+#
+# Please document the content in doc_mbo_OptPath.R
 getExtras = function(n, prop, train.time, control) {
   # this happens in init design
   if (is.null(prop)) {
@@ -9,8 +31,8 @@ getExtras = function(n, prop, train.time, control) {
   }
   exs = vector("list", n)
   errs = prop$errors.model
-  
-  lams = prop$lcb.lambdas
+
+  lams = prop$multipoint.cb.lambdas
   if (is.null(lams))
     lams = rep(NA_real_, n)
   
@@ -39,9 +61,9 @@ getExtras = function(n, prop, train.time, control) {
       ex = list(prop$crit.vals[i, 1L], error.model = errs[i])
       names(ex)[1] = control$infill.crit
     }
-    # if we use singlecrit parallel LCB store lambdas
-    if (!is.null(control$multipoint.method) && control$number.of.targets == 1L && control$multipoint.method == "lcb") {
-      ex$lcb.lambda = lams[i]
+    # if we use singlecrit parallel CB store lambdas
+    if (!is.null(control$multipoint.method) && control$number.of.targets == 1L && control$multipoint.method == "cb") {
+      ex$cb.lambda = lams[i]
     }
     # if we use parego, store weights
     if (control$number.of.targets > 1L && control$multicrit.method == "parego") {

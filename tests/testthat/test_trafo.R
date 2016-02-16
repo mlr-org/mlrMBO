@@ -1,17 +1,20 @@
-context("mbo")
+context("trafo")
 
 test_that("trafo works", {
-  f = makeMBOFunction(function(x) {
-    stopifnot(x >= 0)
-    return(x)
-  })
-  ps = makeParamSet(
-    makeNumericParam("x", lower = -15, upper = 0, trafo = function(x) -x)
+  f = smoof::makeSingleObjectiveFunction(
+    fn = function(x) {
+      stopifnot(x >= 0)
+      return(x)
+    },
+    par.set = makeParamSet(makeNumericParam("x", lower = -15, upper = 0, trafo = function(x) -x)),
+    has.simple.signature = TRUE
   )
   learner = makeLearner("regr.randomForest")
-  ctrl = makeMBOControl(iters = 5)
+  ctrl = makeMBOControl()
+  ctrl = setMBOControlTermination(ctrl, iters = 5L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100)
-  or = mbo(f, par.set = ps, learner = learner, control = ctrl, show.info = TRUE)
+  des = generateTestDesign(10L, smoof::getParamSet(f))
+  or = mbo(f, design = des, learner = learner, control = ctrl, show.info = TRUE)
   op = as.data.frame(or$opt.path)
-  op$x == -1 * op$y
+  expect_true(all(op$x == -1 * op$y))
 })

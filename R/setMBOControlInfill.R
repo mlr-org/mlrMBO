@@ -1,5 +1,11 @@
 #' @title Extends mbo control object with infill criteria and infill optimizer options.
 #'
+#' @description
+#' Please note that internally all infill criteria are minimized. So for some of them,
+#' we internally compute their negated version, eg., for EI or also for CB when the objective is to
+#' be maximized. In the latter case mlrMBO actually computes the negative upper confidence bound and
+#' minimizes that.
+#'
 #' @template arg_control
 #' @param crit [\code{character(1)}]\cr
 #'   How should infill points be rated. Possible parameter values are:
@@ -7,38 +13,37 @@
 #'   \dQuote{ei}: Expected improvement.
 #'   \dQuote{aei}: Augmented expected improvement.
 #'   \dQuote{eqi}: Expected quantile improvement.
-#'   \dQuote{lcb}: Lower confidence bound.
-#'   \dQuote{random}: Random infill point. Optimization of this criteria won't be performed.
+#'   \dQuote{cb}: Confidence bound.
 #'   Alternatively, you may pass a function name as string.
 #' @param interleave.random.points [\code{integer(1)}]\cr
 #'   Add \code{interleave.random.points} uniformly sampled points additionally to the
-#'   regular proposed points in each step. 
+#'   regular proposed points in each step.
 #'   If \code{crit="random"} this value will be neglected.
 #'   Default is 0.
 #' @param crit.eqi.beta [\code{numeric(1)}]\cr
 #'   Beta parameter for expected quantile improvement criterion.
 #'   Only used if \code{crit == "eqi"}, ignored otherwise.
 #'   Default is 0.75.
-#' @param crit.lcb.lambda [\code{numeric(1)}]\cr
-#'   Lambda parameter for lower confidence bound infill criterion.
-#'   If you use \code{lcb} as a \code{MultiPoint}-Method, this value will be the expected value for the exponetial distribution from which the lambdas are drawn.
-#'   Only used if \code{crit == "lcb"}, ignored otherwise.
+#' @param crit.cb.lambda [\code{numeric(1)}]\cr
+#'   Lambda parameter for confidence bound infill criterion.
+#'   If you use \code{cb} as a \code{MultiPoint}-Method, this value will be the expected value for the exponetial distribution from which the lambdas are drawn.
+#'   Only used if \code{crit == "cb"}, ignored otherwise.
 #'   Default is 1.
 # FIXME: does this only make sense for multicrit? or single crit too?
-#' @param crit.lcb.pi [\code{numeric(1)}]\cr
-#'   Probability-of-improvement value to determine the lambda parameter for lcb infill criterion.
+#' @param crit.cb.pi [\code{numeric(1)}]\cr
+#'   Probability-of-improvement value to determine the lambda parameter for cb infill criterion.
 #'   It is an alternative to set the trade-off between \dQuote{mean} and \dQuote{se}.
-#'   Only used if \code{crit == "lcb"}, ignored otherwise.
-#'   If specified, \code{crit.lcb.lambda == NULL} must hold.
+#'   Only used if \code{crit == "cb"}, ignored otherwise.
+#'   If specified, \code{crit.cb.lambda == NULL} must hold.
 #'   Default is \code{NULL}.
-#' @param crit.lcb.inflate.se [\code{logical(1)}]\cr
+#' @param crit.cb.inflate.se [\code{logical(1)}]\cr
 #'   Try to inflate or deflate the estimated standard error to get to the same scale as the mean?
 #'   Calculates the range of the mean and standard error and multiplies the standard error
 #'   with the quotient of theses ranges.
 #'   Default is \code{FALSE}.
 #' @param crit.aei.use.nugget [\code{logical(1)}]\cr
 #'   Only used if \code{crit == "aei"}. Should the nugget effect be used for the
-#'   pure variance estimation? Default is \code{FALSE}. 
+#'   pure variance estimation? Default is \code{FALSE}.
 #' @param filter.proposed.points [\code{logical(1)}]\cr
 #'   Design points located too close to each other can lead to
 #'   numerical problems when using e.g. kriging as a surrogate model.
@@ -87,7 +92,7 @@
 #' @param opt.ea.mu [\code{integer(1)}]\cr
 #'   For \code{opt = "ea"}:
 #'   Population size of EA.
-#'   Default is 10.
+#'   The default is 10 times the number of parameters of the function to optimize.
 #' @param opt.ea.pm.eta [\code{numeric(1)}]\cr
 #'   For \code{opt = "ea"}:
 #'   Distance parameter of mutation distribution, see \code{\link[emoa]{pm_operator}}.
@@ -129,16 +134,15 @@
 #'   For \code{opt.multicrit.method = "nsga2"}.
 #'   nsga2 param. Default is 10.
 #' @return [\code{\link{MBOControl}}].
-#' @note See the other setMBOControl... functions and \code{makeMBOControl} for referenced arguments.
-#' @seealso makeMBOControl
+#' @family MBOControl
 #' @export
 setMBOControlInfill = function(control,
   crit = NULL,
   interleave.random.points = 0L,
   crit.eqi.beta = 0.75,
-  crit.lcb.lambda = 1,
-  crit.lcb.pi = NULL,
-  crit.lcb.inflate.se = NULL,
+  crit.cb.lambda = 1,
+  crit.cb.pi = NULL,
+  crit.cb.inflate.se = NULL,
   crit.aei.use.nugget = NULL,
   filter.proposed.points = NULL,
   filter.proposed.points.tol = NULL,
@@ -165,25 +169,22 @@ setMBOControlInfill = function(control,
   control$infill.crit.eqi.beta = coalesce(crit.eqi.beta, control$infill.crit.eqi.beta, 0.75)
   assertNumber(control$infill.crit.eqi.beta, na.ok = FALSE, lower = 0.5, upper = 1)
 
-  # lambda value for lcb - either given, or set via given pi, the other one must be NULL!
-  if (!is.null(crit.lcb.lambda) && !is.null(crit.lcb.pi))
-    stop("Please specify either 'crit.lcb.lambda' or 'crit.lcb.pi' for the lcb crit, not both!")
-  if (is.null(crit.lcb.pi))
-    assertNumeric(crit.lcb.lambda, len = 1L, any.missing = FALSE, lower = 0)
-  if (is.null(crit.lcb.lambda)) {
-    assertNumeric(crit.lcb.pi, len = 1L, any.missing = FALSE, lower = 0, upper = 1)
+  # lambda value for cb - either given, or set via given pi, the other one must be NULL!
+  if (!is.null(crit.cb.lambda) && !is.null(crit.cb.pi))
+    stop("Please specify either 'crit.cb.lambda' or 'crit.cb.pi' for the cb crit, not both!")
+  if (is.null(crit.cb.pi))
+    assertNumeric(crit.cb.lambda, len = 1L, any.missing = FALSE, lower = 0)
+  if (is.null(crit.cb.lambda)) {
+    assertNumeric(crit.cb.pi, len = 1L, any.missing = FALSE, lower = 0, upper = 1)
     # This is the formula from TW diss for setting lambda.
     # Note, that alpha = -lambda, so we need the negative values
-    crit.lcb.lambda = -qnorm(0.5 * crit.lcb.pi^(1 / control$number.of.targets))
+    crit.cb.lambda = -qnorm(0.5 * crit.cb.pi^(1 / control$number.of.targets))
   }
-  control$infill.crit.lcb.lambda = coalesce(crit.lcb.lambda, control$infill.crit.lcb.lambda, 1)
-  
-  control$infill.crit.lcb.inflate.se = coalesce(crit.lcb.inflate.se, control$infill.crit.lcb.inflate.se, FALSE)
-  assertFlag(control$infill.crit.lcb.inflate.se)
-  
+  control$infill.crit.cb.lambda = coalesce(crit.cb.lambda, control$infill.crit.cb.lambda, 1)
+  control$infill.crit.cb.inflate.se = coalesce(crit.cb.inflate.se, control$infill.crit.cb.inflate.se, FALSE)
+  assertFlag(control$infill.crit.cb.inflate.se)
   control$infill.crit.aei.use.nugget = coalesce(crit.aei.use.nugget, control$infill.crit.aei.use.nugget, FALSE)
   assertFlag(control$infill.crit.aei.use.nugget)
-  
   control$filter.proposed.points = coalesce(filter.proposed.points, control$filter.proposed.points, FALSE)
   assertFlag(control$filter.proposed.points)
 
@@ -213,9 +214,10 @@ setMBOControlInfill = function(control,
   control$infill.opt.ea.maxit = asCount(control$infill.opt.ea.maxit)
   assertCount(control$infill.opt.ea.maxit, na.ok = FALSE, positive = TRUE)
 
-  control$infill.opt.ea.mu = coalesce(opt.ea.mu, control$infill.opt.ea.mu, 10L)
-  control$infill.opt.ea.mu = asCount(control$infill.opt.ea.mu)
-  assertCount(control$infill.opt.ea.mu, na.ok = FALSE, positive = TRUE)
+  # cannot use coalsece here since we set the default later in checkstuff
+  if (!is.null(opt.ea.mu)) {
+    control$infill.opt.ea.mu = opt.ea.mu
+  }
 
   control$infill.opt.ea.sbx.eta = coalesce(opt.ea.sbx.eta, control$infill.opt.ea.sbx.eta, 15)
   assertNumber(control$infill.opt.ea.sbx.eta, na.ok = FALSE, lower = 0)

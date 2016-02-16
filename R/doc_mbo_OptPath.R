@@ -9,7 +9,7 @@
 #' \item{propose.time}{Time needed to propose the point. If we have indivual timings from the proposal mechanism, we have one differrent value per point here. If all were generated in one go, we only have one timing, we store it in the slot for the first point, rest are NA.}
 #' \item{errors.model}{Possible Error Messages. If point-producing model(s) crashed they are replicated for all n points, if only one error message was passed we store it for the first point, rest are NA.}
 #' \item{filter.replace}{If point filtering was enabled, we store whether the point was replaced by a random one.}
-#' \item{multipoint.cb.lambda}{Random lambda-value used in q-CB point proposal. One lambda for each point in that case.}
+#' \item{multipoint.cb.lambdas}{Random lambda-value used in q-CB point proposal. One lambda for each point in that case.}
 #' \item{.weight}{Weight vector sampled for multipoint ParEGO}
 #' }
 #'
