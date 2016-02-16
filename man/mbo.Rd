@@ -21,7 +21,8 @@ Initial design as data frame. If the y-values are not already present in design,
 mbo will evaluate the points.
 If the parameters have corresponding trafo functions,
 the design must not be transformed before it is passed!
-Default is \code{NULL}, which means \code{\link{generateDesign}} is called and a design
+Functions to generate designs are available in \code{ParamHelpers}: \code{\link[ParamHelpers]{generateDesign}}, \code{\link[ParamHelpers]{generateGridDesign}}, \code{\link[ParamHelpers]{generateRandomDesign}}.
+Default is \code{NULL}, which means \code{\link[ParamHelpers]{generateDesign}} is called and a design
 of size 4 times number of all parameters is created.}
 
 \item{learner}{[\code{\link[mlr]{Learner}}]\cr
@@ -43,5 +44,16 @@ Further arguments passed to fitness function.}
 }
 \description{
 See \link{mbo_parallel} for all parallelization options.
+}
+\examples{
+obj.fun = makeSingleObjectiveFunction(
+ fn = function(x) x[1]^2 + sin(x[2]), 
+ par.set = makeNumericParamSet(id = "x", lower = -1, upper = 1, len = 2))
+ctrl = makeMBOControl()
+ctrl = setMBOControlTermination(ctrl, iters = 3L)
+des = generateDesign(n = 5L, getParamSet(obj.fun), fun = lhs::maximinLHS)
+res = mbo(obj.fun, design = des, control = ctrl)
+print(res)
+plot(res)
 }
 

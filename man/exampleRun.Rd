@@ -21,7 +21,8 @@ Initial design as data frame. If the y-values are not already present in design,
 mbo will evaluate the points.
 If the parameters have corresponding trafo functions,
 the design must not be transformed before it is passed!
-Default is \code{NULL}, which means \code{\link{generateDesign}} is called and a design
+Functions to generate designs are available in \code{ParamHelpers}: \code{\link[ParamHelpers]{generateDesign}}, \code{\link[ParamHelpers]{generateGridDesign}}, \code{\link[ParamHelpers]{generateRandomDesign}}.
+Default is \code{NULL}, which means \code{\link[ParamHelpers]{generateDesign}} is called and a design
 of size 4 times number of all parameters is created.}
 
 \item{learner}{[\code{\link[mlr]{Learner}}]\cr
