@@ -18,19 +18,23 @@ Default is 10.}
 
 \item{time.budget}{[\code{integer(1)} | NULL]\cr
 Running time budget in seconds. Note that the actual mbo run can take more time since
-the condition is checked after each iteration.}
+the condition is checked after each iteration.
+The default \code{NULL} means: There is no time budget.}
 
 \item{exec.time.budget}{[\code{integer(1)} | NULL]\cr
 Execution time (time spent executing the function passed to \code{mbo})
 budget in seconds. Note that the actual mbo run can take more time since
-the condition is checked after each iteration.}
+the condition is checked after each iteration.
+The default \code{NULL} means: There is no execution time budget.}
 
 \item{target.fun.value}{[\code{numeric(1)}] | NULL]\cr
 Stopping criterion for single crit optimization: Stop if a function evaluation
-is better than this given target.value.}
+is better than this given target.value.
+The default \code{NULL} means: The function value won't be taken into account for stopping.}
 
 \item{max.evals}{[\code{integer(1) | NULL}]\cr
-Maximal number of function evaluations.}
+Maximal number of function evaluations.
+The default \code{NULL} means: The total number of evaluations won't be taken into account for stopping.}
 
 \item{more.stop.conds}{[\code{list}]\cr
 Optional list of termination conditions. Each condition needs to be a function

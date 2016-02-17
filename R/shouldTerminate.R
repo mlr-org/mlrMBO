@@ -9,26 +9,14 @@ shouldTerminate.OptState = function(opt.state) {
   for (stop.cond in stop.conds) {
     stop.obj = stop.cond(opt.state)
     if (stop.obj$term) {
+      # if user-defined stopping condition is active, set the code by hand
+      if (is.null(stop.obj$code)) {
+        stop.obj$code = "term.custom"
+      }
       return(stop.obj)
     }
   }
 
   # "fallback"
-  return(list(term = FALSE, message = NA_character_, code = 0L))
-}
-
-# This function returns all the character which lead to an termination
-# of the MBO Iteratio if x == NULL, otherwise the representative reason
-# according to the number returned in shouldTerminate()
-getTerminateChars = function(x = NULL) {
-  final.states = c(iter = "iter.exceeded", time = "time.exceeded",
-    exec.time = "exec.time.exceeded", target = "target.fun.value.reached",
-    evals = "max.evals.reached", manual = "manual.exceeded")
-  if (is.null(x)) {
-    return(final.states)
-  } else if (x == 0) {
-    return("iter")
-  } else {
-    return(as.character(final.states[x]))
-  }
+  return(list(term = FALSE, message = NA_character_, code = NA_character_))
 }
