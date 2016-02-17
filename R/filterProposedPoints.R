@@ -24,7 +24,7 @@ filterProposedPoints = function(prop, opt.state) {
     design = dropNamed(design, ".multifid.lvl")
   }
   calcMaxMetric = function(x, y) max(abs(x - y))
-  to.delete = rep(FALSE,  n)
+  to.delete = rep(FALSE, n)
 
   # look at min distance from i-point to current set (design + accepted)
   for (i in 1:n) {
@@ -45,6 +45,7 @@ filterProposedPoints = function(prop, opt.state) {
   if (n.replace > 0) {
     # FIXME: we might want to do something smarter here. how about augmenting the current design?
     prop$prop.points[to.delete, ] = generateRandomDesign(n.replace, par.set)
+    prop$prop.type[to.delete] = "random.filter"
   }
 
   if (control$multifid) {
