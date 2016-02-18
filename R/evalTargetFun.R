@@ -96,7 +96,7 @@ evalTargetFun.OptState = function(opt.state, xs, extras) {
       collapse(sprintf(num.format.string, control$y.name, y2), ", "),
       ytime,
       ifelse(y.valid, "", " (imputed)"),
-      ifelse(is.na(prop.type), "design", prop.type)
+      prop.type
     )
 
     # concatenate internal and user defined extras for logging in opt.path

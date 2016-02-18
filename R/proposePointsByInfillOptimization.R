@@ -19,19 +19,25 @@ proposePointsByInfillOptimization = function(opt.state, par.set = NULL, control 
   control = coalesce(control, getOptProblemControl(opt.problem))
   opt.path = coalesce(opt.path, getOptStateOptPath(opt.state))
   iter = getOptStateLoop(opt.state)
+  infill.crit.name = control$infill.crit
 
   n = control$propose.points
+  prop.type = rep(paste0("infill_", infill.crit.name), n)
+
   # ensure we have a list
   ch = checkFailedModels(models, par.set, n, control = control)
-  if (!ch$ok)
+  if (!ch$ok) {
+    ch$prop$prop.type = prop.type
     return(ch$prop)
+  }
 
   design = convertOptPathToDf(opt.path, control)
+
+  #FIXME: maybe better do this in setMBOControlMultifid?
   if (control$multifid) {
-    infill.crit.fun = infillCritMultiFid
-  } else {
-    infill.crit.fun = getInfillCritFunction(control$infill.crit)
+    infill.crit.name = "multifid"
   }
+  infill.crit.fun = getInfillCritFunction(infill.crit.name)
   infill.opt.fun = getInfillOptFunction(control$infill.opt)
   # store time to propose single point
   st = system.time({
@@ -40,5 +46,5 @@ proposePointsByInfillOptimization = function(opt.state, par.set = NULL, control 
   prop.points.converted = convertDataFrameCols(prop.points, ints.as.num = TRUE, logicals.as.factor = TRUE)
   crit.vals = infill.crit.fun(prop.points.converted, models, control, par.set, design, iter, ...)
   crit.vals = matrix(crit.vals, ncol = 1L)
-  return(list(prop.points = prop.points, propose.time = st[3L], crit.vals = crit.vals, errors.model = NA_character_))
+  return(list(prop.points = prop.points, propose.time = st[3L], prop.type = prop.type, crit.vals = crit.vals, errors.model = NA_character_))
 }

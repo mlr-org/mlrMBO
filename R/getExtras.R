@@ -23,7 +23,7 @@ getExtras = function(n, prop, train.time, control) {
     k = ifelse(control$number.of.targets > 1L && control$multicrit.method == "mspot", control$number.of.targets + 1, 1L)
     # pregenerate a dummmy "prop" data structure
     prop = list(crit.vals = matrix(NA_real_, nrow = n, ncol = k), propose.time = NA_real_, errors.model = NA_character_,
-      filter.replace = rep(NA, n), prop.type = rep(NA, n))
+      filter.replace = rep(NA, n), prop.type = rep("initdesign", n))
   }
   exs = vector("list", n)
   errs = prop$errors.model
