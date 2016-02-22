@@ -21,6 +21,11 @@ proposePointsByInfillOptimization = function(opt.state, par.set = NULL, control 
   iter = getOptStateLoop(opt.state)
   infill.crit.name = control$infill.crit
 
+  #FIXME: maybe better do this in setMBOControlMultifid?
+  if (control$multifid) {
+    infill.crit.name = "multifid"
+  }
+
   n = control$propose.points
   prop.type = rep(paste0("infill_", infill.crit.name), n)
 
@@ -32,11 +37,6 @@ proposePointsByInfillOptimization = function(opt.state, par.set = NULL, control 
   }
 
   design = convertOptPathToDf(opt.path, control)
-
-  #FIXME: maybe better do this in setMBOControlMultifid?
-  if (control$multifid) {
-    infill.crit.name = "multifid"
-  }
   infill.crit.fun = getInfillCritFunction(infill.crit.name)
   infill.opt.fun = getInfillOptFunction(control$infill.opt)
   # store time to propose single point
