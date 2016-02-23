@@ -12,11 +12,11 @@ mboFinalize = function(file) {
   assertCharacter(file, len = 1L)
   opt.state = loadOptState(file)
   state = getOptStateState(opt.state)
-  if (state %in% getTerminateChars()) {
+  if (state %in% getOptStateValidTerminationStates()) {
     warningf("Optimization ended with %s. No need to finalize Simply returning stored result.", state)
     return(getOptResultMboResult(getOptStateOptResult(opt.state)))
   }
-  setOptStateState(opt.state, getTerminateChars("manual"))
+  setOptStateState(opt.state, "term.custom")
   mboFinalize2(opt.state)
 }
 

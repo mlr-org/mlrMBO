@@ -92,7 +92,8 @@ getOptStateFinalPoints = function(opt.state, unify = FALSE) {
     list(
       x = best$x,
       y = as.numeric(best$y),
-      best.ind = final.index)
+      best.ind = final.index
+    )
   } else {
     inds = getOptPathParetoFront(opt.path, index = TRUE)
     pareto.set = lapply(inds, function(i) getOptPathEl(opt.path, i)$x)
@@ -100,13 +101,14 @@ getOptStateFinalPoints = function(opt.state, unify = FALSE) {
       list(
         x = do.call(rbind.data.frame ,pareto.set),
         y = getOptPathParetoFront(opt.path),
-        best.ind = inds)
+        best.ind = inds
+      )
     } else {
       list(
         pareto.front = getOptPathY(opt.path)[inds, , drop = FALSE],
         pareto.set = pareto.set,
         inds = inds
-        )
+      )
     }
   }
 }
@@ -119,10 +121,15 @@ getOptStateTermination = function(opt.state) {
   terminate = shouldTerminate.OptState(opt.state)
   # update only if termination condition is met
   if (terminate$term) {
-    # custom stopping conditions have no code. We assign 5 here manually, which
-    # means manual.exceeded (see getTerminateChars(...))
-    code = if (is.null(terminate$code)) 6L else terminate$code
-    setOptStateState(opt.state, getTerminateChars(code))
+    setOptStateState(opt.state, terminate$code)
   }
   terminate
+}
+
+getOptStateValidStates = function() {
+  c("init", "iter", getOptStateValidTerminationStates())
+}
+
+getOptStateValidTerminationStates = function() {
+  c("term.iter", "term.time", "term.exectime", "term.yval", "term.feval", "term.custom")
 }

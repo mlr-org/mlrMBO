@@ -21,8 +21,15 @@ NULL
 #  @param opt.result \code{OptResult} \cr
 #    Pointer to the OptResult Object.
 #  @param state \code{character(1)} \cr
-#    Tells us in what state we are in text. So far we know: init, iter,
-#    iter.exceeded, time.exceeded, exec.time.exceeded, target.fun.value.reached, manual.exceeded
+#    Tells us in what state we are in text. So far we know:
+#    init - right after iniitilization of mbo
+#    iter - within an iteration
+#    term.iter - maximal number of iterations reached
+#    term.time - maximal running time exceeded
+#    term.exectime - maximal execution time reached
+#    term.yval - target fun value reached
+#    term.fevals - maximal number of function evaluations reached
+#    term.custom - terminated due to custom stopping condition
 #  @param opt.path \code{OptPath} \cr
 #    Here we keep the opt.path. It delivers the data for the tasks and other usefull information.
 #  @param time.last.saved \code{POSIXct} \cr

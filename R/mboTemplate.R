@@ -32,7 +32,6 @@ mboTemplate.OptState = function(obj) {
     opt.problem = getOptStateOptProblem(opt.state)
     showInfo(getOptProblemShowInfo(opt.problem), "%s. The stopping conditions
       was satisfied right after the creation of the initial design!", terminate$message)
-    opt.state$terminate = terminate
     return(opt.state)
   }
   repeat {
@@ -41,7 +40,6 @@ mboTemplate.OptState = function(obj) {
     finalizeMboLoop(opt.state)
     terminate = getOptStateTermination(opt.state)
     if (terminate$term) {
-      opt.state$terminate = terminate
       break
     }
   }
