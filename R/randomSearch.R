@@ -7,17 +7,6 @@ randomSearch = function(fun, design = NULL, control, show.info = getOption("mlrM
   control$noisy = isNoisy(fun)
   control$minimize = shouldBeMinimized(fun)
 
-  #wrap fun for early termination
-  force(fun)
-  fun2 = function (...) {
-    if (getOptStateTermination(opt.state)$term) {
-      NA_real_
-    } else {  
-      fun(...)
-    }
-  }
-  class(fun2) = c("smoof_wrapped_function")
-
   opt.problem = makeOptProblem(
     fun = fun,
     par.set = par.set,
@@ -29,21 +18,15 @@ randomSearch = function(fun, design = NULL, control, show.info = getOption("mlrM
 
   opt.state = makeOptState(opt.problem)
 
-  #wrap fun for early termination
-  force(fun)
-  fun2 = function (...) {
-    if (getOptStateTermination(opt.state)$term) {
-      NA_real_
-    } else {  
-      fun(...)
-    }
-  }
-  class(fun2) = c("smoof_wrapped_function")
-
   evalMBODesign.OptState(opt.state)
   setOptStateLoop(opt.state)
   
-  n = min(control$iters, 10000L)
+  #roughly estimate time per evaluatio from initial design to account for time budget
+  opt.path = getOptStateOptPath(opt.state)
+  mean.time.used = mean(getOptPathExecTimes(opt.path))
+  time.budget = min(control$time.budget, control$exec.time.budget)
+  
+  n = min(control$iters, floor(time.budget / mean.time.used))
   prop = list(
     prop.points = generateRandomDesign(par.set = par.set, n = n),
     crit.vals = matrix(rep.int(NA_real_, n), nrow = n, ncol = 1L),
