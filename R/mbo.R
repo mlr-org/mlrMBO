@@ -40,6 +40,12 @@
 mbo = function(fun, design = NULL, learner = NULL, control,
   show.info = getOption("mlrMBO.show.info", TRUE), more.args = list()) {
 
+  #re-route randomSearch
+  if(control$infill.crit == "random") {
+    res = randomSearch(fun = fun, design = design, control = control, show.info = show.info, more.args = more.args)
+    return(res)
+  }
+
   assertClass(fun, "smoof_function")
   par.set = smoof::getParamSet(fun)
   n.params = sum(getParamLengths(par.set))
