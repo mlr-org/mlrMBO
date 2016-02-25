@@ -5,7 +5,7 @@ library(emoa)
 source("todo-files/plot_multicritMBO.R")
 set.seed(1)
 
-# create parameter space    
+# create parameter space
 cost = makeNumericParam("cost", lower = -24, upper = 1, trafo = function(x) 2^x)
 gamma =  makeNumericParam("gamma", lower = -24, upper = 1, trafo = function(x) 2^x)
 epsDualGap = makeNumericParam("epsilon", lower = -13, upper = -1, trafo = function(x) 2^x)
@@ -23,21 +23,21 @@ imputeFun = function(x, y, opt.path) {
 # create control object
 learner = makeLearner("regr.km", predict.type = "se")
 control = makeMBOControl(
-  number.of.targets = 2L, 
+  n.objectives = 2L,
   minimize = c(TRUE, TRUE),
   iters = 5L,
-  propose.points = 20L, 
-  init.design.points = 20L, 
+  propose.points = 20L,
+  init.design.points = 20L,
   y.name = c("exp", "eps"),
-#  save.on.disk.at = 1:11, 
+#  save.on.disk.at = 1:11,
 #  save.file.path =paste(storagePath, "/saveFile.mboData", sep = ""),
   impute = imputeFun)
-control = setMBOControlInfill (control, 
+control = setMBOControlInfill (control,
                                crit = "lcb",
                                filter.proposed.points = TRUE,
                                filter.proposed.points.tol = 1e-2)
-control = setMBOControlMultiCrit (control, 
-                                  method = "parego", 
+control = setMBOControlMultiCrit (control,
+                                  method = "parego",
                                   parego.use.margin.points = c(TRUE, FALSE))
 resMBO = mbo(f, ps, learner = learner, control = control)
 #plot(resMBO, infill.crit = "lcb")

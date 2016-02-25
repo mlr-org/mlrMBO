@@ -25,7 +25,7 @@ getWorstExtremePoint = function(points, minimize) {
 }
 
 # return the hypervolume contribution of each elemt (row) of xs (matrix with length
-# number.of.targets cols) with respect to the ys (matrix with number.of.target cols)
+# n.objectives cols) with respect to the ys (matrix with number.of.target cols)
 # ref is the used reference point for hv calculation
 # return vector of hypervolume contributions
 getHypervolumeContributions = function(xs, ys, ref.point, minimize) {
@@ -36,7 +36,7 @@ getHypervolumeContributions = function(xs, ys, ref.point, minimize) {
 }
 
 # determines the reference point for multicrit optimization
-# Returns reference-point, numeric vector of length number.of.targets
+# Returns reference-point, numeric vector of length n.objectives
 getMultiCritRefPoint = function (ys, control, minimize = control$minimize) {
   switch(control$multicrit.ref.point.method,
     const = control$multicrit.ref.point.val,

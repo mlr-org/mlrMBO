@@ -41,7 +41,7 @@ Used if \code{ref.point.method = "const"}. Has to be specified in this case.}
 
 \item{parego.s}{[\code{integer(1)}]\cr
 Parameter of parego - controls the number of weighting vectors. The default
-depends on \code{number.of.targets} and leads to ca. 100000 different possible
+depends on \code{n.objectives} and leads to ca. 100000 different possible
 weight vectors. The defaults for (2, 3, 4, 5, 6) dimensions are (100000,
 450, 75, 37, 23) and 10 for higher dimensions.}
 

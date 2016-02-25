@@ -28,7 +28,7 @@
 #'   Used if \code{ref.point.method = "const"}. Has to be specified in this case.
 #' @param parego.s [\code{integer(1)}]\cr
 #'   Parameter of parego - controls the number of weighting vectors. The default
-#'   depends on \code{number.of.targets} and leads to ca. 100000 different possible
+#'   depends on \code{n.objectives} and leads to ca. 100000 different possible
 #'   weight vectors. The defaults for (2, 3, 4, 5, 6) dimensions are (100000,
 #'   450, 75, 37, 23) and 10 for higher dimensions.
 #' @param parego.rho [\code{numeric(1)}]\cr
@@ -111,9 +111,9 @@ setMBOControlMultiCrit = function(control,
   mspot.select.crit = NULL) {
 
   assertClass(control, "MBOControl")
-  number.of.targets = control$number.of.targets
+  n.objectives = control$n.objectives
   propose.points = control$propose.points
-  if (number.of.targets == 1L)
+  if (n.objectives == 1L)
     stop("You are setting multicrit options, but have only 1 objective!")
   requirePackages(c("mco", "emoa"), why = "multicrit optimization")
 
@@ -132,12 +132,12 @@ setMBOControlMultiCrit = function(control,
       stopf("Constant reference point has to be specified.")
     else
       control$multicrit.ref.point.val = coalesce(ref.point.val, control$multicrit.ref.point.val)
-      assertNumeric(control$multicrit.ref.point.val, any.missing = FALSE, finite = TRUE, len = number.of.targets)
+      assertNumeric(control$multicrit.ref.point.val, any.missing = FALSE, finite = TRUE, len = n.objectives)
   }
 
   if (control$multicrit.method == "parego") {
     if (missing(parego.s)) {
-      parego.s = switch(min(number.of.targets, 7L),
+      parego.s = switch(min(n.objectives, 7L),
         1L,
         100000L,
         450L,
@@ -161,14 +161,14 @@ setMBOControlMultiCrit = function(control,
     control$multicrit.parego.sample.more.weights = coalesce(parego.sample.more.weights, control$multicrit.parego.sample.more.weights, 5L)
     assertInt(control$multicrit.parego.sample.more.weights, na.ok = FALSE, lower = 1)
 
-    control$multicrit.parego.use.margin.points = coalesce(parego.use.margin.points, control$multicrit.parego.use.margin.points, rep(FALSE, control$number.of.targets))
-    assertLogical(control$multicrit.parego.use.margin.points, len = number.of.targets, any.missing = FALSE)
+    control$multicrit.parego.use.margin.points = coalesce(parego.use.margin.points, control$multicrit.parego.use.margin.points, rep(FALSE, control$n.objectives))
+    assertLogical(control$multicrit.parego.use.margin.points, len = n.objectives, any.missing = FALSE)
 
     if (sum(control$multicrit.parego.use.margin.points) > propose.points)
       stopf("Can't use %s margin points when only proposing %s points each iteration.",
         sum(control$multicrit.parego.use.margin.points), propose.points)
 
-    number.of.weights = choose(parego.s + number.of.targets - 1L, number.of.targets - 1L)
+    number.of.weights = choose(parego.s + n.objectives - 1L, n.objectives - 1L)
     if (control$multicrit.parego.sample.more.weights * propose.points > number.of.weights)
       stop("Trying to sample more weights than exists. Increase parego.s or decrease number of weights.")
 

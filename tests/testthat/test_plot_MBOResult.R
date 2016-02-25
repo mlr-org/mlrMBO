@@ -20,7 +20,7 @@ test_that("plot multi crit", {
   f = smoof::makeZDT1Function(2L)
   learner = makeLearner("regr.km", predict.type = "se")
   des = generateTestDesign(8L, smoof::getParamSet(f))
-  ctrl = makeMBOControl(propose.points = 2L, number.of.targets = 2L)
+  ctrl = makeMBOControl(propose.points = 2L, n.objectives = 2L)
   ctrl = setMBOControlTermination(ctrl, iters = 2L)
   ctrl = setMBOControlInfill(ctrl, crit = "ei", opt.focussearch.points = 100L,
     opt.focussearch.maxit = 3L, opt = "nsga2")

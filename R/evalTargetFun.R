@@ -24,7 +24,7 @@ evalTargetFun.OptState = function(opt.state, xs, extras) {
 
   # short names and so on
   nevals = length(xs)
-  ny = control$number.of.targets
+  ny = control$n.objectives
   num.format = control$output.num.format
   num.format.string = paste("%s = ", num.format, sep = "")
   dobs = ensureVector(asInteger(getOptStateLoop(opt.state)), n = nevals, cl = "integer")

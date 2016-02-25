@@ -85,7 +85,7 @@ test_that("impute y parego", {
   )
   des1 = generateTestDesign(10L, smoof::getParamSet(f1))
   learner = makeLearner("regr.rpart")
-  ctrl = makeMBOControl(number.of.targets = 2L,
+  ctrl = makeMBOControl(n.objectives = 2L,
     impute.y.fun = function(x, y, opt.path) c(100, 100))
   ctrl = setMBOControlTermination(ctrl, iters = 5L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10)

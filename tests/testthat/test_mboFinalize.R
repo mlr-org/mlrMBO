@@ -46,7 +46,7 @@ test_that("mboFinalize", {
 
   des = generateTestDesign(10L, smoof::getParamSet(f))
   ctrl = makeMBOControl(save.on.disk.at = 0:8,
-    save.file.path = save.file, number.of.targets = 2L)
+    save.file.path = save.file, n.objectives = 2L)
   ctrl = setMBOControlTermination(ctrl, iters = 7L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100L)
   ctrl = setMBOControlMultiCrit(ctrl, method = "parego", parego.s = 100L)

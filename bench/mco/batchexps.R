@@ -53,7 +53,7 @@ runMBO = function(static, dynamic, method, crit, opt, prop.points, indicator = "
   learner = makeLearner("regr.km", covtype = "matern5_2", predict.type = "se")
   iters = MBO_ITERS(static$dimx, prop.points)
 
-  ctrl = makeMBOControl(number.of.targets = static$dimy,
+  ctrl = makeMBOControl(n.objectives = static$dimy,
     iters = iters, propose.points = prop.points,
     save.on.disk.at = integer(0L))
   ctrl = setMBOControlInfill(ctrl, crit = crit, opt = opt,

@@ -84,7 +84,7 @@ setMBOControlTermination = function(control,
   }
 
   if (!is.null(target.fun.value)) {
-    if (control$number.of.targets > 1L)
+    if (control$n.objectives > 1L)
       stop("Specifying target.fun.value is only useful in single crit optimization.")
     stop.conds = c(stop.conds, makeMBOTerminationTargetFunValue(target.fun.value))
   }

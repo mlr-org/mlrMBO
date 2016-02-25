@@ -5,7 +5,7 @@
 \alias{makeMBOControl}
 \title{Set MBO options.}
 \usage{
-makeMBOControl(number.of.targets = 1L, propose.points = 1L,
+makeMBOControl(n.objectives = 1L, propose.points = 1L,
   final.method = "best.true.y", final.evals = 0L, y.name = "y",
   impute.y.fun = NULL, trafo.y.fun = NULL, suppress.eval.errors = TRUE,
   save.on.disk.at = integer(0L), save.on.disk.at.time = Inf,
@@ -15,9 +15,9 @@ makeMBOControl(number.of.targets = 1L, propose.points = 1L,
   resample.measures = list(mse), output.num.format = "\%.3g")
 }
 \arguments{
-\item{number.of.targets}{[\code{integer(1)}]\cr
-How many objectives are to be optimized? \code{number.of.targets = 1} implies normal single
-criteria optimization, \code{number.of.targets > 1} implies multicriteria optimization.
+\item{n.objectives}{[\code{integer(1)}]\cr
+How many objectives are to be optimized? \code{n.objectives = 1} implies normal single
+criteria optimization, \code{n.objectives > 1} implies multicriteria optimization.
 Default is 1.}
 
 \item{propose.points}{[\code{integer(1)}]\cr
@@ -39,7 +39,7 @@ Default is 0.}
 
 \item{y.name}{[\code{character}]\cr
 Vector for names of y-columns for target values in optimization path.
-Default is \dQuote{y_i}, i = 1, ..., number.of.targets.}
+Default is \dQuote{y_i}, i = 1, ..., n.objectives.}
 
 \item{impute.y.fun}{[\code{function(x, y, opt.path, ...)}*]\cr
 Functions that gets triggered if your objective evaluation produced
