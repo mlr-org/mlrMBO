@@ -2,7 +2,7 @@ context("exampleRunMulticrit")
 
 test_that("exampleRunMulticrit", {
 
-  doRun = function(fun, method, crit, prop.points, indicator = "sms") {
+  doRun = function(method, crit, prop.points, indicator = "sms") {
     # set nugget effect to small value for num stability in this unit test
     learner = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2", nugget = 0.001)
     control = makeMBOControl(number.of.targets = 2L,
@@ -21,16 +21,16 @@ test_that("exampleRunMulticrit", {
     res = renderExampleRunPlot(run, iter = 1L)
   }
 
-  doRun(fun1, method = "parego", crit = "ei", prop.points = 1L)
-  doRun(fun1, method = "parego", crit = "ei", prop.points = 2L)
-  doRun(fun1, method = "parego", crit = "cb", prop.points = 1L)
-  doRun(fun1, method = "parego", crit = "cb", prop.points = 2L)
-  doRun(fun1, method = "mspot", crit = "ei", prop.points = 1L)
-  doRun(fun1, method = "mspot", crit = "ei", prop.points = 2L)
-  doRun(fun1, method = "mspot", crit = "cb", prop.points = 1L)
-  doRun(fun1, method = "mspot", crit = "cb", prop.points = 2L)
-  doRun(fun1, method = "dib", crit = "dib", prop.points = 1L)
-  doRun(fun1, method = "dib", crit = "dib", prop.points = 2L)
-  doRun(fun1, method = "dib", crit = "dib", prop.points = 1L, indicator = "eps")
-  doRun(fun1, method = "dib", crit = "dib", prop.points = 2L, indicator = "eps")
+  doRun(method = "parego", crit = "ei", prop.points = 1L)
+  doRun(method = "parego", crit = "ei", prop.points = 2L)
+  doRun(method = "parego", crit = "cb", prop.points = 1L)
+  doRun(method = "parego", crit = "cb", prop.points = 2L)
+  doRun(method = "mspot", crit = "ei", prop.points = 1L)
+  doRun(method = "mspot", crit = "ei", prop.points = 2L)
+  doRun(method = "mspot", crit = "cb", prop.points = 1L)
+  doRun(method = "mspot", crit = "cb", prop.points = 2L)
+  doRun(method = "dib", crit = "dib", prop.points = 1L)
+  doRun(method = "dib", crit = "dib", prop.points = 2L)
+  doRun(method = "dib", crit = "dib", prop.points = 1L, indicator = "eps")
+  doRun(method = "dib", crit = "dib", prop.points = 2L, indicator = "eps")
 })
