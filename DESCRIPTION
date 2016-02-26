@@ -17,7 +17,7 @@ Depends:
     lhs,
     mlr (>= 2.7),
     ParamHelpers (>= 1.4),
-    smoof (>= 1.2)
+    smoof (>= 1.3)
 Imports:
     BBmisc (>= 1.7),
     checkmate (>= 1.7.1),

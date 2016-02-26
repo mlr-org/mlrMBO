@@ -96,7 +96,7 @@ evalScheduleSmartParallelMap = function(wrapFun, xs, xs.trafo, xs.schedule.info 
       scheduled = rbind(scheduled, list(job = length(xs) + seq_along(inds), on = max(scheduled$on) + seq_along(inds), at = occupied.time[max(scheduled$on) + seq_along(inds)]))
       extras = c(extras, extras2[inds])
       xs = c(xs, xs2[inds])
-      x2.trafo = apply(xs2[inds], trafoValue, par = getOptProblemParSet(getOptStateOptProblem(opt.state)))
+      xs2.trafo = apply(xs2[inds], trafoValue, par = getOptProblemParSet(getOptStateOptProblem(opt.state)))
       xs.trafo = c(xs.trafo, xs2.trafo)
     }
 

@@ -3,7 +3,7 @@
 proposePointsRandom = function(opt.state) {
   opt.problem = getOptStateOptProblem(opt.state)
   par.set = getOptProblemParSet(opt.problem)
-  n = control$interleave.random.points
+  n = getOptProblemControl(opt.problem)$interleave.random.points
   proposePointsRandom2(par.set, n)
 }
 
