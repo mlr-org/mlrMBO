@@ -23,14 +23,14 @@ proposePoints.OptState = function(opt.state){
       res = proposePointsMultiFid(opt.state)
     } else if (is.null(control$multipoint.method)) {
       res = proposePointsByInfillOptimization(opt.state)
-    } else {
-      if (control$multipoint.method == "cb")
-        res = proposePointsParallelCB(opt.state)
-      else if (control$multipoint.method == "cl")
-        res = proposePointsConstantLiar(opt.state)
-      else if (control$multipoint.method == "multicrit") {
-        res = proposePointsMOIMBO(opt.state)
-      }
+    } else if (control$multipoint.method == "cb") {
+      res = proposePointsParallelCB(opt.state)
+    } else if (control$multipoint.method == "cl") {
+      res = proposePointsConstantLiar(opt.state)
+    } else if (control$multipoint.method == "multicrit") {
+      res = proposePointsMOIMBO(opt.state)
+    } else if (control$multipoint.method == "infilldistributed") {
+      res = proposePointsInfillDistributed(opt.state)
     }
   } else {
     if (control$multicrit.method == "parego") {

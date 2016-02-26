@@ -14,6 +14,7 @@ proposePointsInfillDistributed = function(opt.state, ...) {
   infill.opt.fun = getInfillOptFunction(control$infill.opt)
 
   st = system.time({
+    #find minimum and maximum infill value
     prop.points = lapply(list(infill.crit.fun, infill.crit.fun.max), infill.opt.fun, models = models, control = control, par.set = par.set, opt.path = opt.path, design = design, iter = iter, ...)
 
     prop.points.converted = lapply(prop.points, convertDataFrameCols, ints.as.num = TRUE, logicals.as.factor = TRUE)
@@ -23,6 +24,7 @@ proposePointsInfillDistributed = function(opt.state, ...) {
     crit.vals = infill.crit.fun.max(prop.points.converted, models, control, par.set, design, iter, ...)
 
     f = function(x) {
+      #FIXME We can not handle NumericVectorParam here
       x = convertListOfRowsToDataFrame(list(x))
       infill.crit.fun.max(x, models, control, par.set, design, iter, ...)
     }
