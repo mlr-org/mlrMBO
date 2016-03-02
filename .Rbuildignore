@@ -1,6 +1,4 @@
 doc
-^makeR
-^clement
 todo-files
 tools
 
@@ -9,11 +7,7 @@ tools
 
 ^.*tar.gz$
 bench
-fragen.txt
-install_dependencies.R
-Makefile
 README.md
-todo.txt
 
 src/*.o
 src/*.so
