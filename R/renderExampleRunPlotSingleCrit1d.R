@@ -94,7 +94,14 @@ renderExampleRunPlot1d = function(x, iter,
         critfun(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past, ])
     } else {
       objective = control$multipoint.multicrit.objective
-      if (objective == "mean.dist") {
+      if (control$multipoint.method == "cb") {
+        lambdas = as.data.frame(opt.path)[type %in% "prop", "multipoint.cb.lambda"]
+        ctrl2s = createRandomCBControls(control, "cb", user.lambda = TRUE)$controls
+        for (i in seq_along(lambdas)) {
+          ctrl2s[[i]]$infill.crit.cb.lambda = lambdas[i]
+          evals[[sprintf("%s: %.2f", name.crit, lambdas[i])]] = critfun(evals.x, list(model), ctrl2s[[i]], par.set, convertOptPathToDf(opt.path, control)[idx.past, ])  
+        }
+      } else if (objective == "mean.dist") {
         evals[[name.crit]] = opt.direction * infillCritMeanResponse(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past, ])
       } else if (objective == "ei.dist") {
         evals[[name.crit]] = opt.direction * infillCritEI(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past, ])
