@@ -5,6 +5,7 @@ joinProposedPoints = function(props) {
     prop.points = do.call(rbind, extractSubList(props, "prop.points", simplify = FALSE)),
     crit.vals = do.call(rbind, extractSubList(props, "crit.vals", simplify = FALSE)),
     propose.time = do.call(c, extractSubList(props, "propose.time", simplify = FALSE)),
+    prop.type = do.call(c, extractSubList(props, "prop.type", simplify = FALSE)),
     errors.model = do.call(c, extractSubList(props, "errors.model", simplify = FALSE))
   )
 }

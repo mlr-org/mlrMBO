@@ -132,5 +132,6 @@ proposePointsMOIMBO = function(opt.state, ...) {
     }
   }) # system.time
   rownames(X) = NULL
-  return(list(prop.points = X, propose.time = st[3L], crit.vals = Y, errors.model = NA_character_))
+  prop.type = rep("infill_moimbo", n)
+  return(list(prop.points = X, propose.time = st[3L], crit.vals = Y, prop.type = prop.type, errors.model = NA_character_))
 }
