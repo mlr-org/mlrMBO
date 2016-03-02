@@ -21,7 +21,7 @@ makeTasksMultiCrit = function(opt.path, control) {
     data[[y.name]] = trafo.y.fun(data[[y.name]], handle.violations = "error")
   }
 
-  tasks = vector(mode = "list", length = control$number.of.targets)
+  tasks = vector(mode = "list", length = control$n.objectives)
   for (ind in seq_along(control$y.name)) {
     data.tmp = dropNamed(data, control$y.name[-ind])
     tasks[[ind]] = makeRegrTask(target = control$y.name[ind], data = data.tmp)

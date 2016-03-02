@@ -3,9 +3,9 @@
 #' @description
 #' Creates a control object for MBO optimization.
 #'
-#' @param number.of.targets [\code{integer(1)}]\cr
-#'   How many objectives are to be optimized? \code{number.of.targets = 1} implies normal single
-#'   criteria optimization, \code{number.of.targets > 1} implies multicriteria optimization.
+#' @param n.objectives [\code{integer(1)}]\cr
+#'   How many objectives are to be optimized? \code{n.objectives = 1} implies normal single
+#'   criteria optimization, \code{n.objectives > 1} implies multicriteria optimization.
 #'   Default is 1.
 #' @param propose.points [\code{integer(1)}]\cr
 #'   Number of proposed / really evaluated points each iteration.
@@ -23,7 +23,7 @@
 #'   Default is 0.
 #' @param y.name [\code{character}]\cr
 #'   Vector for names of y-columns for target values in optimization path.
-#'   Default is \dQuote{y_i}, i = 1, ..., number.of.targets.
+#'   Default is \dQuote{y_i}, i = 1, ..., n.objectives.
 #' @param impute.y.fun [\code{function(x, y, opt.path, ...)}*]\cr
 #'   Functions that gets triggered if your objective evaluation produced
 #'   a) an exception b) a return object of invalid type c) a numeric vector that
@@ -77,7 +77,7 @@
 #' @aliases MBOControl
 #' @family MBOControl
 #' @export
-makeMBOControl = function(number.of.targets = 1L,
+makeMBOControl = function(n.objectives = 1L,
   propose.points = 1L,
   final.method = "best.true.y", final.evals = 0L,
   y.name = "y",
@@ -94,7 +94,7 @@ makeMBOControl = function(number.of.targets = 1L,
   output.num.format = "%.3g"
 ) {
 
-  number.of.targets = asInt(number.of.targets, lower = 1L)
+  n.objectives = asInt(n.objectives, lower = 1L)
 
   propose.points = asInt(propose.points, lower = 1L)
 
@@ -109,9 +109,9 @@ makeMBOControl = function(number.of.targets = 1L,
   assertChoice(final.method, choices = c("last.proposed", "best.true.y", "best.predicted"))
   final.evals = asInt(final.evals, lower = 0L)
 
-  if (number.of.targets > 1 && length(y.name) == 1 && y.name == "y")
-    y.name = paste("y", 1:number.of.targets, sep = "_")
-  assertCharacter(y.name, len = number.of.targets, any.missing = FALSE)
+  if (n.objectives > 1 && length(y.name) == 1 && y.name == "y")
+    y.name = paste("y", 1:n.objectives, sep = "_")
+  assertCharacter(y.name, len = n.objectives, any.missing = FALSE)
 
   # If debug-mode, turn of saving.
   if (getOption("mlrMBO.debug.mode", default = FALSE))
@@ -124,7 +124,7 @@ makeMBOControl = function(number.of.targets = 1L,
   assertString(output.num.format)
 
   control = makeS3Obj("MBOControl",
-    number.of.targets = number.of.targets,
+    n.objectives = n.objectives,
     propose.points = propose.points,
     final.method = final.method,
     final.evals = final.evals,
@@ -146,9 +146,9 @@ makeMBOControl = function(number.of.targets = 1L,
   # set defaults for infill methods and other stuff
   control = setMBOControlInfill(control)
   control = setMBOControlTermination(control, iters = 10L)
-  if (number.of.targets == 1L && propose.points > 1L)
+  if (n.objectives == 1L && propose.points > 1L)
     control = setMBOControlMultiPoint(control)
-  if (number.of.targets > 1L)
+  if (n.objectives > 1L)
     control = setMBOControlMultiCrit(control)
   return(control)
 }
@@ -161,13 +161,13 @@ makeMBOControl = function(number.of.targets = 1L,
 #'   Not used.
 #' @export
 print.MBOControl = function(x, ...) {
-  catf("Objectives                    : %s", x$number.of.targets)
+  catf("Objectives                    : %s", x$n.objectives)
   catf("Points proposed per iter      : %i", x$propose.points)
   if (!is.null(x$trafo.y.fun)) {
     catf("y transformed before modelling: %s", attr(x$trafo.y.fun, "name"))
   }
   catf("")
-  if (x$number.of.targets > 1L) {
+  if (x$n.objectives > 1L) {
     catf("Multicrit Method              : %s", x$multicrit.method)
     catf("Infill criterion              : %s", x$infill.crit)
     catf("Infill optimizer              : %s", x$infill.opt)

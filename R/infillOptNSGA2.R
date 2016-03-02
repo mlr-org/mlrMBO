@@ -6,7 +6,7 @@ infillOptMultiCritNSGA2 = function(infill.crit, models, control, par.set, opt.pa
 
   # build target function for vectorized nsga2 and run it
   rep.pids = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
-  m = control$number.of.targets
+  m = control$n.objectives
   fun.tmp = function(x) {
     newdata = as.data.frame(x)
     colnames(newdata) = rep.pids
@@ -17,7 +17,7 @@ infillOptMultiCritNSGA2 = function(infill.crit, models, control, par.set, opt.pa
         par.set = par.set, design = design, iter = iter, ...)
     }))
   }
-  res = mco::nsga2(fun.tmp, idim = getParamNr(par.set, devectorize = TRUE), odim = control$number.of.targets,
+  res = mco::nsga2(fun.tmp, idim = getParamNr(par.set, devectorize = TRUE), odim = control$n.objectives,
     lower.bounds = getLower(par.set), upper.bounds = getUpper(par.set), vectorized = TRUE,
     popsize = control$infill.opt.nsga2.popsize, generations = control$infill.opt.nsga2.generations,
     cprob = control$infill.opt.nsga2.cprob, cdist = control$infill.opt.nsga2.cdist,

@@ -177,7 +177,7 @@ setMBOControlInfill = function(control,
     assertNumeric(crit.cb.pi, len = 1L, any.missing = FALSE, lower = 0, upper = 1)
     # This is the formula from TW diss for setting lambda.
     # Note, that alpha = -lambda, so we need the negative values
-    crit.cb.lambda = -qnorm(0.5 * crit.cb.pi^(1 / control$number.of.targets))
+    crit.cb.lambda = -qnorm(0.5 * crit.cb.pi^(1 / control$n.objectives))
   }
   control$infill.crit.cb.lambda = coalesce(crit.cb.lambda, control$infill.crit.cb.lambda, 1)
 

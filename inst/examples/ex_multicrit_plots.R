@@ -9,7 +9,7 @@ pause = interactive()
 obj.fun = makeDTLZ1Function(dimensions = 5L, n.objectives = 3L)
 
 lrn = makeLearner("regr.km", predict.type = "se")
-ctrl = makeMBOControl(number.of.targets = 3L,
+ctrl = makeMBOControl(n.objectives = 3L,
   propose.points = 2L)
 ctrl = setMBOControlTermination(ctrl, iters = 10L)
 ctrl = setMBOControlInfill(ctrl, crit = "ei", opt.focussearch.points = 1000L,

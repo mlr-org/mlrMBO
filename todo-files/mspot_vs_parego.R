@@ -7,7 +7,7 @@ ps = makeNumericParamSet(len = 5L, lower = 0, upper = 1)
 
 # Test normal run
 learner = makeLearner("regr.km", predict.typ = "se")
-ctrl = makeMBOControl(iters = 5L, number.of.targets = 2L, init.design.points = 10L)
+ctrl = makeMBOControl(iters = 5L, n.objectives = 2L, init.design.points = 10L)
 ctrl = setMBOControlInfill(ctrl, crit = "ei")
 ctrl = setMBOControlMultiCrit(ctrl, method = "parego")
 or.parego = mbo(f, ps, learner = learner, control = ctrl)

@@ -87,7 +87,7 @@ plotExampleRun = function(object, iters, pause = TRUE,
   if (!is.null(ylim))
     assertNumeric(ylim, len = 2L, any.missing = FALSE)
 
-  multi.crit = object$control$number.of.targets > 1
+  multi.crit = object$control$n.objectives > 1
 
   # Helper to arrange plot via gridExtra and pause process
   arrangePlots = function(plots, multi.crit) {

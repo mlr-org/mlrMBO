@@ -6,7 +6,7 @@
 #   prop.points [data.frame]  : the proposed points, 1 per row, with n rows
 #   crit.vals [matrix(n, k)]  : crit vals for proposed points. rows = points
 #                               for some methods, we have a cv for each objective.
-#                               in this case k > 1 and typically k = number.of.targets
+#                               in this case k > 1 and typically k = n.objectives
 #   propose.time [numeric(n)] : time needed to propose points(s)
 #   errors.models [character] : model errors, resulting in randomly proposed points.
 #                               length is one string PER PROPOSED POINT, not per element of <models>

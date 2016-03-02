@@ -10,7 +10,7 @@ obj.fun = makeZDT1Function(dimensions = 2L)
 
 learner = makeLearner("regr.km", nugget.estim = FALSE, predict.type = "se")
 
-ctrl = makeMBOControl(number.of.targets = 2L, propose.points = 2L, save.on.disk.at = integer(0L))
+ctrl = makeMBOControl(n.objectives = 2L, propose.points = 2L, save.on.disk.at = integer(0L))
 ctrl = setMBOControlTermination(ctrl, iters = 5L)
 ctrl = setMBOControlInfill(ctrl, crit = "dib",
   opt.focussearch.points = 10000L)

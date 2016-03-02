@@ -54,9 +54,9 @@ exampleRun = function(fun, design = NULL, learner = NULL, control,
   control$noisy = noisy
   control$minimize = shouldBeMinimized(fun)
 
-  if (control$number.of.targets != 1L)
+  if (control$n.objectives != 1L)
     stopf("exampleRun can only be applied for single objective functions, but you have %i objectives! Use 'exampleRunMultiCrit'!",
-      control$number.of.targets)
+      control$n.objectives)
   if (n.params >= 3L)
     stopf("exampleRun can only be applied for functions with at most 2 dimensions, but you have %iD", n.params)
 

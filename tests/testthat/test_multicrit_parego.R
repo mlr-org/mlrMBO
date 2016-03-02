@@ -4,7 +4,7 @@ test_that("mbo parego works", {
 
   # Test normal run
   learner = makeLearner("regr.km", nugget.estim = TRUE)
-  ctrl = makeMBOControl(number.of.targets = 2L)
+  ctrl = makeMBOControl(n.objectives = 2L)
   ctrl = setMBOControlTermination(ctrl, iters = 5L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10)
   ctrl = setMBOControlMultiCrit(ctrl, method = "parego", parego.s = 100)
@@ -12,7 +12,7 @@ test_that("mbo parego works", {
   expect_true(!any(is.na(or$pareto.front)))
 
   # Test margin points
-  ctrl = makeMBOControl(number.of.targets = 2, propose.points = 2L)
+  ctrl = makeMBOControl(n.objectives = 2, propose.points = 2L)
   ctrl = setMBOControlTermination(ctrl, iters = 5L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 5)
   ctrl = setMBOControlMultiCrit(ctrl, method = "parego", parego.s = 100, parego.use.margin.points = c(TRUE, TRUE))
@@ -22,7 +22,7 @@ test_that("mbo parego works", {
   expect_true(all(1 - w[, 1] == w[, 2]))
 
   # Test margin points
-  ctrl = makeMBOControl(number.of.targets = 2, propose.points = 2L)
+  ctrl = makeMBOControl(n.objectives = 2, propose.points = 2L)
   ctrl = setMBOControlTermination(ctrl, iters = 5L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 5)
   ctrl = setMBOControlMultiCrit(ctrl, method = "parego", parego.s = 100, parego.use.margin.points = c(TRUE, TRUE))
@@ -32,14 +32,14 @@ test_that("mbo parego works", {
   expect_true(all(1 - w[, 1] == w[, 2]))
 
   # Test wrong dimension
-  ctrl = makeMBOControl(number.of.targets = 3)
+  ctrl = makeMBOControl(n.objectives = 3)
   ctrl = setMBOControlTermination(ctrl, iters = 5L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10L)
   ctrl = setMBOControlMultiCrit(ctrl, method = "parego", parego.s = 100)
   expect_error(mbo(testfmco1, testdesmco1, learner = learner, control = ctrl), "Objective function has")
 
   # Test multippoint
-  ctrl = makeMBOControl(number.of.targets = 2, propose.points = 5L)
+  ctrl = makeMBOControl(n.objectives = 2, propose.points = 5L)
   ctrl = setMBOControlTermination(ctrl, iters = 1L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10L)
   ctrl = setMBOControlMultiCrit(ctrl, method = "parego", parego.s = 100)
@@ -52,7 +52,7 @@ test_that("mbo parego works", {
   expect_false(any(duplicated(w[-c(1:10), 2])))
 
   # Multipoint with minimization and maximization
-  ctrl = makeMBOControl(number.of.targets = 2, propose.points = 5L)
+  ctrl = makeMBOControl(n.objectives = 2, propose.points = 5L)
   ctrl = setMBOControlTermination(ctrl, iters = 5L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10L)
   ctrl = setMBOControlMultiCrit(ctrl, method = "parego", parego.s = 100)
