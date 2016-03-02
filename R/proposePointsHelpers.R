@@ -5,6 +5,7 @@ joinProposedPoints = function(props) {
     prop.points = do.call(rbind, extractSubList(props, "prop.points", simplify = FALSE)),
     crit.vals = do.call(rbind, extractSubList(props, "crit.vals", simplify = FALSE)),
     propose.time = do.call(c, extractSubList(props, "propose.time", simplify = FALSE)),
+    prop.type = do.call(c, extractSubList(props, "prop.type", simplify = FALSE)),
     errors.model = do.call(c, extractSubList(props, "errors.model", simplify = FALSE))
   )
 }
@@ -18,8 +19,8 @@ checkFailedModels = function(models, par.set, npoints, control) {
     prop.points = generateDesign(npoints, par.set, randomLHS)
     prop$prop.points = convertDataFrameCols(prop.points, ints.as.num = TRUE, logicals.as.factor = TRUE)
     # mspot is the special kid, that needs multiple crit vals
-    if (control$number.of.targets > 1L && control$multicrit.method == "mspot")
-      prop$crit.vals = matrix(rep(NA_real_), nrow = npoints, ncol = control$number.of.targets + 1)
+    if (control$n.objectives > 1L && control$multicrit.method == "mspot")
+      prop$crit.vals = matrix(rep(NA_real_), nrow = npoints, ncol = control$n.objectives + 1)
     else
       prop$crit.vals = matrix(rep(NA_real_, npoints), ncol = 1L)
     prop$errors.model = getFailureModelMsg(models[[which.first(isfail)]])

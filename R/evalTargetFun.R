@@ -24,7 +24,8 @@ evalTargetFun.OptState = function(opt.state, xs, extras, xs.schedule.info = NULL
   control = getOptProblemControl(opt.problem)
 
   # short names and so on
-  ny = control$number.of.targets
+  nevals = length(xs)
+  ny = control$n.objectives
   num.format = control$output.num.format
   num.format.string = paste("%s = ", num.format, sep = "")
   imputeY = control$impute.y.fun
@@ -99,11 +100,16 @@ evalTargetFun.OptState = function(opt.state, xs, extras, xs.schedule.info = NULL
       }
     }
 
+    prop.type = extras[[i]]$prop.type
+
     # showInfo - use the trafo'd value here!
-    showInfo(getOptProblemShowInfo(opt.problem), "[mbo] %i: %s : %s : %.1f secs%s",
-      dob, paramValueToString(par.set, x.trafo, num.format = num.format),
+    showInfo(getOptProblemShowInfo(opt.problem), "[mbo] %i: %s : %s : %.1f secs%s : %s",
+      dob,
+      paramValueToString(par.set, x.trafo, num.format = num.format),
       collapse(sprintf(num.format.string, control$y.name, y2), ", "),
-      ytime, ifelse(y.valid, "", " (imputed)")
+      ytime,
+      ifelse(y.valid, "", " (imputed)"),
+      prop.type
     )
 
     # concatenate internal and user defined extras for logging in opt.path

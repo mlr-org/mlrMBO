@@ -25,9 +25,10 @@
 getExtras = function(n, prop, train.time, control) {
   # this happens in init design
   if (is.null(prop)) {
-    k = ifelse(control$number.of.targets > 1L && control$multicrit.method == "mspot", control$number.of.targets + 1, 1L)
+    k = ifelse(control$n.objectives > 1L && control$multicrit.method == "mspot", control$n.objectives + 1, 1L)
+    # pregenerate a dummmy "prop" data structure
     prop = list(crit.vals = matrix(NA_real_, nrow = n, ncol = k), propose.time = NA_real_, errors.model = NA_character_,
-      filter.replace = rep(NA, n))
+      filter.replace = rep(NA, n), prop.type = rep("initdesign", n))
   }
   exs = vector("list", n)
   errs = prop$errors.model
@@ -53,7 +54,7 @@ getExtras = function(n, prop, train.time, control) {
 
   for (i in 1:n) {
     # if we use mspot, store all crit.vals
-    if (control$number.of.targets > 1L && control$multicrit.method == "mspot") {
+    if (control$n.objectives > 1L && control$multicrit.method == "mspot") {
       ex = as.list(prop$crit.vals[i, ])
       names(ex) = c(paste(control$infill.crit, control$y.name, sep = "."), "hv.contr")
       ex$error.model = errs[i]
@@ -61,12 +62,18 @@ getExtras = function(n, prop, train.time, control) {
       ex = list(prop$crit.vals[i, 1L], error.model = errs[i])
       names(ex)[1] = control$infill.crit
     }
-    # if we use singlecrit parallel CB store lambdas
-    if (!is.null(control$multipoint.method) && control$number.of.targets == 1L && control$multipoint.method == "cb") {
-      ex$cb.lambda = lams[i]
+	# if we use singlecrit parallel CB store lambdas
+    if (!is.null(control$multipoint.method) && (control$n.objectives == 1L && control$multipoint.method == "cb")) {
+      lams = prop$multipoint.cb.lambdas
+      if (is.null(lams))
+        lams = rep(NA_real_, n)
+      ex$multipoint.cb.lambda = lams[i]
     }
     # if we use parego, store weights
-    if (control$number.of.targets > 1L && control$multicrit.method == "parego") {
+    if (control$n.objectives > 1L && control$multicrit.method == "parego") {
+      weight.mat = prop$weight.mat
+      if (is.null(weight.mat))
+        weight.mat = matrix(NA_real_, nrow = n, ncol = control$n.objectives)
       w = setNames(as.list(weight.mat[i, ]), paste0(".weight", 1:ncol(weight.mat)))
       ex = c(ex, w)
     }
@@ -84,12 +91,12 @@ getExtras = function(n, prop, train.time, control) {
       ex$scheduled.priority = NA_real_
     }
     ex$train.time = if (i == 1) train.time else NA_real_
+    ex$prop.type = prop$prop.type[i]
+    ex$propose.time = NA_real_
     if (length(prop$propose.time) > 1L) {
       ex$propose.time = prop$propose.time[i]
-    } else if (i == 1) {
-      ex$propose.time = prop$propose.time
     } else {
-      ex$propose.time = NA_real_
+      ex$propose.time = if (i == 1) prop$propose.time else NA_real_
     }
     ex$exec.timestamp = NA_integer_
     exs[[i]] = ex

@@ -6,7 +6,7 @@
 # @param control [\code{\link{MBOControl}}]\cr
 #   MBO control object.
 # @param all.possible.weights [\code{matrix}]\cr
-# Matrix with control$number.of.targets cols, each row sums up to one. The weight
+# Matrix with control$n.objectives cols, each row sums up to one. The weight
 # vectors are sampled uniquely from this rows. Notice: The first control$number.of.target rows
 # have to be the margin rows, as generated in mboParego
 # @return [\code{list}] List with elements
@@ -38,7 +38,7 @@ makeTasksParEGO = function(opt.path, control, all.possible.weights) {
 
   # propose points
   # if desired - create the margin weight vector
-  margin.points = diag(control$number.of.targets)[control$multicrit.parego.use.margin.points, , drop = FALSE]
+  margin.points = diag(control$n.objectives)[control$multicrit.parego.use.margin.points, , drop = FALSE]
 
   # how many random weights should be used?
   random.weights = n.points - sum(control$multicrit.parego.use.margin.points)

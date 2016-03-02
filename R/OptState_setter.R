@@ -5,7 +5,7 @@ setOptStateModels = function(opt.state, models) {
 }
 
 setOptStateRandomSeed = function(opt.state) {
-  opt.state$random.seed = .Random.seed
+  opt.state$random.seed = getRandomSeed()
   invisible()
 }
 

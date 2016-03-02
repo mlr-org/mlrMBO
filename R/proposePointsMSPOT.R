@@ -25,6 +25,7 @@ proposePointsMSPOT = function(opt.state, ...) {
   crit.vals = evalCritFunForMultiCritModels(infill.crit.fun, ppoints, models, control,
     par.set, design, iter)
   crit.vals = cbind(crit.vals, prop.points$prop.hv.contrs)
+  prop.type = rep(paste0("infill_", control$infill.crit), n)
 
-  return(list(prop.points = ppoints, propose.time = st[3L], crit.vals = crit.vals, errors.model = NA_character_))
+  return(list(prop.points = ppoints, propose.time = st[3L], crit.vals = crit.vals, prop.type = prop.type, errors.model = NA_character_))
 }

@@ -152,7 +152,7 @@ infillCritDIB = function(points, models, control, par.set, design, iter) {
   ses = extractSubList(ps, c("data", "se"), simplify = "cols")
   cbs = means %*% diag(maximize.mult) - control$infill.crit.cb.lambda * ses
   # from here on ys and cbs are ALWAYS minimized
-  all.mini = rep(TRUE, control$number.of.targets)
+  all.mini = rep(TRUE, control$n.objectives)
 
   ys.front = getNonDominatedPoints(ys, minimize = all.mini)
 
@@ -161,7 +161,7 @@ infillCritDIB = function(points, models, control, par.set, design, iter) {
     ref.point = getMultiCritRefPoint(ys, control, minimize = all.mini)
     # get epsilon for epsilon-dominace - set adaptively or use given constant value
     if (is.null(control$dib.sms.eps)) {
-      c.val = 1 - 1 / 2^control$number.of.targets
+      c.val = 1 - 1 / 2^control$n.objectives
       eps = vnapply(seq_col(ys.front), function(i) {
         (max(ys.front[,i]) - min(ys.front[,i])) /
           (ncol(ys.front) + c.val * (control$iters - iter))

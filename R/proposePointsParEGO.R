@@ -4,7 +4,7 @@ proposePointsParEGO = function(opt.state) {
   # copy control and propose 1 point each, per scalar task
   control2 = getOptProblemControl(getOptStateOptProblem(opt.state));
   control2$propose.points = 1L
-  control2$number.of.targets = 1L
+  control2$n.objectives = 1L
   # scalar tasks are always constructed so they minimized
   control2$minimize = TRUE
   props = list()

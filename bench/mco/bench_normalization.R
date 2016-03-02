@@ -17,7 +17,7 @@ reg = makeExperimentRegistry("mco_bench", packages = c(
   "emoa",
   "mlrMBO"
   ), src.files = c(
-  "defs.R", 
+  "defs.R",
   "WFG.R"
   )
 )
@@ -40,17 +40,17 @@ for (i in 1:9) {
 addAlgorithm(reg, "parego", fun = function(static, normalization) {
   par.set = static$par.set
   names.x = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
-  
+
   learner = makeLearner("regr.km", predict.type = "se")
   iters = (FEVALS - INIT_DESIGN_POINTS)
-  
-  ctrl = makeMBOControl(number.of.targets = static$ny, init.design.points = INIT_DESIGN_POINTS,
+
+  ctrl = makeMBOControl(n.objectives = static$ny, init.design.points = INIT_DESIGN_POINTS,
     iters = iters, propose.points = 1L,
     save.on.disk.at = integer(0L))
-  ctrl = setMBOControlInfill(ctrl, crit = "ei", opt.focussearch.points = 10000L, 
+  ctrl = setMBOControlInfill(ctrl, crit = "ei", opt.focussearch.points = 10000L,
     opt.restarts = 3L, opt.focussearch.maxit = 3L)
   ctrl = setMBOControlMultiCrit(ctrl, parego.normalize = normalization)
-  
+
   res = mbo(makeMBOFunction(static$objective), static$par.set,
     learner = learner, control = ctrl, show.info = TRUE)
   hv = dominated_hypervolume(t(res$pareto.front), ref = static$ref)

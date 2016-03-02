@@ -9,7 +9,7 @@ showInfo = function(show.info, ...) {
 loadPackages = function(control) {
   if (control$infill.opt == "cmaes")
     requirePackages("cmaes", why = "proposePoints")
-  if (control$number.of.targets == 1L && control$propose.points > 1L && control$multipoint.method == "multicrit")
+  if (control$n.objectives == 1L && control$propose.points > 1L && control$multipoint.method == "multicrit")
     requirePackages("emoa", why = "proposePoints")
 }
 
@@ -28,4 +28,10 @@ combWithSum = function(n, k) {
 
 getFileBackupName = function(fn) {
   file.path(dirname(fn), sprintf(".~%s", basename(fn)))
+}
+
+getRandomSeed = function() {
+  if (!exists(".Random.seed", .GlobalEnv))
+    set.seed(NULL)
+  get(".Random.seed", .GlobalEnv)
 }

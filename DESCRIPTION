@@ -16,7 +16,7 @@ BugReports: https://github.com/berndbischl/mlrMBO/issues
 Depends:
     lhs,
     mlr (>= 2.7),
-    ParamHelpers (>= 1.4),
+    ParamHelpers (>= 1.8),
     smoof (>= 1.3)
 Imports:
     BBmisc (>= 1.7),

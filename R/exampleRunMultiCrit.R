@@ -28,7 +28,7 @@ exampleRunMultiCrit= function(fun, design = NULL, learner, control, points.per.d
   show.info = NULL, nsga2.args = list(), ...) {
 
   assertClass(fun, "smoof_multi_objective_function")
-  par.set = smoof::getParamSet(fun)
+  par.set = getParamSet(fun)
   par.types = getParamTypes(par.set)
   n.params = sum(getParamLengths(par.set))
   if (is.null(design))

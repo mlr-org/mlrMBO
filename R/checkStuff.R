@@ -18,9 +18,14 @@ checkStuff = function(fun, par.set, design, learner, control) {
   assertClass(control, "MBOControl")
   assertClass(learner, "Learner")
 
-  if (getNumberOfObjectives(fun) != control$number.of.targets) {
+  if (getNumberOfObjectives(fun) != control$n.objectives) {
     stopf("Objective function has %i objectives, but the control object assumes %i.",
-      getNumberOfObjectives(fun), control$number.of.targets)
+      getNumberOfObjectives(fun), control$n.objectives)
+  }
+
+  # at the moment we do not support noisy multicriteria optimization
+  if (getNumberOfObjectives(fun) > 1L && isNoisy(fun)) {
+    stopf("Optimization of noisy multi-objective functions not supported in the moment.")
   }
 
   # general parameter and learner checks
@@ -80,7 +85,7 @@ checkStuff = function(fun, par.set, design, learner, control) {
   control$resample.at = coalesce(control$resample.at, integer(0))
 
   #  single objective
-  if (control$number.of.targets == 1L) {
+  if (control$n.objectives == 1L) {
     if (control$propose.points == 1L) { # single point
     } else {                            # multi point
       if ((control$multipoint.method %in% c("cb", "cl", "cb") ||
@@ -102,7 +107,7 @@ checkStuff = function(fun, par.set, design, learner, control) {
   }
 
   # multicrit stuff
-  if (control$number.of.targets > 1L) {
+  if (control$n.objectives > 1L) {
     if (control$multicrit.method == "dib") {
       if (control$infill.crit != "dib")
         stopf("For multicrit 'dib' infil.crit must be set to 'dib'!")

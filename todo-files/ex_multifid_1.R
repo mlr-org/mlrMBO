@@ -19,7 +19,7 @@
 # ctrl = makeMBOControl(init.design.points = 20L, iters = 20L,
 #   init.design.fun = maximinLHS, show.learner.output = FALSE
 # )
-# ctrl = setMBOControlInfill(ctrl, crit = "multiFid", opt = "focussearch",
+# ctrl = setMBOControlInfill(ctrl, crit = "multifid", opt = "focussearch",
 #   opt.restarts = 1L, opt.focussearch.maxit = 1L, opt.focussearch.points = 100L,
 #   filter.proposed.points = TRUE, filter.proposed.points.tol = 0.001
 # )

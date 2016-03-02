@@ -4,7 +4,7 @@ makeTasks = function(opt.state) {
   opt.problem = getOptStateOptProblem(opt.state)
   control = getOptProblemControl(opt.problem)
   opt.path = getOptStateOptPath(opt.state)
-  if (control$number.of.targets == 1L) {
+  if (control$n.objectives == 1L) {
     tasks = list(makeTaskSingleObj(opt.path, control))
   } else {
     if (control$multicrit.method == "parego")
