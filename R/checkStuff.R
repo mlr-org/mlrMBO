@@ -23,6 +23,11 @@ checkStuff = function(fun, par.set, design, learner, control) {
       getNumberOfObjectives(fun), control$n.objectives)
   }
 
+  # at the moment we do not support noisy multicriteria optimization
+  if (getNumberOfObjectives(fun) > 1L && isNoisy(fun)) {
+    stopf("Optimization of noisy multi-objective functions not supported in the moment.")
+  }
+
   # general parameter and learner checks
   if (any(vlapply(par.set$pars, inherits, what = "LearnerParam")))
     stop("No parameter can be of class 'LearnerParam'! Use basic parameters instead to describe you region of interest!")
