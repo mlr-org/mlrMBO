@@ -34,7 +34,7 @@ exampleRun = function(fun, design = NULL, learner = NULL, control,
   points.per.dim = 50, noisy.evals = 10, show.info = NULL) {
 
   assertClass(fun, "smoof_single_objective_function")
-  par.set = smoof::getParamSet(fun)
+  par.set = getParamSet(fun)
   par.types = getParamTypes(par.set)
   n.params = sum(getParamLengths(par.set))
   noisy = isNoisy(fun)

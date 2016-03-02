@@ -28,7 +28,7 @@
 #' @return [\code{\link{MBOSingleObjResult}} | \code{\link{MBOMultiObjResult}}]
 #' @examples
 #' obj.fun = makeSingleObjectiveFunction(
-#'  fn = function(x) x[1]^2 + sin(x[2]), 
+#'  fn = function(x) x[1]^2 + sin(x[2]),
 #'  par.set = makeNumericParamSet(id = "x", lower = -1, upper = 1, len = 2))
 #' ctrl = makeMBOControl()
 #' ctrl = setMBOControlTermination(ctrl, iters = 3L)
@@ -41,7 +41,7 @@ mbo = function(fun, design = NULL, learner = NULL, control,
   show.info = getOption("mlrMBO.show.info", TRUE), more.args = list()) {
 
   assertClass(fun, "smoof_function")
-  par.set = smoof::getParamSet(fun)
+  par.set = getParamSet(fun)
   n.params = sum(getParamLengths(par.set))
   control$noisy = isNoisy(fun)
   control$minimize = shouldBeMinimized(fun)

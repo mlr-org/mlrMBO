@@ -10,6 +10,7 @@ env:
 r_github_packages:
   - jakobbossek/smoof
   - mlr-org/mlr
+  - berndbischl/ParamHelpers
 
 notifications:
   email:
