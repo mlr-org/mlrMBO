@@ -28,7 +28,7 @@ test_that("smart schedule works", {
   for (i in seq_row(setups)) {
     x = as.list(setups[i,])
     control = makeMBOControl(
-      propose.points = 5L,
+      propose.points = 10L,
       schedule.method = "smartParallelMap",
       schedule.nodes = 5L,
       schedule.priority = x$schedule.priority,
