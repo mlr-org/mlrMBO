@@ -39,7 +39,7 @@ getExtras = function(n, prop, train.time, control) {
   
   weight.mat = prop$weight.mat
   if (is.null(weight.mat))
-    weight.mat = matrix(NA_real_, nrow = n, ncol = control$number.of.targets)
+    weight.mat = matrix(NA_real_, nrow = n, ncol = control$n.objectives)
 
   predicted.time = prop$predicted.time
   predicted.time.se = prop$predicted.time.se

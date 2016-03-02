@@ -31,6 +31,7 @@ randomSearch = function(fun, design = NULL, control, show.info = getOption("mlrM
     prop.points = generateRandomDesign(par.set = par.set, n = n),
     crit.vals = matrix(rep.int(NA_real_, n), nrow = n, ncol = 1L),
     propose.time = rep.int(NA_real_, n),
+    prop.type = rep("random_search", n),
     errors.model = rep.int(NA_character_, n)
   )
   setOptStateModels(opt.state, models = list(train.time = 0L))

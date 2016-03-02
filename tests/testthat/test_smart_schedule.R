@@ -3,6 +3,7 @@ context("smart schedule")
 test_that("smart schedule works", {
   set.seed(3)
   objfun = smoof::makeSingleObjectiveFunction(
+    
     fn = function(x) {
       x = (x$x-5)^2
       attr(x,"exec.time") = 10L
@@ -48,8 +49,8 @@ test_that("smart schedule works", {
     expect_true(!all(is.na(op.df$scheduled.on)))
     expect_true(!all(is.na(op.df$scheduled.job)))
     expect_true(!all(is.na(op.df$scheduled.priority)))
-    expect_true(!all(is.na(op.df$cb.lambda)))
-    expect_true(abs(mean(op.df$cb.lambda, na.rm = TRUE) - x$crit.cb.lambda) < sd(op.df$cb.lambda, na.rm = TRUE))
+    expect_true(!all(is.na(op.df$multipoint.cb.lambda)))
+    expect_true(abs(mean(op.df$multipoint.cb.lambda, na.rm = TRUE) - x$crit.cb.lambda) < sd(op.df$multipoint.cb.lambda, na.rm = TRUE))
     or
   }
 })
