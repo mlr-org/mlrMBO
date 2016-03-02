@@ -66,7 +66,7 @@ makeOptState = function(opt.problem, loop = 0L, tasks = NULL, models = NULL,
   opt.state$loop.starttime = loop.starttime
   opt.state$time.used = time.used
 
-  opt.state$random.seed = .Random.seed
+  opt.state$random.seed = getRandomSeed()
   opt.state$time.created = time.created
   class(opt.state) = append(class(opt.state), "OptState")
   opt.state
@@ -103,7 +103,9 @@ loadOptState.OptProblem = function(obj) {
 }
 
 loadOptState.character = function(obj) {
-  load2(file = obj, "opt.state")
+  opt.state = load2(file = obj, "opt.state")
+  set.seed(getOptStateRandomSeed(opt.state))
+  return(opt.state)
 }
 
 # If we already have a mbo result we will return it, otherwise it will be generated and stored in the opt.result

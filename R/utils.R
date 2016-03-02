@@ -29,3 +29,9 @@ combWithSum = function(n, k) {
 getFileBackupName = function(fn) {
   file.path(dirname(fn), sprintf(".~%s", basename(fn)))
 }
+
+getRandomSeed = function() {
+  if (!exists(".Random.seed", .GlobalEnv))
+    set.seed(NULL)
+  get(".Random.seed", .GlobalEnv)
+}
