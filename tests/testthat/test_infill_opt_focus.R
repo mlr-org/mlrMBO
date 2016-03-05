@@ -64,6 +64,9 @@ test_that("complex param space, dependencies, focusing, restarts", {
       if(x$disc2 == 'a') tmp3 = log(x$realA) + x$intA^4 + ifelse(x$discA == 'm', 5, 0)
       if(x$disc2 == 'b') tmp3 = exp(x$realB) + ifelse(x$discB == 'R', sin(x$realBR), sin(x$realBNR))
       if(x$disc2 == "c") tmp3 = 500
+      assert(is.list(x$discVec))
+      assert(x$discVec[[1]] %in% c("a", "b", "c"))
+      assert(x$discScal %in% c("x", "y", "z"))
       tmp1 + tmp2 + tmp3
     },
     par.set = makeParamSet(
@@ -71,6 +74,8 @@ test_that("complex param space, dependencies, focusing, restarts", {
       makeIntegerParam("int1", lower = -100, upper = 100),
       makeNumericVectorParam("realVec", len = 10, lower = -50, upper = 50),
       makeIntegerVectorParam("intVec", len = 3, lower = 0, upper = 100),
+      makeDiscreteVectorParam("discVec", len = 3, c(x = "a", y = "b", z = "c")),
+      makeDiscreteParam("discScal", c(a = "x", b = "y", c = "z")),
       makeNumericParam("real2", lower = -1, upper = 1),
       makeDiscreteParam("disc1", values = c("foo", "bar"), requires = quote(real2 < 0)),
       makeNumericParam("real3", lower = -100, upper = 100, requires = quote(real2 > 0)),
