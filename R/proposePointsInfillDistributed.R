@@ -24,8 +24,6 @@ proposePointsInfillDistributed = function(opt.state, ...) {
     crit.vals = infill.crit.fun.max(prop.points.converted, models, control, par.set, design, iter, ...)
 
     f = function(x) {
-      #FIXME We can not handle NumericVectorParam here
-      x = convertListOfRowsToDataFrame(list(x))
       infill.crit.fun.max(x, models, control, par.set, design, iter, ...)
     }
     f.max = max(crit.vals)
@@ -35,10 +33,9 @@ proposePointsInfillDistributed = function(opt.state, ...) {
   st2 = system.time({
     prop.points = rejSamp(f = f, n = n, par.set = par.set, f.max = f.max, f.min = f.min)
   })
-
-  prop.points = convertListOfRowsToDataFrame(prop.points)
-  prop.points.converted = convertDataFrameCols(prop.points, ints.as.num = TRUE, logicals.as.factor = TRUE)
-  crit.vals = infill.crit.fun(prop.points.converted, models, control, par.set, design, iter, ...)
+  
+  prop.points = plyr::rbind.fill(prop.points)
+  crit.vals = infill.crit.fun(prop.points, models, control, par.set, design, iter, ...)
 
   # calcullate proposal time. min max finding goes to first. rest devided.
   propose.time = rep(st2[3L] / n, n)
@@ -49,6 +46,7 @@ proposePointsInfillDistributed = function(opt.state, ...) {
     prop.points = prop.points,
     crit.vals = matrix(crit.vals, ncol = 1L),
     propose.time = propose.time,
+    prop.type = rep("infill_distributed", n),
     errors.model = rep.int(NA_character_, n)
   )
 }

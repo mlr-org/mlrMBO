@@ -19,7 +19,7 @@ rejSamp = function(f, n = 1, par.set, f.max, f.min, ...) {
   rej.helper = function() {
     j = TRUE
     while(j) {
-      x = sampleValue(par = par.set, ...)
+      x = generateRandomDesign(n = 1, par.set = par.set, ...)
       z = runif(1, f.min, f.max)
       if (f(x) >  z) {
         return(x)
