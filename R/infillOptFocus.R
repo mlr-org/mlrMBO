@@ -8,8 +8,16 @@
 # See infillOptCMAES.R for interface explanation.
 infillOptFocus = function(infill.crit, models, control, par.set, opt.path, design, iter, ...) {
   global.y = Inf
+  
+  allRequirements = extractSubList(par.set$pars, "requires", simplify = FALSE)
+  allUsedVars = unique(do.call(base::c, sapply(allRequirements, all.vars)))
+  forbiddenVars = getParamIds(filterParams(par.set, type = c("discretevector", "logicalvector")))
+  if (any(allUsedVars%in% forbiddenVars)) {
+    stop("Cannot do focus search when some variables have requirements that depend on discrete or logical vector parameters.")
+  }
+  
 
-  # restart the whole crap some times
+  # perform multiple starts
   for (restart.iter in seq_len(control$infill.opt.restarts)) {
     # copy parset so we can shrink it
     ps.local = par.set
@@ -21,6 +29,14 @@ infillOptFocus = function(infill.crit, models, control, par.set, opt.path, desig
     # the sampled value (levels 1 to n - #(dropped levels)) to levels with random dropouts.
     discreteVectorMapping = lapply(filterParams(par.set, type = c("discretevector", "logicalvector"))$pars,
         function(param) rep(list(setNames(names(param$values), names(param$values))), param$len))
+    discreteVectorMapping = do.call(base::c, discreteVectorMapping)
+    # the resulting object is NULL if there are no discrete / logical vector params
+
+    if (!is.null(discreteVectorMapping)) {
+      mappedPars = filterParams(par.set, type = c("discretevector", "logicalvector"))
+      names(discreteVectorMapping) = getParamIds(mappedPars, with.nr = TRUE, repeated = TRUE)
+    }
+    
 
     # do iterations where we focus the region-of-interest around the current best point
     for (local.iter in seq_len(control$infill.opt.focussearch.maxit)) {
@@ -31,13 +47,11 @@ infillOptFocus = function(infill.crit, models, control, par.set, opt.path, desig
       newdesign = convertDataFrameCols(newdesign, ints.as.num = TRUE, logicals.as.factor = TRUE)
 
       # handle discrete vectors
-      for (dvparam in filterParams(par.set, type = c("discretevector", "logicalvector"))$pars) {
-        for (dimnum in seq_len(dvparam$len)) {
-          dfindex = paste0(dvparam$id, dimnum)
-          mapping = discreteVectorMapping[[dvparam$id]][[dimnum]]
-          levels(newdesign[[dfindex]]) = mapping[levels(newdesign[[dfindex]])]
-        }
+      for (dfindex in names(discreteVectorMapping)) {
+        mapping = discreteVectorMapping[[dfindex]]
+        levels(newdesign[[dfindex]]) = mapping[levels(newdesign[[dfindex]])]
       }
+
       y = infill.crit(newdesign, models, control, par.set, design, iter, ...)
 
       # get current best value
@@ -77,9 +91,9 @@ infillOptFocus = function(infill.crit, models, control, par.set, opt.path, desig
            if (par$type %nin% c("discretevector", "logicalvector")) {
              val.names = names(par$values)
              # remove current val from delete options, should work also for NA
-             val.names = val.names[!sapply(par$values, identical, y=val)]  # remember, 'val' may not even be a character
+             val.names = val.names[!sapply(par$values, identical, y=val)]  # remember, 'val' can be any type
              to.del = sample(val.names, 1)
-             par$values[to.del] = NULL
+             par$values[[to.del]] = NULL
            } else {
              # we remove the last element of par$values and a random element for
              # each dimension in discreteVectorMapping.
@@ -89,13 +103,13 @@ infillOptFocus = function(infill.crit, models, control, par.set, opt.path, desig
                val = names(val)
              }
              for (dimnum in seq_len(par$len)) {
-               val.names = discreteVectorMapping[[par$id]][[dimnum]]
-               newmap = val.names
+               dfindex = paste0(par$id, dimnum)
+               newmap = val.names = discreteVectorMapping[[dfindex]]
                val.names = val.names[val.names != val[dimnum]]
                to.del = sample(val.names, 1)
                newmap = newmap[newmap != to.del]
                names(newmap) = names(par$values)
-               discreteVectorMapping[[par$id]][[dimnum]] <<- newmap
+               discreteVectorMapping[[dfindex]] <<- newmap
              }
            }
          }
