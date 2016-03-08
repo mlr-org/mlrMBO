@@ -59,7 +59,7 @@ getOptProblemLearner = function(opt.problem) {
 
 getOptProblemTimeLearner = function(opt.problem) {
   makeTrafoWrapper(
-    opt.problem$learner, 
+    getOptProblemLearner(opt.problem), 
     trafo = log, 
     trafo.inverse = exp, 
     trafo.se = function(se, y) {
