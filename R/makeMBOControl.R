@@ -56,6 +56,7 @@
 #'   If \code{save.on.disk.at} is used, this is the name of the file where the data
 #'   will be saved.
 #'   Default \dQuote{mbo_run.RData} in your current working directory.
+#'   If \code{schedule.method} is asyn then this is the path where all intermediate results will be stored.
 #' @param store.model.at [\code{integer}]\cr
 #'   Sequential optimization iterations when the model should be saved.
 #'   Iteration 1 is the model fit for the initial design, iters + 1 is a final
@@ -74,7 +75,7 @@
 #' @param output.num.format [\code{logical(1)}]\cr
 #'   Format string for the precision of the numeric output of mbo.
 #' @param schedule.method [\code{character(1)}]\cr
-#'   Choose wich scheduling method for multipoint evaluation should be used. Default is none. Another option is smartParallelMap.
+#'   Choose wich scheduling method for multipoint evaluation should be used. Default is none. Another option is smartParallelMap and asyn.
 #' @param schedule.nodes [\code{integer(1)}]\cr
 #'   If > 1 we try to schedule the proposed points in a smart way on the given numbers of threads.
 #'   You need to set the value for \code{propose.points} higher then the number of available cores. 
@@ -140,11 +141,13 @@ makeMBOControl = function(n.objectives = 1L,
     save.on.disk.at = NULL
 
   assertNumeric(save.on.disk.at.time, lower = 0, finite = FALSE, len = 1)
+  assertInteger(store.model.at)
+  assertPathForOutput(dirname(save.file.path))
   assertClass(resample.desc, "ResampleDesc")
   assertList(resample.measures, types = "Measure")
 
   assertString(output.num.format)
-  assertChoice(schedule.method, choices = c("none", "smartParallelMap"))
+  assertChoice(schedule.method, choices = c("none", "smartParallelMap", "asyn"))
   schedule.nodes = asInteger(schedule.nodes, upper = propose.points)
   assertChoice(schedule.priority, choices = c("infill", "explore", "exploit", "balanced"))
   assertFlag(schedule.priority.time)

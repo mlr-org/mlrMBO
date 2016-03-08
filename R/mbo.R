@@ -72,7 +72,11 @@ mbo = function(fun, design = NULL, learner = NULL, control,
     more.args = more.args)
 
   # we call the magic mboTemplate where everything happens
-  final.opt.state = mboTemplate(opt.problem)
+  if (control$schedule.method == "asyn") {
+    final.opt.state = mboAsynTemplate(opt.problem)
+  } else {
+    final.opt.state = mboTemplate(opt.problem)  
+  }
 
   mboFinalize2(final.opt.state)
 }
