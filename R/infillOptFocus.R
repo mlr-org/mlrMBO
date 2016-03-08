@@ -9,10 +9,12 @@
 infillOptFocus = function(infill.crit, models, control, par.set, opt.path, design, iter, ...) {
   global.y = Inf
   
+  discreteVectorPars = filterParams(par.set, type = c("discretevector", "logicalvector"))
+  
   allRequirements = extractSubList(par.set$pars, "requires", simplify = FALSE)
-  allUsedVars = unique(do.call(base::c, sapply(allRequirements, all.vars)))
-  forbiddenVars = getParamIds(filterParams(par.set, type = c("discretevector", "logicalvector")))
-  if (any(allUsedVars%in% forbiddenVars)) {
+  allRequirementVars = unique(unlist(lapply(allRequirements, all.vars)))
+  forbiddenRequirementVars = getParamIds(discreteVectorPars)
+  if (any(allRequirementVars %in% forbiddenRequirementVars)) {
     stop("Cannot do focus search when some variables have requirements that depend on discrete or logical vector parameters.")
   }
   
@@ -22,19 +24,23 @@ infillOptFocus = function(infill.crit, models, control, par.set, opt.path, desig
     # copy parset so we can shrink it
     ps.local = par.set
     
-    # handle discrete vectors:
-    # The problem is that for discrete vectors, we can't adjust the values dimension-wise.
-    # Therefore, for discrete vectors, we always drop the last level and instead have a
-    # mapping that maps, for each discrete vector param and for each dimension, from 
-    # the sampled value (levels 1 to n - #(dropped levels)) to levels with random dropouts.
-    discreteVectorMapping = lapply(filterParams(par.set, type = c("discretevector", "logicalvector"))$pars,
+    # Handle discrete vectors (and logical vectors):
+    # The problem is that for discrete vectors, we can't adjust the range dimension-wise.
+    # Instead we store the range of each discrete vectorparameter dimension in the list of named characters
+    # `discreteVectorMapping`. In each iteration a random value (that does not contain
+    # the optimum) is dropped from each vector on this list. The $values of the parameters in the parameterset also
+    # need to be modified to reflect the reduced range: from them, always the last value is dropped.
+    # Then `discreteVectorMapping` is a mapping that maps, for each discrete vector param dimension
+    # with originally n values, from the sampled value (levels 1 to n - #(dropped levels)) to the acutal levels with
+    # random dropouts.
+    #
+    # Since the requirements of the param set are queried while generating the design, this breaks if
+    # there are requirements depending on discrete vector parameters.
+    discreteVectorMapping = lapply(discreteVectorPars$pars,
         function(param) rep(list(setNames(names(param$values), names(param$values))), param$len))
-    discreteVectorMapping = do.call(base::c, discreteVectorMapping)
-    # the resulting object is NULL if there are no discrete / logical vector params
-
-    if (!is.null(discreteVectorMapping)) {
-      mappedPars = filterParams(par.set, type = c("discretevector", "logicalvector"))
-      names(discreteVectorMapping) = getParamIds(mappedPars, with.nr = TRUE, repeated = TRUE)
+    discreteVectorMapping = unlist(discreteVectorMapping, recursive=FALSE)
+    if (!isEmpty(discreteVectorPars)) {
+      names(discreteVectorMapping) = getParamIds(discreteVectorPars, with.nr = TRUE, repeated = TRUE)
     }
     
 
