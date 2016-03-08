@@ -29,7 +29,7 @@ makeOptResult = function(stored.models = list(), resample.results = list(), mbo.
   opt.result$resample.results = resample.results
   opt.result$mbo.result = mbo.result
 
-  class(opt.result) = append(class(opt.result), "OptResult")
+  class(opt.result) = c("OptResult", class(opt.result))
   opt.result
 }
 

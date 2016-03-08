@@ -44,7 +44,7 @@ makeOptProblem = function(fun, par.set, design = NULL, learner, control, show.in
   opt.problem$more.args = more.args
   opt.problem$all.possible.weights = NULL
 
-  class(opt.problem) = append(class(opt.problem), "OptProblem")
+  class(opt.problem) = c("OptProblem", class(opt.problem))
 
   opt.problem
 }

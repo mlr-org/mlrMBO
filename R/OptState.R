@@ -68,7 +68,7 @@ makeOptState = function(opt.problem, loop = 0L, tasks = NULL, models = NULL,
 
   opt.state$random.seed = getRandomSeed()
   opt.state$time.created = time.created
-  class(opt.state) = append(class(opt.state), "OptState")
+  class(opt.state) = c("OptState", class(opt.state))
   opt.state
 }
 
