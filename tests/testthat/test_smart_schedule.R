@@ -66,6 +66,8 @@ test_that("async MBO works", {
   unlink(dirname(save.file), recursive = TRUE, force = TRUE)
   op.df = as.data.frame(or$opt.path)
   expect_true(nrow(op.df) == 20)
+  expect_true(all(is.na(op.df$train.time[11:20])))
+  expect_true(all(is.na(op.df$multipoint.cb.lambda[11:20])))
 })
 # test_that("multifid works with smart scheduling", {
 #   #for now complicated
