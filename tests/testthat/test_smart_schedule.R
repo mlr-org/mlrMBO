@@ -3,7 +3,6 @@ context("smart schedule")
 test_that("smart schedule works", {
   set.seed(3)
   objfun = smoof::makeSingleObjectiveFunction(
-    
     fn = function(x) {
       x = (x$x-5)^2
       attr(x,"exec.time") = 10L
@@ -55,6 +54,19 @@ test_that("smart schedule works", {
   }
 })
 
+test_that("async MBO works", {
+  #save.file = tempfile("state")
+  save.file = "testMBO/here.Rdata"
+  ctrl = makeMBOControl(schedule.method = "asyn", save.file.path = save.file)
+  ctrl = setMBOControlTermination(ctrl, iters = 20L, max.evals = 20L)
+  ctrl = setMBOControlInfill(control = ctrl, crit = "cb", crit.cb.lambda = 2, opt.focussearch.maxit = 2L, opt.focussearch.points = 50L)
+  ctrl = setMBOControlMultiPoint(ctrl, method = "cb")
+  surrogat.learner = makeLearner("regr.randomForest", predict.type = "se", ntree = 50, ntree.for.se = 20)
+  or = mbo(fun = testf.fsphere.2d, design = testd.fsphere.2d, learner = surrogat.learner, control = ctrl)
+  unlink(dirname(save.file), recursive = TRUE, force = TRUE)
+  op.df = as.data.frame(or$opt.path)
+  expect_true(nrow(op.df) == 20)
+})
 # test_that("multifid works with smart scheduling", {
 #   #for now complicated
 #   #get multipoint working with multifid and then we can talk

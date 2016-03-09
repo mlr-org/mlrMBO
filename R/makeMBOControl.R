@@ -141,8 +141,8 @@ makeMBOControl = function(n.objectives = 1L,
     save.on.disk.at = NULL
 
   assertNumeric(save.on.disk.at.time, lower = 0, finite = FALSE, len = 1)
-  assertInteger(store.model.at)
-  assertPathForOutput(dirname(save.file.path))
+  if (!is.null(store.model.at)) assertIntegerish(store.model.at)
+  assertPathForOutput(dirname(save.file.path), overwrite = TRUE)
   assertClass(resample.desc, "ResampleDesc")
   assertList(resample.measures, types = "Measure")
 

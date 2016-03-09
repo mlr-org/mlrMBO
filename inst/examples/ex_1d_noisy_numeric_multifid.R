@@ -19,15 +19,13 @@ obj.fun = makeSingleObjectiveFunction(
   par.set = makeNumericParamSet(lower = 3, upper = 13, len = 1L),
   has.simple.signature = FALSE,
   noisy = TRUE,
-  global.opt.value = -1
+  global.opt.value = -1,
+  fn.mean = function(x) {
+    if (is.null(x$.multifid.lvl))
+      x$multifid.lvl = 2
+    sin(x$x) - (x$.multifid.lvl - 2)*(0.05*(x$x-7)^2 + 1)
+  }
 )
-
-# here in this example we know the true, deterministic function
-obj.fun.mean = function(x) {
-  if (is.null(x$.multifid.lvl))
-    x$multifid.lvl = 2
-  sin(x$x) - (x$.multifid.lvl - 2)*(0.05*(x$x-7)^2 + 1)
-}
 
 ctrl = makeMBOControl(
   propose.points = 1L,
@@ -46,7 +44,7 @@ ctrl = setMBOControlMultiFid(ctrl, lvls = c(0.1, 1), costs = c(1, 4), param = "p
 design = generateDesign(10L, getParamSet(obj.fun), fun = lhs::maximinLHS)
 
 run = exampleRun(obj.fun, design = design, learner = lrn,
-  control = ctrl, points.per.dim = 200L, noisy.evals = 50L, fun.mean = obj.fun.mean,
+  control = ctrl, points.per.dim = 200L, noisy.evals = 50L,
   show.info = TRUE)
 
 print(run)

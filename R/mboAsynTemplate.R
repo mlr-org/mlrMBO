@@ -4,15 +4,37 @@ mboAsynTemplate = function(opt.problem) {
   if (!(control$infill.crit == "cb" && control$multipoint.method == "cb")) {
     stopf("We don't have CL support or similar now, so only cb with multipoint.method == cb makes sense!")
   }
-  setupMBOOnline(opt.problem)
-  opt.state = readDirectoryToOptState(opt.problem)
-  
-  while(!shouldTerminate.OptState(opt.state)$term){
-    #not really:
-    runMBOOnline(opt.problem)
-    opt.state = readDirectoryToOptState(opt.problem)
+  if (control$time.budget < Inf && control$exec.time.budget == Inf) {
+    stopf("We don't support time.budget yet. Please use 'exec.time.budget' instead")
   }
+  if (control$iters == Inf && control$schedule.nodes == 1) {
+    stopf("iters are inf and schedule.nodes is 1. Please set on of those.")
+  }
+  
+  #wrapper to check budget
+  wrapAsynFun = function() {
+    opt.state = readDirectoryToOptState(opt.problem)
+    if (!shouldTerminate.OptState(opt.state)$term) {
+      runMBOOnline(opt.state)
+    }
+  }
+  
+  #start the calculation
+  setupMBOOnline(opt.problem)
 
+  if (control$iters < Inf) {
+    parallelMap(function(x) wrapAsynFun(), x = rep(TRUE, control$iters), level = "mlrMBO.async")
+    opt.state = readDirectoryToOptState(opt.problem)
+  } else if (!is.null(control$batchJobs.reg)) {
+    #write method to send further jobs if budget is not exhausted and number of waiting jobs gets low
+  } else {
+    opt.state = readDirectoryToOptState(opt.problem)
+    while(!shouldTerminate.OptState(opt.state)$term){
+      parallelMap(function(x) wrapAsynFun(), x = rep(TRUE, control$schedule.nodes * 10), level = "mlrMBO.async")
+      opt.state = readDirectoryToOptState(opt.problem)
+    }
+  }
+  return(opt.state)
 }
 
 setupMBOOnline = function(opt.problem) {
@@ -22,7 +44,7 @@ setupMBOOnline = function(opt.problem) {
   opt.state = makeOptState(opt.problem = opt.problem)
   #parallized in evalTargetFun with level mlrMBO.feval
   evalMBODesign.OptState(opt.state)
-  saveRDS(opt.problem, file = file.path(path, sprintf("state_0.rds")))
+  saveRDS(getOptStateOptPath(opt.state), file = file.path(path, sprintf("state_0_init.rds")))
 }
 
 
@@ -35,8 +57,12 @@ runMBOOnline.character = function(x, ...) {
 }
 
 runMBOOnline.OptProblem = function(x, ...) {
-  opt.state = readDirectoryToOptState(x)
-  setOptStateLoop() #loop + 1
+  runMBOOnline(readDirectoryToOptState(x))
+}
+
+runMBOOnline.OptState = function(x, ...) {
+  opt.state = x
+  setOptStateLoop(opt.state) #loop + 1
   prop = proposePoints.OptState(opt.state)
   evalProposedPoints.OptState(opt.state, prop)
   writeResultToDirectory(opt.state)
@@ -44,32 +70,29 @@ runMBOOnline.OptProblem = function(x, ...) {
 }
 
 readDirectoryToOptState = function(opt.problem) {
+  control = getOptProblemControl(opt.problem)
   readOptPathFromDirectory = function(path) {
+    op = readRDS(file.path(path, "state_0_init.rds"))
     files = list.files(path, pattern = "^state_[[:alnum:]]+\\.rds$", full.names = TRUE)
-    op = makeMBOOptPath(x)
-    if (length(files)) {
-      df = rbindlist(lapply(files, readRDS), fill = TRUE)
-      op$env$path = as.data.frame(df[, c(x$control$y.name, getParamIds(getOptProblemParSet(x))), with = FALSE])
-      op$env$dob = df$dob
-      op$env$eol = df$eol
-      op$env$error.message = df$error.message
-      op$env$exec.time = df$exec.time
-      op$env$extra = vector("list", nrow(df))
+    file.contents = lapply(files, readRDS)
+    for (op.el in file.contents) {
+      do.call(addOptPathEl, c(list(op = op), op.el))
     }
     return(op)
   }
-  path = dirname(getOptProblemControl(opt.problem)$save.file.path)
+  path = dirname(control$save.file.path)
   opt.path = readOptPathFromDirectory(path)
   makeOptState(
-    opt.problem = x, 
+    opt.problem = opt.problem, 
     opt.path = opt.path, 
-    loop = getOptPathLength(getOptStateOptPath(opt.state))
+    loop = getOptPathLength(opt.path)
     )
 }
 
 writeResultToDirectory = function(opt.state) {
-  last.row = getOptPathEl(opt.path, getOptPathLength(getOptStateOptPath(opt.state)))
-  hash = digest::sha1(list(Sys.time(), Sys.info()))
-  last.row$extra = NULL
-  saveRDS(as.data.frame(last.row), file = file.path(path, sprintf("state_%i_%s.rds", getOptStateLoop(opt.state), hash)))
+  opt.path = getOptStateOptPath(opt.state)
+  last.op.el = getOptPathEl(opt.path, getOptPathLength(opt.path))
+  hash = substr(digest::sha1(list(Sys.time(), Sys.info())), 1, 50) #filenames will have length 64
+  path = dirname(getOptProblemControl(getOptStateOptProblem(opt.state))$save.file.path)
+  saveRDS(last.op.el, file = file.path(path, sprintf("state_%.4i%s.rds", getOptStateLoop(opt.state), hash)))
 }

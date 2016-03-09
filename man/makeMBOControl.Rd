@@ -80,7 +80,8 @@ Default is \code{Inf}, i. e., not to save ever.}
 \item{save.file.path}{[\code{character(1)}] \cr
 If \code{save.on.disk.at} is used, this is the name of the file where the data
 will be saved.
-Default \dQuote{mbo_run.RData} in your current working directory.}
+Default \dQuote{mbo_run.RData} in your current working directory.
+If \code{schedule.method} is asyn then this is the path where all intermediate results will be stored.}
 
 \item{store.model.at}{[\code{integer}]\cr
 Sequential optimization iterations when the model should be saved.
@@ -105,7 +106,7 @@ Default is \code{\link[mlr]{mse}}.}
 Format string for the precision of the numeric output of mbo.}
 
 \item{schedule.method}{[\code{character(1)}]\cr
-Choose wich scheduling method for multipoint evaluation should be used. Default is none. Another option is smartParallelMap.}
+Choose wich scheduling method for multipoint evaluation should be used. Default is none. Another option is smartParallelMap and asyn.}
 
 \item{schedule.nodes}{[\code{integer(1)}]\cr
 If > 1 we try to schedule the proposed points in a smart way on the given numbers of threads.

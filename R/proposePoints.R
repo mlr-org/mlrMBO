@@ -54,7 +54,7 @@ proposePoints.OptState = function(opt.state){
     res = filterProposedPoints(res, opt.state)
   }
 
-  if (control$schedule.method != "none") {
+  if (control$schedule.method == "smartParallelMap") {
     time.model = getOptStateTimeModel(opt.state)
     time.prediction = predict(time.model, newdata = res$prop.points)
     res$predicted.time = getPredictionResponse(time.prediction)
