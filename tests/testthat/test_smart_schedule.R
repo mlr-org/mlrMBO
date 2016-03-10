@@ -54,9 +54,9 @@ test_that("smart schedule works", {
   }
 })
 
-test_that("async MBO works", {
+test_that("asyn MBO works", {
   #save.file = tempfile("state")
-  save.file = "testMBO/here.Rdata"
+  save.file = tempfile(fileext = ".RData")
   ctrl = makeMBOControl(schedule.method = "asyn", save.file.path = save.file)
   ctrl = setMBOControlTermination(ctrl, iters = 20L, max.evals = 20L)
   ctrl = setMBOControlInfill(control = ctrl, crit = "cb", crit.cb.lambda = 2, opt.focussearch.maxit = 2L, opt.focussearch.points = 50L)
@@ -66,8 +66,24 @@ test_that("async MBO works", {
   unlink(dirname(save.file), recursive = TRUE, force = TRUE)
   op.df = as.data.frame(or$opt.path)
   expect_true(nrow(op.df) == 20)
-  expect_true(all(is.na(op.df$train.time[11:20])))
-  expect_true(all(is.na(op.df$multipoint.cb.lambda[11:20])))
+  expect_true(all(!is.na(op.df$train.time[11:20])))
+  expect_true(all(!is.na(op.df$multipoint.cb.lambda[11:20])))
+})
+
+test_that("asyn MBO works with CL", {
+  #save.file = tempfile("state")
+  save.file = tempfile(fileext = ".RData")
+  ctrl = makeMBOControl(schedule.method = "asyn", save.file.path = save.file)
+  ctrl = setMBOControlTermination(ctrl, iters = 20L, max.evals = 20L)
+  ctrl = setMBOControlInfill(control = ctrl, crit = "ei", opt.focussearch.maxit = 2L, opt.focussearch.points = 50L)
+  ctrl = setMBOControlMultiPoint(ctrl, method = "cl")
+  surrogat.learner = makeLearner("regr.randomForest", predict.type = "se", ntree = 50, ntree.for.se = 20)
+  or = mbo(fun = testf.fsphere.2d, design = testd.fsphere.2d, learner = surrogat.learner, control = ctrl)
+  unlink(dirname(save.file), recursive = TRUE, force = TRUE)
+  op.df = as.data.frame(or$opt.path)
+  expect_true(nrow(op.df) == 20)
+  expect_true(all(!is.na(op.df$train.time[11:20])))
+  expect_true(all(!is.na(op.df$ei[11:20])))
 })
 # test_that("multifid works with smart scheduling", {
 #   #for now complicated

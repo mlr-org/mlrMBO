@@ -82,14 +82,17 @@ getExtras = function(n, prop, train.time, control) {
       ex$filter.replace = prop$filter.replace[i]
     }
     # if we use scheduling, store predicted exec.times
-    if (control$schedule.method != "none") {
+    if (control$schedule.method == "smartParallelMap") {
       ex$predicted.time = predicted.time[i]
       ex$predicted.time.se = predicted.time.se[i]
       ex$scheduled.at = NA_real_
       ex$scheduled.on = NA_real_
       ex$scheduled.job = NA_real_
       ex$scheduled.priority = NA_real_
+    } else if (control$schedule.method == "asyn") {
+      ex$eval.state = "done" #done/proposed
     }
+    # if we use asyn MBO store node information and evaluation starte
     ex$train.time = if (i == 1) train.time else NA_real_
     ex$prop.type = prop$prop.type[i]
     ex$propose.time = NA_real_
