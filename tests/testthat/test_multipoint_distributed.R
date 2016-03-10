@@ -1,6 +1,7 @@
 context("infill distributed")
 
 test_that("basic infill distributed works", {
+  set.seed(1)
   lrn = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
   ctrl = makeMBOControl(propose.points = 5L)
   ctrl = setMBOControlTermination(ctrl, iters = 2L)
