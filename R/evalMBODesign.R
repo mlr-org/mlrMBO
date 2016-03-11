@@ -19,7 +19,7 @@ evalMBODesign.OptState = function(opt.state) {
 
   # check that the provided design one seems ok
   # sanity check: are paramter values and colnames of design consistent?
-  if (!setequal(setdiff(colnames(design), y.name), pids))
+  if (!setequal(setdiff(colnames(design), c(y.name, "exec.time")), pids))
     stop("Column names of design 'design' must match names of parameters in 'par.set'!")
 
   # sanity check: do not allow transformed designs
@@ -32,17 +32,18 @@ evalMBODesign.OptState = function(opt.state) {
     }
   }
 
-  design.x = dropNamed(design, y.name)
   # reorder + create list of x-points
-  design.x = design.x[, pids, drop = FALSE]
+  design.x = design[, pids, drop = FALSE]
   xs = dfRowsToList(design.x, par.set)
 
   # either only log init design stuff to opt.path or eval y-values
   if (all(y.name %in% colnames(design))) {
     y = as.matrix(design[, y.name, drop = FALSE])
+    exec.time = design[["exec.time"]]
+    if (is.null(exec.time)) exec.time = rep(NA_real_, nrow(design))
     lapply(seq_along(xs), function(i)
       addOptPathEl(getOptStateOptPath(opt.state), x = xs[[i]], y = y[i, ], dob = 0L,
-        error.message = NA_character_, exec.time = NA_real_, extra = extras[[i]])
+        error.message = NA_character_, exec.time = exec.time[i], extra = extras[[i]])
     )
   } else if (all(y.name %nin% colnames(design))) {
     showInfo(getOptProblemShowInfo(opt.problem), "Computing y column(s) for design. Not provided.")

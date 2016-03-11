@@ -26,7 +26,7 @@ randomSearch = function(fun, design = NULL, control, show.info = getOption("mlrM
   mean.time.used = mean(getOptPathExecTimes(opt.path))
   time.budget = min(control$time.budget, control$exec.time.budget)
   
-  n = min(control$iters, floor(time.budget / mean.time.used))
+  n = min(control$iters, floor(time.budget / mean.time.used), na.rm = TRUE)
   prop = list(
     prop.points = generateRandomDesign(par.set = par.set, n = n),
     crit.vals = matrix(rep.int(NA_real_, n), nrow = n, ncol = 1L),
