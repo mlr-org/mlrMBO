@@ -11,8 +11,8 @@ test_that("basic infill distributed works", {
 
   res = mbo(testf.fsphere.2d, testd.fsphere.2d, learner = lrn, control = ctrl)
   op = as.data.frame(res$opt.path)
-  expect_true(all(is.na(op$cb[1:10])))
-  expect_true(all(!is.na(op$cb[11:20])))
+  expect_true(all(is.na(op$ei[1:10])))
+  expect_true(all(!is.na(op$ei[11:20])))
   expect_is(res, "MBOResult")
-  expect_true(res$y < 0.1)
+  expect_true(res$y < 0.5)
 })
