@@ -34,6 +34,7 @@ mboAsynTemplate = function(opt.problem) {
       opt.state = readDirectoryToOptState(opt.problem)
     }
   }
+  cleanDirectory(opt.problem)
   return(opt.state)
 }
 

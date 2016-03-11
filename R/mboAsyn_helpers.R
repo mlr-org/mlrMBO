@@ -10,7 +10,7 @@ readOptPathFromDirectory = function(path) {
 
 readProposalsFromDirectoryToOptPath = function(path, opt.path, opt.problem) {
   control = getOptProblemControl(opt.problem)
-  path = dirname(control$save.file.path)
+  path = getAsynDir(opt.problem)
   files = list.files(path, pattern = "^prop_[[:alnum:]]+\\.rds$", full.names = TRUE)
   file.contents = lapply(files, readRDS)
   #concept copied from proposePointsConstantLiar.R
@@ -24,7 +24,7 @@ readProposalsFromDirectoryToOptPath = function(path, opt.path, opt.problem) {
 
 readDirectoryToOptState = function(opt.problem) {
   control = getOptProblemControl(opt.problem)
-  opt.path = readOptPathFromDirectory(dirname(control$save.file.path))
+  opt.path = readOptPathFromDirectory(getAsynDir(opt.problem))
   #add proposals with CL to opt.path
   if (control$multipoint.method == "cl") {
     readProposalsFromDirectoryToOptPath(path, opt.path, opt.problem)
@@ -49,8 +49,19 @@ writeThingToDirectory = function(opt.problem, thing, prefix, hash = TRUE){
   } else {
     hash = ""
   }
-  path = dirname(getOptProblemControl(opt.problem)$save.file.path)
+  path = getAsynDir(opt.problem)
   save.file = file.path(path, sprintf("%s%s.rds", prefix, hash))
   saveRDS(thing, file = save.file)
   save.file
+}
+
+cleanDirectory = function(opt.problem) {
+  path = getAsynDir(opt.problem)
+  unlink(path, recursive = TRUE, force = TRUE)
+}
+
+getAsynDir = function(opt.problem) {
+  path = file.path(dirname(getOptProblemControl(opt.problem)$save.file.path), "asyn")
+  dir.create(path, showWarnings = FALSE)
+  path
 }
