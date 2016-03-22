@@ -7,7 +7,7 @@
 #   MBO control object.
 # @return [\code{data.frame}]
 convertOptPathToDf = function(opt.path, control) {
-  df = as.data.frame(opt.path, discretes.as.factor = TRUE, include.rest = FALSE)
+  df = as.data.frame(opt.path, include.rest = FALSE)
   df = convertDataFrameCols(df, ints.as.num = TRUE, logicals.as.factor = TRUE)
   return(df)
 }
