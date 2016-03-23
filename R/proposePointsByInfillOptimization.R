@@ -13,7 +13,7 @@
 #                               NA if the model was Ok, or the (first) error message if some model crashed
 proposePointsByInfillOptimization = function(opt.state, par.set = NULL, control = NULL, opt.path = NULL, models = NULL, ...) {
   opt.problem = getOptStateOptProblem(opt.state)
-  models = coalesce(models, getOptStateModels(opt.state)$models)
+  if (is.null(models)) models = getOptStateModels(opt.state)$models
   models = if (inherits(models, "WrappedModel")) list(models) else models
   par.set = coalesce(par.set, getOptProblemParSet(opt.problem))
   control = coalesce(control, getOptProblemControl(opt.problem))
