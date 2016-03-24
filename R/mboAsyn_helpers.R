@@ -19,7 +19,7 @@ readProposalsFromDirectoryToOptPath = function(path, opt.path, opt.problem) {
   for (prop.el in file.contents) {
     x = dfRowToList(prop.el$prop.points, getOptProblemParSet(opt.problem), 1)
     dob = max(getOptPathDOB(opt.path))
-    addOptPathEl(opt.path, x = x, y = lie, dob = dob + 1, extras = getOptPathEl(opt.path, dob)$extra) #FIXME: We just cheat and copy last known extras to new lie ¯\_(ツ)_/¯
+    addOptPathEl(opt.path, x = x, y = lie, dob = dob + 1, extra = getOptPathEl(opt.path, dob)$extra) #FIXME: We just cheat and copy last known extras to new lie ¯\_(ツ)_/¯
   }
 }
 
