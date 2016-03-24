@@ -8,7 +8,7 @@ readOptPathFromDirectory = function(path) {
   return(op)
 }
 
-readProposalsFromDirectoryToOptPath = function(path, opt.path, opt.problem) {
+readProposalsFromDirectoryToOptPath = function(opt.path, opt.problem) {
   control = getOptProblemControl(opt.problem)
   path = getAsynDir(opt.problem)
   files = list.files(path, pattern = "^prop_[[:alnum:]]+\\.rds$", full.names = TRUE)
@@ -28,7 +28,7 @@ readDirectoryToOptState = function(opt.problem) {
   opt.path = readOptPathFromDirectory(getAsynDir(opt.problem))
   #add proposals with CL to opt.path
   if (control$multipoint.method == "cl") {
-    readProposalsFromDirectoryToOptPath(path, opt.path, opt.problem)
+    readProposalsFromDirectoryToOptPath(opt.path, opt.problem)
   }
   makeOptState(
     opt.problem = opt.problem, 

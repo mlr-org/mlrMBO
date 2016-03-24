@@ -12,7 +12,7 @@
 mboContinue = function(file) {
   assertCharacter(file, len = 1L)
   opt.state = loadOptState(file)
-  ctrl = getOptProblemControl(getOptStateOptProblem(opt.state))
+  control = getOptProblemControl(getOptStateOptProblem(opt.state))
   if (control$infill.crit == "random" || control$schedule.method == "asyn") {
     warningf("RandomSearch and asyn not supported to be continued. Return last state", state)
     return(getOptResultMboResult(getOptStateOptResult(opt.state)))

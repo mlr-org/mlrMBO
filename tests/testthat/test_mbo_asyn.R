@@ -1,8 +1,7 @@
 context("asyn MBO")
 
 test_that("asyn MBO works", {
-  #save.file = tempfile("state")
-  save.file = tempfile(fileext = ".RData")
+  save.file = file.path(tempdir(), "asyn", "mbo.RData")
   ctrl = makeMBOControl(schedule.method = "asyn", save.file.path = save.file)
   ctrl = setMBOControlTermination(ctrl, iters = 20L, max.evals = 20L)
   ctrl = setMBOControlInfill(control = ctrl, crit = "cb", crit.cb.lambda = 2, opt.focussearch.maxit = 2L, opt.focussearch.points = 50L)
@@ -19,7 +18,7 @@ test_that("asyn MBO works", {
 })
 
 test_that("asyn MBO works with CL", {
-  save.file = tempfile(fileext = ".RData")
+  save.file = file.path(tempdir(), "asyn", "mbo.RData")
   ctrl = makeMBOControl(schedule.method = "asyn", save.file.path = save.file)
   ctrl = setMBOControlTermination(ctrl, iters = 20L, max.evals = 20L)
   ctrl = setMBOControlInfill(control = ctrl, crit = "ei", opt.focussearch.maxit = 2L, opt.focussearch.points = 50L)
