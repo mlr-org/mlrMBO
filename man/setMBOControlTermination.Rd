@@ -4,7 +4,7 @@
 \alias{setMBOControlTermination}
 \title{Set termination options.}
 \usage{
-setMBOControlTermination(control, iters = 10L, time.budget = NULL,
+setMBOControlTermination(control, iters = NULL, time.budget = NULL,
   exec.time.budget = NULL, target.fun.value = NULL, max.evals = NULL,
   more.stop.conds = list())
 }
@@ -13,8 +13,7 @@ setMBOControlTermination(control, iters = 10L, time.budget = NULL,
 Control object for mbo.}
 
 \item{iters}{[\code{integer(1)}]\cr
-Number of sequential optimization steps.
-Default is 10.}
+Number of sequential optimization steps.}
 
 \item{time.budget}{[\code{integer(1)} | NULL]\cr
 Running time budget in seconds. Note that the actual mbo run can take more time since
