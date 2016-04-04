@@ -31,7 +31,7 @@ proposePointsInfillDistributed = function(opt.state, ...) {
   })
 
   st2 = system.time({
-    prop.points = rejSamp(f = f, n = n, par.set = par.set, f.max = f.max, f.min = f.min)
+    prop.points = rejSamp(f = f, n = n, par.set = par.set, f.max = f.max, f.min = f.min, max.iter = 1000)
   })
   
   prop.points = plyr::rbind.fill(prop.points)

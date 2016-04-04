@@ -11,21 +11,24 @@
 # #' @return
 # #'  \code{n} Random numbers from the function \code{f} interpreted as probality density function.
 
-rejSamp = function(f, n = 1, par.set, f.max, f.min, ...) {
+rejSamp = function(f, n = 1, par.set, f.max, f.min, max.iter = 50000, ...) {
   assertFunction(f)
   assertCount(n, positive = TRUE)
   assertClass(par.set, "ParamSet")
 
-  rej.helper = function() {
+  rej.helper = function(max.iter) {
     j = TRUE
-    while(j) {
+    i = 1
+    while(j && i <= max.iter) {
       x = generateRandomDesign(n = 1, par.set = par.set, ...)
       z = runif(1, f.min, f.max)
       if (f(x) >  z) {
         return(x)
       }
+      i = i + 1
     }
+    return(x)
   }
   
-  return(replicate(n, rej.helper(), simplify = FALSE))
+  return(replicate(n, rej.helper(max.iter), simplify = FALSE))
 }
