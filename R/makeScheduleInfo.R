@@ -14,7 +14,7 @@ makeScheduleInfo = function(prop, opt.state) {
     #highest priority for those with lowest crit.val
     priorities = -prop$crit.vals
   } else {
-    stopf("Priority mehtod %s was not appliable!", control$schedule.priority)
+    stopf("Schedule Priority mehtod %s was not appliable!", control$schedule.priority)
   }
   if (control$schedule.priority.time) {
     first.id = which.max(priorities)
