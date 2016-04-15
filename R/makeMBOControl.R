@@ -138,7 +138,7 @@ makeMBOControl = function(n.objectives = 1L,
 
   # If debug-mode, turn of saving.
   if (getOption("mlrMBO.debug.mode", default = FALSE))
-    save.on.disk.at = NULL
+    save.on.disk.at = integer(0L)
 
   assertNumeric(save.on.disk.at.time, lower = 0, finite = FALSE, len = 1)
   if (!is.null(store.model.at)) assertIntegerish(store.model.at)
