@@ -48,7 +48,8 @@ infillCritEI = function(points, models, control, par.set, design, iter) {
   ei = d * xcr.prob + p.se * xcr.dens
   # FIXME: magic number
   # if se too low set 0 (numerical problems), negate due to minimization
-  ifelse(p.se < 1e-6, 0, -ei)
+  res = ifelse(p.se < 1e-6, 0, -ei)
+  setAttribute(res, "crit.components", data.frame(se = p$se, mean = p$response))
 }
 
 # LOWER CONFIDENCE BOUND
@@ -69,8 +70,8 @@ infillCritCB = function(points, models, control, par.set, design, iter) {
   } else {
     inflate = 1
   }
-
-  maximize.mult * p$response - inflate * control$infill.crit.cb.lambda * p$se
+  res = maximize.mult * p$response - inflate * control$infill.crit.cb.lambda * p$se
+  setAttribute(res, "crit.components", data.frame(se = p$se, mean = p$response, lambda = control$infill.crit.cb.lambda))
 }
 
 ######################  Noisy criteria ###########################################################
@@ -99,9 +100,9 @@ infillCritAEI = function(points, models, control, par.set, design, iter) {
     estimateResidualVariance(model, data = design, target = control$y.name)
 
   tau = sqrt(pure.noise.var)
-  aei = ifelse(p.se < 1e-06, 0,
+  res = (-1) * ifelse(p.se < 1e-06, 0,
     (d * xcr.prob + p.se * xcr.dens) * (1 - tau / sqrt(tau^2 + p.se^2)))
-  return(-aei)
+  setAttribute(res, "crit.components", data.frame(se = p$se, mean = p$response, tau = tau))
 }
 
 # EXPECTED QUANTILE IMPROVEMENT
