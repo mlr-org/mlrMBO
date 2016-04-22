@@ -21,19 +21,19 @@
 
 # MEAN RESPONSE OF MODEL
 # (useful for deterministic and noisy)
-infillCritMeanResponse = function(points, models, control, par.set, design, iter) {
+infillCritMeanResponse = function(points, models, control, par.set, design, iter, attributes = FALSE) {
   ifelse(control$minimize, 1, -1) * predict(models[[1L]], newdata = points)$data$response
 }
 
 # MODEL UNCERTAINTY
 # (on its own not really useful for anything I suppose ...)
-infillCritStandardError = function(points, models, control, par.set, design, iter) {
+infillCritStandardError = function(points, models, control, par.set, design, iter, attributes = FALSE) {
   -predict(models[[1L]], newdata = points)$data$se
 }
 
 # EXPECTED IMPROVEMENT
 # (useful for deterministic, for noisy only with reinterpolation)
-infillCritEI = function(points, models, control, par.set, design, iter) {
+infillCritEI = function(points, models, control, par.set, design, iter, attributes = FALSE) {
   model = models[[1L]]
   maximize.mult = ifelse(control$minimize, 1, -1)
   y = maximize.mult * design[, control$y.name]
@@ -49,12 +49,15 @@ infillCritEI = function(points, models, control, par.set, design, iter) {
   # FIXME: magic number
   # if se too low set 0 (numerical problems), negate due to minimization
   res = ifelse(p.se < 1e-6, 0, -ei)
-  setAttribute(res, "crit.components", data.frame(se = p$se, mean = p$response))
+  if (attributes) {
+    res = setAttribute(res, "crit.components", data.frame(se = p$se, mean = p$response))
+  }
+  return(res)
 }
 
 # LOWER CONFIDENCE BOUND
 # (useful for deterministic and also naively for noisy)
-infillCritCB = function(points, models, control, par.set, design, iter) {
+infillCritCB = function(points, models, control, par.set, design, iter, attributes = FALSE) {
   model = models[[1L]]
   maximize.mult = ifelse(control$minimize, 1, -1)
   p = predict(model, newdata = points)$data
@@ -71,14 +74,17 @@ infillCritCB = function(points, models, control, par.set, design, iter) {
     inflate = 1
   }
   res = maximize.mult * p$response - inflate * control$infill.crit.cb.lambda * p$se
-  setAttribute(res, "crit.components", data.frame(se = p$se, mean = p$response, lambda = control$infill.crit.cb.lambda))
+  if (attributes) {
+    res = setAttribute(res, "crit.components", data.frame(se = p$se, mean = p$response, lambda = control$infill.crit.cb.lambda))
+  }
+  return(res) 
 }
 
 ######################  Noisy criteria ###########################################################
 
 # AUGMENTED EXPECTED IMPROVEMENT
 # (useful for noisy functions)
-infillCritAEI = function(points, models, control, par.set, design, iter) {
+infillCritAEI = function(points, models, control, par.set, design, iter, attributes = FALSE) {
   model = models[[1L]]
   maximize.mult = ifelse(control$minimize, 1, -1)
   p = predict(model, newdata = points)$data
@@ -102,12 +108,16 @@ infillCritAEI = function(points, models, control, par.set, design, iter) {
   tau = sqrt(pure.noise.var)
   res = (-1) * ifelse(p.se < 1e-06, 0,
     (d * xcr.prob + p.se * xcr.dens) * (1 - tau / sqrt(tau^2 + p.se^2)))
-  setAttribute(res, "crit.components", data.frame(se = p$se, mean = p$response, tau = tau))
+  if (attributes) {
+    res = setAttribute(res, "crit.components", data.frame(se = p$se, mean = p$response, tau = tau))  
+  }
+  return(res)
+  
 }
 
 # EXPECTED QUANTILE IMPROVEMENT
 # (useful for noisy functions)
-infillCritEQI = function(points, models, control, par.set, design, iter) {
+infillCritEQI = function(points, models, control, par.set, design, iter, attributes = FALSE) {
   model = models[[1L]]
   maximize.mult = ifelse(control$minimize, 1, -1)
   # compute q.min
@@ -144,7 +154,7 @@ infillCritEQI = function(points, models, control, par.set, design, iter) {
 # direct.sms LOWER CONFIDENCE BOUND of points, then HV contribution of these wrt to design
 # direct.eps: LOWER CONFIDENCE BOUND of points, then epsilon indicator contribution of these wrt to design
 # (useful for deterministic and stochastic MCO)
-infillCritDIB = function(points, models, control, par.set, design, iter) {
+infillCritDIB = function(points, models, control, par.set, design, iter, attributes = FALSE) {
   # get ys and cb-value-matrix for new points, minimize version
   maximize.mult = ifelse(control$minimize, 1, -1)
   ys = as.matrix(design[, control$y.name]) %*% diag(maximize.mult)

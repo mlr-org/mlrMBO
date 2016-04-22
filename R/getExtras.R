@@ -24,12 +24,15 @@ getExtras = function(n, prop, train.time, control) {
     # pregenerate a dummmy "prop" data structure
     prop = list(crit.vals = matrix(NA_real_, nrow = n, ncol = k), propose.time = NA_real_, errors.model = NA_character_,
       filter.replace = rep(NA, n), prop.type = rep("initdesign", n))
-    if (control$infill.crit == "ei") {
+    ## make space for crit.components (not so fancy to do it here)
+    if (control$multifid) {
+      prop$crit.components = data.frame(ei = NA_real_, se = NA_real_, alpha1 = NA_real_, alpha2 = NA_real_, alpha3 = NA_real_, sd = NA_real_)
+    } else if (control$n.objectives == 1L && control$infill.crit == "ei") {
       prop$crit.components = data.frame(se = NA_real_, mean = NA_real_)
-    } else if (control$infill.crit == "cb") {
+    } else if (control$n.objectives == 1L && control$infill.crit == "cb") {
       prop$crit.components = data.frame(se = NA_real_, mean = NA_real_, lambda = NA_real_)
-    } else if (control$infill.crit == "aei") {
-      prop$crit.components = data.frame(se = NA_real_, mean = NA_real_, tau = NA_real_)
+    } else if (control$n.objectives == 1L && control$infill.crit == "aei") {
+      prop$crit.components = data.frame(se = NA_real_, mean = NA_real_, tau = NA_real_)  
     }
   }
   exs = vector("list", n)
