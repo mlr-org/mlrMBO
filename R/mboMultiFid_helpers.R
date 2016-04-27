@@ -62,7 +62,7 @@ infillCritMultiFid = function(points, models, control, par.set, design, iter, at
   mf.res = infillCritMultiFid2(points, models, control, par.set, design, iter, attributes = FALSE, lvl.cors, lvl.sds, lvl, time.model)
   res = mf.res$crit
   if (attributes) {
-    res = setAttribute(res, "crit.components", do.call(cbind, mf.res[-1]))  
+    res = setAttribute(res, "crit.components", do.call(cbind.data.frame, c(list(attr(res, "crit.components")), mf.res[-1])))  
   }
   return(res)
 }
@@ -76,7 +76,7 @@ infillCritMultiFid2 = function(points, models, control, par.set, design, iter, a
   # note: mbo returns the negated EI (and SE), so have to later minimize the huang crit.
   # which is done by default by our optimizer anyway
   infill.crit.fun = getInfillCritFunction(control$infill.crit)
-  ei.last = infill.crit.fun(points.last, models, control, par.set, design.last, iter)
+  ei.last = infill.crit.fun(points.last, models, control, par.set, design.last, iter, attributes = TRUE)
   alpha1 = lvl.cors[lvl]
 
   # ALPHA 2
@@ -94,7 +94,7 @@ infillCritMultiFid2 = function(points, models, control, par.set, design, iter, a
     alpha3 = getPredictionResponse(predict(time.model, newdata = points.last)) / getPredictionResponse(predict(time.model, newdata = points.current))
   }
   crit = ei.last * alpha1 * alpha2 * alpha3
-  list(crit = crit, ei = ei.last, se = se, alpha1 = alpha1, alpha2 = alpha2, alpha3 = alpha3, sd = sigmas)
+  list(crit = crit, mf.ei.last = ei.last, mf.se = se, mf.alpha1 = alpha1, mf.alpha2 = alpha2, mf.alpha3 = alpha3, mf.sd = sigmas)
 }
 
 calcModelSD = function(lvl, model, control, design) {

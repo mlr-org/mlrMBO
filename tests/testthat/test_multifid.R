@@ -38,14 +38,18 @@ test_that("basic multifid works", {
   set.seed(1)
   result = mbo(f, des, learner = surrogat.learner, control = control)
   #this is not realy a hard threashold
-  expect_true(result$y < 1)
+  expect_true(result$y < 0.25)
+  
+  opdf = as.data.frame(result$opt.path)
+  expect_subset(c("x",".multifid.lvl","y","ei","se","mean","mf.ei.last","mf.se","mf.alpha1","mf.alpha2","mf.alpha3","mf.sd"), colnames(opdf))
+  expect_true(!any(is.na(opdf[11:15, c("ei","se","mean","mf.ei.last","mf.se","mf.alpha1","mf.alpha2","mf.alpha3","mf.sd")])))
 
   # remove cots so time.model will be estimated
   control$multifid.costs = NULL
   f.delay = makeSingleObjectiveFunction(
     fn = function(x) {
       Sys.sleep(0.1 + x$.multifid.lvl/3)
-      return(f(x))
+      f(x)
     },
     par.set = makeParamSet(
       makeNumericParam("x", lower = 0, upper = 10),
@@ -56,8 +60,9 @@ test_that("basic multifid works", {
   set.seed(1)
   result.time = mbo(f.delay, des, learner = surrogat.learner, control = control)
   #this is not realy a hard threashold
-  expect_true(result$y < 1)
+  expect_true(result.time$y <0.25)
   # this is pretty hard and migh fail?
   # expect_equal(as.data.frame(result.time$opt.path)$.multifid.lvl, as.data.frame(result$opt.path)$.multifid.lvl)
+  
 })
 
