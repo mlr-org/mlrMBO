@@ -26,6 +26,14 @@ test_that("infill crits", {
       expect_true(or$y < 25)
     else
       expect_true(or$y > 30)
+    opdf = as.data.frame(or$opt.path)
+    if ("ei" %in% colnames(opdf)) {
+      expect_true(!any(is.na(opdf[21:23, c("ei","se","mean")])))
+    } else if ("cb" %in% colnames(opdf)) {
+      expect_true(!any(is.na(opdf[21:23, c("se","mean","lambda")])))
+    } else if ("aei" %in% colnames(opdf)) {
+      expect_true(!any(is.na(opdf[21:23, c("se","mean","tau")])))
+    }
   }
 
   learners = list(
