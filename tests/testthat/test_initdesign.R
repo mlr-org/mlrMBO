@@ -12,7 +12,6 @@ test_that("init design", {
 
   learner = makeLearner("regr.km", nugget.estim = TRUE)
   ctrl = makeMBOControl()
-  ctrl = setMBOControlTermination(ctrl)
   ctrl = setMBOControlTermination(ctrl, iters = 1L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10L)
 
