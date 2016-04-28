@@ -147,7 +147,7 @@ makeMBOControl = function(n.objectives = 1L,
   assertList(resample.measures, types = "Measure")
 
   assertString(output.num.format)
-  assertChoice(schedule.method, choices = c("none", "smartParallelMap", "asyn"))
+  assertChoice(schedule.method, choices = c("none", "smartParallelMap", "asyn", "scheduleKnapsack"))
   schedule.nodes = asInteger(schedule.nodes, upper = propose.points)
   assertChoice(schedule.priority, choices = c("infill", "explore", "exploit", "balanced"))
   assertFlag(schedule.priority.time)
