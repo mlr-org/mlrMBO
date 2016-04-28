@@ -35,7 +35,8 @@ proposePointsInfillDistributed = function(opt.state, ...) {
   })
   
   prop.points = plyr::rbind.fill(prop.points)
-  crit.vals = infill.crit.fun(prop.points, models, control, par.set, design, iter, ...)
+  crit.vals = infill.crit.fun(prop.points, models, control, par.set, design, iter, attributes = TRUE, ...)
+  crit.components = attr(crit.vals, "crit.components")
 
   # calcullate proposal time. min max finding goes to first. rest devided.
   propose.time = rep(st2[3L] / n, n)
@@ -47,6 +48,7 @@ proposePointsInfillDistributed = function(opt.state, ...) {
     crit.vals = matrix(crit.vals, ncol = 1L),
     propose.time = propose.time,
     prop.type = rep("infill_distributed", n),
-    errors.model = rep.int(NA_character_, n)
+    errors.model = rep.int(NA_character_, n),
+    crit.components = crit.components
   )
 }
