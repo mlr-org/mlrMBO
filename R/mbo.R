@@ -58,7 +58,6 @@ mbo = function(fun, design = NULL, learner = NULL, control,
   # generate an OptProblem which gathers all necessary information to define the optimization problem in one environment.
   opt.problem = makeOptProblem(
     fun = fun,
-    par.set = par.set,
     design = design,
     learner = learner,
     control = control,
