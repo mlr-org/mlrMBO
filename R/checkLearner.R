@@ -16,7 +16,7 @@ NULL
 # check and create default learner
 checkLearner = function(learner, par.set, control) {
   if (missing(learner) || is.null(learner)) {
-    if (!hasDiscrete(par.set) && !hasLogical(par.set)) {
+    if (!hasDiscrete(par.set, include.logical = TRUE)) {
       if (control$noisy) {
         learner = makeLearner("regr.km", covtype = "matern5_2", predict.type = "se", nugget.estim = control$noisy)
       } else {
