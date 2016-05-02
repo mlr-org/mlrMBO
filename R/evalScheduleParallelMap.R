@@ -84,8 +84,8 @@ evalScheduleSmartParallelMap = function(wrapFun, xs, xs.trafo, xs.schedule.info 
         train.time = NA_real_,
         control = control2)
       for (i in seq_along(extras2)) {
-         #fixme not very safe
-        names(extras2[[i]]) = names(extras[[1]])
+        empty = getExtras(1, control = control, prop = NULL, train.time = NA_real_)[[1]]
+        extras2[[i]] = insert(empty, extras2[[i]], intersect(names(empty), names(extras2[[i]])))
       }
       xs2 = dfRowsToList(prop$prop.points, par.set)
       xs2 = lapply(xs2, repairPoint, par.set = par.set)
