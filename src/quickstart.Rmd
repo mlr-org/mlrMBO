@@ -1,0 +1,33 @@
+# Introductory example
+
+**Info:** this guide gives you an overview of the typical structure of optimization with **mrMBO**. For a much more
+detailed introduction see [the next chapter](introduction.md).
+
+Here we provide a Quickstart example for you to make yourself familiar with **mlrMBO**. We aim to optimize the one dimensional Rastrigin function using model-based optimization. Instead of writing this function by hand, we make use of the soobench library, which offers a lot of common single objective optimization functions.
+
+```{r}
+library(soobench)
+library(mlr)
+library(mlrMBO)
+library(ParamHelpers)
+obj.fun = rastrigin_function(1)
+```
+
+**Note:** Since all this stuff here is under heavy developement it might be neccessary to install the github developement version of the ParamHelpers package via the ```devtools::install_github``` function.
+
+We decide ourself to use kriging as our surrgate model. Furthermore we use Expected Improvement (EI) as the infill criterion, i. e., the criterion which determines which point(s) of the objective function should be evaluated in further iterations (keep in mind, that using EI as the infill criterion needs the learner to support standard error estimation). Initially we let mbo generate an initial design of 30 points (the default algorithm is maximinLHS from package lhs).
+
+```{r}
+par.set = extractParamSetFromSooFunction(obj.fun)
+
+learner = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
+control = makeMBOControl(iters = 10L, init.design.points = 30L)
+control = setMBOControlInfill(control, crit = "ei")
+```
+
+Finally we start the optimization process and print the result object.
+
+```{r}
+result = mbo(makeMBOFunction(obj.fun), par.set = par.set, learner = learner, control = control, show.info = TRUE)
+print(result)
+```

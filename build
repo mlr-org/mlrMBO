@@ -1,0 +1,130 @@
+#!/usr/bin/env Rscript
+
+# config #######################################################################
+src = "src"
+dest = "docs"
+
+# - ianhowson (does not have base packages)
+urlMlrFunctions = "http://rpackages.ianhowson.com/cran/mlrMBO/man/"
+urlContribPackages = "http://rpackages.ianhowson.com/cran/"
+urlBasePackages = "http://www.inside-r.org/r-doc/"
+docs = "man/"
+ext = ".html"
+baseR = c("base", "compiler", "datasets", "graphics", "grDevices", "grid", "methods", "parallel", "splines", "stats", "stats4","tcltk", "tools", "utils")
+
+# macros to link to docs:
+# - [NAME](&PACKAGE::FUNCTION)
+# - [NAME](&FUNCTION) (mlr documentation)
+# - [&PACKAGE::FUNCTION]
+# - [&FUNCTION] (mlr documentation)
+# - [NAME](%PACKAGE)
+# - [%PACKAGE]
+
+macros = list(
+  list(pattern = "\\[(.+?)\\]\\(&([A-Za-z0-9.]+?)::([A-Za-z0-9.-_]+)\\)", replacement = paste("[\\1](", urlContribPackages, "\\2/", docs, "\\3", ext, ")", sep = "")),
+  list(pattern = "\\[(.+?)\\]\\(&([A-Za-z0-9.-]+?)\\)", replacement = paste("[\\1](", urlMlrFunctions, "\\2", ext, ")", sep = "")),
+  list(pattern = "\\[&([A-Za-z0-9.]+?)::([A-Za-z0-9.-_]+?)\\]", replacement = paste("[\\1::\\2](", urlContribPackages, "\\1/", docs, "\\2", ext, ")", sep = "")),
+  list(pattern = "\\[&([A-Za-z0-9.-]+?)\\]", replacement = paste("[\\1](", urlMlrFunctions, "\\1", ext, ")", sep = "")),
+  list(pattern = "\\[(.+?)\\]\\(%([A-Za-z0-9.-]+?)\\)", replacement = paste("[\\1](", urlContribPackages, "\\2/)", sep = "")),
+  list(pattern = "\\[%([A-Za-z0-9.-]+?)\\]", replacement = paste("[\\1](", urlContribPackages, "\\1/)", sep = ""))
+)
+
+if (urlContribPackages != urlBasePackages) {
+  # macros to link to docs:
+  # - [NAME](&PACKAGE::FUNCTION)
+  # - [&PACKAGE::FUNCTION]
+  # - [NAME](%PACKAGE)
+  # - [%PACKAGE]
+  macrosRecom = c(
+    lapply(baseR, function(p) list(pattern = paste("\\[(.+?)\\]\\(&(", p, ")::([A-Za-z0-9.-_]+)\\)", sep = ""), replacement = paste("[\\1](", urlBasePackages, "\\2/\\3)", sep = ""))),
+    lapply(baseR, function(p) list(pattern = paste("\\[&(", p, ")::([A-Za-z0-9.-_]+?)\\]", sep = ""), replacement = paste("[\\1::\\2](", urlBasePackages, "\\1/\\2)", sep = ""))),
+    lapply(baseR, function(p) list(pattern = paste("\\[(.+?)\\]\\(%(", p, ")\\)", sep = ""), replacement = paste("[\\1](", urlBasePackages, "\\2/)", sep = ""))),
+    lapply(baseR, function(p) list(pattern = paste("\\[%(", p, ")\\]", sep = ""), replacement = paste("[\\1](", urlBasePackages, "\\1/)", sep = "")))
+  )
+  macros = c(macrosRecom, macros)
+}
+
+
+# helper functions #############################################################
+# generate useful exit status
+exit = function(status, msg, ...) {
+  if (!missing(msg))
+    cat(sprintf(msg, ...), "\n\n", sep = "")
+  quit(save = "no", status = status)
+}
+
+# set seed depending on file name
+setSeed = function(x, algo = "crc32") {
+ hash = digest(x, algo = algo)
+ set.seed(strtoi(sprintf("0x%s", substr(hash, 1L, 7L))))
+}
+
+# worker function
+knitIt = function(f) {
+  messagef("Knitting file '%s' ...", f)
+  lines = readLines(file.path(src, f))
+  for (macro in macros)
+    lines = str_replace_all(lines, macro$pattern, macro$replacement)
+
+  cache.path = paste0(file.path("cache", f), .Platform$file.sep)
+  opts_chunk$set(cache = TRUE, cache.path = cache.path, dev = "svg", error = FALSE, comment = "#>", collapse = TRUE)
+  setSeed(f)
+  knit(
+    text = lines,
+    output = file.path(dest, str_replace(f, "\\.Rmd$", "\\.md")),
+    quiet = TRUE
+  )
+}
+
+
+# start #######################################################################
+message("Loading required packages ...")
+suppressPackageStartupMessages({
+  # namespace conflicts
+  library(glmnet)   # auc
+  library(ROCR)
+
+  # required to build
+  library(methods)
+  library(parallel)
+  library(pander)
+  library(BBmisc)
+  library(knitr)
+  library(stringr)
+  library(digest)
+  library(caret) # we get problems if this shadows "mlr::train"
+  suppressWarnings(library(rgl)) # suppress "no X" warning on travis
+  library(mlr)
+})
+
+# turn warnings to errors, we don't want to miss them
+options(warn = 2L)
+# embed images in HTML
+opts_knit$set(upload.fun = image_uri)
+# number of spaces to indent the code is 2 (for chunks with tidy=TRUE)
+opts_chunk$set(tidy.opts=list(indent=2, width.cutoff=80))
+
+# create output directory
+if (!isDirectory("docs"))
+  dir.create("docs")
+
+# do lapply for now. with mclapply it seems unclear how to stop best on error. this was 100% broken before
+dummy = lapply(list.files(src, pattern = "\\.Rmd$"), knitIt)
+
+# build docs with mkdocs
+ok = system3("mkdocs", "build")
+if (ok$exit.code == 0L) {
+  message("Build successfull!")
+  message("Now zip everything!")
+  setwd("devel/html/")
+  suppressAll(zip("../mlrMBO_tutorial.zip", files = "."))
+  setwd("../")
+  # clean up
+  unlink("figure", recursive = TRUE)
+  exit(0L)
+}
+
+messagef("Build failed!")
+exit(ok$exit.code)
+
+# vim: set ft=r:

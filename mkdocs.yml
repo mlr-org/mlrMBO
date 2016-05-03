@@ -1,0 +1,18 @@
+site_name: mlrMBO tutorial
+site_dir: devel/html
+repo_url: https://github.com/mlr-org/mlrMBO/
+use_directory_urls: False
+theme: 'mkdocs'
+theme_dir: custom_theme
+extra_css: ['css/custom_mlr.css', 'css/custom_highlight.css']
+markdown_extensions:
+  - mdx_math:
+      enable_dollar_delimiter: True
+extra_javascript: ['https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML']
+pages:
+- Home: 'index.md'
+- Basics:
+    - 'Quickstart': 'quickstart.md'
+    - 'In Depth Introduction': 'in_depth_introduction.md'
+- Advanced:
+    - 'Parallelization': 'parallelization.md'
