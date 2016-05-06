@@ -15,13 +15,13 @@ obj.fun = smoof::makeRastriginFunction(1)
 
 **Note:** Since all this stuff here is under heavy developement it might be neccessary to install the github developement version of the ParamHelpers package via the ```devtools::install_github``` function.
 
-We decide ourself to use kriging as our surrgate model. Furthermore we use Expected Improvement (EI) as the infill criterion, i. e., the criterion which determines which point(s) of the objective function should be evaluated in further iterations (keep in mind, that using EI as the infill criterion needs the learner to support standard error estimation). 
+We decide ourself to use kriging as our surrgate model and to do 10 sequential optimization steps. Furthermore we use Expected Improvement (EI) as the infill criterion, i. e., the criterion which determines which point(s) of the objective function should be evaluated in further iterations (keep in mind, that using EI as the infill criterion needs the learner to support standard error estimation). 
 
 ```{r}
 learner = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
 control = makeMBOControl()
-control = setMBOControlInfill(control, crit = "ei")
 control = setMBOControlTermination(control, iters = 10)
+control = setMBOControlInfill(control, crit = "ei")
 ```
 
 Finally we start the optimization process and print the result object.
