@@ -13,11 +13,11 @@ mboContinue = function(file) {
   assertCharacter(file, len = 1L)
   opt.state = loadOptState(file)
   control = getOptProblemControl(getOptStateOptProblem(opt.state))
+  state = getOptStateState(opt.state)
   if (control$infill.crit == "random" || control$schedule.method == "asyn") {
     warningf("RandomSearch and asyn not supported to be continued. Return last state", state)
     return(getOptResultMboResult(getOptStateOptResult(opt.state)))
   }
-  state = getOptStateState(opt.state)
   if (state %nin% c("init", "iter")) {
     warningf("Tuning ended with %s. No need to continue. Simply returning stored result.", state)
     return(getOptResultMboResult(getOptStateOptResult(opt.state)))
