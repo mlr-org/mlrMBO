@@ -15,7 +15,7 @@ mboContinue = function(file) {
   control = getOptProblemControl(getOptStateOptProblem(opt.state))
   state = getOptStateState(opt.state)
   if (control$infill.crit == "random" || control$schedule.method == "asyn") {
-    warningf("RandomSearch and asyn not supported to be continued. Return last state", state)
+    stopf("RandomSearch and asyn not supported to be continued. Return last state", state)
     return(getOptResultMboResult(getOptStateOptResult(opt.state)))
   }
   if (state %nin% c("init", "iter")) {
