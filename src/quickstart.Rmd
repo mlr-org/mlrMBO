@@ -15,14 +15,10 @@ obj.fun = smoof::makeRastriginFunction(1)
 
 **Note:** Since all this stuff here is under heavy developement it might be neccessary to install the github developement version of the ParamHelpers package via the ```devtools::install_github``` function.
 
-We decide ourself to use kriging as our surrgate model. Furthermore we use Expected Improvement (EI) as the infill criterion, i. e., the criterion which determines which point(s) of the objective function should be evaluated in further iterations (keep in mind, that using EI as the infill criterion needs the learner to support standard error estimation). Initially we let mbo generate an initial design of 30 points (the default algorithm is maximinLHS from package lhs).
+We decide ourself to use kriging as our surrgate model. Furthermore we use Expected Improvement (EI) as the infill criterion, i. e., the criterion which determines which point(s) of the objective function should be evaluated in further iterations (keep in mind, that using EI as the infill criterion needs the learner to support standard error estimation). 
 
 ```{r}
-par.set = attributes(obj.fun)$par.set
-# par.set = extractParamSetFromSooFunction(obj.fun)
-
 learner = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
-# control = makeMBOControl(iters = 10L, init.design.points = 30L)
 control = makeMBOControl()
 control = setMBOControlInfill(control, crit = "ei")
 control = setMBOControlTermination(control, iters = 10)
@@ -31,7 +27,6 @@ control = setMBOControlTermination(control, iters = 10)
 Finally we start the optimization process and print the result object.
 
 ```{r}
-result = mbo(obj.fun, # par.set = par.set, 
-             learner = learner, control = control, show.info = TRUE)
+result = mbo(obj.fun, learner = learner, control = control, show.info = TRUE)
 print(result)
 ```
