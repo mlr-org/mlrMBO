@@ -30,10 +30,19 @@ readDirectoryToOptState = function(opt.problem) {
   if (control$multipoint.method == "cl") {
     readProposalsFromDirectoryToOptPath(opt.path, opt.problem)
   }
+
+  #find the first available exec.timestamp which does not belong to init.design
+  start.time = as.integer(Sys.time())
+  for(i in seq_along(opt.path$env$extra)[getOptPathDOB(opt.path)!=0]) {
+    start.time = opt.path$env$extra[[i]]$exec.timestamp
+    if (!is.null(start.time) && !is.na(start.time)) break
+  }
+
   makeOptState(
     opt.problem = opt.problem, 
     opt.path = opt.path, 
-    loop = getOptPathLength(opt.path)
+    loop = sum(getOptPathDOB(opt.path)!=0),
+    time.used = as.integer(Sys.time()) - start.time
     )
 }
 
@@ -63,6 +72,6 @@ cleanDirectory = function(opt.problem) {
 
 getAsynDir = function(opt.problem) {
   path = file.path(dirname(getOptProblemControl(opt.problem)$save.file.path), "asyn")
-  dir.create(path, showWarnings = FALSE)
+  dir.create(path, showWarnings = FALSE, recursive = TRUE)
   path
 }

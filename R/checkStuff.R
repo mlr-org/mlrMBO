@@ -126,4 +126,9 @@ checkStuff = function(fun, par.set, design, learner, control) {
   if (control$filter.proposed.points && hasDiscrete(par.set))
     stop("Filtering proposed points currently not implemented for discrete parameters!")
   return(control)
+
+  # scheduling stuff
+  if (control$schedule.method == "asyn" && is.null(control$multipoint.method)) {
+    stop("For schedule.method 'asyn' you need a multipoint.method!")
+  }
 }

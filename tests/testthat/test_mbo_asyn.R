@@ -1,7 +1,7 @@
 context("asyn MBO")
 
 test_that("asyn MBO works", {
-  save.file = file.path(tempdir(), "asyn", "mbo.RData")
+  save.file = file.path(tempdir(), "mbo_asyn", "mbo.RData")
   ctrl = makeMBOControl(schedule.method = "asyn", save.file.path = save.file)
   ctrl = setMBOControlTermination(ctrl, iters = 20L, max.evals = 20L)
   ctrl = setMBOControlInfill(control = ctrl, crit = "cb", crit.cb.lambda = 2, opt.focussearch.maxit = 2L, opt.focussearch.points = 50L)
@@ -18,7 +18,7 @@ test_that("asyn MBO works", {
 })
 
 test_that("asyn MBO works with CL", {
-  save.file = file.path(tempdir(), "asyn", "mbo.RData")
+  save.file = file.path(tempdir(), "mbo_asyn", "mbo.RData")
   ctrl = makeMBOControl(schedule.method = "asyn", save.file.path = save.file)
   ctrl = setMBOControlTermination(ctrl, iters = 20L, max.evals = 20L)
   ctrl = setMBOControlInfill(control = ctrl, crit = "ei", opt.focussearch.maxit = 2L, opt.focussearch.points = 50L)
@@ -32,4 +32,41 @@ test_that("asyn MBO works with CL", {
   expect_true(nrow(op.df) >= 20)
   expect_true(all(!is.na(op.df$train.time[11:20])))
   expect_true(all(!is.na(op.df$ei[11:20])))
+})
+
+test_that("asyn MBO works with mboContinue", {
+  # make sure there is no or - object in the environment
+  or = NULL
+  assign(".counter", 0L, envir = .GlobalEnv)
+  f = makeSingleObjectiveFunction(
+    fn = function(x) {
+      .counter = get(".counter", envir = .GlobalEnv)
+      assign(".counter", .counter + 1L, envir = .GlobalEnv)
+      if (.counter == 8)
+        stop("foo")
+      sum(x$x^2)
+    },
+    par.set = makeNumericParamSet(len = 2L, lower = -2, upper = 1),
+    has.simple.signature = FALSE
+  )
+
+  learner = makeLearner("regr.randomForest", predict.type = "se", ntree = 50, ntree.for.se = 20)
+  save.file = file.path(tempdir(), "mbo_asyn", "mbo.RData")
+  dir.create(dirname(save.file))
+  des = generateTestDesign(6L, smoof::getParamSet(f))
+  ctrl = makeMBOControl(schedule.method = "asyn", save.file.path = save.file)
+  ctrl = setMBOControlTermination(ctrl, iters = 4L, max.evals = 10L)
+  ctrl = setMBOControlInfill(control = ctrl, crit = "cb", crit.cb.lambda = 2, opt.focussearch.maxit = 2L, opt.focussearch.points = 50L)
+  ctrl = setMBOControlMultiPoint(ctrl, method = "cb")
+  options(mlrMBO.debug.mode = FALSE)
+  or = mbo(f, des, learner = learner, control = ctrl)
+  expect_error({or = mbo(f, des, learner = learner, control = ctrl)}, "foo")
+  for (i in 1:10) {
+    try({or = mboContinue(save.file)}, silent = TRUE)
+    if (!is.null(or))
+      break
+  }
+  expect_equal(getOptPathLength(or$opt.path), 10)
+  expect_class(or, c("MBOSingleObjResult", "MBOResult"))
+  unlink(dirname(save.file), recursive = TRUE)
 })

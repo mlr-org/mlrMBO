@@ -14,14 +14,19 @@ mboContinue = function(file) {
   opt.state = loadOptState(file)
   control = getOptProblemControl(getOptStateOptProblem(opt.state))
   state = getOptStateState(opt.state)
-  if (control$infill.crit == "random" || control$schedule.method == "asyn") {
-    stopf("RandomSearch and asyn not supported to be continued. Return last state", state)
+  if (control$schedule.method == "asyn") {
+    if (control$time.budget < Inf) {
+      stopf("asyn with given time.budget does not work yet.")
+    }
+    final.opt.state = mboAsynTemplate(opt.state)
+  } else if (control$infill.crit == "random") {
+    stopf("RandomSearch ist not supported to be continued. Return last state", state)
     return(getOptResultMboResult(getOptStateOptResult(opt.state)))
-  }
-  if (state %nin% c("init", "iter")) {
+  } else if (state %nin% c("init", "iter")) {
     warningf("Tuning ended with %s. No need to continue. Simply returning stored result.", state)
     return(getOptResultMboResult(getOptStateOptResult(opt.state)))
+  } else {
+    final.opt.state = mboTemplate(opt.state)  
   }
-  final.opt.state = mboTemplate(opt.state)
   mboFinalize2(final.opt.state)
 }
