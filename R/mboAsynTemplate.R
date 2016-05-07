@@ -76,10 +76,10 @@ runMBOOnline.OptProblem = function(x, ...) {
 
 runMBOOnline.OptState = function(x, ...) {
   opt.state = x
-  setOptStateLoop(opt.state) #loop + 1
   prop = proposePoints.OptState(opt.state)
   proposal.file = writeThingToDirectory(getOptStateOptProblem(opt.state), prop, "prop_")
   evalProposedPoints.OptState(opt.state, prop)
+  finalizeMboLoop(opt.state)
   unlink(proposal.file)
   writeResultToDirectory(opt.state)
   invisible(opt.state)

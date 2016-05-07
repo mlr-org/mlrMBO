@@ -41,7 +41,7 @@ readDirectoryToOptState = function(opt.problem) {
   makeOptState(
     opt.problem = opt.problem, 
     opt.path = opt.path, 
-    loop = sum(getOptPathDOB(opt.path)!=0),
+    loop = sum(getOptPathDOB(opt.path)!=0) + 1,
     time.used = as.integer(Sys.time()) - start.time
     )
 }
