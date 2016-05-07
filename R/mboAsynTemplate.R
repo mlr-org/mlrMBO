@@ -6,12 +6,6 @@ mboAsynTemplate.OptProblem = function(obj) {
   opt.problem = obj
   #sanity checks here
   control = getOptProblemControl(opt.problem)
-  #if (!(control$infill.crit == "cb" && control$multipoint.method == "cb")) {
-  #  stopf("We don't have CL support or similar now, so only cb with multipoint.method == cb makes sense!")
-  #}
-  if (control$time.budget < Inf && control$exec.time.budget == Inf) {
-    stopf("We don't support time.budget yet. Please use 'exec.time.budget' instead")
-  }
   if (control$iters == Inf && control$schedule.nodes == 1) {
     stopf("iters are inf and schedule.nodes is 1. Please set on of those.")
   }
