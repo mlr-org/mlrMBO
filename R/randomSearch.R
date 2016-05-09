@@ -23,7 +23,8 @@ randomSearch = function(fun, design = NULL, control, show.info = getOption("mlrM
   #roughly estimate time per evaluatio from initial design to account for time budget
   opt.path = getOptStateOptPath(opt.state)
   mean.time.used = mean(getOptPathExecTimes(opt.path))
-  time.budget = max(control$time.budget, control$exec.time.budget)
+  minOmax = if (is.finite(control$time.budget) && is.finite(control$time.budget)) max else min
+  time.budget = minOmax(control$time.budget, control$exec.time.budget)
   
   n = min(control$iters, floor(time.budget / mean.time.used), na.rm = TRUE)
   prop = list(
