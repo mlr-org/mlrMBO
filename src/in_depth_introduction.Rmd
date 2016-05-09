@@ -48,18 +48,10 @@ objfun1 = makeAckleyFunction(5)
 
 The self-constructed function is built with ``makeSingleObjetiveFunction``. 
 It has the attribute ``par.set`` that has to be a ParamSet object from the **ParamHelpers** package, which provides information about the parameters of the objective function and their constraints for optimization.
-We assume ``x`` from interval [0,1] and ``k`` from interval [1,2]. Parameter ``method`` can be either ``"a"`` or ``"b"``.
+We assume ``j`` from interval [0,1] and ``k`` from interval [1,2]. Parameter ``method`` can be either ``"a"`` or ``"b"``.
 The type of optimization, in this case maximization, is also defined in ``makeSingleObjetiveFunction`` with ``minimize = TRUE`` as default.
 
 ```{r}
-# foo = function(listOfValues) {
-#   x = listOfValues[[1]]
-#   k = listOfValues[[2]]
-#   method = listOfValues[[3]]
-#   perf = ifelse(method == "a", k * sin(x) + cos(x),
-#                sin(x) + k * cos(x))
-#   return(perf)
-# }
 foo = function(x) {
   j = x[[1]]
   k = x[[2]]
