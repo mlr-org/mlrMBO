@@ -6,8 +6,6 @@ The result of this sequential procedure is the optimization path containing the 
 Once again, take a look at the already introduced basic example of the optimization of the one dimensional Rastrigin function.
 
 ```{r eval=FALSE}
-library(smoof)
-library(mlr)
 library(mlrMBO)
 obj.fun = makeRastriginFunction(1)
 
@@ -30,8 +28,7 @@ Each step ends with an R object, which is then passed to ```mbo()```, i. e., to 
 1. set up a MBO control object, which offers a load of options
 1. finally start the optimization
 
-This web page will provide you with an in-depth introduction on how to set the ``mbo()`` parameters depending on the
-desired kind of optimization.
+This web page will provide you with an in-depth introduction on how to set the ``mbo()`` parameters depending on the desired kind of optimization.
 
 
 # Objective Function
@@ -40,19 +37,19 @@ desired kind of optimization.
 The first argument of ``mbo()`` is the name of the objective function created with the package **smoof**. 
 The first argument of this objective function has to be a list of values.
 The function has to return a single numerical value. 
-We demonstrate in this tutorial optimization of two simple functions: 5 dimensional ``ackley function`` (``objfun1``) and a self-constructed sine und cosine combination (``objfun2``). 
+We demonstrate in this tutorial the optimization of two simple functions: The 5 dimensional ``ackley function`` (``objfun1``) and a self-constructed sine und cosine combination (``objfun2``), where we do not minimize but maximize the function. 
 ``objfun1`` depends on 5 numeric parameters, while ``objfun2`` assumes 2 numeric and 1 discrete parameters.
+
 The 5 dimensional ``ackley function`` can be get by using the appropriate function of the **smoof** package
 
 ```{r}
-library(mlrMBO)
-library(smoof)
 objfun1 = makeAckleyFunction(5) 
 ```
 
 The self-constructed function is built with ``makeSingleObjetiveFunction``. 
-It has the attribute ``par.set`` that has to be a ParamSet object from the **ParamHelpers** package, which provides information about the parameters of the objective function and their constraints for optimization. 
+It has the attribute ``par.set`` that has to be a ParamSet object from the **ParamHelpers** package, which provides information about the parameters of the objective function and their constraints for optimization.
 We assume ``x`` from interval [0,1] and ``k`` from interval [1,2]. Parameter ``method`` can be either ``"a"`` or ``"b"``.
+The type of optimization, in this case maximization, is also defined in ``makeSingleObjetiveFunction`` with ``minimize = TRUE`` as default.
 
 ```{r}
 foo = function(listOfValues) {
@@ -63,24 +60,19 @@ foo = function(listOfValues) {
                sin(x) + k * cos(x))
   return(perf)
 }
-# foo = function(x, k, method) {
-#   perf = ifelse(method == "a", k * sin(x) + cos(x),
-#                sin(x) + k * cos(x))
-#   return(perf)
-# }
-# doesnt work either
+
 objfun2 = makeSingleObjectiveFunction(
-  name = "example", 
-  fn = foo, 
+  name = "example",
+  fn = foo,
   par.set = makeParamSet(
-    makeNumericParam("j", lower = 0,upper = 1),
+    makeNumericParam("x", lower = 0,upper = 1),
     makeIntegerParam("k", lower = 1, upper = 2),
     makeDiscreteParam("method", values = c("a", "b"))
-  )
+  ),
+  has.simple.signature = FALSE,
+  minimize = FALSE
 )
 ```
-
-We aim to maximize ``objfun2``. In a following section will be shown how to set the ``MBOControl`` object in order to switch the minimization problem into a maximization one.
 
 
 # Initial Design
@@ -93,7 +85,6 @@ However, if special designs are desired (e.g., orthogonal designs), its interfac
 Particular attention has to be paid to the setting of the ``trafo`` attribute.
 
 ```{r}
-library(lhs)
 init.points1 = 5 * sum(ParamHelpers::getParamLengths(smoof::getParamSet(objfun1)))
 # NOTE:
 # init.points1 = 5 * getParamLengths(getParamSet(objfun1))
@@ -122,7 +113,6 @@ In our example we consider these two surrogate models:
 ``kriging`` for optimizing of ``objfun1``  and ``random forest`` for ``objfun2``.
 
 ```{r}
-library(mlr)
 learner_km = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
 learner_rf = makeLearner("regr.randomForest")
 ```
@@ -195,9 +185,6 @@ Further functions
 
 The number of sequential steps (iterations) can be set via the attribute ``iters`` of the function ``setMBOControlTermination`` (default setting is 10).
 
-Furthermore, the user can specify whether the function has to be minimized or maximized with the attribute ``minimize`` (default setting TRUE , e.g.,  minimization).
-<!-- FIXME minimize/maximize not found yet.  -->
-
 There are also many other functions and attributes which user can set in a desired way...
 <!-- FIXME further informations about setMBOControl... functions here ? -->
 <!-- like how often should the surrogate model be stored or resampled during the optimization. -->
@@ -217,7 +204,6 @@ control1 = setMBOControlTermination(
 )
 
 control2 = makeMBOControl()
-#  minimize = FALSE,
 control2 = setMBOControlInfill(
   control = control2,
   crit = "mean",
@@ -240,9 +226,6 @@ Optimization of ``objfun1``
 
 <!-- FIXME??? Optimization has a long computation time -->
 ```{r eval=FALSE}
-library(mlrMBO)
-library(BBmisc)
-
 mbo1 = mbo(objfun1, design = design1, learner = learner_km, control = control1, show.info = TRUE)
 mbo1
 getOptPathY(mbo1$opt.path, "y") # get all y values
@@ -309,7 +292,7 @@ The attribute ``bw.iters`` provides the number of models in the ensemble, see do
 learner_rt = makeLearner("regr.rpart")
 bag_rt = makeBaggingWrapper(learner_rt, bw.iters = 5)
 setPredictType(bag_rt, predict.type = "se")
-mbo2 = mbo(objfun2, design = design2, learner = learner_rf, control = control2, show.info = FALSE)
+mbo2 = mbo(objfun2, design = design2, learner = bag_rt, control = control2, show.info = FALSE)
 mbo2$y
 ```
 
