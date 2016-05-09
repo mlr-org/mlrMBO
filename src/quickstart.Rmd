@@ -10,23 +10,20 @@ library(smoof)
 library(mlr)
 library(mlrMBO)
 library(ParamHelpers)
-obj.fun = smoof::makeRastriginFunction(1)
+obj.fun = makeRastriginFunction(1)
 ```
 
 **Note:** Since all this stuff here is under heavy developement it might be neccessary to install the github developement version of the ParamHelpers package via the `devtools::install_github` function.
 
-We decide ourself to use kriging as our surrgate model. Furthermore we use Expected Improvement (EI) as the infill criterion, i. e., the criterion which determines which point(s) of the objective function should be evaluated in further iterations (keep in mind, that using EI as the infill criterion needs the learner to support standard error estimation). Initially we use an initial design of 10 points (the default algorithm is randomLHS from package lhs).
+We decide ourself to use kriging as our surrogate model and to do 10 sequential optimization steps. Furthermore we use Expected Improvement (EI) as the infill criterion, i. e., the criterion which determines which point(s) of the objective function should be evaluated in further iterations (keep in mind, that using EI as the infill criterion needs the learner to support standard error estimation). 
 
 ```{r}
-par.set = attributes(obj.fun)$par.set
-# par.set = extractParamSetFromSooFunction(obj.fun)
-
 learner = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
-# control = makeMBOControl(iters = 10L, init.design.points = 30L)
 control = makeMBOControl()
+control = setMBOControlTermination(control, iters = 10)
 control = setMBOControlInfill(control, crit = "ei")
 control = setMBOControlTermination(control, iters = 10)
-design = generateDesign(n = 10, par.set = getParamSet(obj.fun))
+design = generateDesign(n = 10, par.set = smoof::getParamSet(obj.fun))
 ```
 
 Finally we start the optimization process and print the result object.
