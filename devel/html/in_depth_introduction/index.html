@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../img/favicon.ico">
+
+	<title>In Depth Introduction - mlrMBO tutorial</title>
+
+        <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../css/font-awesome-4.0.3.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="../css/highlight.css">
+        <link href="../css/custom_mlr.css" rel="stylesheet">
+        <link href="../css/custom_highlight.css" rel="stylesheet">
+
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+        
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+
+            <!-- Main title -->
+            <a class="navbar-brand" href="../index.html">mlrMBO tutorial</a>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+            
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                
+                
+                    <li >
+                        <a href="../index.html">Home</a>
+                    </li>
+                
+                
+                
+                    <li class="dropdown active">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Basics <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../quickstart/index.html">Quickstart</a>
+</li>
+
+                        
+                            
+<li class="active">
+    <a href="index.html">In Depth Introduction</a>
+</li>
+
+                        
+                        </ul>
+                    </li>
+                
+                
+                
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Advanced <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../parallelization/index.html">Parallelization</a>
+</li>
+
+                        
+                        </ul>
+                    </li>
+                
+                
+                </ul>
+            
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                        <i class="fa fa-search"></i> Search
+                    </a>
+                </li>
+                
+                    <li >
+                        <a rel="next" href="../quickstart/index.html">
+                            <i class="fa fa-arrow-left"></i> Previous
+                        </a>
+                    </li>
+                    <li >
+                        <a rel="prev" href="../parallelization/index.html">
+                            Next <i class="fa fa-arrow-right"></i>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a href="https://github.com/mlr-org/mlrMBO/">
+                            
+                                <i class="fa fa-github"></i>
+                            
+                            GitHub
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+</div>
+
+        <div class="container">
+            
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+    
+        <li class="main active"><a href="#objective-function">Objective Function</a></li>
+        
+    
+        <li class="main "><a href="#initial-design">Initial Design</a></li>
+        
+    
+        <li class="main "><a href="#surrogate-model">Surrogate Model</a></li>
+        
+    
+        <li class="main "><a href="#mbocontrol">MBOControl</a></li>
+        
+    
+        <li class="main "><a href="#setmbocontrolinfill">setMBOControlInfill</a></li>
+        
+            <li><a href="#attribute-crit">Attribute crit</a></li>
+        
+            <li><a href="#attribute-opt">Attribute opt</a></li>
+        
+    
+        <li class="main "><a href="#further-functions">Further functions</a></li>
+        
+    
+        <li class="main "><a href="#experiments-and-output">Experiments and Output</a></li>
+        
+            <li><a href="#optimization-of-objfun1">Optimization of objfun1</a></li>
+        
+            <li><a href="#optimization-of-objfun2">Optimization of objfun2</a></li>
+        
+    
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<p>The first step of MBO requires an initial set of evaluation points which is then evaluated by the black box function.
+The basic procedure of MBO is an iterating loop of the following steps:
+Firstly, a user defined surrogate model is fitted on the evaluated points, secondly, a new evaluation point is proposed by an infill criterion and lastly, its performance is evaluated.
+The result of this sequential procedure is the optimization path containing the best parameter setting and the fitted surrogate model.</p>
+<p>Once again, take a look at the already introduced basic example of the optimization of the one dimensional Rastrigin function.</p>
+<pre><code class="r">library(mlrMBO)
+#&gt; Loading required package: lhs
+#&gt; Loading required package: smoof
+#&gt; Loading required package: checkmate
+#&gt; 
+#&gt; Attaching package: 'smoof'
+#&gt; The following object is masked from 'package:mlr':
+#&gt; 
+#&gt;     getParamSet
+#&gt; Warning: replacing previous import by 'smoof::getParamSet' when loading
+#&gt; 'mlrMBO'
+#&gt; 
+#&gt; Attaching package: 'mlrMBO'
+#&gt; The following object is masked from 'package:ParamHelpers':
+#&gt; 
+#&gt;     plotEAF
+obj.fun = makeRastriginFunction(1)
+
+learner = makeLearner(&quot;regr.km&quot;, predict.type = &quot;se&quot;, covtype = &quot;matern3_2&quot;)
+control = makeMBOControl()
+control = setMBOControlTermination(control, iters = 5)
+control = setMBOControlInfill(control, crit = &quot;ei&quot;)
+
+result = mbo(obj.fun, learner = learner, control = control, show.info = TRUE)
+#&gt; Computing y column(s) for design. Not provided.
+#&gt; [mbo] 0: x=3.29 : y = 23.5 : 0.0 secs : initdesign
+#&gt; [mbo] 0: x=-3.22 : y = 18.5 : 0.0 secs : initdesign
+#&gt; [mbo] 0: x=-0.777 : y = 8.9 : 0.0 secs : initdesign
+#&gt; [mbo] 0: x=1.93 : y = 4.59 : 0.0 secs : initdesign
+#&gt; 
+#&gt; optimisation start
+#&gt; ------------------
+#&gt; * estimation method   : MLE 
+#&gt; * optimisation method : BFGS 
+#&gt; * analytical gradient : used
+#&gt; * trend model : ~1
+#&gt; * covariance model : 
+#&gt;   - type :  matern3_2 
+#&gt;   - nugget : NO
+#&gt;   - parameters lower bounds :  1e-10 
+#&gt;   - parameters upper bounds :  13.02456 
+#&gt;   - best initial criterion value(s) :  -14.00775 
+#&gt; 
+#&gt; N = 1, M = 5 machine precision = 2.22045e-16
+#&gt; At X0, 0 variables are exactly at the bounds
+#&gt; At iterate     0  f=       14.008  |proj g|=      0.72708
+#&gt; At iterate     1  f =       13.729  |proj g|=             0
+#&gt; 
+#&gt; iterations 1
+#&gt; function evaluations 2
+#&gt; segments explored during Cauchy searches 1
+#&gt; BFGS updates skipped 0
+#&gt; active bounds at final generalized Cauchy point 1
+#&gt; norm of the final projected gradient 0
+#&gt; final function value 13.7295
+#&gt; 
+#&gt; F = 13.7295
+#&gt; final  value 13.729484 
+#&gt; converged
+#&gt; [mbo] 1: x=-4.72 : y = 33.9 : 0.0 secs : infill_ei
+#&gt; 
+#&gt; optimisation start
+#&gt; ------------------
+#&gt; * estimation method   : MLE 
+#&gt; * optimisation method : BFGS 
+#&gt; * analytical gradient : used
+#&gt; * trend model : ~1
+#&gt; * covariance model : 
+#&gt;   - type :  matern3_2 
+#&gt;   - nugget : NO
+#&gt;   - parameters lower bounds :  1e-10 
+#&gt;   - parameters upper bounds :  16.03308 
+#&gt;   - best initial criterion value(s) :  -18.8355 
+#&gt; 
+#&gt; N = 1, M = 5 machine precision = 2.22045e-16
+#&gt; At X0, 0 variables are exactly at the bounds
+#&gt; At iterate     0  f=       18.835  |proj g|=     0.075704
+#&gt; At iterate     1  f =       18.832  |proj g|=      0.019382
+#&gt; At iterate     2  f =       18.832  |proj g|=     0.0091959
+#&gt; At iterate     3  f =       18.832  |proj g|=     0.0038259
+#&gt; At iterate     4  f =       18.832  |proj g|=     0.0017401
+#&gt; At iterate     5  f =       18.832  |proj g|=    0.00078512
+#&gt; At iterate     6  f =       18.832  |proj g|=    0.00036173
+#&gt; At iterate     7  f =       18.832  |proj g|=    0.00016757
+#&gt; At iterate     8  f =       18.832  |proj g|=    7.8277e-05
+#&gt; At iterate     9  f =       18.832  |proj g|=    3.6757e-05
+#&gt; At iterate    10  f =       18.832  |proj g|=    1.7346e-05
+#&gt; At iterate    11  f =       18.832  |proj g|=    8.2183e-06
+#&gt; At iterate    12  f =       18.832  |proj g|=    3.9073e-06
+#&gt; 
+#&gt; iterations 12
+#&gt; function evaluations 13
+#&gt; segments explored during Cauchy searches 12
+#&gt; BFGS updates skipped 0
+#&gt; active bounds at final generalized Cauchy point 0
+#&gt; norm of the final projected gradient 3.90729e-06
+#&gt; final function value 18.8316
+#&gt; 
+#&gt; F = 18.8316
+#&gt; final  value 18.831551 
+#&gt; converged
+#&gt; [mbo] 2: x=1.87 : y = 6.7 : 0.0 secs : infill_ei
+#&gt; 
+#&gt; optimisation start
+#&gt; ------------------
+#&gt; * estimation method   : MLE 
+#&gt; * optimisation method : BFGS 
+#&gt; * analytical gradient : used
+#&gt; * trend model : ~1
+#&gt; * covariance model : 
+#&gt;   - type :  matern3_2 
+#&gt;   - nugget : NO
+#&gt;   - parameters lower bounds :  1e-10 
+#&gt;   - parameters upper bounds :  16.03308 
+#&gt;   - best initial criterion value(s) :  -21.02962 
+#&gt; 
+#&gt; N = 1, M = 5 machine precision = 2.22045e-16
+#&gt; At X0, 0 variables are exactly at the bounds
+#&gt; At iterate     0  f=        21.03  |proj g|=      0.61913
+#&gt; At iterate     1  f =       20.983  |proj g|=       0.57786
+#&gt; At iterate     2  f =       20.921  |proj g|=       0.27495
+#&gt; At iterate     3  f =       20.917  |proj g|=       0.04167
+#&gt; At iterate     4  f =       20.917  |proj g|=     0.0014829
+#&gt; At iterate     5  f =       20.917  |proj g|=    8.3302e-06
+#&gt; At iterate     6  f =       20.917  |proj g|=    1.6546e-09
+#&gt; 
+#&gt; iterations 6
+#&gt; function evaluations 8
+#&gt; segments explored during Cauchy searches 6
+#&gt; BFGS updates skipped 0
+#&gt; active bounds at final generalized Cauchy point 0
+#&gt; norm of the final projected gradient 1.65464e-09
+#&gt; final function value 20.9172
+#&gt; 
+#&gt; F = 20.9172
+#&gt; final  value 20.917239 
+#&gt; converged
+#&gt; [mbo] 3: x=2.14 : y = 8.09 : 0.0 secs : infill_ei
+#&gt; 
+#&gt; optimisation start
+#&gt; ------------------
+#&gt; * estimation method   : MLE 
+#&gt; * optimisation method : BFGS 
+#&gt; * analytical gradient : used
+#&gt; * trend model : ~1
+#&gt; * covariance model : 
+#&gt;   - type :  matern3_2 
+#&gt;   - nugget : NO
+#&gt;   - parameters lower bounds :  1e-10 
+#&gt;   - parameters upper bounds :  16.03308 
+#&gt;   - best initial criterion value(s) :  -24.67325 
+#&gt; 
+#&gt; N = 1, M = 5 machine precision = 2.22045e-16
+#&gt; At X0, 0 variables are exactly at the bounds
+#&gt; At iterate     0  f=       24.673  |proj g|=      0.75882
+#&gt; At iterate     1  f =        24.03  |proj g|=       0.61425
+#&gt; At iterate     2  f =       23.612  |proj g|=       0.43672
+#&gt; At iterate     3  f =       23.607  |proj g|=       0.22142
+#&gt; At iterate     4  f =       23.607  |proj g|=     0.0062194
+#&gt; At iterate     5  f =       23.607  |proj g|=    6.9388e-05
+#&gt; At iterate     6  f =       23.607  |proj g|=     2.234e-08
+#&gt; 
+#&gt; iterations 6
+#&gt; function evaluations 9
+#&gt; segments explored during Cauchy searches 6
+#&gt; BFGS updates skipped 0
+#&gt; active bounds at final generalized Cauchy point 0
+#&gt; norm of the final projected gradient 2.23399e-08
+#&gt; final function value 23.6066
+#&gt; 
+#&gt; F = 23.6066
+#&gt; final  value 23.606588 
+#&gt; converged
+#&gt; [mbo] 4: x=-0.399 : y = 18.2 : 0.0 secs : infill_ei
+#&gt; 
+#&gt; optimisation start
+#&gt; ------------------
+#&gt; * estimation method   : MLE 
+#&gt; * optimisation method : BFGS 
+#&gt; * analytical gradient : used
+#&gt; * trend model : ~1
+#&gt; * covariance model : 
+#&gt;   - type :  matern3_2 
+#&gt;   - nugget : NO
+#&gt;   - parameters lower bounds :  1e-10 
+#&gt;   - parameters upper bounds :  16.03308 
+#&gt;   - best initial criterion value(s) :  -27.64944 
+#&gt; 
+#&gt; N = 1, M = 5 machine precision = 2.22045e-16
+#&gt; At X0, 0 variables are exactly at the bounds
+#&gt; At iterate     0  f=       27.649  |proj g|=       8.5093
+#&gt; At iterate     1  f =       27.419  |proj g|=       0.63398
+#&gt; At iterate     2  f =       26.838  |proj g|=       0.47073
+#&gt; At iterate     3  f =       26.803  |proj g|=        1.7961
+#&gt; At iterate     4  f =       26.756  |proj g|=       0.19972
+#&gt; At iterate     5  f =       26.755  |proj g|=      0.014908
+#&gt; At iterate     6  f =       26.755  |proj g|=    0.00015116
+#&gt; At iterate     7  f =       26.755  |proj g|=    1.1164e-07
+#&gt; 
+#&gt; iterations 7
+#&gt; function evaluations 10
+#&gt; segments explored during Cauchy searches 7
+#&gt; BFGS updates skipped 0
+#&gt; active bounds at final generalized Cauchy point 0
+#&gt; norm of the final projected gradient 1.11641e-07
+#&gt; final function value 26.7553
+#&gt; 
+#&gt; F = 26.7553
+#&gt; final  value 26.755343 
+#&gt; converged
+#&gt; [mbo] 5: x=1.99 : y = 3.98 : 0.0 secs : infill_ei
+#&gt; 
+#&gt; optimisation start
+#&gt; ------------------
+#&gt; * estimation method   : MLE 
+#&gt; * optimisation method : BFGS 
+#&gt; * analytical gradient : used
+#&gt; * trend model : ~1
+#&gt; * covariance model : 
+#&gt;   - type :  matern3_2 
+#&gt;   - nugget : NO
+#&gt;   - parameters lower bounds :  1e-10 
+#&gt;   - parameters upper bounds :  16.03308 
+#&gt;   - best initial criterion value(s) :  -27.94255 
+#&gt; 
+#&gt; N = 1, M = 5 machine precision = 2.22045e-16
+#&gt; At X0, 0 variables are exactly at the bounds
+#&gt; At iterate     0  f=       27.943  |proj g|=      0.59855
+#&gt; At iterate     1  f =       27.852  |proj g|=       0.56757
+#&gt; At iterate     2  f =       27.741  |proj g|=        1.5549
+#&gt; At iterate     3  f =       27.709  |proj g|=       0.32923
+#&gt; At iterate     4  f =       27.707  |proj g|=      0.029886
+#&gt; At iterate     5  f =       27.707  |proj g|=    0.00068044
+#&gt; At iterate     6  f =       27.707  |proj g|=    1.3519e-06
+#&gt; 
+#&gt; iterations 6
+#&gt; function evaluations 8
+#&gt; segments explored during Cauchy searches 6
+#&gt; BFGS updates skipped 0
+#&gt; active bounds at final generalized Cauchy point 0
+#&gt; norm of the final projected gradient 1.35189e-06
+#&gt; final function value 27.7075
+#&gt; 
+#&gt; F = 27.7075
+#&gt; final  value 27.707455 
+#&gt; converged
+</code></pre>
+
+<p>From this example we can easily recognize some <strong>mlrMBO</strong> essentials like parameters, learners and the control object.</p>
+<p>Basically the following steps are needed to start a surrogate-based optimization with our package. 
+Each step ends with an R object, which is then passed to <code>mbo()</code>, i. e., to the working horse of mlrMBO.</p>
+<ol>
+<li>define the objective function and its parameters by using the package <strong>smoof</strong></li>
+<li>(optionally generate an initial design)</li>
+<li>define a learner, i. e., the surrogate model</li>
+<li>set up a MBO control object, which offers a load of options</li>
+<li>finally start the optimization</li>
+</ol>
+<p>This web page will provide you with an in-depth introduction on how to set the <code>mbo()</code> parameters depending on the desired kind of optimization.</p>
+<h1 id="objective-function">Objective Function</h1>
+<p>The first argument of <code>mbo()</code> is the name of the objective function created with the package <strong>smoof</strong>. 
+The first argument of this objective function has to be a list of values.
+The function has to return a single numerical value. 
+We demonstrate in this tutorial the optimization of two simple functions: The 5 dimensional <code>ackley function</code> (<code>objfun1</code>) and a self-constructed sine und cosine combination (<code>objfun2</code>), where we do not minimize but maximize the function. 
+<code>objfun1</code> depends on 5 numeric parameters, while <code>objfun2</code> assumes 2 numeric and 1 discrete parameters.</p>
+<p>The 5 dimensional <code>ackley function</code> can be get by using the appropriate function of the <strong>smoof</strong> package</p>
+<pre><code class="r">objfun1 = makeAckleyFunction(5) 
+</code></pre>
+
+<p>The self-constructed function is built with <code>makeSingleObjetiveFunction</code>. 
+It has the attribute <code>par.set</code> that has to be a ParamSet object from the <strong>ParamHelpers</strong> package, which provides information about the parameters of the objective function and their constraints for optimization.
+We assume <code>j</code> from interval [0,1] and <code>k</code> from interval [1,2]. Parameter <code>method</code> can be either <code>"a"</code> or <code>"b"</code>.
+The type of optimization, in this case maximization, is also defined in <code>makeSingleObjetiveFunction</code> with <code>minimize = TRUE</code> as default.</p>
+<pre><code class="r">foo = function(x) {
+  j = x[[1]]
+  k = x[[2]]
+  method = x[[3]]
+  perf = ifelse(method == &quot;a&quot;, k * sin(j) + cos(j),
+               sin(j) + k * cos(j))
+  return(perf)
+}
+objfun2 = makeSingleObjectiveFunction(
+  name = &quot;example&quot;,
+  fn = foo,
+  par.set = makeParamSet(
+    makeNumericParam(&quot;j&quot;, lower = 0,upper = 1),
+    makeIntegerParam(&quot;k&quot;, lower = 1, upper = 2),
+    makeDiscreteParam(&quot;method&quot;, values = c(&quot;a&quot;, &quot;b&quot;))
+  ),
+  has.simple.signature = FALSE,
+  minimize = FALSE
+)
+</code></pre>
+
+<h1 id="initial-design">Initial Design</h1>
+<p>The second argument of the <code>mbo()</code> function - <code>design</code> - is the initial design with default setting <code>NULL</code>.</p>
+<p>It is recommendable to use the <code>generateDesign</code> function from <strong>ParamHelpers</strong> package to create it.
+However, if special designs are desired (e.g., orthogonal designs), its interface has to be the same as the interface of the <code>generateDesign</code> objects. 
+Particular attention has to be paid to the setting of the <code>trafo</code> attribute.</p>
+<pre><code class="r">init.points1 = 5 * sum(ParamHelpers::getParamLengths(smoof::getParamSet(objfun1)))
+# NOTE:
+# init.points1 = 5 * getParamLengths(getParamSet(objfun1))
+# is not working, because mlr::getParamSet() is used by default.
+init.fun1 = randomLHS
+set.seed(1)
+design1 = generateDesign(n = init.points1, par.set = smoof::getParamSet(objfun1), fun = init.fun1, trafo = FALSE)
+
+init.points2 = 5 * sum(ParamHelpers::getParamLengths(smoof::getParamSet(objfun2)))
+init.fun2 = maximinLHS
+init.args2 = list(k = 3, dup = 4)
+design2 = generateDesign(n = init.points2, par.set = smoof::getParamSet(objfun2), fun.args = init.args2, fun = init.fun2, trafo = FALSE)
+</code></pre>
+
+<h1 id="surrogate-model">Surrogate Model</h1>
+<p>Attribute <code>learner</code> of the <code>mbo()</code> function allows us to choose an appropriate surrogate model for the parameter optimization.
+It can be easily done using the <code>makeLearner</code> function from <strong>mlr</strong> package.
+List of implemented learners can be seen using the ?learners command or on <code>http://mlr-org.github.io/mlr-tutorial/release/html/integrated_learners/</code>
+<!-- NEW -->
+The choice of the surrogate model depends on the parameter set of the objective function.
+While kriging models are advisable for the numeric parameters, random forest models can be used if at least one parameter is factorial.
+In our example we consider these two surrogate models:
+<code>kriging</code> for optimizing of <code>objfun1</code>  and <code>random forest</code> for <code>objfun2</code>.</p>
+<pre><code class="r">learner_km = makeLearner(&quot;regr.km&quot;, predict.type = &quot;se&quot;, covtype = &quot;matern3_2&quot;)
+learner_rf = makeLearner(&quot;regr.randomForest&quot;)
+</code></pre>
+
+<p>However, in some cases it is necessary to modify the learners (e.g., in order to get the standard error prediction for design points).
+This will be discussed und illustrated in the section "Experiments and Output".</p>
+<h1 id="mbocontrol">MBOControl</h1>
+<p>The <code>MBOControl</code> object can be created with <code>makeMBOControl</code> and some attributes can be set when creating it.
+But there are also further functions to define or change the settings of the object:  </p>
+<h1 id="setmbocontrolinfill"><code>setMBOControlInfill</code></h1>
+<h2 id="attribute-crit">Attribute <code>crit</code></h2>
+<p>One of the most important issues is to define how the next design points in the sequential loops have to be chosen. 
+Firstly, we have to choose the infill criterion using the  <code>crit</code> attribute of <code>setMBOControlInfill</code>.
+At the moment five possibilities are implemented:
+<em> <code>mean</code>: mean response of the surrogate model,
+</em> <code>ei</code>: expected improvement of the surrogate model,
+<em> <code>aei</code>: augmented expected improvement, which is especially useful for the noisy functions,
+</em> <code>eqi</code>: expected quantile improvement
+* <code>cb</code>: confidence bound which is the additive combination of mean response and mean standard error estimation of the surrogate model (response - lambda * standard.error). 
+The default value of lambda is 1, but it can easily be changed by
+the <code>crit.cb.lambda</code> attribute.</p>
+<h2 id="attribute-opt">Attribute <code>opt</code></h2>
+<p>The attribute <code>opt</code> sets how the next point to evaluate should be proposed given an infill criterion. 
+The possibilities are <code>focussearch</code>, <code>cmaes</code>, <code>ea</code> and <code>nsga2</code>.</p>
+<p>If <code>focussearch</code> is chosen, the common procedure is as follows: 
+in the first step an lhs design is sampled in the parameter space (by <code>randomLHS</code> function) and the design point with the best  prediction of the infill criterion is determined. 
+User can set the size of this design by the <code>opt.focussearch.points</code> attribute (default value is 10000). 
+In the second step the parameter space is shrunk around the best design point in a certain way which should not be discussed in detail here. 
+First and second steps are repeated iteratively <code>opt.focussearch.maxit</code> times (default is 5) while the best seen value of the infill criterion is passed back.</p>
+<p>If <code>opt</code> is <code>cmaes</code>, the point, which optimizes the
+infill criterion, is chosen via <code>cma_es</code> function of  <strong>cmaes</strong> package. Control argument for <code>cmaes</code> optimizer can be provided in
+the <code>opt.cmaes.control</code> attribute (default is empty list).</p>
+<p>If <code>opt</code> is <code>ea</code> a simple (mu+1)-evolutionary optimization algorithm is used to optimize the infill criterion.
+The population size mu can be set by the <code>opt.ea.mu</code> attribute (default value is 10).
+(mu+1) means that in each population only one child is generated using crossover und mutation operators (from <strong>emao</strong> package).</p>
+<p>The parameters <code>eta</code> and <code>p</code> of the latter two operators can be adjusted via the attributes <code>opt.ea.sbx.eta</code>, <code>opt.ea.sbx.p</code>,
+<code>opt.ea.pm.eta</code> and <code>opt.ea.pm.p</code>.
+The default number of EA iterations is 500 and can be changed by <code>opt.ea.maxit</code> attribute.</p>
+<p>For multi objective optimization, <code>opt</code> should be set to <code>nsga2</code>. 
+This is needed for mspot.
+<!-- FIXME informations about "nsga2" --></p>
+<p>As all four infill optimization strategies do not guarantee  to find the global optimum, users can set the number of restarts by the <code>opt.restarts</code> attribute (default value is 1).
+After conducting the desired number of restarts the design point with the best infill criterion value is passed back to the MBO loop.</p>
+<p>Please note that just <code>focussearch</code> optimizer is suitable for the case of factor parameters in the parameter set!</p>
+<h1 id="further-functions">Further functions</h1>
+<p>The number of sequential steps (iterations) can be set via the attribute <code>iters</code> of the function <code>setMBOControlTermination</code> (default setting is 10).</p>
+<p>There are also many other functions and attributes which user can set in a desired way...
+<!-- FIXME further informations about setMBOControl... functions here ? -->
+<!-- like how often should the surrogate model be stored or resampled during the optimization. -->
+The list of all attributes is provided in the software documentation.
+<!-- Let us construct <code>mboControl</code> objects for our two object functions. --></p>
+<pre><code class="r">control1 = makeMBOControl()
+control1 = setMBOControlInfill(
+  control = control1,
+  crit = &quot;ei&quot;,
+  opt = &quot;cmaes&quot;
+)
+control1 = setMBOControlTermination(
+  control = control1,
+  iters = 10
+)
+
+control2 = makeMBOControl()
+control2 = setMBOControlInfill(
+  control = control2,
+  crit = &quot;mean&quot;,
+  opt = &quot;focussearch&quot;
+)
+control2 = setMBOControlTermination(
+  control = control2,
+  iters = 10
+)
+</code></pre>
+
+<h1 id="experiments-and-output">Experiments and Output</h1>
+<p>Now we will apply the mbo() function to optimize the two objective functions.</p>
+<h2 id="optimization-of-objfun1">Optimization of <code>objfun1</code></h2>
+<!-- FIXME??? Optimization has a long computation time -->
+
+<pre><code class="r">mbo1 = mbo(objfun1, design = design1, learner = learner_km, control = control1, show.info = TRUE)
+mbo1
+getOptPathY(mbo1$opt.path, &quot;y&quot;) # get all y values
+
+</code></pre>
+
+<p>The output of mbo function is a structure of several variables. The most important are:</p>
+<ul>
+<li>x: the best point of the parameter space</li>
+<li>y: the associated best value of the objective function</li>
+<li>opt.path: optimization path. See <strong>ParamHelpers</strong> for further information.</li>
+<li>models: If no other setting were provided in the <code>MBOControl</code> object, the last estimated surrogate is given here.</li>
+<li>...</li>
+</ul>
+<!-- FIXME: get optimization path as data.frame !-->
+
+<p>We can also change some attributes of the <code>MBOControl</code> object and run mbo() function again</p>
+<pre><code class="r">control1$infill.crit = &quot;mean&quot;
+control1$infill.opt = &quot;focussearch&quot;
+mbo1 = mbo(objfun1, design = design1, learner = learner_km, control = control1, show.info = FALSE)
+mbo1$y
+</code></pre>
+
+<h2 id="optimization-of-objfun2">Optimization of <code>objfun2</code></h2>
+<p>Let us apply <strong>mlrMBO</strong> package to optimize object2 function, which contains one factor variable.
+We have already mentioned before that in this case just the <code>focussearch</code> infill optimization function is suitable.
+If we use <code>mean</code> as infill criterion any kind of model which can handle with factor variables can be used here (like random tree, random forest, linear model and many others).</p>
+<pre><code class="r">mbo2 = mbo(objfun2, design = design2, learner = learner_rf, control = control2, show.info = FALSE)
+mbo2$y
+</code></pre>
+
+<p>In contrast, if one will apply <code>ei</code> or <code>cb</code> infill criteria,
+the <code>predict.type</code> attribute of the learner have be set to <code>se</code>, if possible. A list of regression learners which support it can be viewed by:</p>
+<pre><code class="r">#listLearners(type = &quot;regr&quot;, se = TRUE)
+</code></pre>
+
+<!-- If no comment here, we get a lot warning message !-->
+
+<p>We hence modify the random forest learner and optimize <code>objfun2</code> by <code>ei</code> infill criterion.</p>
+<pre><code class="r">learner_rf = makeLearner(&quot;regr.randomForest&quot;, predict.type = &quot;se&quot;)
+control2$infill.crit = &quot;ei&quot;
+mbo2 = mbo(objfun2, design = design2, learner = learner_rf, control = control2, show.info = FALSE)
+mbo2$y
+</code></pre>
+
+<p>Finally, if a learner, which does not support the <code>se</code> prediction type, should be applied for the optimization with <code>ei</code> infill criterion, there is a possibility to create a bagging model with the desired characteristics. 
+The attribute <code>bw.iters</code> provides the number of models in the ensemble, see documentation for <code>makeBaggingWrapper</code> of <strong>mlr</strong> package.</p>
+<pre><code class="r">learner_rt = makeLearner(&quot;regr.rpart&quot;)
+bag_rt = makeBaggingWrapper(learner_rt, bw.iters = 5)
+bag_rt = setPredictType(bag_rt, predict.type = &quot;se&quot;)
+mbo2 = mbo(objfun2, design = design2, learner = bag_rt, control = control2, show.info = FALSE)
+mbo2$y
+</code></pre>
+
+<!--
+ TODO
+
+1) noisy optimization example
+
+2) mulicrit
+
+3) multipoint
+!--></div>
+            
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            
+            <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+
+        <script src="../js/jquery-1.10.2.min.js"></script>
+        <script src="../js/bootstrap-3.0.3.min.js"></script>
+        <script src="../js/highlight.pack.js"></script>
+        <script>var base_url = '..';</script>
+        <script data-main="../mkdocs/js/search.js" src="../mkdocs/js/require.js"></script>
+        <script src="../js/base.js"></script>
+        <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            From here you can search these documents. Enter
+                            your search terms below.
+                        </p>
+                        <form role="form">
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
+                            </div>
+                        </form>
+                        <div id="mkdocs-search-results"></div>
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </body>
+</html>

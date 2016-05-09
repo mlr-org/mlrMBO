@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../img/favicon.ico">
+
+	<title>Quickstart - mlrMBO tutorial</title>
+
+        <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../css/font-awesome-4.0.3.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="../css/highlight.css">
+        <link href="../css/custom_mlr.css" rel="stylesheet">
+        <link href="../css/custom_highlight.css" rel="stylesheet">
+
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+        
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+
+            <!-- Main title -->
+            <a class="navbar-brand" href="../index.html">mlrMBO tutorial</a>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+            
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                
+                
+                    <li >
+                        <a href="../index.html">Home</a>
+                    </li>
+                
+                
+                
+                    <li class="dropdown active">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Basics <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+<li class="active">
+    <a href="index.html">Quickstart</a>
+</li>
+
+                        
+                            
+<li >
+    <a href="../in_depth_introduction/index.html">In Depth Introduction</a>
+</li>
+
+                        
+                        </ul>
+                    </li>
+                
+                
+                
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Advanced <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../parallelization/index.html">Parallelization</a>
+</li>
+
+                        
+                        </ul>
+                    </li>
+                
+                
+                </ul>
+            
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                        <i class="fa fa-search"></i> Search
+                    </a>
+                </li>
+                
+                    <li >
+                        <a rel="next" href="../index.html">
+                            <i class="fa fa-arrow-left"></i> Previous
+                        </a>
+                    </li>
+                    <li >
+                        <a rel="prev" href="../in_depth_introduction/index.html">
+                            Next <i class="fa fa-arrow-right"></i>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a href="https://github.com/mlr-org/mlrMBO/">
+                            
+                                <i class="fa fa-github"></i>
+                            
+                            GitHub
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+</div>
+
+        <div class="container">
+            
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+    
+        <li class="main active"><a href="#introductory-example">Introductory example</a></li>
+        
+    
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<h1 id="introductory-example">Introductory example</h1>
+<p><strong>Info:</strong> this guide gives you an overview of the typical structure of optimization with <strong>mrMBO</strong>. For a much more
+detailed introduction see <a href="introduction.md">the next chapter</a>.</p>
+<p>Here we provide a Quickstart example for you to make yourself familiar with <strong>mlrMBO</strong>. We aim to optimize the one dimensional Rastrigin function using model-based optimization. Instead of writing this function by hand, we make use of the smoof library, which offers a lot of common single objective optimization functions.</p>
+<pre><code class="r">library(smoof)
+library(mlr)
+library(mlrMBO)
+library(ParamHelpers)
+obj.fun = makeRastriginFunction(1)
+</code></pre>
+
+<p><strong>Note:</strong> Since all this stuff here is under heavy developement it might be neccessary to install the github developement version of the ParamHelpers package via the <code>devtools::install_github</code> function.</p>
+<p>We decide ourself to use kriging as our surrogate model and to do 10 sequential optimization steps. Furthermore we use Expected Improvement (EI) as the infill criterion, i. e., the criterion which determines which point(s) of the objective function should be evaluated in further iterations (keep in mind, that using EI as the infill criterion needs the learner to support standard error estimation). </p>
+<pre><code class="r">learner = makeLearner(&quot;regr.km&quot;, predict.type = &quot;se&quot;, covtype = &quot;matern3_2&quot;)
+control = makeMBOControl()
+control = setMBOControlTermination(control, iters = 10)
+control = setMBOControlInfill(control, crit = &quot;ei&quot;)
+control = setMBOControlTermination(control, iters = 10)
+design = generateDesign(n = 10, par.set = smoof::getParamSet(obj.fun))
+</code></pre>
+
+<p>Finally we start the optimization process and print the result object.</p>
+<pre><code class="r">result = mbo(obj.fun, design = design, learner = learner, control = control, show.info = TRUE)
+#&gt; Computing y column(s) for design. Not provided.
+#&gt; [mbo] 0: x=4.17 : y = 22.8 : 0.0 secs : initdesign
+#&gt; [mbo] 0: x=2.74 : y = 18.4 : 0.0 secs : initdesign
+#&gt; [mbo] 0: x=0.272 : y = 11.5 : 0.0 secs : initdesign
+#&gt; [mbo] 0: x=-1.65 : y = 18.4 : 0.0 secs : initdesign
+#&gt; [mbo] 0: x=2.03 : y = 4.32 : 0.0 secs : initdesign
+#&gt; [mbo] 0: x=3.11 : y = 12.1 : 0.0 secs : initdesign
+#&gt; [mbo] 0: x=-2.44 : y = 25.3 : 0.0 secs : initdesign
+#&gt; [mbo] 0: x=-3.89 : y = 17.4 : 0.0 secs : initdesign
+#&gt; [mbo] 0: x=-0.769 : y = 9.37 : 0.0 secs : initdesign
+#&gt; [mbo] 0: x=-4.37 : y = 35.9 : 0.0 secs : initdesign
+#&gt; 
+#&gt; optimisation start
+#&gt; ------------------
+#&gt; * estimation method   : MLE 
+#&gt; * optimisation method : BFGS 
+#&gt; * analytical gradient : used
+#&gt; * trend model : ~1
+#&gt; * covariance model : 
+#&gt;   - type :  matern3_2 
+#&gt;   - nugget : NO
+#&gt;   - parameters lower bounds :  1e-10 
+#&gt;   - parameters upper bounds :  17.08579 
+#&gt;   - best initial criterion value(s) :  -42.16228 
+#&gt; 
+#&gt; N = 1, M = 5 machine precision = 2.22045e-16
+#&gt; At X0, 0 variables are exactly at the bounds
+#&gt; At iterate     0  f=       42.162  |proj g|=       1.9768
+#&gt; At iterate     1  f =       35.839  |proj g|=       0.31573
+#&gt; At iterate     2  f =        35.68  |proj g|=             0
+#&gt; 
+#&gt; iterations 2
+#&gt; function evaluations 3
+#&gt; segments explored during Cauchy searches 2
+#&gt; BFGS updates skipped 0
+#&gt; active bounds at final generalized Cauchy point 1
+#&gt; norm of the final projected gradient 0
+#&gt; final function value 35.6801
+#&gt; 
+#&gt; F = 35.6801
+#&gt; final  value 35.680121 
+#&gt; converged
+#&gt; [mbo] 1: x=-2.05 : y = 4.7 : 0.0 secs : infill_ei
+#&gt; 
+#&gt; optimisation start
+#&gt; ------------------
+#&gt; * estimation method   : MLE 
+#&gt; * optimisation method : BFGS 
+#&gt; * analytical gradient : used
+#&gt; * trend model : ~1
+#&gt; * covariance model : 
+#&gt;   - type :  matern3_2 
+#&gt;   - nugget : NO
+#&gt;   - parameters lower bounds :  1e-10 
+#&gt;   - parameters upper bounds :  17.08579 
+#&gt;   - best initial criterion value(s) :  -50.85536 
+#&gt; 
+#&gt; N = 1, M = 5 machine precision = 2.22045e-16
+#&gt; At X0, 0 variables are exactly at the bounds
+#&gt; At iterate     0  f=       50.855  |proj g|=       1.8606
+#&gt; At iterate     1  f =       39.744  |proj g|=             0
+#&gt; 
+#&gt; iterations 1
+#&gt; function evaluations 2
+#&gt; segments explored during Cauchy searches 1
+#&gt; BFGS updates skipped 0
+#&gt; active bounds at final generalized Cauchy point 1
+#&gt; norm of the final projected gradient 0
+#&gt; final function value 39.7438
+#&gt; 
+#&gt; F = 39.7438
+#&gt; final  value 39.743841 
+#&gt; converged
+#&gt; [mbo] 2: x=3.62 : y = 30.3 : 0.0 secs : infill_ei
+#&gt; 
+#&gt; optimisation start
+#&gt; ------------------
+#&gt; * estimation method   : MLE 
+#&gt; * optimisation method : BFGS 
+#&gt; * analytical gradient : used
+#&gt; * trend model : ~1
+#&gt; * covariance model : 
+#&gt;   - type :  matern3_2 
+#&gt;   - nugget : NO
+#&gt;   - parameters lower bounds :  1e-10 
+#&gt;   - parameters upper bounds :  17.08579 
+#&gt;   - best initial criterion value(s) :  -46.05445 
+#&gt; 
+#&gt; N = 1, M = 5 machine precision = 2.22045e-16
+#&gt; At X0, 0 variables are exactly at the bounds
+#&gt; At iterate     0  f=       46.054  |proj g|=      0.45522
+#&gt; At iterate     1  f =       43.926  |proj g|=             0
+#&gt; 
+#&gt; iterations 1
+#&gt; function evaluations 2
+#&gt; segments explored during Cauchy searches 1
+#&gt; BFGS updates skipped 0
+#&gt; active bounds at final generalized Cauchy point 1
+#&gt; norm of the final projected gradient 0
+#&gt; final function value 43.9265
+#&gt; 
+#&gt; F = 43.9265
+#&gt; final  value 43.926485 
+#&gt; converged
+#&gt; [mbo] 3: x=-3.55 : y = 32.2 : 0.0 secs : infill_ei
+#&gt; 
+#&gt; optimisation start
+#&gt; ------------------
+#&gt; * estimation method   : MLE 
+#&gt; * optimisation method : BFGS 
+#&gt; * analytical gradient : used
+#&gt; * trend model : ~1
+#&gt; * covariance model : 
+#&gt;   - type :  matern3_2 
+#&gt;   - nugget : NO
+#&gt;   - parameters lower bounds :  1e-10 
+#&gt;   - parameters upper bounds :  17.08579 
+#&gt;   - best initial criterion value(s) :  -49.18026 
+#&gt; 
+#&gt; N = 1, M = 5 machine precision = 2.22045e-16
+#&gt; At X0, 0 variables are exactly at the bounds
+#&gt; At iterate     0  f=        49.18  |proj g|=      0.30591
+#&gt; At iterate     1  f =       48.175  |proj g|=             0
+#&gt; 
+#&gt; iterations 1
+#&gt; function evaluations 2
+#&gt; segments explored during Cauchy searches 1
+#&gt; BFGS updates skipped 0
+#&gt; active bounds at final generalized Cauchy point 1
+#&gt; norm of the final projected gradient 0
+#&gt; final function value 48.1752
+#&gt; 
+#&gt; F = 48.1752
+#&gt; final  value 48.175161 
+#&gt; converged
+#&gt; [mbo] 4: x=3.72 : y = 25.6 : 0.0 secs : infill_ei
+#&gt; 
+#&gt; optimisation start
+#&gt; ------------------
+#&gt; * estimation method   : MLE 
+#&gt; * optimisation method : BFGS 
+#&gt; * analytical gradient : used
+#&gt; * trend model : ~1
+#&gt; * covariance model : 
+#&gt;   - type :  matern3_2 
+#&gt;   - nugget : NO
+#&gt;   - parameters lower bounds :  1e-10 
+#&gt;   - parameters upper bounds :  17.08579 
+#&gt;   - best initial criterion value(s) :  -52.05361 
+#&gt; 
+#&gt; N = 1, M = 5 machine precision = 2.22045e-16
+#&gt; At X0, 0 variables are exactly at the bounds
+#&gt; At iterate     0  f=       52.054  |proj g|=      0.30731
+#&gt; At iterate     1  f =       51.605  |proj g|=             0
+#&gt; 
+#&gt; iterations 1
+#&gt; function evaluations 2
+#&gt; segments explored during Cauchy searches 1
+#&gt; BFGS updates skipped 0
+#&gt; active bounds at final generalized Cauchy point 1
+#&gt; norm of the final projected gradient 0
+#&gt; final function value 51.6047
+#&gt; 
+#&gt; F = 51.6047
+#&gt; final  value 51.604695 
+#&gt; converged
+#&gt; [mbo] 5: x=-3.79 : y = 22 : 0.0 secs : infill_ei
+#&gt; 
+#&gt; optimisation start
+#&gt; ------------------
+#&gt; * estimation method   : MLE 
+#&gt; * optimisation method : BFGS 
+#&gt; * analytical gradient : used
+#&gt; * trend model : ~1
+#&gt; * covariance model : 
+#&gt;   - type :  matern3_2 
+#&gt;   - nugget : NO
+#&gt;   - parameters lower bounds :  1e-10 
+#&gt;   - parameters upper bounds :  17.08579 
+#&gt;   - best initial criterion value(s) :  -54.14426 
+#&gt; 
+#&gt; N = 1, M = 5 machine precision = 2.22045e-16
+#&gt; At X0, 0 variables are exactly at the bounds
+#&gt; At iterate     0  f=       54.144  |proj g|=       5.6298
+#&gt; At iterate     1  f =       54.011  |proj g|=       0.22682
+#&gt; At iterate     2  f =       53.963  |proj g|=        0.1198
+#&gt; At iterate     3  f =       53.963  |proj g|=     0.0074116
+#&gt; At iterate     4  f =       53.963  |proj g|=     1.392e-05
+#&gt; At iterate     5  f =       53.963  |proj g|=    1.5912e-09
+#&gt; 
+#&gt; iterations 5
+#&gt; function evaluations 8
+#&gt; segments explored during Cauchy searches 5
+#&gt; BFGS updates skipped 0
+#&gt; active bounds at final generalized Cauchy point 0
+#&gt; norm of the final projected gradient 1.59118e-09
+#&gt; final function value 53.9628
+#&gt; 
+#&gt; F = 53.9628
+#&gt; final  value 53.962788 
+#&gt; converged
+#&gt; [mbo] 6: x=1.94 : y = 4.5 : 0.0 secs : infill_ei
+#&gt; 
+#&gt; optimisation start
+#&gt; ------------------
+#&gt; * estimation method   : MLE 
+#&gt; * optimisation method : BFGS 
+#&gt; * analytical gradient : used
+#&gt; * trend model : ~1
+#&gt; * covariance model : 
+#&gt;   - type :  matern3_2 
+#&gt;   - nugget : NO
+#&gt;   - parameters lower bounds :  1e-10 
+#&gt;   - parameters upper bounds :  17.08579 
+#&gt;   - best initial criterion value(s) :  -57.42694 
+#&gt; 
+#&gt; N = 1, M = 5 machine precision = 2.22045e-16
+#&gt; At X0, 0 variables are exactly at the bounds
+#&gt; At iterate     0  f=       57.427  |proj g|=      0.37626
+#&gt; At iterate     1  f =       56.944  |proj g|=       0.31386
+#&gt; At iterate     2  f =       56.668  |proj g|=       0.24689
+#&gt; At iterate     3  f =       56.657  |proj g|=       0.52416
+#&gt; At iterate     4  f =       56.656  |proj g|=      0.025438
+#&gt; At iterate     5  f =       56.656  |proj g|=    0.00038393
+#&gt; At iterate     6  f =       56.656  |proj g|=    2.9003e-07
+#&gt; 
+#&gt; iterations 6
+#&gt; function evaluations 9
+#&gt; segments explored during Cauchy searches 6
+#&gt; BFGS updates skipped 0
+#&gt; active bounds at final generalized Cauchy point 0
+#&gt; norm of the final projected gradient 2.90031e-07
+#&gt; final function value 56.6555
+#&gt; 
+#&gt; F = 56.6555
+#&gt; final  value 56.655547 
+#&gt; converged
+#&gt; [mbo] 7: x=-1.96 : y = 4.13 : 0.0 secs : infill_ei
+#&gt; 
+#&gt; optimisation start
+#&gt; ------------------
+#&gt; * estimation method   : MLE 
+#&gt; * optimisation method : BFGS 
+#&gt; * analytical gradient : used
+#&gt; * trend model : ~1
+#&gt; * covariance model : 
+#&gt;   - type :  matern3_2 
+#&gt;   - nugget : NO
+#&gt;   - parameters lower bounds :  1e-10 
+#&gt;   - parameters upper bounds :  17.08579 
+#&gt;   - best initial criterion value(s) :  -68.84067 
+#&gt; 
+#&gt; N = 1, M = 5 machine precision = 2.22045e-16
+#&gt; At X0, 0 variables are exactly at the bounds
+#&gt; At iterate     0  f=       68.841  |proj g|=       1.4873
+#&gt; At iterate     1  f =       63.315  |proj g|=             0
+#&gt; 
+#&gt; iterations 1
+#&gt; function evaluations 2
+#&gt; segments explored during Cauchy searches 1
+#&gt; BFGS updates skipped 0
+#&gt; active bounds at final generalized Cauchy point 1
+#&gt; norm of the final projected gradient 0
+#&gt; final function value 63.3155
+#&gt; 
+#&gt; F = 63.3155
+#&gt; final  value 63.315486 
+#&gt; converged
+#&gt; [mbo] 8: x=1.13 : y = 4.36 : 0.0 secs : infill_ei
+#&gt; 
+#&gt; optimisation start
+#&gt; ------------------
+#&gt; * estimation method   : MLE 
+#&gt; * optimisation method : BFGS 
+#&gt; * analytical gradient : used
+#&gt; * trend model : ~1
+#&gt; * covariance model : 
+#&gt;   - type :  matern3_2 
+#&gt;   - nugget : NO
+#&gt;   - parameters lower bounds :  1e-10 
+#&gt;   - parameters upper bounds :  17.08579 
+#&gt;   - best initial criterion value(s) :  -64.75254 
+#&gt; 
+#&gt; N = 1, M = 5 machine precision = 2.22045e-16
+#&gt; At X0, 0 variables are exactly at the bounds
+#&gt; At iterate     0  f=       64.753  |proj g|=      0.52075
+#&gt; At iterate     1  f =       63.962  |proj g|=       0.43422
+#&gt; At iterate     2  f =       63.285  |proj g|=       0.30913
+#&gt; At iterate     3  f =       63.269  |proj g|=        1.1478
+#&gt; At iterate     4  f =       63.261  |proj g|=      0.074181
+#&gt; At iterate     5  f =       63.261  |proj g|=     0.0026487
+#&gt; At iterate     6  f =       63.261  |proj g|=    6.4719e-06
+#&gt; 
+#&gt; iterations 6
+#&gt; function evaluations 9
+#&gt; segments explored during Cauchy searches 6
+#&gt; BFGS updates skipped 0
+#&gt; active bounds at final generalized Cauchy point 0
+#&gt; norm of the final projected gradient 6.47193e-06
+#&gt; final function value 63.2613
+#&gt; 
+#&gt; F = 63.2613
+#&gt; final  value 63.261339 
+#&gt; converged
+#&gt; [mbo] 9: x=1.32 : y = 16 : 0.0 secs : infill_ei
+#&gt; 
+#&gt; optimisation start
+#&gt; ------------------
+#&gt; * estimation method   : MLE 
+#&gt; * optimisation method : BFGS 
+#&gt; * analytical gradient : used
+#&gt; * trend model : ~1
+#&gt; * covariance model : 
+#&gt;   - type :  matern3_2 
+#&gt;   - nugget : NO
+#&gt;   - parameters lower bounds :  1e-10 
+#&gt;   - parameters upper bounds :  17.08579 
+#&gt;   - best initial criterion value(s) :  -76.513 
+#&gt; 
+#&gt; N = 1, M = 5 machine precision = 2.22045e-16
+#&gt; At X0, 0 variables are exactly at the bounds
+#&gt; At iterate     0  f=       76.513  |proj g|=       1.3051
+#&gt; At iterate     1  f =       70.586  |proj g|=             0
+#&gt; 
+#&gt; iterations 1
+#&gt; function evaluations 2
+#&gt; segments explored during Cauchy searches 1
+#&gt; BFGS updates skipped 0
+#&gt; active bounds at final generalized Cauchy point 1
+#&gt; norm of the final projected gradient 0
+#&gt; final function value 70.586
+#&gt; 
+#&gt; F = 70.586
+#&gt; final  value 70.586034 
+#&gt; converged
+#&gt; [mbo] 10: x=1.41 : y = 20.4 : 0.0 secs : infill_ei
+#&gt; 
+#&gt; optimisation start
+#&gt; ------------------
+#&gt; * estimation method   : MLE 
+#&gt; * optimisation method : BFGS 
+#&gt; * analytical gradient : used
+#&gt; * trend model : ~1
+#&gt; * covariance model : 
+#&gt;   - type :  matern3_2 
+#&gt;   - nugget : NO
+#&gt;   - parameters lower bounds :  1e-10 
+#&gt;   - parameters upper bounds :  17.08579 
+#&gt;   - best initial criterion value(s) :  -85.50927 
+#&gt; 
+#&gt; N = 1, M = 5 machine precision = 2.22045e-16
+#&gt; At X0, 0 variables are exactly at the bounds
+#&gt; At iterate     0  f=       85.509  |proj g|=       1.4973
+#&gt; At iterate     1  f =       82.144  |proj g|=        2.0383
+#&gt; ys=-2.885e+00  -gs= 2.242e+00, BFGS update SKIPPED
+#&gt; At iterate     2  f =       73.855  |proj g|=             0
+#&gt; 
+#&gt; iterations 2
+#&gt; function evaluations 3
+#&gt; segments explored during Cauchy searches 2
+#&gt; BFGS updates skipped 1
+#&gt; active bounds at final generalized Cauchy point 1
+#&gt; norm of the final projected gradient 0
+#&gt; final function value 73.855
+#&gt; 
+#&gt; F = 73.855
+#&gt; final  value 73.854960 
+#&gt; converged
+print(result)
+#&gt; Recommended parameters:
+#&gt; x=-1.96
+#&gt; Objective: y = 4.134
+#&gt; 
+#&gt; Optimization path
+#&gt; 10 + 10 entries in total, displaying last 10 (or less):
+#&gt;            x         y dob eol error.message exec.time         ei
+#&gt; 11 -2.050284  4.698625   1  NA          &lt;NA&gt;     0.000 -0.2288446
+#&gt; 12  3.623820 30.255372   2  NA          &lt;NA&gt;     0.000 -0.3726289
+#&gt; 13 -3.546339 32.155650   3  NA          &lt;NA&gt;     0.000 -0.3422541
+#&gt; 14  3.722633 25.569052   4  NA          &lt;NA&gt;     0.001 -0.3188126
+#&gt; 15 -3.787732 21.998262   5  NA          &lt;NA&gt;     0.000 -0.2604270
+#&gt; 16  1.938323  4.498631   6  NA          &lt;NA&gt;     0.000 -1.1183878
+#&gt; 17 -1.961884  4.134397   7  NA          &lt;NA&gt;     0.000 -0.9190494
+#&gt; 18  1.128445  4.357019   8  NA          &lt;NA&gt;     0.000 -0.4194018
+#&gt; 19  1.319269 15.956642   9  NA          &lt;NA&gt;     0.000 -1.4304011
+#&gt; 20  1.409904 20.427879  10  NA          &lt;NA&gt;     0.000 -0.4781482
+#&gt;    error.model train.time prop.type propose.time exec.timestamp        se
+#&gt; 11        &lt;NA&gt;      0.018 infill_ei        0.231     1462797170  8.576909
+#&gt; 12        &lt;NA&gt;      0.018 infill_ei        0.358     1462797171  8.972263
+#&gt; 13        &lt;NA&gt;      0.019 infill_ei        0.344     1462797172  9.408390
+#&gt; 14        &lt;NA&gt;      0.018 infill_ei        0.232     1462797172  9.843812
+#&gt; 15        &lt;NA&gt;      0.016 infill_ei        0.235     1462797173  9.651479
+#&gt; 16        &lt;NA&gt;      0.021 infill_ei        0.259     1462797173  5.725409
+#&gt; 17        &lt;NA&gt;      0.020 infill_ei        0.261     1462797174  4.622039
+#&gt; 18        &lt;NA&gt;      0.019 infill_ei        0.377     1462797174 10.029210
+#&gt; 19        &lt;NA&gt;      0.023 infill_ei        0.283     1462797175  7.264680
+#&gt; 20        &lt;NA&gt;      0.018 infill_ei        0.265     1462797175  9.935517
+#&gt;         mean
+#&gt; 11 17.538842
+#&gt; 12 16.371550
+#&gt; 13 17.528535
+#&gt; 14 18.653697
+#&gt; 15 19.147651
+#&gt; 16  7.231362
+#&gt; 17  6.618227
+#&gt; 18 17.570495
+#&gt; 19  7.787929
+#&gt; 20 16.790109
+</code></pre></div>
+            
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            
+            <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+
+        <script src="../js/jquery-1.10.2.min.js"></script>
+        <script src="../js/bootstrap-3.0.3.min.js"></script>
+        <script src="../js/highlight.pack.js"></script>
+        <script>var base_url = '..';</script>
+        <script data-main="../mkdocs/js/search.js" src="../mkdocs/js/require.js"></script>
+        <script src="../js/base.js"></script>
+        <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            From here you can search these documents. Enter
+                            your search terms below.
+                        </p>
+                        <form role="form">
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
+                            </div>
+                        </form>
+                        <div id="mkdocs-search-results"></div>
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </body>
+</html>
