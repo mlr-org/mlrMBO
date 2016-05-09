@@ -5,7 +5,7 @@ The result of this sequential procedure is the optimization path containing the 
 
 Once again, take a look at the already introduced basic example of the optimization of the one dimensional Rastrigin function.
 
-```{r eval=FALSE}
+```{r}
 library(mlrMBO)
 obj.fun = makeRastriginFunction(1)
 
