@@ -52,20 +52,27 @@ We assume ``x`` from interval [0,1] and ``k`` from interval [1,2]. Parameter ``m
 The type of optimization, in this case maximization, is also defined in ``makeSingleObjetiveFunction`` with ``minimize = TRUE`` as default.
 
 ```{r}
-foo = function(listOfValues) {
-  x = listOfValues[[1]]
-  k = listOfValues[[2]]
-  method = listOfValues[[3]]
-  perf = ifelse(method == "a", k * sin(x) + cos(x),
-               sin(x) + k * cos(x))
+# foo = function(listOfValues) {
+#   x = listOfValues[[1]]
+#   k = listOfValues[[2]]
+#   method = listOfValues[[3]]
+#   perf = ifelse(method == "a", k * sin(x) + cos(x),
+#                sin(x) + k * cos(x))
+#   return(perf)
+# }
+foo = function(x) {
+  j = x[[1]]
+  k = x[[2]]
+  method = x[[3]]
+  perf = ifelse(method == "a", k * sin(j) + cos(j),
+               sin(j) + k * cos(j))
   return(perf)
 }
-
 objfun2 = makeSingleObjectiveFunction(
   name = "example",
   fn = foo,
   par.set = makeParamSet(
-    makeNumericParam("x", lower = 0,upper = 1),
+    makeNumericParam("j", lower = 0,upper = 1),
     makeIntegerParam("k", lower = 1, upper = 2),
     makeDiscreteParam("method", values = c("a", "b"))
   ),
@@ -291,7 +298,7 @@ The attribute ``bw.iters`` provides the number of models in the ensemble, see do
 ```{r eval=FALSE}
 learner_rt = makeLearner("regr.rpart")
 bag_rt = makeBaggingWrapper(learner_rt, bw.iters = 5)
-setPredictType(bag_rt, predict.type = "se")
+bag_rt = setPredictType(bag_rt, predict.type = "se")
 mbo2 = mbo(objfun2, design = design2, learner = bag_rt, control = control2, show.info = FALSE)
 mbo2$y
 ```
