@@ -15,8 +15,11 @@ mboContinue = function(file) {
   control = getOptProblemControl(getOptStateOptProblem(opt.state))
   state = getOptStateState(opt.state)
   if (control$schedule.method == "asyn") {
-    if (control$time.budget < Inf) {
-      stopf("asyn with given time.budget does not work yet.")
+    if (is.finite(control$time.budget) && !is.finite(control$exec.time.budget)) {
+      stopf("Continuation of asyn with given time.budget does not work yet.")
+    } else if (is.finite(control$time.budget) && is.finite(control$exec.time.budget)) {
+      warningf("Continuation of asyn disables the time.budget (%i) and we only use exec.time.budget (%i)", control$time.budget, control$exec.time.budget)
+      control$time.budget = Inf #FIXME for obvious reasons
     }
     final.opt.state = mboAsynTemplate(opt.state)
   } else if (control$infill.crit == "random") {
