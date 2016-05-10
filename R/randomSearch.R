@@ -27,8 +27,12 @@ randomSearch = function(fun, design = NULL, control, show.info = getOption("mlrM
   time.budget = minOmax(control$time.budget, control$exec.time.budget)
   
   n = min(control$iters, floor(time.budget / mean.time.used), na.rm = TRUE)
+  prop.points = generateRandomDesign(par.set = par.set, n = n)
+  if (control$filter.proposed.points) {
+      prop.points = filterProposedPoints(prop, opt.state)
+    }
   prop = list(
-    prop.points = generateRandomDesign(par.set = par.set, n = n),
+    prop.points = prop.points,
     crit.vals = matrix(rep.int(NA_real_, n), nrow = n, ncol = 1L),
     propose.time = rep.int(NA_real_, n),
     prop.type = rep("random_search", n),

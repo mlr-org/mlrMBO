@@ -33,22 +33,24 @@ mboAsynTemplate.OptState = function(obj) {
   }
 
   #wrapper to check budget
-  wrapAsynFun = function() {
+  wrapAsynFun = function(i) {
     opt.state = readDirectoryToOptState(opt.problem)
+    start.after = ifelse(i < control$schedule.nodes, i - 1, 0)
+    ##! control$schedule.nodes
     if (!shouldTerminate.OptState(opt.state)$term) {
-      runMBOOnline(opt.state)
+      runMBOOnline(opt.state, start.after = start.after)
     }
   }
 
   if (control$iters < Inf) {
-    parallelMap(function(x) wrapAsynFun(), x = rep(TRUE, control$iters), level = "mlrMBO.asyn")
+    parallelMap(wrapAsynFun, i = seq_len(control$iters), level = "mlrMBO.asyn")
     opt.state = readDirectoryToOptState(opt.problem)
   } else if (!is.null(control$batchJobs.reg)) {
     #write method to send further jobs if budget is not exhausted and number of waiting jobs gets low
   } else {
     opt.state = readDirectoryToOptState(opt.problem)
     while(!shouldTerminate.OptState(opt.state)$term){
-      parallelMap(function(x) wrapAsynFun(), x = rep(TRUE, control$schedule.nodes * 10), level = "mlrMBO.asyn")
+      parallelMap(wrapAsynFun, i = seq_len(control$schedule.nodes * 100), level = "mlrMBO.asyn")
       opt.state = readDirectoryToOptState(opt.problem)
     }
   }
@@ -61,14 +63,14 @@ runMBOOnline = function(x, ...) {
 }
 
 runMBOOnline.character = function(x, ...) {
-  runMBOOnline(readRDS(file.path(x, "opt_problem.rds")))
+  runMBOOnline(readRDS(file.path(x, "opt_problem.rds")), ...)
 }
 
-runMBOOnline.OptProblem = function(x, ...) {
-  runMBOOnline(readDirectoryToOptState(x))
+runMBOOnline.OptProblem = function(x, start.after = 0, ...) {
+  runMBOOnline(readDirectoryToOptState(x, proposals.read.at.least = start.after), ...)
 }
 
-runMBOOnline.OptState = function(x, ...) {
+runMBOOnline.OptState = function(x, start.after, ...) {
   opt.state = x
   prop = proposePoints.OptState(opt.state)
   proposal.file = writeThingToDirectory(getOptStateOptProblem(opt.state), prop, "prop_")

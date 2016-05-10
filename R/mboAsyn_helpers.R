@@ -8,10 +8,18 @@ readOptPathFromDirectory = function(path) {
   return(op)
 }
 
-readProposalsFromDirectoryToOptPath = function(opt.path, opt.problem) {
+readProposalsFromDirectoryToOptPath = function(opt.path, opt.problem, read.at.least = 0, time.out = 60) {
   control = getOptProblemControl(opt.problem)
   path = getAsynDir(opt.problem)
-  files = list.files(path, pattern = "^prop_[[:alnum:]]+\\.rds$", full.names = TRUE)
+  start.time = Sys.time()
+  repeat {
+    files = list.files(path, pattern = "^prop_[[:alnum:]]+\\.rds$", full.names = TRUE)
+    if (length(files) >= read.at.least || difftime(Sys.time(), start.time, units = "secs") > read.at.least*time.out) {
+      break
+    } else {
+      Sys.sleep(1)
+    }
+  }
   file.contents = lapply(files, readRDS)
   #concept copied from proposePointsConstantLiar.R
   liar = control$multipoint.cl.lie
@@ -23,12 +31,12 @@ readProposalsFromDirectoryToOptPath = function(opt.path, opt.problem) {
   }
 }
 
-readDirectoryToOptState = function(opt.problem) {
+readDirectoryToOptState = function(opt.problem, proposals.read.at.least = 0) {
   control = getOptProblemControl(opt.problem)
   opt.path = readOptPathFromDirectory(getAsynDir(opt.problem))
   #add proposals with CL to opt.path
   if (control$multipoint.method == "cl") {
-    readProposalsFromDirectoryToOptPath(opt.path, opt.problem)
+    readProposalsFromDirectoryToOptPath(opt.path, opt.problem, read.at.least = proposals.read.at.least)
   }
 
   #find the first available exec.timestamp which does not belong to init.design
