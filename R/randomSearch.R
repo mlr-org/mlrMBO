@@ -8,7 +8,6 @@ randomSearch = function(fun, design = NULL, control, show.info = getOption("mlrM
 
   opt.problem = makeOptProblem(
     fun = fun,
-    par.set = par.set,
     design = design,
     learner = NULL,
     control = control,
