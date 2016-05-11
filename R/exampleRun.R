@@ -40,7 +40,7 @@ exampleRun = function(fun, design = NULL, learner = NULL, control,
   noisy = isNoisy(fun)
   control$noisy = noisy
   control$minimize = shouldBeMinimized(fun)
-  learner = checkLearner(learner, par.set, control)
+  learner = checkLearner(learner, par.set, control, fun)
   assertClass(control, "MBOControl")
   points.per.dim = asCount(points.per.dim, positive = TRUE)
   noisy.evals = asCount(noisy.evals, positive = TRUE)
