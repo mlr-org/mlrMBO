@@ -17,25 +17,40 @@ r_github_packages:
   - mlr-org/mlr
 
 r_binary_packages:
-  - ggplot2
-  - RColorBrewer
-  - gridExtra
-  - plyr
-  - reshape2
   - akima
+  - assertthat
+  - chron
   - cmaes
+  - crayon
+  - data.table
+  - DBI
   - DiceOptim
+  - dplyr
   - earth
   - emoa
   - GGally
+  - ggplot2
+  - ggvis
+  - gridExtra
+  - htmltools
+  - httpuv
   - kernlab
   - kknn
+  - lazyeval
   - mboost
   - mco
+  - multcomp
   - nnet
   - party
+  - plyr
+  - plotrix
   - randomForest
+  - RColorBrewer
+  - reshape2
   - rpart
+  - shiny
+  - testthat
+  - zoo
 
 before_install:
     - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test -y
