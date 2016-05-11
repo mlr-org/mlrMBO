@@ -13,8 +13,8 @@ obj.fun = makeSingleObjectiveFunction(
   fn = function(x) sin(x) + rnorm(1, 0, 0.1),
   par.set = makeNumericParamSet(lower = 3, upper = 13, len = 1L),
   noisy = TRUE,
-  global.opt.value = -1, 
-  fn.mean = function(x) {sin(x$x)}
+  global.opt.value = -1,
+  fn.mean = function(x) sin(x$x)
 )
 
 ctrl = makeMBOControl(

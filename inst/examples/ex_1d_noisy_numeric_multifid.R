@@ -16,7 +16,10 @@ obj.fun = makeSingleObjectiveFunction(
     if (is.null(x$.multifid.lvl)) x$multifid.lvl = 2
     sin(x$x) + rnorm(1, 0, 0.1) - (x$.multifid.lvl - 2) * (0.05 * (x$x - 7)^2 + 1)
   },
-  par.set = makeNumericParamSet(lower = 3, upper = 13, len = 1L),
+  par.set = makeParamSet(
+    makeNumericParam("x", lower = 3, upper = 13),
+    makeIntegerParam(".multifid.lvl", lower = 1L, upper = 2L)
+  ),
   has.simple.signature = FALSE,
   noisy = TRUE,
   global.opt.value = -1,
@@ -33,7 +36,6 @@ ctrl = makeMBOControl(
   final.evals = 10L
 )
 ctrl = setMBOControlTermination(ctrl, iters = 5L)
-
 
 lrn = makeLearner("regr.km", predict.type = "se", nugget.estim = TRUE)
 
