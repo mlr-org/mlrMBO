@@ -14,14 +14,10 @@
 NULL
 
 # check and create default learner
-checkLearner = function(learner, par.set, control) {
+checkLearner = function(learner, par.set, control, fun) {
   if (missing(learner) || is.null(learner)) {
-    if (!hasDiscrete(par.set)) {
-      if (control$noisy) {
-        learner = makeLearner("regr.km", covtype = "matern5_2", predict.type = "se", nugget.estim = control$noisy)
-      } else {
-        learner = makeLearner("regr.km", covtype = "matern5_2", predict.type = "se", nugget = 10^(-4))
-      }
+    if (!hasDiscrete(par.set, include.logical = TRUE)) {
+      learner = makeMboKrigingLearner(control, fun)
     } else {
       learner = makeLearner("regr.randomForest", predict.type = "se")
     }

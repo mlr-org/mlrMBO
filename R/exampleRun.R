@@ -38,7 +38,9 @@ exampleRun = function(fun, design = NULL, learner = NULL, control,
   par.types = getParamTypes(par.set)
   n.params = sum(getParamLengths(par.set))
   noisy = isNoisy(fun)
-  learner = checkLearner(learner, par.set, control)
+  control$noisy = noisy
+  control$minimize = shouldBeMinimized(fun)
+  learner = checkLearner(learner, par.set, control, fun)
   assertClass(control, "MBOControl")
   points.per.dim = asCount(points.per.dim, positive = TRUE)
   noisy.evals = asCount(noisy.evals, positive = TRUE)
@@ -51,8 +53,6 @@ exampleRun = function(fun, design = NULL, learner = NULL, control,
     global.opt = smoof::getGlobalOptimum(fun)$value
   else
     global.opt = NA_real_
-  control$noisy = noisy
-  control$minimize = shouldBeMinimized(fun)
 
   if (control$n.objectives != 1L)
     stopf("exampleRun can only be applied for single objective functions, but you have %i objectives! Use 'exampleRunMultiCrit'!",

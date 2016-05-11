@@ -6,7 +6,6 @@
 #' @template arg_control
 #' @param iters [\code{integer(1)}]\cr
 #'   Number of sequential optimization steps.
-#'   Default is 10.
 #' @param time.budget [\code{integer(1)} | NULL]\cr
 #'   Running time budget in seconds. Note that the actual mbo run can take more time since
 #'   the condition is checked after each iteration.
@@ -56,7 +55,7 @@
 #' @family MBOControl
 #' @export
 setMBOControlTermination = function(control,
-  iters = 10L, time.budget = NULL, exec.time.budget = NULL, target.fun.value = NULL, max.evals = NULL, more.stop.conds = list()) {
+  iters = NULL, time.budget = NULL, exec.time.budget = NULL, target.fun.value = NULL, max.evals = NULL, more.stop.conds = list()) {
 
   assertList(more.stop.conds)
 
