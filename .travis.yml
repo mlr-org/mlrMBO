@@ -36,7 +36,6 @@ r_binary_packages:
   - party
   - randomForest
   - rpart
-  - eaf
 
 before_install:
     - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test -y
