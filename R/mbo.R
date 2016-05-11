@@ -50,7 +50,7 @@ mbo = function(fun, design = NULL, learner = NULL, control,
     design = generateDesign(n.params * 4L, par.set)
   else
     assertDataFrame(design, min.rows = 1L, min.cols = 1L)
-  learner = checkLearner(learner, par.set, control)
+  learner = checkLearner(learner, par.set, control, fun)
   control = checkStuff(fun, par.set, design, learner, control)
 
   loadPackages(control)

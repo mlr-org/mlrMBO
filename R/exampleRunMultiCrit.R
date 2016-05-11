@@ -34,7 +34,7 @@ exampleRunMultiCrit= function(fun, design = NULL, learner, control, points.per.d
   if (is.null(design))
     design = generateDesign(4 * n.params, par.set)
 
-  learner = checkLearner(learner, par.set, control)
+  learner = checkLearner(learner, par.set, control, fun)
   assertClass(control, "MBOControl")
   minimize = shouldBeMinimized(fun)
   control$noisy = isNoisy(fun)
