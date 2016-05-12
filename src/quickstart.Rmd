@@ -1,7 +1,7 @@
 # Introductory example
 
 **Info:** this guide gives you an overview of the typical structure of optimization with **mrMBO**. For a much more
-detailed introduction see [the next chapter](introduction.md).
+detailed introduction see [the next chapter](in_deph_introduction.md).
 
 Here we provide a Quickstart example for you to make yourself familiar with **mlrMBO**. We aim to optimize the one dimensional Rastrigin function using model-based optimization. Instead of writing this function by hand, we make use of the smoof library, which offers a lot of common single objective optimization functions.
 
@@ -17,12 +17,13 @@ obj.fun = makeRastriginFunction(1)
 
 We decide ourself to use kriging as our surrogate model and to do 10 sequential optimization steps. Furthermore we use Expected Improvement (EI) as the infill criterion, i. e., the criterion which determines which point(s) of the objective function should be evaluated in further iterations (keep in mind, that using EI as the infill criterion needs the learner to support standard error estimation). 
 
+As a last step we have to generate an initial design on which we evaluate our model in the beginning. We use `ParamHelpers::generateDesign` to generate 10 points in a latin hypercube design.
+
 ```{r}
 learner = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
 control = makeMBOControl()
 control = setMBOControlTermination(control, iters = 10)
 control = setMBOControlInfill(control, crit = "ei")
-control = setMBOControlTermination(control, iters = 10)
 design = generateDesign(n = 10, par.set = smoof::getParamSet(obj.fun))
 ```
 
@@ -32,3 +33,37 @@ Finally we start the optimization process and print the result object.
 result = mbo(obj.fun, design = design, learner = learner, control = control, show.info = TRUE)
 print(result)
 ```
+
+# Example run
+
+There is also the function `exampleRun`, which is useful to figure out how `mbo` works and to visualize the results.
+
+```{r, results="hide"}
+ex = exampleRun(obj.fun, control = control, show.info = FALSE)
+```
+```{r}
+print(ex)
+plotExampleRun(ex, iter = 1L)
+plotExampleRun(ex, iter = 3L)
+plotExampleRun(ex, iter = 10L)
+```
+
+Or alternatively for a two dimensional function
+
+```{r, results="hide"}
+obj.fun2 = makeRastriginFunction(2L)
+design2 = generateDesign(n = 10, par.set = smoof::getParamSet(obj.fun2))
+ex2 = exampleRun(obj.fun2, control = control, show.info = FALSE)
+```
+```{r}
+print(ex2)
+plotExampleRun(ex, iter = 1L)
+plotExampleRun(ex, iter = 3L)
+plotExampleRun(ex, iter = 10L)
+```
+
+
+
+
+
+
