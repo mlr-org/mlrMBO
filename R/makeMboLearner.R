@@ -14,19 +14,19 @@
 #' @export
 makeMboLearner = function(control, fun, ...) {
   par.vals = list(...)
-  if (!hasDiscrete(par.set, include.logical = TRUE)) {
+  if (!hasDiscrete(smoof::getParamSet(fun), include.logical = TRUE)) {
     recomended.settings = list(covtype = "matern5_2")
     par.vals = insert(recomended.settings, list(...))
-    base.learner = makeLearner("regr.km", predict.type = "se", par.vals = par.vals)
+    base.learner = makeLearner("regr.km", predict.type = "se")
     if (!control$filter.proposed.points) {
       warningf("filter.proposed.points is not set in the control object. This might lead to the 'leading minor of order ...' error during model fit.")
     }
-    if (isNoisy(fun)) {
+    if (is.null(par.vals$nugget.estim) && isNoisy(fun)) {
       learner = setHyperPars(base.learner, nugget.estim = TRUE)
     } else if (is.null(getHyperPars(base.learner)$nugget) && is.null(getHyperPars(base.learner)$nugget.stability)) {
       learner = setHyperPars(base.learner, nugget.stability = 10^-8)
     } else {
-      learner = base.learner
+      learner = setHyperPars(base.learner, par.vals)
     }
   } else {
     learner = makeLearner("regr.randomForest", predict.type = "se", par.vals = par.vals)
