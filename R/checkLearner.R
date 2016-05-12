@@ -16,11 +16,7 @@ NULL
 # check and create default learner
 checkLearner = function(learner, par.set, control, fun) {
   if (missing(learner) || is.null(learner)) {
-    if (!hasDiscrete(par.set, include.logical = TRUE)) {
-      learner = makeMboKrigingLearner(control, fun)
-    } else {
-      learner = makeLearner("regr.randomForest", predict.type = "se")
-    }
+    learner = makeMboLearner(control, fun)
   } else {
     assertClass(learner, "Learner")
   }
