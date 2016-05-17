@@ -16,6 +16,7 @@ test_that("asyn MBO works", {
   expect_true(nrow(op.df) >= 15)
   expect_true(all(!is.na(op.df$train.time[11:15])))
   expect_true(all(!is.na(op.df$multipoint.cb.lambda[11:15])))
+  expect_equal(op.df$dob[11:15], 1:5)
 })
 
 test_that("asyn MBO works with CL", {
@@ -33,6 +34,7 @@ test_that("asyn MBO works with CL", {
   expect_true(nrow(op.df) >= 15)
   expect_true(all(!is.na(op.df$train.time[11:15])))
   expect_true(all(!is.na(op.df$ei[11:15])))
+  expect_equal(op.df$dob[11:15], 1:5)
 })
 
 test_that("asyn MBO works with mboContinue", {
@@ -55,7 +57,7 @@ test_that("asyn MBO works with mboContinue", {
   save.file = file.path(tempdir(), "mbo_asyn", "mbo.RData")
   dir.create(dirname(save.file))
   des = generateTestDesign(6L, smoof::getParamSet(f))
-  ctrl = makeMBOControl(schedule.method = "asyn", save.file.path = save.file, save.on.disk.at = 0:4)
+  ctrl = makeMBOControl(schedule.method = "asyn", save.file.path = save.file, save.on.disk.at = 0:5)
   ctrl = setMBOControlTermination(ctrl, iters = 4L)
   ctrl = setMBOControlInfill(control = ctrl, crit = "cb", crit.cb.lambda = 2, opt.focussearch.maxit = 2L, opt.focussearch.points = 50L)
   ctrl = setMBOControlMultiPoint(ctrl, method = "cb")

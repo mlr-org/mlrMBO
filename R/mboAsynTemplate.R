@@ -33,27 +33,32 @@ mboAsynTemplate.OptState = function(obj) {
   }
 
   #wrapper to check budget
-  wrapAsynFun = function(i) {
+  asynSingle = function(i) {
     opt.state = readDirectoryToOptState(opt.problem)
     start.after = ifelse(i < control$schedule.nodes, i - 1, 0)
     ##! control$schedule.nodes
     if (!shouldTerminate.OptState(opt.state)$term) {
       runMBOOnline(opt.state, start.after = start.after)
     }
+    invisible()
   }
 
-  if (control$iters < Inf) {
-    #FIXME: Why not parallelMap(AsynLoop, i = 1:m, level = "mlrMBO.asyn")
-    parallelMap(wrapAsynFun, i = seq_len(control$iters), level = "mlrMBO.asyn")
-    opt.state = readDirectoryToOptState(opt.problem)
-  } else if (!is.null(control$batchJobs.reg)) {
+  #infinityLoop wrapper
+  asynInfinityLoop = function(i) {
+    start.after = ifelse(i < control$schedule.nodes, i - 1, 0)
+    repeat {
+      opt.state = readDirectoryToOptState(opt.problem)
+      if (shouldTerminate.OptState(opt.state)$term) break
+      runMBOOnline(opt.state, start.after = start.after, node = i)
+    }
+    invisible()
+  }
+  
+  if (!is.null(control$batchJobs.reg)) {
     #write method to send further jobs if budget is not exhausted and number of waiting jobs gets low
   } else {
+    parallelMap(asynInfinityLoop, i = seq_len(control$schedule.nodes), level = "mlrMBO.asyn")
     opt.state = readDirectoryToOptState(opt.problem)
-    while(!shouldTerminate.OptState(opt.state)$term){
-      parallelMap(wrapAsynFun, i = seq_len(control$schedule.nodes * 100), level = "mlrMBO.asyn")
-      opt.state = readDirectoryToOptState(opt.problem)
-    }
   }
   cleanDirectory(opt.problem)
   return(opt.state)
@@ -68,12 +73,13 @@ runMBOOnline.character = function(x, ...) {
 }
 
 runMBOOnline.OptProblem = function(x, start.after = 0, ...) {
-  runMBOOnline(readDirectoryToOptState(x, proposals.read.at.least = start.after), ...)
+  runMBOOnline(readDirectoryToOptState(x, read.at.least = start.after), ...)
 }
 
-runMBOOnline.OptState = function(x, start.after, ...) {
+runMBOOnline.OptState = function(x, node = 0, ...) {
   opt.state = x
   prop = proposePoints.OptState(opt.state)
+  #FIXME: save node information into prop if possible?
   proposal.file = writeThingToDirectory(getOptStateOptProblem(opt.state), prop, "prop_")
   evalProposedPoints.OptState(opt.state, prop)
   finalizeMboLoop(opt.state)

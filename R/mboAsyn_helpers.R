@@ -23,24 +23,21 @@ readProposalsFromDirectoryToOptPath = function(opt.path, opt.problem, read.at.le
   file.contents = lapply(files, readRDS)
   #concept copied from proposePointsConstantLiar.R
   liar = control$multipoint.cl.lie
-  #FIXME: 
   lie = liar(getOptPathY(opt.path, control$y.name))
   for (prop.el in file.contents) {
     x = dfRowToList(prop.el$prop.points, getOptProblemParSet(opt.problem), 1)
     dob = max(getOptPathDOB(opt.path))
-    addOptPathEl(opt.path, x = x, y = lie, dob = dob + 1, extra = getOptPathEl(opt.path, dob)$extra) #FIXME: We just cheat and copy last known extras to new lie ¯\_(ツ)_/¯
+    last.extra = getOptPathEl(opt.path, dob)$extra #FIXME: We just cheat and copy last known extras to new lie ¯\_(ツ)_/¯
+    last.extra$prop.type = "liar"
+    addOptPathEl(opt.path, x = x, y = lie, dob = dob + 1, extra = last.extra) 
   }
 }
 
-readDirectoryToOptState = function(opt.problem, proposals.read.at.least = 0) {
+readDirectoryToOptState = function(opt.problem, read.at.least = 0) {
   control = getOptProblemControl(opt.problem)
   opt.path = readOptPathFromDirectory(getAsynDir(opt.problem))
   #add proposals with CL to opt.path
-  #FIXME: Always Impute
-  if (control$multipoint.method == "cl") {
-    readProposalsFromDirectoryToOptPath(opt.path, opt.problem, read.at.least = proposals.read.at.least)
-  }
-
+  readProposalsFromDirectoryToOptPath(opt.path, opt.problem, read.at.least = read.at.least - max(getOptPathDOB(opt.path)))
   #find the first available exec.timestamp which does not belong to init.design
   start.time = as.integer(Sys.time())
   for(i in seq_along(opt.path$env$extra)[getOptPathDOB(opt.path)!=0]) {
