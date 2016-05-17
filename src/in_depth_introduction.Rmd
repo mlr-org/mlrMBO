@@ -156,7 +156,7 @@ The possibilities are:
 * ``focussearch``: Firstly a Latin Hypercube design of size ``opt.focussearch.points`` (default 10000) is sampled in the parameter space (by ``randomLHS``) and the design point with the best prediction of the infill criterion is determined. Then, the parameter space is shrunk around the best design point. This process is repeated ``opt.focussearch.maxit`` (default 5) times and the best seen value of the infill criterion is passed back.
 * ```cmaes``: The optimal point is found with a covariance matrix adapting evolutionary strategy from the **cmeas** package. If the run fails, a random point is generated and a warning is given. Further control arguments can be provided in ``opt.cmaes.control`` as a list. 
 * ``ea``: Use an evolutionary multiobjective optimization algorithm from the package **emoa** to determine the best point. The population size mu can be set by  ``opt.ea.mu`` (default value is 10). (mu+1) means that in each population only one child is generated using crossover und mutation operators. The parameters ``eta`` and ``p`` of the latter two operators can be adjusted via the attributes ``opt.ea.sbx.eta``, ``opt.ea.sbx.p``,``opt.ea.pm.eta`` and ``opt.ea.pm.p``. The default number of EA iterations is 500 and can be changed by ``opt.ea.maxit`` attribute.
-* ``nsga2``: Use an non-domiated sorting genetic algorithm from the package **nsga2R** to determine the best point. This algorithm should be used for multi object optimization.
+* ``nsga2``: Use an non-dominated sorting genetic algorithm from the package **nsga2R** to determine the best point. This algorithm should be used for multi object optimization.
 
 <!-- FIXME informations about "nsga2" -->
 
