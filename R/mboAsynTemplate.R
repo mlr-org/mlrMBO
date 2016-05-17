@@ -43,6 +43,7 @@ mboAsynTemplate.OptState = function(obj) {
   }
 
   if (control$iters < Inf) {
+    #FIXME: Why not parallelMap(AsynLoop, i = 1:m, level = "mlrMBO.asyn")
     parallelMap(wrapAsynFun, i = seq_len(control$iters), level = "mlrMBO.asyn")
     opt.state = readDirectoryToOptState(opt.problem)
   } else if (!is.null(control$batchJobs.reg)) {

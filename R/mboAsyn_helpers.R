@@ -23,6 +23,7 @@ readProposalsFromDirectoryToOptPath = function(opt.path, opt.problem, read.at.le
   file.contents = lapply(files, readRDS)
   #concept copied from proposePointsConstantLiar.R
   liar = control$multipoint.cl.lie
+  #FIXME: 
   lie = liar(getOptPathY(opt.path, control$y.name))
   for (prop.el in file.contents) {
     x = dfRowToList(prop.el$prop.points, getOptProblemParSet(opt.problem), 1)
@@ -35,6 +36,7 @@ readDirectoryToOptState = function(opt.problem, proposals.read.at.least = 0) {
   control = getOptProblemControl(opt.problem)
   opt.path = readOptPathFromDirectory(getAsynDir(opt.problem))
   #add proposals with CL to opt.path
+  #FIXME: Always Impute
   if (control$multipoint.method == "cl") {
     readProposalsFromDirectoryToOptPath(opt.path, opt.problem, read.at.least = proposals.read.at.least)
   }
