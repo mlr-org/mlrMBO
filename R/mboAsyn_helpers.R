@@ -8,12 +8,16 @@ readOptPathFromDirectory = function(path) {
   return(op)
 }
 
+listProposals = function(path) {
+  list.files(path, pattern = "(^|_)prop_[[:alnum:]]+\\.rds$", full.names = TRUE)
+}
+
 readProposalsFromDirectoryToOptPath = function(opt.path, opt.problem, read.at.least = 0, time.out = 60) {
   control = getOptProblemControl(opt.problem)
   path = getAsynDir(opt.problem)
   start.time = Sys.time()
   repeat {
-    files = list.files(path, pattern = "^prop_[[:alnum:]]+\\.rds$", full.names = TRUE)
+    files = listProposals(path)
     if (length(files) >= read.at.least || difftime(Sys.time(), start.time, units = "secs") > read.at.least*time.out) {
       break
     } else {
@@ -75,6 +79,12 @@ writeThingToDirectory = function(opt.problem, thing, prefix, hash = TRUE){
 cleanDirectory = function(opt.problem) {
   path = getAsynDir(opt.problem)
   unlink(path, recursive = TRUE, force = TRUE)
+}
+
+cleanProposals = function(opt.problem) {
+  path = getAsynDir(opt.problem)
+  files = listProposals(path)
+  unlink(files, recursive = FALSE, force = FALSE)
 }
 
 getAsynDir = function(opt.problem) {

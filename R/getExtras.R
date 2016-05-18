@@ -97,11 +97,12 @@ getExtras = function(n, prop, train.time, control) {
       ex$predicted.time = predicted.time[i]
       ex$predicted.time.se = predicted.time.se[i]
       ex$scheduled.at = NA_real_
-      ex$scheduled.on = NA_real_
+      ex$scheduled.on = NA_integer_
       ex$scheduled.job = NA_real_
       ex$scheduled.priority = NA_real_
     } else if (control$schedule.method == "asyn") {
       ex$eval.state = "done" #done/proposed
+      ex$scheduled.on = NA_integer_
     }
     # if we use asyn MBO store node information and evaluation starte
     ex$train.time = if (i == 1) train.time else NA_real_

@@ -21,6 +21,7 @@ mboContinue = function(file) {
       warningf("Continuation of asyn disables the time.budget (%i) and we only use exec.time.budget (%i)", control$time.budget, control$exec.time.budget)
       control$time.budget = Inf #FIXME for obvious reasons
     }
+    cleanProposals(getOptStateOptProblem(opt.state))
     final.opt.state = mboAsynTemplate(opt.state)
   } else if (control$infill.crit == "random") {
     stopf("RandomSearch ist not supported to be continued. Return last state", state)

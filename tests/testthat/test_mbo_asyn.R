@@ -39,6 +39,7 @@ test_that("asyn MBO works with CL", {
 
 test_that("asyn MBO works with mboContinue", {
   # make sure there is no or - object in the environment
+  save.file = file.path(tempdir(), "mbo_asyn", "mbo.RData")
   or = NULL
   assign(".counter", 0L, envir = .GlobalEnv)
   f = makeSingleObjectiveFunction(
@@ -54,7 +55,6 @@ test_that("asyn MBO works with mboContinue", {
   )
 
   learner = makeLearner("regr.randomForest", predict.type = "se", ntree = 50, ntree.for.se = 20)
-  save.file = file.path(tempdir(), "mbo_asyn", "mbo.RData")
   dir.create(dirname(save.file))
   des = generateTestDesign(6L, smoof::getParamSet(f))
   ctrl = makeMBOControl(schedule.method = "asyn", save.file.path = save.file, save.on.disk.at = 0:5)

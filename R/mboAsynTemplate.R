@@ -76,11 +76,18 @@ runMBOOnline.OptProblem = function(x, start.after = 0, ...) {
   runMBOOnline(readDirectoryToOptState(x, read.at.least = start.after), ...)
 }
 
-runMBOOnline.OptState = function(x, node = 0, ...) {
+runMBOOnline.OptState = function(x, node = NA_integer_, ...) {
   opt.state = x
   prop = proposePoints.OptState(opt.state)
-  #FIXME: save node information into prop if possible?
-  proposal.file = writeThingToDirectory(getOptStateOptProblem(opt.state), prop, "prop_")
+  prop$extra$scheduled.on = node
+  prop$extra$eval.state = "proposed"
+  if (is.na(node)) {
+    prop.prefix = "prop_"
+  } else {
+    prop.prefix = sprintf("node_%i_prop_", node)
+  }
+  proposal.file = writeThingToDirectory(getOptStateOptProblem(opt.state), prop, prop.prefix)
+  prop$extra$eval.state = "done"
   evalProposedPoints.OptState(opt.state, prop)
   finalizeMboLoop(opt.state)
   unlink(proposal.file)
