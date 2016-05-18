@@ -73,7 +73,8 @@ test_that("mbo works with different learners", {
   testit(f1, "regr.nnet", FALSE)
   testit(f2, "regr.nnet", TRUE)
   testit(f2, "regr.nnet", FALSE)
-  testit(f2, makeMboKrigingLearner(ctrl, f2), TRUE, FALSE)
+  testit(f2, makeMboLearner(ctrl, f1), TRUE, FALSE)
+  testit(f2, makeMboLearner(ctrl, f2), TRUE, FALSE)
 
 
   # FIXME: I disable the folowing tests .. I think the tests above should be
