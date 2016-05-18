@@ -2,6 +2,7 @@ language: R
 sudo: required
 cache: packages
 warnings_are_errors: false
+r_check_args: "--as-cran"
 env:
   global:
     - _R_CHECK_TIMINGS_=0
