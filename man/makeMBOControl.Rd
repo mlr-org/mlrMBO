@@ -15,7 +15,7 @@ makeMBOControl(n.objectives = 1L, propose.points = 1L,
   resample.measures = list(mse), output.num.format = "\%.3g",
   schedule.method = "none", schedule.nodes = 1L,
   schedule.priority = "infill", schedule.priority.time = FALSE,
-  schedule.fill.random = TRUE)
+  schedule.fill.random = TRUE, time.model.trafo.log = FALSE)
 }
 \arguments{
 \item{n.objectives}{[\code{integer(1)}]\cr
@@ -126,6 +126,9 @@ Priorize by time? Meaning short predicted jobs will run first. Default is \code{
 
 \item{schedule.fill.random}{[\code{logical(1)}]\cr
 If scheduling does not fill all nodes, should we fill it with random points which have fast enough runtime? Default is \code{TRUE}.}
+
+\item{time.model.trafo.log}{[\code{logical(1)}]\cr
+Should the time model be learned on log-transformed times? Default is \code{FALSE}.}
 }
 \value{
 [\code{\link{MBOControl}}].
