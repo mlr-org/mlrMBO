@@ -34,7 +34,7 @@ makeMBOTerminationMaxBudget = function(time.budget) {
   assertNumber(time.budget, na.ok = FALSE)
   force(time.budget)
   function(opt.state) {
-    time.used = as.numeric(getOptStateTimeUsed(opt.state), units = "secs")
+    time.used = getOptStateTimeUsed(opt.state)
     term = (time.used > time.budget)
     message = if (!term) NA_character_ else sprintf("Time budged %f reached.", time.budget)
     return(list(term = term, message = message, code = "term.time"))

@@ -40,21 +40,22 @@ readProposalsFromDirectoryToOptPath = function(opt.path, opt.problem, read.at.le
 readDirectoryToOptState = function(opt.problem, read.at.least = 0) {
   control = getOptProblemControl(opt.problem)
   opt.path = readOptPathFromDirectory(getAsynDir(opt.problem))
+  max.dob = max(getOptPathDOB(opt.path))
   #add proposals with CL to opt.path
-  readProposalsFromDirectoryToOptPath(opt.path, opt.problem, read.at.least = read.at.least - max(getOptPathDOB(opt.path)))
+  readProposalsFromDirectoryToOptPath(opt.path, opt.problem, read.at.least = read.at.least - max.dob)
   #find the first available exec.timestamp which does not belong to init.design
-  start.time = as.integer(Sys.time())
-  for(i in seq_along(opt.path$env$extra)[getOptPathDOB(opt.path)!=0]) {
-    start.time = opt.path$env$extra[[i]]$exec.timestamp
-    if (!is.null(start.time) && !is.na(start.time)) break
+  start.time = as.numeric(Sys.time(), units = "secs")
+  if (max.dob > 0) {
+    exec.timestamps = getOptPathCols(opt.path, "exec.timestamp", dob = seq_len(max.dob))[["exec.timestamp"]]
+    start.time = min(c(start.time, exec.timestamps), na.rm = TRUE)
   }
-
+  
   makeOptState(
     opt.problem = opt.problem, 
     opt.path = opt.path, 
     loop = sum(getOptPathDOB(opt.path)!=0) + 1,
-    time.used = as.integer(Sys.time()) - start.time
-    )
+    time.used = as.numeric(Sys.time(), units = "secs") - start.time
+  )
 }
 
 writeResultToDirectory = function(opt.state) {

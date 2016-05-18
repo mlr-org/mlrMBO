@@ -43,11 +43,11 @@ setOptStateLoopStarttime = function(opt.state) {
 
 setOptStateTimeUsed = function(opt.state, time.used = NULL, time.add = NULL) {
   if (!is.null(time.used)) {
-    opt.state$time.used = time.used
+    opt.state$time.used = as.numeric(time.used, units = "secs")
   } else if (!is.null(time.add)) {
-    opt.state$time.used = getOptStateTimeUsed(opt.state) + time.add
+    opt.state$time.used = getOptStateTimeUsed(opt.state) + as.numeric(time.add, units = "secs")
   } else {
-    opt.state$time.used = getOptStateTimeUsed(opt.state) + difftime(Sys.time(), getOptStateLoopStarttime(opt.state), units = "secs")
+    opt.state$time.used = getOptStateTimeUsed(opt.state) + as.numeric(difftime(Sys.time(), getOptStateLoopStarttime(opt.state)), units = "secs")
     setOptStateLoopStarttime(opt.state)
   }
   invisible()
