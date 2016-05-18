@@ -2,7 +2,7 @@ language: R
 sudo: required
 cache: packages
 warnings_are_errors: false
-r_check_args: "--as-cran"
+r_check_args: "--as-cran --run-donttest"
 env:
   global:
     - _R_CHECK_TIMINGS_=0
