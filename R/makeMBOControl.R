@@ -91,6 +91,8 @@
 #'    Priorize by time? Meaning short predicted jobs will run first. Default is \code{FALSE}.
 #' @param schedule.fill.random [\code{logical(1)}]\cr
 #'    If scheduling does not fill all nodes, should we fill it with random points which have fast enough runtime? Default is \code{TRUE}.
+#' @param time.model.trafo.log [\code{logical(1)}]\cr
+#'    Should the time model be learned on log-transformed times? Default is \code{FALSE}.
 #' @return [\code{\link{MBOControl}}].
 #' @aliases MBOControl
 #' @family MBOControl
@@ -114,7 +116,8 @@ makeMBOControl = function(n.objectives = 1L,
   schedule.nodes = 1L,
   schedule.priority = "infill",
   schedule.priority.time = FALSE,
-  schedule.fill.random = TRUE
+  schedule.fill.random = TRUE,
+  time.model.trafo.log = FALSE
 ) {
 
   n.objectives = asInt(n.objectives, lower = 1L)
@@ -174,6 +177,7 @@ makeMBOControl = function(n.objectives = 1L,
     schedule.priority = schedule.priority,
     schedule.priority.time = schedule.priority.time,
     schedule.fill.random = schedule.fill.random,
+    time.model.trafo.log = time.model.trafo.log,
     multifid = FALSE
   )
 

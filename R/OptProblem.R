@@ -57,7 +57,9 @@ getOptProblemLearner = function(opt.problem) {
 }
 
 getOptProblemTimeLearner = function(opt.problem) {
-  makeTrafoWrapper(
+  control = getOptProblemControl(opt.problem)
+  if (control$time.model.trafo.log) {
+    learner = makeTrafoWrapper(
     getOptProblemLearner(opt.problem), 
     trafo = log, 
     trafo.inverse = exp, 
@@ -67,6 +69,10 @@ getOptProblemTimeLearner = function(opt.problem) {
       # <=> x = 1/2 e^(2 s+y)-e^y/2
       0.5 * exp(2 * se + y) - exp(y)/2
     })
+  } else {
+    learner = getOptProblemLearner(opt.problem)
+  }
+  learner
 }
 
 getOptProblemControl = function(opt.problem) {
