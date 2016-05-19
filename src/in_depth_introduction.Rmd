@@ -191,18 +191,16 @@ Add multi-fidelity options to the ``MBOControl`` control object. This is useful 
 This adds multi-criteria optimization specific options to the control object. For details see the tutorial page on multi-criteria optimization.
 
 
-There are also many other functions and attributes which user can set in a desired way...
-<!-- FIXME further informations about setMBOControl... functions here ? -->
-<!-- like how often should the surrogate model be stored or resampled during the optimization. -->
+
 The list of all attributes is provided in the software documentation.
-<!-- Let us construct ``mboControl`` objects for our two object functions. -->
+
 
 ```{r eval=FALSE}
 control1 = makeMBOControl()
 control1 = setMBOControlInfill(
   control = control1,
   crit = "ei",
-  opt = "cmaes"
+  opt = "focussearch"
 )
 control1 = setMBOControlTermination(
   control = control1,
@@ -221,66 +219,58 @@ control2 = setMBOControlTermination(
 )
 ```
 
-Experiments and Output
-======================
+# Experiments and Output
+
 
 Now we will apply the mbo() function to optimize the two objective functions.
 
-Optimization of ``objfun1``
----------------------------
+## Optimization of objfun1
 
 
-<!-- FIXME??? Optimization has a long computation time -->
+
 ```{r eval=FALSE}
-mbo1 = mbo(objfun1, design = design1, learner = learner_km, control = control1, show.info = TRUE)
+mbo1 = mbo(objfun1, design = design1, learner = surr.km, control = control1, show.info = TRUE)
 mbo1
-getOptPathY(mbo1$opt.path, "y") # get all y values
-
 ```
 
-The output of mbo function is a structure of several variables. The most important are:
+The default output of mbo contains the best found parameter set and the optimzation path. The ``MBOResult`` object contains additional information, most importanty:
 
 * x: the best point of the parameter space
 * y: the associated best value of the objective function
 * opt.path: optimization path. See **ParamHelpers** for further information.
-* models: If no other setting were provided in the ``MBOControl`` object, the last estimated surrogate is given here.
+* models: Depending on ``store.model.at`` in the ``MBOControl`` object, this contains zero, one or multiple surrogate models (default is to save the model generated after the last iteration).
 * ...
 
-
-<!-- FIXME: get optimization path as data.frame !-->
-
-We can also change some attributes of the ``MBOControl`` object and run mbo() function again
+We can also change some arguments of the ``MBOControl`` object and run ``mbo()`` again:
 
 ```{r eval=FALSE}
 control1$infill.crit = "mean"
-control1$infill.opt = "focussearch"
-mbo1 = mbo(objfun1, design = design1, learner = learner_km, control = control1, show.info = FALSE)
+control1$iters = 5L
+mbo1 = mbo(objfun1, design = design1, learner = surr.km, control = control1, show.info = FALSE)
 mbo1$y
 ```
 
 
-Optimization of ``objfun2``
----------------------------
+## Optimization of objfun2
 
-Let us apply **mlrMBO** package to optimize object2 function, which contains one factor variable.
-We have already mentioned before that in this case just the ``focussearch`` infill optimization function is suitable.
-If we use ``mean`` as infill criterion any kind of model which can handle with factor variables can be used here (like random tree, random forest, linear model and many others).
+Now let us use **mlrMBO** to optimize ``objfun2``, which contains one factor variable.
+As we have already mentioned before, in case of factor variables only ``focussearch`` is suitable.
+If we use ``mean`` as the infill criterion, any kind of model which can handle factors can be used (like regression trees, random forests, linear models and many others).
 
 ```{r eval=FALSE}
 mbo2 = mbo(objfun2, design = design2, learner = learner_rf, control = control2, show.info = FALSE)
 mbo2$y
 ```
 
-In contrast, if one will apply ``ei`` or ``cb`` infill criteria,
-the ``predict.type`` attribute of the learner have be set to ``se``, if possible. A list of regression learners which support it can be viewed by:
+If we want to use the expected improvement ``ei`` or (lower) confidence bound ``cb`` infill criteria,
+the ``predict.type`` attribute of the learner has be set to ``se``. A list of regression learners which support it can be viewed by:
 
 ```{r eval=FALSE}
-#listLearners(type = "regr", se = TRUE)
+listLearners(type = "regr", properties = "se")
 ```
 
-<!-- If no comment here, we get a lot warning message !-->
 
-We hence modify the random forest learner and optimize ``objfun2`` by ``ei`` infill criterion.
+We modify the random forest to predict the standard error and optimize ``objfun2`` by the ``ei`` infill criterion.
 
 ```{r eval=FALSE}
 learner_rf = makeLearner("regr.randomForest", predict.type = "se")
@@ -290,17 +280,7 @@ mbo2$y
 ```
 
 
-Finally, if a learner, which does not support the ``se`` prediction type, should be applied for the optimization with ``ei`` infill criterion, there is a possibility to create a bagging model with the desired characteristics. 
-The attribute ``bw.iters`` provides the number of models in the ensemble, see documentation for ``makeBaggingWrapper`` of **mlr** package.
-
-
-```{r eval=FALSE}
-learner_rt = makeLearner("regr.rpart")
-bag_rt = makeBaggingWrapper(learner_rt, bw.iters = 5)
-bag_rt = setPredictType(bag_rt, predict.type = "se")
-mbo2 = mbo(objfun2, design = design2, learner = bag_rt, control = control2, show.info = FALSE)
-mbo2$y
-```
+Finally, if a learner, which does not support the ``se`` prediction type, should be applied for the optimization with the ``ei`` infill criterion, it possible to create a bagging model with the desired characteristics. For details on how to do it take a look at the [bagging section](https://mlr-org.github.io/mlr-tutorial/devel/html/bagging/index.html) in the ``mlr`` tutorial.
 
 <!--
  TODO
