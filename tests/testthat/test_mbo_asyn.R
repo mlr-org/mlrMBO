@@ -17,6 +17,7 @@ test_that("asyn MBO works", {
   expect_true(all(!is.na(op.df$train.time[11:15])))
   expect_true(all(!is.na(op.df$multipoint.cb.lambda[11:15])))
   expect_equal(op.df$dob[11:15], 1:5)
+  expect_true(all(!is.na(op.df$scheduled.on[11:15])))
 })
 
 test_that("asyn MBO works with CL", {
@@ -35,6 +36,7 @@ test_that("asyn MBO works with CL", {
   expect_true(all(!is.na(op.df$train.time[11:15])))
   expect_true(all(!is.na(op.df$ei[11:15])))
   expect_equal(op.df$dob[11:15], 1:5)
+  expect_true(all(!is.na(op.df$scheduled.on[11:15])))
 })
 
 test_that("asyn MBO works with mboContinue", {

@@ -79,15 +79,15 @@ runMBOOnline.OptProblem = function(x, start.after = 0, ...) {
 runMBOOnline.OptState = function(x, node = NA_integer_, ...) {
   opt.state = x
   prop = proposePoints.OptState(opt.state)
-  prop$extra$scheduled.on = node
-  prop$extra$eval.state = "proposed"
+  prop$scheduled.on = node
+  prop$eval.state = "proposed"
   if (is.na(node)) {
     prop.prefix = "prop_"
   } else {
     prop.prefix = sprintf("node_%i_prop_", node)
   }
   proposal.file = writeThingToDirectory(getOptStateOptProblem(opt.state), prop, prop.prefix)
-  prop$extra$eval.state = "done"
+  prop$eval.state = "done"
   evalProposedPoints.OptState(opt.state, prop)
   finalizeMboLoop(opt.state)
   unlink(proposal.file)

@@ -40,6 +40,9 @@ getExtras = function(n, prop, train.time, control) {
     if (control$multifid) {
       prop$crit.components = cbind.data.frame(prop$crit.components, mf.ei.last = NA_real_, mf.se = NA_real_, mf.alpha1 = NA_real_, mf.alpha2 = NA_real_, mf.alpha3 = NA_real_, mf.sd = NA_real_)
     }
+    if (control$schedule.method == "asyn") {
+      prop = c(prop, scheduled.on = NA_integer_, eval.state = NA_character_) 
+    }
   }
   exs = vector("list", n)
   errs = prop$errors.model
@@ -101,8 +104,8 @@ getExtras = function(n, prop, train.time, control) {
       ex$scheduled.job = NA_real_
       ex$scheduled.priority = NA_real_
     } else if (control$schedule.method == "asyn") {
-      ex$eval.state = "done" #done/proposed
-      ex$scheduled.on = NA_integer_
+      ex$eval.state = prop$eval.state
+      ex$scheduled.on = prop$scheduled.on
     }
     # if we use asyn MBO store node information and evaluation starte
     ex$train.time = if (i == 1) train.time else NA_real_
