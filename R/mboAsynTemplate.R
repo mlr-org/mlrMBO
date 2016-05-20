@@ -45,12 +45,11 @@ mboAsynTemplate.OptState = function(obj) {
 
   #infinityLoop wrapper
   asynInfinityLoop = function(i) {
-    start.after = ifelse(i < control$schedule.nodes, i - 1, 0)
+    Sys.sleep(0.1 * (i-1))
     repeat {
       opt.state = readDirectoryToOptState(opt.problem)
       if (shouldTerminate.OptState(opt.state)$term) break
-      runMBOOnline(opt.state, start.after = start.after, node = i)
-      start.after = 0
+      runMBOOnline(opt.state, node = i)
     }
     invisible()
   }
@@ -73,21 +72,23 @@ runMBOOnline.character = function(x, ...) {
   runMBOOnline(readRDS(file.path(x, "opt_problem.rds")), ...)
 }
 
-runMBOOnline.OptProblem = function(x, start.after = 0, ...) {
-  runMBOOnline(readDirectoryToOptState(x, read.at.least = start.after), ...)
+runMBOOnline.OptProblem = function(x, ...) {
+  runMBOOnline(readDirectoryToOptState(x), ...)
 }
 
 runMBOOnline.OptState = function(x, node = NA_integer_, ...) {
+  if (!is.na(node)) {
+    node.prefix = sprintf("node_%i_", node)
+  } else {
+    node.prefix = ""
+  }
   opt.state = x
+  block.file = writeThingToDirectory(getOptStateOptProblem(opt.state), opt.state, sprintf("%sblock_", node.prefix), hash = TRUE)
   prop = proposePoints.OptState(opt.state)
   prop$scheduled.on = node
   prop$eval.state = "proposed"
-  if (is.na(node)) {
-    prop.prefix = "prop_"
-  } else {
-    prop.prefix = sprintf("node_%i_prop_", node)
-  }
-  proposal.file = writeThingToDirectory(getOptStateOptProblem(opt.state), prop, prop.prefix)
+  unlink(block.file)
+  proposal.file = writeThingToDirectory(getOptStateOptProblem(opt.state), prop, sprintf("%sprop_", node.prefix))
   prop$eval.state = "done"
   evalProposedPoints.OptState(opt.state, prop)
   finalizeMboLoop(opt.state)

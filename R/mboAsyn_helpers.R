@@ -12,18 +12,10 @@ listProposals = function(path) {
   list.files(path, pattern = "(^|_)prop_[[:alnum:]]+\\.rds$", full.names = TRUE)
 }
 
-readProposalsFromDirectoryToOptPath = function(opt.path, opt.problem, read.at.least = 0, time.out = 60) {
+readProposalsFromDirectoryToOptPath = function(opt.path, opt.problem) {
   control = getOptProblemControl(opt.problem)
   path = getAsynDir(opt.problem)
-  start.time = Sys.time()
-  repeat {
-    files = listProposals(path)
-    if (length(files) >= read.at.least || difftime(Sys.time(), start.time, units = "secs") > read.at.least*time.out) {
-      break
-    } else {
-      Sys.sleep(1)
-    }
-  }
+  files = listProposals(path)
   file.contents = lapply(files, readRDS)
   #concept copied from proposePointsConstantLiar.R
   liar = control$multipoint.cl.lie
@@ -31,25 +23,48 @@ readProposalsFromDirectoryToOptPath = function(opt.path, opt.problem, read.at.le
   for (prop.el in file.contents) {
     x = dfRowToList(prop.el$prop.points, getOptProblemParSet(opt.problem), 1)
     dob = max(getOptPathDOB(opt.path))
-    last.extra = getOptPathEl(opt.path, dob)$extra #FIXME: We just cheat and copy last known extras to new lie ¯\_(ツ)_/¯
+    last.extra = getOptPathEl(opt.path, getOptPathLength(opt.path))$extra #FIXME: We just cheat and copy last known extras to new lie ¯\_(ツ)_/¯
     last.extra$prop.type = "liar"
     addOptPathEl(opt.path, x = x, y = lie, dob = dob + 1, extra = last.extra) 
   }
 }
 
-readDirectoryToOptState = function(opt.problem, read.at.least = 0) {
-  control = getOptProblemControl(opt.problem)
-  opt.path = readOptPathFromDirectory(getAsynDir(opt.problem))
-  max.dob = max(getOptPathDOB(opt.path))
-  #add proposals with CL to opt.path
-  readProposalsFromDirectoryToOptPath(opt.path, opt.problem, read.at.least = read.at.least)
-  #find the first available exec.timestamp which does not belong to init.design
+hashOptPath = function(opt.path) {
+  digest::sha1(list(
+  getOptPathX(opt.path),
+  getOptPathY(opt.path),
+  getOptPathDOB(opt.path),
+  getOptPathCol(opt.path, "prop.type")  
+  ))
+}
+
+readDirectoryToOptState = function(opt.problem, respect.block = TRUE, time.out = 3) {
   start.time = as.numeric(Sys.time(), units = "secs")
+  control = getOptProblemControl(opt.problem)
+  repeat {
+    opt.path = readOptPathFromDirectory(getAsynDir(opt.problem))
+    max.dob = max(getOptPathDOB(opt.path))
+    #add proposals with CL to opt.path
+    readProposalsFromDirectoryToOptPath(opt.path, opt.problem)
+    #if we do not have to look fore identical opt.paths: break and continue normal
+    if (!respect.block) break
+    block.files = list.files(getAsynDir(opt.problem), pattern = "(^|_)block_[[:alnum:]]+\\.rds$", full.names = TRUE)
+    #if there aint any opt.states blocked: break and continue normal
+    if (length(block.files)==0) break
+    #if there aint any similiar opt.state: break and continue normal
+    op.hashes = lapply(block.files, function(f) hashOptPath(getOptStateOptPath(readRDS(f))))
+    this.op.hash = hashOptPath(opt.path)
+    if (this.op.hash %nin% op.hashes) break
+    #we don't want to read an similar opt.state. That's why we wait until proposals or results have been generated to get another opt.state.
+    # unless we have a time out
+    if (as.numeric(Sys.time(), units = "secs") - start.time > time.out) break
+    Sys.sleep(0.1)
+  }
+  #find the first available exec.timestamp which does not belong to init.design
   if (max.dob > 0) {
-    exec.timestamps = getOptPathCols(opt.path, "exec.timestamp", dob = seq_len(max.dob))[["exec.timestamp"]]
+    exec.timestamps = getOptPathCol(opt.path, "exec.timestamp", dob = seq_len(max.dob))
     start.time = min(c(start.time, exec.timestamps), na.rm = TRUE)
   }
-  
   makeOptState(
     opt.problem = opt.problem, 
     opt.path = opt.path, 
@@ -67,7 +82,7 @@ writeResultToDirectory = function(opt.state) {
 
 writeThingToDirectory = function(opt.problem, thing, prefix, hash = TRUE){
   if (hash) {
-    hash = substr(digest::sha1(list(Sys.time(), Sys.info())), 1, 64-nchar(prefix)-4) #filenames will have length 64
+    hash = substr(digest::sha1(list(Sys.time(), Sys.info(), Sys.getpid())), 1, 64-nchar(prefix)-4) #filenames will have length 64
   } else {
     hash = ""
   }
