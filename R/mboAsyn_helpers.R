@@ -42,7 +42,7 @@ readDirectoryToOptState = function(opt.problem, read.at.least = 0) {
   opt.path = readOptPathFromDirectory(getAsynDir(opt.problem))
   max.dob = max(getOptPathDOB(opt.path))
   #add proposals with CL to opt.path
-  readProposalsFromDirectoryToOptPath(opt.path, opt.problem, read.at.least = read.at.least - max.dob)
+  readProposalsFromDirectoryToOptPath(opt.path, opt.problem, read.at.least = read.at.least)
   #find the first available exec.timestamp which does not belong to init.design
   start.time = as.numeric(Sys.time(), units = "secs")
   if (max.dob > 0) {
@@ -53,7 +53,7 @@ readDirectoryToOptState = function(opt.problem, read.at.least = 0) {
   makeOptState(
     opt.problem = opt.problem, 
     opt.path = opt.path, 
-    loop = sum(getOptPathDOB(opt.path)!=0) + 1,
+    loop = max(getOptPathDOB(opt.path)) + 1,
     time.used = as.numeric(Sys.time(), units = "secs") - start.time
   )
 }

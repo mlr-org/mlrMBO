@@ -50,6 +50,7 @@ mboAsynTemplate.OptState = function(obj) {
       opt.state = readDirectoryToOptState(opt.problem)
       if (shouldTerminate.OptState(opt.state)$term) break
       runMBOOnline(opt.state, start.after = start.after, node = i)
+      start.after = 0
     }
     invisible()
   }
