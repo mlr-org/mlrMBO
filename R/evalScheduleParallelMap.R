@@ -19,7 +19,7 @@ evalScheduleParallelMap = function(wrapFun, xs, xs.trafo, xs.schedule.info = NUL
   funRes = parallelMap(wrapFun, xs.trafo, level = "mlrMBO.feval",
     impute.error = if (is.null(imputeY)) NULL else identity)
 
-  list(funRes = funRes, xs = xs, xs.trafo = xs.trafo, extras = extras, dob = asInteger(getOptStateLoop(opt.state)))
+  list(funRes = funRes, xs = xs, xs.trafo = xs.trafo, extras = extras, dob = getOptStateLoop(opt.state))
 }
 
 evalScheduleSmartParallelMap = function(wrapFun, xs, xs.trafo, xs.schedule.info = NULL, extras = NULL, opt.state) {

@@ -24,7 +24,7 @@ setOptStateLoop = function(opt.state, loop = NULL) {
   if (is.null(loop))
     opt.state$loop = opt.state$loop + 1L
   else
-    opt.state$loop = loop
+    opt.state$loop = as.integer(loop)
   # save resampling and models in result routine
   setOptStateRandomSeed(opt.state)
   setOptStateTimeUsed(opt.state)
