@@ -38,7 +38,7 @@ hashOptPath = function(opt.path) {
   ))
 }
 
-readDirectoryToOptState = function(opt.problem, respect.block = TRUE, time.out = 3) {
+readDirectoryToOptState = function(opt.problem, respect.block = TRUE, time.out = 60) {
   start.time = as.numeric(Sys.time(), units = "secs")
   control = getOptProblemControl(opt.problem)
   repeat {
