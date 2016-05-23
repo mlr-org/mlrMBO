@@ -48,7 +48,7 @@ plotExampleRun(ex, iter = 3L)
 plotExampleRun(ex, iter = 10L)
 ```
 
-Or alternatively for a two dimensional function
+Or alternatively for a two dimensional function:
 
 ```{r, results="hide"}
 obj.fun2 = makeRastriginFunction(2L)
@@ -57,9 +57,9 @@ ex2 = exampleRun(obj.fun2, control = control, show.info = FALSE)
 ```
 ```{r}
 print(ex2)
-plotExampleRun(ex, iter = 1L)
-plotExampleRun(ex, iter = 3L)
-plotExampleRun(ex, iter = 10L)
+plotExampleRun(ex2, iter = 1L)
+plotExampleRun(ex2, iter = 3L)
+plotExampleRun(ex2, iter = 10L)
 ```
 
 

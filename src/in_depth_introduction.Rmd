@@ -243,7 +243,7 @@ The default output of mbo contains the best found parameter set and the optimzat
 
 We can also change some arguments of the ``MBOControl`` object and run ``mbo()`` again:
 
-```{r eval=FALSE}
+```{r eval=TRUE}
 control1$infill.crit = "mean"
 control1$iters = 5L
 mbo1 = mbo(objfun1, design = design1, learner = surr.km, control = control1, show.info = FALSE)
@@ -257,7 +257,7 @@ Now let us use **mlrMBO** to optimize ``objfun2``, which contains one factor var
 As we have already mentioned before, in case of factor variables only ``focussearch`` is suitable.
 If we use ``mean`` as the infill criterion, any kind of model which can handle factors can be used (like regression trees, random forests, linear models and many others).
 
-```{r eval=FALSE}
+```{r eval=TRUE}
 mbo2 = mbo(objfun2, design = design2, learner = learner_rf, control = control2, show.info = FALSE)
 mbo2$y
 ```
