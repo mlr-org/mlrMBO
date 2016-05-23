@@ -12,11 +12,18 @@ listProposals = function(path) {
   list.files(path, pattern = "(^|_)prop_[[:alnum:]]+\\.rds$", full.names = TRUE)
 }
 
+readFileContents = function(files) {
+  file.contents = lapply(files, function(f) {
+    tryCatch({readRDS(f)}, error = function(e) return(NULL))
+  })
+  file.contents[!sapply(file.contents, is.null)]
+}
+
 readProposalsFromDirectoryToOptPath = function(opt.path, opt.problem) {
   control = getOptProblemControl(opt.problem)
   path = getAsynDir(opt.problem)
   files = listProposals(path)
-  file.contents = lapply(files, readRDS)
+  file.contents = readFileContents(files)
   #concept copied from proposePointsConstantLiar.R
   liar = control$multipoint.cl.lie
   lie = liar(getOptPathY(opt.path, control$y.name))
@@ -52,7 +59,9 @@ readDirectoryToOptState = function(opt.problem, respect.block = TRUE, time.out =
     #if there aint any opt.states blocked: break and continue normal
     if (length(block.files)==0) break
     #if there aint any similiar opt.state: break and continue normal
-    op.hashes = lapply(block.files, function(f) hashOptPath(getOptStateOptPath(readRDS(f))))
+    file.contents = readFileContents(block.files)
+    if (length(file.contents)==0) break
+    op.hashes = lapply(file.contents, function(f) hashOptPath(getOptStateOptPath(f)))
     this.op.hash = hashOptPath(opt.path)
     if (this.op.hash %nin% op.hashes) break
     #we don't want to read an similar opt.state. That's why we wait until proposals or results have been generated to get another opt.state.

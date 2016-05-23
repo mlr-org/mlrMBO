@@ -13,11 +13,11 @@ test_that("asyn MBO works", {
   parallelMap::parallelStop()
   unlink(dirname(save.file), recursive = TRUE, force = TRUE)
   op.df = as.data.frame(or$opt.path)
-  expect_true(nrow(op.df) >= 15)
+  expect_true(nrow(op.df) >= 14)
   #expect_true(all(!is.na(op.df$train.time[11:15])))
-  expect_true(all(!is.na(op.df$multipoint.cb.lambda[11:15])))
+  expect_true(all(!is.na(op.df$multipoint.cb.lambda[11:14])))
   expect_equal(op.df$dob[11:12], 1:2)
-  expect_true(all(!is.na(op.df$scheduled.on[11:15])))
+  expect_true(all(!is.na(op.df$scheduled.on[11:14])))
 })
 
 test_that("asyn MBO works with CL", {
