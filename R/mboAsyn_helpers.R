@@ -36,12 +36,18 @@ readProposalsFromDirectoryToOptPath = function(opt.path, opt.problem) {
   }
 }
 
-hashOptPath = function(opt.path) {
+hashOptPath = function(opt.path, ignore.proposed = TRUE) {
+  dobs = 
+  prop.type = getOptPathCol(opt.path, "prop.type")
+  y = getOptPathY(opt.path)
+  if (ignore.proposed) {
+    y = y[prop.type == "done"] #we ignore proposed y as they may varey
+  }
   digest::sha1(list(
   getOptPathX(opt.path),
-  getOptPathY(opt.path),
+  y,
   getOptPathDOB(opt.path),
-  getOptPathCol(opt.path, "prop.type")  
+  prop.type 
   ))
 }
 
@@ -67,7 +73,7 @@ readDirectoryToOptState = function(opt.problem, respect.block = TRUE, time.out =
     #we don't want to read an similar opt.state. That's why we wait until proposals or results have been generated to get another opt.state.
     # unless we have a time out
     if (as.numeric(Sys.time(), units = "secs") - start.time > time.out) break
-    Sys.sleep(0.1)
+    Sys.sleep(1)
   }
   #find the first available exec.timestamp which does not belong to init.design
   if (max.dob > 0) {
