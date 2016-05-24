@@ -32,7 +32,7 @@ readProposalsFromDirectoryToOptPath = function(opt.path, opt.problem) {
     dob = max(getOptPathDOB(opt.path))
     last.extra = getOptPathEl(opt.path, getOptPathLength(opt.path))$extra #FIXME: We just cheat and copy last known extras to new lie ¯\_(ツ)_/¯
     last.extra$prop.type = "liar"
-    addOptPathEl(opt.path, x = x, y = lie, dob = dob + 1, extra = last.extra) 
+    addOptPathEl(opt.path, x = x, y = lie, dob = dob + 1, extra = last.extra, exec.time = 0) 
   }
 }
 
@@ -84,7 +84,7 @@ readDirectoryToOptState = function(opt.problem, time.out = 60) {
   makeOptState(
     opt.problem = opt.problem, 
     opt.path = opt.path, 
-    loop = max(getOptPathDOB(opt.path)) + 1,
+    loop = max.dob + 1,
     time.used = as.numeric(Sys.time(), units = "secs") - start.time
   )
 }

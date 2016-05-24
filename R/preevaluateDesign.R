@@ -10,7 +10,6 @@
 preevaluateDesign = function(fun, design, control, show.info, more.args = list()) {
   opt.problem = makeOptProblem(
     fun = fun,
-    par.set = smoof::getParamSet(fun),
     design = design,
     learner = NA,
     control = control,
