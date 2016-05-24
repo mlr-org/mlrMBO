@@ -51,7 +51,8 @@ hashOptPath = function(opt.path, ignore.proposed = TRUE) {
   ))
 }
 
-readDirectoryToOptState = function(opt.problem, respect.block = TRUE, time.out = 60) {
+readDirectoryToOptState = function(opt.problem, time.out = 60) {
+  #FIXME: Blocking leads to error in time.budget?
   start.time = as.numeric(Sys.time(), units = "secs")
   control = getOptProblemControl(opt.problem)
   repeat {
@@ -60,7 +61,7 @@ readDirectoryToOptState = function(opt.problem, respect.block = TRUE, time.out =
     #add proposals with CL to opt.path
     readProposalsFromDirectoryToOptPath(opt.path, opt.problem)
     #if we do not have to look fore identical opt.paths: break and continue normal
-    if (!respect.block) break
+    if (!control$asyn.wait.for.proposals) break
     block.files = list.files(getAsynDir(opt.problem), pattern = "(^|_)block_[[:alnum:]]+\\.rds$", full.names = TRUE)
     #if there aint any opt.states blocked: break and continue normal
     if (length(block.files)==0) break

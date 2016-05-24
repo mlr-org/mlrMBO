@@ -15,7 +15,8 @@ makeMBOControl(n.objectives = 1L, propose.points = 1L,
   resample.measures = list(mse), output.num.format = "\%.3g",
   schedule.method = "none", schedule.nodes = 1L,
   schedule.priority = "infill", schedule.priority.time = FALSE,
-  schedule.fill.random = TRUE, time.model.trafo.log = FALSE)
+  schedule.fill.random = TRUE, time.model.trafo.log = FALSE,
+  asyn.wait.for.proposals = TRUE, asyn.filter.proposals = FALSE)
 }
 \arguments{
 \item{n.objectives}{[\code{integer(1)}]\cr
@@ -129,6 +130,12 @@ If scheduling does not fill all nodes, should we fill it with random points whic
 
 \item{time.model.trafo.log}{[\code{logical(1)}]\cr
 Should the time model be learned on log-transformed times? Default is \code{FALSE}.}
+
+\item{asyn.wait.for.proposals}{[\code{logical(1)}]\cr
+Should waiting be enabled for proposals? Default is \code{TRUE}.}
+
+\item{asyn.filter.proposals}{[\code{logical(1)}]\cr
+Should proposed points be filtered? Only works with \code{filter.proposed.points = TRUE}. Default is \code{FALSE}.}
 }
 \value{
 [\code{\link{MBOControl}}].

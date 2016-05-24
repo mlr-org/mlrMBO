@@ -83,12 +83,24 @@ runMBOOnline.OptState = function(x, node = NA_integer_, ...) {
     node.prefix = ""
   }
   opt.state = x
-  block.file = writeThingToDirectory(getOptStateOptProblem(opt.state), opt.state, sprintf("%sblock_", node.prefix), hash = TRUE)
+  opt.problem = getOptStateOptProblem(opt.state)
+  control = getOptProblemControl(opt.problem)
+  if (control$asyn.wait.for.proposals) {
+    block.file = writeThingToDirectory(opt.problem, opt.state, sprintf("%sblock_", node.prefix), hash = TRUE)
+  }
   prop = proposePoints.OptState(opt.state)
+  if (control$asyn.filter.proposals) {
+    prop2 = filterProposedPoints(prop, opt.state)
+    if (any(prop2$prop.type == "random_filter")) {
+      return(invisible(opt.state))
+    }
+  }
   prop$scheduled.on = node
   prop$eval.state = "proposed"
-  unlink(block.file)
-  proposal.file = writeThingToDirectory(getOptStateOptProblem(opt.state), prop, sprintf("%sprop_", node.prefix))
+  if (control$asyn.wait.for.proposals) {
+    unlink(block.file)
+  }
+  proposal.file = writeThingToDirectory(opt.problem, prop, sprintf("%sprop_", node.prefix))
   prop$eval.state = "done"
   evalProposedPoints.OptState(opt.state, prop)
   finalizeMboLoop(opt.state)
