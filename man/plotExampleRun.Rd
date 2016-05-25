@@ -11,7 +11,8 @@ plotExampleRun(object, iters, pause = TRUE, densregion = TRUE,
 }
 \arguments{
 \item{object}{[\code{function}]\cr
-\code{MBOExampleRun} or \code{MBOExampleRunMulticrit} object.}
+\code{MBOExampleRun} object from \code{exampleRun} or
+\code{MBOExampleRunMulticrit} object from \code{exampleRunMultiCrit}.}
 
 \item{iters}{[\code{integer}]\cr
 Selected iterations of \code{object} to produce plots.
