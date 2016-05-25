@@ -1,4 +1,6 @@
-# Parallelization
+Work in progress
+
+<!--# Parallelization
 
 It is possible to parallelize the evaluation of the target function to speed up the computation. Internally the
 evaluation of the target function is realized with the R package ``parallelMap``. This package offers simple parallelization with various different backends. For details on the usage see the [parallelMap github page](https://github.com/berndbischl/parallelMap#parallelmap), which offers a nice tutorial and describes all possible backends thorougly.  For our usage we use a *multicore* backend. Note, that the multicore parallelization does _not_ work on windows machines.
@@ -27,7 +29,7 @@ Since mbo is a sequential method we cannot gain any improvement in the running t
 
 If our target function is not deterministic (e.g. the accuracy of a machine learning model) it is advisable to take the crossvalidation error. For the crossvalidation error, the model is fitted multuple times on slightly different training data. This process can be easily parallelized with ``parallelMap``.
 
-```{r}
+```{r, eval = FALSE}
 library(mlr)
 
 fn = function(x) {
@@ -46,8 +48,8 @@ par.set = filterParams(mlr::getParamSet("classif.ksvm"), ids = c("C", "sigma"))
 par.set = makeParamSet(makeNumericParam("C", lower = -10, upper = 10, trafo = function(x) 2^x),
                        makeNumericParam("sigma", lower = -10, upper = 10, trafo = function(x) 2^x))
 
-obj.fun = makeSingleObjectiveFunction(name = "noisy_example", 
-                                      fn = fn, 
+obj.fun = makeSingleObjectiveFunction(name = "noisy_example",
+                                      fn = fn,
                                       has.simple.signature = FALSE,
                                       par.set = par.set)
 
@@ -62,3 +64,5 @@ exampleRun(obj.fun, design = design, control = control)
 parallelStop()
 
 ```
+-->
+

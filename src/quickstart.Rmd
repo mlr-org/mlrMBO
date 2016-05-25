@@ -1,9 +1,9 @@
 # Introductory example
 
-**Info:** this guide gives you an overview of the typical structure of optimization with **mrMBO**. For a much more
-detailed introduction see [the next chapter](in_deph_introduction.md).
+**Info:** this guide gives you an overview of the typical optimization workflow with **mrMBO**. For a much more
+detailed introduction see [the next chapter](in_depth_introduction.md).
 
-Here we provide a Quickstart example for you to make yourself familiar with **mlrMBO**. We aim to optimize the one dimensional Rastrigin function using model-based optimization. Instead of writing this function by hand, we make use of the smoof library, which offers a lot of common single objective optimization functions.
+Here we provide a quickstart example for you to make yourself familiar with **mlrMBO**. We aim to optimize the one dimensional Rastrigin function using model-based optimization. Instead of writing this function by hand, we make use of the smoof package, which offers a lot of common single objective optimization functions.
 
 ```{r}
 library(smoof)
@@ -13,9 +13,9 @@ library(ParamHelpers)
 obj.fun = makeRastriginFunction(1)
 ```
 
-**Note:** Since all this stuff here is under heavy developement it might be neccessary to install the github developement version of the ParamHelpers package via the `devtools::install_github` function.
+**Note:** Since all this stuff here is still under developement it might be neccessary to install the github developement version of the ParamHelpers package via the `devtools::install_github` function.
 
-We decide ourself to use kriging as our surrogate model and to do 10 sequential optimization steps. Furthermore we use Expected Improvement (EI) as the infill criterion, i. e., the criterion which determines which point(s) of the objective function should be evaluated in further iterations (keep in mind, that using EI as the infill criterion needs the learner to support standard error estimation). 
+We decide to use kriging as our surrogate model and to do 10 sequential optimization steps. Furthermore we use Expected Improvement (EI) as the infill criterion, i. e., the criterion which determines which point(s) of the objective function should be evaluated in each iterations (keep in mind, that using EI as the infill criterion needs the learner to support standard error estimation). 
 
 As a last step we have to generate an initial design on which we evaluate our model in the beginning. We use `ParamHelpers::generateDesign` to generate 10 points in a latin hypercube design.
 
@@ -30,7 +30,8 @@ design = generateDesign(n = 10, par.set = smoof::getParamSet(obj.fun))
 Finally we start the optimization process and print the result object.
 
 ```{r}
-result = mbo(obj.fun, design = design, learner = learner, control = control, show.info = TRUE)
+result = mbo(obj.fun, design = design, learner = learner, control = control, 
+             show.info = TRUE)
 print(result)
 ```
 
@@ -43,9 +44,7 @@ ex = exampleRun(obj.fun, control = control, show.info = FALSE)
 ```
 ```{r}
 print(ex)
-plotExampleRun(ex, iter = 1L)
-plotExampleRun(ex, iter = 3L)
-plotExampleRun(ex, iter = 10L)
+plotExampleRun(ex)
 ```
 
 Or alternatively for a two dimensional function:
@@ -57,9 +56,7 @@ ex2 = exampleRun(obj.fun2, control = control, show.info = FALSE)
 ```
 ```{r}
 print(ex2)
-plotExampleRun(ex2, iter = 1L)
-plotExampleRun(ex2, iter = 3L)
-plotExampleRun(ex2, iter = 10L)
+plotExampleRun(ex2)
 ```
 
 
