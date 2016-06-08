@@ -5,10 +5,10 @@
 \title{Set multipoint proposal options.}
 \usage{
 setMBOControlMultiPoint(control, method = NULL, cb.multiple = NULL,
-  cl.lie = NULL, multicrit.objective = NULL, multicrit.dist = NULL,
-  multicrit.selection = NULL, multicrit.maxit = NULL,
-  multicrit.sbx.eta = NULL, multicrit.sbx.p = NULL,
-  multicrit.pm.eta = NULL, multicrit.pm.p = NULL)
+  mean.liar = NULL, cl.lie = NULL, multicrit.objective = NULL,
+  multicrit.dist = NULL, multicrit.selection = NULL,
+  multicrit.maxit = NULL, multicrit.sbx.eta = NULL,
+  multicrit.sbx.p = NULL, multicrit.pm.eta = NULL, multicrit.pm.p = NULL)
 }
 \arguments{
 \item{control}{[\code{\link{MBOControl}}]\cr
@@ -42,6 +42,9 @@ Possible parameter values are:
 \dQuote{random}: lambdas will be drawn from an exponential distribution.
 \dQuote{static.quantiles}: lambdas will be generated from a sequence of quantiles from the exponential distribution.
 \dQuote{random.quantiles}: lambdas will be generated from a sequence of quantiles from \code{propose.points*100} exponentialy distributed random numbers.}
+
+\item{mean.liar}{[\code{logical(1)}]\cr
+Mean prediction will be used for lying. Overwrites \code{cl.lie} if set to \code{TRUE}. Default is \code{FALSE}.}
 
 \item{cl.lie}{[\code{function}]\cr
 Function used by constant liar method for lying. Default is \code{min}.}

@@ -29,6 +29,8 @@
 #'   \dQuote{random}: lambdas will be drawn from an exponential distribution.
 #'   \dQuote{static.quantiles}: lambdas will be generated from a sequence of quantiles from the exponential distribution.
 #'   \dQuote{random.quantiles}: lambdas will be generated from a sequence of quantiles from \code{propose.points*100} exponentialy distributed random numbers.
+#' @param mean.liar [\code{logical(1)}]\cr
+#'   Mean prediction will be used for lying. Overwrites \code{cl.lie} if set to \code{TRUE}. Default is \code{FALSE}.
 #' @param cl.lie [\code{function}]\cr
 #'   Function used by constant liar method for lying. Default is \code{min}.
 #' @param multicrit.objective [\code{character(1)}]\cr
@@ -70,6 +72,7 @@
 setMBOControlMultiPoint = function(control,
   method = NULL,
   cb.multiple = NULL,
+  mean.liar = NULL,
   cl.lie = NULL,
   multicrit.objective = NULL,
   multicrit.dist = NULL,
@@ -95,6 +98,8 @@ setMBOControlMultiPoint = function(control,
     min
   }
   assertFunction(control$multipoint.cl.lie)
+
+  control$multipoint.mean.liar = coalesce(mean.liar, control$multipoint.mean.liar, FALSE)
 
   control$multipoint.multicrit.objective = coalesce(multicrit.objective, control$multipoint.multicrit.objective, "ei.dist")
   assertChoice(control$multipoint.multicrit.objective, choices = c("mean.dist", "ei.dist", "mean.se", "mean.se.dist"))

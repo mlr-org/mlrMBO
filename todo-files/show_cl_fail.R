@@ -1,0 +1,15 @@
+mydev()
+fn = makeBraninFunction()
+ctrl = makeMBOControl(propose.points = 4, store.model.at = 0:20)
+ctrl = setMBOControlInfill(ctrl, crit = "ei")
+ctrl = setMBOControlMultiPoint(ctrl, method = "cl", cl.lie = max)
+ctrl = setMBOControlTermination(ctrl, iters = 3)
+lrn = makeLearner("regr.km", nugget.stability = 10^-8, covtype = "matern5_2", predict.type = "se")
+des = generateDesign(par.set = smoof::getParamSet(fn))
+res = exampleRun(fn, design = des, learner = lrn, control = ctrl)
+
+plotExampleRun(res, iters = 3)
+
+grid = generateGridDesign(par.set = smoof::getParamSet(fn), resolution = 30)
+pred = predict(xx.models[[2]], newdata = grid)
+getPredictionResponse(pred)

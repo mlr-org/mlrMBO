@@ -19,4 +19,10 @@ test_that("multipoint constant liar", {
   res = mbo(f, des, learner = lrn, control = ctrl)
   expect_is(res, "MBOResult")
   expect_true(res$y < 0.1)
+
+  #With mean prediction as lie
+  ctrl = setMBOControlMultiPoint(ctrl, method = "cl", mean.liar = TRUE)
+  res = mbo(f, des, learner = lrn, control = ctrl)
+  expect_is(res, "MBOResult")
+  expect_true(res$y < 0.1)
 })

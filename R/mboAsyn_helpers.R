@@ -25,14 +25,12 @@ readProposalsFromDirectoryToOptPath = function(opt.path, opt.problem) {
   files = listProposals(path)
   file.contents = readFileContents(files)
   #concept copied from proposePointsConstantLiar.R
-  liar = control$multipoint.cl.lie
-  lie = liar(getOptPathY(opt.path, control$y.name))
   for (prop.el in file.contents) {
     x = dfRowToList(prop.el$prop.points, getOptProblemParSet(opt.problem), 1)
     dob = max(getOptPathDOB(opt.path))
     last.extra = getOptPathEl(opt.path, getOptPathLength(opt.path))$extra #FIXME: We just cheat and copy last known extras to new lie ¯\_(ツ)_/¯
     last.extra$prop.type = "liar"
-    addOptPathEl(opt.path, x = x, y = lie, dob = dob + 1, extra = last.extra, exec.time = 0) 
+    addOptPathEl(opt.path, x = x, y = liar(opt.problem, opt.path, prop.el$prop.points) , dob = dob + 1, extra = last.extra, exec.time = 0) 
   }
 }
 
@@ -109,8 +107,11 @@ writeThingToDirectory = function(opt.problem, thing, prefix, hash = TRUE){
 }
 
 cleanDirectory = function(opt.problem) {
-  path = getAsynDir(opt.problem)
-  unlink(path, recursive = TRUE, force = TRUE)
+  ctrl = getOptProblemControl(opt.problem)
+  if (is.null(ctrl$asyn.cleanup) || ctrl$asyn.cleanup == TRUE) {
+    path = getAsynDir(opt.problem)
+    unlink(path, recursive = TRUE, force = TRUE)
+  }
 }
 
 cleanProposals = function(opt.problem) {
