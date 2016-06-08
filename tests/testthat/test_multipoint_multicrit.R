@@ -3,7 +3,6 @@ context("multipoint multicrit")
 test_that("multipoint multicrit", {
   f = makeBraninFunction()
   f = setAttribute(f, "par.set", makeNumericParamSet(len = 2L, lower = 0, upper = 1))
-  lrn = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
 
   #FIXME how can we test this better?
   for (obj in c("ei.dist", "mean.se", "mean.se.dist")) {
@@ -21,7 +20,7 @@ test_that("multipoint multicrit", {
           multicrit.maxit = 30L
         )
 
-        res = mbo(f, des, learner = lrn, control = ctrl)
+        res = mbo(f, des, learner = default.kriging, control = ctrl)
 
         gap = res$y - 0.3979
         #expect_true(gap < 0.1)
