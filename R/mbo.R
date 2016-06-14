@@ -32,7 +32,7 @@
 #'  par.set = makeNumericParamSet(id = "x", lower = -1, upper = 1, len = 2))
 #' ctrl = makeMBOControl()
 #' ctrl = setMBOControlTermination(ctrl, iters = 3L)
-#' des = generateDesign(n = 5L, getParamSet(obj.fun))
+#' des = generateDesign(n = 5L, getParamSet(obj.fun), fun = lhs::maximinLHS)
 #' res = mbo(obj.fun, design = des, control = ctrl)
 #' print(res)
 #' plot(res)
