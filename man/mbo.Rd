@@ -23,7 +23,7 @@ If the parameters have corresponding trafo functions,
 the design must not be transformed before it is passed!
 Functions to generate designs are available in \code{ParamHelpers}: \code{\link[ParamHelpers]{generateDesign}}, \code{\link[ParamHelpers]{generateGridDesign}}, \code{\link[ParamHelpers]{generateRandomDesign}}.
 Default is \code{NULL}, which means \code{\link[ParamHelpers]{generateDesign}} is called and a design
-of size 4 times number of all parameters with a maximizing the minimal disctance between design points is created; see \code{\link[lhs]{maximinLHS}}.}
+of size 4 times number of all parameters is created. The points are drawn via \code{\link[lhs]{maximinLHS}} to maximize the minimal distance between design points.}
 
 \item{learner}{[\code{\link[mlr]{Learner}}]\cr
 Regression learner from mlr, which is used as a surrogate to model our fitness function.
@@ -51,7 +51,7 @@ obj.fun = makeSingleObjectiveFunction(
  par.set = makeNumericParamSet(id = "x", lower = -1, upper = 1, len = 2))
 ctrl = makeMBOControl()
 ctrl = setMBOControlTermination(ctrl, iters = 3L)
-des = generateDesign(n = 5L, getParamSet(obj.fun))
+des = generateDesign(n = 5L, getParamSet(obj.fun), fun = lhs::maximinLHS)
 res = mbo(obj.fun, design = des, control = ctrl)
 print(res)
 plot(res)
