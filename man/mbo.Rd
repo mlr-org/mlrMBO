@@ -23,7 +23,7 @@ If the parameters have corresponding trafo functions,
 the design must not be transformed before it is passed!
 Functions to generate designs are available in \code{ParamHelpers}: \code{\link[ParamHelpers]{generateDesign}}, \code{\link[ParamHelpers]{generateGridDesign}}, \code{\link[ParamHelpers]{generateRandomDesign}}.
 Default is \code{NULL}, which means \code{\link[ParamHelpers]{generateDesign}} is called and a design
-of size 4 times number of all parameters with a maximizing the minimal disctance between design points, see \code{\link[lhs]{maximinLHS}}.}
+of size 4 times number of all parameters with a maximizing the minimal disctance between design points is created; see \code{\link[lhs]{maximinLHS}}.}
 
 \item{learner}{[\code{\link[mlr]{Learner}}]\cr
 Regression learner from mlr, which is used as a surrogate to model our fitness function.
