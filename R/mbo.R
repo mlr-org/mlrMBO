@@ -17,7 +17,7 @@
 #'   the design must not be transformed before it is passed!
 #'   Functions to generate designs are available in \code{ParamHelpers}: \code{\link[ParamHelpers]{generateDesign}}, \code{\link[ParamHelpers]{generateGridDesign}}, \code{\link[ParamHelpers]{generateRandomDesign}}.
 #'   Default is \code{NULL}, which means \code{\link[ParamHelpers]{generateDesign}} is called and a design
-#'   of size 4 times number of all parameters is created.
+#'   of size 4 times number of all parameters is created. The points are drawn via \code{\link[lhs]{maximinLHS}} to maximize the minimal distance between design points.
 #' @param learner [\code{\link[mlr]{Learner}}]\cr
 #'   Regression learner from mlr, which is used as a surrogate to model our fitness function.
 #'   If \code{NULL} (default), the default learner is determined as described here: \link{mbo_default_learner}.
@@ -47,7 +47,7 @@ mbo = function(fun, design = NULL, learner = NULL, control,
   control$minimize = shouldBeMinimized(fun)
   assertFlag(show.info)
   if (is.null(design))
-    design = generateDesign(n.params * 4L, par.set)
+    design = generateDesign(n.params * 4L, par.set, fun = lhs::maximinLHS)
   else
     assertDataFrame(design, min.rows = 1L, min.cols = 1L)
   learner = checkLearner(learner, par.set, control)
