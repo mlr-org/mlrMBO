@@ -17,13 +17,13 @@ The package has not been released on CRAN yet. Run the following command in R to
 
 To install packages directly from github use the `install_github()` function from `devtools`.
 
-```splus
+```r
 install.packages("devtools")
 ```
 
 Before you can install `mlrMBO` you need the current github versions of both [mlr](https://github.com/mlr-org/mlr/) and [ParamHelpers](https://github.com/berndbischl/ParamHelpers).
 
-```splus
+```r
 library(devtools)
 install_github("berndbischl/ParamHelpers")
 install_github("mlr-org/mlr")
@@ -31,8 +31,8 @@ install_github("mlr-org/mlr")
 
 Then you can easily install.  
 
-```splus
-devtools::install_github("mlr-org/mlrMBO")
+```r
+install_github("mlr-org/mlrMBO")
 ```
 
 Àll other dependencies will be installed automatically from CRAN. 
