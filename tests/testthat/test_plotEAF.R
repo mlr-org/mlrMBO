@@ -7,7 +7,7 @@ test_that("plotEAF works", {
     par.set = makeNumericParamSet(len = 2L, lower = -2, upper = 1),
     n.objectives = 2L
   )
-  des = generateTestDesign(5L, smoof::getParamSet(f))
+  des = generateTestDesign(5L, getParamSet(f))
 
   # Test normal run
   learner = makeLearner("regr.km", nugget.estim = TRUE)

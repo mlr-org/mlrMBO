@@ -22,7 +22,7 @@ test_that("mboContinue", {
   # First test sombo
   learner = makeLearner("regr.rpart")
   save.file = tempfile("state", fileext=".RData")
-  des = generateTestDesign(10L, smoof::getParamSet(f))
+  des = generateTestDesign(10L, getParamSet(f))
   ctrl = makeMBOControl(save.on.disk.at = 0:4,
     save.file.path = save.file)
   ctrl = setMBOControlTermination(ctrl, iters = 3L)
@@ -50,7 +50,7 @@ test_that("mboContinue", {
     n.objectives = 2L
   )
 
-  des = generateTestDesign(10L, smoof::getParamSet(f))
+  des = generateTestDesign(10L, getParamSet(f))
   ctrl = makeMBOControl(save.on.disk.at = 0:8,
     save.file.path = save.file, n.objectives = 2L)
   ctrl = setMBOControlTermination(ctrl, iters = 7L)
@@ -76,7 +76,7 @@ test_that("mboContinue works when at end", {
   )
   learner = makeLearner("regr.rpart")
   save.file = tempfile(fileext = ".RData")
-  des = generateTestDesign(10L, smoof::getParamSet(f))
+  des = generateTestDesign(10L, getParamSet(f))
   ctrl = makeMBOControl(save.on.disk.at = 0:2,
     save.file.path = save.file)
   ctrl = setMBOControlTermination(ctrl, iters = 1L)

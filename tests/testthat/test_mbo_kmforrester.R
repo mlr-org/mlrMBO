@@ -9,7 +9,7 @@ test_that("mbo works with Kriging reinterpolation method ", {
     fn = function(x) sum(x^2) + rnorm(1, sd = 0.5),
     par.set = par.set
   )
-  des = generateTestDesign(10, par.set = smoof::getParamSet(f))
+  des = generateTestDesign(10, par.set = getParamSet(f))
   y  = sapply(1:nrow(des), function(i) f(as.list(des[i, ])))
   des$y = y
   learner = makeLearner("regr.kmforrester", predict.type = "se")

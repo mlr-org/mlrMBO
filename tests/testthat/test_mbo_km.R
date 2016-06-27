@@ -24,7 +24,7 @@ test_that("mbo works with km", {
   )
   f = setAttribute(f, "par.set", par.set)
 
-  des = generateTestDesign(10L, par.set = smoof::getParamSet(f))
+  des = generateTestDesign(10L, par.set = getParamSet(f))
   des$y = apply(des, 1, f)
   or = mbo(f, des, learner, ctrl)
   expect_true(!is.na(or$y))

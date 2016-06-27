@@ -6,9 +6,9 @@ test_that("infill crits", {
   f1 = smoof::makeSphereFunction(2L)
   f2 = smoof::makeSingleObjectiveFunction(
     fn = function(x) sum(x^2) + rnorm(1, 0, 0.03),
-    par.set = smoof::getParamSet(f1)
+    par.set = getParamSet(f1)
   )
-  des = generateTestDesign(ninit, smoof::getParamSet(f1))
+  des = generateTestDesign(ninit, getParamSet(f1))
 
 
   mycontrol = function(minimize, crit) {
