@@ -20,7 +20,7 @@ test_that("simple random search, no dependencies, no focusing", {
   )
 
   learner = makeLearner("regr.randomForest")
-  des = generateTestDesign(20L, smoof::getParamSet(obj.fun))
+  des = generateTestDesign(20L, getParamSet(obj.fun))
   ctrl = makeMBOControl()
   ctrl = setMBOControlTermination(ctrl, iters = 2L)
   ctrl = setMBOControlInfill(ctrl, opt = "focussearch",
@@ -46,7 +46,7 @@ test_that("dependent params, but no focusing", {
 
   learner = makeLearner("regr.randomForest")
   learner = makeImputeWrapper(learner, classes = list(numeric = imputeMedian(), factor = imputeMode()))
-  des = generateTestDesign(20L, smoof::getParamSet(obj.fun))
+  des = generateTestDesign(20L, getParamSet(obj.fun))
   ctrl = makeMBOControl()
   ctrl = setMBOControlTermination(ctrl, iters = 2L)
   ctrl = setMBOControlInfill(ctrl, opt = "focussearch", opt.restarts = 1L, opt.focussearch.maxit = 1L,
@@ -93,7 +93,7 @@ test_that("complex param space, dependencies, focusing, restarts", {
   )
 
   # FIXME: This is too small?
-  des = generateDesign(20L, smoof::getParamSet(obj.fun))
+  des = generateDesign(20L, getParamSet(obj.fun))
   ctrl = makeMBOControl()
   ctrl = setMBOControlTermination(ctrl, iters = 2L)
   ctrl = setMBOControlInfill(ctrl, crit = "ei", opt = "focussearch",

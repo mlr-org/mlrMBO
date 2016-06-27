@@ -9,7 +9,7 @@ test_that("infillopt ea", {
   ctrl = setMBOControlInfill(ctrl, crit = "ei", opt = "ea", opt.restarts = 2L,
     opt.ea.maxit = 75L, opt.ea.lambda = 1L)
 
-  des = generateTestDesign(20L, smoof::getParamSet(obj.fun))
+  des = generateTestDesign(20L, getParamSet(obj.fun))
   res = mbo(obj.fun, des, learner = default.kriging, control = ctrl)
   expect_true(res$y < 1e-1)
 
@@ -22,7 +22,7 @@ test_that("infillopt ea", {
     has.simple.signature = FALSE
   )
 
-  des = generateTestDesign(10L, smoof::getParamSet(obj.fun))
+  des = generateTestDesign(10L, getParamSet(obj.fun))
   res = mbo(obj.fun, des, learner = default.kriging, control = ctrl)
   expect_true(res$y < 1e-1)
 })

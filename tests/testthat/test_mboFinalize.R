@@ -25,7 +25,7 @@ test_that("mboFinalize", {
     save.file.path = save.file)
   ctrl = setMBOControlTermination(ctrl, iters = 3L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10L)
-  des = generateTestDesign(10L, smoof::getParamSet(f))
+  des = generateTestDesign(10L, getParamSet(f))
   expect_error(or <- mbo(f, des, learner = learner, control = ctrl), "foo")
   or = mboFinalize(save.file)
   expect_equal(getOptPathLength(or$opt.path), 12L)
@@ -44,7 +44,7 @@ test_that("mboFinalize", {
     par.set = makeNumericParamSet(len = 2L, lower = -2, upper = 1)
   )
 
-  des = generateTestDesign(10L, smoof::getParamSet(f))
+  des = generateTestDesign(10L, getParamSet(f))
   ctrl = makeMBOControl(save.on.disk.at = 0:8,
     save.file.path = save.file, n.objectives = 2L)
   ctrl = setMBOControlTermination(ctrl, iters = 7L)
@@ -65,7 +65,7 @@ test_that("mboFinalize works when at end", {
   )
   learner = makeLearner("regr.rpart")
   save.file = tempfile(fileext = ".RData")
-  des = generateTestDesign(10L, smoof::getParamSet(f))
+  des = generateTestDesign(10L, getParamSet(f))
   ctrl = makeMBOControl(save.on.disk.at = 0:2,
     save.file.path = save.file)
   ctrl = setMBOControlTermination(ctrl, iters = 1L)

@@ -92,7 +92,7 @@ test_that("mbo works with rf", {
   expect_true(!is.na(or$y))
   expect_equal(getOptPathLength(or$opt.path), 15)
 
-  des = generateTestDesign(10L, smoof::getParamSet(f))
+  des = generateTestDesign(10L, getParamSet(f))
   ctrl = makeMBOControl()
   ctrl = setMBOControlTermination(ctrl, iters = 5L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100)
@@ -112,14 +112,14 @@ test_that("mbo works with rf", {
   )
 
   learner = makeLearner("regr.randomForest")
-  des = generateTestDesign(10L, smoof::getParamSet(f))
+  des = generateTestDesign(10L, getParamSet(f))
   ctrl = makeMBOControl()
   ctrl = setMBOControlTermination(ctrl, iters = 3L)
   ctrl = setMBOControlInfill(ctrl, opt = "cmaes", opt.cmaes.control = list(maxit = 2L))
   or = mbo(f, des, learner, ctrl)
   expect_true(!is.na(or$y))
   expect_equal(getOptPathLength(or$opt.path), 10 + 3)
-  des = generateTestDesign(10L, smoof::getParamSet(f))
+  des = generateTestDesign(10L, getParamSet(f))
   ctrl = makeMBOControl(final.method = "best.predicted")
   ctrl = setMBOControlTermination(ctrl, iters = 3L)
   ctrl = setMBOControlInfill(ctrl, opt = "cmaes", opt.cmaes.control = list(maxit = 2L))
@@ -140,7 +140,7 @@ test_that("mbo works with rf", {
   )
 
   learner = makeLearner("regr.randomForest")
-  des = generateTestDesign(10L, smoof::getParamSet(f))
+  des = generateTestDesign(10L, getParamSet(f))
   ctrl = makeMBOControl()
   ctrl = setMBOControlTermination(ctrl, iters = 5L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100L)
@@ -158,7 +158,7 @@ test_that("mbo works with rf", {
     par.set = par.set
   )
 
-  des = generateTestDesign(10L, smoof::getParamSet(f))
+  des = generateTestDesign(10L, getParamSet(f))
   ctrl = makeMBOControl(trafo.y.fun = trafoLog(handle.violations = "error"))
   ctrl = setMBOControlTermination(ctrl, iters = 2L)
   expect_error(mbo(f, control = ctrl, more.args = list(shift = -1)))
