@@ -29,8 +29,8 @@ test_that("impute y", {
   learner = makeLearner("regr.randomForest")
 
   n.focus.points = 100L
-  des1 = generateTestDesign(10L, smoof::getParamSet(f1))
-  des2 = generateTestDesign(10L, smoof::getParamSet(f2))
+  des1 = generateTestDesign(10L, getParamSet(f1))
+  des2 = generateTestDesign(10L, getParamSet(f2))
 
   ctrl = makeMBOControl()
   ctrl = setMBOControlTermination(ctrl, iters = 20L)
@@ -83,7 +83,7 @@ test_that("impute y parego", {
     par.set = makeNumericParamSet(len = 2L, lower = 0, upper = 3),
     n.objectives = 2L
   )
-  des1 = generateTestDesign(10L, smoof::getParamSet(f1))
+  des1 = generateTestDesign(10L, getParamSet(f1))
   learner = makeLearner("regr.rpart")
   ctrl = makeMBOControl(n.objectives = 2L,
     impute.y.fun = function(x, y, opt.path) c(100, 100))

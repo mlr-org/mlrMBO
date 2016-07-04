@@ -80,7 +80,7 @@ getOptProblemControl = function(opt.problem) {
 }
 
 getOptProblemParSet = function(opt.problem) {
-  smoof::getParamSet(getOptProblemFun(opt.problem))
+  getParamSet(getOptProblemFun(opt.problem))
 }
 
 getOptProblemMoreArgs = function(opt.problem) {

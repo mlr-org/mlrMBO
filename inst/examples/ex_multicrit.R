@@ -16,7 +16,7 @@ ctrl = setMBOControlInfill(ctrl, crit = "dib",
   opt.focussearch.points = 10000L)
 ctrl = setMBOControlMultiCrit(ctrl, parego.s = 100)
 
-design = generateDesign(5L, smoof::getParamSet(obj.fun), fun = lhs::maximinLHS)
+design = generateDesign(5L, getParamSet(obj.fun), fun = lhs::maximinLHS)
 
 run = exampleRunMultiCrit(obj.fun, design = design, learner = learner, ctrl, points.per.dim = 50L,
   show.info = TRUE, nsga2.args = list())

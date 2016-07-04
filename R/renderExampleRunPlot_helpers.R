@@ -125,7 +125,7 @@ fillBackgroundWithInfillCrit = function(pl, data, x.name, crit.name) {
 addParegoWeightLines = function(pl, data.y, idx, opt.path, proposed.counter, rho) {
   y1range = range(data.y[idx$past, 1L])
   y2range = range(data.y[idx$past, 2L])
-  weights = as.numeric(opt.path[idx$proposed[proposed.counter], c(".weight1", ".weight2")])
+  weights = as.numeric(opt.path[idx$proposed[proposed.counter], c("parego.weight.1", "parego.weight.2")])
 
   slope  = weights[2L] * (y2range[2L] - y2range[1L]) /
     (weights[1L] * (y1range[2L] - y1range[1L]))

@@ -14,7 +14,7 @@ test_that("extras are logged a expected", {
       makeNumericParam("x", lower = -2, upper = 2)
     )
   )
-  des = generateTestDesign(10L, smoof::getParamSet(f))
+  des = generateTestDesign(10L, getParamSet(f))
 
   learner = makeLearner("regr.km", predict.type = "se")
   control = makeMBOControl()
