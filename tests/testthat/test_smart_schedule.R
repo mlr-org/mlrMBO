@@ -2,7 +2,7 @@ context("smart schedule")
 
 test_that("smart schedule works", {
   set.seed(3)
-  objfun = smoof::makeSingleObjectiveFunction(
+  objfun = makeSingleObjectiveFunction(
     fn = function(x) {
       x = (x$x-5)^2
       attr(x,"exec.time") = 10L
@@ -38,7 +38,7 @@ test_that("smart schedule works", {
 
     control = setMBOControlInfill(control = control, crit = "cb", crit.cb.lambda = x$crit.cb.lambda, opt.focussearch.maxit = 2L, opt.focussearch.points = 50L)
     control = setMBOControlMultiPoint(control = control, cb.multiple = x$multipoint.cb.multiple)
-    des = generateTestDesign(5L, smoof::getParamSet(objfun))
+    des = generateTestDesign(5L, getParamSet(objfun))
     or = mbo(fun = objfun, design = des, learner = surrogat.learner, control = control)
     op.df = as.data.frame(or$opt.path)
     expect_true(nrow(op.df) == 15)

@@ -11,7 +11,7 @@ test_that("basic randomSearch works", {
   expect_equal(names(or$x), names(testp.fsphere.2d$pars))
   
   #FIXME, check result if time is met before iters
-  objfun = smoof::makeSingleObjectiveFunction(
+  objfun = makeSingleObjectiveFunction(
     fn = function(x) {
       x = (x$x-5)^2
       attr(x,"exec.time") = 10L
@@ -23,7 +23,7 @@ test_that("basic randomSearch works", {
     has.simple.signature = FALSE
   )
   ctrl2 = setMBOControlTermination(ctrl, iters = 20, exec.time.budget = 100)
-  des = generateTestDesign(5L, smoof::getParamSet(objfun))
+  des = generateTestDesign(5L, getParamSet(objfun))
   or = randomSearch(fun = objfun, design = des, control = ctrl2, show.info = TRUE)
   expect_equal(sum(as.data.frame(or$opt.path)$exec.time), 150)
   expect_equal(getOptPathLength(or$opt.path), 15)

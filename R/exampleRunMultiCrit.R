@@ -39,7 +39,7 @@ exampleRunMultiCrit= function(fun, design = NULL, learner, control, points.per.d
   minimize = shouldBeMinimized(fun)
   control$noisy = isNoisy(fun)
   control$minimize = minimize
-  ref.point = smoof::getRefPoint(fun)
+  ref.point = getRefPoint(fun)
 
   if (is.null(show.info)) {
     show.info = getOption("mlrMBO.show.info", TRUE)

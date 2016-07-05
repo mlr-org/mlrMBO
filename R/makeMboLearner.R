@@ -14,7 +14,7 @@
 #' @export
 makeMboLearner = function(control, fun, ...) {
   par.vals = list(...)
-  if (!hasDiscrete(smoof::getParamSet(fun), include.logical = TRUE)) {
+  if (!hasDiscrete(getParamSet(fun), include.logical = TRUE)) {
     recomended.settings = list(covtype = "matern5_2")
     par.vals = insert(recomended.settings, list(...))
     base.learner = makeLearner("regr.km", predict.type = "se")

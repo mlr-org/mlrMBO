@@ -47,7 +47,7 @@ mbo = function(fun, design = NULL, learner = NULL, control,
   }
 
   assertClass(fun, "smoof_function")
-  par.set = smoof::getParamSet(fun)
+  par.set = getParamSet(fun)
   n.params = sum(getParamLengths(par.set))
   control$noisy = isNoisy(fun)
   control$minimize = shouldBeMinimized(fun)

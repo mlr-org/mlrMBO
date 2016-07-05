@@ -3,8 +3,8 @@ context("infill crits")
 test_that("infill crits", {
   ninit = 20L
   niters = 3L
-  f1 = smoof::makeSphereFunction(2L)
-  f2 = smoof::makeSingleObjectiveFunction(
+  f1 = makeSphereFunction(2L)
+  f2 = makeSingleObjectiveFunction(
     fn = function(x) sum(x^2) + rnorm(1, 0, 0.03),
     par.set = getParamSet(f1)
   )

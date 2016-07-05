@@ -29,7 +29,7 @@ test_that("asyn MBO works with CL", {
     par.set = makeNumericParamSet(len = 2, lower = -2, upper = 2),
     has.simple.signature = TRUE
   )
-  des = generateDesign(n = 10, par.set = smoof::getParamSet(fn.sleep))
+  des = generateDesign(n = 10, par.set = getParamSet(fn.sleep))
   des$y = apply(des, 1, function(x) sum(x^2))
   save.file = file.path(tempdir(), "mbo_asyn", "mbo.RData")
   ctrl = makeMBOControl(schedule.method = "asyn", save.file.path = save.file, propose.points = 2, schedule.nodes = 2, asyn.wait.for.proposals = FALSE, asyn.filter.proposals = TRUE)
@@ -70,7 +70,7 @@ test_that("asyn MBO works with mboContinue", {
 
   learner = makeLearner("regr.randomForest", predict.type = "se", ntree = 50, ntree.for.se = 20)
   dir.create(dirname(save.file))
-  des = generateTestDesign(6L, smoof::getParamSet(f))
+  des = generateTestDesign(6L, getParamSet(f))
   ctrl = makeMBOControl(schedule.method = "asyn", save.file.path = save.file, save.on.disk.at = 0:5)
   ctrl = setMBOControlTermination(ctrl, iters = 4L)
   ctrl = setMBOControlInfill(control = ctrl, crit = "cb", crit.cb.lambda = 2, opt.focussearch.maxit = 2L, opt.focussearch.points = 50L)

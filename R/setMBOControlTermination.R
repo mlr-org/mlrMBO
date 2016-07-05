@@ -33,7 +33,7 @@
 #'   }
 #' @return [\code{\link{MBOControl}}].
 #' @examples
-#' fn = smoof::makeSphereFunction(1L)
+#' fn = makeSphereFunction(1L)
 #' ctrl = makeMBOControl()
 #'
 #' # custom stopping condition (stop if target function value reached)

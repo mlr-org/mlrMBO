@@ -5,7 +5,7 @@ context("focus search")
 # the region of the optimum.
 
 test_that("simple random search, no dependencies, no focusing", {
-  obj.fun = smoof::makeSingleObjectiveFunction(
+  obj.fun = makeSingleObjectiveFunction(
     fn = function(x) {
       x$x0 + (x$x2 == "v1") + sum(x$x4^2)
     },
@@ -30,7 +30,7 @@ test_that("simple random search, no dependencies, no focusing", {
 })
 
 test_that("dependent params, but no focusing", {
-  obj.fun = smoof::makeSingleObjectiveFunction(
+  obj.fun = makeSingleObjectiveFunction(
     fn = function(x) {
       x = removeMissingValues(x)
       x$x0 + ifelse(x$foo == "a", x$x1, as.numeric(x$x2 == "v2"))
@@ -58,7 +58,7 @@ test_that("dependent params, but no focusing", {
 
 test_that("complex param space, dependencies, focusing, restarts", {
 
-  obj.fun = smoof::makeSingleObjectiveFunction(
+  obj.fun = makeSingleObjectiveFunction(
     fn = function(x) {
       x = removeMissingValues(x)
       tmp1 = (sqrt(x$real1)) + x$int1^2 - mean(x$realVec) + sum(x$intVec)

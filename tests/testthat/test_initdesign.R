@@ -2,7 +2,7 @@ context("init design")
 
 test_that("init design", {
   # without trafo
-  obj.fun = smoof::makeSingleObjectiveFunction(
+  obj.fun = makeSingleObjectiveFunction(
     fn = function(x) sum(x^2),
     par.set = makeParamSet(
       makeNumericParam("x1", lower = -2, upper = 1),

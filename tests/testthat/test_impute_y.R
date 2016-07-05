@@ -6,7 +6,7 @@ test_that("impute y", {
   options(parallelMap.suppress.local.errors = TRUE)
 
   par.set = makeNumericParamSet(len = 2L, lower = 0, upper = 3)
-  f1 = smoof::makeSingleObjectiveFunction(
+  f1 = makeSingleObjectiveFunction(
     fn = function(x) {
       y = sum(x^2)
       if (y < 5)
@@ -16,7 +16,7 @@ test_that("impute y", {
     par.set = par.set
   )
 
-  f2 = smoof::makeSingleObjectiveFunction(
+  f2 = makeSingleObjectiveFunction(
     fn = function(x) {
       y = sum(x^2)
       if (y < 5)
@@ -75,7 +75,7 @@ test_that("impute y", {
 test_that("impute y parego", {
 
   # Test impute
-  f1 = smoof::makeMultiObjectiveFunction(
+  f1 = makeMultiObjectiveFunction(
     fn = function(x) {
       y = x^2
       ifelse(y < 2, NA, y)

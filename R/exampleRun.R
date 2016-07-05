@@ -44,13 +44,13 @@ exampleRun = function(fun, design = NULL, learner = NULL, control,
   assertClass(control, "MBOControl")
   points.per.dim = asCount(points.per.dim, positive = TRUE)
   noisy.evals = asCount(noisy.evals, positive = TRUE)
-  fun.mean = smoof::getMeanFunction(fun)
+  fun.mean = getMeanFunction(fun)
   if (is.null(show.info))
     show.info = getOption("mlrMBO.show.info", TRUE)
   assertLogical(show.info, len = 1L, any.missing = FALSE)
 
-  if (smoof::hasGlobalOptimum(fun))
-    global.opt = smoof::getGlobalOptimum(fun)$value
+  if (hasGlobalOptimum(fun))
+    global.opt = getGlobalOptimum(fun)$value
   else
     global.opt = NA_real_
 

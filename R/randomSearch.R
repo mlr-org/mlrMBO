@@ -2,7 +2,7 @@
 
 randomSearch = function(fun, design = NULL, control, show.info = getOption("mlrMBO.show.info", TRUE), more.args = list()) {
   assertClass(fun, "smoof_function")
-  par.set = smoof::getParamSet(fun)
+  par.set = getParamSet(fun)
   control$noisy = isNoisy(fun)
   control$minimize = shouldBeMinimized(fun)
 

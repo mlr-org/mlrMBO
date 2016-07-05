@@ -52,7 +52,7 @@ return a list with the following elements:
 Extends an MBO control object with infill criteria and infill optimizer options.
 }
 \examples{
-fn = smoof::makeSphereFunction(1L)
+fn = makeSphereFunction(1L)
 ctrl = makeMBOControl()
 
 # custom stopping condition (stop if target function value reached)

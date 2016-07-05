@@ -18,7 +18,7 @@ test_that("renderExampleRunPlot produces list of ggplot2 objects", {
 
   ### 1D NUMERIC
 
-  obj.fn = smoof::makeSingleObjectiveFunction(
+  obj.fn = makeSingleObjectiveFunction(
     fn = function(x, ...) { if (abs(x) <= 2) sum(x * x) else stop("trafo failed") },
     par.set = makeParamSet(
       makeNumericParam("x", lower = -20, upper = 20, trafo = function(x) x / 10)
@@ -50,7 +50,7 @@ test_that("renderExampleRunPlot produces list of ggplot2 objects", {
 
 
   ### 2d MIXED
-  obj.fn = smoof::makeSingleObjectiveFunction(
+  obj.fn = makeSingleObjectiveFunction(
     fn = function(x) {
       if (abs(x$x) > 3)
         stop("trafo failed")
@@ -72,7 +72,7 @@ test_that("renderExampleRunPlot produces list of ggplot2 objects", {
   checkPlotList(plot.list)
 
   ### 2D NUMERIC (MULTIPOINT)
-  obj.fun = smoof::makeSingleObjectiveFunction(
+  obj.fun = makeSingleObjectiveFunction(
     fn = function(x) {
       if (any(abs(x) > 5)) stop("trafo failed") else sum(x^2)
     },

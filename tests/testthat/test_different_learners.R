@@ -8,7 +8,7 @@ test_that("mbo works with different learners", {
     makeDiscreteParam("disc1", values = c("a", "b")),
     makeNumericParam("num1", lower = 0, upper = 1)
   )
-  f1 = smoof::makeSingleObjectiveFunction(
+  f1 = makeSingleObjectiveFunction(
     fn = function(x) {
       ifelse(x$disc1 == "a", x$num1 * 2 - 1, 1 - x$num1)
     },

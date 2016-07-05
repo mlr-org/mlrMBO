@@ -17,7 +17,7 @@ test_that("plot single crit", {
 })
 
 test_that("plot multi crit", {
-  f = smoof::makeZDT1Function(2L)
+  f = makeZDT1Function(2L)
   learner = makeLearner("regr.km", predict.type = "se")
   des = generateTestDesign(8L, getParamSet(f))
   ctrl = makeMBOControl(propose.points = 2L, n.objectives = 2L)
