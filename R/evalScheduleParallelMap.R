@@ -30,11 +30,18 @@ evalScheduleSmartParallelMap = function(wrapFun, xs, xs.trafo, xs.schedule.info 
     
     # order everything according to priorities in xs.schedule.info
     if (!is.null(xs.schedule.info$priorities)) {
+      if (any(is.na(xs.schedule.info$priorities))) {
+        stopf("Observed NA values in priorities which breaks scheduling!")
+      }
       order.idx = order(xs.schedule.info$priorities, decreasing = TRUE)
       xs = xs[order.idx]
       xs.trafo = xs.trafo[order.idx]
       xs.schedule.info = xs.schedule.info[order.idx,, drop = FALSE]
       extras = extras[order.idx]
+    }
+    
+    if (any(is.na(xs.schedule.info$times))) {
+      stopf("Observed NA values in times which breaks scheduling!")
     }
 
     t.max = xs.schedule.info$times[1L] + 0.05 * xs.schedule.info$times[1L]
