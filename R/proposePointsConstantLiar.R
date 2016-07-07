@@ -14,7 +14,6 @@ proposePointsConstantLiar = function(opt.state) {
   opt.path2 = deepCopyOptPath(opt.path)
   dob = max(getOptPathDOB(opt.path)) + 1
   props = list()
-  xx.models <<- list()
   for (i in 1:npoints) {
     # propose point, add to opt.path2 with y = lie, then update model
     props[[i]] = proposePointsByInfillOptimization(opt.state, control = control2, opt.path = opt.path2, models = list(model))
@@ -22,7 +21,6 @@ proposePointsConstantLiar = function(opt.state) {
     addOptPathEl(opt.path2, x = x, y = liar(opt.problem, opt.path2, props[[i]]$prop.points, model), dob = dob)
     rt = makeTaskSingleObj(opt.path2, control)
     model = train(model$learner, rt)
-    xx.models[[i]] <<- model
   }
   joinProposedPoints(props)
 }
