@@ -16,7 +16,8 @@ makeMBOControl(n.objectives = 1L, propose.points = 1L,
   schedule.method = "none", schedule.nodes = 1L,
   schedule.priority = "infill", schedule.priority.time = FALSE,
   schedule.fill.random = TRUE, time.model.trafo.log = FALSE,
-  asyn.wait.for.proposals = TRUE, asyn.filter.proposals = FALSE)
+  asyn.wait.for.proposals = TRUE, asyn.filter.proposals = FALSE,
+  asyn.cleanup = FALSE, check.constant.model = FALSE)
 }
 \arguments{
 \item{n.objectives}{[\code{integer(1)}]\cr
@@ -136,6 +137,12 @@ Should waiting be enabled for proposals? Default is \code{TRUE}.}
 
 \item{asyn.filter.proposals}{[\code{logical(1)}]\cr
 Should proposed points be filtered? Only works with \code{filter.proposed.points = TRUE}. Default is \code{FALSE}.}
+
+\item{asyn.cleanup}{[\code{logical(1)}]\cr
+Clean asyn files after run? Default is \code{FALSE}.}
+
+\item{check.constant.model}{\code{logical(1)}\cr
+Should we check if the model just proposes constant values after each model build.}
 }
 \value{
 [\code{\link{MBOControl}}].

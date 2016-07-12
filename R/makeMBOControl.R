@@ -97,6 +97,11 @@
 #'    Should waiting be enabled for proposals? Default is \code{TRUE}.
 #' @param asyn.filter.proposals [\code{logical(1)}]\cr
 #'    Should proposed points be filtered? Only works with \code{filter.proposed.points = TRUE}. Default is \code{FALSE}.
+#' @param asyn.cleanup [\code{logical(1)}]\cr
+#'    Clean asyn files after run? Default is \code{FALSE}.
+#' @param check.constant.model \code{logical(1)}\cr
+#'    Should we check if the model just proposes constant values after each model build.
+#'    (Only works for Focussearch for now)
 #' @return [\code{\link{MBOControl}}].
 #' @aliases MBOControl
 #' @family MBOControl
@@ -123,7 +128,9 @@ makeMBOControl = function(n.objectives = 1L,
   schedule.fill.random = TRUE,
   time.model.trafo.log = FALSE,
   asyn.wait.for.proposals = TRUE,
-  asyn.filter.proposals = FALSE
+  asyn.filter.proposals = FALSE,
+  asyn.cleanup = FALSE,
+  check.constant.model = FALSE
 ) {
 
   n.objectives = asInt(n.objectives, lower = 1L)
@@ -160,6 +167,12 @@ makeMBOControl = function(n.objectives = 1L,
   schedule.nodes = asInteger(schedule.nodes, upper = propose.points)
   assertChoice(schedule.priority, choices = c("infill", "explore", "exploit", "balanced"))
   assertFlag(schedule.priority.time)
+  assertFlag(schedule.fill.random)
+  assertFlag(time.model.trafo.log)
+  assertFlag(asyn.wait.for.proposals)
+  assertFlag(asyn.filter.proposals)
+  assertFlag(asyn.cleanup)
+  assertFlag(check.constant.model)
 
   control = makeS3Obj("MBOControl",
     n.objectives = n.objectives,
@@ -186,6 +199,8 @@ makeMBOControl = function(n.objectives = 1L,
     time.model.trafo.log = time.model.trafo.log,
     asyn.wait.for.proposals = asyn.wait.for.proposals,
     asyn.filter.proposals = asyn.filter.proposals,
+    asyn.cleanup = asyn.cleanup,
+    check.constant.model = check.constant.model,
     multifid = FALSE
   )
 

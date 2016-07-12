@@ -109,6 +109,11 @@ getExtras = function(n, prop, train.time, control) {
       ex$eval.state = prop$eval.state
       ex$scheduled.on = prop$scheduled.on
     }
+    if (isTRUE(attr(prop$prop.points, "constant.model"))) {
+      ex$constant.model = TRUE
+    } else {
+      ex$constant.model = FALSE
+    }
     # if we use asyn MBO store node information and evaluation starte
     ex$train.time = if (i == 1) train.time else NA_real_
     ex$prop.type = prop$prop.type[i]
