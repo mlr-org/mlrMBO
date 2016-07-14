@@ -37,7 +37,7 @@ mboAsynTemplate.OptState = function(obj) {
     opt.state = readDirectoryToOptState(opt.problem)
     start.after = ifelse(i < control$schedule.nodes, i - 1, 0)
     ##! control$schedule.nodes
-    if (!shouldTerminate.OptState(opt.state)$term) {
+    if (!getOptStateTermination(opt.state)$term) {
       runMBOOnline(opt.state, start.after = start.after)
     }
     invisible()

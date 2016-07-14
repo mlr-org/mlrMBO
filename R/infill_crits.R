@@ -105,7 +105,7 @@ infillCritAEI = function(points, models, control, par.set, design, iter, attribu
   else
     estimateResidualVariance(model, data = design, target = control$y.name)
 
-  tau = sqrt(pure.noise.var)
+  tau = sqrt(pure.noise.var) #standard deviation of heterogenous noise
   res = (-1) * ifelse(p.se < 1e-06, 0,
     (d * xcr.prob + p.se * xcr.dens) * (1 - tau / sqrt(tau^2 + p.se^2)))
   if (attributes) {
