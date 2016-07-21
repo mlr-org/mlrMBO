@@ -14,7 +14,7 @@ test_that("stopping criteria works", {
 
   # time budget
   ctrl = makeMBOControl()
-  ctrl = setMBOControlTermination(ctrl, iters = iters, time.budget = time.budget)
+  ctrl = setMBOControlTermination(ctrl, time.budget = time.budget)
   or = mbo(f, design = design, learner = learner, control = ctrl)
 
   expect_equal(or$final.state, "term.time")
@@ -25,11 +25,11 @@ test_that("stopping criteria works", {
   or = mbo(f, design = design, learner = learner, control = ctrl)
 
   expect_equal(or$final.state, "term.yval")
-  expect_less_than(or$y, target.fun.value)
+  expect_lt(or$y, target.fun.value)
 
   # maximal number of target function evaluations
   ctrl = makeMBOControl()
-  ctrl = setMBOControlTermination(ctrl, iters = iters, max.evals = max.evals)
+  ctrl = setMBOControlTermination(ctrl, max.evals = max.evals)
   or = mbo(f, design = design, learner = learner, control = ctrl)
 
   expect_equal(or$final.state, "term.feval")
