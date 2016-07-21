@@ -61,7 +61,7 @@ setMBOControlTermination = function(control,
 
   stop.conds = more.stop.conds
 
-  if (is.null(iters) && is.null(time.budget) && is.null(exec.time.budget) && length(stop.conds) == 0L) {
+  if (is.null(iters) && is.null(time.budget) && is.null(exec.time.budget) && is.null(max.evals) && length(stop.conds) == 0L) {
     stopf("You need to specify a maximal number of iteration, a time budget or at least
       one custom stopping condition, but you provided neither.")
   }
