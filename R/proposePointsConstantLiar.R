@@ -27,14 +27,14 @@ proposePointsConstantLiar = function(opt.state) {
 
 liar = function(opt.problem, opt.path, x, model = NULL) {
   control = getOptProblemControl(opt.problem)
-  if (!control$multipoint.mean.liar) {
-    res = control$multipoint.cl.lie(getOptPathY(opt.path, control$y.name))
-  } else {
+  if (control$multipoint.mean.liar) {
     if (is.null(model)) {
-      rt = makeTaskSingleObj(opt.path, control)
-      model = train(getOptProblemLearner(opt.problem), rt)
+      model = train(getOptProblemLearner(opt.problem), makeTaskSingleObj(opt.path, control))
     }
     res = getPredictionResponse(predict(model, newdata = x))
+    stopf("I lied this value %.3f", res)
+  } else {
+    res = control$multipoint.cl.lie(getOptPathY(opt.path, control$y.name))
   }
   return(res)
 }

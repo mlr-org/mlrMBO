@@ -90,6 +90,7 @@ runMBOOnline.OptState = function(x, node = NA_integer_, ...) {
   }
   prop = proposePoints.OptState(opt.state)
   if (control$asyn.filter.proposals) {
+    # If we want filtering and we have any filtered point, we just return the actual opt.state, which means that we do noting and start over (why did we want this?) 
     prop2 = filterProposedPoints(prop, opt.state)
     if (any(prop2$prop.type == "random_filter")) {
       return(invisible(opt.state))

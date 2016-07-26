@@ -164,7 +164,13 @@ makeMBOControl = function(n.objectives = 1L,
 
   assertString(output.num.format)
   assertChoice(schedule.method, choices = c("none", "smartParallelMap", "asyn"))
-  schedule.nodes = asInteger(schedule.nodes, upper = propose.points)
+  if (schedule.method == "asyn") {
+    if (propose.points > 1L) warning("For schedule.method='asyn' you normally would just use propose.points = 1")
+    schedule.nodes = asInteger(schedule.nodes)
+  } else {
+    schedule.nodes = asInteger(schedule.nodes, upper = propose.points)  
+  }
+  
   assertChoice(schedule.priority, choices = c("infill", "explore", "exploit", "balanced"))
   assertFlag(schedule.priority.time)
   assertFlag(schedule.fill.random)
