@@ -11,3 +11,4 @@ src/*.o
 src/*.so
 plots
 tests/testthat/Rplots.pdf
+*.sublime-*
