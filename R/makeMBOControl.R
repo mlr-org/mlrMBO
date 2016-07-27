@@ -75,7 +75,13 @@
 #' @param output.num.format [\code{logical(1)}]\cr
 #'   Format string for the precision of the numeric output of mbo.
 #' @param schedule.method [\code{character(1)}]\cr
-#'   Choose wich scheduling method for multipoint evaluation should be used. Default is none. Another option is smartParallelMap and asyn.
+#'   Choose wich scheduling method for multipoint evaluation should be used. 
+#'   Default is \dQuote{none} for no scheduling.
+#'   If you want scheduling chose one of the following options but make sure to use it together with \code{parallelMap::parallelStart*(..., level = "mlrMBO.asyn")}:
+#'   \dQuote{smartParallelMap}: Needs more \code{propose.points} then \code{schedule.nodes}. 
+#'     Will propose more points then cores and only evaluate the most efficient ones.
+#'     Runtimes for scheduling will be estimated.
+#'   \dQuote{asyn}: Starts a different mbo routine, where the function is evaluated as soon as there are free resources. For this it is important to set \code{asyn.impute.method} as the proposal for a new point will take into account the ongoing evaluations which just have an NA y value. 
 #' @param schedule.nodes [\code{integer(1)}]\cr
 #'   If > 1 we try to schedule the proposed points in a smart way on the given numbers of threads.
 #'   You need to set the value for \code{propose.points} higher then the number of available cores. 
@@ -99,6 +105,11 @@
 #'    Should proposed points be filtered? Only works with \code{filter.proposed.points = TRUE}. Default is \code{FALSE}.
 #' @param asyn.cleanup [\code{logical(1)}]\cr
 #'    Clean asyn files after run? Default is \code{FALSE}.
+#' @param asyn.impute.method [\code{character(1)}]\cr
+#'    Choices are:
+#'      \dQuote{min} take minimum of y-values.
+#'      \dQuote{max} take maximum of y-values.
+#'      \dQuote{mean} take prediction at point x based on previous evaluations.
 #' @param check.constant.model \code{logical(1)}\cr
 #'    Should we check if the model just proposes constant values after each model build.
 #'    (Only works for Focussearch for now)
@@ -130,6 +141,7 @@ makeMBOControl = function(n.objectives = 1L,
   asyn.wait.for.proposals = TRUE,
   asyn.filter.proposals = FALSE,
   asyn.cleanup = FALSE,
+  asyn.impute.method = "min",
   check.constant.model = FALSE
 ) {
 
@@ -179,6 +191,7 @@ makeMBOControl = function(n.objectives = 1L,
   assertFlag(asyn.filter.proposals)
   assertFlag(asyn.cleanup)
   assertFlag(check.constant.model)
+  assertChoice(asyn.impute.method, choices = c("min", "max", "mean"))
 
   control = makeS3Obj("MBOControl",
     n.objectives = n.objectives,
@@ -206,6 +219,7 @@ makeMBOControl = function(n.objectives = 1L,
     asyn.wait.for.proposals = asyn.wait.for.proposals,
     asyn.filter.proposals = asyn.filter.proposals,
     asyn.cleanup = asyn.cleanup,
+    asyn.impute.method = asyn.impute.method,
     check.constant.model = check.constant.model,
     multifid = FALSE
   )

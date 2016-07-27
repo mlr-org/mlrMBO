@@ -25,12 +25,14 @@ readProposalsFromDirectoryToOptPath = function(opt.path, opt.problem) {
   files = listProposals(path)
   file.contents = readFileContents(files)
   #concept copied from proposePointsConstantLiar.R
+  last.extra = getOptPathEl(opt.path, getOptPathLength(opt.path))$extra #FIXME: We just cheat and copy last 
+  last.extra$prop.type = "evaluating"
+  par.set = getOptProblemParSet(opt.problem)
   for (prop.el in file.contents) {
-    x = dfRowToList(prop.el$prop.points, getOptProblemParSet(opt.problem), 1)
+    x = dfRowToList(prop.el$prop.points, par.set, 1)
     dob = max(getOptPathDOB(opt.path))
-    last.extra = getOptPathEl(opt.path, getOptPathLength(opt.path))$extra #FIXME: We just cheat and copy last known extras to new lie ¯\_(ツ)_/¯
-    last.extra$prop.type = "liar"
-    addOptPathEl(opt.path, x = x, y = liar(opt.problem, opt.path, prop.el$prop.points) , dob = dob + 1, extra = last.extra, exec.time = 0) 
+    # We put a NA to the Y to later make use of the impute.y.fun
+    addOptPathEl(opt.path, x = x, y = NA, dob = dob + 1, extra = last.extra, exec.time = 0) 
   }
 }
 
@@ -42,10 +44,10 @@ hashOptPath = function(opt.path, ignore.proposed = TRUE) {
     y = y[prop.type == "done"] #we ignore proposed y as they may varey
   }
   digest::sha1(list(
-  getOptPathX(opt.path),
-  y,
-  getOptPathDOB(opt.path),
-  prop.type 
+    getOptPathX(opt.path),
+    y,
+    getOptPathDOB(opt.path),
+    prop.type 
   ))
 }
 
@@ -56,7 +58,7 @@ readDirectoryToOptState = function(opt.problem, time.out = 60) {
   repeat {
     opt.path = readOptPathFromDirectory(getAsynDir(opt.problem))
     max.dob = max(getOptPathDOB(opt.path))
-    #add proposals with CL to opt.path
+    #add proposals with CL or NAs for unevaluated y to opt.path
     readProposalsFromDirectoryToOptPath(opt.path, opt.problem)
     #if we do not have to look fore identical opt.paths: break and continue normal
     if (!control$asyn.wait.for.proposals) break
@@ -124,4 +126,18 @@ getAsynDir = function(opt.problem) {
   path = file.path(dirname(getOptProblemControl(opt.problem)$save.file.path), "asyn")
   dir.create(path, showWarnings = FALSE, recursive = TRUE)
   path
+}
+
+asynImputeMean = function(opt.problem, data, y.name) {
+  learner = getOptProblemLearner(opt.problem)
+  cols = setNames(list(imputeLearner(learner, features = NULL)), y.name)
+  impute(data, cols = cols)$data
+}
+
+asynImputeMin = function(opt.problem = NULL, data, y.name) {
+  impute(data, cols = setNames(list(imputeMin(0)), y.name))$data
+}
+
+asynImputeMax = function(opt.problem = NULL, data, y.name) {
+  impute(data, cols = setNames(list(imputeMax(0)), y.name))$data
 }

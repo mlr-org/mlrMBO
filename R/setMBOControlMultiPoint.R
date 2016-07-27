@@ -89,7 +89,7 @@ setMBOControlMultiPoint = function(control,
   control$multipoint.cb.multiple = coalesce(cb.multiple, control$multipoint.cb.multiple, "random")
   assertChoice(control$multipoint.cb.multiple, choices = c("random", "static.quantiles", "random.quantiles"))
 
-  # Workaround since coalesce cannot hande functions
+  # Workaround since coalesce cannot handle functions
   control$multipoint.cl.lie = if (!is.null(cl.lie)) {
     cl.lie
   } else if (!is.null(control$multipoint.cl.lie)) {
