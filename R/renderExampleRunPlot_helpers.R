@@ -77,7 +77,8 @@ getInfillCritGrid = function(crit.name, points.per.dim, models, control, par.set
   if (inherits(models, "FailureModel"))
     xgrid[[crit.name]] = NA
   else
-    xgrid[[crit.name]] = opt.direction * critfun(xgrid, models, control, par.set, opt.path, iter)
+    xgrid[[crit.name]] = opt.direction * critfun(xgrid, models, control, par.set,
+      opt.path[, 1:(sum(getParamLengths(par.set)) + control$n.objectives)], iter)
   return(xgrid)
 }
 

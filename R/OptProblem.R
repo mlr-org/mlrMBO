@@ -42,7 +42,16 @@ makeOptProblem = function(fun, design = NULL, learner, control, show.info = TRUE
   opt.problem$show.info = show.info
   opt.problem$more.args = more.args
   opt.problem$all.possible.weights = NULL
-
+  
+  # Unfortunately, the multicrit method epic is a bit special ...
+  if (control$n.objectives > 1L & control$multicrit.method %in% c("epic")) {
+    # Sample the initial design purely random from the sampled decision space
+    design.inds = sample(nrow(design), control$multicrit.epic.design.size)
+    opt.problem$design = design[design.inds, ]
+    # design is just the sampled decision space without evaluated points
+    opt.problem$sampled.decision.space = design[-design.inds, ]
+  }
+  
   class(opt.problem) = append(class(opt.problem), "OptProblem")
 
   opt.problem

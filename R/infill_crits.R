@@ -179,3 +179,67 @@ infillCritDIB = function(points, models, control, par.set, design, iter) {
   }
   return(crit.vals)
 }
+
+
+## EPO
+infillCritEPO = function(points, models, control, par.set, design, iter) {
+  # Space filling: For each new point calculate the min.distance
+  # to an existing point. We want to propose a point with maximal min.distance!
+  # Therefore, multiply with -1
+  Xs = as.matrix(design[, names(design) %nin% control$y.name])
+  
+  # Normalize! With respect to only Xs.
+  maxs = apply(Xs, 2, max)
+  mins = apply(Xs, 2, min)
+  Xs = sapply(seq_col(Xs), function(i) (Xs[, i] - mins[i]) / (maxs[i] - mins[i]))
+  points2 = sapply(seq_col(points), function(i) (points[, i] - mins[i]) / (maxs[i] - mins[i]))
+  if (is.vector(points2))
+    points2 = matrix(points2, nrow = 1)
+  points2 = data.frame(points2)
+  names(points2) = names(points)
+  
+  dists = fields::rdist(Xs, points2)
+  min.dists = apply(dists, 2, min)
+
+  # "Evolution pressure"
+  # Set the distance of every point to high value,
+  # if its probabilitiy of beeing non-dominated is to small.
+  if (control$multicrit.epo.type == "classif")
+    probs = getPredictionProbabilities(predict(models[[1L]], newdata = points2))
+  else
+    probs = -predict(models[[1L]], newdata = points)$data$response
+  #print(probs)
+  #print(probs)
+  #print(min.dists)
+  #max.it = control$iters + 1
+  #p = sqrt((iter - 1) / control$iters)
+  #p = 0.2
+  #p = (iter - 1) / control$iters
+  #p = pnorm(-3 + 6 * iter / control$iters)
+  #p = 1 - 0.995^(iter)
+  #p = 1 - 1 / iter
+  #p = (log(1 / (max.it - iter + 1)) - log(1 / max.it)) /
+  #  (log(1 / 2) - log(1 / max.it))
+  #print(p)
+  
+  p = control$multicrit.epo.p
+  
+  print(p)
+  
+  if (control$multicrit.epo.p.scal == "cut")
+    crit.vals = ifelse(probs >= p, -1 * min.dists, 1 - probs)
+  
+  if (control$multicrit.epo.p.scal == "tscheb") {
+    y2 = -1 * cbind(min.dists * (1 - p), probs * p)
+    crit.vals = apply(y2, 1, max) + 0.05 * rowSums(y2)
+  }
+  
+  #crit.vals = min.dists * probs
+  #print(crit.vals)
+  #print(min(crit.vals))
+  #stop("bla")
+  #print(min(crit.vals))
+  return(crit.vals)
+}
+
+

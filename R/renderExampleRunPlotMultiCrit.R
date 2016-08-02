@@ -94,7 +94,7 @@ makeXPlot = function(data.x, idx, idx.nsga2.paretofront, method, x.name, crit.na
       crit2 = createBasicSpacePlot(crit2.plot, gg.points.xspace, iter, object, x.name, 0.8, "x", colors)
     )
   }
-  if (method %in% c("parego", "dib")) {
+  if (method %in% c("parego", "dib", "epo")) {
     if (propose.points == 1L) {
       data.crit = getInfillCritGrid(crit.name, points.per.dim, models,
         control, par.set, opt.path[idx$past, ], iter)

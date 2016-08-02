@@ -37,10 +37,23 @@ checkStuff = function(fun, par.set, design, learner, control) {
 
   if (hasDiscrete(par.set) && !hasLearnerProperties(learner, "factors"))
     stop("Provided learner does not support factor parameters.")
-
-  if (learner$type != "regr")
-    stop("mbo requires regression learner!")
-
+  
+  ## Some MBO methods require regression, some classification learner!
+  if (control$n.objectives > 1L & control$multicrit.method %in% c("epic", "epo")) {
+    if (control$multicrit.epo.type == "classif") {
+      if (learner$type != "classif") {
+        stop("epic / epo.classif requires classification learner!")
+      }
+    } else {
+      if (learner$type != "regr") {
+        stop("epic / epo.classif requires classification learner!")
+      }
+    }
+  } else {
+    if (learner$type != "regr")
+      stop("mbo requires regression learner!")
+  }
+  
   if (hasRequires(par.set) && !hasLearnerProperties(learner, "missings"))
     stopf("The 'par.set' has dependent parameters, which will lead to missing values in X-space during modeling, but learner '%s' does not support handling of missing values (property 'missing')!", learner$id)
 
@@ -117,6 +130,11 @@ checkStuff = function(fun, par.set, design, learner, control) {
     }
     if (control$multicrit.method == "mspot" && control$infill.opt != "nsga2")
       stopf("For multicrit 'mspot' infil.opt must be set to 'nsga2'!")
+    
+    if (control$multicrit.method == "epic") {
+      if (is.null(design))
+        stop("You have to specify the design = sampled decision space for epic.")
+    }
   }
 
   # multifidelity stuff

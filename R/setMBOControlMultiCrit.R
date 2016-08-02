@@ -10,7 +10,10 @@
 #'   \dQuote{parego}: The ParEGO algorithm.
 #'   \dQuote{dib}: Direct indicator-based method. Subsumes SMS-EGO and epsilon-EGO.
 #'   \dQuote{mspot}: Directly optimizes multcrit problem where we substitute the true
-#'   objectives with model-based infill crits via an EMOA.
+#'     objectives with model-based infill crits via an EMOA.
+#'   \dQuote{epic}: Estimates Pareto Set by classification and proposes
+#'     points that are non-dominated with probability p_next.
+#'     Please note: epic needs a classification learner!
 #'   All methods can also propose multiple points in parallel.
 #'   Default is \dQuote{dib}.
 #' @param ref.point.method [\code{character(1)}] \cr
@@ -58,11 +61,34 @@
 #'   proposed a set of candidates, \dQuote{propose.points} are selected via
 #'   the hypervoume contribution of this infill.crit.
 #'   Possible values are \dQuote{mean} and \dQuote{cb}, default ist \dQuote{mean}
+#' @param epic.design.size [\code{integer(1)}]\cr
+#'   Size of the initial design of epic. Please do note the special behaviour of epic:
+#'   The \dQuote{design} parameter does not equal the initial design, but a sampled
+#'   decision space. Each evaluated point must be one from this sampled decision space!
+#'   Hence, the initial design is a subset of the \dQuote{design}, and this parameter
+#'   controls the size of the initial design. Default is 4 * d where d is the
+#'   dimension of the parameter set.
+#' @param epic.p.nond [\code{numeric(1)}]\cr
+#'   Minimum probability of non-domination for the next proposed point.
+#'   Must be in [0, 1], default is 0.6
+#' @param epic.p.next [\code{numeric}]\cr
+#'   Vector of desired probabilites for the next proposed points.
+#'   Must be of length \dQuote{propose.points}. Default is rep(0.8, \dQuote{propose.points}).
+#'   @param epo.p.type [\code{numeric}]\cr
+#'     TODO
+#'   @param epo.p.method [\code{numeric}]\cr
+#'     TODO
+#'   @param epo.p.scal [\code{numeric}]\cr
+#'     TODO
 #' @return [\code{\link{MBOControl}}].
 #'
 #' @references
 #' For more information on the implemented multi-criteria procedures the following
 #' sources might be helpful:
+#' Horn, Daniel; Wagner, Tobias; Biermann, Dirk; Weihs, Claus; Bischl, Bernd;
+#' Model-Based Multi-objective Optimization: Taxonomy, Multi-Point Proposal, Toolbox and Benchmark
+#' Evolutionary Multi-Criterion Optimization ,64-78, 2015, Springer
+#' 
 #' Knowles, J.: ParEGO: A hybrid algorithm with on-line landscape
 #' approximation for expensive multiobjective optimization problems. IEEE
 #' Transactions on Evolutionary Computation, 10 (2006) 1, pp. 50-66
@@ -108,7 +134,13 @@ setMBOControlMultiCrit = function(control,
   parego.normalize = NULL,
   dib.indicator = NULL,
   dib.sms.eps = NULL,
-  mspot.select.crit = NULL) {
+  mspot.select.crit = NULL,
+  epic.design.size = NULL,
+  epic.p.nond = NULL,
+  epic.p.next = NULL,
+  epo.p.method,
+  epo.p.scal,
+  epo.type) {
 
   assertClass(control, "MBOControl")
   n.objectives = control$n.objectives
@@ -118,7 +150,8 @@ setMBOControlMultiCrit = function(control,
   requirePackages(c("mco", "emoa"), why = "multicrit optimization")
 
   control$multicrit.method = coalesce(method, control$multicrit.method, "dib")
-  assertChoice(control$multicrit.method, choices = c("parego", "mspot", "dib"))
+  assertChoice(control$multicrit.method, choices =
+      c("parego", "mspot", "dib", "epic", "epo", "epo"))
 
   # Reference Point
   control$multicrit.ref.point.method = coalesce(ref.point.method, control$multicrit.ref.point.method, "all")
@@ -190,5 +223,29 @@ setMBOControlMultiCrit = function(control,
   control$mspot.select.crit = coalesce(mspot.select.crit, control$mspot.select.crit, "mean")
   assertChoice(control$mspot.select.crit, choices = c("mean", "cb"))
 
+  
+  control$multicrit.epic.design.size = coalesce(epic.design.size, control$multicrit.epic.design.size)
+  if (!is.null(control$epic.design.size))
+    control$multicrit.epic.design.size = asCount(control$multicrit.epic.design.size, positive = TRUE)
+  
+  control$multicrit.epic.p.nond = coalesce(epic.p.nond, control$multicrit.epic.p.nond, 0.6)
+  assertNumber(control$multicrit.epic.p.nond, lower = 0, upper = 1)
+  
+
+  control$multicrit.epic.p.next = coalesce(epic.p.next, control$multicrit.epic.p.next,
+    rep(0.8, control$propose.points))
+  assertNumeric(control$multicrit.epic.p.next, lower = 0, upper = 1, any.missing = FALSE,
+    len = control$propose.points)
+  
+  control$multicrit.epo.type = coalesce(epo.type, control$multicrit.epo.type, "classif")
+  assertChoice(control$multicrit.epo.type, choices = c("classif", "regr"))
+  
+  control$multicrit.epo.p.method = coalesce(epo.p.method, control$multicrit.epo.p.method, "const05")
+  assertChoice(control$multicrit.epo.p.method, choices =
+      c("const05", "trunc.norm", "sqrt", "linear", "runif"))
+  
+  control$multicrit.epo.p.scal = coalesce(epo.p.scal, control$multicrit.epo.p.scal, "tscheb")
+  assertChoice(control$multicrit.epo.p.scal, choices = c("tscheb", "cut"))
+  
   return(control)
 }

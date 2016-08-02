@@ -39,6 +39,10 @@ proposePoints.OptState = function(opt.state){
       res = proposePointsMSPOT(opt.state)
     } else if (control$multicrit.method == "dib") {
       res = proposePointsDIB(opt.state)
+    } else if (control$multicrit.method == "epic") {
+      res = proposePointsEPIC(opt.state)
+    } else if (control$multicrit.method == "epo") {
+      res = proposePointsEPO(opt.state)
     }
   }
 
