@@ -10,7 +10,17 @@ proposePointsEPO = function(opt.state) {
   iter = getOptStateLoop(opt.state)
   
   if (control$propose.points == 1L) {
-    res = proposePointsByInfillOptimization(opt.state)
+    requirePackages("truncnorm")
+    control2 = control
+    control2$multicrit.epo.p = switch(control$multicrit.epo.p.method,
+      const05 = 0.5,
+      trunc.norm = rtruncnorm(n = 1, a = 0, b = 1, sd = 0.25,
+        mean = (iter - 1) / control$iters),
+      sqrt = sqrt((iter - 1) / control$iters), 
+      linear = (iter - 1) / control$iters,
+      runif = runif(1)
+    )
+    res = proposePointsByInfillOptimization(opt.state, control = control2)
   } else {
     # copy opt.path so we can store already proposed points in it
      opt.path2 = deepCopyOptPath(opt.path)
