@@ -46,6 +46,11 @@ proposePoints.OptState = function(opt.state){
     add = proposePointsRandom(opt.state)
     res = joinProposedPoints(list(res, add))
   }
+  
+  if  (control$multicrit.rtmbmo.k > 0L) {
+    add = proposePointsRollingTide(opt.state)
+    res = joinProposedPoints(list(res, add))
+  }
 
   if (!is.matrix(res$crit.vals))
     res$crit.vals = matrix(res$crit.vals, ncol = 1L)

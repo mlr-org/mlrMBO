@@ -58,6 +58,14 @@
 #'   proposed a set of candidates, \dQuote{propose.points} are selected via
 #'   the hypervoume contribution of this infill.crit.
 #'   Possible values are \dQuote{mean} and \dQuote{cb}, default ist \dQuote{mean}
+#' @param rtmbmo.k [\code{integer(1)}]\cr
+#'   Rolling Tide Model Based Multi Objective Optimization for noisy multi objective
+#'   optimization. Number of reevaluations of allready evaluated points in each
+#'   iteration. Default is 0, no reevaluations are performed. Can only be set
+#'   to higher values for noisy optimization problems.
+#' @param rtmbmo.method [\code{character(1)}]\cr
+#'   Which Rolling Tide Model Based Multi Objective Optimizatio to use. 
+#'   Default is original, alternative is tschebbysheff.
 #' @return [\code{\link{MBOControl}}].
 #'
 #' @references
@@ -108,7 +116,9 @@ setMBOControlMultiCrit = function(control,
   parego.normalize = NULL,
   dib.indicator = NULL,
   dib.sms.eps = NULL,
-  mspot.select.crit = NULL) {
+  mspot.select.crit = NULL,
+  rtmbmo.k = NULL,
+  rtmbmo.method = NULL) {
 
   assertClass(control, "MBOControl")
   n.objectives = control$n.objectives
@@ -189,6 +199,12 @@ setMBOControlMultiCrit = function(control,
 
   control$mspot.select.crit = coalesce(mspot.select.crit, control$mspot.select.crit, "mean")
   assertChoice(control$mspot.select.crit, choices = c("mean", "cb"))
-
+  
+  control$multicrit.rtmbmo.k = coalesce(rtmbmo.k, control$multicrit.rtmbmo.k, 0)
+  assertCount(control$multicrit.rtmbmo.k)
+  
+  control$multicrit.rtmbmo.method = coalesce(rtmbmo.method, control$multicrit.rtmbmo.method, "original")
+  assertChoice(control$multicrit.rtmbmo.method, choices = c("original", "tschebbysheff"))
+  
   return(control)
 }

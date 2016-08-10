@@ -24,7 +24,7 @@ checkStuff = function(fun, par.set, design, learner, control) {
   }
 
   # at the moment we do not support noisy multicriteria optimization
-  if (getNumberOfObjectives(fun) > 1L && isNoisy(fun)) {
+  if (getNumberOfObjectives(fun) > 1L && isNoisy(fun) && control$multicrit.rtmbmo.k == 0L) {
     stopf("Optimization of noisy multi-objective functions not supported in the moment.")
   }
 
