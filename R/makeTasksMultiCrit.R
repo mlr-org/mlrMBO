@@ -10,7 +10,12 @@
 #   MBO control object.
 # @return [\code{list(\link[mlr]{SupervisedTask}})]
 makeTasksMultiCrit = function(opt.path, control) {
-  data = convertOptPathToDf(opt.path, control)
+  # get the mean data if noisy:
+  if (control$multicrit.rtmbmo.k > 0) {
+    data = convertOptPathToMeanDf(opt.path, control)$df
+  } else {
+    data = convertOptPathToDf(opt.path, control)
+  }
 
   # FIXME: trafo.y.fun should be a list of length y.name
   # user selected to (log)-transform the y-column

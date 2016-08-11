@@ -47,7 +47,7 @@ proposePoints.OptState = function(opt.state){
     res = joinProposedPoints(list(res, add))
   }
   
-  if  (control$multicrit.rtmbmo.k > 0L) {
+  if  (control$n.objectives > 1L && control$multicrit.rtmbmo.k > 0L) {
     add = proposePointsRollingTide(opt.state)
     res = joinProposedPoints(list(res, add))
   }

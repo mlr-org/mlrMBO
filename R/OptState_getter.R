@@ -96,20 +96,34 @@ getOptStateFinalPoints = function(opt.state, unify = FALSE) {
       best.ind = final.index
     )
   } else {
-    inds = getOptPathParetoFront(opt.path, index = TRUE)
-    pareto.set = lapply(inds, function(i) getOptPathEl(opt.path, i)$x)
-    if (unify) {
+    ## If we did noisy optimization the Pareto front is based
+    ## on the mean evaluations:
+    if (control$multicrit.rtmbmo.k > 0) {
+      final.design = convertOptPathToMeanDf(getOptStateOptPath(opt.state))$df
+      final.design.y = final.design[, control$y.name]
+      inds = !is_dominated(t(final.design.y))
       list(
-        x = do.call(rbind.data.frame ,pareto.set),
-        y = getOptPathParetoFront(opt.path),
-        best.ind = inds
-      )
-    } else {
-      list(
-        pareto.front = getOptPathY(opt.path)[inds, , drop = FALSE],
-        pareto.set = pareto.set,
+        pareto.front = final.design.y[inds, ],
+        # FIXME: pareto.set is a data.frame here, not a list of lists ...
+        pareto.set = dropNamed(final.design, control$y.name)[inds, ],
         inds = inds
       )
+    } else {
+      inds = getOptPathParetoFront(opt.path, index = TRUE)
+      pareto.set = lapply(inds, function(i) getOptPathEl(opt.path, i)$x)
+      if (unify) {
+        list(
+          x = do.call(rbind.data.frame ,pareto.set),
+          y = getOptPathParetoFront(opt.path),
+          best.ind = inds
+        )
+      } else {
+        list(
+          pareto.front = getOptPathY(opt.path)[inds, , drop = FALSE],
+          pareto.set = pareto.set,
+          inds = inds
+        )
+      } 
     }
   }
 }

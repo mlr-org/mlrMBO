@@ -15,9 +15,15 @@
 makeTasksParEGO = function(opt.path, control, all.possible.weights) {
   n.points = control$propose.points
   # get data + normalize the targets to [0, 1] + drop them from data
-  data = convertOptPathToDf(opt.path, control)
+  # get the mean data if noisy:
+  if (control$multicrit.rtmbmo.k > 0) {
+    data = convertOptPathToMeanDf(opt.path, control)$df
+  } else {
+    data = convertOptPathToDf(opt.path, control)
+  }
+  
+  y = as.matrix(data[, control$y.name])
   data = dropNamed(data, control$y.name)
-  y = getOptPathY(opt.path)
   if (control$multicrit.parego.normalize == "standard") {
     y = normalize(y, method = "range", margin = 2L)
   } else {

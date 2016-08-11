@@ -5,21 +5,16 @@ proposePointsRollingTide = function(opt.state) {
   opt.path = getOptStateOptPath(opt.state)
   
   k = control$multicrit.rtmbmo.k
-  design = getOptPathX(opt.path)
-  design = convertDataFrameCols(design, ints.as.num = TRUE, logicals.as.factor = TRUE)
   
   # Get mean performances for each point - each point can have multiple evaluations
-  unique.design = unique(convertRowsToList(design))
-  Y.mean = lapply(unique.design, function(tmp) {
-    reevals = sapply(seq_row(design), function(i) all(tmp == design[i, ]))
-    Ys = getOptPathY(opt.path, drop = FALSE)[reevals, , drop = FALSE]
-    list(perf = colMeans(Ys), n.evals = sum(reevals))
-  })
+  design = convertOptPathToMeanDf(opt.path)
+  n.evals = design$n.evals
+  design = design$df
+  design.x = dropNamed(design, control$y.name)
+  design.y = as.matrix(design[, control$y.name])
   
   # Calculate the non-dominated sorting rank for each point
-  Ys = extractSubList(Y.mean, "perf")
-  nds.rank = nds_rank(Ys)
-  n.evals = extractSubList(Y.mean, "n.evals")
+  nds.rank = nds_rank(t(design.y))
   
   # Propose k points for reevaluation
   prop.inds = numeric(k)
@@ -53,7 +48,7 @@ proposePointsRollingTide = function(opt.state) {
   }
   
   list(
-    prop.points = design[prop.inds, ],
+    prop.points = design.x[prop.inds, ],
     crit.vals = matrix(rep.int(NA_real_, k), nrow = k, ncol = 1L),
     propose.time = rep.int(NA_real_, k),
     prop.type = rep("rolling_tide", k),
