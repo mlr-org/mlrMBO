@@ -102,10 +102,12 @@ getOptStateFinalPoints = function(opt.state, unify = FALSE) {
       final.design = convertOptPathToMeanDf(getOptStateOptPath(opt.state))$df
       final.design.y = final.design[, control$y.name]
       inds = !is_dominated(t(final.design.y))
+      
+      pareto.set = dropNamed(final.design, control$y.name)[inds, ]
+      pareto.set = dfRowsToList(pareto.set, getOptProblemParSet(opt.problem))
       list(
         pareto.front = final.design.y[inds, ],
-        # FIXME: pareto.set is a data.frame here, not a list of lists ...
-        pareto.set = dropNamed(final.design, control$y.name)[inds, ],
+        pareto.set = pareto.set,
         inds = inds
       )
     } else {
