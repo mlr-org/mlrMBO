@@ -33,10 +33,9 @@ test_that("asyn MBO works with CL", {
   save.file = file.path(tempdir(), "mbo_asyn", "mbo.RData")
   ctrl = makeMBOControl(schedule.method = "asyn", save.file.path = save.file, propose.points = 1, schedule.nodes = 2, asyn.wait.for.proposals = FALSE, asyn.filter.proposals = TRUE, asyn.impute.method = "mean")
   ctrl = setMBOControlTermination(ctrl, time.budget = 60L)
-  ctrl = setMBOControlInfill(control = ctrl, crit = "ei", opt.focussearch.maxit = 2L, opt.focussearch.points = 50L)
-  surrogat.learner = makeLearner("regr.km", predict.type = "se")
-  parallelMap::parallelStartMulticore(2, level = "mlrMBO.asyn", logging = TRUE, storagedir = "~/dump")
-  or = mbo(fun = fn.sleep, design = des, learner = surrogat.learner, control = ctrl)
+  ctrl = setMBOControlInfill(control = ctrl, crit = "ei", opt.focussearch.maxit = 2L, opt.focussearch.points = 50L, filter.proposed.points = TRUE)
+  parallelMap::parallelStartMulticore(2, level = "mlrMBO.asyn", logging = TRUE)
+  or = mbo(fun = fn.sleep, design = des, control = ctrl)
   parallelMap::parallelStop()
   unlink(dirname(save.file), recursive = TRUE, force = TRUE)
   op.df = as.data.frame(or$opt.path)
@@ -49,9 +48,13 @@ test_that("asyn MBO works with CL", {
   expect_true(sum(op.df$exec.time[11:15]>=3)>=2)
 })
 
+# Here we want to leave the debug-mode to test the saving
+options(mlrMBO.debug.mode = FALSE)
+
 test_that("asyn MBO works with mboContinue", {
   # make sure there is no or - object in the environment
   save.file = file.path(tempdir(), "mbo_asyn", "mbo.RData")
+  dir.create(dirname(save.file), recursive = TRUE)
   or = NULL
   assign(".counter", 0L, envir = .GlobalEnv)
   f = makeSingleObjectiveFunction(
@@ -67,7 +70,6 @@ test_that("asyn MBO works with mboContinue", {
   )
 
   learner = makeLearner("regr.randomForest", predict.type = "se", ntree = 50, ntree.for.se = 20)
-  dir.create(dirname(save.file))
   des = generateTestDesign(6L, getParamSet(f))
   ctrl = makeMBOControl(schedule.method = "asyn", save.file.path = save.file, save.on.disk.at = 0:5)
   ctrl = setMBOControlTermination(ctrl, iters = 4L)

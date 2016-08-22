@@ -24,20 +24,32 @@ readProposalsFromDirectoryToOptPath = function(opt.path, opt.problem) {
   path = getAsynDir(opt.problem)
   files = listProposals(path)
   file.contents = readFileContents(files)
-  #concept copied from proposePointsConstantLiar.R
+
+  # for friggn imputation build a data.frame we can impute on
+  df = convertOptPathToDf(opt.path)
+  n = nrow(df)
+  df.props = do.call(rbind, extractSubList(file.contents, "prop.points", simplify = FALSE))
+  df = plyr::rbind.fill(df, df.props) #FIXME: I am not totally sure if the x will have the right types in complicated cases
+  # user requested handling of NA y values in Opt-Path
+  if (anyNA(df[[control$y.name]])) {
+    impute.y = switch(control$asyn.impute.method,
+      mean = asynImputeMean,
+      min = asynImputeMin,
+      max = asynImputeMax)
+    df[[control$y.name]] = impute.y(opt.problem, data = df)
+  }
   last.extra = getOptPathEl(opt.path, getOptPathLength(opt.path))$extra #FIXME: We just cheat and copy last 
   last.extra$prop.type = "evaluating"
   par.set = getOptProblemParSet(opt.problem)
-  for (prop.el in file.contents) {
-    x = dfRowToList(prop.el$prop.points, par.set, 1)
-    dob = max(getOptPathDOB(opt.path))
-    # We put a NA to the Y to later make use of the impute.y.fun
-    addOptPathEl(opt.path, x = x, y = NA, dob = dob + 1, extra = last.extra, exec.time = 0) 
+  for (i in seq_along(file.contents)) {
+    x = dfRowToList(file.contents[[i]]$prop.points, par.set, 1)
+    y = df[[control$y.name]][n + i]
+    # We put a NA to the Y to later make use of asyn.impute.method
+    addOptPathEl(opt.path, x = x, y = y, extra = last.extra, exec.time = 0) 
   }
 }
 
 hashOptPath = function(opt.path, ignore.proposed = TRUE) {
-  dobs = 
   prop.type = getOptPathCol(opt.path, "prop.type")
   y = getOptPathY(opt.path)
   if (ignore.proposed) {
@@ -128,16 +140,19 @@ getAsynDir = function(opt.problem) {
   path
 }
 
-asynImputeMean = function(opt.problem, data, y.name) {
+asynImputeMean = function(opt.problem, data) {
+  y.name = getOptProblemControl(opt.problem)$y.name
   learner = getOptProblemLearner(opt.problem)
   cols = setNames(list(imputeLearner(learner, features = NULL)), y.name)
-  impute(data, cols = cols)$data
+  impute(data, cols = cols)$data[[y.name]]
 }
 
-asynImputeMin = function(opt.problem = NULL, data, y.name) {
-  impute(data, cols = setNames(list(imputeMin(0)), y.name))$data
+asynImputeMin = function(opt.problem, data) {
+  y.name = getOptProblemControl(opt.problem)$y.name
+  impute(data, cols = setNames(list(imputeMin(0)), y.name))$data[[y.name]]
 }
 
-asynImputeMax = function(opt.problem = NULL, data, y.name) {
-  impute(data, cols = setNames(list(imputeMax(0)), y.name))$data
+asynImputeMax = function(opt.problem, data) {
+  y.name = getOptProblemControl(opt.problem)$y.name
+  impute(data, cols = setNames(list(imputeMax(0))))$data[[y.name]]
 }

@@ -6,8 +6,8 @@
 
 # @param opt.path [\code{\link[ParamHelpers]{optPath}}]\cr
 #   Optimization path.
-# @param control [\code{\link{MBOControl}}]\cr
-#   MBO control object.
+# @param opt.problem [\code{\link{MBOControl}}]\cr
+#   MBO opt.problem object.
 # @return [\code{\link[mlr]{SupervisedTask}}]
 makeTaskSingleObj = function(opt.path, opt.problem) {
   control = getOptProblemControl(opt.problem)
@@ -15,20 +15,9 @@ makeTaskSingleObj = function(opt.path, opt.problem) {
   data$dob = data$eol = NULL
   y.name = control$y.name
 
-  # user requested handling of NA y values in Opt-Path
-  if (control$schedule.method == "asyn" && anyNA(data[[y.name]])) {
-    impute.y = switch(control$asyn.impute.method,
-      mean = asynImputeMean,
-      min = asynImputeMin,
-      max = asynImputeMax)
-    print(data)
-    new.y = impute.y(opt.problem, data = data, y.name = y.name)
-  }
-
   # user selected to (log)-transform the y-column
   trafo.y.fun = control$trafo.y.fun
   if (!is.null(trafo.y.fun)) {
-    
     # We stop the process if negative values occur
     data[[y.name]] = trafo.y.fun(data[[y.name]])
   }

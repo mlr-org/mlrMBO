@@ -56,6 +56,7 @@ mboAsynTemplate.OptState = function(obj) {
   
   if (!is.null(control$batchJobs.reg)) {
     #write method to send further jobs if budget is not exhausted and number of waiting jobs gets low
+    stop("BatchJobs mode not supported yet!")
   } else {
     parallelMap(asynInfinityLoop, i = seq_len(control$schedule.nodes), level = "mlrMBO.asyn")
     opt.state = readDirectoryToOptState(opt.problem)
