@@ -85,7 +85,7 @@ exampleRunMultiCrit= function(fun, design = NULL, learner, control, points.per.d
 
   showInfo(show.info, "Performing MBO on function.")
   showInfo(show.info, "Initial design: %i. Sequential iterations: %i.", control$init.design.points, control$iters)
-  showInfo(show.info, "Learner: %s. Settings:\n%s", learner$id, mlr:::getHyperParsString(learner))
+  showInfo(show.info, "Learner: %s. Settings:\n%s", learner$id, mlr:::getHyperParsString(learner, show.missing.values = FALSE))
 
   # run optimizer now
   res = mbo(fun, design, learner = learner, control = control, show.info = show.info)
@@ -145,7 +145,7 @@ print.MBOExampleRunMultiCrit = function(x, ...) {
   catf("Parameter types               : %s", collapse(x$par.types))
   print(x$control)
   catf("Learner                       : %s", x$learner$id)
-  catf("Learner settings:\n%s", mlr:::getHyperParsString(x$learner))
+  catf("Learner settings:\n%s", mlr:::getHyperParsString(x$learner, show.missing.values = FALSE))
   catf("Hypervolume                   : %.4e", x$mbo.hypervolume)
   catf("NSGA2 Hypervolume (6000 FEs)  : %.4e", x$nsga2.hypervolume)
 }
