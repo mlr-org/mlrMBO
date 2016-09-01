@@ -51,4 +51,4 @@ run = exampleRun(obj.fun, design = design, learner = lrn,
 
 print(run)
 
-res = plotExampleRun(run, pause = pause, densregion = TRUE)
+res = plotExampleRun(run, pause = pause, densregion = TRUE, gg.objects = list(theme_bw()))
