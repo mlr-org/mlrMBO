@@ -7,7 +7,7 @@
 plotExampleRun(object, iters, pause = TRUE, densregion = TRUE,
   se.factor = 1, single.prop.point.plots = FALSE, xlim = NULL,
   ylim = NULL, point.size = 3, line.size = 1, trafo = NULL,
-  colors = c("red", "blue", "green"), ...)
+  colors = c("red", "blue", "green"), gg.objects = list(), ...)
 }
 \arguments{
 \item{object}{[\code{function}]\cr
@@ -68,6 +68,9 @@ Specify colors for point in the plots. Must be a vector of length 3,
 each element a color for the type design, prop and seq respectivly.
 Default is red for the initial design, blue for allready proposed points
 and green for the actual iteration.}
+
+\item{gg.objects}{[\code{list)}]
+List of \code{gg} objects that should be added to all ggplots.}
 
 \item{...}{[any]\cr
 Currently not used.}

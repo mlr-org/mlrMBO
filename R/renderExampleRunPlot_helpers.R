@@ -160,3 +160,15 @@ addParegoWeightLines = function(pl, data.y, idx, opt.path, proposed.counter, rho
   #   pl + geom_line(data = gg.line, aes(x = y1, y = y2), col = "blue", shape = 1)
   pl
 }
+
+# @param g [ggplot object]
+#   A normal ggplot object
+# @ggs [various ggplot objects]
+#   Elements that you want to add to ggplot as custom scales or themes
+addGgsToGgplot = function(g, ggs) {
+  if (!inherits(g, "gg")) return(g) #sometimes there are NAs
+  for (gg in ggs) {
+    g = g + gg
+  }
+  return(g)
+}
