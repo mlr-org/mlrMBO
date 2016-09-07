@@ -33,6 +33,7 @@ readProposalsFromDirectoryToOptPath = function(opt.path, opt.problem) {
   # user requested handling of NA y values in Opt-Path
   if (anyNA(df[[control$y.name]])) {
     impute.y = switch(control$asyn.impute.method,
+      noisymean = asynImputeNoisyMean,
       mean = asynImputeMean,
       min = asynImputeMin,
       max = asynImputeMax)
@@ -44,7 +45,6 @@ readProposalsFromDirectoryToOptPath = function(opt.path, opt.problem) {
   for (i in seq_along(file.contents)) {
     x = dfRowToList(file.contents[[i]]$prop.points, par.set, 1)
     y = df[[control$y.name]][n + i]
-    # We put a NA to the Y to later make use of asyn.impute.method
     addOptPathEl(opt.path, x = x, y = y, extra = last.extra, exec.time = 0) 
   }
 }
@@ -154,5 +154,27 @@ asynImputeMin = function(opt.problem, data) {
 
 asynImputeMax = function(opt.problem, data) {
   y.name = getOptProblemControl(opt.problem)$y.name
-  impute(data, cols = setNames(list(imputeMax(0))))$data[[y.name]]
+  impute(data, cols = setNames(list(imputeMax(0)), y.name))$data[[y.name]]
 }
+
+asynImputeNoisyMean = function(opt.problem, data) {
+  y.name = getOptProblemControl(opt.problem)$y.name
+  learner = getOptProblemLearner(opt.problem)
+  learner = setPredictType(learner, predict.type = "se")
+  this.features = NULL
+  imputeNoisyLearner = imputeLearner(learner, features = this.features)
+  imputeNoisyLearner$impute = function(data, target, col, model, features) {
+    x = data[[col]]
+    ind = is.na(x)
+    # if no NAs are present in data, we always return it unchanged
+    if (all(!ind)) return(x)
+    # FIXME: we do get a list instead of a data.frame?
+    newdata = as.data.frame(data)[ind, features, drop = FALSE]
+    p = predict(model, newdata = newdata)
+    p = rnorm(nrow(newdata), mean = getPredictionResponse(p), sd = getPredictionSE(p))
+    replace(x, ind, p)
+  }
+  cols = setNames(list(imputeNoisyLearner), y.name)
+  impute(data, cols = cols)$data[[y.name]]
+}
+

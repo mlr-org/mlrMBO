@@ -20,32 +20,36 @@ test_that("asyn MBO works", {
 })
 
 test_that("asyn MBO works with CL", {
-  fn.sleep = makeSingleObjectiveFunction(
-    fn = function(x) {
-      Sys.sleep(1 + 2 * Sys.getpid()%%2)
-      sum(x^2)
-    },
-    par.set = makeNumericParamSet(len = 2, lower = -2, upper = 2),
-    has.simple.signature = TRUE
-  )
-  des = generateDesign(n = 10, par.set = getParamSet(fn.sleep))
-  des$y = apply(des, 1, function(x) sum(x^2))
-  save.file = file.path(tempdir(), "mbo_asyn", "mbo.RData")
-  ctrl = makeMBOControl(schedule.method = "asyn", save.file.path = save.file, propose.points = 1, schedule.nodes = 2, asyn.wait.for.proposals = FALSE, asyn.filter.proposals = TRUE, asyn.impute.method = "mean")
-  ctrl = setMBOControlTermination(ctrl, time.budget = 60L)
-  ctrl = setMBOControlInfill(control = ctrl, crit = "ei", opt.focussearch.maxit = 2L, opt.focussearch.points = 50L, filter.proposed.points = TRUE)
-  parallelMap::parallelStartMulticore(2, level = "mlrMBO.asyn", logging = TRUE)
-  or = mbo(fun = fn.sleep, design = des, control = ctrl)
-  parallelMap::parallelStop()
-  unlink(dirname(save.file), recursive = TRUE, force = TRUE)
-  op.df = as.data.frame(or$opt.path)
-  expect_true(nrow(op.df) >= 15)
-  #expect_true(all(!is.na(op.df$train.time[11:15]))) #FIXME Why is this missing now?
-  expect_true(all(!is.na(op.df$ei[11:15])))
-  expect_true(all(!is.na(op.df$scheduled.on[11:15])))
-  expect_true(all(!is.na(op.df$dob[11:15])))
-  expect_equal(op.df$dob[11:13], c(1,1,2))
-  expect_true(sum(op.df$exec.time[11:15]>=3)>=2)
+
+  imp.methods = c("min", "max", "mean", "noisymean")
+
+  for (imp.method in imp.methods) {
+    fn.sleep = makeSingleObjectiveFunction(
+      fn = function(x) {
+        Sys.sleep(1 + 2 * Sys.getpid()%%2)
+        sum(x^2)
+      },
+      par.set = makeNumericParamSet(len = 2, lower = -2, upper = 2),
+      has.simple.signature = TRUE)
+    des = generateDesign(n = 10, par.set = getParamSet(fn.sleep))
+    des$y = apply(des, 1, function(x) sum(x^2))
+    save.file = file.path(tempdir(), "mbo_asyn", "mbo.RData")
+    ctrl = makeMBOControl(schedule.method = "asyn", save.file.path = save.file, propose.points = 1, schedule.nodes = 2, asyn.wait.for.proposals = FALSE, asyn.filter.proposals = TRUE, asyn.impute.method = imp.method)
+    ctrl = setMBOControlTermination(ctrl, time.budget = 15L)
+    ctrl = setMBOControlInfill(control = ctrl, crit = "ei", opt.focussearch.maxit = 2L, opt.focussearch.points = 50L, filter.proposed.points = TRUE)
+    parallelMap::parallelStartMulticore(2, level = "mlrMBO.asyn", logging = TRUE)
+    or = mbo(fun = fn.sleep, design = des, control = ctrl)
+    parallelMap::parallelStop()
+    unlink(dirname(save.file), recursive = TRUE, force = TRUE)
+    op.df = as.data.frame(or$opt.path)
+    expect_true(nrow(op.df) >= 15)
+    #expect_true(all(!is.na(op.df$train.time[11:15]))) #FIXME Why is this missing now?
+    expect_true(all(!is.na(op.df$ei[11:15])))
+    expect_true(all(!is.na(op.df$scheduled.on[11:15])))
+    expect_true(all(!is.na(op.df$dob[11:15])))
+    expect_equal(op.df$dob[11:13], c(1,1,2))
+    expect_true(sum(op.df$exec.time[11:15]>=3)>=2)
+  }
 })
 
 # Here we want to leave the debug-mode to test the saving

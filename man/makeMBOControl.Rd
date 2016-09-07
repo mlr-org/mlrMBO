@@ -152,7 +152,8 @@ Clean asyn files after run? Default is \code{FALSE}.}
 Choices are:
   \dQuote{min} take minimum of y-values.
   \dQuote{max} take maximum of y-values.
-  \dQuote{mean} take prediction at point x based on previous evaluations.}
+  \dQuote{mean} take prediction at point x based on previous evaluations.
+  \dQuote{noisymean} take prediction + rnorm(se) at point x based on previous evaluations.}
 
 \item{check.constant.model}{\code{logical(1)}\cr
 Should we check if the model just proposes constant values after each model build.
