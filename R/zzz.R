@@ -13,5 +13,5 @@
 NULL
 
 .onLoad = function(libname, pkgname) {
-  parallelRegisterLevels(package = "mlrMBO", levels = c("propose.points", "feval", "asyn"))
+  parallelRegisterLevels(package = "mlrMBO", levels = c("propose.points", "feval", "asyn", "asynwrapper"))
 }

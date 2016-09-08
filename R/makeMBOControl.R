@@ -111,6 +111,7 @@
 #'      \dQuote{max} take maximum of y-values.
 #'      \dQuote{mean} take prediction at point x based on previous evaluations.
 #'      \dQuote{noisymean} take prediction + rnorm(se) at point x based on previous evaluations.
+#'      \dQuote{quantilemean} build multiple models with quantile imputed y values
 #' @param check.constant.model \code{logical(1)}\cr
 #'    Should we check if the model just proposes constant values after each model build.
 #'    (Only works for Focussearch for now)
@@ -192,7 +193,7 @@ makeMBOControl = function(n.objectives = 1L,
   assertFlag(asyn.filter.proposals)
   assertFlag(asyn.cleanup)
   assertFlag(check.constant.model)
-  assertChoice(asyn.impute.method, choices = c("min", "max", "mean", "noisymean"))
+  assertChoice(asyn.impute.method, choices = c("min", "max", "mean", "noisymean", "quantilemean"))
 
   control = makeS3Obj("MBOControl",
     n.objectives = n.objectives,

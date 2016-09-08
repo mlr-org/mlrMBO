@@ -34,6 +34,7 @@ readProposalsFromDirectoryToOptPath = function(opt.path, opt.problem) {
   if (anyNA(df[[control$y.name]])) {
     impute.y = switch(control$asyn.impute.method,
       noisymean = asynImputeNoisyMean,
+      quantilemean = asynImputeQuantileMean,
       mean = asynImputeMean,
       min = asynImputeMin,
       max = asynImputeMax)
@@ -178,3 +179,7 @@ asynImputeNoisyMean = function(opt.problem, data) {
   impute(data, cols = cols)$data[[y.name]]
 }
 
+asynImputeQuantileMean = function(opt.problem, data) {
+  y.name = getOptProblemControl(opt.problem)$y.name
+  data[[y.name]]
+}

@@ -22,5 +22,5 @@ makeTaskSingleObj = function(opt.path, opt.problem) {
     data[[y.name]] = trafo.y.fun(data[[y.name]])
   }
 
-  makeRegrTask(target = control$y.name, data = data)
+  makeRegrTask(target = control$y.name, data = data, check.data = FALSE)
 }

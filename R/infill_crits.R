@@ -34,13 +34,12 @@ infillCritStandardError = function(points, models, control, par.set, design, ite
 # EXPECTED IMPROVEMENT
 # (useful for deterministic, for noisy only with reinterpolation)
 infillCritEI = function(points, models, control, par.set, design, iter, attributes = FALSE) {
-  model = models[[1L]]
   maximize.mult = ifelse(control$minimize, 1, -1)
   y = maximize.mult * design[, control$y.name]
-  p = predict(model, newdata = points)$data
+  p = predict(models[[1L]], newdata = points)$data
   p.mu = maximize.mult * p$response
   p.se = p$se
-  y.min = min(y)
+  y.min = min(y, na.rm = TRUE)
   d = y.min - p.mu
   xcr = d / p.se
   xcr.prob = pnorm(xcr)

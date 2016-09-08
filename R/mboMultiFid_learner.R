@@ -12,7 +12,7 @@ if (FALSE) {
 }
 
 makeMultiFidWrapper = function(learner, control) {
-  learner = checkLearner(learner)
+  learner = mlr:::checkLearner(learner)
   assertClass(control, "MBOControl")
   # FIXME: export this in mlr?
   w = mlr:::makeBaseWrapper(

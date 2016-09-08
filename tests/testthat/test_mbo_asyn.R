@@ -21,7 +21,8 @@ test_that("asyn MBO works", {
 
 test_that("asyn MBO works with CL", {
 
-  imp.methods = c("min", "max", "mean", "noisymean")
+  imp.methods = c("min", "max", "mean", "noisymean", "quantilemean")
+  imp.method = c("quantilemean")
 
   for (imp.method in imp.methods) {
     fn.sleep = makeSingleObjectiveFunction(

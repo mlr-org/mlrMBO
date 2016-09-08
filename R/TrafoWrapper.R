@@ -1,5 +1,5 @@
 makeTrafoWrapper = function(learner, trafo = identity, trafo.inverse = identity, trafo.se = function(se, y) se , par.set = makeParamSet(), par.vals = list()) {
-  learner = checkLearner(learner)
+  learner = mlr:::checkLearner(learner)
   assertFunction(trafo)
   assertFunction(trafo.inverse)
   assertFunction(trafo.se, args = c("se", "y"))

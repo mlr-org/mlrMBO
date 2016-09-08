@@ -24,7 +24,7 @@ infillOptFocus = function(infill.crit, models, control, par.set, opt.path, desig
       y = infill.crit(newdesign, models, control, ps.local, design, iter, ...)
 
       # get current best value
-      local.index = getMinIndex(y, ties.method = "random")
+      local.index = getMinIndex(y, ties.method = "random", na.rm = TRUE)
       local.y = y[local.index]
       local.x.df = newdesign[local.index, , drop = FALSE]
       local.x.list = dfRowToList(recodeTypes(local.x.df, ps.local), ps.local, 1)

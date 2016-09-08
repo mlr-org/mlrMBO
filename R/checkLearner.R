@@ -20,6 +20,9 @@ checkLearner = function(learner, par.set, control, fun) {
   } else {
     assertClass(learner, "Learner")
   }
+  if (control$asyn.impute.method == "quantilemean" && !inherits(learner, "AsynWrapper")) {
+    learner = makeAsynWrapper(learner = learner)
+  }
   # so we dont run into problems with focus search et al
   learner$fix.factors.prediction = TRUE
   return(learner)
