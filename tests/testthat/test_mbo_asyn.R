@@ -22,7 +22,6 @@ test_that("asyn MBO works", {
 test_that("asyn MBO works with CL", {
 
   imp.methods = c("min", "max", "mean", "noisymean", "quantilemean")
-  imp.method = c("quantilemean")
 
   for (imp.method in imp.methods) {
     fn.sleep = makeSingleObjectiveFunction(
@@ -36,7 +35,7 @@ test_that("asyn MBO works with CL", {
     des$y = apply(des, 1, function(x) sum(x^2))
     save.file = file.path(tempdir(), "mbo_asyn", "mbo.RData")
     ctrl = makeMBOControl(schedule.method = "asyn", save.file.path = save.file, propose.points = 1, schedule.nodes = 2, asyn.wait.for.proposals = FALSE, asyn.filter.proposals = TRUE, asyn.impute.method = imp.method)
-    ctrl = setMBOControlTermination(ctrl, time.budget = 15L)
+    ctrl = setMBOControlTermination(ctrl, time.budget = 10L)
     ctrl = setMBOControlInfill(control = ctrl, crit = "ei", opt.focussearch.maxit = 2L, opt.focussearch.points = 50L, filter.proposed.points = TRUE)
     parallelMap::parallelStartMulticore(2, level = "mlrMBO.asyn", logging = TRUE)
     or = mbo(fun = fn.sleep, design = des, control = ctrl)
