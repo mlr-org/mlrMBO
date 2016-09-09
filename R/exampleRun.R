@@ -93,7 +93,7 @@ exampleRun = function(fun, design = NULL, learner = NULL, control,
     messagef("Performing MBO on function.")
     if (is.null(design))
       messagef("Initial design: %i. Sequential iterations: %i.", control$init.design.points, control$iters)
-    messagef("Learner: %s. Settings:\n%s", learner$id, mlr:::getHyperParsString(learner))
+    messagef("Learner: %s. Settings:\n%s", learner$id, mlr:::getHyperParsString(learner, show.missing.values = FALSE))
   }
 
   # run optimizer now
@@ -142,7 +142,7 @@ print.MBOExampleRun = function(x, ...) {
   catf("True points per dim.        : %s", collapse(x$points.per.dim))
   print(x$control)
   catf("Learner                     : %s", x$learner$id)
-  catf("Learner settings:\n%s", mlr:::getHyperParsString(x$learner))
+  catf("Learner settings:\n%s", mlr:::getHyperParsString(x$learner, show.missing.values = FALSE))
   mr = x$mbo.res
   op = mr$opt.path
   catf("Recommended parameters:")
