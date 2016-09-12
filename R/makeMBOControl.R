@@ -144,7 +144,7 @@ makeMBOControl = function(n.objectives = 1L,
   asyn.wait.for.proposals = TRUE,
   asyn.filter.proposals = FALSE,
   asyn.cleanup = FALSE,
-  asyn.filter.proposals = FALSE
+  asyn.impute.method = "min",
   check.constant.model = FALSE
 ) {
 
