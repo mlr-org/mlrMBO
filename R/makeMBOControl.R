@@ -144,6 +144,7 @@ makeMBOControl = function(n.objectives = 1L,
   asyn.filter.proposals = FALSE,
   asyn.cleanup = FALSE,
   asyn.impute.method = "min",
+  asyn.impute.quantiles = seq(0.1, 0.9, by = 0.1),
   check.constant.model = FALSE
 ) {
 
@@ -194,6 +195,7 @@ makeMBOControl = function(n.objectives = 1L,
   assertFlag(asyn.cleanup)
   assertFlag(check.constant.model)
   assertChoice(asyn.impute.method, choices = c("min", "max", "mean", "noisymean", "quantilemean"))
+  assertNumeric(asyn.impute.quantiles, lower = 0, upper = 1, any.missing = FALSE)
 
   control = makeS3Obj("MBOControl",
     n.objectives = n.objectives,
@@ -223,6 +225,7 @@ makeMBOControl = function(n.objectives = 1L,
     asyn.cleanup = asyn.cleanup,
     asyn.impute.method = asyn.impute.method,
     check.constant.model = check.constant.model,
+    asyn.impute.quantiles = asyn.impute.quantiles,
     multifid = FALSE
   )
 

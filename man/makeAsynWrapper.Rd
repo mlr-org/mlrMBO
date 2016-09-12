@@ -23,4 +23,7 @@ For the missing y values we will predict a set of quantiles.
 All combinations of those quantile values will be taken to replace the missing values leading to multiple different new tasks.
 We then will train a model for each of those tasks.
 }
+\seealso{
+Other wrapper: \code{\link{makeDiscreteWrapper}}
+}
 
