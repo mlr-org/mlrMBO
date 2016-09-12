@@ -15,13 +15,14 @@ test_that("smart schedule works", {
   )
   
   setups = expand.grid(
+    schedule.method = c("smartParallelMap", "scheduleKnapsack"),
     schedule.priority = c("infill", "explore", "balanced"),
     multipoint.cb.multiple = c("random", "random.quantiles"),
     schedule.priority.time = FALSE,
     crit.cb.lambda = c(1,4),
     stringsAsFactors = FALSE
     )
-  setups = rbind(setups, data.frame(schedule.priority = "infill", multipoint.cb.multiple = "static.quantiles", schedule.priority.time = TRUE, crit.cb.lambda = 2))
+  setups = rbind(setups, data.frame(schedule.method = "smartParallelMap", schedule.priority = "infill", multipoint.cb.multiple = "static.quantiles", schedule.priority.time = TRUE, crit.cb.lambda = 2))
   
   surrogat.learner = makeLearner("regr.lm", predict.type = "se")
   #ors = rowLapply(setups, function(x) {
@@ -29,7 +30,7 @@ test_that("smart schedule works", {
     x = as.list(setups[i,])
     control = makeMBOControl(
       propose.points = 10L,
-      schedule.method = "smartParallelMap",
+      schedule.method = x$schedule.method,
       schedule.nodes = 5L,
       schedule.priority = x$schedule.priority,
       schedule.priority.time = x$schedule.priority.time

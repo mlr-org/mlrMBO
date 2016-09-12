@@ -1,4 +1,5 @@
-# Determines priorities by cluster the proposed points by their config for better distributed priorities.
+# Determines priorities by clustering the proposed points by their distances in the X space for better distributed priorities.
+#
 # @param priorities[\code{numeric} \cr
 #   A Vector containing the priorities for the points in prop
 # @param prop [\code{list}] \cr
@@ -32,23 +33,21 @@ priorityCluster = function(priorities, prop, opt.state) {
   clu = hclust(dist(prop.points))
   gtree = cutree(clu, k = des.clusters)
    
-   
   cluster.mask = logical(no.jobs)
   av.jobs = logical(no.jobs)
   job.mask = logical(no.jobs)
   job.order = numeric()
   av.jobs[] = TRUE
   
-  
   # take the first available job per cluster (priority)
   # add them to the job order and remove them from available Jobs
   
-  while(length(job.order) < no.jobs){
+  while (length(job.order) < no.jobs){
     job.mask[] = FALSE
     for (i in 1:des.clusters){
       cluster.mask = (gtree == i) & av.jobs
       pos.sel = which.max(cluster.mask)
-      if(cluster.mask[pos.sel]){
+      if (cluster.mask[pos.sel]){
         job.mask[pos.sel] = TRUE
         av.jobs[pos.sel] = FALSE
       }

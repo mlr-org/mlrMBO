@@ -1,14 +1,5 @@
-# Evaluates the target function using parallelMap
-# @param wrapFun [\code{function}] \cr
-#   A function which evaluates one item of xs and returns a list with the \code{y}, \code{time} and \code{user.extras}
-# @param xs [\code{list}] \cr
-#   A list of the x values to evaluate by \code{wrapFun}
-# @param xs.schedule.info [\code{list}] \cr
-#   A list containing vectors of the same length as \code{xs} giving the estimated times, priorities and times.se for each evaluation of \code{x}.
-# @param opt.state [\code{OptState}]\cr
-# @return [\code{list}] \cr
-#   List containing the results of \code{wrapFun} for each item in xs
-
+# arguments should always be the same as in evalScheduleParallelMap.R
+# see there for reference
 
 evalScheduleKnapsack = function(wrapFun, xs, xs.trafo, xs.schedule.info = NULL, extras = NULL, opt.state) {
 	if (!is.null(xs.schedule.info$times)) {

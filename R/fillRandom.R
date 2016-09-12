@@ -1,4 +1,4 @@
-# Evaluates the target function using parallelMap
+# Helper function to query the model for jobs with a runtime below given t.max
 #
 # @param t.max [\code{numeric}] \cr
 #   the Maximum Time for the Random Jobs
@@ -9,7 +9,7 @@
 #   List containing the xs, xs.trafo and extras for the choosen Jobs
 
 
-fillRandom = function( t.max, empty.slots ,opt.state){
+fillRandom = function(t.max, empty.slots ,opt.state) {
   control = getOptProblemControl(getOptStateOptProblem(opt.state))
   control2 = control
   par.set = getOptProblemParSet(getOptStateOptProblem(opt.state))
