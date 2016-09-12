@@ -139,11 +139,12 @@ makeMBOControl = function(n.objectives = 1L,
   schedule.priority = "infill",
   schedule.priority.time = FALSE,
   schedule.fill.random = TRUE,
+  schedule.cluster = FALSE,
   time.model.trafo.log = FALSE,
   asyn.wait.for.proposals = TRUE,
   asyn.filter.proposals = FALSE,
   asyn.cleanup = FALSE,
-  asyn.impute.method = "min",
+  asyn.filter.proposals = FALSE
   check.constant.model = FALSE
 ) {
 
@@ -182,7 +183,7 @@ makeMBOControl = function(n.objectives = 1L,
     if (propose.points > 1L) warning("For schedule.method='asyn' you normally would just use propose.points = 1")
     schedule.nodes = asInteger(schedule.nodes)
   } else {
-    schedule.nodes = asInteger(schedule.nodes, upper = propose.points)  
+  schedule.nodes = asInteger(schedule.nodes, upper = propose.points)
   }
   
   assertChoice(schedule.priority, choices = c("infill", "explore", "exploit", "balanced"))
@@ -192,6 +193,7 @@ makeMBOControl = function(n.objectives = 1L,
   assertFlag(asyn.wait.for.proposals)
   assertFlag(asyn.filter.proposals)
   assertFlag(asyn.cleanup)
+  assertFlag(schedule.cluster)
   assertFlag(check.constant.model)
   assertChoice(asyn.impute.method, choices = c("min", "max", "mean", "noisymean", "quantilemean"))
 
@@ -217,6 +219,7 @@ makeMBOControl = function(n.objectives = 1L,
     schedule.priority = schedule.priority,
     schedule.priority.time = schedule.priority.time,
     schedule.fill.random = schedule.fill.random,
+    schedule.cluster = schedule.cluster,
     time.model.trafo.log = time.model.trafo.log,
     asyn.wait.for.proposals = asyn.wait.for.proposals,
     asyn.filter.proposals = asyn.filter.proposals,
