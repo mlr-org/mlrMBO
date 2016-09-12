@@ -52,6 +52,7 @@ evalTargetFun.OptState = function(opt.state, xs, extras, xs.schedule.info = NULL
   scheduleFunction = switch(control$schedule.method,
     smartParallelMap = evalScheduleSmartParallelMap,
     asyn = evalScheduleParallelMap,
+    scheduleKnapsack = evalScheduleKnapsack,
     evalScheduleParallelMap
   )
   

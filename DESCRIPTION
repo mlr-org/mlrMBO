@@ -29,6 +29,7 @@ Imports:
     reshape2,
     digest
 Suggests:
+    adagio,
     akima,
     cmaes,
     DiceKriging,
