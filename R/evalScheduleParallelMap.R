@@ -39,10 +39,6 @@ evalScheduleSmartParallelMap = function(wrapFun, xs, xs.trafo, xs.schedule.info 
       xs.schedule.info = xs.schedule.info[order.idx,, drop = FALSE]
       extras = extras[order.idx]
     }
-    
-    if (any(is.na(xs.schedule.info$times))) {
-      stopf("Observed NA values in times which breaks scheduling!")
-    }
 
     t.max = xs.schedule.info$times[1L] + 0.05 * xs.schedule.info$times[1L]
     
@@ -68,45 +64,56 @@ evalScheduleSmartParallelMap = function(wrapFun, xs, xs.trafo, xs.schedule.info 
     scheduled = scheduled[load.balance.order,]
     xs = xs[scheduled$job]
     xs.trafo = xs.trafo[scheduled$job]
-    xs.schedule.info[scheduled$job,]
+    xs.schedule.info =  xs.schedule.info[scheduled$job,]
     extras = extras[scheduled$job]
 
+   # Fill empty Nodes with Random Jobs
+    if (control$schedule.fill.random && (empty.slots = schedule.nodes - nrow(scheduled))>0) {
+      stuff = fillRandom(t.max = t.max, empty.slots = empty.slots,  opt.state)
+      used.slots = length(stuff[[1]])
+      if (used.slots>0){  
+        scheduled = rbind(scheduled, list(job = length(xs) + seq_along(1:used.slots), on = max(scheduled$on) + seq_along(1:used.slots), at = occupied.time[max(scheduled$on) + seq_along(1:used.slots)]))
+        xs = c(xs, stuff[[1]])
+        xs.trafo = c(xs.trafo, stuff[[2]])
+        extras = c(extras, stuff[[3]])
+      }
+    }
     #fill empty nodes with random jobs below time threashold
     #FIXME dirty hack to fill stuff
-    if (control$schedule.fill.random && (empty.slots = schedule.nodes - nrow(scheduled))>0) {
-      par.set = getOptProblemParSet(getOptStateOptProblem(opt.state))
-      prop = proposePointsRandom2(par.set = par.set, n = empty.slots * 50)
-      control2 = control
-      control2$infill.crit = "random"
-      control2$propose.points = empty.slots * 50
-      time.model = getOptStateTimeModel(opt.state)
-      time.prediction = predict(time.model, newdata = prop$prop.points)
-      predicted.time = getPredictionResponse(time.prediction)
-      #partly taken from evalProposedPoints.OptState
-      extras2 = getExtras(
-        n = nrow(prop$prop.points),
-        prop = c(prop, list(
-          predicted.time = predicted.time,
-          predicted.time.se = getPredictionSE(time.prediction))),
-        train.time = NA_real_,
-        control = control2)
-      for (i in seq_along(extras2)) {
-        empty = getExtras(1, control = control, prop = NULL, train.time = NA_real_)[[1]]
-        extras2[[i]] = insert(empty, extras2[[i]], intersect(names(empty), names(extras2[[i]])))
-      }
-      xs2 = dfRowsToList(prop$prop.points, par.set)
-      xs2 = lapply(xs2, repairPoint, par.set = par.set)
-      #narrow down to fit inside of t.max
-      inds = which(predicted.time < t.max)
-      #narrow down to one job for each free node
-      inds = head(inds, empty.slots)
-      scheduled = rbind(scheduled, list(job = length(xs) + seq_along(inds), on = max(scheduled$on) + seq_along(inds), at = occupied.time[max(scheduled$on) + seq_along(inds)]))
-      extras = c(extras, extras2[inds])
-      xs = c(xs, xs2[inds])
-      xs2.trafo = lapply(xs2[inds], trafoValue, par = getOptProblemParSet(getOptStateOptProblem(opt.state)))
-      xs.trafo = c(xs.trafo, xs2.trafo)
-    }
-
+  #  if (control$schedule.fill.random && (empty.slots = schedule.nodes - nrow(scheduled))>0) {
+  #    par.set = getOptProblemParSet(getOptStateOptProblem(opt.state))
+  #    prop = proposePointsRandom2(par.set = par.set, n = empty.slots * 50)
+  #    control2 = control
+  #    control2$infill.crit = "random"
+  #    control2$propose.points = empty.slots * 50
+  #    time.model = getOptStateTimeModel(opt.state)
+  #    time.prediction = predict(time.model, newdata = prop$prop.points)
+  #    predicted.time = getPredictionResponse(time.prediction)
+  #    #partly taken from evalProposedPoints.OptState
+  #    extras2 = getExtras(
+  #      n = nrow(prop$prop.points),
+  #      prop = c(prop, list(
+  #        predicted.time = predicted.time,
+  #        predicted.time.se = getPredictionSE(time.prediction))),
+  #      train.time = NA_real_,
+  #      control = control2)
+  #    for (i in seq_along(extras2)) {
+  #      empty = getExtras(1, control = control, prop = NULL, train.time = NA_real_)[[1]]
+  #      extras2[[i]] = insert(empty, extras2[[i]], intersect(names(empty), names(extras2[[i]])))
+  #    }
+  #    xs2 = dfRowsToList(prop$prop.points, par.set)
+  #    xs2 = lapply(xs2, repairPoint, par.set = par.set)
+  #    #narrow down to fit inside of t.max
+  #    inds = which(predicted.time < t.max)
+  #    #narrow down to one job for each free node
+  #    inds = head(inds, empty.slots)
+  #    scheduled = rbind(scheduled, list(job = length(xs) + seq_along(inds), on = max(scheduled$on) + seq_along(inds), at = occupied.time[max(scheduled$on) + seq_along(inds)]))
+  #    extras = c(extras, extras2[inds])
+  #    xs = c(xs, xs2[inds])
+  #    xs2.trafo = lapply(xs2[inds], trafoValue, par = getOptProblemParSet(getOptStateOptProblem(opt.state)))
+  #    xs.trafo = c(xs.trafo, xs2.trafo)
+  #  }
+    
     #put scheduling information into extras
     for (i in seq_row(scheduled)) {
       extras[[i]]$scheduled.job = scheduled$job[i]
