@@ -15,10 +15,10 @@ makeMBOControl(n.objectives = 1L, propose.points = 1L,
   resample.measures = list(mse), output.num.format = "\%.3g",
   schedule.method = "none", schedule.nodes = 1L,
   schedule.priority = "infill", schedule.priority.time = FALSE,
-  schedule.fill.random = TRUE, time.model.trafo.log = FALSE,
-  asyn.wait.for.proposals = TRUE, asyn.filter.proposals = FALSE,
-  asyn.cleanup = FALSE, asyn.impute.method = "min",
-  check.constant.model = FALSE)
+  schedule.fill.random = TRUE, schedule.cluster = FALSE,
+  time.model.trafo.log = FALSE, asyn.wait.for.proposals = TRUE,
+  asyn.filter.proposals = FALSE, asyn.cleanup = FALSE,
+  asyn.impute.method = "min", check.constant.model = FALSE)
 }
 \arguments{
 \item{n.objectives}{[\code{integer(1)}]\cr
