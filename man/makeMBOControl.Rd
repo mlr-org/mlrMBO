@@ -18,7 +18,8 @@ makeMBOControl(n.objectives = 1L, propose.points = 1L,
   schedule.fill.random = TRUE, schedule.cluster = FALSE,
   time.model.trafo.log = FALSE, asyn.wait.for.proposals = TRUE,
   asyn.filter.proposals = FALSE, asyn.cleanup = FALSE,
-  asyn.impute.method = "min", check.constant.model = FALSE)
+  asyn.impute.method = "min", asyn.impute.quantiles = seq(0.1, 0.9, by =
+  0.1), check.constant.model = FALSE)
 }
 \arguments{
 \item{n.objectives}{[\code{integer(1)}]\cr
