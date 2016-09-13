@@ -35,17 +35,20 @@ makeMBOResult.OptState = function(opt.state) {
   opt.result = getOptStateOptResult(opt.state)
   opt.path = getOptStateOptPath(opt.state)
   
+  # Get the final mean design
+  final.design = convertOptPathToMeanDf(opt.path, control = control)$df
+  final.design.x = dropNamed(final.design, control$y.name)
+  
   # Find indices of the best values and re-evaluate them
   final.inds = chooseFinalPoint(opt.state)
-  final.x = lapply(final.inds, function(i) getOptPathEl(opt.path, i)$x)
+  #final.x = lapply(final.inds, function(i) getOptPathEl(opt.path, i)$x)
+  final.x = final.design.x[final.inds, ]
+  final.x = dfRowsToList(final.x, par.set = getOptProblemParSet(opt.problem), enforce.col.types = TRUE)
   if (getOptProblemControl(opt.problem)$final.evals > 0) {
     evalFinalPoint(opt.state, final.inds)
   }
   
   # Calculate final y
-  # Get the final mean design
-  final.design = convertOptPathToMeanDf(opt.path, control = control)$df
-  final.design.x = dropNamed(final.design, control$y.name)
   # Find: which rows in final.design belong to a final.x
   inds = sapply(final.x, function(x) {
     which(sapply(seq_row(final.design.x),
