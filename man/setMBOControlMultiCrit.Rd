@@ -8,7 +8,8 @@ setMBOControlMultiCrit(control, method = NULL, ref.point.method = NULL,
   ref.point.offset = NULL, ref.point.val = NULL, parego.s = NULL,
   parego.rho = NULL, parego.use.margin.points = NULL,
   parego.sample.more.weights = NULL, parego.normalize = NULL,
-  dib.indicator = NULL, dib.sms.eps = NULL, mspot.select.crit = NULL)
+  dib.indicator = NULL, dib.sms.eps = NULL, mspot.select.crit = NULL,
+  rtmbmo.k = NULL, rtmbmo.method = NULL)
 }
 \arguments{
 \item{control}{[\code{\link{MBOControl}}]\cr
@@ -78,6 +79,16 @@ Which infill.crit to use in the candidate selection. After the NSGA2
 proposed a set of candidates, \dQuote{propose.points} are selected via
 the hypervoume contribution of this infill.crit.
 Possible values are \dQuote{mean} and \dQuote{cb}, default ist \dQuote{mean}}
+
+\item{rtmbmo.k}{[\code{integer(1)}]\cr
+Rolling Tide Model Based Multi Objective Optimization for noisy multi objective
+optimization. Number of reevaluations of allready evaluated points in each
+iteration. Default is 0, no reevaluations are performed. Can only be set
+to higher values for noisy optimization problems.}
+
+\item{rtmbmo.method}{[\code{character(1)}]\cr
+Which Rolling Tide Model Based Multi Objective Optimizatio to use. 
+Default is original, alternative is tschebbysheff.}
 }
 \value{
 [\code{\link{MBOControl}}].

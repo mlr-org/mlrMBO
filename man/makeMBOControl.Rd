@@ -6,11 +6,11 @@
 \title{Set MBO options.}
 \usage{
 makeMBOControl(n.objectives = 1L, propose.points = 1L,
-  final.method = "best.true.y", final.evals = 0L, y.name = "y",
-  impute.y.fun = NULL, trafo.y.fun = NULL, suppress.eval.errors = TRUE,
-  save.on.disk.at = integer(0L), save.on.disk.at.time = Inf,
-  save.file.path = file.path(getwd(), "mlr_run.RData"),
-  store.model.at = NULL, resample.at = integer(0),
+  final.method = "best.true.y", final.y.method = "true", final.evals = 0L,
+  y.name = "y", impute.y.fun = NULL, trafo.y.fun = NULL,
+  suppress.eval.errors = TRUE, save.on.disk.at = integer(0L),
+  save.on.disk.at.time = Inf, save.file.path = file.path(getwd(),
+  "mlr_run.RData"), store.model.at = NULL, resample.at = integer(0),
   resample.desc = makeResampleDesc("CV", iter = 10),
   resample.measures = list(mse), output.num.format = "\%.3g")
 }
@@ -32,6 +32,12 @@ Can be bad if target function is noisy.
 \dQuote{best.predicted}: Use the final model to predict all points ever visited and use the best one.
 This might average-out noisy function values.
 Default is: \dQuote{best.true.y}.}
+
+\item{final.y.method}{[\code{character(1)}]\cr
+Which final y value should be returned?
+\dQuote{true}: Return the true y-values for the final points. Of multiple
+  evaluations per final point have been performed their mean value is returned.
+\dQuote{predicted}: Return the predicted y-values of the final models.}
 
 \item{final.evals}{[\code{integer(1)}]\cr
 How many target function evals should be done at final point to reduce noise?
