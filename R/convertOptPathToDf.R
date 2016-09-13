@@ -24,15 +24,20 @@ convertOptPathToMeanDf = function(opt.path, control, aggr = mean) {
   # Get mean performances for each point - each point can have multiple evaluations
   unique.design = unique(convertRowsToList(design))
   Y.mean = lapply(unique.design, function(tmp) {
-    reevals = sapply(seq_row(design), function(i) all(tmp == design[i, ]))
+    reevals = sapply(seq_row(design), function(i) all(tmp == design[i, ], na.rm = TRUE))
     Ys = getOptPathY(opt.path, drop = FALSE)[reevals, , drop = FALSE]
     list(perf = apply(Ys, 2, aggr), n.evals = sum(reevals))
   })
   
-  Ys = t(extractSubList(Y.mean, "perf"))
-  n.evals = extractSubList(Y.mean, "n.evals")
+  design = convertListOfRowsToDataFrame(unique.design, col.names = names(design))
   
-  design = cbind(convertListOfRowsToDataFrame(unique.design, col.names = names(design)), Ys)
+  Ys = extractSubList(Y.mean, "perf")
+  if (is.matrix(Ys)) {
+    design = cbind(design, t(Ys))
+  } else {
+    design[[control$y.name]] = Ys
+  }
+  n.evals = extractSubList(Y.mean, "n.evals")
   
   return(list(df = design, n.evals = n.evals))
 }

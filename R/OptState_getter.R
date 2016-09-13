@@ -101,7 +101,7 @@ getOptStateFinalPoints = function(opt.state, unify = FALSE) {
     if (control$multicrit.rtmbmo.k > 0) {
       final.design = convertOptPathToMeanDf(getOptStateOptPath(opt.state))$df
       final.design.y = final.design[, control$y.name]
-      inds = !is_dominated(t(final.design.y))
+      inds = !emoa::is_dominated(t(final.design.y))
       
       pareto.set = dropNamed(final.design, control$y.name)[inds, ]
       pareto.set = dfRowsToList(pareto.set, getOptProblemParSet(opt.problem))

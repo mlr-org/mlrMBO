@@ -32,19 +32,43 @@ NULL
 makeMBOResult.OptState = function(opt.state) {
   opt.problem = getOptStateOptProblem(opt.state)
   control = getOptProblemControl(opt.problem)
-  final.points = getOptStateFinalPoints(opt.state)
   opt.result = getOptStateOptResult(opt.state)
-
-  if (length(final.points$x)) {
-    if (getOptProblemControl(opt.problem)$final.evals > 0) {
-      ys = evalFinalPoint(opt.state, final.points)
-      final.points$y = mean(ys)
-    }
+  opt.path = getOptStateOptPath(opt.state)
+  
+  # Find indices of the best values and re-evaluate them
+  final.inds = chooseFinalPoint(opt.state)
+  final.x = lapply(final.inds, function(i) getOptPathEl(opt.path, i)$x)
+  if (getOptProblemControl(opt.problem)$final.evals > 0) {
+    evalFinalPoint(opt.state, final.inds)
+  }
+  
+  # Calculate final y
+  # Get the final mean design
+  final.design = convertOptPathToMeanDf(opt.path, control = control)$df
+  final.design.x = dropNamed(final.design, control$y.name)
+  # Find: which rows in final.design belong to a final.x
+  inds = sapply(final.x, function(x) {
+    which(sapply(seq_row(final.design.x),
+      function(i) all(final.design.x[i, , drop = FALSE] == unlist(x), na.rm = TRUE)))
+  })
+  
+  if (control$final.y.method == "true") {
+    # Here we want to use the mean value of all re-evaluations
+    final.y = final.design[inds, control$y.name]
+  } else if (control$final.y.method == "predicted") {
+    # Here we want to use the model prediction
+     final.y = lapply(getOptStateModels(opt.state)$models, predict,
+      newdata = final.design.x[inds, , drop = FALSE])
+    final.y = lapply(final.y, getPredictionResponse)
+    final.y = do.call(cbind, final.y)
+  }
+  
+  if (control$n.objective == 1L) {
     makeS3Obj(
       c("MBOSingleObjResult", "MBOResult"),
-      x = dropNamed(final.points$x, ".multifid.lvl"),
-      y = final.points$y, # strip name
-      best.ind = final.points$best.ind,
+      x = final.x[[1]],#dropNamed(final.points$x, ".multifid.lvl"),
+      y = final.y, #final.points$y, # strip name
+      best.ind = final.inds, #final.points$best.ind,
       opt.path = getOptStateOptPath(opt.state),
       resample.results = getOptResultResampleResults(opt.result),
       final.state = getOptStateState(opt.state),
@@ -53,9 +77,9 @@ makeMBOResult.OptState = function(opt.state) {
     )
   } else {
     makeS3Obj(c("MBOMultiObjResult", "MBOResult"),
-      pareto.front = final.points$pareto.front,
-      pareto.set = final.points$pareto.set,
-      pareto.inds = final.points$inds,
+      pareto.front = final.y, #final.points$pareto.front,
+      pareto.set = final.x, #final.points$pareto.set,
+      pareto.inds = final.inds, #final.points$inds,
       opt.path = getOptStateOptPath(opt.state),
       final.state = getOptStateState(opt.state),
       models = getOptResultStoredModels(opt.result),

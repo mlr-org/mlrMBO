@@ -14,7 +14,7 @@ proposePointsRollingTide = function(opt.state) {
   design.y = as.matrix(design[, control$y.name])
   
   # Calculate the non-dominated sorting rank for each point
-  nds.rank = nds_rank(t(design.y))
+  nds.rank = emoa::nds_rank(t(design.y))
   
   # Propose k points for reevaluation
   prop.inds = numeric(k)

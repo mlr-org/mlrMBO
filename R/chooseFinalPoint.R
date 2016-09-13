@@ -15,9 +15,18 @@ chooseFinalPoint = function(opt.state) {
   opt.problem =  getOptStateOptProblem(opt.state)
   opt.path = getOptStateOptPath(opt.state)
   control = getOptProblemControl(opt.problem)
-  switch (control$final.method,
-    "last.proposed" = getOptPathLength(opt.path),
-    "best.true.y" = getOptPathBestIndex(opt.path, ties = "random"),
-    "best.predicted" = which(rank(ifelse(control$minimize, 1, -1) *
-      predict(getOptStateModels(opt.state)$models[[1L]], task = getOptStateTasks(opt.state)[[1]])$data$response, ties.method = "random") == 1L))
-}
+  if (control$n.objectives == 1L) {
+    switch (control$final.method,
+      "last.proposed" = getOptPathLength(opt.path),
+      "best.true.y" = getOptPathBestIndex(opt.path, ties = "random"),
+      "best.predicted" = which(rank(ifelse(control$minimize, 1, -1) *
+          predict(getOptStateModels(opt.state)$models[[1L]],
+            task = getOptStateTasks(opt.state)[[1]])$data$response,
+        ties.method = "random") == 1L))
+  } else {
+    # FIXME: Are last.proposed and best.predicted useful for multicrit?
+    switch(control$final.method,
+      "best.true.y" = getOptPathMeanParetoInds(opt.path, control$y.name)
+    )
+  }
+ }

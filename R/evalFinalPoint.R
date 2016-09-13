@@ -1,11 +1,15 @@
-evalFinalPoint = function(opt.state, final.points) {
+evalFinalPoint = function(opt.state, final.inds) {
   opt.problem = getOptStateOptProblem(opt.state)
   control = getOptProblemControl(opt.problem)
+  opt.path = getOptStateOptPath(opt.state)
   final.evals = control$final.evals
   # do some final evaluations and compute mean of target fun values
-  # FIXME: Do we really want the resampling of the last point be part of the opt.path and thus be part of a new model fit if we restart the problem?
+  # FIXME: Do we really want the resampling of the last point be part of the
+  # opt.path and thus be part of a new model fit if we restart the problem?
   showInfo(getOptProblemShowInfo(opt.problem), "Performing %i final evals", final.evals)
-  xs = replicate(final.evals, final.points$x, simplify = FALSE)
-  extras = getExtras(final.evals, NULL, NA_real_, control)
+  xs = Reduce(function(li, i) {
+    c(li, replicate(final.evals, getOptPathEl(opt.path, i)$x, simplify = FALSE))
+  }, x = final.inds, init = list())
+  extras = getExtras(length(xs), NULL, NA_real_, control)
   evalTargetFun.OptState(opt.state, xs, extras)
 }

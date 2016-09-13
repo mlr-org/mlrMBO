@@ -18,6 +18,11 @@
 #'   \dQuote{best.predicted}: Use the final model to predict all points ever visited and use the best one.
 #'   This might average-out noisy function values.
 #'   Default is: \dQuote{best.true.y}.
+#' @param final.y.method [\code{character(1)}]\cr
+#'   Which final y value should be returned?
+#'   \dQuote{true}: Return the true y-values for the final points. Of multiple
+#'     evaluations per final point have been performed their mean value is returned.
+#'   \dQuote{predicted}: Return the predicted y-values of the final models.
 #' @param final.evals [\code{integer(1)}]\cr
 #'   How many target function evals should be done at final point to reduce noise?
 #'   Default is 0.
@@ -79,7 +84,9 @@
 #' @export
 makeMBOControl = function(n.objectives = 1L,
   propose.points = 1L,
-  final.method = "best.true.y", final.evals = 0L,
+  final.method = "best.true.y",
+  final.y.method = "true",
+  final.evals = 0L,
   y.name = "y",
   impute.y.fun = NULL,
   trafo.y.fun = NULL,
@@ -107,6 +114,7 @@ makeMBOControl = function(n.objectives = 1L,
   assertFlag(suppress.eval.errors)
 
   assertChoice(final.method, choices = c("last.proposed", "best.true.y", "best.predicted"))
+  assertChoice(final.y.method, choices = c("true", "predicted"))
   final.evals = asInt(final.evals, lower = 0L)
 
   if (n.objectives > 1 && length(y.name) == 1 && y.name == "y")
@@ -127,6 +135,7 @@ makeMBOControl = function(n.objectives = 1L,
     n.objectives = n.objectives,
     propose.points = propose.points,
     final.method = final.method,
+    final.y.method = final.y.method,
     final.evals = final.evals,
     y.name = y.name,
     impute.y.fun = impute.y.fun,

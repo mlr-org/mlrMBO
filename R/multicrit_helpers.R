@@ -57,3 +57,14 @@ evalCritFunForMultiCritModels = function(infill.crit.fun, points, models, contro
       infill.crit.fun(points, models[i], control, par.set, design, iter)
   }))
 }
+
+# Helper for Noisy Multicrit:
+# FIXME: Move this to ParamHelpers?
+getOptPathMeanParetoInds = function(opt.path, y.name) {
+  final.design = convertOptPathToMeanDf(opt.path)$df
+  final.design.y = final.design[, y.name]
+  which(!emoa::is_dominated(t(final.design.y)))
+}
+
+
+

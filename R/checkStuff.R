@@ -25,7 +25,8 @@ checkStuff = function(fun, par.set, design, learner, control) {
 
   # at the moment we do not support noisy multicriteria optimization
   if (getNumberOfObjectives(fun) > 1L && isNoisy(fun) && control$multicrit.rtmbmo.k == 0L) {
-    stopf("Optimization of noisy multi-objective functions not supported in the moment.")
+    #stopf("Optimization of noisy multi-objective functions not supported in the moment.")
+    warning("Optimization of noisy multi-objective functions is only experimental in the moment.")
   }
 
   # general parameter and learner checks
@@ -117,6 +118,9 @@ checkStuff = function(fun, par.set, design, learner, control) {
     }
     if (control$multicrit.method == "mspot" && control$infill.opt != "nsga2")
       stopf("For multicrit 'mspot' infil.opt must be set to 'nsga2'!")
+    if (control$final.method != "best.true.y") {
+      stopf("For multicrit optimization final.method must be set to best.true.y.")
+    }
   }
 
   # multifidelity stuff
