@@ -43,7 +43,8 @@ makeMBOResult.OptState = function(opt.state) {
   final.inds = chooseFinalPoint(opt.state)
   #final.x = lapply(final.inds, function(i) getOptPathEl(opt.path, i)$x)
   final.x = final.design.x[final.inds, ]
-  final.x = dfRowsToList(final.x, par.set = getOptProblemParSet(opt.problem), enforce.col.types = TRUE)
+  final.x = dfRowsToList(as.data.frame(final.x),
+    par.set = getOptProblemParSet(opt.problem), enforce.col.types = TRUE)
   if (getOptProblemControl(opt.problem)$final.evals > 0) {
     evalFinalPoint(opt.state, final.inds)
   }
