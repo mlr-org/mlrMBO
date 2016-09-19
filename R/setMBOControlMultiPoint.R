@@ -112,8 +112,5 @@ setMBOControlMultiPoint = function(control,
   control$multipoint.multicrit.pm.p = coalesce(multicrit.pm.p, control$multipoint.multicrit.pm.p, 1)
   assertNumber(control$multipoint.multicrit.pm.p, na.ok = FALSE, lower = 0, upper = 1)
 
-  # FIXME: this is currently a hidden option, also see multipoint_cb.R
-  control$cb.min.dist = 1e-5
-
   return(control)
 }

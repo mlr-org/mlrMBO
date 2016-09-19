@@ -19,6 +19,7 @@ proposePointsConstantLiar = function(opt.state) {
   for (i in 1:npoints) {
     # propose point, add to opt.path2 with y = lie, then update model
     props[[i]] = proposePointsByInfillOptimization(opt.state, control = control2, opt.path = opt.path2, models = list(model))
+    if (i==npoints) break # we don't need to update the model when we aleady have the n-th proposal
     x = dfRowToList(props[[i]]$prop.points, par.set, 1)
     addOptPathEl(opt.path2, x = x, y = lie, dob = dob)
     rt = makeTaskSingleObj(opt.path2, control)

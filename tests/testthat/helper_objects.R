@@ -19,16 +19,18 @@ testf.zdt1.2d = makeZDT1Function(dimensions = 2L)
 testp.zdt1.2d = getParamSet(testf.zdt1.2d)
 testd.zdt1.2d = generateTestDesign(10L, testp.zdt1.2d)
 
+default.kriging = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
+
 testfmco1 = makeMultiObjectiveFunction(
   fn = function(x) x^2,
   n.objectives = 2L,
   par.set = makeNumericParamSet(len = 2L, lower = -2, upper = 1)
 )
-testdesmco1 = generateTestDesign(10L, smoof::getParamSet(testfmco1))
+testdesmco1 = generateTestDesign(10L, getParamSet(testfmco1))
 
 testfmco2 = makeMultiObjectiveFunction(
   fn = function(x) c(1, -1) * x^2,
   n.objectives = 2L,
   par.set = makeNumericParamSet(len = 2L, lower = -2, upper = 1)
 )
-testdesmco2 = generateTestDesign(10L, smoof::getParamSet(testfmco2))
+testdesmco2 = generateTestDesign(10L, getParamSet(testfmco2))

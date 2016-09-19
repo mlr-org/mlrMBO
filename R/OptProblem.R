@@ -32,11 +32,10 @@ NULL
 # All variables in this Object should be documented here.
 # Think of it, when you implement new ones!
 # Unfortunately in R we cannot hinder you from putting other values in this object, but please: Don't!
-makeOptProblem = function(fun, par.set, design = NULL, learner, control, show.info = TRUE, more.args = list()) {
+makeOptProblem = function(fun, design = NULL, learner, control, show.info = TRUE, more.args = list()) {
   opt.problem = new.env()
 
   opt.problem$fun = fun
-  opt.problem$par.set = par.set
   opt.problem$design = design
   opt.problem$learner = learner
   opt.problem$control = control
@@ -62,7 +61,7 @@ getOptProblemControl = function(opt.problem) {
 }
 
 getOptProblemParSet = function(opt.problem) {
-  opt.problem$par.set
+  getParamSet(getOptProblemFun(opt.problem))
 }
 
 getOptProblemMoreArgs = function(opt.problem) {

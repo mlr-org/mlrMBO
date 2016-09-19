@@ -1,39 +1,31 @@
 context("mbo km")
 
 test_that("mbo works with km", {
-  par.set = makeParamSet(
-    makeNumericParam("x1", lower = -2, upper = 1),
-    makeNumericParam("x2", lower = -1, upper = 2)
-  )
-  f = makeSingleObjectiveFunction(
-    fn = function(x) sum(x^2),
-    par.set = par.set
-  )
-  des = generateTestDesign(10, par.set = smoof::getParamSet(f))
-  y = sapply(1:nrow(des), function(i) f(as.list(des[i, ])))
-  des$y = y
+  des = testd.fsphere.2d
+  des$y = apply(des, 1, testf.fsphere.2d)
   learner = makeLearner("regr.km", nugget.estim = TRUE)
   ctrl = makeMBOControl()
   ctrl = setMBOControlTermination(ctrl, iters = 5L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100L)
-  or = mbo(f, des, learner = learner, control = ctrl)
+  or = mbo(testf.fsphere.2d, des, learner = learner, control = ctrl)
   expect_true(!is.na(or$y))
   expect_equal(getOptPathLength(or$opt.path), 15L)
   df = as.data.frame(or$opt.path)
   expect_true(is.numeric(df$x1))
   expect_true(is.numeric(df$x2))
   expect_true(is.list(or$x))
-  expect_equal(names(or$x), names(par.set$pars))
+  expect_equal(names(or$x), names(testp.fsphere.2d$pars))
   expect_equal(length(or$models[[1]]$subset), 15L)
 
+  f = testf.fsphere.2d
   par.set = makeParamSet(
     makeNumericParam("x1", lower = -2, upper = 1),
     makeIntegerParam("x2", lower = -1, upper = 2)
   )
   f = setAttribute(f, "par.set", par.set)
 
-  des = generateTestDesign(10L, par.set = smoof::getParamSet(f))
-  des$y  = sapply(1:nrow(des), function(i) f(as.list(des[i, ])))
+  des = generateTestDesign(10L, par.set = getParamSet(f))
+  des$y = apply(des, 1, f)
   or = mbo(f, des, learner, ctrl)
   expect_true(!is.na(or$y))
   expect_equal(getOptPathLength(or$opt.path), 15L)
@@ -59,25 +51,17 @@ test_that("mbo works with km", {
 
 
 test_that("mbo works with impute and failure model", {
-  f = makeSingleObjectiveFunction(
-    fn = function(x) sum(x^2),
-    par.set = makeParamSet(
-      makeNumericParam("x1", lower = -2, upper = 1),
-      makeNumericParam("x2", lower = -1, upper = 2)
-    )
-  )
-  des = generateTestDesign(10, par.set = smoof::getParamSet(f))
+  des = testd.fsphere.2d
   # add same point twice with differnent y-vals - will crash km without nugget for sure
   des = rbind(des, data.frame(x1 = c(0, 0), x2 = c(0, 0)))
-  y  = sapply(1:nrow(des), function(i) f(as.list(des[i, ])))
-  y[length(y)] = 123
-  des$y = y
+  des$y = apply(des, 1, testf.fsphere.2d)
+  des$y[nrow(des)] = 123
   # make sure model does not break, and we get a failure model
   learner = makeLearner("regr.km", config = list(on.learner.error = "quiet"))
   ctrl = makeMBOControl()
   ctrl = setMBOControlTermination(ctrl, iters = 2L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10L)
-  or = mbo(f, des, learner = learner, control = ctrl)
+  or = mbo(testf.fsphere.2d, des, learner = learner, control = ctrl)
   expect_equal(getOptPathLength(or$opt.path), 14)
   op = as.data.frame(or$opt.path)
   expect_true(!is.na(op$error.model[13L]))

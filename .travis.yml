@@ -1,16 +1,45 @@
 language: R
 sudo: false
-cache: packages
-warnings_are_errors: false
+r:
+  - release
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - gcc-4.9
+      - g++-4.9
+      - gfortran-4.9
+      - libgmp-dev
 env:
   global:
     - _R_CHECK_TIMINGS_=0
+    - _R_CHECK_FORCE_SUGGESTS_=0
     - secure: "e2QLomaUqNvpHnGNdBXS4VO2/UWokrKl9UgYrqWo+fhpXaJiJuONNPNL44BuWZR2Cy7noTHrevVbTKBkGpqJR42mkjzcjd6qyR1Ctiveir+84/HTtmexouIUn5OFRH5dgyt/gquld31RlHlSYoKho3nZ7D7SnVExov9tp2FGRhU="
 
+warnings_are_errors: false
+r_check_args: "--as-cran --run-donttest"
+
 r_github_packages:
-  - berndbischl/ParamHelpers
+  - berndbischl/parallelMap
   - jakobbossek/smoof
   - mlr-org/mlr
+
+r_packages:
+  - roxygen2
+
+
+before_install:
+  - mkdir $HOME/bin
+  - ln -s $(which gcc-4.9) $HOME/bin/gcc
+  - ln -s $(which g++-4.9) $HOME/bin/g++
+  - ln -s $(which gfortran-4.9) $HOME/bin/gfortran
+  - export PATH=$HOME/bin:$PATH
+  - echo $LD_LIBRARY_PATH
+  - echo $LIBRARY_PATH
+
+after_failure:
+  - ./travis-tool.sh dump_logs
 
 notifications:
   email:
