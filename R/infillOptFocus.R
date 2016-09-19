@@ -9,12 +9,11 @@
 infillOptFocus = function(infill.crit, models, control, par.set, opt.path, design, iter, ...) {
   global.y = Inf
   
-  discreteVectorPars = filterParams(par.set, type = c("discretevector", "logicalvector"))
+  discrete.vector.pars = filterParams(par.set, type = c("discretevector", "logicalvector"))
   
-  allRequirements = extractSubList(par.set$pars, "requires", simplify = FALSE)
-  allRequirementVars = unique(unlist(lapply(allRequirements, all.vars)))
-  forbiddenRequirementVars = getParamIds(discreteVectorPars)
-  if (any(allRequirementVars %in% forbiddenRequirementVars)) {
+  all.requirements = extractSubList(par.set$pars, "requires", simplify = FALSE)
+  all.requirement.vars = unique(unlist(lapply(all.requirements, all.vars)))
+  if (any(all.requirement.vars %in% getParamIds(discrete.vector.pars))) {
     stop("Cannot do focus search when some variables have requirements that depend on discrete or logical vector parameters.")
   }
   
@@ -27,20 +26,20 @@ infillOptFocus = function(infill.crit, models, control, par.set, opt.path, desig
     # Handle discrete vectors (and logical vectors):
     # The problem is that for discrete vectors, we can't adjust the range dimension-wise.
     # Instead we store the range of each discrete vectorparameter dimension in the list of named characters
-    # `discreteVectorMapping`. In each iteration a random value (that does not contain
+    # `discrete.vector.mapping`. In each iteration a random value (that does not contain
     # the optimum) is dropped from each vector on this list. The $values of the parameters in the parameterset also
     # need to be modified to reflect the reduced range: from them, always the last value is dropped.
-    # Then `discreteVectorMapping` is a mapping that maps, for each discrete vector param dimension
+    # Then `discrete.vector.mapping` is a mapping that maps, for each discrete vector param dimension
     # with originally n values, from the sampled value (levels 1 to n - #(dropped levels)) to the acutal levels with
     # random dropouts.
     #
     # Since the requirements of the param set are queried while generating the design, this breaks if
     # there are requirements depending on discrete vector parameters.
-    discreteVectorMapping = lapply(discreteVectorPars$pars,
+    discrete.vector.mapping = lapply(discrete.vector.pars$pars,
         function(param) rep(list(setNames(names(param$values), names(param$values))), param$len))
-    discreteVectorMapping = unlist(discreteVectorMapping, recursive=FALSE)
-    if (!isEmpty(discreteVectorPars)) {
-      names(discreteVectorMapping) = getParamIds(discreteVectorPars, with.nr = TRUE, repeated = TRUE)
+    discrete.vector.mapping = unlist(discrete.vector.mapping, recursive=FALSE)
+    if (!isEmpty(discrete.vector.pars)) {
+      names(discrete.vector.mapping) = getParamIds(discrete.vector.pars, with.nr = TRUE, repeated = TRUE)
     }
     
 
@@ -53,8 +52,8 @@ infillOptFocus = function(infill.crit, models, control, par.set, opt.path, desig
       newdesign = convertDataFrameCols(newdesign, ints.as.num = TRUE, logicals.as.factor = TRUE)
 
       # handle discrete vectors
-      for (dfindex in names(discreteVectorMapping)) {
-        mapping = discreteVectorMapping[[dfindex]]
+      for (dfindex in names(discrete.vector.mapping)) {
+        mapping = discrete.vector.mapping[[dfindex]]
         levels(newdesign[[dfindex]]) = mapping[levels(newdesign[[dfindex]])]
       }
 
@@ -102,7 +101,7 @@ infillOptFocus = function(infill.crit, models, control, par.set, opt.path, desig
              par$values[[to.del]] = NULL
            } else {
              # we remove the last element of par$values and a random element for
-             # each dimension in discreteVectorMapping.
+             # each dimension in discrete.vector.mapping.
              par$values = par$values[-length(par$values)]
              if (par$type != "logicalvector") {
                # for discretevectorparam val would be a list; convert to character vector
@@ -110,12 +109,12 @@ infillOptFocus = function(infill.crit, models, control, par.set, opt.path, desig
              }
              for (dimnum in seq_len(par$len)) {
                dfindex = paste0(par$id, dimnum)
-               newmap = val.names = discreteVectorMapping[[dfindex]]
+               newmap = val.names = discrete.vector.mapping[[dfindex]]
                val.names = val.names[val.names != val[dimnum]]
                to.del = sample(val.names, 1)
                newmap = newmap[newmap != to.del]
                names(newmap) = names(par$values)
-               discreteVectorMapping[[dfindex]] <<- newmap
+               discrete.vector.mapping[[dfindex]] <<- newmap
              }
            }
          }
