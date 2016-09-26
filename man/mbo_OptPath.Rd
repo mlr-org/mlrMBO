@@ -21,7 +21,7 @@ The extras are:
   }
 }
 \item{multipoint.cb.lambda}{Random lambda-value used in q-CB point proposal. One lambda for each point in that case.}
-\item{.weight}{Weight vector sampled for multipoint ParEGO}
+\item{parego.weight}{Weight vector sampled for multipoint ParEGO}
 }
 
 Moreover, the user may pass additional \dQuote{user extras} by appending a named list

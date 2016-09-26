@@ -15,7 +15,7 @@ test_that("init design", {
   ctrl = setMBOControlTermination(ctrl, iters = 1L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10L)
 
-  des = generateTestDesign(10L, par.set = smoof::getParamSet(obj.fun))
+  des = generateTestDesign(10L, par.set = getParamSet(obj.fun))
 
   or = mbo(obj.fun, des, learner, ctrl)
   expect_equal(getOptPathLength(or$opt.path), 11L)
@@ -35,7 +35,7 @@ test_that("init design", {
     )
   )
 
-  des = generateTestDesign(10, smoof::getParamSet(obj.fun), trafo = TRUE)
+  des = generateTestDesign(10, getParamSet(obj.fun), trafo = TRUE)
   expect_error(mbo(obj.fun, des, learner, ctrl))
 
   # wrong col names in inir design

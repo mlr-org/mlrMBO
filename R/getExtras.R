@@ -13,7 +13,7 @@
 # errors.model            character(1)
 # filter.replace          logical(1)
 # multipoint.cb.lambda    numeric(1)
-# .weight<j>              numeric(1)
+# parego.weight.<j>         numeric(1)
 #
 # Please document the content in doc_mbo_OptPath.R
 
@@ -54,7 +54,7 @@ getExtras = function(n, prop, train.time, control) {
       weight.mat = prop$weight.mat
       if (is.null(weight.mat))
         weight.mat = matrix(NA_real_, nrow = n, ncol = control$n.objectives)
-      w = setNames(as.list(weight.mat[i, ]), paste0(".weight", 1:ncol(weight.mat)))
+      w = setNames(as.list(weight.mat[i, ]), paste0("parego.weight.", 1:ncol(weight.mat)))
       ex = c(ex, w)
     }
     # if we filtered proposed points, store flag
