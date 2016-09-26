@@ -30,7 +30,7 @@ makeMboLearner = function(control, fun, ...) {
     } else if (is.null(getHyperPars(base.learner)$nugget)) {
       par.vals = insert(list(nugget.stability = 10^-8), par.vals)
     }
-    return(setHyperPars(base.learner, par.vals))
+    return(setHyperPars(base.learner, par.vals = par.vals))
   } else {
     return(makeLearner("regr.randomForest", predict.type = "se", par.vals = par.vals))
   }
