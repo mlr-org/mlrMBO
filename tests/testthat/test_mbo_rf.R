@@ -70,6 +70,7 @@ test_that("mbo works with rf", {
   y  = sapply(1:nrow(des), function(i) f(as.list(des[i,])))
   des$y = y
   learner = makeLearner("regr.randomForest")
+  learner = makeDiscreteWrapper(learner, discw.category = "x3", discw.na.val = 99)
   ctrl = makeMBOControl()
   ctrl = setMBOControlTermination(ctrl, iters = 5L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100)

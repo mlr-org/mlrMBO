@@ -10,9 +10,12 @@ makeDiscreteWrapper(learner, discw.category = NULL, discw.na.val = NULL)
 \item{learner}{[\code{Learner}]\cr
 mlr Learner}
 
-\item{discw.category}{[\code{charachter}]\cr
-names of the columns that indicate the categorical value to split before training.
+\item{discw.category}{[\code{charachter(1)}]\cr
+name of the column that indicates the categorical value to split before training.
 If value is NULL (default) then the first categorical value will be taken into account.}
+
+\item{discw.na.val}{[\code{numeric(1)}]\cr
+Number that structural missing values should be imputed with.}
 }
 \value{
 Wrapped Learner
