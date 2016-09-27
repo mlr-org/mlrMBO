@@ -16,11 +16,11 @@ makeScheduleInfo = function(prop, opt.state) {
   } else {
     stopf("Schedule Priority mehtod %s was not appliable!", control$schedule.priority)
   }
-  if(control$schedule.cluster && !control$schedule.priority.time){
+  if (control$schedule.cluster && !control$schedule.priority.time){
     #highest priority for those with highest priority within each cluster
     priorities = priorityCluster(priorities, prop, opt.state)
   }
-  if(control$schedule.cluster && control$schedule.priority.time){
+  if (control$schedule.cluster && control$schedule.priority.time){
     #highest priority for those with highest priority within each cluster
     priorities = timeCluster(priorities, prop, opt.state)
   }
