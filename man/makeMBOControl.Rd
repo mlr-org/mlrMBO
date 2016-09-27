@@ -12,7 +12,8 @@ makeMBOControl(n.objectives = 1L, propose.points = 1L,
   save.file.path = file.path(getwd(), "mlr_run.RData"),
   store.model.at = NULL, resample.at = integer(0),
   resample.desc = makeResampleDesc("CV", iter = 10),
-  resample.measures = list(mse), output.num.format = "\%.3g")
+  resample.measures = list(mse), output.num.format = "\%.3g",
+  check.constant.model = FALSE)
 }
 \arguments{
 \item{n.objectives}{[\code{integer(1)}]\cr
@@ -100,6 +101,10 @@ Default is \code{\link[mlr]{mse}}.}
 
 \item{output.num.format}{[\code{logical(1)}]\cr
 Format string for the precision of the numeric output of mbo.}
+
+\item{check.constant.model}{\code{logical(1)}\cr
+Should we check if the model just proposes constant values after each model build.
+(Only works for Focussearch for now)}
 }
 \value{
 [\code{\link{MBOControl}}].

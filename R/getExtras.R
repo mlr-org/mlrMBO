@@ -61,6 +61,12 @@ getExtras = function(n, prop, train.time, control) {
     if (control$filter.proposed.points) {
       ex$filter.replace = prop$filter.replace[i]
     }
+    if (isTRUE(attr(prop$prop.points, "constant.model"))) {
+      ex$constant.model = TRUE
+    } else {
+      ex$constant.model = FALSE
+    }
+    # if we use asyn MBO store node information and evaluation starte
     ex$train.time = if (i == 1) train.time else NA_real_
     ex$prop.type = prop$prop.type[i]
     ex$propose.time = NA_real_

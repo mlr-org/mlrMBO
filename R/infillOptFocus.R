@@ -24,10 +24,19 @@ infillOptFocus = function(infill.crit, models, control, par.set, opt.path, desig
       y = infill.crit(newdesign, models, control, ps.local, design, iter, ...)
 
       # get current best value
-      local.index = getMinIndex(y, ties.method = "random")
+      local.index = getMinIndex(y, ties.method = "random", na.rm = TRUE)
       local.y = y[local.index]
       local.x.df = newdesign[local.index, , drop = FALSE]
       local.x.list = dfRowToList(recodeTypes(local.x.df, ps.local), ps.local, 1)
+
+      # we want to stop early if the model just proposes constant values (Kriging!)
+      if (control$check.constant.model) {
+        if (length(unique(y)) == 1) {
+          res = recodeTypes(local.x.df, par.set)
+          attr(res, "constant.model") = TRUE
+          return(res)
+        }
+      }
 
       # if we found a new best value, store it
       if (local.y < global.y) {
