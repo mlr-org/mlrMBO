@@ -73,9 +73,6 @@
 #'   Default is \code{\link[mlr]{mse}}.
 #' @param output.num.format [\code{logical(1)}]\cr
 #'   Format string for the precision of the numeric output of mbo.
-#' @param check.constant.model \code{logical(1)}\cr
-#'    Should we check if the model just proposes constant values after each model build.
-#'    (Only works for Focussearch for now)
 #' @return [\code{\link{MBOControl}}].
 #' @aliases MBOControl
 #' @family MBOControl
@@ -94,8 +91,7 @@ makeMBOControl = function(n.objectives = 1L,
   resample.at = integer(0),
   resample.desc = makeResampleDesc("CV", iter = 10),
   resample.measures = list(mse),
-  output.num.format = "%.3g",
-  check.constant.model = FALSE
+  output.num.format = "%.3g"
 ) {
 
   n.objectives = asInt(n.objectives, lower = 1L)
@@ -126,7 +122,6 @@ makeMBOControl = function(n.objectives = 1L,
   assertList(resample.measures, types = "Measure")
 
   assertString(output.num.format)
-  assertFlag(check.constant.model)
  
   control = makeS3Obj("MBOControl",
     n.objectives = n.objectives,
@@ -145,7 +140,6 @@ makeMBOControl = function(n.objectives = 1L,
     resample.at = resample.at,
     resample.measures = resample.measures,
     output.num.format = output.num.format,
-    check.constant.model = check.constant.model,
     multifid = FALSE
   )
 

@@ -19,6 +19,7 @@
 #' }
 #' \item{multipoint.cb.lambda}{Random lambda-value used in q-CB point proposal. One lambda for each point in that case.}
 #' \item{parego.weight}{Weight vector sampled for multipoint ParEGO}
+#' \item{constant.model}{If CMAES or Focussearch is used to optimize the infill crit, they can automatically determine if the model is constant in this iteration.}
 #' }
 #'
 #' Moreover, the user may pass additional \dQuote{user extras} by appending a named list
