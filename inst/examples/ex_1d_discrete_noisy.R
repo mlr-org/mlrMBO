@@ -42,4 +42,4 @@ run = exampleRun(obj.fun, design = design, learner = lrn, control = ctrl,
 	points.per.dim = 50L, show.info = TRUE)
 
 print(run)
-plotExampleRun(run, pause = pause, densregion = TRUE)
+plotExampleRun(run, pause = pause, densregion = TRUE, gg.objects = list(theme_bw()))

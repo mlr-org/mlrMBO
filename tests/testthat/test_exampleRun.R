@@ -90,9 +90,7 @@ test_that("renderExampleRunPlot produces list of ggplot2 objects", {
     multicrit.maxit = 200L
   )
 
-  lrn = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
-
-  run = exampleRun(obj.fun, learner = lrn, control = ctrl, points.per.dim = 50L)
+  run = exampleRun(obj.fun, learner = default.kriging, control = ctrl, points.per.dim = 50L)
 
   plot.list = renderExampleRunPlot(run, iter = 1L)
   checkPlotList(plot.list)

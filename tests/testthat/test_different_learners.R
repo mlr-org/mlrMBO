@@ -33,7 +33,7 @@ test_that("mbo works with different learners", {
       lrn = setPredictType(lrn, "se")
       ctrl$infill.crit = "ei"
     }
-    des = generateTestDesign(10L, smoof::getParamSet(fun))
+    des = generateTestDesign(10L, getParamSet(fun))
     mbo(fun, des, learner = lrn, control = ctrl)
   }
 
