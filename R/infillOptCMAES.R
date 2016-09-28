@@ -45,12 +45,15 @@ infillOptCMAES = function(infill.crit, models, control, par.set, opt.path, desig
   for (i in 1:control$infill.opt.restarts) {
     if (i == 1) {
       start = getOptPathEl(opt.path, getOptPathBestIndex(opt.path))$x
+      cmaes.control = insert(list(diag.value = TRUE), control$infill.opt.cmaes.control)
     } else {
       start = sampleValue(par.set)
     }
     start = unlist(start)
-    results[[i]] = cmaes::cma_es(par = start, fn = f, lower = low, upper = upp, control = control$infill.opt.cmaes.control)
+    results[[i]] = cmaes::cma_es(par = start, fn = f, lower = low, upper = upp, control = cmaes.control)
   }
+  # check if the model just gives constant values
+  constant.model = (length(unique(as.vector(res$diagnostic$value))) == 1)
   ys = extractSubList(results, "value")
   ys = ys[!is.infinite(ys)]
   res = NULL
@@ -62,7 +65,8 @@ infillOptCMAES = function(infill.crit, models, control, par.set, opt.path, desig
     j = which(rank(ys, ties.method = "random") == 1L)
     res = t(results[[j]]$par)
   }
-  setColNames(as.data.frame(res), rep.pids)
+  res = setColNames(as.data.frame(res), rep.pids)
+  setAttribute(res, "constant.model", constant.model)
 }
 
 # FIXME: allow DiceOptim optimizer later...

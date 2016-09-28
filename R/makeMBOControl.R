@@ -195,7 +195,6 @@ makeMBOControl = function(n.objectives = 1L,
   assertFlag(asyn.filter.proposals)
   assertFlag(asyn.cleanup)
   assertFlag(schedule.cluster)
-  assertFlag(check.constant.model)
   assertChoice(asyn.impute.method, choices = c("min", "max", "mean", "noisymean", "quantilemean"))
   assertNumeric(asyn.impute.quantiles, lower = 0, upper = 1, any.missing = FALSE)
 
@@ -227,7 +226,6 @@ makeMBOControl = function(n.objectives = 1L,
     asyn.filter.proposals = asyn.filter.proposals,
     asyn.cleanup = asyn.cleanup,
     asyn.impute.method = asyn.impute.method,
-    check.constant.model = check.constant.model,
     asyn.impute.quantiles = asyn.impute.quantiles,
     multifid = FALSE
   )
