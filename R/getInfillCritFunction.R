@@ -19,6 +19,7 @@ getInfillCritFunction = function(infill.crit) {
     # eipi  =  infillCritEIPI,
     dib = infillCritDIB,
     multifid = infillCritMultiFid,
+    eei = infillCritEEI,
     match.fun(infill.crit)
   )
 }

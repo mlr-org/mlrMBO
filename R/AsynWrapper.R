@@ -23,8 +23,7 @@ makeAsynWrapper = function(learner, aw.quantiles = c(0.25,0.5,0.75)) {
   ps = makeParamSet(
     makeNumericVectorLearnerParam(id = "aw.quantiles", lower = 0, upper = 1)
   )
-  mlr:::makeHomogeneousEnsemble(id, learner$type, learner, packs, par.set = ps, par.vals = pv,
-                          learner.subclass = "AsynWrapper", model.subclass = "AsynModel")
+  mlr:::makeHomogeneousEnsemble(id, learner$type, learner, packs, par.set = ps, par.vals = pv, learner.subclass = "AsynWrapper", model.subclass = "AsynModel")
 }
 
 #' @export
