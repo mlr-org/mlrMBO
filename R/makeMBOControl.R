@@ -115,6 +115,11 @@
 #' @param check.constant.model \code{logical(1)}\cr
 #'    Should we check if the model just proposes constant values after each model build.
 #'    (Only works for Focussearch for now)
+#' @param asyn.impute.mc.iters \code{integer(1)}\cr
+#'    Number of simulated kriging curves used to estimate the EEI for busy points.
+#'    Default is 50.
+#' @param asyn.impute.quantiles \code{numeric}\cr
+#'    As an alternative to the monte carlo sampling above you can define quantiles to be drawn at busy points.
 #' @return [\code{\link{MBOControl}}].
 #' @aliases MBOControl
 #' @family MBOControl
@@ -145,7 +150,8 @@ makeMBOControl = function(n.objectives = 1L,
   asyn.filter.proposals = FALSE,
   asyn.cleanup = FALSE,
   asyn.impute.method = "min",
-  asyn.impute.quantiles = seq(0.1, 0.9, by = 0.1),
+  asyn.impute.quantiles = c(0.25,0.5,0.75),
+  asyn.impute.mc.iters = 50,
   check.constant.model = FALSE
 ) {
 
@@ -195,8 +201,9 @@ makeMBOControl = function(n.objectives = 1L,
   assertFlag(asyn.filter.proposals)
   assertFlag(asyn.cleanup)
   assertFlag(schedule.cluster)
-  assertChoice(asyn.impute.method, choices = c("min", "max", "mean", "noisymean", "quantilemean"))
-  assertNumeric(asyn.impute.quantiles, lower = 0, upper = 1, any.missing = FALSE)
+  assertChoice(asyn.impute.method, choices = c("min", "max", "mean", "noisymean", "quantilemean", "mc"))
+  assertNumeric(asyn.impute.quantiles, lower = 0, upper = 1, any.missing = FALSE, null.ok = TRUE)
+  assertInt(asyn.impute.mc.iters, lower = 1, null.ok = TRUE)
 
   control = makeS3Obj("MBOControl",
     n.objectives = n.objectives,
@@ -227,6 +234,7 @@ makeMBOControl = function(n.objectives = 1L,
     asyn.cleanup = asyn.cleanup,
     asyn.impute.method = asyn.impute.method,
     asyn.impute.quantiles = asyn.impute.quantiles,
+    asyn.impute.mc.iters = asyn.impute.mc.iters,
     multifid = FALSE
   )
 

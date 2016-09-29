@@ -4,7 +4,8 @@
 \alias{makeAsynWrapper}
 \title{Fuse learner with imputation of y}
 \usage{
-makeAsynWrapper(learner, aw.quantiles = c(0.25, 0.5, 0.75))
+makeAsynWrapper(learner, aw.quantiles = c(0.25, 0.5, 0.75),
+  aw.mc.iters = NULL)
 }
 \arguments{
 \item{learner}{[\code{Learner}]\cr

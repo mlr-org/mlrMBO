@@ -18,8 +18,8 @@ makeMBOControl(n.objectives = 1L, propose.points = 1L,
   schedule.fill.random = TRUE, schedule.cluster = FALSE,
   time.model.trafo.log = FALSE, asyn.wait.for.proposals = TRUE,
   asyn.filter.proposals = FALSE, asyn.cleanup = FALSE,
-  asyn.impute.method = "min", asyn.impute.quantiles = seq(0.1, 0.9, by =
-  0.1), check.constant.model = FALSE)
+  asyn.impute.method = "min", asyn.impute.quantiles = c(0.25, 0.5, 0.75),
+  asyn.impute.mc.iters = 50, check.constant.model = FALSE)
 }
 \arguments{
 \item{n.objectives}{[\code{integer(1)}]\cr
@@ -156,6 +156,13 @@ Choices are:
   \dQuote{mean} take prediction at point x based on previous evaluations.
   \dQuote{noisymean} take prediction + rnorm(se) at point x based on previous evaluations.
   \dQuote{quantilemean} build multiple models with quantile imputed y values}
+
+\item{asyn.impute.quantiles}{\code{numeric}\cr
+As an alternative to the monte carlo sampling above you can define quantiles to be drawn at busy points.}
+
+\item{asyn.impute.mc.iters}{\code{integer(1)}\cr
+Number of simulated kriging curves used to estimate the EEI for busy points.
+Default is 50.}
 
 \item{check.constant.model}{\code{logical(1)}\cr
 Should we check if the model just proposes constant values after each model build.
