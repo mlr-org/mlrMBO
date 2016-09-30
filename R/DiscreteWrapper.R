@@ -27,6 +27,7 @@ makeDiscreteWrapper = function(learner, discw.category = NULL, discw.na.val = NU
   rm(list = names(args))
 
   trainfun = function(data, target, args) {
+    data.notarget = data[, colnames(data) != target, drop = FALSE]
     discw.category = coalesce(
       args$discw.category,
       names(which(sapply(data.notarget, is.factor)))[1])

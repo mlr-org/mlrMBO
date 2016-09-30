@@ -10,14 +10,14 @@
 #'   mlr Learner
 #' @param aw.quantiles [\code{numeric}]\cr
 #'   Quantiles that should be calculated for imputation.
-#'   Default is \code{c(0.25,0.5, 0.75)}.
+#'   Default is \code{NULL}.
 #' @param aw.mc.iters [\code{integer(1)}]\cr
 #'   Number of samples for the monte carlo method to draw from the kriging model to calculate the EEI.
 #'   Default is \code{NULL}.
 #'   Only one of the above parameters can be given.
 #' @return Wrapped Learner
 #' @family wrapper
-makeAsynWrapper = function(learner, aw.quantiles = c(0.25,0.5,0.75), aw.mc.iters = NULL) {
+makeAsynWrapper = function(learner, aw.quantiles = NULL, aw.mc.iters = NULL) {
   learner = mlr:::checkLearner(learner, type=c("regr"))
   pv = list()
   assertNumeric(aw.quantiles, lower = 0, upper = 1, any.missing = FALSE, min.len = 1, null.ok = TRUE)
@@ -27,6 +27,9 @@ makeAsynWrapper = function(learner, aw.quantiles = c(0.25,0.5,0.75), aw.mc.iters
   }
   if (!is.null(aw.mc.iters) && !inherits(learner, "regr.km")) {
     stop("Sorry, Monte Carlo Simulation is only available for DiceKriging (regr.km)")
+  }
+  if (getLearnerPredictType(learner) != "se") {
+    stop("Learner has to have predict.type == 'se'")
   }
   pv$aw.quantiles = aw.quantiles
   pv$aw.mc.iters = aw.mc.iters
@@ -40,7 +43,7 @@ makeAsynWrapper = function(learner, aw.quantiles = c(0.25,0.5,0.75), aw.mc.iters
 }
 
 #' @export
-trainLearner.AsynWrapper = function(.learner, .task, .subset, .weights = NULL, aw.quantiles = c(0.25,0.5,0.75), aw.mc.iters = NULL, ...) {
+trainLearner.AsynWrapper = function(.learner, .task, .subset, .weights = NULL, aw.quantiles = NULL, aw.mc.iters = NULL, ...) {
   .task = subsetTask(.task, subset = .subset)
   learner = .learner$next.learner
   na.ind = is.na(getTaskTargets(.task))
@@ -50,10 +53,10 @@ trainLearner.AsynWrapper = function(.learner, .task, .subset, .weights = NULL, a
     models = list(model0)
   } else {
     if (!is.null(aw.quantiles)) {
-      p = predict(model0, subsetTask(.task, subset = na.ind))
+      pred = predict(model0, subsetTask(.task, subset = na.ind))
       # calculate quantiles
       q.y = lapply(aw.quantiles, function(q) {
-        qnorm(p = q, mean = getPredictionResponse(p), sd = getPredictionSE(p))
+        qnorm(p = q, mean = getPredictionResponse(pred), sd = getPredictionSE(pred))
       })
       q.y = convertListOfRowsToDataFrame(q.y)
       # build all possible combinations of possible quantile outcomes
@@ -61,7 +64,7 @@ trainLearner.AsynWrapper = function(.learner, .task, .subset, .weights = NULL, a
       y.expanded = do.call(expand.grid, q.y)
     } else if (!is.null(aw.mc.iters)) {
       new.x = getTaskData(.task, target.extra = TRUE, subset = na.ind)$data
-      y.expanded = DiceKriging::simulate(m, nsim = aw.mc.iters, newdata = new.x, cond = TRUE)
+      y.expanded = DiceKriging::simulate(model0$learner.model, nsim = aw.mc.iters, newdata = new.x, cond = TRUE)
     }
     
     # now fill the missing Y values with all different combinations and train the models
