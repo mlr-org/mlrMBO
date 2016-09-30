@@ -97,6 +97,9 @@
 #'    Priorize by time? Meaning short predicted jobs will run first. Default is \code{FALSE}.
 #' @param schedule.fill.random [\code{logical(1)}]\cr
 #'    If scheduling does not fill all nodes, should we fill it with random points which have fast enough runtime? Default is \code{TRUE}.
+#' @param schedule.cluster [\code{logical{1}}]\cr
+#'    Should clustering be used to prevent points close to each other to be scheduled next to each other? 
+#'    Default is \code{FALSE}.
 #' @param time.model.trafo.log [\code{logical(1)}]\cr
 #'    Should the time model be learned on log-transformed times? Default is \code{FALSE}.
 #' @param asyn.wait.for.proposals [\code{logical(1)}]\cr

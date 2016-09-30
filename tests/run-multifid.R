@@ -3,5 +3,5 @@ library(mlrMBO)
 library(checkmate)
 
 library(testthat)
-test_check("mlrMBO", filter = "test_multifid")
+test_check("mlrMBO", filter = "multifid_")
 

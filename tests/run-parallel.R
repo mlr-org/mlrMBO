@@ -3,5 +3,5 @@ library(mlrMBO)
 library(checkmate)
 
 library(testthat)
-test_check("mlrMBO", filter = "test_parallel")
+test_check("mlrMBO", filter = "parallel_")
 

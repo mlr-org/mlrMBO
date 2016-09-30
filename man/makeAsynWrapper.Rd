@@ -14,6 +14,11 @@ mlr Learner}
 \item{aw.quantiles}{[\code{numeric}]\cr
 Quantiles that should be calculated for imputation.
 Default is \code{c(0.25,0.5, 0.75)}.}
+
+\item{aw.mc.iters}{[\code{integer(1)}]\cr
+Number of samples for the monte carlo method to draw from the kriging model to calculate the EEI.
+Default is \code{NULL}.
+Only one of the above parameters can be given.}
 }
 \value{
 Wrapped Learner
