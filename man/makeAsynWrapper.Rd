@@ -4,8 +4,7 @@
 \alias{makeAsynWrapper}
 \title{Fuse learner with imputation of y}
 \usage{
-makeAsynWrapper(learner, aw.quantiles = c(0.25, 0.5, 0.75),
-  aw.mc.iters = NULL)
+makeAsynWrapper(learner, aw.quantiles = NULL, aw.mc.iters = NULL)
 }
 \arguments{
 \item{learner}{[\code{Learner}]\cr
@@ -13,7 +12,7 @@ mlr Learner}
 
 \item{aw.quantiles}{[\code{numeric}]\cr
 Quantiles that should be calculated for imputation.
-Default is \code{c(0.25,0.5, 0.75)}.}
+Default is \code{NULL}.}
 
 \item{aw.mc.iters}{[\code{integer(1)}]\cr
 Number of samples for the monte carlo method to draw from the kriging model to calculate the EEI.
