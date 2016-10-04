@@ -61,7 +61,7 @@ trainLearner.AsynWrapper = function(.learner, .task, .subset, .weights = NULL, a
       q.y = convertListOfRowsToDataFrame(q.y)
       # build all possible combinations of possible quantile outcomes
       # each column represents the possible outcomes for one missing Y value
-      y.expanded = do.call(expand.grid, q.y)
+      y.expanded = as.matrix(do.call(expand.grid, q.y))
     } else if (!is.null(aw.mc.iters)) {
       new.x = getTaskData(.task, target.extra = TRUE, subset = na.ind)$data
       y.expanded = DiceKriging::simulate(model0$learner.model, nsim = aw.mc.iters, newdata = new.x, cond = TRUE)
@@ -78,7 +78,8 @@ trainLearner.AsynWrapper = function(.learner, .task, .subset, .weights = NULL, a
 
 doAsynWrapperTrainIteration = function(i, task, y.expanded, learner, na.ind) {
   data = getTaskData(task)
-  data[na.ind, getTaskTargetNames(task)] = t(y.expanded[i, ])
+  assertMatrix(y.expanded)
+  data[na.ind, getTaskTargetNames(task)] = y.expanded[i, ]
   imputed.task = mlr:::changeData(task = task, data = data)
   train(learner = learner, task = imputed.task)
 }
