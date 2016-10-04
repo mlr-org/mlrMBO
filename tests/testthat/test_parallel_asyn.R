@@ -26,7 +26,7 @@ test_that("asyn MBO works with CL", {
   for (imp.method in imp.methods) {
     fn.sleep = makeSingleObjectiveFunction(
       fn = function(x) {
-        Sys.sleep(1 + 2 * Sys.getpid()%%2)
+        Sys.sleep(1 + Sys.getpid()%%4)
         sum(x^2)
       },
       par.set = makeNumericParamSet(len = 2, lower = -2, upper = 2),
@@ -35,10 +35,10 @@ test_that("asyn MBO works with CL", {
     des$y = apply(des, 1, function(x) sum(x^2))
     save.file = file.path(tempdir(), "mbo_asyn", "mbo.RData")
     ctrl = makeMBOControl(schedule.method = "asyn", save.file.path = save.file, propose.points = 1, schedule.nodes = 2, asyn.wait.for.proposals = FALSE, asyn.filter.proposals = TRUE, asyn.impute.method = imp.method, store.model.at = 0:10)
-    ctrl = setMBOControlTermination(ctrl, time.budget = 10L)
+    ctrl = setMBOControlTermination(ctrl, time.budget = 9L)
     crit = if (imp.method %in% c("mc", "quantilemean")) "eei" else "ei"
     ctrl = setMBOControlInfill(control = ctrl, crit = crit, opt.focussearch.maxit = 2L, opt.focussearch.points = 50L, filter.proposed.points = TRUE)
-    parallelMap::parallelStartMulticore(2, level = "mlrMBO.asyn", logging = TRUE)
+    parallelMap::parallelStartMulticore(4, level = "mlrMBO.asyn", logging = TRUE)
     or = mbo(fun = fn.sleep, design = des, control = ctrl)
     parallelMap::parallelStop()
     unlink(dirname(save.file), recursive = TRUE, force = TRUE)
@@ -48,8 +48,8 @@ test_that("asyn MBO works with CL", {
     expect_true(all(!is.na(op.df[[crit]][11:15])))
     expect_true(all(!is.na(op.df$scheduled.on[11:15])))
     expect_true(all(!is.na(op.df$dob[11:15])))
-    expect_equal(op.df$dob[11:13], c(1,1,2))
-    expect_true(sum(op.df$exec.time[11:15]>=3)>=2)
+    expect_equal(op.df$dob[11:12], c(1,1))
+    expect_true(sum(op.df$exec.time[11:14]>=3)>=2)
     if (imp.method %in% c("mc", "quantilemean")) {
       expect_class(getFirst(or$models)$learner.model, "AsynModel")
     }
