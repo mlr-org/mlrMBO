@@ -49,7 +49,6 @@ test_that("asyn MBO works with CL", {
     expect_true(all(!is.na(op.df$scheduled.on[11:15])))
     expect_true(all(!is.na(op.df$dob[11:15])))
     expect_equal(op.df$dob[11:12], c(1,1))
-    expect_true(sum(op.df$exec.time[11:14]>=3)>=2)
     if (imp.method %in% c("mc", "quantilemean")) {
       expect_class(getFirst(or$models)$learner.model, "AsynModel")
     }
