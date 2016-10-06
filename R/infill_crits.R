@@ -198,8 +198,16 @@ infillCritEEI = function(points, models, control, par.set, design, iter, attribu
   models = models[[1]]
   assertClass(models, "AsynModel")
   models = getLearnerModel(models, more.unwrap = FALSE)
-  eeis = do.call(cbind, lapply(models, function(x) {
+  eeis.list = lapply(models, function(x) {
     infillCritEI(points = points, models = list(x), control = control, par.set = par.set, design = design, iter = iter, attributes = attributes)
-  }))
-  apply(eeis, 1, mean)
+  })
+  eeis = do.call(cbind, eeis.list)
+  res = apply(eeis, 1, mean)
+  if (attributes) {
+    crit.components = lapply(eeis.list, function(x) attr(x, "crit.components"))
+    crit.components = plyr::rbind.fill(crit.components)
+    crit.components = as.data.frame(t(apply(crit.components, 2, mean)))
+    res = setAttribute(res, "crit.components", crit.components)
+  }
+  return(res)
 }

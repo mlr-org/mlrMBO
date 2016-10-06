@@ -38,6 +38,8 @@ getExtras = function(n, prop, train.time, control) {
       prop$crit.components = data.frame(se = NA_real_, mean = NA_real_, lambda = NA_real_)
     } else if (control$n.objectives == 1L && control$infill.crit == "aei") {
       prop$crit.components = data.frame(se = NA_real_, mean = NA_real_, tau = NA_real_)  
+    } else if (control$n.objectives == 1L && control$infill.crit == "eei") {
+      prop$crit.components = data.frame(se = NA_real_, mean = NA_real_)  
     }
     if (control$multifid) {
       prop$crit.components = cbind.data.frame(prop$crit.components, mf.ei.last = NA_real_, mf.se = NA_real_, mf.alpha1 = NA_real_, mf.alpha2 = NA_real_, mf.alpha3 = NA_real_, mf.sd = NA_real_)
