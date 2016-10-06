@@ -1,5 +1,6 @@
 context("asyn MBO")
 options(mlrMBO.debug.mode = FALSE)
+options(parallelMap.logging = FALSE)
 
 test_that("asyn MBO works", {
   save.file = file.path(tempdir(), "mbo_asyn", "mbo.RData")

@@ -1,4 +1,5 @@
 context("smart schedule")
+options(parallelMap.logging = FALSE)
 
 test_that("smart schedule works", {
   set.seed(3)
