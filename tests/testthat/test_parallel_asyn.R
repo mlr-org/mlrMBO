@@ -3,6 +3,7 @@ options(mlrMBO.debug.mode = FALSE)
 options(parallelMap.logging = FALSE)
 
 test_that("asyn MBO works", {
+  skip_on_appveyor()
   save.file = file.path(tempdir(), "mbo_asyn", "mbo.RData")
   ctrl = makeMBOControl(schedule.method = "asyn", save.file.path = save.file, schedule.nodes = 2, propose.points = 1)
   ctrl = setMBOControlTermination(ctrl, iters = 4L, max.evals = 14L)
@@ -21,7 +22,7 @@ test_that("asyn MBO works", {
 })
 
 test_that("asyn MBO works with CL", {
-
+  skip_on_appveyor()
   imp.methods = c("min", "max", "mean", "noisymean", "mc", "quantilemean")
   
   for (imp.method in imp.methods) {
