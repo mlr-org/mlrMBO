@@ -31,6 +31,8 @@ proposePoints.OptState = function(opt.state){
       res = proposePointsMOIMBO(opt.state)
     } else if (control$multipoint.method == "infilldistributed") {
       res = proposePointsInfillDistributed(opt.state)
+    } else if (control$multipoint.method == "groupinfill") {
+      res = proposePointsGroupInfill(opt.state)
     }
   } else {
     if (control$multicrit.method == "parego") {

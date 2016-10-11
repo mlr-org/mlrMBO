@@ -8,7 +8,8 @@ setMBOControlMultiPoint(control, method = NULL, cb.multiple = NULL,
   mean.liar = NULL, cl.lie = NULL, multicrit.objective = NULL,
   multicrit.dist = NULL, multicrit.selection = NULL,
   multicrit.maxit = NULL, multicrit.sbx.eta = NULL,
-  multicrit.sbx.p = NULL, multicrit.pm.eta = NULL, multicrit.pm.p = NULL)
+  multicrit.sbx.p = NULL, multicrit.pm.eta = NULL, multicrit.pm.p = NULL,
+  groupinfill.sample.n = NULL, groupinfill.dist.penalty = NULL)
 }
 \arguments{
 \item{control}{[\code{\link{MBOControl}}]\cr
@@ -34,6 +35,7 @@ Then, the function value of the best point is simply guessed by the worst seen f
 This lie is used to update the model in order to propose the subsequent point.
 The procedure is applied until the number of best points achieves \code{propose.points}.
 \dQuote{infilldistributed}: Uses the infill criterion as a density from which random param settings are drawn.
+\dQuote{groupinfill}: Very early version of a group based infill criteria!
 Default is \code{cb}.}
 
 \item{cb.multiple}{[\code{character(1)}]\cr
@@ -87,6 +89,14 @@ Default is 15.}
 
 \item{multicrit.pm.p}{[\code{numeric(1)}]\cr
 Probability of 1-point mutation, see \code{\link[emoa]{pm_operator}}.
+Default is 1.}
+
+\item{groupinfill.sample.n}{[\code{numeric(1)}]\cr
+Number of groups to sample.
+Default is 1000.}
+
+\item{groupinfill.dist.penalty}{[\code{numeric(1)}]\cr
+Penalty term to multiply with the distance penalty term.
 Default is 1.}
 }
 \value{

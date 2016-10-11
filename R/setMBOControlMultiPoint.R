@@ -22,6 +22,7 @@
 #'   This lie is used to update the model in order to propose the subsequent point.
 #'   The procedure is applied until the number of best points achieves \code{propose.points}.
 #'   \dQuote{infilldistributed}: Uses the infill criterion as a density from which random param settings are drawn.
+#'   \dQuote{groupinfill}: Very early version of a group based infill criteria!
 #'   Default is \code{cb}.
 #' @param cb.multiple [\code{character(1)}]\cr
 #'   Method to generate multiple lambdas for multipoint proposals.
@@ -66,6 +67,12 @@
 #' @param multicrit.pm.p [\code{numeric(1)}]\cr
 #'   Probability of 1-point mutation, see \code{\link[emoa]{pm_operator}}.
 #'   Default is 1.
+#' @param groupinfill.sample.n [\code{numeric(1)}]\cr
+#'   Number of groups to sample.
+#'   Default is 1000.
+#' @param groupinfill.dist.penalty [\code{numeric(1)}]\cr
+#'   Penalty term to multiply with the distance penalty term.
+#'   Default is 1.
 #' @return [\code{\link{MBOControl}}].
 #' @family MBOControl
 #' @export
@@ -79,7 +86,9 @@ setMBOControlMultiPoint = function(control,
   multicrit.selection = NULL,
   multicrit.maxit = NULL,
   multicrit.sbx.eta = NULL, multicrit.sbx.p = NULL,
-  multicrit.pm.eta = NULL, multicrit.pm.p = NULL) {
+  multicrit.pm.eta = NULL, multicrit.pm.p = NULL,
+  groupinfill.sample.n = NULL,
+  groupinfill.dist.penalty = NULL) {
 
   assertClass(control, "MBOControl")
 
@@ -127,6 +136,12 @@ setMBOControlMultiPoint = function(control,
 
   control$multipoint.multicrit.pm.p = coalesce(multicrit.pm.p, control$multipoint.multicrit.pm.p, 1)
   assertNumber(control$multipoint.multicrit.pm.p, na.ok = FALSE, lower = 0, upper = 1)
+
+  control$multipoint.groupinfill.sample.n = coalesce(groupinfill.sample.n, control$multipoint.groupinfill.sample.n, 1000)
+  assertNumber(control$multipoint.groupinfill.sample.n, na.ok = FALSE, lower = 1)
+  
+  control$multipoint.groupinfill.dist.penalty = coalesce(groupinfill.dist.penalty, control$multipoint.groupinfill.dist.penalty, 1)
+  assertNumber(control$multipoint.groupinfill.dist.penalty, na.ok = FALSE)
 
   return(control)
 }
