@@ -36,7 +36,7 @@ test_that("asyn MBO works with CL", {
     des = generateDesign(n = 10, par.set = getParamSet(fn.sleep))
     des$y = apply(des, 1, function(x) sum(x^2))
     save.file = file.path(tempdir(), "mbo_asyn", "mbo.RData")
-    ctrl = makeMBOControl(schedule.method = "asyn", save.file.path = save.file, propose.points = 1, schedule.nodes = 4, asyn.wait.for.proposals = FALSE, asyn.filter.proposals = TRUE, asyn.impute.method = imp.method, store.model.at = 0:10)
+    ctrl = makeMBOControl(schedule.method = "asyn", save.file.path = save.file, propose.points = 1, schedule.nodes = 4, asyn.wait.for.proposals = FALSE, asyn.skip.filtered.propsals = TRUE, asyn.impute.method = imp.method, store.model.at = 0:10)
     ctrl = setMBOControlTermination(ctrl, time.budget = 9L)
     crit = if (imp.method %in% c("mc", "quantilemean")) "eei" else "ei"
     ctrl = setMBOControlInfill(control = ctrl, crit = crit, opt.focussearch.maxit = 2L, opt.focussearch.points = 50L, filter.proposed.points = TRUE)

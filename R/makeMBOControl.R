@@ -104,8 +104,10 @@
 #'    Should the time model be learned on log-transformed times? Default is \code{FALSE}.
 #' @param asyn.wait.for.proposals [\code{logical(1)}]\cr
 #'    Should waiting be enabled for proposals? Default is \code{TRUE}.
-#' @param asyn.filter.proposals [\code{logical(1)}]\cr
-#'    Should proposed points be filtered? Only works with \code{filter.proposed.points = TRUE}. Default is \code{FALSE}.
+#' @param asyn.skip.filtered.propsals [\code{logical(1)}]\cr
+#'    If poposed points are filtered. 
+#'    Should we then ignore those results and restart point proposal to find a point a bit further away.
+#'    Only works with \code{filter.proposed.points = TRUE}. Default is \code{FALSE}.
 #' @param asyn.cleanup [\code{logical(1)}]\cr
 #'    Clean asyn files after run? Default is \code{FALSE}.
 #' @param asyn.impute.method [\code{character(1)}]\cr
@@ -150,7 +152,7 @@ makeMBOControl = function(n.objectives = 1L,
   schedule.cluster = FALSE,
   time.model.trafo.log = FALSE,
   asyn.wait.for.proposals = TRUE,
-  asyn.filter.proposals = FALSE,
+  asyn.skip.filtered.propsals = FALSE,
   asyn.cleanup = FALSE,
   asyn.impute.method = "min",
   asyn.impute.quantiles = c(0.25,0.5,0.75),
@@ -201,7 +203,7 @@ makeMBOControl = function(n.objectives = 1L,
   assertFlag(schedule.fill.random)
   assertFlag(time.model.trafo.log)
   assertFlag(asyn.wait.for.proposals)
-  assertFlag(asyn.filter.proposals)
+  assertFlag(asyn.skip.filtered.propsals)
   assertFlag(asyn.cleanup)
   assertFlag(schedule.cluster)
   assertChoice(asyn.impute.method, choices = c("min", "max", "mean", "noisymean", "quantilemean", "mc"))
@@ -233,7 +235,7 @@ makeMBOControl = function(n.objectives = 1L,
     schedule.cluster = schedule.cluster,
     time.model.trafo.log = time.model.trafo.log,
     asyn.wait.for.proposals = asyn.wait.for.proposals,
-    asyn.filter.proposals = asyn.filter.proposals,
+    asyn.skip.filtered.propsals = asyn.skip.filtered.propsals,
     asyn.cleanup = asyn.cleanup,
     asyn.impute.method = asyn.impute.method,
     asyn.impute.quantiles = asyn.impute.quantiles,

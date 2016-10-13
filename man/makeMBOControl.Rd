@@ -17,7 +17,7 @@ makeMBOControl(n.objectives = 1L, propose.points = 1L,
   schedule.priority = "infill", schedule.priority.time = FALSE,
   schedule.fill.random = TRUE, schedule.cluster = FALSE,
   time.model.trafo.log = FALSE, asyn.wait.for.proposals = TRUE,
-  asyn.filter.proposals = FALSE, asyn.cleanup = FALSE,
+  asyn.skip.filtered.propsals = FALSE, asyn.cleanup = FALSE,
   asyn.impute.method = "min", asyn.impute.quantiles = c(0.25, 0.5, 0.75),
   asyn.impute.mc.iters = 50, check.constant.model = FALSE)
 }
@@ -147,7 +147,7 @@ Should the time model be learned on log-transformed times? Default is \code{FALS
 \item{asyn.wait.for.proposals}{[\code{logical(1)}]\cr
 Should waiting be enabled for proposals? Default is \code{TRUE}.}
 
-\item{asyn.filter.proposals}{[\code{logical(1)}]\cr
+\item{asyn.skip.filtered.propsals}{[\code{logical(1)}]\cr
 Should proposed points be filtered? Only works with \code{filter.proposed.points = TRUE}. Default is \code{FALSE}.}
 
 \item{asyn.cleanup}{[\code{logical(1)}]\cr
