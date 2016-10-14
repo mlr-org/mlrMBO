@@ -148,18 +148,21 @@ Should the time model be learned on log-transformed times? Default is \code{FALS
 Should waiting be enabled for proposals? Default is \code{TRUE}.}
 
 \item{asyn.skip.filtered.propsals}{[\code{logical(1)}]\cr
-Should proposed points be filtered? Only works with \code{filter.proposed.points = TRUE}. Default is \code{FALSE}.}
+If poposed points are filtered. 
+Should we then ignore those results and restart point proposal to find a point a bit further away.
+Only works with \code{filter.proposed.points = TRUE}. Default is \code{FALSE}.}
 
 \item{asyn.cleanup}{[\code{logical(1)}]\cr
 Clean asyn files after run? Default is \code{FALSE}.}
 
 \item{asyn.impute.method}{[\code{character(1)}]\cr
-Choices are:
-  \dQuote{min} take minimum of y-values.
-  \dQuote{max} take maximum of y-values.
-  \dQuote{mean} take prediction at point x based on previous evaluations.
-  \dQuote{noisymean} take prediction + rnorm(se) at point x based on previous evaluations.
-  \dQuote{quantilemean} build multiple models with quantile imputed y values}
+ Choices are:
+   \dQuote{min} take minimum of y-values.
+   \dQuote{max} take maximum of y-values.
+   \dQuote{mean} take prediction at point x based on previous evaluations.
+   \dQuote{noisymean} take prediction + rnorm(se) at point x based on previous evaluations.
+   \dQuote{quantilemean} build multiple models with quantile imputed y values
+Default is \code{min}.}
 
 \item{asyn.impute.quantiles}{\code{numeric}\cr
 As an alternative to the monte carlo sampling above you can define quantiles to be drawn at busy points.}

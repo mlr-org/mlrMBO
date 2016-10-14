@@ -117,6 +117,7 @@
 #'      \dQuote{mean} take prediction at point x based on previous evaluations.
 #'      \dQuote{noisymean} take prediction + rnorm(se) at point x based on previous evaluations.
 #'      \dQuote{quantilemean} build multiple models with quantile imputed y values
+#'   Default is \code{min}.
 #' @param check.constant.model \code{logical(1)}\cr
 #'    Should we check if the model just proposes constant values after each model build.
 #'    (Only works for Focussearch for now)
