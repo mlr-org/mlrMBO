@@ -8,6 +8,7 @@
 # See infillOptCMAES.R for interface explanation.
 infillOptFocus = function(infill.crit, models, control, par.set, opt.path, design, iter, ...) {
   global.y = Inf
+  constant.model = FALSE
 
   # restart the whole crap some times
   for (restart.iter in seq_len(control$infill.opt.restarts)) {
@@ -30,7 +31,8 @@ infillOptFocus = function(infill.crit, models, control, par.set, opt.path, desig
       local.x.list = dfRowToList(recodeTypes(local.x.df, ps.local), ps.local, 1)
 
       # check if the model just gives constant values
-      constant.model = (local.iter == 1 && length(unique(y)) == 1)
+      if (local.iter == 1 && length(unique(y)) == 1) 
+        constant.model = TRUE
 
       # if we found a new best value, store it
       if (local.y < global.y) {
