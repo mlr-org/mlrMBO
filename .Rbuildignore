@@ -4,6 +4,7 @@ tools
 
 .gitignore
 .travis.yml
+appveyor.yml
 
 ^.*tar.gz$
 bench

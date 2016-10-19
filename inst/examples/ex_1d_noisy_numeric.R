@@ -14,7 +14,7 @@ obj.fun = makeSingleObjectiveFunction(
   par.set = makeNumericParamSet(lower = 3, upper = 13, len = 1L),
   noisy = TRUE,
   global.opt.value = -1,
-  fn.mean = function(x) sin(x$x)
+  fn.mean = function(x) sin(x)
 )
 
 ctrl = makeMBOControl(
