@@ -5,6 +5,7 @@ test_that("stopping criteria works", {
   time.budget = 3L # seconds
   target.fun.value = 0.005
   max.evals = 13L
+  tollerance = 0.1
 
   f = makeSphereFunction(1L)
   x.grid = seq(-2, 2, length.out = 10L)
@@ -34,4 +35,12 @@ test_that("stopping criteria works", {
 
   expect_equal(or$final.state, "term.feval")
   expect_equal(getOptPathLength(or$opt.path), max.evals)
+
+  # target input value
+  ctrl = makeMBOControl()
+  ctrl = setMBOControlTermination(ctrl, more.stop.conds = list(makeMBOTerminationTagetInputValue(tollerance = tollerance)))
+  or = mbo(f, design = design, learner = learner, control = ctrl)
+
+  expect_equal(or$final.state, "term.custom")
+  expect_lt(or$y, f(getGlobalOptimum(f)$param[1,,drop=FALSE] + tollerance)) #works because symmetry and convexity of f
 })

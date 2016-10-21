@@ -97,3 +97,34 @@ makeMBOTerminationMaxEvals = function(max.evals) {
     return(list(term = term, message = message, code = "term.feval"))
   }
 }
+
+# @title
+# distance of the best point so far to known optimal x. 
+# At the moment only supports euclidean distances.
+#
+# @param tollerance [numeric(1)]
+#   How close do we have to get to the known optimal x
+# @param opt.x [numeric]
+#   The already known optimal x
+makeMBOTerminationTagetInputValue = function(tollerance = 10^(-10), opt.x = NULL) {
+  assertNumber(tollerance, lower = 0)
+  assertNumeric(opt.x, null.ok = TRUE)
+  force(tollerance)
+  force(opt.x)
+  function(opt.state) {
+    opt.problem = getOptStateOptProblem(opt.state)
+    control = getOptProblemControl(opt.problem)
+    opt.path = getOptStateOptPath(opt.state)
+    if (is.null(opt.x)) opt.x = getGlobalOptimum(getOptProblemFun(opt.problem))$param
+    if (is.null(opt.x)) {
+      term = FALSE
+    } else {
+      current.best = getOptPathEl(opt.path, getOptPathBestIndex((opt.path)))$x
+      term = any(
+        as.matrix(dist(rbind(current.best$x, opt.x)))[-1, 1] <= tollerance
+      )  
+    }
+    message = if (!term) NA_character_ else sprintf("Target function input value (%s) reached.", collapsef(opt.x, fmt = "%.1f"))
+    return(list(term = term, message = message, code = "term.custom"))
+  }
+}

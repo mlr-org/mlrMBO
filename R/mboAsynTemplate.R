@@ -32,17 +32,6 @@ mboAsynTemplate.OptState = function(obj) {
     writeThingToDirectory(opt.problem, getOptStateOptPath(opt.state), "state_0_init", hash = FALSE)
   }
 
-  #wrapper to check budget
-  asynSingle = function(i) {
-    opt.state = readDirectoryToOptState(opt.problem)
-    start.after = ifelse(i < control$schedule.nodes, i - 1, 0)
-    ##! control$schedule.nodes
-    if (!getOptStateTermination(opt.state)$term) {
-      runMBOOnline(opt.state, start.after = start.after)
-    }
-    invisible()
-  }
-
   #infinityLoop wrapper
   asynInfinityLoop = function(i) {
     Sys.sleep(0.1 * (i-1))
