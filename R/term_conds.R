@@ -102,14 +102,14 @@ makeMBOTerminationMaxEvals = function(max.evals) {
 # distance of the best point so far to known optimal x. 
 # At the moment only supports euclidean distances.
 #
-# @param tollerance [numeric(1)]
+# @param tolerance [numeric(1)]
 #   How close do we have to get to the known optimal x
 # @param opt.x [numeric]
 #   The already known optimal x
-makeMBOTerminationTargetInputValue = function(tollerance = 10^(-10), opt.x = NULL) {
-  assertNumber(tollerance, lower = 0)
+makeMBOTerminationTargetInputValue = function(tolerance = 10^(-10), opt.x = NULL) {
+  assertNumber(tolerance, lower = 0)
   assertNumeric(opt.x, null.ok = TRUE)
-  force(tollerance)
+  force(tolerance)
   force(opt.x)
   function(opt.state) {
     opt.problem = getOptStateOptProblem(opt.state)
@@ -121,7 +121,7 @@ makeMBOTerminationTargetInputValue = function(tollerance = 10^(-10), opt.x = NUL
     } else {
       current.best = getOptPathEl(opt.path, getOptPathBestIndex((opt.path)))$x
       term = any(
-        as.matrix(dist(rbind(current.best$x, opt.x)))[-1, 1] <= tollerance
+        as.matrix(dist(rbind(current.best$x, opt.x)))[-1, 1] <= tolerance
       )  
     }
     message = if (!term) NA_character_ else sprintf("Target function input value (%s) reached.", collapsef(opt.x, fmt = "%.1f"))
