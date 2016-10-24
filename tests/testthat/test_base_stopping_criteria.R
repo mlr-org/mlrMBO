@@ -38,7 +38,7 @@ test_that("stopping criteria works", {
 
   # target input value
   ctrl = makeMBOControl()
-  ctrl = setMBOControlTermination(ctrl, more.stop.conds = list(makeMBOTerminationTagetInputValue(tollerance = tollerance)))
+  ctrl = setMBOControlTermination(ctrl, more.stop.conds = list(makeMBOTerminationTargetInputValue(tollerance = tollerance)))
   or = mbo(f, design = design, learner = learner, control = ctrl)
 
   expect_equal(or$final.state, "term.custom")

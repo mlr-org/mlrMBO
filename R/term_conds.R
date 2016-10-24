@@ -106,7 +106,7 @@ makeMBOTerminationMaxEvals = function(max.evals) {
 #   How close do we have to get to the known optimal x
 # @param opt.x [numeric]
 #   The already known optimal x
-makeMBOTerminationTagetInputValue = function(tollerance = 10^(-10), opt.x = NULL) {
+makeMBOTerminationTargetInputValue = function(tollerance = 10^(-10), opt.x = NULL) {
   assertNumber(tollerance, lower = 0)
   assertNumeric(opt.x, null.ok = TRUE)
   force(tollerance)
