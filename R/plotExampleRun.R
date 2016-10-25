@@ -15,7 +15,8 @@
 #'   plot displays the x-space.
 #'
 #' @param object [\code{function}]\cr
-#'   \code{MBOExampleRun} or \code{MBOExampleRunMulticrit} object.
+#'   \code{MBOExampleRun} object from \code{exampleRun} or
+#'   \code{MBOExampleRunMulticrit} object from \code{exampleRunMultiCrit}.
 #' @param iters [\code{integer}]\cr
 #'   Selected iterations of \code{object} to produce plots.
 #'   Default is all iterations.
