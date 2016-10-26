@@ -35,3 +35,9 @@ getRandomSeed = function() {
     set.seed(NULL)
   get(".Random.seed", .GlobalEnv)
 }
+
+measureTime = function(expr, ee = parent.frame()) {
+  before = proc.time()[3L]
+  force(expr)
+  proc.time()[3L] - before
+}
