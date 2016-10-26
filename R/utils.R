@@ -39,5 +39,5 @@ getRandomSeed = function() {
 measureTime = function(expr, ee = parent.frame()) {
   before = proc.time()[3L]
   force(expr)
-  proc.time()[3L] - before
+  as.numeric(proc.time()[3L] - before)
 }
