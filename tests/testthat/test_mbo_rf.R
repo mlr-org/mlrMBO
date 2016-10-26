@@ -161,11 +161,9 @@ test_that("mbo works with rf", {
   des = generateTestDesign(10L, getParamSet(f))
   ctrl = makeMBOControl(trafo.y.fun = trafoLog(handle.violations = "error"))
   ctrl = setMBOControlTermination(ctrl, iters = 2L)
-  expect_error(mbo(f, control = ctrl, more.args = list(shift = -1)))
+  expect_error(mbo(f, control = ctrl, more.args = list(shift = -1)), "Negative function values occured during transformation.")
   or = mbo(f, des, control = ctrl, more.args = list(shift = 0))
   expect_true(!is.na(or$y))
-  # negative function values not allowed when log-transforming y-values before modelling
-  expect_error(mbo(f, control = ctrl, more.args = list(shift = -1)))
 })
 
 # FIXME: we do we get so bad results with so many models for this case?
