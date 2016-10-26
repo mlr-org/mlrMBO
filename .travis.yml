@@ -6,6 +6,11 @@ r:
   - release
   - devel
 
+r_github_packages:
+  - berndbischl/parallelMap
+  - jakobbossek/smoof
+  - mlr-org/mlr
+
 env:
   global:
     - secure: "e2QLomaUqNvpHnGNdBXS4VO2/UWokrKl9UgYrqWo+fhpXaJiJuONNPNL44BuWZR2Cy7noTHrevVbTKBkGpqJR42mkjzcjd6qyR1Ctiveir+84/HTtmexouIUn5OFRH5dgyt/gquld31RlHlSYoKho3nZ7D7SnVExov9tp2FGRhU="
