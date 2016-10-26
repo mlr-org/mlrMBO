@@ -49,7 +49,7 @@ evalTargetFun.OptState = function(opt.state, xs, extras) {
 
   # do we have a valid y object?
   isYValid = function(y) {
-    !is.error(y) && is.numeric(y) && (length(y) == ny) && !any(is.na(y) | is.nan(y) | is.infinite(y))
+    !is.error(y) && testNumeric(y, len = ny, any.missing = FALSE, finite = TRUE)
   }
 
   # return error objects if we impute

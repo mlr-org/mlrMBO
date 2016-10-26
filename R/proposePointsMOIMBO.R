@@ -89,7 +89,7 @@ proposePointsMOIMBO = function(opt.state, ...) {
   if (objective %in% c("mean.dist", "ei.dist", "mean.se.dist"))
     Y[, y.dim] = -mydist(as.matrix(X), Y[,1])
 
-  st = system.time({
+  secs = measureTime({
     for (i in 1:control$multipoint.multicrit.maxit) {
       # Create new individual (mu + 1)
       parents = sample(1:mu, 2)
@@ -130,8 +130,8 @@ proposePointsMOIMBO = function(opt.state, ...) {
       X = X[-to.kill, ,drop = FALSE]
       Y = Y[-to.kill, ,drop = FALSE]
     }
-  }) # system.time
+  }) # measureTime
   rownames(X) = NULL
   prop.type = rep("infill_moimbo", n)
-  return(list(prop.points = X, propose.time = st[3L], crit.vals = Y, prop.type = prop.type, errors.model = NA_character_))
+  return(list(prop.points = X, propose.time = secs, crit.vals = Y, prop.type = prop.type, errors.model = NA_character_))
 }

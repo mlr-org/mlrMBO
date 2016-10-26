@@ -17,7 +17,7 @@ proposePointsMSPOT = function(opt.state, ...) {
   infill.opt.fun = getInfillOptFunction(control$infill.opt)
 
   # store time to propose single point
-  st = system.time({
+  secs = measureTime({
     prop.points = infill.opt.fun(infill.crit.fun, models, control, par.set, opt.path, design, iter, ...)
   })
 
@@ -27,5 +27,5 @@ proposePointsMSPOT = function(opt.state, ...) {
   crit.vals = cbind(crit.vals, prop.points$prop.hv.contrs)
   prop.type = rep(paste0("infill_", control$infill.crit), n)
 
-  return(list(prop.points = ppoints, propose.time = st[3L], crit.vals = crit.vals, prop.type = prop.type, errors.model = NA_character_))
+  return(list(prop.points = ppoints, propose.time = secs, crit.vals = crit.vals, prop.type = prop.type, errors.model = NA_character_))
 }

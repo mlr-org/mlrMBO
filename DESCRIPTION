@@ -19,6 +19,7 @@ Depends:
     ParamHelpers (>= 1.8),
     smoof (>= 1.3)
 Imports:
+    backports,
     BBmisc (>= 1.7),
     checkmate (>= 1.8.1),
     ggplot2,
