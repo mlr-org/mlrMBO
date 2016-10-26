@@ -170,7 +170,7 @@ renderExampleRunPlot1d = function(x, iter,
     g = g + scale_linetype(name = "type")
 
     if (noisy) {
-      if (!any(is.na(x$y.true))) {
+      if (!anyMissing(x$y.true)) {
         source = data.frame(x$y.true)
         names(source) = name.y
         gap = calculateGap(source[idx.pastpresent, , drop = FALSE], global.opt, control)
