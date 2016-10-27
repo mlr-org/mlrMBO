@@ -21,7 +21,12 @@ Will overwrite mlrMBOs recomendations.}
 [\code{Learner}]
 }
 \description{
-Based on in the function is noisy or not this function generates a kriging learner whichs settings are the right ones for mbo.
-Additionally it determines the nugget for each model fit based on the variance of the target function.
+This is a helper function that generates the right learner for the surrogate based on criteria of the objective function.
+For numeric only parameter spaces: \cr
+If the objective function is noisy the nugget effect will be estimated unless \code{nugget.estim = FALSE} is explicitly given in \code{...}.
+Also \code{jitter} is set to \code{TRUE} to circumvent a problem with DiceKriging where already trained input values produce the exact trained output.
+For further informations check the \code{$note} slot of the created learner.
+If the objective function is deterministic we add a small nugget effect to increase numerical stability which prevents crashes of DiceKriging. 
+For mixed parameter spaces the function returns a random forest regression learner.
 }
 
