@@ -14,19 +14,22 @@ Control object for mbo.}
 The same objective function which is also passed to \code{\link{mbo}}.}
 
 \item{...}{[any]\cr
-Parameters passed to \code{\link[DiceKriging]{km}}.
+Parameters passed to \code{par.vals}.
 Will overwrite mlrMBOs recomendations.}
 }
 \value{
 [\code{Learner}]
 }
 \description{
-This is a helper function that generates the right learner for the surrogate based on criteria of the objective function.
-For numeric only parameter spaces: \cr
+This is a helper function that generates the right learner for the surrogate, based on criteria of the objective function.
+For numeric only parameter spaces it returns a Kriging regression learner with the following settings: \cr
 If the objective function is noisy the nugget effect will be estimated unless \code{nugget.estim = FALSE} is explicitly given in \code{...}.
 Also \code{jitter} is set to \code{TRUE} to circumvent a problem with DiceKriging where already trained input values produce the exact trained output.
 For further informations check the \code{$note} slot of the created learner.
 If the objective function is deterministic we add a small nugget effect to increase numerical stability which prevents crashes of DiceKriging. 
+The nugget effect is set to 10^-8 * Var(y) on each model training.
 For mixed parameter spaces the function returns a random forest regression learner.
+The method to estimate the variance is the standard deviation of the bagged predictions.
+You can override this setting in \code{...}.
 }
 
