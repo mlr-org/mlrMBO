@@ -242,7 +242,7 @@ setMBOControlInfill = function(control,
   control$infill.opt.nsga2.popsize = coalesce(opt.nsga2.popsize, control$infill.opt.nsga2.popsize, 100L)
   control$infill.opt.nsga2.popsize = asCount(control$infill.opt.nsga2.popsize)
   assertCount(control$infill.opt.nsga2.popsize, na.ok = FALSE, positive = TRUE)
-  if (control$infill.opt.nsga2.popsize < control$propose.points)
+  if (control$infill.opt == "nsga2" && control$infill.opt.nsga2.popsize < control$propose.points)
     stop("Population size of nsga2 must be greater or equal than propose.points.")
 
   control$infill.opt.nsga2.generations = coalesce(opt.nsga2.generations, control$infill.opt.nsga2.generations, 50L)
