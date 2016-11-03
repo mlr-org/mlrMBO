@@ -128,3 +128,27 @@ makeMBOTerminationTargetInputValue = function(tolerance = 10^(-10), opt.x = NULL
     return(list(term = term, message = message, code = "term.custom"))
   }
 }
+
+# @title
+# distance of the best point so far to known optimal x. 
+# At the moment only supports euclidean distances.
+#
+# @param tolerance [numeric(1)]
+#   How close do we have to get to the known optimal x
+# @param opt.x [numeric]
+#   The already known optimal x
+makeMBOTerminationFakeRealtime = function(time.budget) {
+  assertNumber(time.budget, na.ok = FALSE)
+  force(time.budget)
+  function(opt.state) {
+    opt.problem = getOptStateOptProblem(opt.state)
+    control = getOptProblemControl(opt.problem)
+    opt.path = getOptStateOptPath(opt.state)
+    exec.time.used = sum(getOptPathExecTimes(opt.path), na.rm = TRUE)
+    train.time.used = sum(getOptPathCol(opt.path, "train.time"), na.rm = TRUE)
+    propose.time.used = sum(getOptPathCol(opt.path, "propose.time"), na.rm = TRUE)
+    term = time.budget > sum(c(exec.time.used, train.time.used, propose.time.used), na.rm = TRUE)
+    message = if (!term) NA_character_ else sprintf("Fake Realtime Budget (%f) reached.", time.budget)
+    return(list(term = term, message = message, code = "term.custom"))
+  }
+}
