@@ -51,7 +51,7 @@ makeMBOTerminationMaxExecBudget = function(time.budget) {
   force(time.budget)
   function(opt.state) {
     opt.path = getOptStateOptPath(opt.state)
-    time.used = sum(getOptPathExecTimes(opt.path))
+    time.used = sum(getOptPathExecTimes(opt.path), na.rm = TRUE)
 
     term = (time.used > time.budget)
     message = if (!term) NA_character_ else sprintf("Execution time budged %f reached.", time.budget)
@@ -137,18 +137,23 @@ makeMBOTerminationTargetInputValue = function(tolerance = 10^(-10), opt.x = NULL
 #   How close do we have to get to the known optimal x
 # @param opt.x [numeric]
 #   The already known optimal x
-makeMBOTerminationFakeRealtime = function(time.budget) {
+makeMBOTerminationFakeRealtime = function(time.budget, predictive = TRUE) {
   assertNumber(time.budget, na.ok = FALSE)
   force(time.budget)
   function(opt.state) {
     opt.problem = getOptStateOptProblem(opt.state)
     control = getOptProblemControl(opt.problem)
     opt.path = getOptStateOptPath(opt.state)
-    exec.time.used = sum(getOptPathExecTimes(opt.path), na.rm = TRUE)
-    train.time.used = sum(getOptPathCol(opt.path, "train.time"), na.rm = TRUE)
-    propose.time.used = sum(getOptPathCol(opt.path, "propose.time"), na.rm = TRUE)
-    term = time.budget > sum(c(exec.time.used, train.time.used, propose.time.used), na.rm = TRUE)
-    message = if (!term) NA_character_ else sprintf("Fake Realtime Budget (%f) reached.", time.budget)
+    exec.time.used = na.omit(getOptPathExecTimes(opt.path))
+    train.time.used = na.omit(getOptPathCol(opt.path, "train.time"))
+    propose.time.used = na.omit(getOptPathCol(opt.path, "propose.time"))
+    if (predictive && length(propose.time.used) > 1 && length(train.time.used) > 1 && length(exec.time.used) > 1) {
+      buffer = getLast(propose.time.used) + getLast(train.time.used) + mean(exec.time.used)
+    } else {
+      buffer = 0
+    }
+    term = time.budget < sum(c(exec.time.used, train.time.used, propose.time.used)) + buffer
+    message = if (!term) NA_character_ else sprintf("Fake Realtime Budget (%f) reached with overall train.time: %.1f, propose.time: %.1f, exec.time: %.1f .", time.budget, sum(train.time.used), sum(propose.time.used), sum(exec.time.used))
     return(list(term = term, message = message, code = "term.custom"))
   }
 }
