@@ -1,6 +1,6 @@
 readOptPathFromDirectory = function(path) {
   op = readRDS(file.path(path, "state_0_init.rds"))
-  files = list.files(path, pattern = "^state_[[:alnum:]]+\\.rds$", full.names = TRUE)
+  files = list.files(path, pattern = "^state_[0-9]+_[0-9]+_[[:alnum:]]+\\.rds$", full.names = TRUE)
   file.contents = lapply(files, readRDS)
   for (op.el in file.contents) {
     do.call(addOptPathEl, c(list(op = op), op.el))
@@ -9,7 +9,7 @@ readOptPathFromDirectory = function(path) {
 }
 
 listProposals = function(path) {
-  list.files(path, pattern = "(^|_)prop_[[:alnum:]]+\\.rds$", full.names = TRUE)
+  list.files(path, pattern = "^prop_[0-9]+_[[:alnum:]]+\\.rds$", full.names = TRUE)
 }
 
 readFileContents = function(files) {
@@ -65,31 +65,16 @@ hashOptPath = function(opt.path, ignore.proposed = TRUE) {
   ))
 }
 
-readDirectoryToOptState = function(opt.problem, time.out = 60) {
+readDirectoryToOptState = function(opt.problem, node = 0L) {
   #FIXME: Blocking leads to error in time.budget?
+  waitAndBlock(opt.problem, "readDirectoryToOptState", node = node)
   start.time = as.numeric(Sys.time(), units = "secs")
   control = getOptProblemControl(opt.problem)
-  repeat {
-    opt.path = readOptPathFromDirectory(getAsynDir(opt.problem))
-    max.dob = max(getOptPathDOB(opt.path))
-    #add proposals with CL or NAs for unevaluated y to opt.path
-    readProposalsFromDirectoryToOptPath(opt.path, opt.problem)
-    #if we do not have to look fore identical opt.paths: break and continue normal
-    if (!control$asyn.wait.for.proposals) break
-    block.files = list.files(getAsynDir(opt.problem), pattern = "(^|_)block_[[:alnum:]]+\\.rds$", full.names = TRUE)
-    #if there aint any opt.states blocked: break and continue normal
-    if (length(block.files)==0) break
-    #if there aint any similiar opt.state: break and continue normal
-    file.contents = readFileContents(block.files)
-    if (length(file.contents)==0) break
-    op.hashes = lapply(file.contents, function(f) hashOptPath(getOptStateOptPath(f)))
-    this.op.hash = hashOptPath(opt.path)
-    if (this.op.hash %nin% op.hashes) break
-    #we don't want to read an similar opt.state. That's why we wait until proposals or results have been generated to get another opt.state.
-    # unless we have a time out
-    if (as.numeric(Sys.time(), units = "secs") - start.time > time.out) break
-    Sys.sleep(1)
-  }
+  opt.path = readOptPathFromDirectory(getAsynDir(opt.problem))
+  max.dob = max(getOptPathDOB(opt.path))
+  #add proposals with CL or NAs for unevaluated y to opt.path
+  readProposalsFromDirectoryToOptPath(opt.path, opt.problem)
+
   #find the first available exec.timestamp which does not belong to init.design
   if (max.dob > 0) {
     exec.timestamps = getOptPathCol(opt.path, "exec.timestamp", dob = seq_len(max.dob))
@@ -103,10 +88,10 @@ readDirectoryToOptState = function(opt.problem, time.out = 60) {
   )
 }
 
-writeResultToDirectory = function(opt.state) {
+writeResultToDirectory = function(opt.state, node = 0L) {
   opt.path = getOptStateOptPath(opt.state)
   last.op.el = getOptPathEl(opt.path, getOptPathLength(opt.path))
-  prefix = sprintf("state_%.4i", getOptStateLoop(opt.state))
+  prefix = sprintf("state_%.4i_%i_", getOptStateLoop(opt.state), node)
   writeThingToDirectory(getOptStateOptProblem(opt.state), last.op.el, prefix)
 }
 
@@ -124,7 +109,7 @@ writeThingToDirectory = function(opt.problem, thing, prefix, hash = TRUE){
 
 cleanDirectory = function(opt.problem) {
   ctrl = getOptProblemControl(opt.problem)
-  if (is.null(ctrl$asyn.cleanup) || ctrl$asyn.cleanup == TRUE) {
+  if (isTRUE(ctrl$asyn.cleanup)) {
     path = getAsynDir(opt.problem)
     unlink(path, recursive = TRUE, force = TRUE)
   }
@@ -183,4 +168,36 @@ asynImputeNoisyMean = function(opt.problem, data) {
 asynNoImpute = function(opt.problem, data) {
   y.name = getOptProblemControl(opt.problem)$y.name
   data[[y.name]]
+}
+
+
+# function.name: function that starts the block
+# node: cpu on which the block was started
+# thing: eventual data to save
+waitAndBlock = function(opt.problem, function.name, node = 0, thing = NULL, time.out = 3000L, wait = 5L) {
+  start.time = Sys.time()
+  block.files = character(1L)
+  while (
+      getOptProblemControl(opt.problem)$asyn.wait.for.proposals && 
+      length(block.files) > 0L && 
+      difftime(start.time, Sys.time(), units = "secs") < time.out
+    ) {
+    block.files = list.files(
+      getAsynDir(opt.problem), 
+      pattern = sprintf("^block_%s_[0-9]+_[[:alnum:]]+\\.rds$", function.name),
+      full.names = TRUE
+    )
+    Sys.sleep(wait + runif(1, -1, 1))
+  }
+  block.name = sprintf("block_%s_%i_", function.name, node)
+  writeThingToDirectory(opt.problem, thing = thing, prefix = block.name)
+}
+
+unblock = function(opt.problem, function.name, node = 0) {
+  block.files = list.files(
+    getAsynDir(opt.problem), 
+    pattern = sprintf("^block_%s_%i_[[:alnum:]]+\\.rds$", function.name, node),
+    full.names = TRUE
+  )
+  lapply(block.files, unlink)
 }

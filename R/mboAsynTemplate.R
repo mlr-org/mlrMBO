@@ -34,9 +34,9 @@ mboAsynTemplate.OptState = function(obj) {
 
   #infinityLoop wrapper
   asynInfinityLoop = function(i) {
-    Sys.sleep(0.1 * (i-1))
+    Sys.sleep(i-1)
     repeat {
-      opt.state = readDirectoryToOptState(opt.problem)
+      opt.state = readDirectoryToOptState(opt.problem, node = i)
       if (shouldTerminate.OptState(opt.state)$term) break
       runMBOOnline(opt.state, node = i)
     }
@@ -66,18 +66,10 @@ runMBOOnline.OptProblem = function(x, ...) {
   runMBOOnline(readDirectoryToOptState(x), ...)
 }
 
-runMBOOnline.OptState = function(x, node = NA_integer_, ...) {
-  if (!is.na(node)) {
-    node.prefix = sprintf("node_%i_", node)
-  } else {
-    node.prefix = ""
-  }
+runMBOOnline.OptState = function(x, node = 0, ...) {
   opt.state = x
   opt.problem = getOptStateOptProblem(opt.state)
   control = getOptProblemControl(opt.problem)
-  if (control$asyn.wait.for.proposals) {
-    block.file = writeThingToDirectory(opt.problem, opt.state, sprintf("%sblock_", node.prefix), hash = TRUE)
-  }
   prop = proposePoints.OptState(opt.state)
   if (control$asyn.skip.filtered.propsals) {
     # If we want filtering and we have any filtered point, we just return the actual opt.state, which means that we do noting and start over (why did we want this?) 
@@ -87,14 +79,12 @@ runMBOOnline.OptState = function(x, node = NA_integer_, ...) {
   }
   prop$scheduled.on = node
   prop$eval.state = "proposed"
-  if (control$asyn.wait.for.proposals) {
-    unlink(block.file)
-  }
-  proposal.file = writeThingToDirectory(opt.problem, prop, sprintf("%sprop_", node.prefix))
+  proposal.file = writeThingToDirectory(opt.problem, prop, sprintf("prop_%i_", node))
+  unblock(opt.problem, "readDirectoryToOptState", node = node)
   prop$eval.state = "done"
   evalProposedPoints.OptState(opt.state, prop)
   finalizeMboLoop(opt.state)
   unlink(proposal.file)
-  writeResultToDirectory(opt.state)
+  writeResultToDirectory(opt.state, node = node)
   invisible(opt.state)
 }
