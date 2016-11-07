@@ -65,9 +65,9 @@ hashOptPath = function(opt.path, ignore.proposed = TRUE) {
   ))
 }
 
-readDirectoryToOptState = function(opt.problem, node = 0L) {
+readDirectoryToOptState = function(opt.problem, node = 0L, block = TRUE) {
   #FIXME: Blocking leads to error in time.budget?
-  waitAndBlock(opt.problem, "readDirectoryToOptState", node = node)
+  if (block) waitAndBlock(opt.problem, "readDirectoryToOptState", node = node)
   start.time = as.numeric(Sys.time(), units = "secs")
   control = getOptProblemControl(opt.problem)
   opt.path = readOptPathFromDirectory(getAsynDir(opt.problem))

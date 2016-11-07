@@ -37,7 +37,10 @@ mboAsynTemplate.OptState = function(obj) {
     Sys.sleep(i-1)
     repeat {
       opt.state = readDirectoryToOptState(opt.problem, node = i)
-      if (shouldTerminate.OptState(opt.state)$term) break
+      if (shouldTerminate.OptState(opt.state)$term) {
+        unblock(opt.problem, "readDirectoryToOptState", node = i)
+        break
+      }
       runMBOOnline(opt.state, node = i)
     }
     invisible()
@@ -48,7 +51,7 @@ mboAsynTemplate.OptState = function(obj) {
     stop("BatchJobs mode not supported yet!")
   } else {
     parallelMap(asynInfinityLoop, i = seq_len(control$schedule.nodes), level = "mlrMBO.asyn")
-    opt.state = readDirectoryToOptState(opt.problem)
+    opt.state = readDirectoryToOptState(opt.problem, block = FALSE)
   }
   cleanDirectory(opt.problem)
   return(opt.state)
@@ -63,10 +66,11 @@ runMBOOnline.character = function(x, ...) {
 }
 
 runMBOOnline.OptProblem = function(x, ...) {
-  runMBOOnline(readDirectoryToOptState(x), ...)
+  runMBOOnline(readDirectoryToOptState(x, block = FALSE), ...)
 }
 
 runMBOOnline.OptState = function(x, node = 0, ...) {
+  on.exit({unblock(opt.problem, "readDirectoryToOptState", node = node)})
   opt.state = x
   opt.problem = getOptStateOptProblem(opt.state)
   control = getOptProblemControl(opt.problem)
