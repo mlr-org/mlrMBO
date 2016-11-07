@@ -119,13 +119,13 @@ makeOptStateMboResult = function(opt.state) {
   mbo.result
 }
 
-print.OptState = function(opt.state) {
+print.OptState = function(x, ...) {
   catf("OptSate")
-  catf("Actual state: %s", getOptStateState(opt.state))
-  catf("Actual loop: %i", getOptStateLoop(opt.state))
-  catf("Loop started:%s", opt.state$loop.starttime)
+  catf("Actual state: %s", getOptStateState(x))
+  catf("Actual loop: %i", getOptStateLoop(x))
+  catf("Loop started:%s", x$loop.starttime)
   catf("")
-  print(getOptStateOptProblem(opt.state))
+  print(getOptStateOptProblem(x))
   catf("")
-  print(getOptStateOptPath(opt.state))
+  print(getOptStateOptPath(x))
 }

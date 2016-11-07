@@ -37,6 +37,7 @@ test_that("basic multifid works", {
   des = generateTestDesign(10L, getParamSet(f), fun = lhs::maximinLHS)
   set.seed(1)
   result = mbo(f, des, learner = surrogat.learner, control = control)
+  expect_output(print(result), "Recommended parameters")
   #this is not realy a hard threashold
   expect_true(result$y < 1)
 
@@ -56,7 +57,7 @@ test_that("basic multifid works", {
   set.seed(1)
   result.time = mbo(f.delay, des, learner = surrogat.learner, control = control)
   #this is not realy a hard threashold
-  expect_true(result$y < 1)
+  expect_true(result.time$y < 1)
   # this is pretty hard and migh fail?
   # expect_equal(as.data.frame(result.time$opt.path)$.multifid.lvl, as.data.frame(result$opt.path)$.multifid.lvl)
 })

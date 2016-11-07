@@ -11,6 +11,7 @@ test_that("multicrit dib works", {
   ctrl = setMBOControlMultiCrit(ctrl, method = "dib")
   or = mbo(testfmco1, testdesmco1, learner = learner, control = ctrl)
   expect_true(!any(is.na(or$pareto.front)))
+  expect_output(print(or), "Optimization path")
 
   # reference point:
   expect_error(setMBOControlMultiCrit(ctrl, method = "dib", ref.point.method = "const"))

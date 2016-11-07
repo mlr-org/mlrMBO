@@ -9,6 +9,7 @@ test_that("mbo parego works", {
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10)
   ctrl = setMBOControlMultiCrit(ctrl, method = "parego", parego.s = 100)
   or = mbo(testfmco1, testdesmco1, learner = learner, control = ctrl)
+  expect_output(print(or), "Optimization path")
   expect_true(!any(is.na(or$pareto.front)))
 
   # Test margin points

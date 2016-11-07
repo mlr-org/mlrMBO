@@ -7,6 +7,7 @@ test_that("multipoint cb", {
   ctrl = setMBOControlMultiPoint(ctrl, method = "cb")
 
   res = mbo(testf.fsphere.1d, testd.fsphere.1d, learner = default.kriging, control = ctrl)
+  expect_output(print(res), "Recommended parameters")
   op = as.data.frame(res$opt.path)
   expect_true(all(is.na(op$multipoint.cb.lambda[1:5])))
   expect_true(all(!is.na(op$multipoint.cb.lambda[6:15])))
@@ -22,6 +23,7 @@ test_that("multipoint cb with random interleaved points", {
     opt.focussearch.maxit = 2L, interleave.random.points = 5L)
   ctrl = setMBOControlMultiPoint(ctrl, method = "cb")
   res = mbo(testf.fsphere.1d, testd.fsphere.1d, learner = default.kriging, control = ctrl)
+  expect_output(print(res), "Recommended parameters")
   op = as.data.frame(res$opt.path)
   op = tail(op, 10)
 

@@ -102,9 +102,9 @@ getOptProblemDesign = function(opt.problem) {
   opt.problem$design
 }
 
-print.OptProblem = function(opt.problem) {
+print.OptProblem = function(x, ...) {
   catf("OptProblem")
-  catf("Objective Function: %s", getName(getOptProblemFun()))
+  catf("Objective Function: %s", getName(getOptProblemFun(x)))
   catf("Surrogate Learner:")
-  print(getOptProblemLearner(opt.problem))
+  print(getOptProblemLearner(x))
 } 

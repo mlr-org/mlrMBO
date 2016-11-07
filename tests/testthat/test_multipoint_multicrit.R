@@ -21,6 +21,7 @@ test_that("multipoint multicrit", {
         )
 
         res = mbo(f, des, learner = default.kriging, control = ctrl)
+        expect_output(print(res), "Recommended parameters")
 
         gap = res$y - 0.3979
         #expect_true(gap < 0.1)
