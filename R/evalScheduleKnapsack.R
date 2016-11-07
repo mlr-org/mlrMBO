@@ -60,7 +60,7 @@ evalScheduleKnapsack = function(wrapFun, xs, xs.trafo, xs.schedule.info = NULL, 
 		  ks.time = as.integer(x.times * 1000)
 		  ks.cap = as.integer(max.time * 1000)
 		  if (requireNamespace("adagio")){
-		    ks.vector = adagio::mknapsack(ks.prio, ks.time, ks.cap, bck = 10000)
+		    ks.vector = adagio::mknapsack(ks.prio, ks.time, ks.cap, bck = 50)
 		  }else{
 		    stop("Package adagio is needed for Knapsack scheduling. Please install it", call. = FALSE)
 		  }
