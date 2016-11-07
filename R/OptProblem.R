@@ -101,3 +101,10 @@ setOptProblemDesign = function(opt.problem, design) {
 getOptProblemDesign = function(opt.problem) {
   opt.problem$design
 }
+
+print.OptProblem = function(opt.problem) {
+  catf("OptProblem")
+  catf("Objective Function: %s", getName(getOptProblemFun()))
+  catf("Surrogate Learner:")
+  print(getOptProblemLearner(opt.problem))
+} 
