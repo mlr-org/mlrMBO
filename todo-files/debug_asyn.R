@@ -1,13 +1,13 @@
 devtools::load_all("~/gits/mlrMBO/")
 #dir = "~/lido_nobackup/synRambo_5d_m8_long/mlrMBO/job_391"
 setwd(dir)
-opt.problem = readRDS(file = "/tmp/RtmpRqrb99/mbo_asyn/asyn/opt_problem.rds")
+opt.problem = readRDS(file = "/var/folders/qn/qn3zh_3d18j6tr264jnn4y_w0000gn/T//RtmpQAqYCS/mbo_asyn/asyn/opt_problem.rds")
 ctrl = getOptProblemControl(opt.problem)
 
-node.prefix = ""
 
 ## propose a further point
 opt.state = readDirectoryToOptState(opt.problem)
+unblock(opt.problem, function.name = "readDirectoryToOptState", node = 2)
 models = getOptStateModels(opt.state)
 x.des = generateDesign(n = 100, par.set = getOptProblemParSet(opt.problem))
 real.y = apply(x.des, 1, function(x) sum(x^2))

@@ -5,7 +5,7 @@ options(parallelMap.logging = FALSE)
 test_that("asyn MBO works", {
   skip_on_appveyor()
   save.file = file.path(tempdir(), "mbo_asyn", "mbo.RData")
-  ctrl = makeMBOControl(schedule.method = "asyn", save.file.path = save.file, schedule.nodes = 2, propose.points = 1)
+  ctrl = makeMBOControl(schedule.method = "asyn", save.file.path = save.file, schedule.nodes = 2, propose.points = 1, asyn.wait.for.proposals = TRUE)
   ctrl = setMBOControlTermination(ctrl, iters = 4L, max.evals = 14L)
   ctrl = setMBOControlInfill(control = ctrl, crit = "cb", crit.cb.lambda = 2, opt.focussearch.maxit = 2L, opt.focussearch.points = 50L)
   surrogat.learner = makeLearner("regr.randomForest", predict.type = "se", ntree = 50, ntree.for.se = 20)

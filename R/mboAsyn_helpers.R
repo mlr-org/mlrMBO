@@ -176,17 +176,20 @@ asynNoImpute = function(opt.problem, data) {
 # thing: eventual data to save
 waitAndBlock = function(opt.problem, function.name, node = 0, thing = NULL, time.out = 3000L, wait = 5L) {
   start.time = Sys.time()
-  block.files = character(1L)
+  listBlocks = function() {
+    list.files(
+      getAsynDir(opt.problem), 
+      pattern = sprintf("^block_%s_[0-9]+_[[:alnum:]]+\\.rds$", function.name),
+      full.names = TRUE
+    )
+  }
+  block.files = listBlocks()
   while (
       getOptProblemControl(opt.problem)$asyn.wait.for.proposals && 
       length(block.files) > 0L && 
       difftime(start.time, Sys.time(), units = "secs") < time.out
     ) {
-    block.files = list.files(
-      getAsynDir(opt.problem), 
-      pattern = sprintf("^block_%s_[0-9]+_[[:alnum:]]+\\.rds$", function.name),
-      full.names = TRUE
-    )
+    block.files = listBlocks()
     Sys.sleep(wait + runif(1, -1, 1))
   }
   block.name = sprintf("block_%s_%i_", function.name, node)
