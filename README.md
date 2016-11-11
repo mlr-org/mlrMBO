@@ -3,8 +3,9 @@
 
 Model-based optimization with mlr
 
-[![Build Status](https://travis-ci.org/mlr-org/mlrMBO.png?branch=master)](https://travis-ci.org/mlr-org/mlrMBO)
-[![Build status](https://ci.appveyor.com/api/projects/status/gvr607kqcl78qjq9/branch/master?svg=true)](https://ci.appveyor.com/project/jakob-r/mlrmbo/branch/master)
+[![Build Status](https://travis-ci.org/mlr-org/mlrMBO.png?branch=master)](https://travis-ci.org/mlr-org/mlrMBO) master <br />
+[![Build status](https://ci.appveyor.com/api/projects/status/gvr607kqcl78qjq9/branch/master?svg=true)](https://ci.appveyor.com/project/jakob-r/mlrmbo/branch/master) windows <br />
+[![Build Status](https://travis-ci.org/mlr-org/mlrMBO.png?branch=gh-pages)](https://travis-ci.org/mlr-org/mlrMBO) tutorial <br />
 
 
 The package will be released soon, so some links below are not working.
