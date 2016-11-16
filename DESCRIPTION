@@ -33,6 +33,7 @@ Suggests:
     DiceOptim,
     earth,
     emoa,
+    GGally,
     gridExtra,
     kernlab,
     kknn,
