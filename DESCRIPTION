@@ -25,7 +25,6 @@ Imports:
     ggplot2,
     RColorBrewer,
     parallelMap (>= 1.1),
-    plyr,
     reshape2
 Suggests:
     akima,
@@ -34,11 +33,9 @@ Suggests:
     DiceOptim,
     earth,
     emoa,
-    GGally,
     gridExtra,
     kernlab,
     kknn,
-    mboost,
     mco,
     nnet,
     party,

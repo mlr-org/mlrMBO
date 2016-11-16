@@ -115,7 +115,8 @@ renderExampleRunPlot1d = function(x, iter,
       #rename .multifid.lvl according to control object
       repl = paste0(control$multifid.param, "=", control$multifid.lvls)
       names(repl) = as.character(seq_along(control$multifid.lvls))
-      gg.fun$.multifid.lvl = plyr::revalue(as.factor(gg.fun$.multifid.lvl), replace = repl)
+      #gg.fun$.multifid.lvl = plyr::revalue(as.factor(gg.fun$.multifid.lvl), replace = repl)
+      gg.fun$.multifid.lvl = factor(gg.fun$.multifid.lvl, labels = repl)
     }
 
     if (se) gg.fun$se = gg.fun$se * se.factor
