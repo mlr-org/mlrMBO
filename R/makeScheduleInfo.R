@@ -24,14 +24,20 @@ makeScheduleInfo = function(prop, opt.state) {
     #highest priority for those with highest priority within each cluster
     priorities = timeCluster(priorities, prop, opt.state)
   }
+
+  # repair negative times
+  # replace negative times with smallest observed time or smallest postive predicted time
+  predicted.times = prop$predicted.time
+  min.time = min(predicted.times[predicted.times > 0], getOptPathExecTimes(getOptStateOptPath(opt.state)), na.rm = TRUE)
+  predicted.times[predicted.times <= 0] = min.time
   
   if (control$schedule.priority.time && !control$schedule.cluster) {
     first.id = which.max(priorities)
-    priorities = -prop$predicted.time
+    priorities = -predicted.times
     priorities[first.id] = max(priorities) + 1
   }
   data.frame(
-    times = prop$predicted.time,
+    times = predicted.times,
     priorities = priorities,
     times.se = prop$predicted.time.se)
 }
