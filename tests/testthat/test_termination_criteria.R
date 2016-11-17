@@ -1,6 +1,6 @@
-context("stopping criteria")
+context("termination criteria")
 
-test_that("stopping criteria works", {
+test_that("termination criteria works", {
   iters = 30L
   time.budget = 3L # seconds
   target.fun.value = 0.005

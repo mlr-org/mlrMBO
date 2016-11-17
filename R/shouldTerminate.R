@@ -1,4 +1,4 @@
-# Helper which checks stopping criteria.
+# Helper which checks termination criteria.
 #
 # @param opt.state [\code{OptState}]\cr
 shouldTerminate.OptState = function(opt.state) {
@@ -9,7 +9,7 @@ shouldTerminate.OptState = function(opt.state) {
   for (stop.cond in stop.conds) {
     stop.obj = stop.cond(opt.state)
     if (stop.obj$term) {
-      # if user-defined stopping condition is active, set the code by hand
+      # if user-defined termination condition is active, set the code by hand
       if (is.null(stop.obj$code)) {
         stop.obj$code = "term.custom"
       }

@@ -29,7 +29,7 @@ NULL
 #    term.exectime - maximal execution time reached
 #    term.yval - target fun value reached
 #    term.fevals - maximal number of function evaluations reached
-#    term.custom - terminated due to custom stopping condition
+#    term.custom - terminated due to custom termination condition
 #  @param opt.path \code{OptPath} \cr
 #    Here we keep the opt.path. It delivers the data for the tasks and other usefull information.
 #  @param time.last.saved \code{POSIXct} \cr

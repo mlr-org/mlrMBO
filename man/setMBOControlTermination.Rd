@@ -6,7 +6,7 @@
 \usage{
 setMBOControlTermination(control, iters = NULL, time.budget = NULL,
   exec.time.budget = NULL, target.fun.value = NULL, max.evals = NULL,
-  more.stop.conds = list())
+  more.termination.conds = list())
 }
 \arguments{
 \item{control}{[\code{\link{MBOControl}}]\cr
@@ -27,22 +27,22 @@ the condition is checked after each iteration.
 The default \code{NULL} means: There is no execution time budget.}
 
 \item{target.fun.value}{[\code{numeric(1)}] | NULL]\cr
-Stopping criterion for single crit optimization: Stop if a function evaluation
+Termination criterion for single crit optimization: Stop if a function evaluation
 is better than this given target.value.
-The default \code{NULL} means: The function value won't be taken into account for stopping.}
+The default \code{NULL} means: The function value won't be taken into account for termination.}
 
 \item{max.evals}{[\code{integer(1) | NULL}]\cr
 Maximal number of function evaluations.
-The default \code{NULL} means: The total number of evaluations won't be taken into account for stopping.}
+The default \code{NULL} means: The total number of evaluations won't be taken into account for termination.}
 
-\item{more.stop.conds}{[\code{list}]\cr
+\item{more.termination.conds}{[\code{list}]\cr
 Optional list of termination conditions. Each condition needs to be a function
 of a single argument \code{opt.state} of type \code{\link{OptState}} and should
 return a list with the following elements:
 \describe{
   \item{term [\code{logical(1)}]}{Logical value indicating whether the
-  stopping condition is met.}
-  \item{message [\code{character(1)}]}{Stopping message.}
+  termination condition is met.}
+  \item{message [\code{character(1)}]}{Termination message. At the moment we just allow \code{term.custom}.}
 }}
 }
 \value{
@@ -55,7 +55,7 @@ Extends an MBO control object with infill criteria and infill optimizer options.
 fn = smoof::makeSphereFunction(1L)
 ctrl = makeMBOControl()
 
-# custom stopping condition (stop if target function value reached)
+# custom termination condition (stop if target function value reached)
 # We neglect the optimization direction (min/max) in this example.
 yTargetValueTerminator = function(y.val) {
   force(y.val)
@@ -68,8 +68,8 @@ yTargetValueTerminator = function(y.val) {
   }
 }
 
-# assign custom stopping condition
-ctrl = setMBOControlTermination(ctrl, more.stop.conds = list(yTargetValueTerminator(0.05)))
+# assign custom termination condition
+ctrl = setMBOControlTermination(ctrl, more.termination.conds = list(yTargetValueTerminator(0.05)))
 res = mbo(fn, control = ctrl)
 }
 \seealso{
