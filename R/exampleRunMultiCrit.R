@@ -53,7 +53,7 @@ exampleRunMultiCrit= function(fun, design = NULL, learner, control, points.per.d
   if (n.params != 2L)
     stopf("exampleRunMultiCrit can only be applied for functions with 2 parameters, but you have %iD", n.params)
 
-  control$store.model.at = 1:control$iters
+  control$store.model.at = seq_len(control$iters)
   names.x = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
   names.y = control$y.name
 
@@ -98,7 +98,7 @@ exampleRunMultiCrit= function(fun, design = NULL, learner, control, points.per.d
   if (control$multicrit.method %in% c("dib", "mspot")) {
     mbo.pred.grid.x = generateGridDesign(par.set, resolution = points.per.dim)
     mbo.pred.grid.mean = vector("list", control$iters)
-    for (iter in 1:control$iters) {
+    for (iter in seq_len(control$iters)) {
       mods = res$models[[iter]]
       ps = lapply(mods, predict, newdata = mbo.pred.grid.x)
       y1 = extractSubList(ps, c("data", "response"), simplify = "cols")

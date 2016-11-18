@@ -19,18 +19,18 @@ infillOptEA = function(infill.crit, models, control, par.set, opt.path, design, 
   best.x = NULL
   best.y = Inf
 
-  for (restart.iter in 1:control$infill.opt.restarts) {
+  for (restart.iter in seq_len(control$infill.opt.restarts)) {
 
     # random inital population:
     X = generateDesign(mu, par.set, fun = randomLHS)
     y = infill.crit(X, models, control, par.set, design, iter, ...)
 
-    for (i in 1:control$infill.opt.ea.maxit) {
+    for (i in seq_len(control$infill.opt.ea.maxit)) {
       # Create new individual (mu + lambda)
-      parentSet = replicate(lambda, sample(1:mu, 2))
+      parentSet = replicate(lambda, sample(seq_len(mu), 2))
 
       # get two kids from crossover, select 1 randomly and mutate
-      for (i in 1:ncol(parentSet)) {
+      for (i in seq_col(parentSet)) {
         parents = parentSet[, i]
         child = crossover(t(X[parents, , drop = FALSE]))
         child1 = child[, sample(c(1, 2), 1)]
@@ -48,7 +48,7 @@ infillOptEA = function(infill.crit, models, control, par.set, opt.path, design, 
       }
 
       # get elements we want to remove from current population
-      to.survive = order(y)[1:mu]
+      to.survive = head(order(y), mu)
       X = X[to.survive, , drop = FALSE]
       y = y[to.survive]
     }

@@ -90,9 +90,9 @@ proposePointsMOIMBO = function(opt.state, ...) {
     Y[, y.dim] = -mydist(as.matrix(X), Y[,1])
 
   secs = measureTime({
-    for (i in 1:control$multipoint.multicrit.maxit) {
+    for (i in seq_len(control$multipoint.multicrit.maxit)) {
       # Create new individual (mu + 1)
-      parents = sample(1:mu, 2)
+      parents = sample(seq_len(mu), 2)
       # get two kids from CX, sel. 1 randomly, mutate
       child = crossover(t(X[parents, , drop = FALSE]))
       child1 = child[,sample(c(1, 2), 1)]

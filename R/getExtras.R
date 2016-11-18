@@ -28,7 +28,7 @@ getExtras = function(n, prop, train.time, control) {
   # if we only have one msg, replicate it
   if (length(errs) == 1L)
     errs = rep(errs, n)
-  for (i in 1:n) {
+  for (i in seq_len(n)) {
     # if we use mspot, store all crit.vals
     if (control$n.objectives > 1L && control$multicrit.method == "mspot") {
       ex = as.list(prop$crit.vals[i, ])
@@ -52,7 +52,7 @@ getExtras = function(n, prop, train.time, control) {
       weight.mat = prop$weight.mat
       if (is.null(weight.mat))
         weight.mat = matrix(NA_real_, nrow = n, ncol = control$n.objectives)
-      w = setNames(as.list(weight.mat[i, ]), paste0("parego.weight.", 1:ncol(weight.mat)))
+      w = setNames(as.list(weight.mat[i, ]), paste0("parego.weight.", seq_col(weight.mat)))
       ex = c(ex, w)
     }
     ex$train.time = if (i == 1) train.time else NA_real_

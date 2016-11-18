@@ -60,7 +60,7 @@ exampleRun = function(fun, design = NULL, learner = NULL, control,
   if (n.params >= 3L)
     stopf("exampleRun can only be applied for functions with at most 2 dimensions, but you have %iD", n.params)
 
-  control$store.model.at = 1:(control$iters+1)
+  control$store.model.at = seq_len(control$iters+1)
   names.x = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
   name.y = control$y.name
 
@@ -82,7 +82,7 @@ exampleRun = function(fun, design = NULL, learner = NULL, control,
   } else {
     evals = evaluate(fun.mean, par.set, n.params, par.types, noisy = FALSE, noisy.evals = 1, points.per.dim, names.x, name.y, multifid.lvls = seq_along(control$multifid.lvls))
   }
-  
+
   if (is.na(global.opt))
     global.opt.estim = ifelse(shouldBeMinimized(fun), min(evals[, name.y]), max(evals[, name.y]))
   else
@@ -104,14 +104,14 @@ exampleRun = function(fun, design = NULL, learner = NULL, control,
   if (!is.null(fun.mean)) {
     y.true = vnapply(convertRowsToList(getOptPathX(res$opt.path), name.list = TRUE, name.vector = TRUE), fun.mean)
   }
-  
+
   if (control$multifid) {
     n.params = n.params - 1
     par.set = dropParams(par.set, ".multifid.lvl")
     par.types = getParamTypes(par.set)
     names.x = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
   }
-  
+
   makeS3Obj("MBOExampleRun",
     fun.mean = fun.mean,
     par.set = par.set,
