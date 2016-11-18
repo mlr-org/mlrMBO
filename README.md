@@ -1,9 +1,8 @@
 # mlrMBO
 
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/mlrMBO)](https://cran.r-project.org/package=mlrMBO)
-[![Build Status](https://travis-ci.org/mlr-org/mlrMBO.png?branch=master)](https://travis-ci.org/mlr-org/mlrMBO) master <br />
-[![Build status](https://ci.appveyor.com/api/projects/status/gvr607kqcl78qjq9/branch/master?svg=true)](https://ci.appveyor.com/project/jakob-r/mlrmbo/branch/master) windows <br />
-[![Build Status](https://travis-ci.org/mlr-org/mlrMBO.png?branch=gh-pages)](https://travis-ci.org/mlr-org/mlrMBO) tutorial <br />
+[![Build Status](https://travis-ci.org/mlr-org/mlrMBO.png?branch=master)](https://travis-ci.org/mlr-org/mlrMBO)
+[![Build status](https://ci.appveyor.com/api/projects/status/gvr607kqcl78qjq9/branch/master?svg=true)](https://ci.appveyor.com/project/jakob-r/mlrmbo/branch/master)
 
 Model-based optimization with [mlr](https://github.com/mlr-org/mlr/).
 
