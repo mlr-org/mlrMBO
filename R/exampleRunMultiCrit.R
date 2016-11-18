@@ -76,6 +76,12 @@ exampleRunMultiCrit= function(fun, design = NULL, learner, control, points.per.d
   nsga2.res = do.call(mco::nsga2, args)
   nsga2.paretoset = setColNames(as.data.frame(nsga2.res$par[nsga2.res$pareto.optimal, , drop = FALSE]), names.x)
   nsga2.paretofront = nsga2.res$value[nsga2.res$pareto.optimal, ]
+
+  # Use trafo.fun for nsga2 result:
+  if (!is.null(trafo.y.fun)) {
+    nsga2.paretofront = trafo.y.fun(nsga2.paretofront)
+  }
+
   if (is.null(ref.point))
     ref.point = apply(nsga2.paretofront, 2, max) * mults  + 1
   # front: and back to orginal scale ...
