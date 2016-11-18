@@ -42,4 +42,9 @@ test_that("extras are logged a expected", {
   expect_true(all(is.numeric(opt.path[["exec.time"]])))
   expect_true(all(is.numeric(opt.path[["train.time"]])))
   expect_true(all(is.numeric(opt.path[["propose.time"]])))
+
+  #check whether infill.crit specific informations is logged
+  expect_true(all(c("se", "mean") %in% names(opt.path)))
+  expect_true(all(is.numeric(opt.path[["se"]][11:12])))
+  expect_true(all(is.numeric(opt.path[["mean"]][11:12])))
 })

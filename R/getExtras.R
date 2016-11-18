@@ -22,6 +22,17 @@ getExtras = function(n, prop, train.time, control) {
     k = ifelse(control$n.objectives > 1L && control$multicrit.method == "mspot", control$n.objectives + 1, 1L)
     # pregenerate a dummmy "prop" data structure
     prop = list(crit.vals = matrix(NA_real_, nrow = n, ncol = k), propose.time = NA_real_, errors.model = NA_character_, prop.type = rep("initdesign", n))
+    ## make space for crit.components (not so fancy to do it here)
+    if (control$n.objectives == 1L && control$infill.crit == "ei") {
+      prop$crit.components = data.frame(se = NA_real_, mean = NA_real_)
+    } else if (control$n.objectives == 1L && control$infill.crit == "cb") {
+      prop$crit.components = data.frame(se = NA_real_, mean = NA_real_, lambda = NA_real_)
+    } else if (control$n.objectives == 1L && control$infill.crit == "aei") {
+      prop$crit.components = data.frame(se = NA_real_, mean = NA_real_, tau = NA_real_)  
+    }
+    if (control$multifid) {
+      prop$crit.components = cbind.data.frame(prop$crit.components, mf.ei.last = NA_real_, mf.se = NA_real_, mf.alpha1 = NA_real_, mf.alpha2 = NA_real_, mf.alpha3 = NA_real_, mf.sd = NA_real_)
+    }
   }
   exs = vector("list", n)
   errs = prop$errors.model
@@ -63,6 +74,8 @@ getExtras = function(n, prop, train.time, control) {
     } else {
       ex$propose.time = if (i == 1) prop$propose.time else NA_real_
     }
+    # infill.crit components
+    ex = insert(ex, as.list(prop$crit.components[i,,drop = FALSE]))
     exs[[i]] = ex
   }
   return(exs)
