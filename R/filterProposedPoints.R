@@ -38,9 +38,8 @@ filterProposedPoints = function(prop, opt.state) {
   }
 
   # for now replace removed design points with random points,
-  #  we leave all other data in prop like it is, we have flag filter.replace
+  #  we leave all other data in prop like it is, we have prop.tye "random_filter"
   n.replace = sum(to.delete)
-  prop$filter.replace = to.delete
 
   if (n.replace > 0) {
     # FIXME: we might want to do something smarter here. how about augmenting the current design?
