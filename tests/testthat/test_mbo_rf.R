@@ -41,7 +41,7 @@ test_that("mbo works with rf", {
     par.set = par.set
   )
   des = generateTestDesign(10L, par.set = par.set)
-  des$y  = sapply(1:nrow(des), function(i) f(as.list(des[i,])))
+  des$y  = vnapply(1:nrow(des), function(i) f(as.list(des[i,])))
   or = mbo(f, des, learner, ctrl)
   expect_true(!is.na(or$y))
   expect_equal(getOptPathLength(or$opt.path), 15)
@@ -67,7 +67,7 @@ test_that("mbo works with rf", {
   )
 
   des = generateTestDesign(10, par.set = par.set)
-  y  = sapply(1:nrow(des), function(i) f(as.list(des[i,])))
+  y  = vnapply(1:nrow(des), function(i) f(as.list(des[i,])))
   des$y = y
   learner = makeLearner("regr.randomForest")
   ctrl = makeMBOControl()

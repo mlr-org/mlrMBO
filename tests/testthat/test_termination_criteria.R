@@ -8,7 +8,7 @@ test_that("termination criteria works", {
 
   f = makeSphereFunction(1L)
   x.grid = seq(-2, 2, length.out = 10L)
-  design = data.frame(x = x.grid, y = sapply(x.grid, f))
+  design = data.frame(x = x.grid, y = vnapply(x.grid, f))
 
   learner = makeLearner("regr.randomForest")
 
