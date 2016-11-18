@@ -1,14 +1,9 @@
-doc
 todo-files
-tools
 
 .gitignore
 .travis.yml
 appveyor.yml
-
 ^.*tar.gz$
-bench
-README.md
 
 src/*.o
 src/*.so
