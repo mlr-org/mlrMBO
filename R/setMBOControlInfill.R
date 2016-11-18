@@ -49,7 +49,7 @@
 #'   This parameter activates or deactivates a heuristic to handle this issue.
 #'   If \code{TRUE}, proposed points whose distance to design points or other current
 #'   candidate points is smaller than \code{filter.proposed.points.tol}, are replaced by random points.
-#'   If enabled, a logical column \dQuote{filter.replace} is added to the resulting \code{opt.path},
+#'   If enabled, the column entry for \code{prop.type} is set to \dQuote{random_filter} in the resulting \code{opt.path},
 #'   so you can see whether such a replacement happened.
 #'   Default is \code{FALSE}.
 #' @param filter.proposed.points.tol [\code{numeric(1)}]\cr
