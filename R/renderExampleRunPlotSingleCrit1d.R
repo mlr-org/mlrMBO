@@ -104,12 +104,12 @@ renderExampleRunPlot1d = function(x, iter,
     }
     # prepare drawing of standard error (confidence interval)
     if (se) {
-      evals$se = -infillCritStandardError(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past, ])
+      evals$se = -infillCritStandardError(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past,, drop = FALSE])
     }
   }
 
   if (isNumeric(par.set, include.int = FALSE)) {
-    gg.fun = reshape2::melt(evals, id.vars = c(getParamIds(opt.path$par.set), if (se) "se" else NULL))
+    gg.fun = data.table::setDF(data.table::melt(evals, id.vars = c(getParamIds(opt.path$par.set), if (se) "se" else NULL)))
 
     if (control$multifid) {
       #rename .multifid.lvl according to control object
