@@ -62,7 +62,7 @@ makeTasksParEGO = function(opt.path, control, all.possible.weights) {
   tasks = vector(mode = "list", length = n.points)
   for (loop in seq_len(n.points)) {
     # make sure to minimize, then create scalarized response
-    lambda = lambdas[loop,, drop = FALSE] * ifelse(control$minimize, 1, -1)
+    lambda = lambdas[loop,, drop = TRUE] * ifelse(control$minimize, 1, -1)
     y2 = y %*% diag(lambda)
     data$y.scalar = apply(y2, 1, max) + control$multicrit.parego.rho * rowSums(y2)
     tasks[[loop]] = makeRegrTask(target = "y.scalar", data = data)
