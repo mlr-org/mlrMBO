@@ -41,7 +41,7 @@ test_that("mbo works with rf", {
     par.set = par.set
   )
   des = generateTestDesign(10L, par.set = par.set)
-  des$y  = vnapply(seq_row(des), function(i) f(as.list(des[i,])))
+  des$y  = vnapply(seq_row(des), function(i) f(as.list(des[i, ])))
   or = mbo(f, des, learner, ctrl)
   expect_true(!is.na(or$y))
   expect_equal(getOptPathLength(or$opt.path), 15)

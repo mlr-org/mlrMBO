@@ -83,7 +83,7 @@ predictLearner.MultiFidWrapper = function(.learner, .model, .newdata, ...) {
     cbind.data.frame(Reduce("+", response), se)
   })
   reorder = match(seq_along(lvls), unlist(split.inds, use.names = FALSE))
-  res = as.matrix(do.call(rbind.data.frame, responses)[reorder,])
+  res = as.matrix(do.call(rbind.data.frame, responses)[reorder,, drop = FALSE])
   res
 }
 
