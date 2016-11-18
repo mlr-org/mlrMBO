@@ -18,7 +18,7 @@ makeTasksMultiCrit = function(opt.path, control) {
   if (!is.null(trafo.y.fun)) {
     y.name = control$y.name
     # We stop the process if negative values occur
-    data[[y.name]] = trafo.y.fun(data[[y.name]], handle.violations = "error")
+    data[, y.name] = trafo.y.fun(data[, y.name])
   }
 
   tasks = vector(mode = "list", length = control$n.objectives)
