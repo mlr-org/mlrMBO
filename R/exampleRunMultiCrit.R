@@ -78,8 +78,8 @@ exampleRunMultiCrit= function(fun, design = NULL, learner, control, points.per.d
   nsga2.paretofront = nsga2.res$value[nsga2.res$pareto.optimal, ]
 
   # Use trafo.fun for nsga2 result:
-  if (!is.null(trafo.y.fun)) {
-    nsga2.paretofront = trafo.y.fun(nsga2.paretofront)
+  if (!is.null(control$trafo.y.fun)) {
+    nsga2.paretofront = control$trafo.y.fun(nsga2.paretofront)
   }
 
   if (is.null(ref.point))
