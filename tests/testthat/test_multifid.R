@@ -1,6 +1,9 @@
 context("multifid")
 
 test_that("basic multifid works", {
+
+  skip_on_cran() #we skip because it is not exported
+  
   f = makeSingleObjectiveFunction(
     fn = function(x) {
       lvl.par.val = x$.multifid.lvl
@@ -26,7 +29,7 @@ test_that("basic multifid works", {
                                 filter.proposed.points = TRUE,
                                 filter.proposed.points.tol = 0.01
   )
-  control = setMBOControlMultiFid(control = control,
+  control = mlrMBO:::setMBOControlMultiFid(control = control,
                                   param = "dw.perc",
                                   costs = 1:3,
                                   lvls = c(0.1, 0.5, 1),
