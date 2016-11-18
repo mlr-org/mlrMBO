@@ -14,19 +14,18 @@ License: BSD_3_clause + file LICENSE
 URL: https://github.com/berndbischl/mlrMBO
 BugReports: https://github.com/berndbischl/mlrMBO/issues
 Depends:
-    lhs,
     mlr (>= 2.7),
     ParamHelpers (>= 1.8),
     smoof (>= 1.3)
 Imports:
+    backports,
     BBmisc (>= 1.7),
-    checkmate (>= 1.7.1),
+    checkmate (>= 1.8.1),
+    data.table,
+    lhs,
     ggplot2,
     RColorBrewer,
-    gridExtra,
-    parallelMap (>= 1.1),
-    plyr,
-    reshape2
+    parallelMap (>= 1.1)
 Suggests:
     akima,
     cmaes,
@@ -35,9 +34,9 @@ Suggests:
     earth,
     emoa,
     GGally,
+    gridExtra,
     kernlab,
     kknn,
-    mboost,
     mco,
     nnet,
     party,
@@ -47,5 +46,5 @@ Suggests:
     eaf
 LazyData: yes
 ByteCompile: yes
-Version: 1.0
+Version: 1.0.0
 RoxygenNote: 5.0.1

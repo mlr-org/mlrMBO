@@ -21,7 +21,7 @@
        \item{term.exectime}{Maximal execution time of function evaluations reached.}
        \item{term.yval}{Target function value reached.}
        \item{term.fevals}{maximal number of function evaluations reached.}
-       \item{term.custom}{Terminated due to custom, user-defined stopping condition.}
+       \item{term.custom}{Terminated due to custom, user-defined termination condition.}
     }
   }
   \item{models [List of \code{\link[mlr]{WrappedModel}}]}{List of saved regression models if \code{store.model.at} is set in \code{makeMBOControl}. The default is that it contains the model generated after the last iteration.}

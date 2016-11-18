@@ -26,14 +26,15 @@ test_that("mbo works with different learners", {
     opt.restarts = 1L, opt.focussearch.maxit = 1L)
 
   testit = function(fun, lrn, se, bagging = TRUE) {
-    lrn = makeLearner(lrn)
+    if (is.character(lrn))
+      lrn = makeLearner(lrn)
     if (se) {
       if (bagging)
         lrn = makeBaggingWrapper(lrn, bw.iters = 5L)
       lrn = setPredictType(lrn, "se")
       ctrl$infill.crit = "ei"
     }
-    des = generateTestDesign(10L, smoof::getParamSet(fun))
+    des = generateTestDesign(10L, getParamSet(fun))
     mbo(fun, des, learner = lrn, control = ctrl)
   }
 
@@ -72,6 +73,9 @@ test_that("mbo works with different learners", {
   testit(f1, "regr.nnet", FALSE)
   testit(f2, "regr.nnet", TRUE)
   testit(f2, "regr.nnet", FALSE)
+  testit(f2, makeMboLearner(ctrl, f1), TRUE, FALSE)
+  testit(f2, makeMboLearner(ctrl, f2), TRUE, FALSE)
+
 
   # FIXME: I disable the folowing tests .. I think the tests above should be
   # enough ...

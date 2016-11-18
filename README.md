@@ -1,39 +1,25 @@
 # mlrMBO
 
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/mlrMBO)](https://cran.r-project.org/package=mlrMBO)
+[![Build Status](https://travis-ci.org/mlr-org/mlrMBO.png?branch=master)](https://travis-ci.org/mlr-org/mlrMBO)
+[![Build status](https://ci.appveyor.com/api/projects/status/gvr607kqcl78qjq9/branch/master?svg=true)](https://ci.appveyor.com/project/jakob-r/mlrmbo/branch/master)
 
-Model-based optimization with mlr
-
-Travis CI: [![Build Status](https://travis-ci.org/mlr-org/mlrMBO.png?branch=master)](https://travis-ci.org/mlr-org/mlrMBO)
-
-The package will be released soon, so some links below are not working.
-
-* [Offical CRAN release site](http://cran.r-project.org/web/packages/mlrMBO/index.html) 
-  
-* [Tutorial on github](https://github.com/mlr-org/mlrMBO/blob/master/doc/knitted/tutorial/README.md) (*work in progress*)
+Model-based optimization with [mlr](https://github.com/mlr-org/mlr/).
 
 # Installation
 
-The package has not been released on CRAN yet. Run the following command in R to install the current GitHub version. 
-[Further installation instructions](https://github.com/tudo-r/PackagesInfo/wiki/Installation-Information) are available are available at the site of tudo-r.
+`mlrMBO` currently needs the development versions of the packages [mlr](https://github.com/mlr-org/mlr/) and [ParamHelpers](https://github.com/berndbischl/ParamHelpers).
+To install `mlrMBO` with all dependencies, run the following lines:
 
-```splus
+```r
+devtools::install_github("berndbischl/ParamHelpers")
+devtools::install_github("mlr-org/mlr")
 devtools::install_github("mlr-org/mlrMBO")
 ```
 
-# Mailinglist and Email-Service-Hook
 
-Developers use this mailing list:
+# Resources
 
-https://groups.google.com/forum/?hl=de#!forum/mlrmbo-devel
-
-mlrmbo-devel@googlegroups.com
-
-The github-service-hook will also send commit messages to this list. 
-
-
-
-
-
-
-
-
+* [Tutorial on github](http://mlr-org.github.io/mlrMBO/devel/html/) (*work in progress*)
+* Developers mailing list at [google groups](https://groups.google.com/forum/?hl=de#!forum/mlrmbo-devel).
+  The github-service-hook will also send commit messages to this list.

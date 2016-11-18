@@ -24,4 +24,4 @@ run = exampleRun(obj.fun, design = design, learner = lrn, control = ctrl,
 
 print(run)
 
-plotExampleRun(run, pause = pause)
+plotExampleRun(run, pause = pause, gg.objects = list(theme_bw()))

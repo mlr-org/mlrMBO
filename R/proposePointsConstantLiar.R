@@ -14,11 +14,12 @@ proposePointsConstantLiar = function(opt.state) {
   # copy opt.path to store lies
   opt.path2 = deepCopyOptPath(opt.path)
   lie = liar(getOptPathY(opt.path, control$y.name))
-  dob = max(getOptPathDOB(opt.path)) + 1
+  dob = max(getOptPathDOB(opt.path)) + 1L
   props = list()
-  for (i in 1:npoints) {
+  for (i in seq_len(npoints)) {
     # propose point, add to opt.path2 with y = lie, then update model
     props[[i]] = proposePointsByInfillOptimization(opt.state, control = control2, opt.path = opt.path2, models = list(model))
+    if (i==npoints) break # we don't need to update the model when we aleady have the n-th proposal
     x = dfRowToList(props[[i]]$prop.points, par.set, 1)
     addOptPathEl(opt.path2, x = x, y = lie, dob = dob)
     rt = makeTaskSingleObj(opt.path2, control)

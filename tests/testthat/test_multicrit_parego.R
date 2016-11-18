@@ -9,6 +9,7 @@ test_that("mbo parego works", {
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10)
   ctrl = setMBOControlMultiCrit(ctrl, method = "parego", parego.s = 100)
   or = mbo(testfmco1, testdesmco1, learner = learner, control = ctrl)
+  expect_output(print(or), "Optimization path")
   expect_true(!any(is.na(or$pareto.front)))
 
   # Test margin points
@@ -17,7 +18,7 @@ test_that("mbo parego works", {
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 5)
   ctrl = setMBOControlMultiCrit(ctrl, method = "parego", parego.s = 100, parego.use.margin.points = c(TRUE, TRUE))
   or = mbo(testfmco1, testdesmco1, learner = learner, control = ctrl)
-  w = as.data.frame(or$opt.path)[-(1:10), c(".weight1", ".weight2")]
+  w = as.data.frame(or$opt.path)[-(1:10), c("parego.weight.1", "parego.weight.2")]
   expect_true(all(w == 0 | w == 1))
   expect_true(all(1 - w[, 1] == w[, 2]))
 
@@ -27,7 +28,7 @@ test_that("mbo parego works", {
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 5)
   ctrl = setMBOControlMultiCrit(ctrl, method = "parego", parego.s = 100, parego.use.margin.points = c(TRUE, TRUE))
   or = mbo(testfmco1, testdesmco1, learner = learner, control = ctrl)
-  w = as.data.frame(or$opt.path)[-(1:10), c(".weight1", ".weight2")]
+  w = as.data.frame(or$opt.path)[-(1:10), c("parego.weight.1", "parego.weight.2")]
   expect_true(all(w == 0 | w == 1))
   expect_true(all(1 - w[, 1] == w[, 2]))
 
@@ -46,7 +47,7 @@ test_that("mbo parego works", {
   or = mbo(testfmco1, testdesmco1, learner = learner, control = ctrl)
 
   # check used weights
-  w = as.data.frame(or$opt.path)[, c(".weight1", ".weight2")]
+  w = as.data.frame(or$opt.path)[, c("parego.weight.1", "parego.weight.2")]
   expect_true(all(rowSums(w[-(1:10),]) == 1))
   expect_false(any(duplicated(w[-(1:10), 1])))
   expect_false(any(duplicated(w[-c(1:10), 2])))

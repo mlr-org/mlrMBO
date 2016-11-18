@@ -1,24 +1,18 @@
-language: R
+language: r
 sudo: false
 cache: packages
-warnings_are_errors: false
-env:
-  global:
-    - _R_CHECK_TIMINGS_=0
-    - secure: "e2QLomaUqNvpHnGNdBXS4VO2/UWokrKl9UgYrqWo+fhpXaJiJuONNPNL44BuWZR2Cy7noTHrevVbTKBkGpqJR42mkjzcjd6qyR1Ctiveir+84/HTtmexouIUn5OFRH5dgyt/gquld31RlHlSYoKho3nZ7D7SnVExov9tp2FGRhU="
+
+r:
+  - release
+  - devel
 
 r_github_packages:
-  - berndbischl/ParamHelpers
+  - berndbischl/parallelMap
   - jakobbossek/smoof
   - mlr-org/mlr
 
-notifications:
-  email:
-    recipients:
-      - bernd_bischl@gmx.net
-      - j.bossek@gmail.com
-      - daniel.horn@tu-dortmund.de
-      - michellang@gmail.com
-      - code@jakob-r.de
-    on_success: change
-    on_failure: always
+env:
+  global:
+    - secure: "e2QLomaUqNvpHnGNdBXS4VO2/UWokrKl9UgYrqWo+fhpXaJiJuONNPNL44BuWZR2Cy7noTHrevVbTKBkGpqJR42mkjzcjd6qyR1Ctiveir+84/HTtmexouIUn5OFRH5dgyt/gquld31RlHlSYoKho3nZ7D7SnVExov9tp2FGRhU="
+
+warnings_are_errors: false

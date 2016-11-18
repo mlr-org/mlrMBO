@@ -11,9 +11,8 @@
 # train.time              numeric(1)
 # propose.time            numeric(1)
 # errors.model            character(1)
-# filter.replace          logical(1)
 # multipoint.cb.lambda    numeric(1)
-# .weight<j>              numeric(1)
+# parego.weight.<j>         numeric(1)
 #
 # Please document the content in doc_mbo_OptPath.R
 
@@ -22,8 +21,7 @@ getExtras = function(n, prop, train.time, control) {
   if (is.null(prop)) {
     k = ifelse(control$n.objectives > 1L && control$multicrit.method == "mspot", control$n.objectives + 1, 1L)
     # pregenerate a dummmy "prop" data structure
-    prop = list(crit.vals = matrix(NA_real_, nrow = n, ncol = k), propose.time = NA_real_, errors.model = NA_character_,
-      filter.replace = rep(NA, n), prop.type = rep("initdesign", n))
+    prop = list(crit.vals = matrix(NA_real_, nrow = n, ncol = k), propose.time = NA_real_, errors.model = NA_character_, prop.type = rep("initdesign", n))
     ## make space for crit.components (not so fancy to do it here)
     if (control$n.objectives == 1L && control$infill.crit == "ei") {
       prop$crit.components = data.frame(se = NA_real_, mean = NA_real_)
@@ -41,7 +39,7 @@ getExtras = function(n, prop, train.time, control) {
   # if we only have one msg, replicate it
   if (length(errs) == 1L)
     errs = rep(errs, n)
-  for (i in 1:n) {
+  for (i in seq_len(n)) {
     # if we use mspot, store all crit.vals
     if (control$n.objectives > 1L && control$multicrit.method == "mspot") {
       ex = as.list(prop$crit.vals[i, ])
@@ -65,12 +63,8 @@ getExtras = function(n, prop, train.time, control) {
       weight.mat = prop$weight.mat
       if (is.null(weight.mat))
         weight.mat = matrix(NA_real_, nrow = n, ncol = control$n.objectives)
-      w = setNames(as.list(weight.mat[i, ]), paste0(".weight", 1:ncol(weight.mat)))
+      w = setNames(as.list(weight.mat[i, ]), paste0("parego.weight.", seq_col(weight.mat)))
       ex = c(ex, w)
-    }
-    # if we filtered proposed points, store flag
-    if (control$filter.proposed.points) {
-      ex$filter.replace = prop$filter.replace[i]
     }
     ex$train.time = if (i == 1) train.time else NA_real_
     ex$prop.type = prop$prop.type[i]

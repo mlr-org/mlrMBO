@@ -131,6 +131,7 @@ infillCritEQI = function(points, models, control, par.set, design, iter, attribu
 
   pure.noise.var = if (inherits(model$learner, "regr.km")) {
     pure.noise.var = model$learner.model@covariance@nugget
+    #FIXME: What if kriging is wrapped?
   } else {
     estimateResidualVariance(model, data = design, target = control$y.name)
   }

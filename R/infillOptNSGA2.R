@@ -10,7 +10,7 @@ infillOptMultiCritNSGA2 = function(infill.crit, models, control, par.set, opt.pa
   fun.tmp = function(x) {
     newdata = as.data.frame(x)
     colnames(newdata) = rep.pids
-    asMatrixRows(lapply(1:m, function(i) {
+    asMatrixRows(lapply(seq_len(m), function(i) {
       # we need to make sure mininimize in control is a scalar, so we can multiply it in infill crits...
       control$minimize = control$minimize[i]
       infill.crit(points = newdata, models = models[i], control = control,
@@ -31,7 +31,7 @@ infillOptMultiCritNSGA2 = function(infill.crit, models, control, par.set, opt.pa
   candidate.points = res$par
   # Use the mean/cb response of the model to calculate the hv.contr, not the nsga2-val
   hv.contr.crit = getInfillCritFunction(control$mspot.select.crit)
-  candidate.vals = asMatrixCols(lapply(1:m, function(i) {
+  candidate.vals = asMatrixCols(lapply(seq_len(m), function(i) {
     # we need to make sure mininimize in control is a scalar, so we can multiply it in infill crits...
     control$minimize = control$minimize[i]
 
@@ -48,16 +48,16 @@ infillOptMultiCritNSGA2 = function(infill.crit, models, control, par.set, opt.pa
 
   ref.point = getMultiCritRefPoint(ys, control)
   prop.hv.contrs = numeric(control$propose.points)
-  for (i in 1:control$propose.points) {
+  for (i in seq_len(control$propose.points)) {
     hv.contrs = getHypervolumeContributions(xs = candidate.vals,
       ys = rbind(ys, prop.vals), ref.point = ref.point, minimize = control$minimize)
     best.ind = which.max(hv.contrs)
     prop.hv.contrs[i] = max(hv.contrs)
     # add best to prop.points/vals and remove from candidate.point/vals
     prop.points = rbind(prop.points, candidate.points[best.ind, ])
-    candidate.points = candidate.points[-best.ind, ]
+    candidate.points = candidate.points[-best.ind,, drop = FALSE]
     prop.vals = rbind(prop.vals, candidate.vals[best.ind, ])
-    candidate.vals = candidate.vals[-best.ind, ]
+    candidate.vals = candidate.vals[-best.ind,, drop = FALSE]
   }
 
   # FIXME: cleanup - i'm reall unsure how to set the names of prop.points technically

@@ -7,14 +7,16 @@ test_that("extras are logged a expected", {
     fn = function(x) {
       res = sum(x^2)
       # here we append additional stuff to be logged in opt path
-      res = setAttribute(res, "extras", list(extra1 = runif(1), extra2 = letters[sample(1:10, 1)]))
+      extras = list(extra1 = runif(1), extra2 = letters[sample(1:10, 1)])
+      if (res > 2) extras = c(extras, list(.extra3 = "y bigger than two!"))
+      res = setAttribute(res, "extras", extras)
       return(res)
     },
     par.set = makeParamSet(
       makeNumericParam("x", lower = -2, upper = 2)
     )
   )
-  des = generateTestDesign(10L, smoof::getParamSet(f))
+  des = generateTestDesign(10L, getParamSet(f))
 
   learner = makeLearner("regr.km", predict.type = "se")
   control = makeMBOControl()
@@ -32,6 +34,9 @@ test_that("extras are logged a expected", {
   expect_true(all(extras.names %in% names(opt.path)))
   expect_true(all(is.numeric(opt.path[["extra1"]])))
   expect_true(all(opt.path[["extra2"]] %in% letters[1:10]))
+  
+  # check if the dotted extra is logged
+  expect_true(getOptPathEl(result$opt.path, which.first(opt.path$y > 2))$extra$.extra3 == "y bigger than two!")
 
   # check whether times (model fitting, execution, ...) are logged
   expect_true(all(is.numeric(opt.path[["exec.time"]])))

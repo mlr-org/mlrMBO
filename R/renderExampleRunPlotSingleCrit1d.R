@@ -91,31 +91,32 @@ renderExampleRunPlot1d = function(x, iter,
     #FIXME: We might want to replace the following by a helper function so that we can reuse it in buildPointsData()
     if (propose.points == 1L) {
       evals[[name.crit]] = opt.direction *
-        critfun(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past, ])
+        critfun(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past,, drop = FALSE])
     } else {
       objective = control$multipoint.multicrit.objective
       if (objective == "mean.dist") {
-        evals[[name.crit]] = opt.direction * infillCritMeanResponse(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past, ])
+        evals[[name.crit]] = opt.direction * infillCritMeanResponse(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past,, drop = FALSE])
       } else if (objective == "ei.dist") {
-        evals[[name.crit]] = opt.direction * infillCritEI(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past, ])
+        evals[[name.crit]] = opt.direction * infillCritEI(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past,, drop = FALSE])
       } else if (objective %in% c("mean.se", "mean.se.dist")) {
-        evals[[name.crit]] = opt.direction * infillCritMeanResponse(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past, ])
+        evals[[name.crit]] = opt.direction * infillCritMeanResponse(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past,, drop = FALSE])
       }
     }
     # prepare drawing of standard error (confidence interval)
     if (se) {
-      evals$se = -infillCritStandardError(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past, ])
+      evals$se = -infillCritStandardError(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past,, drop = FALSE])
     }
   }
 
   if (isNumeric(par.set, include.int = FALSE)) {
-    gg.fun = reshape2::melt(evals, id.vars = c(getParamIds(opt.path$par.set), if (se) "se" else NULL))
+    gg.fun = data.table::setDF(data.table::melt(evals, id.vars = c(getParamIds(opt.path$par.set), if (se) "se" else NULL)))
 
     if (control$multifid) {
       #rename .multifid.lvl according to control object
       repl = paste0(control$multifid.param, "=", control$multifid.lvls)
       names(repl) = as.character(seq_along(control$multifid.lvls))
-      gg.fun$.multifid.lvl = plyr::revalue(as.factor(gg.fun$.multifid.lvl), replace = repl)
+      #gg.fun$.multifid.lvl = plyr::revalue(as.factor(gg.fun$.multifid.lvl), replace = repl)
+      gg.fun$.multifid.lvl = factor(gg.fun$.multifid.lvl, labels = repl)
     }
 
     if (se) gg.fun$se = gg.fun$se * se.factor
@@ -170,7 +171,7 @@ renderExampleRunPlot1d = function(x, iter,
     g = g + scale_linetype(name = "type")
 
     if (noisy) {
-      if (!any(is.na(x$y.true))) {
+      if (!anyMissing(x$y.true)) {
         source = data.frame(x$y.true)
         names(source) = name.y
         gap = calculateGap(source[idx.pastpresent, , drop = FALSE], global.opt, control)
@@ -178,7 +179,7 @@ renderExampleRunPlot1d = function(x, iter,
         gap = NA
       }
     } else {
-      gap = calculateGap(convertOptPathToDf(opt.path, control)[idx.pastpresent, ], global.opt, control)
+      gap = calculateGap(convertOptPathToDf(opt.path, control)[idx.pastpresent,, drop = FALSE], global.opt, control)
     }
 
     g = g + ggtitle(sprintf("Iter = %i, Gap = %.4e", iter, gap))
@@ -215,7 +216,7 @@ renderExampleRunPlot1d = function(x, iter,
     pl.fun = pl.fun + scale_colour_discrete(name = "type")
     pl.fun = pl.fun + ggtitle(
       sprintf("Iter = %i, Gap = %.4e", iter,
-      calculateGap(convertOptPathToDf(opt.path, control)[idx.pastpresent,], global.opt, control))
+      calculateGap(convertOptPathToDf(opt.path, control)[idx.pastpresent,, drop = FALSE], global.opt, control))
     )
 
     pl.fun = pl.fun + theme(

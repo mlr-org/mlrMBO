@@ -41,7 +41,7 @@ test_that("mbo works with rf", {
     par.set = par.set
   )
   des = generateTestDesign(10L, par.set = par.set)
-  des$y  = sapply(1:nrow(des), function(i) f(as.list(des[i,])))
+  des$y  = vnapply(seq_row(des), function(i) f(as.list(des[i, ])))
   or = mbo(f, des, learner, ctrl)
   expect_true(!is.na(or$y))
   expect_equal(getOptPathLength(or$opt.path), 15)
@@ -67,7 +67,7 @@ test_that("mbo works with rf", {
   )
 
   des = generateTestDesign(10, par.set = par.set)
-  y  = sapply(1:nrow(des), function(i) f(as.list(des[i,])))
+  y  = vnapply(seq_row(des), function(i) f(as.list(des[i,])))
   des$y = y
   learner = makeLearner("regr.randomForest")
   ctrl = makeMBOControl()
@@ -92,7 +92,7 @@ test_that("mbo works with rf", {
   expect_true(!is.na(or$y))
   expect_equal(getOptPathLength(or$opt.path), 15)
 
-  des = generateTestDesign(10L, smoof::getParamSet(f))
+  des = generateTestDesign(10L, getParamSet(f))
   ctrl = makeMBOControl()
   ctrl = setMBOControlTermination(ctrl, iters = 5L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100)
@@ -112,14 +112,14 @@ test_that("mbo works with rf", {
   )
 
   learner = makeLearner("regr.randomForest")
-  des = generateTestDesign(10L, smoof::getParamSet(f))
+  des = generateTestDesign(10L, getParamSet(f))
   ctrl = makeMBOControl()
   ctrl = setMBOControlTermination(ctrl, iters = 3L)
   ctrl = setMBOControlInfill(ctrl, opt = "cmaes", opt.cmaes.control = list(maxit = 2L))
   or = mbo(f, des, learner, ctrl)
   expect_true(!is.na(or$y))
   expect_equal(getOptPathLength(or$opt.path), 10 + 3)
-  des = generateTestDesign(10L, smoof::getParamSet(f))
+  des = generateTestDesign(10L, getParamSet(f))
   ctrl = makeMBOControl(final.method = "best.predicted")
   ctrl = setMBOControlTermination(ctrl, iters = 3L)
   ctrl = setMBOControlInfill(ctrl, opt = "cmaes", opt.cmaes.control = list(maxit = 2L))
@@ -140,7 +140,7 @@ test_that("mbo works with rf", {
   )
 
   learner = makeLearner("regr.randomForest")
-  des = generateTestDesign(10L, smoof::getParamSet(f))
+  des = generateTestDesign(10L, getParamSet(f))
   ctrl = makeMBOControl()
   ctrl = setMBOControlTermination(ctrl, iters = 5L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100L)
@@ -158,14 +158,12 @@ test_that("mbo works with rf", {
     par.set = par.set
   )
 
-  des = generateTestDesign(10L, smoof::getParamSet(f))
+  des = generateTestDesign(10L, getParamSet(f))
   ctrl = makeMBOControl(trafo.y.fun = trafoLog(handle.violations = "error"))
   ctrl = setMBOControlTermination(ctrl, iters = 2L)
-  expect_error(mbo(f, control = ctrl, more.args = list(shift = -1)))
+  expect_error(mbo(f, control = ctrl, more.args = list(shift = -1)), "Negative function values occured during transformation.")
   or = mbo(f, des, control = ctrl, more.args = list(shift = 0))
   expect_true(!is.na(or$y))
-  # negative function values not allowed when log-transforming y-values before modelling
-  expect_error(mbo(f, control = ctrl, more.args = list(shift = -1)))
 })
 
 # FIXME: we do we get so bad results with so many models for this case?

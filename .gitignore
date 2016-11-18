@@ -1,13 +1,12 @@
 mlrMBO.Rcheck
 mlrMBO_*.tar.gz
-.Rproj.user
-*.Rproj
 .Rhistory
 html
-bench/soo/soo_bench-files/
-bench/mco/mco_bench-files/
-bench/mlr/modelsel-files
+todo-files/bench/soo/soo_bench-files/
+todo-files/bench/mco/mco_bench-files/
+todo-files/bench/mlr/modelsel-files
 src/*.o
 src/*.so
 plots
 tests/testthat/Rplots.pdf
+*.sublime-*

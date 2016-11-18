@@ -6,7 +6,8 @@ test_that("renderExampleRunPlot produces list of ggplot2 objects", {
   n.iters = 1L
 
   doRun = function(obj.fn, predict.type, crit, learner = "regr.km") {
-    learner = makeLearner(learner, predict.type = predict.type)
+    if (!is.null(learner))
+      learner = makeLearner(learner, predict.type = predict.type)
     control = makeMBOControl()
     control = setMBOControlTermination(control, iters = n.iters)
     control = setMBOControlInfill(control, crit = crit, opt = "focussearch", opt.focussearch.points = 10)
@@ -41,6 +42,10 @@ test_that("renderExampleRunPlot produces list of ggplot2 objects", {
 
   # with se
   plot.list = doRun(obj.fn, "se", "ei")
+  checkPlotList(plot.list)
+  
+  #default learner
+  plot.list = doRun(obj.fn, "response", "ei", learner = NULL)
   checkPlotList(plot.list)
 
 
@@ -85,9 +90,7 @@ test_that("renderExampleRunPlot produces list of ggplot2 objects", {
     multicrit.maxit = 200L
   )
 
-  lrn = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
-
-  run = exampleRun(obj.fun, learner = lrn, control = ctrl, points.per.dim = 50L)
+  run = exampleRun(obj.fun, learner = default.kriging, control = ctrl, points.per.dim = 50L)
 
   plot.list = renderExampleRunPlot(run, iter = 1L)
   checkPlotList(plot.list)

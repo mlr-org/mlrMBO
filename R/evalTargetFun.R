@@ -49,7 +49,7 @@ evalTargetFun.OptState = function(opt.state, xs, extras) {
 
   # do we have a valid y object?
   isYValid = function(y) {
-    !is.error(y) && is.numeric(y) && (length(y) == ny) && !any(is.na(y) | is.nan(y) | is.infinite(y))
+    !is.error(y) && testNumeric(y, len = ny, any.missing = FALSE, finite = TRUE)
   }
 
   # return error objects if we impute
@@ -57,7 +57,7 @@ evalTargetFun.OptState = function(opt.state, xs, extras) {
     impute.error = if (is.null(imputeY)) NULL else identity)
 
   # loop evals and to some post-processing
-  for (i in 1:nevals) {
+  for (i in seq_len(nevals)) {
     r = res[[i]]; x = xs[[i]]; x.trafo = xs.trafo[[i]]; dob = dobs[i]
     # y is now either error object or return val
     if (is.error(r)) {

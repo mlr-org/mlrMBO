@@ -13,13 +13,9 @@ obj.fun = makeSingleObjectiveFunction(
   fn = function(x) sin(x) + rnorm(1, 0, 0.1),
   par.set = makeNumericParamSet(lower = 3, upper = 13, len = 1L),
   noisy = TRUE,
-  global.opt.value = -1
+  global.opt.value = -1,
+  fn.mean = function(x) sin(x)
 )
-
-# here in this example we know the true, deterministic function
-obj.fun.mean = function(x) {
-  sin(x$x)
-}
 
 ctrl = makeMBOControl(
   propose.points = 1L,
@@ -37,9 +33,9 @@ ctrl = setMBOControlInfill(ctrl, crit = "ei", opt = "focussearch",
 design = generateDesign(6L, getParamSet(obj.fun), fun = lhs::maximinLHS)
 
 run = exampleRun(obj.fun, design = design, learner = lrn,
-  control = ctrl, points.per.dim = 200L, noisy.evals = 50L, fun.mean = obj.fun.mean,
+  control = ctrl, points.per.dim = 200L, noisy.evals = 50L,
   show.info = TRUE)
 
 print(run)
 
-plotExampleRun(run, pause = pause, densregion = TRUE)
+plotExampleRun(run, pause = pause, densregion = TRUE, gg.objects = list(theme_bw()))

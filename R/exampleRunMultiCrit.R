@@ -34,7 +34,7 @@ exampleRunMultiCrit= function(fun, design = NULL, learner, control, points.per.d
   if (is.null(design))
     design = generateDesign(4 * n.params, par.set)
 
-  learner = checkLearner(learner, par.set, control)
+  learner = checkLearner(learner, par.set, control, fun)
   assertClass(control, "MBOControl")
   minimize = shouldBeMinimized(fun)
   control$noisy = isNoisy(fun)
@@ -53,7 +53,7 @@ exampleRunMultiCrit= function(fun, design = NULL, learner, control, points.per.d
   if (n.params != 2L)
     stopf("exampleRunMultiCrit can only be applied for functions with 2 parameters, but you have %iD", n.params)
 
-  control$store.model.at = 1:control$iters
+  control$store.model.at = seq_len(control$iters)
   names.x = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
   names.y = control$y.name
 
@@ -85,7 +85,7 @@ exampleRunMultiCrit= function(fun, design = NULL, learner, control, points.per.d
 
   showInfo(show.info, "Performing MBO on function.")
   showInfo(show.info, "Initial design: %i. Sequential iterations: %i.", control$init.design.points, control$iters)
-  showInfo(show.info, "Learner: %s. Settings:\n%s", learner$id, mlr:::getHyperParsString(learner))
+  showInfo(show.info, "Learner: %s. Settings:\n%s", learner$id, mlr:::getHyperParsString(learner, show.missing.values = FALSE))
 
   # run optimizer now
   res = mbo(fun, design, learner = learner, control = control, show.info = show.info)
@@ -98,7 +98,7 @@ exampleRunMultiCrit= function(fun, design = NULL, learner, control, points.per.d
   if (control$multicrit.method %in% c("dib", "mspot")) {
     mbo.pred.grid.x = generateGridDesign(par.set, resolution = points.per.dim)
     mbo.pred.grid.mean = vector("list", control$iters)
-    for (iter in 1:control$iters) {
+    for (iter in seq_len(control$iters)) {
       mods = res$models[[iter]]
       ps = lapply(mods, predict, newdata = mbo.pred.grid.x)
       y1 = extractSubList(ps, c("data", "response"), simplify = "cols")
@@ -145,7 +145,7 @@ print.MBOExampleRunMultiCrit = function(x, ...) {
   catf("Parameter types               : %s", collapse(x$par.types))
   print(x$control)
   catf("Learner                       : %s", x$learner$id)
-  catf("Learner settings:\n%s", mlr:::getHyperParsString(x$learner))
+  catf("Learner settings:\n%s", mlr:::getHyperParsString(x$learner, show.missing.values = FALSE))
   catf("Hypervolume                   : %.4e", x$mbo.hypervolume)
   catf("NSGA2 Hypervolume (6000 FEs)  : %.4e", x$nsga2.hypervolume)
 }

@@ -38,7 +38,9 @@ exampleRun = function(fun, design = NULL, learner = NULL, control,
   par.types = getParamTypes(par.set)
   n.params = sum(getParamLengths(par.set))
   noisy = isNoisy(fun)
-  learner = checkLearner(learner, par.set, control)
+  control$noisy = noisy
+  control$minimize = shouldBeMinimized(fun)
+  learner = checkLearner(learner, par.set, control, fun)
   assertClass(control, "MBOControl")
   points.per.dim = asCount(points.per.dim, positive = TRUE)
   noisy.evals = asCount(noisy.evals, positive = TRUE)
@@ -51,8 +53,6 @@ exampleRun = function(fun, design = NULL, learner = NULL, control,
     global.opt = smoof::getGlobalOptimum(fun)$value
   else
     global.opt = NA_real_
-  control$noisy = noisy
-  control$minimize = shouldBeMinimized(fun)
 
   if (control$n.objectives != 1L)
     stopf("exampleRun can only be applied for single objective functions, but you have %i objectives! Use 'exampleRunMultiCrit'!",
@@ -60,7 +60,7 @@ exampleRun = function(fun, design = NULL, learner = NULL, control,
   if (n.params >= 3L)
     stopf("exampleRun can only be applied for functions with at most 2 dimensions, but you have %iD", n.params)
 
-  control$store.model.at = 1:(control$iters+1)
+  control$store.model.at = seq_len(control$iters+1)
   names.x = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
   name.y = control$y.name
 
@@ -80,7 +80,7 @@ exampleRun = function(fun, design = NULL, learner = NULL, control,
   if (is.null(fun.mean)) {
     evals = evaluate(fun, par.set, n.params, par.types, noisy, noisy.evals, points.per.dim, names.x, name.y, seq_along(control$multifid.lvls))
   } else {
-    evals = evaluate(fun.mean, par.set, n.params, par.types, noisy = FALSE, noisy.evals = 1, points.per.dim, names.x, name.y, seq_along(control$multifid.lvls))
+    evals = evaluate(fun.mean, par.set, n.params, par.types, noisy = FALSE, noisy.evals = 1, points.per.dim, names.x, name.y, multifid.lvls = seq_along(control$multifid.lvls))
   }
 
   if (is.na(global.opt))
@@ -93,7 +93,7 @@ exampleRun = function(fun, design = NULL, learner = NULL, control,
     messagef("Performing MBO on function.")
     if (is.null(design))
       messagef("Initial design: %i. Sequential iterations: %i.", control$init.design.points, control$iters)
-    messagef("Learner: %s. Settings:\n%s", learner$id, mlr:::getHyperParsString(learner))
+    messagef("Learner: %s. Settings:\n%s", learner$id, mlr:::getHyperParsString(learner, show.missing.values = FALSE))
   }
 
   # run optimizer now
@@ -103,6 +103,13 @@ exampleRun = function(fun, design = NULL, learner = NULL, control,
   y.true = NA
   if (!is.null(fun.mean)) {
     y.true = vnapply(convertRowsToList(getOptPathX(res$opt.path), name.list = TRUE, name.vector = TRUE), fun.mean)
+  }
+
+  if (control$multifid) {
+    n.params = n.params - 1
+    par.set = dropParams(par.set, ".multifid.lvl")
+    par.types = getParamTypes(par.set)
+    names.x = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
   }
 
   makeS3Obj("MBOExampleRun",
@@ -135,7 +142,7 @@ print.MBOExampleRun = function(x, ...) {
   catf("True points per dim.        : %s", collapse(x$points.per.dim))
   print(x$control)
   catf("Learner                     : %s", x$learner$id)
-  catf("Learner settings:\n%s", mlr:::getHyperParsString(x$learner))
+  catf("Learner settings:\n%s", mlr:::getHyperParsString(x$learner, show.missing.values = FALSE))
   mr = x$mbo.res
   op = mr$opt.path
   catf("Recommended parameters:")
@@ -158,29 +165,13 @@ getEvals = function(fun, par.set, noisy, noisy.evals, points.per.dim, names.x, n
   return(evals)
 }
 
-getEvalsForMultifid = function(fun, par.set, noisy, noisy.evals, points.per.dim, names.x, name.y, multifid.lvls) {
-  eval.list = lapply(multifid.lvls, function(l){
-    force(l)
-    force(fun)
-    this.fun = function(x) {
-      x$.multifid.lvl = l
-      fun(x)
-    }
-    evals = getEvals(this.fun, par.set, noisy, noisy.evals, points.per.dim, names.x, name.y)
-    cbind.data.frame(.multifid.lvl = l, evals)
-  })
-  do.call("rbind", eval.list)
-}
-
 evaluate = function(fun, par.set, n.params, par.types, noisy, noisy.evals, points.per.dim, names.x, name.y, multifid.lvls = numeric(0)) {
   if (!noisy && n.params == 1L && par.types == "discrete")
     stopf("ExampleRun does not make sense with a single deterministic discrete parameter.")
+  if (length(multifid.lvls) && n.params %in% c(2L,3L) && all(par.types %in% c("numeric", "numericvector", "discrete", "integer")))
+    return(getEvals(fun, par.set, noisy, noisy.evals, points.per.dim * length(multifid.lvls), names.x, name.y))
   if (n.params %in% c(1L, 2L) && all(par.types %in% c("numeric", "numericvector", "discrete"))) {
-    if (length(multifid.lvls)) {
-      return(getEvalsForMultifid(fun, par.set, noisy, noisy.evals, points.per.dim, names.x, name.y, multifid.lvls))
-    } else {
-      return(getEvals(fun, par.set, noisy, noisy.evals, points.per.dim, names.x, name.y))
-    }
+    return(getEvals(fun, par.set, noisy, noisy.evals, points.per.dim, names.x, name.y))
   }
 }
 

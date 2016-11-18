@@ -6,7 +6,7 @@ test_that("plot single crit", {
     par.set = makeNumericParamSet(len = 5L, lower = -1, upper = 1)
   )
   learner = makeLearner("regr.km", predict.type = "se")
-  des = generateTestDesign(8L, smoof::getParamSet(f))
+  des = generateTestDesign(8L, getParamSet(f))
   ctrl = makeMBOControl(propose.points = 1L)
   ctrl = setMBOControlTermination(ctrl, iters = 2L)
   ctrl = setMBOControlInfill(ctrl, crit = "ei", opt.focussearch.points = 100L,
@@ -19,7 +19,7 @@ test_that("plot single crit", {
 test_that("plot multi crit", {
   f = smoof::makeZDT1Function(2L)
   learner = makeLearner("regr.km", predict.type = "se")
-  des = generateTestDesign(8L, smoof::getParamSet(f))
+  des = generateTestDesign(8L, getParamSet(f))
   ctrl = makeMBOControl(propose.points = 2L, n.objectives = 2L)
   ctrl = setMBOControlTermination(ctrl, iters = 2L)
   ctrl = setMBOControlInfill(ctrl, crit = "ei", opt.focussearch.points = 100L,

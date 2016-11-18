@@ -64,7 +64,7 @@
 #     )
 #
 #     fit = function(x) {
-#       sum(sapply(x, nchar))
+#       sum(viapply(x, nchar))
 #     }
 #
 #     surrogate = makeLearner("regr.randomForest")

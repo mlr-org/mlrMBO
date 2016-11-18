@@ -15,7 +15,8 @@
 #'   plot displays the x-space.
 #'
 #' @param object [\code{function}]\cr
-#'   \code{MBOExampleRun} or \code{MBOExampleRunMulticrit} object.
+#'   \code{MBOExampleRun} object from \code{exampleRun} or
+#'   \code{MBOExampleRunMulticrit} object from \code{exampleRunMultiCrit}.
 #' @param iters [\code{integer}]\cr
 #'   Selected iterations of \code{object} to produce plots.
 #'   Default is all iterations.
@@ -61,6 +62,8 @@
 #'   each element a color for the type design, prop and seq respectivly.
 #'   Default is red for the initial design, blue for allready proposed points
 #'   and green for the actual iteration.
+#' @param gg.objects [\code{list)}]
+#'   List of \code{gg} objects that should be added to all ggplots.
 #' @param ... [any]\cr
 #'   Currently not used.
 #' @return Nothing.
@@ -69,11 +72,11 @@ plotExampleRun = function(object, iters, pause = TRUE,
   densregion = TRUE, se.factor = 1, single.prop.point.plots = FALSE,
   xlim = NULL, ylim = NULL,
   point.size = 3, line.size = 1,
-  trafo = NULL, colors = c("red", "blue", "green"), ...) {
+  trafo = NULL, colors = c("red", "blue", "green"), gg.objects = list(), ...) {
 
   iters.max = object$control$iters
   if (missing(iters)) {
-    iters = 1:iters.max
+    iters = seq_len(iters.max)
   }
   assertIntegerish(iters, lower = 0L, upper = iters.max, any.missing = FALSE)
   assertFlag(pause)
@@ -92,6 +95,7 @@ plotExampleRun = function(object, iters, pause = TRUE,
   # Helper to arrange plot via gridExtra and pause process
   arrangePlots = function(plots, multi.crit) {
     plots = Filter(Negate(isScalarNA), plots)
+    plots = lapply(plots, addGgsToGgplot, gg.objects)
     n.plots = length(plots)
     if (n.plots > 1) {
       requirePackages("gridExtra", why = "plotExampleRun")
@@ -113,10 +117,10 @@ plotExampleRun = function(object, iters, pause = TRUE,
     # get rendered plot data
     plots = renderExampleRunPlot(object, iter = iter, densregion = densregion, se.factor = se.factor,
       single.prop.point.plots = single.prop.point.plots, xlim = xlim, ylim = ylim,
-      point.size = point.size, line.size = line.size, trafo = trafo, colors = colors, ...)
+      point.size = point.size, line.size = line.size, trafo = trafo, colors = colors, gg.objects = gg.objects, ...)
     if (!any(vlapply(plots, inherits, what = "ggplot"))) {
       # in this case we have multicrit multipoint proposal: list of plots for each proposed point
-      for (jter in 1:length(plots)) {
+      for (jter in seq_along(plots)) {
         arrangePlots(plots[[jter]], multi.crit)
         if (pause && !(iter == getLast(iters) && jter == length(plots)))
           pause()

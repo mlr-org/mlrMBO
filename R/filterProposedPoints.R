@@ -27,9 +27,9 @@ filterProposedPoints = function(prop, opt.state) {
   to.delete = rep(FALSE, n)
 
   # look at min distance from i-point to current set (design + accepted)
-  for (i in 1:n) {
+  for (i in seq_len(n)) {
     pp = prop$prop.points[i, ]
-    min.dist = min(apply(design, 1, calcMaxMetric, y = pp))
+    min.dist = min(apply(design, 1L, calcMaxMetric, y = pp))
     # if too close, mark i-point, otherwise add it to set
     if (min.dist < control$filter.proposed.points.tol)
       to.delete[i] = TRUE
@@ -38,9 +38,8 @@ filterProposedPoints = function(prop, opt.state) {
   }
 
   # for now replace removed design points with random points,
-  #  we leave all other data in prop like it is, we have flag filter.replace
+  #  we leave all other data in prop like it is, we have prop.tye "random_filter"
   n.replace = sum(to.delete)
-  prop$filter.replace = to.delete
 
   if (n.replace > 0) {
     # FIXME: we might want to do something smarter here. how about augmenting the current design?

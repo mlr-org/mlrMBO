@@ -9,6 +9,7 @@ test_that("multicrit mspot works", {
   ctrl = setMBOControlInfill(ctrl, crit = "ei", opt = "nsga2", opt.nsga2.generations = 1L, opt.nsga2.popsize = 12L)
   ctrl = setMBOControlMultiCrit(ctrl, method = "mspot")
   or = mbo(testf.zdt1.2d, testd.zdt1.2d, learner = learner, control = ctrl)
+  expect_output(print(or), "Optimization path")
   op = as.data.frame(or$opt.path)
   k = seq_row(testd.zdt1.2d)
   expect_true(all(is.na(op$ei.y_1[k])))
