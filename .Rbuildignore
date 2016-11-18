@@ -1,15 +1,12 @@
 todo-files
-
 .gitignore
 .travis.yml
 appveyor.yml
 ^.*tar.gz$
-
 src/*.o
 src/*.so
-
 ^.*\.Rproj$
 ^\.Rproj\.user$
-
 ^man-roxygen
 ^.editorconfig$
+^\.agignore$
