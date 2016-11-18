@@ -1,7 +1,6 @@
 context("exampleRunMulticrit")
 
 test_that("exampleRunMulticrit", {
-
   doRun = function(method, crit, prop.points, indicator = "sms") {
     # set nugget effect to small value for num stability in this unit test
     learner = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2", nugget = 0.001)
@@ -18,7 +17,9 @@ test_that("exampleRunMulticrit", {
 
     run = exampleRunMultiCrit(testf.zdt1.2d, testd.zdt1.2d, learner = learner, control = control, points.per.dim = 4L,
       nsga2.args = list(popsize = 4L, generations = 2L))
+    expect_is(run, "MBOExampleRunMultiCrit")
     res = renderExampleRunPlot(run, iter = 1L)
+    expect_list(res, min.len = 1L, types = c("ggplot", "list"))
   }
 
   doRun(method = "parego", crit = "ei", prop.points = 1L)
@@ -26,7 +27,7 @@ test_that("exampleRunMulticrit", {
   doRun(method = "parego", crit = "cb", prop.points = 1L)
   doRun(method = "parego", crit = "cb", prop.points = 2L)
   doRun(method = "mspot", crit = "ei", prop.points = 1L)
-  doRun(method = "mspot", crit = "ei", prop.points = 2L)
+  doRun(method = "mspot", crit = "ei", prop.points = 4L)
   doRun(method = "mspot", crit = "cb", prop.points = 1L)
   doRun(method = "mspot", crit = "cb", prop.points = 2L)
   doRun(method = "dib", crit = "dib", prop.points = 1L)

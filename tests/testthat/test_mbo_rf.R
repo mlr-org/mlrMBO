@@ -6,13 +6,13 @@ test_that("mbo works with rf", {
   ctrl = setMBOControlTermination(ctrl, iters = 5L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100L)
   or = mbo(testf.fsphere.2d, testd.fsphere.2d, learner, ctrl, show.info = TRUE)
-  expect_true(!is.na(or$y))
+  expect_number(or$y)
   expect_equal(or$y, testf.fsphere.2d(or$x))
   expect_equal(getOptPathLength(or$opt.path), 15)
-  expect_true(is.list(or$x))
-  expect_equal(names(or$x), names(testp.fsphere.2d$pars))
-  expect_equal(length(or$models[[1]]$subset), 10)
-  expect_equal(length(or$models[[2]]$subset), 14) #In the 15th step we used a model based on 14
+  expect_list(or$x)
+  expect_set_equal(names(or$x), names(testp.fsphere.2d$pars))
+  expect_length(or$models[[1]]$subset, 10)
+  expect_length(or$models[[2]]$subset, 14) #In the 15th step we used a model based on 14
 
   # check errors
   ctrl = makeMBOControl()
@@ -43,10 +43,10 @@ test_that("mbo works with rf", {
   des = generateTestDesign(10L, par.set = par.set)
   des$y  = vnapply(seq_row(des), function(i) f(as.list(des[i, ])))
   or = mbo(f, des, learner, ctrl)
-  expect_true(!is.na(or$y))
+  expect_number(or$y)
   expect_equal(getOptPathLength(or$opt.path), 15)
   df = as.data.frame(or$opt.path)
-  expect_true(is.numeric(df$x1))
+  expect_numeric(df$x1)
 
   # discrete par
   par.set = makeParamSet(
@@ -67,29 +67,28 @@ test_that("mbo works with rf", {
   )
 
   des = generateTestDesign(10, par.set = par.set)
-  y  = vnapply(seq_row(des), function(i) f(as.list(des[i,])))
-  des$y = y
+  des$y = vnapply(seq_row(des), function(i) f(as.list(des[i,])))
   learner = makeLearner("regr.randomForest")
   ctrl = makeMBOControl()
   ctrl = setMBOControlTermination(ctrl, iters = 5L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100)
   or = mbo(f, des, learner, ctrl)
-  expect_true(!is.na(or$y))
+  expect_number(or$y)
   expect_equal(getOptPathLength(or$opt.path), 15)
   df = as.data.frame(or$opt.path)
-  expect_true(is.numeric(df$x1))
-  expect_true(is.integer(df$x2))
-  expect_true(is.factor(df$x3))
-  expect_true(is.numeric(df$y))
-  expect_true(is.list(or$x))
-  expect_equal(names(or$x), names(par.set$pars))
+  expect_numeric(df$x1, any.missing = FALSE)
+  expect_integer(df$x2, any.missing = FALSE)
+  expect_factor(df$x3, any.missing = FALSE)
+  expect_numeric(df$y, any.missing = FALSE)
+  expect_list(or$x)
+  expect_set_equal(names(or$x), names(par.set$pars))
 
   # check best.predicted
   ctrl = makeMBOControl(final.method = "best.predicted")
   ctrl = setMBOControlTermination(ctrl, iters = 5L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100)
   or = mbo(f, des, learner, ctrl)
-  expect_true(!is.na(or$y))
+  expect_number(or$y)
   expect_equal(getOptPathLength(or$opt.path), 15)
 
   des = generateTestDesign(10L, getParamSet(f))
@@ -97,9 +96,9 @@ test_that("mbo works with rf", {
   ctrl = setMBOControlTermination(ctrl, iters = 5L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100)
   or = mbo(f, des, learner, ctrl)
-  expect_true(!is.na(or$y))
+  expect_number(or$y)
   expect_equal(getOptPathLength(or$opt.path), 15)
-  expect_equal(names(or$x), names(par.set$pars))
+  expect_set_equal(names(or$x), names(par.set$pars))
 
   # check cmaes
   par.set = makeParamSet(
@@ -117,13 +116,14 @@ test_that("mbo works with rf", {
   ctrl = setMBOControlTermination(ctrl, iters = 3L)
   ctrl = setMBOControlInfill(ctrl, opt = "cmaes", opt.cmaes.control = list(maxit = 2L))
   or = mbo(f, des, learner, ctrl)
-  expect_true(!is.na(or$y))
+  expect_number(or$y)
   expect_equal(getOptPathLength(or$opt.path), 10 + 3)
   des = generateTestDesign(10L, getParamSet(f))
   ctrl = makeMBOControl(final.method = "best.predicted")
   ctrl = setMBOControlTermination(ctrl, iters = 3L)
   ctrl = setMBOControlInfill(ctrl, opt = "cmaes", opt.cmaes.control = list(maxit = 2L))
   or = mbo(f, des, learner, ctrl)
+  expect_number(or$y)
   expect_equal(getOptPathLength(or$opt.path), 10 + 3)
 
   # check more.args
@@ -145,7 +145,7 @@ test_that("mbo works with rf", {
   ctrl = setMBOControlTermination(ctrl, iters = 5L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100L)
   or = mbo(f, des, learner, ctrl, more.args = list(shift = 0))
-  expect_true(!is.na(or$y))
+  expect_number(or$y)
 
   # check y transformation before modelling
   par.set = makeParamSet(
@@ -161,9 +161,10 @@ test_that("mbo works with rf", {
   des = generateTestDesign(10L, getParamSet(f))
   ctrl = makeMBOControl(trafo.y.fun = trafoLog(handle.violations = "error"))
   ctrl = setMBOControlTermination(ctrl, iters = 2L)
-  expect_error(mbo(f, control = ctrl, more.args = list(shift = -1)), "Negative function values occured during transformation.")
+  ctrl = setMBOControlInfill(ctrl, filter.proposed.points = TRUE)
+  expect_error(mbo(f, control = ctrl, more.args = list(shift = -1)), "Negative function values occurred during transformation.")
   or = mbo(f, des, control = ctrl, more.args = list(shift = 0))
-  expect_true(!is.na(or$y))
+  expect_number(or$y)
 })
 
 # FIXME: we do we get so bad results with so many models for this case?
@@ -192,4 +193,3 @@ test_that("mbo works with rf", {
 #   expect_equal(or$x$a, TRUE)
 #   expect_true(sum(or$x$b^2) < 1)
 # })
-

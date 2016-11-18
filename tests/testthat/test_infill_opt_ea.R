@@ -1,7 +1,6 @@
 context("infillopt ea")
 
 test_that("infillopt ea", {
-
   obj.fun = smoof::makeSphereFunction(2L)
 
   ctrl = makeMBOControl(propose.points = 1L)
@@ -11,7 +10,7 @@ test_that("infillopt ea", {
 
   des = generateTestDesign(20L, getParamSet(obj.fun))
   res = mbo(obj.fun, des, learner = default.kriging, control = ctrl)
-  expect_true(res$y < 1e-1)
+  expect_lt(res$y, 1e-1)
 
   obj.fun = smoof::makeSingleObjectiveFunction(
     fn = function(x) x$num1^2 + x$int1,
@@ -24,5 +23,5 @@ test_that("infillopt ea", {
 
   des = generateTestDesign(10L, getParamSet(obj.fun))
   res = mbo(obj.fun, des, learner = default.kriging, control = ctrl)
-  expect_true(res$y < 1e-1)
+  expect_lt(res$y, 1e-1)
 })

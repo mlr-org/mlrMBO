@@ -19,13 +19,13 @@ test_that("init design", {
 
   or = mbo(obj.fun, des, learner, ctrl)
   expect_equal(getOptPathLength(or$opt.path), 11L)
-  expect_true(!any(is.na(or$y)))
+  expect_number(or$y)
 
   # with precomputed y
   des$y = apply(des, 1L, obj.fun)
   or = mbo(obj.fun, des, learner, ctrl)
   expect_equal(getOptPathLength(or$opt.path), 11L)
-  expect_true(!any(is.na(or$y)))
+  expect_number(or$y)
 
   # with trafo
   obj.fun = setAttribute(obj.fun, "par.set",
