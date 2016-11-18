@@ -104,18 +104,19 @@ renderExampleRunPlot1d = function(x, iter,
     }
     # prepare drawing of standard error (confidence interval)
     if (se) {
-      evals$se = -infillCritStandardError(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past, ])
+      evals$se = -infillCritStandardError(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past,, drop = FALSE])
     }
   }
 
   if (isNumeric(par.set, include.int = FALSE)) {
-    gg.fun = reshape2::melt(evals, id.vars = c(getParamIds(opt.path$par.set), if (se) "se" else NULL))
+    gg.fun = data.table::setDF(data.table::melt(evals, id.vars = c(getParamIds(opt.path$par.set), if (se) "se" else NULL)))
 
     if (control$multifid) {
       #rename .multifid.lvl according to control object
       repl = paste0(control$multifid.param, "=", control$multifid.lvls)
       names(repl) = as.character(seq_along(control$multifid.lvls))
-      gg.fun$.multifid.lvl = plyr::revalue(as.factor(gg.fun$.multifid.lvl), replace = repl)
+      #gg.fun$.multifid.lvl = plyr::revalue(as.factor(gg.fun$.multifid.lvl), replace = repl)
+      gg.fun$.multifid.lvl = factor(gg.fun$.multifid.lvl, labels = repl)
     }
 
     if (se) gg.fun$se = gg.fun$se * se.factor

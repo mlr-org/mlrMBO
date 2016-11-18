@@ -22,11 +22,10 @@ Imports:
     backports,
     BBmisc (>= 1.7),
     checkmate (>= 1.8.1),
+    data.table,
     ggplot2,
     RColorBrewer,
-    parallelMap (>= 1.1),
-    plyr,
-    reshape2
+    parallelMap (>= 1.1)
 Suggests:
     akima,
     cmaes,
@@ -38,7 +37,6 @@ Suggests:
     gridExtra,
     kernlab,
     kknn,
-    mboost,
     mco,
     nnet,
     party,
