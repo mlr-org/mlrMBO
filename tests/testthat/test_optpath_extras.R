@@ -1,7 +1,6 @@
 context("test optpath extras")
 
 test_that("extras are logged a expected", {
-
   # Our test function stores additional stuff here via attributes
   f = makeSingleObjectiveFunction(
     fn = function(x) {
@@ -35,10 +34,10 @@ test_that("extras are logged a expected", {
   expect_subset(as.character(opt.path[["extra2"]]), letters[1:10])
 
   # check if the dotted extra is logged
-  expect_true(getOptPathEl(result$opt.path, which.first(opt.path$y > 2))$extra$.extra3 == "y bigger than two!")
+  expect_equal(getOptPathEl(result$opt.path, which.first(opt.path$y > 2))$extra$.extra3, "y bigger than two!")
 
   # check whether times (model fitting, execution, ...) are logged
-  expect_numeric(opt.path[["exec.time"]])
+  expect_numeric(opt.path[["exec.time"]], any.missing = FALSE)
   expect_numeric(opt.path[["train.time"]])
   expect_numeric(opt.path[["propose.time"]])
 
