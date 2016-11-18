@@ -1,26 +1,26 @@
 #FIXME: document breifly in mbo how multifid is enabled
 
-#' @title Set multi-fidelity options.
-#' @description
-#' Extends an MBO control object with multi-fidelity specific options.
-#'
-#' @template arg_control
-#' @param param [\code{character(1)}]\cr
-#'   The name of the parameter which increases the performance but also calculation costs.
-#' @param lvls [\code{numeric}]\cr
-#'   The values of the param the learner should be trained with, in ascending order.
-#' @param cor.grid.points [\code{integer(1)}]\cr
-#'   Numbers of points used to calculate the correlation between the different levels of
-#'   the \code{param}.
-#' @param costs [\code{numeric}]\cr
-#'   Vector defining the cost for each level.
-#'   Default is \code{NULL} which means that the cost will be predicted by a model build on the \code{exec.time} from the so far evaluated points.
-#' @param force.last.level.steps [\code{integer(1)}]
-#'   Force an evaluation on the highest fidelity level each i-th step.
-#' @template arg_showinfo
-#' @return [\code{\link{MBOControl}}].
-#' @family MBOControl
-#' @export
+##' @title Set multi-fidelity options.
+##' @description
+##' Extends an MBO control object with multi-fidelity specific options.
+##'
+##' @template arg_control
+##' @param param [\code{character(1)}]\cr
+##'   The name of the parameter which increases the performance but also calculation costs.
+##' @param lvls [\code{numeric}]\cr
+##'   The values of the param the learner should be trained with, in ascending order.
+##' @param cor.grid.points [\code{integer(1)}]\cr
+##'   Numbers of points used to calculate the correlation between the different levels of
+##'   the \code{param}.
+##' @param costs [\code{numeric}]\cr
+##'   Vector defining the cost for each level.
+##'   Default is \code{NULL} which means that the cost will be predicted by a model build on the \code{exec.time} from the so far evaluated points.
+##' @param force.last.level.steps [\code{integer(1)}]
+##'   Force an evaluation on the highest fidelity level each i-th step.
+##' @template arg_showinfo
+##' @return [\code{\link{MBOControl}}].
+##' @family MBOControl
+##' @export
 setMBOControlMultiFid = function(control, param, lvls, costs = NULL, cor.grid.points = NULL,
   force.last.level.steps = NULL, show.info = NULL) {
 
