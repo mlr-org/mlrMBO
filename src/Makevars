@@ -1,7 +1,0 @@
-all: $(SHLIB)
-
-hv.o: hv.c
-	$(CC) $(ALL_CPPFLAGS) $(ALL_CFLAGS) -DVARIANT=4 -c -o hv.o hv.c
-
-avl.o: avl.c
-	$(CC) $(ALL_CPPFLAGS) $(ALL_CFLAGS) -DVARIANT=4 -c -o avl.o avl.c
