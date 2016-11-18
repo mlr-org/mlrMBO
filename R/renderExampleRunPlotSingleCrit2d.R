@@ -59,7 +59,7 @@ renderExampleRunPlot2d = function(x, iter,
     if (proppoints == 1L) {
       evals[[name.crit]] = opt.direction * critfun(evals.x, models, control, par.set, opt.path[idx.past, ])
     } else {
-      objective = control$multipoint.multicrit.objective
+      objective = control$multipoint.moimbo.objective
       if (control$multipoint.method == "cb") {
         evals[[name.crit]] = opt.direction * infillCritMeanResponse(evals.x, models, control, par.set, opt.path[idx.past, ])
       } else {

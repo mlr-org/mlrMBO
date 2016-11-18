@@ -93,7 +93,7 @@ renderExampleRunPlot1d = function(x, iter,
       evals[[name.crit]] = opt.direction *
         critfun(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past,, drop = FALSE])
     } else {
-      objective = control$multipoint.multicrit.objective
+      objective = control$multipoint.moimbo.objective
       if (objective == "mean.dist") {
         evals[[name.crit]] = opt.direction * infillCritMeanResponse(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past,, drop = FALSE])
       } else if (objective == "ei.dist") {
