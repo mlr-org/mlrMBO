@@ -48,5 +48,5 @@ Suggests:
     eaf
 LazyData: yes
 ByteCompile: yes
-Version: 1.0
+Version: 1.0.0
 RoxygenNote: 5.0.1
