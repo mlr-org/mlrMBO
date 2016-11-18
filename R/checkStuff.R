@@ -31,7 +31,7 @@ checkStuff = function(fun, par.set, design, learner, control) {
   # final.method and final.evals have no effect on multicriteria optimization
   if (getNumberOfObjectives(fun) > 1L &&
       (control$final.method != "best.true.y" || control$final.evals > 0L)) {
-    stopf("Setting of final.method and final.evals for multicriteria optimization not supported at the moment.")
+    stop("Setting of final.method and final.evals for multicriteria optimization not supported at the moment.")
   }
 
   # general parameter and learner checks
