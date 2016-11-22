@@ -1,11 +1,12 @@
 context("exampleRunMulticrit")
 
 test_that("exampleRunMulticrit", {
-  doRun = function(method, crit, prop.points, indicator = "sms") {
+
+  doRun = function(method, crit, prop.points, indicator = "sms", trafo.y.fun = NULL) {
     # set nugget effect to small value for num stability in this unit test
     learner = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2", nugget = 0.001)
     control = makeMBOControl(n.objectives = 2L,
-      propose.points = prop.points)
+      propose.points = prop.points, trafo.y.fun = trafo.y.fun)
     control = setMBOControlTermination(control, iters = 1L)
     if (method == "mspot")
       control = setMBOControlInfill(control, crit = crit, opt = "nsga2", opt.nsga2.popsize = 4L,
@@ -24,6 +25,7 @@ test_that("exampleRunMulticrit", {
 
   doRun(method = "parego", crit = "ei", prop.points = 1L)
   doRun(method = "parego", crit = "ei", prop.points = 2L)
+  doRun(method = "parego", crit = "ei", prop.points = 2L, trafo.y.fun = trafoLog())
   doRun(method = "parego", crit = "cb", prop.points = 1L)
   doRun(method = "parego", crit = "cb", prop.points = 2L)
   doRun(method = "mspot", crit = "ei", prop.points = 1L)
