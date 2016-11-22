@@ -55,9 +55,9 @@ infillOptMultiCritNSGA2 = function(infill.crit, models, control, par.set, opt.pa
     prop.hv.contrs[i] = max(hv.contrs)
     # add best to prop.points/vals and remove from candidate.point/vals
     prop.points = rbind(prop.points, candidate.points[best.ind, ])
-    candidate.points = candidate.points[-best.ind, ]
+    candidate.points = candidate.points[-best.ind,, drop = FALSE]
     prop.vals = rbind(prop.vals, candidate.vals[best.ind, ])
-    candidate.vals = candidate.vals[-best.ind, ]
+    candidate.vals = candidate.vals[-best.ind,, drop = FALSE]
   }
 
   # FIXME: cleanup - i'm reall unsure how to set the names of prop.points technically

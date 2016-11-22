@@ -91,15 +91,15 @@ renderExampleRunPlot1d = function(x, iter,
     #FIXME: We might want to replace the following by a helper function so that we can reuse it in buildPointsData()
     if (propose.points == 1L) {
       evals[[name.crit]] = opt.direction *
-        critfun(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past, ])
+        critfun(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past,, drop = FALSE])
     } else {
       objective = control$multipoint.multicrit.objective
       if (objective == "mean.dist") {
-        evals[[name.crit]] = opt.direction * infillCritMeanResponse(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past, ])
+        evals[[name.crit]] = opt.direction * infillCritMeanResponse(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past,, drop = FALSE])
       } else if (objective == "ei.dist") {
-        evals[[name.crit]] = opt.direction * infillCritEI(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past, ])
+        evals[[name.crit]] = opt.direction * infillCritEI(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past,, drop = FALSE])
       } else if (objective %in% c("mean.se", "mean.se.dist")) {
-        evals[[name.crit]] = opt.direction * infillCritMeanResponse(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past, ])
+        evals[[name.crit]] = opt.direction * infillCritMeanResponse(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past,, drop = FALSE])
       }
     }
     # prepare drawing of standard error (confidence interval)
@@ -179,7 +179,7 @@ renderExampleRunPlot1d = function(x, iter,
         gap = NA
       }
     } else {
-      gap = calculateGap(convertOptPathToDf(opt.path, control)[idx.pastpresent, ], global.opt, control)
+      gap = calculateGap(convertOptPathToDf(opt.path, control)[idx.pastpresent,, drop = FALSE], global.opt, control)
     }
 
     g = g + ggtitle(sprintf("Iter = %i, Gap = %.4e", iter, gap))
@@ -216,7 +216,7 @@ renderExampleRunPlot1d = function(x, iter,
     pl.fun = pl.fun + scale_colour_discrete(name = "type")
     pl.fun = pl.fun + ggtitle(
       sprintf("Iter = %i, Gap = %.4e", iter,
-      calculateGap(convertOptPathToDf(opt.path, control)[idx.pastpresent,], global.opt, control))
+      calculateGap(convertOptPathToDf(opt.path, control)[idx.pastpresent,, drop = FALSE], global.opt, control))
     )
 
     pl.fun = pl.fun + theme(

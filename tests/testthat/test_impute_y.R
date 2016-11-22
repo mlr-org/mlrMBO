@@ -41,12 +41,13 @@ test_that("impute y", {
   ctrl = setMBOControlTermination(ctrl, iters = 20L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = n.focus.points)
   res = mbo(f1, des2, learner, ctrl)
+  expect_is(res, "MBOResult")
 
   # Check for correct error messages
   na.inds = which(getOptPathY(res$opt.path) == 0)
   for (ind in 1:getOptPathLength(res$opt.path)) {
     if(ind %in% na.inds)
-      expect_equal(grep("mlrMBO:", getOptPathErrorMessages(res$opt.path)[ind]), 1)
+      expect_string(getOptPathErrorMessages(res$opt.path)[ind], fixed = "mlrMBO:")
     else
       expect_equal(NA_character_, getOptPathErrorMessages(res$opt.path)[ind])
   }
@@ -59,11 +60,13 @@ test_that("impute y", {
   ctrl = setMBOControlTermination(ctrl, iters = 50L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = n.focus.points)
   res = mbo(f2, des2, learner, ctrl)
+  expect_is(res, "MBOResult")
+
   # Check for correct error messages
   na.inds = which(getOptPathY(res$opt.path) == 0)
   for (ind in 1:getOptPathLength(res$opt.path)) {
     if(ind %in% na.inds)
-      expect_equal(grep("foo", getOptPathErrorMessages(res$opt.path)[ind]), 1)
+      expect_string(getOptPathErrorMessages(res$opt.path)[ind], fixed = "foo")
     else
       expect_equal(NA_character_, getOptPathErrorMessages(res$opt.path)[ind])
   }
@@ -73,7 +76,6 @@ test_that("impute y", {
 })
 
 test_that("impute y parego", {
-
   # Test impute
   f1 = smoof::makeMultiObjectiveFunction(
     fn = function(x) {
@@ -92,6 +94,6 @@ test_that("impute y parego", {
   ctrl = setMBOControlMultiCrit(ctrl, method = "parego", parego.s = 100)
   or = mbo(f1, des1, learner = learner, control = ctrl)
   op = as.data.frame(or$opt.path)
-  expect_equal(nrow(op), 10 + 5)
+  expect_data_frame(op, nrow = 10 + 5)
   expect_true(all(is.na(op$error.message) | op$y1 == 100))
 })

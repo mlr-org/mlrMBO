@@ -1,7 +1,6 @@
 context("test optpath extras")
 
 test_that("extras are logged a expected", {
-
   # Our test function stores additional stuff here via attributes
   f = makeSingleObjectiveFunction(
     fn = function(x) {
@@ -25,21 +24,25 @@ test_that("extras are logged a expected", {
 
   # run mbo and convert opt path to data frame
   result = mbo(f, des, learner = learner, control = control)
-
   extras.names = c("extra1", "extra2")
 
   opt.path = as.data.frame(result$opt.path)
 
   # check whether user extras are in fact logged
-  expect_true(all(extras.names %in% names(opt.path)))
-  expect_true(all(is.numeric(opt.path[["extra1"]])))
-  expect_true(all(opt.path[["extra2"]] %in% letters[1:10]))
-  
+  expect_subset(extras.names, names(opt.path))
+  expect_numeric(opt.path[["extra1"]])
+  expect_subset(as.character(opt.path[["extra2"]]), letters[1:10])
+
   # check if the dotted extra is logged
-  expect_true(getOptPathEl(result$opt.path, which.first(opt.path$y > 2))$extra$.extra3 == "y bigger than two!")
+  expect_equal(getOptPathEl(result$opt.path, which.first(opt.path$y > 2))$extra$.extra3, "y bigger than two!")
 
   # check whether times (model fitting, execution, ...) are logged
-  expect_true(all(is.numeric(opt.path[["exec.time"]])))
-  expect_true(all(is.numeric(opt.path[["train.time"]])))
-  expect_true(all(is.numeric(opt.path[["propose.time"]])))
+  expect_numeric(opt.path[["exec.time"]], any.missing = FALSE)
+  expect_numeric(opt.path[["train.time"]])
+  expect_numeric(opt.path[["propose.time"]])
+
+  #check whether infill.crit specific informations is logged
+  expect_subset(c("se", "mean"), names(opt.path))
+  expect_numeric(opt.path[["se"]][11:12], any.missing = FALSE)
+  expect_numeric(opt.path[["mean"]][11:12], any.missing = FALSE)
 })

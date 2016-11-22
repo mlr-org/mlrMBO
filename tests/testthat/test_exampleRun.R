@@ -1,8 +1,6 @@
 context("exampleRun")
 
 test_that("renderExampleRunPlot produces list of ggplot2 objects", {
-  library(ggplot2)
-
   n.iters = 1L
 
   doRun = function(obj.fn, predict.type, crit, learner = "regr.km") {
@@ -43,11 +41,10 @@ test_that("renderExampleRunPlot produces list of ggplot2 objects", {
   # with se
   plot.list = doRun(obj.fn, "se", "ei")
   checkPlotList(plot.list)
-  
+
   #default learner
   plot.list = doRun(obj.fn, "response", "ei", learner = NULL)
   checkPlotList(plot.list)
-
 
   ### 2d MIXED
   obj.fn = smoof::makeSingleObjectiveFunction(

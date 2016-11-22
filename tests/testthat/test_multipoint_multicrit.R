@@ -4,7 +4,7 @@ test_that("multipoint multicrit", {
   f = makeBraninFunction()
   f = setAttribute(f, "par.set", makeNumericParamSet(len = 2L, lower = 0, upper = 1))
 
-  #FIXME how can we test this better?
+  #FIXME: how can we test this better?
   for (obj in c("ei.dist", "mean.se", "mean.se.dist")) {
     for (dist in c("nearest.better", "nearest.neighbor")) {
       for (sel in c("hypervolume", "crowdingdist", "first", "last")) {
@@ -24,7 +24,7 @@ test_that("multipoint multicrit", {
         expect_output(print(res), "Recommended parameters")
 
         gap = res$y - 0.3979
-        #expect_true(gap < 0.1)
+        # expect_lt(gap, 0.1)
       }
     }
   }

@@ -18,7 +18,9 @@ test_that("exampleRunMulticrit", {
 
     run = exampleRunMultiCrit(testf.zdt1.2d, testd.zdt1.2d, learner = learner, control = control, points.per.dim = 4L,
       nsga2.args = list(popsize = 4L, generations = 2L))
+    expect_is(run, "MBOExampleRunMultiCrit")
     res = renderExampleRunPlot(run, iter = 1L)
+    expect_list(res, min.len = 1L, types = c("ggplot", "list"))
   }
 
   doRun(method = "parego", crit = "ei", prop.points = 1L)
@@ -27,7 +29,7 @@ test_that("exampleRunMulticrit", {
   doRun(method = "parego", crit = "cb", prop.points = 1L)
   doRun(method = "parego", crit = "cb", prop.points = 2L)
   doRun(method = "mspot", crit = "ei", prop.points = 1L)
-  doRun(method = "mspot", crit = "ei", prop.points = 2L)
+  doRun(method = "mspot", crit = "ei", prop.points = 4L)
   doRun(method = "mspot", crit = "cb", prop.points = 1L)
   doRun(method = "mspot", crit = "cb", prop.points = 2L)
   doRun(method = "dib", crit = "dib", prop.points = 1L)

@@ -21,18 +21,25 @@ test_that("infill crits", {
 
   mycheck = function(or, minimize) {
     expect_equal(getOptPathLength(or$opt.path), ninit + niters + 10L)
-    expect_true(!is.na(or$y))
+    expect_number(or$y)
     if (minimize)
       expect_true(or$y < 25)
     else
       expect_true(or$y > 30)
+    opdf = as.data.frame(or$opt.path)
+    if ("ei" %in% colnames(opdf)) {
+      expect_true(!any(is.na(opdf[21:23, c("ei","se","mean")])))
+    } else if ("cb" %in% colnames(opdf)) {
+      expect_true(!any(is.na(opdf[21:23, c("se","mean","lambda")])))
+    } else if ("aei" %in% colnames(opdf)) {
+      expect_true(!any(is.na(opdf[21:23, c("se","mean","tau")])))
+    }
   }
 
   learners = list(
     makeLearner("regr.km", predict.type = "se"),
     makeLearner("regr.randomForest", ntree = 10L, predict.type = "se")
   )
-
 
   # FIXME: we see a problem with crit = "mean" here.
   # at some point we will always eval the same point.
@@ -66,7 +73,7 @@ test_that("infill crits", {
   ctrl = setMBOControlInfill(ctrl, crit = "cb", opt = "focussearch", opt.restarts = 1L,
     opt.focussearch.points = 300L, crit.cb.lambda = NULL, crit.cb.pi = 0.5)
   or = mbo(f1, des, learner = makeLearner("regr.km", predict.type = "se"), control = ctrl)
-  expect_true(or$y < 50)
+  expect_lt(or$y, 50)
 
   # check beta for eqi
   expect_error(setMBOControlInfill(ctrl, crit = "eqi", opt = "focussearch", opt.restarts = 1L,

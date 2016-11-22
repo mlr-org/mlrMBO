@@ -74,7 +74,7 @@ trafoSqrt = function(handle.violations = "warn") {
 checkAndRepairNegativeValues = function(x, handle.violations) {
   if (any(x < 0)) {
     if (handle.violations == "error")
-      stopf("Negative function values occured during transformation.")
+      stopf("Negative function values occurred during transformation.")
     warning("Negative function values. Shifting function.")
     return(x - min(x) + 1)
   }

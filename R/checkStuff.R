@@ -28,6 +28,12 @@ checkStuff = function(fun, par.set, design, learner, control) {
     stopf("Optimization of noisy multi-objective functions not supported in the moment.")
   }
 
+  # final.method and final.evals have no effect on multicriteria optimization
+  if (getNumberOfObjectives(fun) > 1L &&
+      (control$final.method != "best.true.y" || control$final.evals > 0L)) {
+    stop("Setting of final.method and final.evals for multicriteria optimization not supported at the moment.")
+  }
+
   # general parameter and learner checks
   if (any(vlapply(par.set$pars, inherits, what = "LearnerParam")))
     stop("No parameter can be of class 'LearnerParam'! Use basic parameters instead to describe you region of interest!")
