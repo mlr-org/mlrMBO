@@ -13,8 +13,8 @@ Authors@R: c(
     person("Michel", "Lang", email = "michellang@gmail.com", role = "aut"),
     person("Janek", "Thomas", email = "janek.thomas@stat.uni-muenchen.de", role = "aut"))
 License: BSD_3_clause + file LICENSE
-URL: https://github.com/berndbischl/mlrMBO
-BugReports: https://github.com/berndbischl/mlrMBO/issues
+URL: https://github.com/mlr-org/mlrMBO
+BugReports: https://github.com/mlr-org/mlrMBO/issues
 Depends:
     mlr (>= 2.7),
     ParamHelpers (>= 1.8),
