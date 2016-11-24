@@ -1,5 +1,36 @@
-library(checkmate)
-
+#' @title Create an infill critertion.
+#'
+#' @description The infill criterion guides the model based search process.
+#' The most prominent infill criteria, e.g., expected improvement, lower
+#' confidence bound and others, are already implemented in mlrMBO. Moreover,
+#' the package allows for the creation of proprietary infill criteria.
+#'
+#' @param infill.fun [\code{function}]\cr
+#'   A function which expects the following parameters in exactly this order
+#'   and return a numeric vector of criteria values at the points:
+#'   \describe{
+#'     \item{points [\code{data.frame}]}{n points where to evaluate}.
+#'     \item{models [\code{\link[mlr]{WrappedModel} | \code{list}]}{Model(s) fitted on design.}
+#'     \item{control [\code{MBOControl}]}{Control object.}
+#'     \item{par.set [ParamSet]}{Parameter set.}
+#'     \item{design [data.frame]}{Design of already visited points.}
+#'     \item{iter [integer(1)]}{Current iteration.}
+#' @param name [\character{1}]\cr
+#'   Full name of the criterion.
+#' @param id [\character{1}]\cr
+#'   Short name of the criterion.
+#'   Used internally and in plots.
+#' @param minimize [\character(1)]\cr
+#'   Shall the criterion be minimized or maximized?
+#'   Default is \code{TRUE}.
+#' @param params [\code{list}]\cr
+#'   Name list of parameters. Infill criteria might depend on parameters.
+#'   These parameters should be stored in the \code{params} list in order
+#'   to access them inside mlrMBO.
+#'   Default is the empty list.
+#' @return [\code{MBOInfillCriterion}]
+#'   Basically \code{infill.fun} with an additional class.
+#'   All other parameters are appended as attributes.
 makeMBOInfillCriterion = function(
   infill.fun,
   name,
@@ -11,6 +42,10 @@ makeMBOInfillCriterion = function(
     args = c("points", "models", "control",
       "par.set", "design", "iter", "attributes"),
     ordered = TRUE)
+
+  #FIXME: add regexp check for names
+  #FIXME: add length restriction for id?
+  #FIXME: handle crit.components
   assertString(name)
   assertString(id)
   assertFlag(minimize)
