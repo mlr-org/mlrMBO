@@ -12,11 +12,11 @@ ctrl = makeMBOControl(
   init.design.points = 10L,
   iters = 5L,
   propose.points = 5L, 
-  multipoint.method = "multicrit",
-  multipoint.multicrit.objective = "mean.se.dist",
-  multipoint.multicrit.eta = 15,
-  multipoint.multicrit.p = 1,
-  multipoint.multicrit.maxit = 200L,
+  multipoint.method = "moimbo",
+  multipoint.moimbo.objective = "mean.se.dist",
+  multipoint.moimbo.eta = 15,
+  multipoint.moimbo.p = 1,
+  multipoint.moimbo.maxit = 200L,
   infill.crit="ei"
 )
 

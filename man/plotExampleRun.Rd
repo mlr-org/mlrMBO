@@ -12,7 +12,7 @@ plotExampleRun(object, iters, pause = TRUE, densregion = TRUE,
 \arguments{
 \item{object}{[\code{function}]\cr
 \code{MBOExampleRun} object from \code{exampleRun} or
-\code{MBOExampleRunMulticrit} object from \code{exampleRunMultiCrit}.}
+\code{MBOExampleRunMultiObj} object from \code{exampleRunMultiObj}.}
 
 \item{iters}{[\code{integer}]\cr
 Selected iterations of \code{object} to produce plots.
@@ -33,7 +33,7 @@ is plotted above and below.
 Default is 1.}
 
 \item{single.prop.point.plots}{[\code{logical(1)}]\cr
-Parameter for Multicrit Multipoint proposal: Should every proposed point
+Parameter for MOI-MBO Multipoint proposal: Should every proposed point
 be displayed in a single plot - or one plot per Iteration? Default is FALSE
 indicating single plots per proposed points.}
 

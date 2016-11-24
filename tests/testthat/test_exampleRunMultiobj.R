@@ -1,6 +1,6 @@
-context("exampleRunMulticrit")
+context("exampleRunMultiObj")
 
-test_that("exampleRunMulticrit", {
+test_that("exampleRunMultiObj", {
 
   doRun = function(method, crit, prop.points, indicator = "sms", trafo.y.fun = NULL) {
     # set nugget effect to small value for num stability in this unit test
@@ -14,11 +14,11 @@ test_that("exampleRunMulticrit", {
     else
       control = setMBOControlInfill(control, crit = crit, opt = "focussearch", opt.restarts = 1L,
         opt.focussearch.points = 10L, opt.focussearch.maxit = 1L)
-    control = setMBOControlMultiCrit(control, method = method, dib.indicator = indicator)
+    control = setMBOControlMultiObj(control, method = method, dib.indicator = indicator)
 
-    run = exampleRunMultiCrit(testf.zdt1.2d, testd.zdt1.2d, learner = learner, control = control, points.per.dim = 4L,
+    run = exampleRunMultiObj(testf.zdt1.2d, testd.zdt1.2d, learner = learner, control = control, points.per.dim = 4L,
       nsga2.args = list(popsize = 4L, generations = 2L))
-    expect_is(run, "MBOExampleRunMultiCrit")
+    expect_is(run, "MBOExampleRunMultiObj")
     res = renderExampleRunPlot(run, iter = 1L)
     expect_list(res, min.len = 1L, types = c("ggplot", "list"))
   }

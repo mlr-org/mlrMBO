@@ -41,7 +41,7 @@ Extends an MBO control object with multi-fidelity specific options.
 \seealso{
 Other MBOControl: \code{\link{makeMBOControl}},
   \code{\link{setMBOControlInfill}},
-  \code{\link{setMBOControlMultiCrit}},
+  \code{\link{setMBOControlMultiObj}},
   \code{\link{setMBOControlMultiPoint}},
   \code{\link{setMBOControlTermination}}
 }

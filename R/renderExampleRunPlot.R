@@ -1,5 +1,5 @@
 #' @title Renders plots for exampleRun objects, either in 1D or 2D, or
-#' exampleRunMultiCrit objects.
+#' exampleRunMultiObj objects.
 #'
 #' @description
 #' The graphical output depends on the target function at hand.
@@ -16,7 +16,7 @@
 #'   plot displays the x-space.
 #'
 #' @param object [\code{function}]\cr
-#'   \code{MBOExampleRun} or \code{MBOExampleRunMulticrit} object.
+#'   \code{MBOExampleRun} or \code{MBOExampleRunMultiObj} object.
 #' @param iter [\code{integer}]\cr
 #'   Selected iteration of \code{object} to render plots for.
 #' @param densregion [\code{logical(1)}]\cr
@@ -28,7 +28,7 @@
 #'   is plotted above and below.
 #'   Default is 1.
 #' @param single.prop.point.plots [\code{logical(1)}]\cr
-#'   Parameter for Multicrit Multipoint proposal: Should every proposed point
+#'   Parameter for MOI-MBO Multipoint proposal: Should every proposed point
 #'   be displayed in a single plot - or one plot per Iteration? Default is FALSE
 #'   indicating single plots per proposed points.
 #' @param xlim [\code{numeric(2)}]\cr

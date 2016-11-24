@@ -23,15 +23,15 @@ checkStuff = function(fun, par.set, design, learner, control) {
       getNumberOfObjectives(fun), control$n.objectives)
   }
 
-  # at the moment we do not support noisy multicriteria optimization
+  # at the moment we do not support noisy multiobjective optimization
   if (getNumberOfObjectives(fun) > 1L && isNoisy(fun)) {
     stopf("Optimization of noisy multi-objective functions not supported in the moment.")
   }
 
-  # final.method and final.evals have no effect on multicriteria optimization
+  # final.method and final.evals have no effect on multiobjective optimization
   if (getNumberOfObjectives(fun) > 1L &&
       (control$final.method != "best.true.y" || control$final.evals > 0L)) {
-    stop("Setting of final.method and final.evals for multicriteria optimization not supported at the moment.")
+    stop("Setting of final.method and final.evals for multiobjective optimization not supported at the moment.")
   }
 
   # general parameter and learner checks
@@ -112,17 +112,17 @@ checkStuff = function(fun, par.set, design, learner, control) {
     }
   }
 
-  # multicrit stuff
+  # multi-objective stuff
   if (control$n.objectives > 1L) {
-    if (control$multicrit.method == "dib") {
+    if (control$multiobj.method == "dib") {
       if (control$infill.crit != "dib")
-        stopf("For multicrit 'dib' infil.crit must be set to 'dib'!")
+        stopf("For multi-objective 'dib' infil.crit must be set to 'dib'!")
     } else {
       if (control$infill.crit == "dib")
-        stopf("For infill.crit 'dib', multicrit method 'dib' is needed!")
+        stopf("For infill.crit 'dib', multi-objective method 'dib' is needed!")
     }
-    if (control$multicrit.method == "mspot" && control$infill.opt != "nsga2")
-      stopf("For multicrit 'mspot' infil.opt must be set to 'nsga2'!")
+    if (control$multiobj.method == "mspot" && control$infill.opt != "nsga2")
+      stopf("For multi-objective 'mspot' infil.opt must be set to 'nsga2'!")
   }
 
   # multifidelity stuff

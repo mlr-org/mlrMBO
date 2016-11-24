@@ -5,10 +5,9 @@
 \title{Set multipoint proposal options.}
 \usage{
 setMBOControlMultiPoint(control, method = NULL, cl.lie = NULL,
-  multicrit.objective = NULL, multicrit.dist = NULL,
-  multicrit.selection = NULL, multicrit.maxit = NULL,
-  multicrit.sbx.eta = NULL, multicrit.sbx.p = NULL,
-  multicrit.pm.eta = NULL, multicrit.pm.p = NULL)
+  moimbo.objective = NULL, moimbo.dist = NULL, moimbo.selection = NULL,
+  moimbo.maxit = NULL, moimbo.sbx.eta = NULL, moimbo.sbx.p = NULL,
+  moimbo.pm.eta = NULL, moimbo.pm.p = NULL)
 }
 \arguments{
 \item{control}{[\code{\link{MBOControl}}]\cr
@@ -22,10 +21,10 @@ Possible values are:
 exp(1)-distribution, so do not define \code{infill.opt.cb.lambda}.
 The optimizer for each proposal is configured in the same way as for the single point case,
 i. e., by specifying \code{infill.opt} and related stuff.
-\dQuote{multicrit}: Proposes points by evolutionary multicriteria optimization.
-The EA is a (mu+1) type of algorithm and runs for \code{multicrit.maxit} generations.
+\dQuote{moimbo}: Proposes points by multiobjective infill criteria via evolutionary multiobjective optimization.
+The EA is a (mu+1) type of algorithm and runs for \code{moimbo.maxit} generations.
 The population size is set to \code{propose.points}.
-The selection criterion is \code{multicrit.selection}.
+The selection criterion is \code{moimbo.selection}.
 \dQuote{cl}: Proposes points by constant liar strategy.
 Only meaningfull if \code{infill.crit == "cb"}
 In the first step the kriging model is fitted based on the real data and the best point is calculated
@@ -38,43 +37,43 @@ Default is \code{cb}.}
 \item{cl.lie}{[\code{function}]\cr
 Function used by constant liar method for lying. Default is \code{min}.}
 
-\item{multicrit.objective}{[\code{character(1)}]\cr
-Objectives which are optimized in multicrit approach.
+\item{moimbo.objective}{[\code{character(1)}]\cr
+Objectives which are optimized in multi-objective approach.
 Possible values are: \dQuote{mean.dist}, \dQuote{ei.dist}, \dQuote{mean.se}, \dQuote{mean.se.dist}.
 Default is \dQuote{ei.dist}.}
 
-\item{multicrit.dist}{[\code{character(1)}]\cr
-Distance function used in multicrit EA.
+\item{moimbo.dist}{[\code{character(1)}]\cr
+Distance function used in multi-objective EA.
 Possible values are: \dQuote{nearest.neigbor}, \dQuote{nearest.better}.
 Default is \dQuote{nearest.better}.}
 
-\item{multicrit.selection}{[\code{character(1)}]\cr
+\item{moimbo.selection}{[\code{character(1)}]\cr
 Method used for selecting 1 element for removal from the population
-in each iteration of the multicriteria EA.
+in each iteration of the multiobjective EA.
 Possible values are:
 \dQuote{hypervolume}: Non-dominated sorting + hypervolume contribution.
 \dQuote{crowdingdist}: Non-dominated sorting + crowding distance based ranking.
-\dQuote{first}: Non-dominated sorting + first objective of \code{multicrit.objective} as criterion.
-\dQuote{last}: Non-dominated sorting + last objective of \code{multicrit.objective} as criterion.
+\dQuote{first}: Non-dominated sorting + first objective of \code{moimbo.objective} as criterion.
+\dQuote{last}: Non-dominated sorting + last objective of \code{moimbo.objective} as criterion.
 Default is \code{hypervolume}.}
 
-\item{multicrit.maxit}{[\code{character(1)}]\cr
-Number of generations for multicriteria EA.
+\item{moimbo.maxit}{[\code{character(1)}]\cr
+Number of generations for multiobjective EA.
 Default is 100.}
 
-\item{multicrit.sbx.eta}{[\code{numeric(1)}]\cr
+\item{moimbo.sbx.eta}{[\code{numeric(1)}]\cr
 Distance parameter of crossover distribution, see \code{\link[emoa]{sbx_operator}}.
 Default is 15.}
 
-\item{multicrit.sbx.p}{[\code{numeric(1)}]\cr
+\item{moimbo.sbx.p}{[\code{numeric(1)}]\cr
 Probability of 1-point crossover, see \code{\link[emoa]{sbx_operator}}.
 Default is 1.}
 
-\item{multicrit.pm.eta}{[\code{numeric(1)}]\cr
+\item{moimbo.pm.eta}{[\code{numeric(1)}]\cr
 Distance parameter of mutation distribution, see \code{\link[emoa]{pm_operator}}.
 Default is 15.}
 
-\item{multicrit.pm.p}{[\code{numeric(1)}]\cr
+\item{moimbo.pm.p}{[\code{numeric(1)}]\cr
 Probability of 1-point mutation, see \code{\link[emoa]{pm_operator}}.
 Default is 1.}
 }
@@ -87,8 +86,8 @@ Extends an MBO control object with options for multipoint proposal.
 \seealso{
 Other MBOControl: \code{\link{makeMBOControl}},
   \code{\link{setMBOControlInfill}},
-  \code{\link{setMBOControlMultiCrit}},
   \code{\link{setMBOControlMultiFid}},
+  \code{\link{setMBOControlMultiObj}},
   \code{\link{setMBOControlTermination}}
 }
 

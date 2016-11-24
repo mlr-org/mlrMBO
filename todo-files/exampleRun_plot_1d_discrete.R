@@ -107,7 +107,7 @@ plotMBOExampleRun1DDiscrete = function(x, iters, pause=TRUE,
     #         xlab=name.x, ylab=name.crit, cex.axis=cex.axis, cex.lab=cex.lab)
     #       for (j in 1:proppoints)
     #         lines(xseq, evals[, sprintf("%s_%i", "lcb", j)], lty="dashed", lwd=lwd.lines)
-    #     } else if (ctrl$multipoint.method == "multicrit") {
+    #     } else if (ctrl$multipoint.method == "moimbo") {
     #       #FIXME add case for bicriteria
     #       plot(xseq, evals[, name.crit], xlim=xlim, type="l", lty="dashed",
     #         xlab=name.x, ylab=name.crit, lwd=lwd.lines, cex.axis=cex.axis, cex.lab=cex.lab)

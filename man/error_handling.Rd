@@ -9,7 +9,7 @@ process. mlrMBO tries to handle most of them as smart as possible.
 
 The target function could
 \itemize{
-  \item{1}{The target function returns NA(s) or NaN(s) (plural for the multicrit case).}
+  \item{1}{The target function returns NA(s) or NaN(s) (plural for the multi-objective case).}
   \item{2}{The target function stops with an error.}
   \item{3}{The target function does not return at all (infinite or very long execution time).}
   \item{4}{The target function crashes the whole R process.}

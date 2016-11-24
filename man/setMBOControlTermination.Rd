@@ -27,7 +27,7 @@ the condition is checked after each iteration.
 The default \code{NULL} means: There is no execution time budget.}
 
 \item{target.fun.value}{[\code{numeric(1)}] | NULL]\cr
-Termination criterion for single crit optimization: Stop if a function evaluation
+Termination criterion for single objective optimization: Stop if a function evaluation
 is better than this given target.value.
 The default \code{NULL} means: The function value won't be taken into account for termination.}
 
@@ -75,8 +75,8 @@ res = mbo(fn, control = ctrl)
 \seealso{
 Other MBOControl: \code{\link{makeMBOControl}},
   \code{\link{setMBOControlInfill}},
-  \code{\link{setMBOControlMultiCrit}},
   \code{\link{setMBOControlMultiFid}},
+  \code{\link{setMBOControlMultiObj}},
   \code{\link{setMBOControlMultiPoint}}
 }
 

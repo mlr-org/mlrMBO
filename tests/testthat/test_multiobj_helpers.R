@@ -1,6 +1,6 @@
-context("multicrit helpers")
+context("multi-objective helpers")
 
-test_that("multicrit helpers", {
+test_that("multi-objective helpers", {
   # we had a bug here
   m = matrix(c(1, 2, 3, 4), 2, 2, byrow = TRUE)
   e = getWorstExtremePoint(m, minimize = c(TRUE, TRUE))
