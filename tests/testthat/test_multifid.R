@@ -20,7 +20,7 @@ test_that("basic multifid works", {
   control = setMBOControlTermination(control, iters = 5L)
 
   control = setMBOControlInfill(control = control,
-                                crit = "ei",
+                                crit = makeMBOInfillCriterionEI(),
                                 opt = "focussearch",
                                 opt.restarts = 1L,
                                 opt.focussearch.maxit = 1L,

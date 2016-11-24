@@ -20,7 +20,7 @@ test_that("extras are logged a expected", {
   learner = makeLearner("regr.km", predict.type = "se")
   control = makeMBOControl()
   control = setMBOControlTermination(control, iters = 2L)
-  control = setMBOControlInfill(control, crit = "ei", opt = "focussearch")
+  control = setMBOControlInfill(control, crit = makeMBOInfillCriterionEI(), opt = "focussearch")
 
   # run mbo and convert opt path to data frame
   result = mbo(f, des, learner = learner, control = control)

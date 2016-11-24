@@ -47,7 +47,8 @@ test_that("infill crits", {
   # we have converged and just waste time. we need to detect this somehow, or cope with it
   for (noisy in c(TRUE, FALSE)) {
     for (minimize in c(TRUE, FALSE)) {
-      crits = if (!noisy) c("mean", "ei") else c("aei", "eqi")
+      crits = if (!noisy) c(makeMBOInfillCriterionMeanResponse(), makeMBOInfillCriterionEI())
+        else c(makeMBOInfillCriterionAEI(), makeMBOInfillCriterionEQI())
       for (lrn in learners) {
         if (inherits(lrn, "regr.km"))
           lrn = setHyperPars(lrn, nugget.estim = noisy)
@@ -65,21 +66,24 @@ test_that("infill crits", {
   # check lambda and pi for cb
   ctrl = makeMBOControl(final.evals = 10L)
   ctrl = setMBOControlTermination(ctrl, iters = niters)
-  ctrl = setMBOControlInfill(ctrl, crit = "cb", opt = "focussearch", opt.restarts = 1L,
-    opt.focussearch.points = 300L, crit.cb.lambda = 2)
+  ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCriterionCB(cb.lambda = 2),
+    opt = "focussearch", opt.restarts = 1L,
+    opt.focussearch.points = 300L)
   mbo(f1, des, learner = makeLearner("regr.km", predict.type = "se"), control = ctrl)
-  expect_error(setMBOControlInfill(ctrl, crit = "cb", opt = "focussearch", opt.restarts = 1L,
-    opt.focussearch.points = 300L, crit.cb.lambda = 2, crit.cb.pi = 0.5))
-  ctrl = setMBOControlInfill(ctrl, crit = "cb", opt = "focussearch", opt.restarts = 1L,
-    opt.focussearch.points = 300L, crit.cb.lambda = NULL, crit.cb.pi = 0.5)
+  expect_error(setMBOControlInfill(ctrl, crit = makeMBOInfillCriterionCB(cb.lambda = 2, cb.pi = 0.5),
+    opt = "focussearch", opt.restarts = 1L,
+    opt.focussearch.points = 300L))
+  ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCriterionCB(cb.lambda = NULL, cb.pi = 0.5),
+    opt = "focussearch", opt.restarts = 1L,
+    opt.focussearch.points = 300L)
   or = mbo(f1, des, learner = makeLearner("regr.km", predict.type = "se"), control = ctrl)
   expect_lt(or$y, 50)
 
   # check beta for eqi
-  expect_error(setMBOControlInfill(ctrl, crit = "eqi", opt = "focussearch", opt.restarts = 1L,
-                                   opt.focussearch.points = 300L, crit.eqi.beta = 2))
-  ctrl = setMBOControlInfill(ctrl, crit = "eqi", opt = "focussearch", opt.restarts = 1L,
-                             opt.focussearch.points = 300L, crit.eqi.beta = 0.6)
+  expect_error(setMBOControlInfill(ctrl, crit = makeMBOInfillCriterionEQI(eqi.beta = 2),
+    opt = "focussearch", opt.restarts = 1L, opt.focussearch.points = 300L))
+  ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCriterionEQI(eqi.beta = 0.6),
+    opt = "focussearch", opt.restarts = 1L, opt.focussearch.points = 300L)
   or = mbo(f1, des, learner = makeLearner("regr.km", predict.type = "se", nugget.estim = TRUE), control = ctrl)
   expect_true(or$y < 50)
 })

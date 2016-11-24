@@ -60,10 +60,6 @@ checkStuff = function(fun, par.set, design, learner, control) {
         "\nBut this learner does not seem to support prediction of standard errors! You could use the mlr wrapper makeBaggingWrapper to bootstrap the standard error estimator."))
   }
 
-  print(infill.crit.id)
-  print(infill.crit)
-  print(getMBOInfillCritParam(infill.crit, "aei.use.nugget"))
-#  stop(12)
   # If nugget estimation should be used, make sure learner is a km model with activated nugget estim
   if (infill.crit.id == "aei" && getMBOInfillCritParam(infill.crit, "aei.use.nugget")) {
     if (learner$short.name != "km" || !isTRUE(getHyperPars(learner)$nugget.estim)) {

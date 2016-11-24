@@ -166,9 +166,10 @@ makeMBOInfillCriterionCB = function(cb.lambda = 1, cb.inflate.se = FALSE, cb.pi 
   }
   assertFlag(cb.inflate.se)
   makeMBOInfillCriterion(
-    infillCritCB = function(points, models, control, par.set, design, iter, attributes = FALSE) {
+    infill.fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
       force(cb.lambda)
-      force(cb.inflate)
+      force(cb.inflate.se)
+      force(cb.pi)
       model = models[[1L]]
       maximize.mult = ifelse(control$minimize, 1, -1)
       p = predict(model, newdata = points)$data
@@ -252,7 +253,7 @@ makeMBOInfillCriterionEQI = function(eqi.beta = 0.75) {
   force(eqi.beta)
 
   makeMBOInfillCriterion(
-    infillCritEQI = function(points, models, control, par.set, design, iter, attributes = FALSE) {
+    infill.fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
       model = models[[1L]]
       maximize.mult = ifelse(control$minimize, 1, -1)
       # compute q.min
@@ -284,5 +285,60 @@ makeMBOInfillCriterionEQI = function(eqi.beta = 0.75) {
     },
     name = "Expected quantile improvement",
     id = "eqi"
+  )
+}
+
+######################  MCO criteria ###########################################################
+
+# SMS-EGO / DIB (direct indicator based):
+# direct.sms LOWER CONFIDENCE BOUND of points, then HV contribution of these wrt to design
+# direct.eps: LOWER CONFIDENCE BOUND of points, then epsilon indicator contribution of these wrt to design
+# (useful for deterministic and stochastic MCO)
+makeMBOInfillCriterionDIB = function() {
+  #FIXME: control$infill.crit.cb.lambda not avaialable! However,
+  # if did needs this one, we need to pass cb.lambda to the dib
+  # constructor
+  #FIXME: what about all those multicrit.dib.... vars?
+  # if these are only needed for the dib criterion we should make them
+  # parameter of makeMBOInfillCriterionDIB()
+  makeMBOInfillCriterion(
+    infillCritDIB = function(points, models, control, par.set, design, iter, attributes = FALSE) {
+      # get ys and cb-value-matrix for new points, minimize version
+      maximize.mult = ifelse(control$minimize, 1, -1)
+      ys = as.matrix(design[, control$y.name]) %*% diag(maximize.mult)
+      ps = lapply(models, predict, newdata = points)
+      means = extractSubList(ps, c("data", "response"), simplify = "cols")
+      ses = extractSubList(ps, c("data", "se"), simplify = "cols")
+      cbs = means %*% diag(maximize.mult) - control$infill.crit.cb.lambda * ses
+      # from here on ys and cbs are ALWAYS minimized
+      all.mini = rep(TRUE, control$n.objectives)
+
+      ys.front = getNonDominatedPoints(ys, minimize = all.mini)
+
+      if (control$multicrit.dib.indicator == "sms") {
+        # get refpoint by ctrl-method, ys could be scaled by -1 (if yi = max!)
+        ref.point = getMultiCritRefPoint(ys, control, minimize = all.mini)
+        # get epsilon for epsilon-dominace - set adaptively or use given constant value
+        if (is.null(control$dib.sms.eps)) {
+          c.val = 1 - 1 / 2^control$n.objectives
+          eps = vnapply(seq_col(ys.front), function(i) {
+            (max(ys.front[, i]) - min(ys.front[, i])) /
+              (ncol(ys.front) + c.val * (control$iters - iter))
+          })
+        } else {
+          # FIXME: user should be allowed to set a vector
+          eps = control$multicrit.dib.sms.eps
+        }
+        ys.front = as.matrix(ys.front)
+        # allocate mem for adding points to front for HV calculation in C
+        front2 = t(rbind(ys.front, 0))
+        crit.vals = .Call("c_sms_indicator", PACKAGE = "mlrMBO", as.matrix(cbs), ys.front, front2, eps, ref.point)
+      } else {
+        crit.vals = .Call("c_eps_indicator", PACKAGE = "mlrMBO", as.matrix(cbs), as.matrix(ys.front))
+      }
+      return(crit.vals)
+    },
+    name = "Whatever dib stands for :-)",
+    id = "dib"
   )
 }

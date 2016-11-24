@@ -5,7 +5,7 @@ test_that("infillopt ea", {
 
   ctrl = makeMBOControl(propose.points = 1L)
   ctrl = setMBOControlTermination(ctrl, iters = 4L)
-  ctrl = setMBOControlInfill(ctrl, crit = "ei", opt = "ea", opt.restarts = 2L,
+  ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCriterionEI(), opt = "ea", opt.restarts = 2L,
     opt.ea.maxit = 75L, opt.ea.lambda = 1L)
 
   des = generateTestDesign(20L, getParamSet(obj.fun))

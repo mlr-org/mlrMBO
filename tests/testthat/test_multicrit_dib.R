@@ -5,7 +5,7 @@ test_that("multicrit dib works", {
   learner = makeLearner("regr.km", nugget.estim = TRUE, predict.type = "se")
   ctrl = makeMBOControl(n.objectives = 2L)
   ctrl = setMBOControlTermination(ctrl, iters = 5L)
-  ctrl = setMBOControlInfill(ctrl, crit = "dib", opt.focussearch.points = 10L, opt.focussearch.maxit = 5L)
+  ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCritDib(), opt.focussearch.points = 10L, opt.focussearch.maxit = 5L)
   ctrl = setMBOControlMultiCrit(ctrl, method = "dib")
   or = mbo(testfmco1, testdesmco1, learner = learner, control = ctrl)
   expect_matrix(or$pareto.front, mode = "numeric", any.missing = FALSE)
@@ -24,7 +24,7 @@ test_that("multicrit dib works", {
   expect_matrix(or$pareto.front, mode = "numeric", any.missing = FALSE)
 
   ctrl = setMBOControlMultiCrit(ctrl, method = "dib", dib.indicator = "eps")
-  ctrl = setMBOControlInfill(ctrl, crit = "dib", opt.focussearch.points = 10)
+  ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCritDib(), opt.focussearch.points = 10)
   or = mbo(testfmco1, testdesmco1, learner = learner, control = ctrl)
   expect_matrix(or$pareto.front, mode = "numeric", any.missing = FALSE)
 })

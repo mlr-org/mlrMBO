@@ -5,8 +5,6 @@
 \title{Extends mbo control object with infill criteria and infill optimizer options.}
 \usage{
 setMBOControlInfill(control, crit = NULL, interleave.random.points = 0L,
-  crit.eqi.beta = 0.75, crit.cb.lambda = 1, crit.cb.pi = NULL,
-  crit.cb.inflate.se = NULL, crit.aei.use.nugget = NULL,
   filter.proposed.points = NULL, filter.proposed.points.tol = NULL,
   opt = "focussearch", opt.restarts = NULL, opt.focussearch.maxit = NULL,
   opt.focussearch.points = NULL, opt.cmaes.control = NULL,
@@ -34,33 +32,6 @@ Add \code{interleave.random.points} uniformly sampled points additionally to the
 regular proposed points in each step.
 If \code{crit="random"} this value will be neglected.
 Default is 0.}
-
-\item{crit.eqi.beta}{[\code{numeric(1)}]\cr
-Beta parameter for expected quantile improvement criterion.
-Only used if \code{crit == "eqi"}, ignored otherwise.
-Default is 0.75.}
-
-\item{crit.cb.lambda}{[\code{numeric(1)}]\cr
-Lambda parameter for confidence bound infill criterion.
-Only used if \code{crit == "cb"}, ignored otherwise.
-Default is 1.}
-
-\item{crit.cb.pi}{[\code{numeric(1)}]\cr
-Probability-of-improvement value to determine the lambda parameter for cb infill criterion.
-It is an alternative to set the trade-off between \dQuote{mean} and \dQuote{se}.
-Only used if \code{crit == "cb"}, ignored otherwise.
-If specified, \code{crit.cb.lambda == NULL} must hold.
-Default is \code{NULL}.}
-
-\item{crit.cb.inflate.se}{[\code{logical(1)}]\cr
-Try to inflate or deflate the estimated standard error to get to the same scale as the mean?
-Calculates the range of the mean and standard error and multiplies the standard error
-with the quotient of theses ranges.
-Default is \code{FALSE}.}
-
-\item{crit.aei.use.nugget}{[\code{logical(1)}]\cr
-Only used if \code{crit == "aei"}. Should the nugget effect be used for the
-pure variance estimation? Default is \code{FALSE}.}
 
 \item{filter.proposed.points}{[\code{logical(1)}]\cr
 Design points located too close to each other can lead to

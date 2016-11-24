@@ -91,7 +91,7 @@ test_that("complex param space, dependencies, focusing, restarts", {
   des = generateDesign(20L, getParamSet(obj.fun))
   ctrl = makeMBOControl()
   ctrl = setMBOControlTermination(ctrl, iters = 2L)
-  ctrl = setMBOControlInfill(ctrl, crit = "ei", opt = "focussearch",
+  ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCriterionEI(), opt = "focussearch",
     opt.restarts = 2L, opt.focussearch.maxit = 2L, opt.focussearch.points = 100L)
   learner = makeLearner("regr.randomForest", predict.type = "se")
   learner = makeImputeWrapper(learner, classes = list(numeric = imputeMedian(), factor = imputeMode()))

@@ -27,16 +27,16 @@ renderExampleRunPlot1d = function(x, iter,
   se = (x$learner$predict.type == "se")
 
   propose.points = control$propose.points
-  name.crit = control$infill.crit
+  infill.crit.id = getMBOInfillCritId(control$infill.crit)
   if(control$multifid) {
-    name.crit = "mfEI"
+    infill.crit.id = "mfEI"
     critfun = infillCritMultiFid.external
   } else {
-    critfun = getInfillCritFunction(name.crit)
+    critfun = getInfillCritFunction(infill.crit.id)
   }
 
   # we need to maximize expected improvement
-  if (name.crit %in% c("ei")) {
+  if (infill.crit.id %in% c("ei")) {
     opt.direction = -1
   } else {
     opt.direction = 1
@@ -90,16 +90,16 @@ renderExampleRunPlot1d = function(x, iter,
 
     #FIXME: We might want to replace the following by a helper function so that we can reuse it in buildPointsData()
     if (propose.points == 1L) {
-      evals[[name.crit]] = opt.direction *
+      evals[[infill.crit.id]] = opt.direction *
         critfun(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past,, drop = FALSE])
     } else {
       objective = control$multipoint.moimbo.objective
       if (objective == "mean.dist") {
-        evals[[name.crit]] = opt.direction * infillCritMeanResponse(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past,, drop = FALSE])
+        evals[[infill.crit.id]] = opt.direction * infillCritMeanResponse(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past,, drop = FALSE])
       } else if (objective == "ei.dist") {
-        evals[[name.crit]] = opt.direction * infillCritEI(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past,, drop = FALSE])
+        evals[[infill.crit.id]] = opt.direction * infillCritEI(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past,, drop = FALSE])
       } else if (objective %in% c("mean.se", "mean.se.dist")) {
-        evals[[name.crit]] = opt.direction * infillCritMeanResponse(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past,, drop = FALSE])
+        evals[[infill.crit.id]] = opt.direction * infillCritMeanResponse(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past,, drop = FALSE])
       }
     }
     # prepare drawing of standard error (confidence interval)
@@ -127,7 +127,7 @@ renderExampleRunPlot1d = function(x, iter,
       ylab = paste0(name.y, " (", attr(trafo$y, "name"), "-transformed)")
     }
     #determine in wich pane (facet_grid) the points belong to
-    pane.names = c(ylab, name.crit)
+    pane.names = c(ylab, infill.crit.id)
     gg.fun$pane = factor(pane.names[ifelse(gg.fun$variable %in% c(name.y, "yhat"), 1, 2)], levels = pane.names)
 
 

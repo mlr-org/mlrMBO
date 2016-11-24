@@ -8,17 +8,17 @@
 # @return [\code{function}]
 getInfillCritFunction = function(infill.crit) {
   switch(infill.crit,
-    mean = infillCritMeanResponse,
-    se = infillCritStandardError,
-    ei = infillCritEI,
-    aei = infillCritAEI,
-    cb = infillCritCB,
-    # akg = infillCritAKG,
-     eqi = infillCritEQI,
-    # mq  = infillCritMQ,
-    # eipi  =  infillCritEIPI,
-    dib = infillCritDIB,
-    multifid = infillCritMultiFid,
+    mean = makeMBOInfillCriterionMeanResponse(),
+    se = makeMBOInfillCriterionStandardError(),
+    ei = makeMBOInfillCriterionEI(),
+    aei = makeMBOInfillCriterionAEI(),
+    cb = makeMBOInfillCriterionCB(),
+    # akg = makeMBOInfillCriterionAKG(),
+     eqi = makeMBOInfillCriterionEQI(),
+    # mq  = makeMBOInfillCriterionMQ(),
+    # eipi  =  makeMBOInfillCriterionEIPI(),
+    dib = makeMBOInfillCriterionDIB(),
+    multifid = makeMBOInfillCriterionMultiFid(),
     match.fun(infill.crit)
   )
 }

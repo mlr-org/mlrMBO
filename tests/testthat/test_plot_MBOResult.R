@@ -9,7 +9,7 @@ test_that("plot single crit", {
   des = generateTestDesign(8L, getParamSet(f))
   ctrl = makeMBOControl(propose.points = 1L)
   ctrl = setMBOControlTermination(ctrl, iters = 2L)
-  ctrl = setMBOControlInfill(ctrl, crit = "ei", opt.focussearch.points = 100L,
+  ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCriterionEI(), opt.focussearch.points = 100L,
     opt.focussearch.maxit = 3L)
   or = mbo(f, des, learner = learner, control = ctrl)
 
