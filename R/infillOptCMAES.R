@@ -45,26 +45,27 @@ infillOptCMAES = function(infill.crit, models, control, par.set, opt.path, desig
     ))
   }
 
-  results = vector("list", control$infill.opt.restarts)
   # restart optimizer, first start point is currently best
-  for (i in 1:control$infill.opt.restarts) {
-    if (i == 1) {
-      start.point = getOptPathEl(opt.path, getOptPathBestIndex(opt.path))$x
-    } else {
-      start.point = sampleValue(par.set)
-    }
+  results = lapply(seq_len(control$infill.opt.restarts), function(i) {
+    start.point = if (i == 1)
+      getOptPathEl(opt.path, getOptPathBestIndex(opt.path))$x
+    else
+      sampleValue(par.set)
     start.point = unlist(start.point)
-    results[[i]] = cmaesr::cmaes(fn, start.point = start.point,
-      monitor = NULL,
-      control = cmaes.control)
-  }
+    cmaesr::cmaes(fn, start.point = start.point,
+      monitor = NULL, control = cmaes.control)
+  })
+
+  # get best result of all runs
   ys = extractSubList(results, "best.fitness")
   ys = ys[!is.infinite(ys)]
   res = NULL
+
   # all CMA-ES runs failed. Therefore we sample a random point and warn
   if (length(ys) == 0) {
     res = t(sampleValue(par.set))
-    warningf("Infill optimizer CMA-ES crashed %i times. Random point generated instead.", control$infill.opt.restart)
+    warningf("Infill optimizer CMA-ES crashed %i times. Random point generated instead.",
+      control$infill.opt.restart)
   } else {
     j = which(rank(ys, ties.method = "random") == 1L)
     res = t(results[[j]]$best.param)
