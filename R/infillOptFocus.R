@@ -89,14 +89,14 @@ infillOptFocus = function(infill.crit, models, control, par.set, opt.path, desig
            }
          } else if (isDiscrete(par)) {
            # randomly drop a level, which is not val
-           if (length(par$values) <= 1L) {
+           if (length(par$values) == 1L) {
              return(par)
            }
            # need to do some magic to handle discrete vectors
            if (par$type %nin% c("discretevector", "logicalvector")) {
              val.names = names(par$values)
              # remove current val from delete options, should work also for NA
-             val.names = val.names[!sapply(par$values, identical, y=val)]  # remember, 'val' can be any type
+             val.names = val.names[!vlapply(par$values, identical, y=val)]  # remember, 'val' can be any type
              to.del = sample(val.names, 1)
              par$values[[to.del]] = NULL
            } else {
