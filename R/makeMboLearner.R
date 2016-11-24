@@ -10,6 +10,7 @@
 #' The nugget effect is set to 10^-8 * Var(y) on each model training.
 #' For mixed parameter spaces the function returns a random forest regression learner.
 #' The method to estimate the variance is the standard deviation of the bagged predictions.
+#' Instead of the default \code{"BFGS"} optimization method we use \code{"rgen"} to circumvent model degeneration for some cases. 
 #' You can override this setting in \code{...}.
 #' 
 #' @template arg_control
@@ -23,7 +24,7 @@
 makeMboLearner = function(control, fun, ...) {
   par.vals = list(...)
   if (!hasDiscrete(getParamSet(fun), include.logical = TRUE)) {
-    par.vals = insert(list(covtype = "matern5_2"), par.vals)
+    par.vals = insert(list(covtype = "matern5_2", optim.method = "gen"), par.vals)
     base.learner = makeLearner("regr.km", predict.type = "se")
     if (!control$filter.proposed.points) {
       warningf("filter.proposed.points is not set in the control object. This might lead to the 'leading minor of order ...' error during model fit.")
