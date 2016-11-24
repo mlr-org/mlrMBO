@@ -1,16 +1,16 @@
 # Termination conditions.
 # Used to evantually stop mbo optimization process
 
-# Each stopping condition is a simple function which expects an opt.state
+# Each termination condition is a simple function which expects an opt.state
 # and returns a list with the following three components
-# * term: logical indicating whether the stopping condition is met.
+# * term: logical indicating whether the termination condition is met.
 # * message: String indicating the reason for termination.
-# * code: short character code of stopping condition (only for build-in stopping conditions!)
+# * code: short character code of termination condition (only for build-in termination conditions!)
 #   Possible value are term.exectime, term.time, term.feval, term.yval. Besides,
-#   term.custom is assigned internally for custom, user-made stopping conditions.
+#   term.custom is assigned internally for custom, user-made termination conditions.
 
 # @title
-# Maximum iteration stopping condition.
+# Maximum iteration termination condition.
 #
 # @param max.iter [integer(1)]
 #   Maximum number of iterations.
@@ -26,7 +26,7 @@ makeMBOTerminationMaxIter = function(max.iter) {
 }
 
 # @title
-# Time budget stopping condition.
+# Time budget termination condition.
 #
 # @param time.budget [numeric(1)]
 #   Time budget in seconds.
@@ -42,7 +42,7 @@ makeMBOTerminationMaxBudget = function(time.budget) {
 }
 
 # @title
-# Execution time budget stopping condition.
+# Execution time budget termination condition.
 #
 # @param time.budget [numeric(1)]
 #   Exceution time budget in seconds.
@@ -60,7 +60,7 @@ makeMBOTerminationMaxExecBudget = function(time.budget) {
 }
 
 # @title
-# y-value stopping condition.
+# y-value termination condition.
 #
 # @param time.budget [numeric(1)]
 #   Traget function value.
@@ -82,7 +82,7 @@ makeMBOTerminationTargetFunValue = function(target.fun.value) {
 }
 
 # @title
-# Maximal function evaluations stopping condition.
+# Maximal function evaluations termination condition.
 #
 # @param max.evals [integer(1)]
 #   Maximal number of function evaluations.

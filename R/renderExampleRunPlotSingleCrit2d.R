@@ -59,7 +59,7 @@ renderExampleRunPlot2d = function(x, iter,
     if (proppoints == 1L) {
       evals[[name.crit]] = opt.direction * critfun(evals.x, models, control, par.set, opt.path[idx.past, ])
     } else {
-      objective = control$multipoint.multicrit.objective
+      objective = control$multipoint.moimbo.objective
       if (control$multipoint.method == "cb") {
         evals[[name.crit]] = opt.direction * infillCritMeanResponse(evals.x, models, control, par.set, opt.path[idx.past, ])
       } else {
@@ -205,28 +205,4 @@ renderExampleRunPlot2d = function(x, iter,
     pl.crit = pl.crit,
     pl.se = pl.se
   )
-}
-
-# Helper for nice alignment of multiple ggplots.
-#
-# @param plot.list [\code{list}]\cr
-#   List of ggplot objects.
-# @param title [\code{character(1)}]\cr
-#   Main title printed above grid-arranged plots.
-# @return Nothing. Plots are printed to the display as a side effect.
-arrangeAndPrintPlots = function(plot.list, title) {
-  plot.list = Filter(Negate(isScalarNA), plot.list)
-  n.plots = length(plot.list)
-  n.row = if (n.plots <= 3) 1L else 2L
-  do.call(gridExtra::grid.arrange, c(plot.list, nrow = n.row, main = title))
-  pause()
-}
-
-# Removes not available plots in plot list.
-#
-# @param plot.list [\code{list}]\cr
-#   List of ggplot objects (NAs allowed).
-# @return plot.list without NAs.
-removeNAPlots = function(plot.list) {
-  Filter(plot.list, f = function(x) !is.na(x))
 }

@@ -5,28 +5,29 @@ Description: A framework for the (sequential) model-based parameter
     parameters of non-linear black-box single- or multiobjective target
     functions like an industrial simulator or a time-consuming algorithm using
     cheap surrogate models.
-Authors@R: c(person("Bernd", "Bischl", email = "bernd_bischl@gmx.net", role =
-    c("aut", "cre")), person("Jakob", "Bossek", email =
-    "jakob.bossek@tu-dortmund.de", role = "aut"), person("Daniel", "Horn",
-    email = "daniel.horn@tu-dortmund.de", role = "aut"), person("Michel",
-    "Lang", email = "michellang@gmail.com", role = "aut"))
+Authors@R: c(
+    person("Bernd", "Bischl", email = "bernd_bischl@gmx.net", role = c("aut", "cre")), 
+    person("Jakob", "Bossek", email = "jakob.bossek@tu-dortmund.de", role = "aut"), 
+    person("Jakob", "Richter", email = "code@jakob-r.de", role = "aut"),
+    person("Daniel", "Horn", email = "daniel.horn@tu-dortmund.de", role = "aut"), 
+    person("Michel", "Lang", email = "michellang@gmail.com", role = "aut"),
+    person("Janek", "Thomas", email = "janek.thomas@stat.uni-muenchen.de", role = "aut"))
 License: BSD_3_clause + file LICENSE
-URL: https://github.com/berndbischl/mlrMBO
-BugReports: https://github.com/berndbischl/mlrMBO/issues
+URL: https://github.com/mlr-org/mlrMBO
+BugReports: https://github.com/mlr-org/mlrMBO/issues
 Depends:
-    lhs,
     mlr (>= 2.7),
     ParamHelpers (>= 1.8),
     smoof (>= 1.3)
 Imports:
+    backports,
     BBmisc (>= 1.7),
-    checkmate (>= 1.7.1),
+    checkmate (>= 1.8.1),
+    data.table,
+    lhs,
     ggplot2,
     RColorBrewer,
-    gridExtra,
-    parallelMap (>= 1.1),
-    plyr,
-    reshape2
+    parallelMap (>= 1.1)
 Suggests:
     akima,
     cmaes,
@@ -35,9 +36,9 @@ Suggests:
     earth,
     emoa,
     GGally,
+    gridExtra,
     kernlab,
     kknn,
-    mboost,
     mco,
     nnet,
     party,
@@ -47,5 +48,5 @@ Suggests:
     eaf
 LazyData: yes
 ByteCompile: yes
-Version: 1.0
+Version: 1.0.0
 RoxygenNote: 5.0.1

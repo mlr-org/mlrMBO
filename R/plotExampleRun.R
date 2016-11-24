@@ -15,7 +15,8 @@
 #'   plot displays the x-space.
 #'
 #' @param object [\code{function}]\cr
-#'   \code{MBOExampleRun} or \code{MBOExampleRunMulticrit} object.
+#'   \code{MBOExampleRun} object from \code{exampleRun} or
+#'   \code{MBOExampleRunMulticrit} object from \code{exampleRunMultiCrit}.
 #' @param iters [\code{integer}]\cr
 #'   Selected iterations of \code{object} to produce plots.
 #'   Default is all iterations.
@@ -75,7 +76,7 @@ plotExampleRun = function(object, iters, pause = TRUE,
 
   iters.max = object$control$iters
   if (missing(iters)) {
-    iters = 1:iters.max
+    iters = seq_len(iters.max)
   }
   assertIntegerish(iters, lower = 0L, upper = iters.max, any.missing = FALSE)
   assertFlag(pause)
@@ -119,7 +120,7 @@ plotExampleRun = function(object, iters, pause = TRUE,
       point.size = point.size, line.size = line.size, trafo = trafo, colors = colors, gg.objects = gg.objects, ...)
     if (!any(vlapply(plots, inherits, what = "ggplot"))) {
       # in this case we have multicrit multipoint proposal: list of plots for each proposed point
-      for (jter in 1:length(plots)) {
+      for (jter in seq_along(plots)) {
         arrangePlots(plots[[jter]], multi.crit)
         if (pause && !(iter == getLast(iters) && jter == length(plots)))
           pause()

@@ -27,8 +27,8 @@
 
 *****************************************************************************/
 
-#ifndef _AVL_H
-#define _AVL_H
+#ifndef MLRMBO_AVL_H_
+#define MLRMBO_AVL_H_
 
 /* We need either depths, counts or both (the latter being the default) */
 #if !defined(AVL_DEPTH) && !defined(AVL_COUNT)
@@ -50,26 +50,26 @@ typedef int (*avl_compare_t)(const void *, const void *);
 typedef void (*avl_freeitem_t)(void *);
 
 typedef struct avl_node_t {
-	struct avl_node_t *next;
-	struct avl_node_t *prev;
-	struct avl_node_t *parent;
-	struct avl_node_t *left;
-	struct avl_node_t *right;
-	void *item;
+    struct avl_node_t *next;
+    struct avl_node_t *prev;
+    struct avl_node_t *parent;
+    struct avl_node_t *left;
+    struct avl_node_t *right;
+    void *item;
 #ifdef AVL_COUNT
-	unsigned int count;
+    unsigned int count;
 #endif
 #ifdef AVL_DEPTH
-	unsigned char depth;
+    unsigned char depth;
 #endif
 } avl_node_t;
 
 typedef struct avl_tree_t {
-	avl_node_t *head;
-	avl_node_t *tail;
-	avl_node_t *top;
-	avl_compare_t cmp;
-	avl_freeitem_t freeitem;
+    avl_node_t *head;
+    avl_node_t *tail;
+    avl_node_t *top;
+    avl_compare_t cmp;
+    avl_freeitem_t freeitem;
 } avl_tree_t;
 
 /* Initializes a new tree for elements that will be ordered using

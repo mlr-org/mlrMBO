@@ -34,7 +34,7 @@ exampleRunMultiCrit= function(fun, design = NULL, learner, control, points.per.d
   if (is.null(design))
     design = generateDesign(4 * n.params, par.set)
 
-  learner = checkLearner(learner, par.set, control)
+  learner = checkLearner(learner, par.set, control, fun)
   assertClass(control, "MBOControl")
   minimize = shouldBeMinimized(fun)
   control$noisy = isNoisy(fun)
@@ -53,7 +53,7 @@ exampleRunMultiCrit= function(fun, design = NULL, learner, control, points.per.d
   if (n.params != 2L)
     stopf("exampleRunMultiCrit can only be applied for functions with 2 parameters, but you have %iD", n.params)
 
-  control$store.model.at = 1:control$iters
+  control$store.model.at = seq_len(control$iters)
   names.x = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
   names.y = control$y.name
 
@@ -76,6 +76,12 @@ exampleRunMultiCrit= function(fun, design = NULL, learner, control, points.per.d
   nsga2.res = do.call(mco::nsga2, args)
   nsga2.paretoset = setColNames(as.data.frame(nsga2.res$par[nsga2.res$pareto.optimal, , drop = FALSE]), names.x)
   nsga2.paretofront = nsga2.res$value[nsga2.res$pareto.optimal, ]
+
+  # Use trafo.fun for nsga2 result:
+  if (!is.null(control$trafo.y.fun)) {
+    nsga2.paretofront = control$trafo.y.fun(nsga2.paretofront)
+  }
+
   if (is.null(ref.point))
     ref.point = apply(nsga2.paretofront, 2, max) * mults  + 1
   # front: and back to orginal scale ...
@@ -98,7 +104,7 @@ exampleRunMultiCrit= function(fun, design = NULL, learner, control, points.per.d
   if (control$multicrit.method %in% c("dib", "mspot")) {
     mbo.pred.grid.x = generateGridDesign(par.set, resolution = points.per.dim)
     mbo.pred.grid.mean = vector("list", control$iters)
-    for (iter in 1:control$iters) {
+    for (iter in seq_len(control$iters)) {
       mods = res$models[[iter]]
       ps = lapply(mods, predict, newdata = mbo.pred.grid.x)
       y1 = extractSubList(ps, c("data", "response"), simplify = "cols")

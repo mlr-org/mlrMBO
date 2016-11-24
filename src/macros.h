@@ -1,5 +1,5 @@
-#ifndef FOO_MACROS_H
-#define FOO_MACROS_H
+#ifndef MLRMBO_MACROS_H_
+#define MLRMBO_MACROS_H_
 
 #include <R.h>
 #include <Rinternals.h>
@@ -18,6 +18,6 @@
 
 #define UNPACK_REAL_MATRIX_2(S, D, N) \
     double *D = REAL(S); \
-    const R_len_t N = nrows(S); 
+    const R_len_t N = nrows(S);
 
 #endif

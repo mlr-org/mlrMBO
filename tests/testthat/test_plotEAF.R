@@ -1,7 +1,6 @@
 context("plotEAF")
 
 test_that("plotEAF works", {
-
   f = makeMultiObjectiveFunction(
     fn = function(x) c(1, -1) * x^2,
     par.set = makeNumericParamSet(len = 2L, lower = -2, upper = 1),
@@ -30,8 +29,8 @@ test_that("plotEAF works", {
 
   algo.names = c("algo1", "algo2")
 
-  expect_true(is.data.frame(res))
-  expect_true(setequal(colnames(res), c("y_1", "y_2", ".algo", ".repl")))
-  expect_true(all(res$.algo %in% algo.names))
+  expect_data_frame(res)
+  expect_set_equal(colnames(res), c("y_1", "y_2", ".algo", ".repl"))
+  expect_subset(as.character(res$.algo), algo.names)
   expect_true(all(res$.repl >= 1) && all(res$.repl <= n.reps))
 })

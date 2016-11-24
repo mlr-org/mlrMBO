@@ -27,5 +27,5 @@ test_that("plot multi crit", {
   ctrl = setMBOControlMultiCrit(ctrl, method = "mspot")
   or = mbo(f, des, learner = learner, control = ctrl)
 
-  plot(or, iters = 0:2, pause  = FALSE)
+  plot(or, iters = 0:2, pause = FALSE)
 })

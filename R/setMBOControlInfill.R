@@ -49,7 +49,7 @@
 #'   This parameter activates or deactivates a heuristic to handle this issue.
 #'   If \code{TRUE}, proposed points whose distance to design points or other current
 #'   candidate points is smaller than \code{filter.proposed.points.tol}, are replaced by random points.
-#'   If enabled, a logical column \dQuote{filter.replace} is added to the resulting \code{opt.path},
+#'   If enabled, the column entry for \code{prop.type} is set to \dQuote{random_filter} in the resulting \code{opt.path},
 #'   so you can see whether such a replacement happened.
 #'   Default is \code{FALSE}.
 #' @param filter.proposed.points.tol [\code{numeric(1)}]\cr
@@ -244,7 +244,7 @@ setMBOControlInfill = function(control,
   control$infill.opt.nsga2.popsize = coalesce(opt.nsga2.popsize, control$infill.opt.nsga2.popsize, 100L)
   control$infill.opt.nsga2.popsize = asCount(control$infill.opt.nsga2.popsize)
   assertCount(control$infill.opt.nsga2.popsize, na.ok = FALSE, positive = TRUE)
-  if (control$infill.opt.nsga2.popsize < control$propose.points)
+  if (control$infill.opt == "nsga2" && control$infill.opt.nsga2.popsize < control$propose.points)
     stop("Population size of nsga2 must be greater or equal than propose.points.")
 
   control$infill.opt.nsga2.generations = coalesce(opt.nsga2.generations, control$infill.opt.nsga2.generations, 50L)

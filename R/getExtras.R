@@ -11,7 +11,6 @@
 # train.time              numeric(1)
 # propose.time            numeric(1)
 # errors.model            character(1)
-# filter.replace          logical(1)
 # multipoint.cb.lambda    numeric(1)
 # parego.weight.<j>         numeric(1)
 #
@@ -22,15 +21,25 @@ getExtras = function(n, prop, train.time, control) {
   if (is.null(prop)) {
     k = ifelse(control$n.objectives > 1L && control$multicrit.method == "mspot", control$n.objectives + 1, 1L)
     # pregenerate a dummmy "prop" data structure
-    prop = list(crit.vals = matrix(NA_real_, nrow = n, ncol = k), propose.time = NA_real_, errors.model = NA_character_,
-      filter.replace = rep(NA, n), prop.type = rep("initdesign", n))
+    prop = list(crit.vals = matrix(NA_real_, nrow = n, ncol = k), propose.time = NA_real_, errors.model = NA_character_, prop.type = rep("initdesign", n))
+    ## make space for crit.components (not so fancy to do it here)
+    if (control$n.objectives == 1L && control$infill.crit == "ei") {
+      prop$crit.components = data.frame(se = NA_real_, mean = NA_real_)
+    } else if (control$n.objectives == 1L && control$infill.crit == "cb") {
+      prop$crit.components = data.frame(se = NA_real_, mean = NA_real_, lambda = NA_real_)
+    } else if (control$n.objectives == 1L && control$infill.crit == "aei") {
+      prop$crit.components = data.frame(se = NA_real_, mean = NA_real_, tau = NA_real_)  
+    }
+    if (control$multifid) {
+      prop$crit.components = cbind.data.frame(prop$crit.components, mf.ei.last = NA_real_, mf.se = NA_real_, mf.alpha1 = NA_real_, mf.alpha2 = NA_real_, mf.alpha3 = NA_real_, mf.sd = NA_real_)
+    }
   }
   exs = vector("list", n)
   errs = prop$errors.model
   # if we only have one msg, replicate it
   if (length(errs) == 1L)
     errs = rep(errs, n)
-  for (i in 1:n) {
+  for (i in seq_len(n)) {
     # if we use mspot, store all crit.vals
     if (control$n.objectives > 1L && control$multicrit.method == "mspot") {
       ex = as.list(prop$crit.vals[i, ])
@@ -54,12 +63,8 @@ getExtras = function(n, prop, train.time, control) {
       weight.mat = prop$weight.mat
       if (is.null(weight.mat))
         weight.mat = matrix(NA_real_, nrow = n, ncol = control$n.objectives)
-      w = setNames(as.list(weight.mat[i, ]), paste0("parego.weight.", 1:ncol(weight.mat)))
+      w = setNames(as.list(weight.mat[i, ]), paste0("parego.weight.", seq_col(weight.mat)))
       ex = c(ex, w)
-    }
-    # if we filtered proposed points, store flag
-    if (control$filter.proposed.points) {
-      ex$filter.replace = prop$filter.replace[i]
     }
     ex$constant.model = isTRUE(attr(prop$prop.points, "constant.model")
     # if we use asyn MBO store node information and evaluation starte
@@ -71,6 +76,8 @@ getExtras = function(n, prop, train.time, control) {
     } else {
       ex$propose.time = if (i == 1) prop$propose.time else NA_real_
     }
+    # infill.crit components
+    ex = insert(ex, as.list(prop$crit.components[i,,drop = FALSE]))
     exs[[i]] = ex
   }
   return(exs)

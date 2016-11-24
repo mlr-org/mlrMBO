@@ -1,7 +1,6 @@
 context("infill optimizers")
 
 test_that("infill optimizers", {
-
   mycontrol = function(opt, restarts) {
     ctrl = makeMBOControl()
     ctrl = setMBOControlTermination(ctrl, iters = 5L)
@@ -10,8 +9,8 @@ test_that("infill optimizers", {
   }
   mycheck = function(or) {
     expect_equal(getOptPathLength(or$opt.path), nrow(testd.fsphere.2d) + 5L)
-    expect_true(!is.na(or$y))
-    expect_true(or$y < 1)
+    expect_number(or$y)
+    expect_lt(or$y, 1)
   }
 
   learner = makeLearner("regr.km", nugget.estim = TRUE)

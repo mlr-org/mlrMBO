@@ -109,8 +109,8 @@ makeMBOControl = function(n.objectives = 1L,
   assertChoice(final.method, choices = c("last.proposed", "best.true.y", "best.predicted"))
   final.evals = asInt(final.evals, lower = 0L)
 
-  if (n.objectives > 1 && length(y.name) == 1 && y.name == "y")
-    y.name = paste("y", 1:n.objectives, sep = "_")
+  if (n.objectives > 1L && length(y.name) == 1L && y.name == "y")
+    y.name = paste("y", seq_len(n.objectives), sep = "_")
   assertCharacter(y.name, len = n.objectives, any.missing = FALSE)
 
   # If debug-mode, turn of saving.

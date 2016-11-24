@@ -19,7 +19,7 @@ test_that("mboContinue", {
     has.simple.signature = FALSE
   )
 
-  # First test sombo
+  # First test smbo
   learner = makeLearner("regr.rpart")
   save.file = tempfile("state", fileext=".RData")
   des = generateTestDesign(10L, getParamSet(f))
@@ -35,6 +35,8 @@ test_that("mboContinue", {
   }
   expect_equal(getOptPathLength(or$opt.path), 13)
   expect_class(or, c("MBOSingleObjResult", "MBOResult"))
+  opt.state = load2(save.file)
+  expect_output(print(opt.state), "OptSate")
   unlink(save.file)
 
   # now test parEGO

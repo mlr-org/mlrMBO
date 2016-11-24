@@ -10,8 +10,8 @@ proposePointsParEGO = function(opt.state) {
   props = list()
   props = parallelMap(proposePointsByInfillOptimization, models = models, level = "mlrMBO.propose.points",
     more.args = list(opt.state = opt.state, control = control2))
-
   res = joinProposedPoints(props)
+  res$crit.components = NULL
   res$weight.mat = weight.mat
   return(res)
 }

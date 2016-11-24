@@ -1,17 +1,15 @@
-trainModel = function(learner, task, control) {
-  if (control$multifid) {
-    learner = makeMultiFidWrapper(learner, control)
-  }
-  st = system.time({
-    m = train(learner, task)
-  })
-  return(list(model = m, train.time = st[3L]))
-}
-
 trainModels = function(learner, tasks, control) {
-  z = lapply(tasks, trainModel,  learner = learner, control = control)
-  list(
-    models = extractSubList(z, "model", simplify = FALSE),
-    train.time = sum(extractSubList(z, "train.time"))
-  )
+  if (control$multifid)
+    learner = makeMultiFidWrapper(learner, control)
+
+  models = vector("list", length(tasks))
+  secs = 0
+
+  for (i in seq_along(models)) {
+    secs = secs + measureTime({
+      models[[i]] = train(learner, tasks[[i]])
+    })
+  }
+
+  list(models = models, train.time = secs)
 }

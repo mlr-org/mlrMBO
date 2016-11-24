@@ -51,7 +51,7 @@ proposePointsMOIMBO = function(opt.state, ...) {
   requirePackages("emoa", why = "multipointInfillOptMulticrit")
 
   n = control$propose.points
-  objective = control$multipoint.multicrit.objective
+  objective = control$multipoint.moimbo.objective
   design = convertOptPathToDf(opt.path, control)
 
   ch = checkFailedModels(models, par.set, n)
@@ -63,11 +63,11 @@ proposePointsMOIMBO = function(opt.state, ...) {
   repids = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
   mu = n
   # FIXME: what are good defaults?
-  mutate =  emoa::pm_operator(control$multipoint.multicrit.pm.eta, control$multipoint.multicrit.pm.p,
+  mutate =  emoa::pm_operator(control$multipoint.moimbo.pm.eta, control$multipoint.moimbo.pm.p,
     getLower(par.set), getUpper(par.set))
-  crossover = emoa::sbx_operator(control$multipoint.multicrit.sbx.eta, control$multipoint.multicrit.sbx.p,
+  crossover = emoa::sbx_operator(control$multipoint.moimbo.sbx.eta, control$multipoint.moimbo.sbx.p,
     getLower(par.set), getUpper(par.set))
-  mydist = switch(control$multipoint.multicrit.dist,
+  mydist = switch(control$multipoint.moimbo.dist,
     nearest.neighbor = distToNN,
     nearest.better = distToNB
   )
@@ -89,10 +89,10 @@ proposePointsMOIMBO = function(opt.state, ...) {
   if (objective %in% c("mean.dist", "ei.dist", "mean.se.dist"))
     Y[, y.dim] = -mydist(as.matrix(X), Y[,1])
 
-  st = system.time({
-    for (i in 1:control$multipoint.multicrit.maxit) {
+  secs = measureTime({
+    for (i in seq_len(control$multipoint.moimbo.maxit)) {
       # Create new individual (mu + 1)
-      parents = sample(1:mu, 2)
+      parents = sample(seq_len(mu), 2)
       # get two kids from CX, sel. 1 randomly, mutate
       child = crossover(t(X[parents, , drop = FALSE]))
       child1 = child[,sample(c(1, 2), 1)]
@@ -118,20 +118,20 @@ proposePointsMOIMBO = function(opt.state, ...) {
         Y[, y.dim] = -mydist(as.matrix(X), Y[,1])
 
       # get elements we want to remove from current pop as index vector
-      to.kill = if (control$multipoint.multicrit.selection == "hypervolume") {
+      to.kill = if (control$multipoint.moimbo.selection == "hypervolume") {
         emoa::nds_hv_selection(t(Y))
-      } else if (control$multipoint.multicrit.selection == "crowdingdist") {
+      } else if (control$multipoint.moimbo.selection == "crowdingdist") {
         emoa::nds_cd_selection(t(Y))
-      } else if (control$multipoint.multicrit.selection == "first") {
+      } else if (control$multipoint.moimbo.selection == "first") {
         nds_1d_selection(t(Y), index = 1)
-      } else if (control$multipoint.multicrit.selection == "last") {
+      } else if (control$multipoint.moimbo.selection == "last") {
         nds_1d_selection(t(Y), index = y.dim)
       }
       X = X[-to.kill, ,drop = FALSE]
       Y = Y[-to.kill, ,drop = FALSE]
     }
-  }) # system.time
+  }) # measureTime
   rownames(X) = NULL
   prop.type = rep("infill_moimbo", n)
-  return(list(prop.points = X, propose.time = st[3L], crit.vals = Y, prop.type = prop.type, errors.model = NA_character_))
+  return(list(prop.points = X, propose.time = secs, crit.vals = Y, prop.type = prop.type, errors.model = NA_character_))
 }

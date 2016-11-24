@@ -6,10 +6,10 @@ set.seed(1)
 configureMlr(show.learner.output = FALSE)
 pause = interactive()
 
-obj.fun = makeDTLZ1Function(dimensions = 5L, n.objectives = 3L)
+obj.fun = makeDTLZ1Function(dimensions = 5L, n.objectives = 2L)
 
 lrn = makeLearner("regr.km", predict.type = "se")
-ctrl = makeMBOControl(n.objectives = 3L,
+ctrl = makeMBOControl(n.objectives = 2L,
   propose.points = 2L)
 ctrl = setMBOControlTermination(ctrl, iters = 10L)
 ctrl = setMBOControlInfill(ctrl, crit = "ei", opt.focussearch.points = 1000L,

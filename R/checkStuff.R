@@ -28,6 +28,12 @@ checkStuff = function(fun, par.set, design, learner, control) {
     stopf("Optimization of noisy multi-objective functions not supported in the moment.")
   }
 
+  # final.method and final.evals have no effect on multicriteria optimization
+  if (getNumberOfObjectives(fun) > 1L &&
+      (control$final.method != "best.true.y" || control$final.evals > 0L)) {
+    stop("Setting of final.method and final.evals for multicriteria optimization not supported at the moment.")
+  }
+
   # general parameter and learner checks
   if (any(vlapply(par.set$pars, inherits, what = "LearnerParam")))
     stop("No parameter can be of class 'LearnerParam'! Use basic parameters instead to describe you region of interest!")
@@ -89,12 +95,12 @@ checkStuff = function(fun, par.set, design, learner, control) {
     if (control$propose.points == 1L) { # single point
     } else {                            # multi point
       if ((control$multipoint.method %in% c("cb", "cl", "cb") ||
-          control$multipoint.method == "multicrit" && control$multipoint.multicrit.objective != "mean.dist" )
+          control$multipoint.method == "moimbo" && control$multipoint.moimbo.objective != "mean.dist" )
         && learner$predict.type != "se") {
         stopf("For multipoint method '%s'%s, predict.type of learner %s must be set to 'se'!%s",
           control$multipoint.method,
-          ifelse(control$multipoint.method == "multicrit",
-            sprintf(" with objective '%s'", control$multipoint.multicrit.obj), ""),
+          ifelse(control$multipoint.method == "moimbo",
+            sprintf(" with objective '%s'", control$multipoint.moimbo.obj), ""),
           learner$id,
           ifelse(hasLearnerProperties(learner, "se"), "",
             "\nBut this learner does not support prediction of standard errors!"))

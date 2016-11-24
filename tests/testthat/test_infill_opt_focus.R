@@ -1,9 +1,5 @@
 context("focus search")
 
-
-#FIXME it would better if we had a better model and would test that we have reached
-# the region of the optimum.
-
 test_that("simple random search, no dependencies, no focusing", {
   obj.fun = smoof::makeSingleObjectiveFunction(
     fn = function(x) {
@@ -26,7 +22,7 @@ test_that("simple random search, no dependencies, no focusing", {
   ctrl = setMBOControlInfill(ctrl, opt = "focussearch",
     opt.restarts = 1L, opt.focussearch.maxit = 1L, opt.focussearch.points = 30L)
   or = mbo(obj.fun, des, learner = learner, control = ctrl)
-  expect_true(!is.na(or$y))
+  expect_number(or$y)
 })
 
 test_that("dependent params, but no focusing", {
@@ -53,11 +49,11 @@ test_that("dependent params, but no focusing", {
     opt.focussearch.points = 500L)
   or = mbo(obj.fun, des, learner = learner, control = ctrl)
   expect_true(all(is.na(as.data.frame(or$opt.path)[["error.model"]])))
-  expect_true(!is.na(or$y))
+  expect_number(or$y)
 })
 
-test_that("complex param space, dependencies, focusing, restarts", {
 
+test_that("complex param space, dependencies, focusing, restarts", {
   obj.fun = smoof::makeSingleObjectiveFunction(
     fn = function(x) {
       x = removeMissingValues(x)
@@ -92,7 +88,6 @@ test_that("complex param space, dependencies, focusing, restarts", {
     has.simple.signature = FALSE
   )
 
-  # FIXME: This is too small?
   des = generateDesign(20L, getParamSet(obj.fun))
   ctrl = makeMBOControl()
   ctrl = setMBOControlTermination(ctrl, iters = 2L)
@@ -102,5 +97,5 @@ test_that("complex param space, dependencies, focusing, restarts", {
   learner = makeImputeWrapper(learner, classes = list(numeric = imputeMedian(), factor = imputeMode()))
 
   or = mbo(obj.fun, des, learner = learner, control = ctrl)
-  expect_true(!is.na(or$y))
+  expect_number(or$y)
 })

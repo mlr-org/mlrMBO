@@ -1,6 +1,6 @@
-context("stopping criteria")
+context("termination criteria")
 
-test_that("stopping criteria works", {
+test_that("termination criteria works", {
   iters = 30L
   time.budget = 3L # seconds
   target.fun.value = 0.005
@@ -8,7 +8,7 @@ test_that("stopping criteria works", {
 
   f = makeSphereFunction(1L)
   x.grid = seq(-2, 2, length.out = 10L)
-  design = data.frame(x = x.grid, y = sapply(x.grid, f))
+  design = data.frame(x = x.grid, y = vnapply(x.grid, f))
 
   learner = makeLearner("regr.randomForest")
 

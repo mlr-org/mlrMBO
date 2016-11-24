@@ -42,7 +42,7 @@ infillOptCMAES = function(infill.crit, models, control, par.set, opt.path, desig
 
   results = vector("list", control$infill.opt.restarts)
   # restart optimizer, first start point is currently best
-  for (i in 1:control$infill.opt.restarts) {
+  for (i in seq_len(control$infill.opt.restarts)) {
     if (i == 1) {
       start = getOptPathEl(opt.path, getOptPathBestIndex(opt.path))$x
       cmaes.control = insert(list(diag.value = TRUE), control$infill.opt.cmaes.control)

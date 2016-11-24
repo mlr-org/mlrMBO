@@ -41,7 +41,7 @@ lrn = makeLearner("regr.km", predict.type = "se", nugget.estim = TRUE)
 
 ctrl = setMBOControlInfill(ctrl, crit = "ei", opt = "focussearch",
   opt.focussearch.points = 500L)
-ctrl = setMBOControlMultiFid(ctrl, lvls = c(0.1, 1), costs = c(1, 4), param = "p")
+ctrl = mlrMBO:::setMBOControlMultiFid(ctrl, lvls = c(0.1, 1), costs = c(1, 4), param = "p")
 
 design = generateDesign(10L, getParamSet(obj.fun), fun = lhs::maximinLHS)
 
