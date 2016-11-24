@@ -6,7 +6,7 @@ set.seed(1)
 configureMlr(show.learner.output = FALSE)
 pause = interactive()
 
-obj.fun = makeZDT1Function(dimensions = 3L)
+obj.fun = makeZDT1Function(dimensions = 2L)
 
 learner = makeLearner("regr.km", nugget.estim = FALSE, predict.type = "se")
 
