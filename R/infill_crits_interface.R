@@ -4,7 +4,7 @@ makeMBOInfillCriterion = function(
   infill.fn,
   name,
   id,
-  minimize = TRUE)
+  minimize = TRUE) {
   assertFunction(
     infill.fn,
     args = c("points", "models", "control",
