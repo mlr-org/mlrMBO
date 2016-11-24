@@ -161,6 +161,7 @@ makeMBOControl = function(n.objectives = 1L,
 #'   Not used.
 #' @export
 print.MBOControl = function(x, ...) {
+  infill.crit.id = getMBOInfillCritId(x$infill.crit)
   catf("Objectives                    : %s", x$n.objectives)
   catf("Points proposed per iter      : %i", x$propose.points)
   if (!is.null(x$trafo.y.fun)) {
@@ -168,13 +169,13 @@ print.MBOControl = function(x, ...) {
   }
   catf("")
   if (x$n.objectives > 1L) {
-    catf("Multicrit Method              : %s", x$multicrit.method)
-    catf("Infill criterion              : %s", x$infill.crit)
+    catf("Multicrit method              : %s", x$multicrit.method)
+    catf("Infill criterion              : %s", infill.crit.id)
     catf("Infill optimizer              : %s", x$infill.opt)
     catf("Infill optimizer restarts     : %i", x$infill.opt.restarts)
   } else {
     if (x$propose.points == 1) {
-      catf("Infill criterion              : %s", x$infill.crit)
+      catf("Infill criterion              : %s", infill.crit.id)
       catf("Infill optimizer              : %s", x$infill.opt)
       catf("Infill optimizer restarts     : %i", x$infill.opt.restarts)
     } else {

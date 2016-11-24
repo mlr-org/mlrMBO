@@ -19,15 +19,15 @@ proposePointsByInfillOptimization = function(opt.state, par.set = NULL, control 
   control = coalesce(control, getOptProblemControl(opt.problem))
   opt.path = coalesce(opt.path, getOptStateOptPath(opt.state))
   iter = getOptStateLoop(opt.state)
-  infill.crit.name = control$infill.crit
+  infill.crit.id = getMBOInfillCritId(control$infill.crit)
 
   #FIXME: maybe better do this in setMBOControlMultifid?
   if (control$multifid) {
-    infill.crit.name = "multifid"
+    infill.crit.id = "multifid"
   }
 
   n = control$propose.points
-  prop.type = rep(paste0("infill_", infill.crit.name), n)
+  prop.type = rep(paste0("infill_", infill.crit.id), n)
 
   # ensure we have a list
   ch = checkFailedModels(models, par.set, n, control = control)
@@ -37,7 +37,7 @@ proposePointsByInfillOptimization = function(opt.state, par.set = NULL, control 
   }
 
   design = convertOptPathToDf(opt.path, control)
-  infill.crit.fun = getInfillCritFunction(infill.crit.name)
+  infill.crit.fun = getInfillCritFunction(infill.crit.id)
   infill.opt.fun = getInfillOptFunction(control$infill.opt)
   # store time to propose single point
   secs = measureTime({

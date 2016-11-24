@@ -18,17 +18,18 @@
 
 getExtras = function(n, prop, train.time, control) {
   # this happens in init design
+  infill.crit.id = getMBOInfillCritId(control$infill.crit)
   if (is.null(prop)) {
     k = ifelse(control$n.objectives > 1L && control$multicrit.method == "mspot", control$n.objectives + 1, 1L)
     # pregenerate a dummmy "prop" data structure
     prop = list(crit.vals = matrix(NA_real_, nrow = n, ncol = k), propose.time = NA_real_, errors.model = NA_character_, prop.type = rep("initdesign", n))
     ## make space for crit.components (not so fancy to do it here)
-    if (control$n.objectives == 1L && control$infill.crit == "ei") {
+    if (control$n.objectives == 1L && infill.crit.id == "ei") {
       prop$crit.components = data.frame(se = NA_real_, mean = NA_real_)
-    } else if (control$n.objectives == 1L && control$infill.crit == "cb") {
+    } else if (control$n.objectives == 1L && infill.crit.id == "cb") {
       prop$crit.components = data.frame(se = NA_real_, mean = NA_real_, lambda = NA_real_)
-    } else if (control$n.objectives == 1L && control$infill.crit == "aei") {
-      prop$crit.components = data.frame(se = NA_real_, mean = NA_real_, tau = NA_real_)  
+    } else if (control$n.objectives == 1L && infill.crit.id == "aei") {
+      prop$crit.components = data.frame(se = NA_real_, mean = NA_real_, tau = NA_real_)
     }
     if (control$multifid) {
       prop$crit.components = cbind.data.frame(prop$crit.components, mf.ei.last = NA_real_, mf.se = NA_real_, mf.alpha1 = NA_real_, mf.alpha2 = NA_real_, mf.alpha3 = NA_real_, mf.sd = NA_real_)
@@ -43,11 +44,11 @@ getExtras = function(n, prop, train.time, control) {
     # if we use mspot, store all crit.vals
     if (control$n.objectives > 1L && control$multicrit.method == "mspot") {
       ex = as.list(prop$crit.vals[i, ])
-      names(ex) = c(paste(control$infill.crit, control$y.name, sep = "."), "hv.contr")
+      names(ex) = c(paste(infill.crit.id, control$y.name, sep = "."), "hv.contr")
       ex$error.model = errs[i]
     } else {
       ex = list(prop$crit.vals[i, 1L], error.model = errs[i])
-      names(ex)[1] = control$infill.crit
+      names(ex)[1] = infill.crit.id
     }
     # if we use singlecrit parallel CB store lambdas
     if (control$propose.points > 1L &&

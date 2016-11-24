@@ -51,15 +51,21 @@ checkStuff = function(fun, par.set, design, learner, control) {
     stopf("The 'par.set' has dependent parameters, which will lead to missing values in X-space during modeling, but learner '%s' does not support handling of missing values (property 'missing')!", learner$id)
 
   # general infill stuff (relavant for single objective and parEGO)
-  if (control$infill.crit %in% c("se", "ei", "aei", "cb", "dib") && learner$predict.type != "se") {
+  infill.crit = control$infill.crit
+  infill.crit.id = getMBOInfillCritId(control$infill.crit)
+  if (infill.crit.id %in% c("se", "ei", "aei", "cb", "dib") && learner$predict.type != "se") {
     stopf("For infill criterion '%s' predict.type of learner %s must be set to 'se'!%s",
-      control$infill.crit, learner$id,
+      infill.crit.id, learner$id,
       ifelse(hasLearnerProperties(learner, "se"), "",
         "\nBut this learner does not seem to support prediction of standard errors! You could use the mlr wrapper makeBaggingWrapper to bootstrap the standard error estimator."))
   }
 
+  print(infill.crit.id)
+  print(infill.crit)
+  print(getMBOInfillCritParam(infill.crit, "aei.use.nugget"))
+#  stop(12)
   # If nugget estimation should be used, make sure learner is a km model with activated nugget estim
-  if (control$infill.crit.aei.use.nugget) {
+  if (infill.crit.id == "aei" && getMBOInfillCritParam(infill.crit, "aei.use.nugget")) {
     if (learner$short.name != "km" || !isTRUE(getHyperPars(learner)$nugget.estim)) {
       stop("You have to turn on nugget estimation in your Kriging Model, if you want to use nugget estimation in the aei!")
     }
