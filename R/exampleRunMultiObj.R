@@ -1,4 +1,4 @@
-#' @title Perform an MBO run on a multi-criteria test function and and visualize what happens.
+#' @title Perform an MBO run on a multi-objective test function and and visualize what happens.
 #'
 #' @description
 #' Only available for 2D -> 2D examples,

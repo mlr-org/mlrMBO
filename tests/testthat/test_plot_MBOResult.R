@@ -1,6 +1,6 @@
 context("plot MBO Result")
 
-test_that("plot single objective", {
+test_that("plot single-objective", {
   f = makeSingleObjectiveFunction(
     fn = function(x) crossprod(x),
     par.set = makeNumericParamSet(len = 5L, lower = -1, upper = 1)
@@ -16,7 +16,7 @@ test_that("plot single objective", {
   plot(or, iters = 0:2, pause = FALSE)
 })
 
-test_that("plot multi crit", {
+test_that("plot multi-objective", {
   f = smoof::makeZDT1Function(2L)
   learner = makeLearner("regr.km", predict.type = "se")
   des = generateTestDesign(8L, getParamSet(f))

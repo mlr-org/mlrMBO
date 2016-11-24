@@ -80,7 +80,7 @@ getOptStateShouldSave = function(opt.state) {
 }
 
 # @param unify [\code{logical(1)}]
-#   Defines if in the case of multiobjective optimization we shoud try to make
+#   Defines if in the case of multi-objective optimization we shoud try to make
 #  the output similar to the result of the normal optimization.
 getOptStateFinalPoints = function(opt.state, unify = FALSE) {
   opt.problem = getOptStateOptProblem(opt.state)

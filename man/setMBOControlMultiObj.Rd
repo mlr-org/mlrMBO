@@ -2,7 +2,7 @@
 % Please edit documentation in R/setMBOControlMultiObj.R
 \name{setMBOControlMultiObj}
 \alias{setMBOControlMultiObj}
-\title{Set multi-criteria options.}
+\title{Set multi-objective options.}
 \usage{
 setMBOControlMultiObj(control, method = NULL, ref.point.method = NULL,
   ref.point.offset = NULL, ref.point.val = NULL, parego.s = NULL,
@@ -83,10 +83,10 @@ Possible values are \dQuote{mean} and \dQuote{cb}, default ist \dQuote{mean}}
 [\code{\link{MBOControl}}].
 }
 \description{
-Extends MBO control object with multi-criteria specific options.
+Extends MBO control object with multi-objective specific options.
 }
 \references{
-For more information on the implemented multi-criteria procedures the following
+For more information on the implemented multi-objective procedures the following
 sources might be helpful:
 Knowles, J.: ParEGO: A hybrid algorithm with on-line landscape
 approximation for expensive multiobjective optimization problems. IEEE
@@ -114,8 +114,8 @@ C. M. Fonseca; S. Greco; J. Shaw, eds., 2013, vol. 7811 of Lecture
 Notes in Computer Science, ISBN 978-3-642-37139-4, pp. 756{770,
 doi:10.1007/978-3-642-37140-0 56}
 
-Jeong, S.; Obayashi, S.: Efficient global optimization (EGO) for multiobjective
-problem and data mining. In: Proc. IEEE Congress on
+Jeong, S.; Obayashi, S.: Efficient global optimization (EGO) for Multi-Objective Problem and Data Mining. 
+In: Proc. IEEE Congress on
 Evolutionary Computation (CEC 2005), Edinburgh, UK, Corne, D.;
 et al. (eds.), IEEE, 2005, ISBN 0-7803-9363-5, pp. 2138-2145
 }

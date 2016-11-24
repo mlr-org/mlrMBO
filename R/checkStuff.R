@@ -23,15 +23,15 @@ checkStuff = function(fun, par.set, design, learner, control) {
       getNumberOfObjectives(fun), control$n.objectives)
   }
 
-  # at the moment we do not support noisy multiobjective optimization
+  # at the moment we do not support noisy multi-objective optimization
   if (getNumberOfObjectives(fun) > 1L && isNoisy(fun)) {
     stopf("Optimization of noisy multi-objective functions not supported in the moment.")
   }
 
-  # final.method and final.evals have no effect on multiobjective optimization
+  # final.method and final.evals have no effect on multi-objective optimization
   if (getNumberOfObjectives(fun) > 1L &&
       (control$final.method != "best.true.y" || control$final.evals > 0L)) {
-    stop("Setting of final.method and final.evals for multiobjective optimization not supported at the moment.")
+    stop("Setting of final.method and final.evals for multi-objective optimization not supported at the moment.")
   }
 
   # general parameter and learner checks
@@ -50,7 +50,7 @@ checkStuff = function(fun, par.set, design, learner, control) {
   if (hasRequires(par.set) && !hasLearnerProperties(learner, "missings"))
     stopf("The 'par.set' has dependent parameters, which will lead to missing values in X-space during modeling, but learner '%s' does not support handling of missing values (property 'missing')!", learner$id)
 
-  # general infill stuff (relavant for single objective and parEGO)
+  # general infill stuff (relavant for single-objective and parEGO)
   if (control$infill.crit %in% c("se", "ei", "aei", "cb", "dib") && learner$predict.type != "se") {
     stopf("For infill criterion '%s' predict.type of learner %s must be set to 'se'!%s",
       control$infill.crit, learner$id,
@@ -90,7 +90,7 @@ checkStuff = function(fun, par.set, design, learner, control) {
   control$store.model.at = coalesce(control$store.model.at, control$iters + 1)
   control$resample.at = coalesce(control$resample.at, integer(0))
 
-  #  single objective
+  #  single-objective
   if (control$n.objectives == 1L) {
     if (control$propose.points == 1L) { # single point
     } else {                            # multi point

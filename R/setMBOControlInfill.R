@@ -28,7 +28,7 @@
 #'   Lambda parameter for confidence bound infill criterion.
 #'   Only used if \code{crit == "cb"}, ignored otherwise.
 #'   Default is 1.
-# FIXME: does this only make sense for multi-objective? or single objective too?
+# FIXME: does this only make sense for multi-objective? or single-objective too?
 #' @param crit.cb.pi [\code{numeric(1)}]\cr
 #'   Probability-of-improvement value to determine the lambda parameter for cb infill criterion.
 #'   It is an alternative to set the trade-off between \dQuote{mean} and \dQuote{se}.

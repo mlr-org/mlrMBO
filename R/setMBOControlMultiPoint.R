@@ -10,7 +10,7 @@
 #'   exp(1)-distribution, so do not define \code{infill.opt.cb.lambda}.
 #'   The optimizer for each proposal is configured in the same way as for the single point case,
 #'   i. e., by specifying \code{infill.opt} and related stuff.
-#'   \dQuote{moimbo}: Proposes points by multiobjective infill criteria via evolutionary multiobjective optimization.
+#'   \dQuote{moimbo}: Proposes points by multi-objective infill criteria via evolutionary multi-objective optimization.
 #'   The EA is a (mu+1) type of algorithm and runs for \code{moimbo.maxit} generations.
 #'   The population size is set to \code{propose.points}.
 #'   The selection criterion is \code{moimbo.selection}.
@@ -35,7 +35,7 @@
 #FIXME: a link to the definition of nearest.better and nearest.neigbor?
 #' @param moimbo.selection [\code{character(1)}]\cr
 #'   Method used for selecting 1 element for removal from the population
-#'   in each iteration of the multiobjective EA.
+#'   in each iteration of the multi-objective EA.
 #'   Possible values are:
 #'   \dQuote{hypervolume}: Non-dominated sorting + hypervolume contribution.
 #'   \dQuote{crowdingdist}: Non-dominated sorting + crowding distance based ranking.
@@ -43,7 +43,7 @@
 #'   \dQuote{last}: Non-dominated sorting + last objective of \code{moimbo.objective} as criterion.
 #'   Default is \code{hypervolume}.
 #' @param moimbo.maxit [\code{character(1)}]\cr
-#'   Number of generations for multiobjective EA.
+#'   Number of generations for multi-objective EA.
 #'   Default is 100.
 #' @param moimbo.sbx.eta [\code{numeric(1)}]\cr
 #'   Distance parameter of crossover distribution, see \code{\link[emoa]{sbx_operator}}.

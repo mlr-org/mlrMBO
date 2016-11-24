@@ -1,4 +1,4 @@
-# Generates a list of scalarized MBO multi-criteria tasks by sampling a unique weight
+# Generates a list of scalarized MBO multi-objective tasks by sampling a unique weight
 # vector for each task.
 #
 # @param opt.path [\code{\link[ParamHelpers]{optPath}}]\cr
