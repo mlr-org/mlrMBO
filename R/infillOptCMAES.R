@@ -26,32 +26,39 @@
 # the first start is always at the best point of the current opt.path.
 # works only for numerics and integers, latter are simply rounded.
 infillOptCMAES = function(infill.crit, models, control, par.set, opt.path, design, iter, ...) {
-  # extract lower and upper bound for params
-  low = getLower(par.set)
-  upp = getUpper(par.set)
-
   rep.pids = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
-  #eval all points of 1 generation at once
   cmaes.control = control$cmaes.control
-  cmaes.control$vectorized = TRUE
-  f = function(x) {
-    newdata = as.data.frame(t(x))
-    colnames(newdata) = rep.pids
-    infill.crit(newdata, models, control, par.set, design, iter, ...)
+
+  fn = smoof::makeSingleObjectiveFunction(
+    fn = function(x) {
+      newdata = as.data.frame(t(x))
+      colnames(newdata) = rep.pids
+      infill.crit(newdata, models, control, par.set, design, iter, ...)
+    },
+    par.set = par.set,
+    vectorized = TRUE
+  )
+
+  if (is.null(cmaes.control)) {
+    cmaes.control = list(stop.ons = c(
+      cmaesr::getDefaultStoppingConditions()
+    ))
   }
 
   results = vector("list", control$infill.opt.restarts)
   # restart optimizer, first start point is currently best
-  for (i in seq_len(control$infill.opt.restarts)) {
+  for (i in 1:control$infill.opt.restarts) {
     if (i == 1) {
-      start = getOptPathEl(opt.path, getOptPathBestIndex(opt.path))$x
+      start.point = getOptPathEl(opt.path, getOptPathBestIndex(opt.path))$x
     } else {
-      start = sampleValue(par.set)
+      start.point = sampleValue(par.set)
     }
-    start = unlist(start)
-    results[[i]] = cmaes::cma_es(par = start, fn = f, lower = low, upper = upp, control = control$infill.opt.cmaes.control)
+    start.point = unlist(start.point)
+    results[[i]] = cmaesr::cmaes(fn, start.point = start.point,
+      monitor = NULL,
+      control = cmaes.control)
   }
-  ys = extractSubList(results, "value")
+  ys = extractSubList(results, "best.fitness")
   ys = ys[!is.infinite(ys)]
   res = NULL
   # all CMA-ES runs failed. Therefore we sample a random point and warn
@@ -60,10 +67,50 @@ infillOptCMAES = function(infill.crit, models, control, par.set, opt.path, desig
     warningf("Infill optimizer CMA-ES crashed %i times. Random point generated instead.", control$infill.opt.restart)
   } else {
     j = which(rank(ys, ties.method = "random") == 1L)
-    res = t(results[[j]]$par)
+    res = t(results[[j]]$best.param)
   }
   setColNames(as.data.frame(res), rep.pids)
 }
+
+# infillOptCMAES = function(infill.crit, models, control, par.set, opt.path, design, iter, ...) {
+#   # extract lower and upper bound for params
+#   low = getLower(par.set)
+#   upp = getUpper(par.set)
+
+#   rep.pids = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
+#   #eval all points of 1 generation at once
+#   cmaes.control = control$cmaes.control
+#   cmaes.control$vectorized = TRUE
+#   f = function(x) {
+#     newdata = as.data.frame(t(x))
+#     colnames(newdata) = rep.pids
+#     infill.crit(newdata, models, control, par.set, design, iter, ...)
+#   }
+
+#   results = vector("list", control$infill.opt.restarts)
+#   # restart optimizer, first start point is currently best
+#   for (i in seq_len(control$infill.opt.restarts)) {
+#     if (i == 1) {
+#       start = getOptPathEl(opt.path, getOptPathBestIndex(opt.path))$x
+#     } else {
+#       start = sampleValue(par.set)
+#     }
+#     start = unlist(start)
+#     results[[i]] = cmaes::cma_es(par = start, fn = f, lower = low, upper = upp, control = control$infill.opt.cmaes.control)
+#   }
+#   ys = extractSubList(results, "value")
+#   ys = ys[!is.infinite(ys)]
+#   res = NULL
+#   # all CMA-ES runs failed. Therefore we sample a random point and warn
+#   if (length(ys) == 0) {
+#     res = t(sampleValue(par.set))
+#     warningf("Infill optimizer CMA-ES crashed %i times. Random point generated instead.", control$infill.opt.restart)
+#   } else {
+#     j = which(rank(ys, ties.method = "random") == 1L)
+#     res = t(results[[j]]$par)
+#   }
+#   setColNames(as.data.frame(res), rep.pids)
+# }
 
 # FIXME: allow DiceOptim optimizer later...
 # infillOptEI = function(infill.crit, model, control, par.set, opt.path, ...) {
