@@ -81,10 +81,10 @@ test_that("renderExampleRunPlot produces list of ggplot2 objects", {
   ctrl = makeMBOControl(propose.points = 3)
   ctrl = setMBOControlTermination(ctrl, iters = n.iters)
   ctrl = setMBOControlMultiPoint(ctrl,
-    method = "multicrit",
-    multicrit.objective = "ei.dist",
-    multicrit.dist = "nearest.neighbor",
-    multicrit.maxit = 200L
+    method = "moimbo",
+    moimbo.objective = "ei.dist",
+    moimbo.dist = "nearest.neighbor",
+    moimbo.maxit = 200L
   )
 
   run = exampleRun(obj.fun, learner = default.kriging, control = ctrl, points.per.dim = 50L)

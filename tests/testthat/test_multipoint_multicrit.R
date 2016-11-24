@@ -13,11 +13,11 @@ test_that("multipoint multicrit", {
         ctrl = makeMBOControl(propose.points = 4L)
         ctrl = setMBOControlTermination(ctrl, iters = 1L)
         ctrl = setMBOControlMultiPoint(ctrl,
-          method = "multicrit",
-          multicrit.objective = obj,
-          multicrit.dist = dist,
-          multicrit.sel = sel,
-          multicrit.maxit = 30L
+          method = "moimbo",
+          moimbo.objective = obj,
+          moimbo.dist = dist,
+          moimbo.sel = sel,
+          moimbo.maxit = 30L
         )
 
         res = mbo(f, des, learner = default.kriging, control = ctrl)

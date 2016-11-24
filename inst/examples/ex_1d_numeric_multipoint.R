@@ -19,10 +19,10 @@ ctrl = setMBOControlTermination(ctrl, iters = 10L)
 
 ctrl = setMBOControlMultiPoint(
 	ctrl,
-  	method = "multicrit",
-  	multicrit.objective = "ei.dist",
-  	multicrit.dist = "nearest.neighbor",
-  	multicrit.maxit = 200L
+  method = "moimbo",
+  moimbo.objective = "ei.dist",
+  moimbo.dist = "nearest.neighbor",
+  moimbo.maxit = 200L
 )
 
 lrn = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")

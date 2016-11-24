@@ -28,7 +28,7 @@ proposePoints.OptState = function(opt.state){
         res = proposePointsParallelCB(opt.state)
       else if (control$multipoint.method == "cl")
         res = proposePointsConstantLiar(opt.state)
-      else if (control$multipoint.method == "multicrit") {
+      else if (control$multipoint.method == "moimbo") {
         res = proposePointsMOIMBO(opt.state)
       }
     }
