@@ -79,6 +79,10 @@ renderExampleRunPlot1d = function(x, iter,
 
   plots = list()
 
+  infill.mean = makeMBOInfillCriterionMeanResponse()
+  infill.ei = makeMBOInfillCriterionEI()
+  infill.se = makeMBOInfillCriterionStandardError()
+
   model = models[[iter]]
   type = vcapply(getOptPathDOB(opt.path), getType, iter = iter)
   idx.past = type %in% c("init", "seq")
@@ -86,7 +90,7 @@ renderExampleRunPlot1d = function(x, iter,
 
   # compute model prediction for current iter
   if (!inherits(model, "FailureModel")) {
-    evals$yhat = ifelse(control$minimize, 1, -1) * infillCritMeanResponse(evals.x, list(model), control)
+    evals$yhat = ifelse(control$minimize, 1, -1) * infill.mean(evals.x, list(model), control)
 
     #FIXME: We might want to replace the following by a helper function so that we can reuse it in buildPointsData()
     if (propose.points == 1L) {
@@ -95,16 +99,16 @@ renderExampleRunPlot1d = function(x, iter,
     } else {
       objective = control$multipoint.moimbo.objective
       if (objective == "mean.dist") {
-        evals[[infill.crit.id]] = opt.direction * infillCritMeanResponse(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past,, drop = FALSE])
+        evals[[infill.crit.id]] = opt.direction * infill.mean(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past,, drop = FALSE])
       } else if (objective == "ei.dist") {
-        evals[[infill.crit.id]] = opt.direction * infillCritEI(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past,, drop = FALSE])
+        evals[[infill.crit.id]] = opt.direction * infill.ei(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past,, drop = FALSE])
       } else if (objective %in% c("mean.se", "mean.se.dist")) {
-        evals[[infill.crit.id]] = opt.direction * infillCritMeanResponse(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past,, drop = FALSE])
+        evals[[infill.crit.id]] = opt.direction * infill.mean(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past,, drop = FALSE])
       }
     }
     # prepare drawing of standard error (confidence interval)
     if (se) {
-      evals$se = -infillCritStandardError(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past,, drop = FALSE])
+      evals$se = -infill.se(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past,, drop = FALSE])
     }
   }
 
@@ -200,7 +204,7 @@ renderExampleRunPlot1d = function(x, iter,
     gg.points = buildPointsData(opt.path, iter)
 
     if (se & densregion) {
-      gg.points$se = -infillCritStandardError(gg.points[, names.x, drop = FALSE],
+      gg.points$se = -infill.se(gg.points[, names.x, drop = FALSE],
         models, control, par.set, opt.path[idx.past, , drop = FALSE])
       gg.points$se.min = gg.points[[name.y]] - se.factor * gg.points$se
       gg.points$se.max = gg.points[[name.y]] + se.factor * gg.points$se

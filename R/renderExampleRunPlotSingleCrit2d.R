@@ -50,25 +50,28 @@ renderExampleRunPlot2d = function(x, iter,
   idx.past = which(opt.path$dob < iter)
 
   model.ok = !inherits(models[[1L]], "FailureModel")
+  infill.mean = makeMBOInfillCriterionMeanResponse()
+  infill.ei = makeMBOInfillCriterionEI()
+  infill.se = makeMBOInfillCriterionStandardError()
 
   if (model.ok) {
-    evals$yhat = ifelse(control$minimize, 1, -1) * infillCritMeanResponse(evals.x, models, control, par.set, opt.path[idx.past, ])
+    evals$yhat = ifelse(control$minimize, 1, -1) * infill.mean(evals.x, models, control, par.set, opt.path[idx.past, ])
     if (se) {
-      evals$se = -infillCritStandardError(evals.x, models, control, par.set, opt.path[idx.past, ])
+      evals$se = -infill.se(evals.x, models, control, par.set, opt.path[idx.past, ])
     }
     if (proppoints == 1L) {
       evals[[infill.crit.id]] = opt.direction * critfun(evals.x, models, control, par.set, opt.path[idx.past, ])
     } else {
       objective = control$multipoint.moimbo.objective
       if (control$multipoint.method == "cb") {
-        evals[[infill.crit.id]] = opt.direction * infillCritMeanResponse(evals.x, models, control, par.set, opt.path[idx.past, ])
+        evals[[infill.crit.id]] = opt.direction * infill.mean(evals.x, models, control, par.set, opt.path[idx.past, ])
       } else {
         if (objective == "mean.dist") {
-          evals[[infill.crit.id]] = opt.direction * infillCritMeanResponse(evals.x, models, control, par.set, opt.path[idx.past, ])
+          evals[[infill.crit.id]] = opt.direction * infill.mean(evals.x, models, control, par.set, opt.path[idx.past, ])
         } else if (objective == "ei.dist") {
-          evals[[infill.crit.id]] = opt.direction * infillCritEI(evals.x, models, control, par.set, opt.path[idx.past, ])
+          evals[[infill.crit.id]] = opt.direction * infill.ei(evals.x, models, control, par.set, opt.path[idx.past, ])
         } else if (objective %in% c("mean.se", "mean.se.dist")) {
-          evals[[infill.crit.id]] = opt.direction * infillCritMeanResponse(evals.x, models, control, par.set, opt.path[idx.past, ])
+          evals[[infill.crit.id]] = opt.direction * infill.mean(evals.x, models, control, par.set, opt.path[idx.past, ])
         }
       }
     }
@@ -172,7 +175,7 @@ renderExampleRunPlot2d = function(x, iter,
     # FIXME: the following ~ 15 lines is copy and paste stuff (see exampleRun_autplot_1d.R)
     if (se) {
       evals.x = evals[, names.x, drop = FALSE]
-      evals$se = -infillCritStandardError(evals.x, models, control, par.set, opt.path[idx.past, ])
+      evals$se = -infill.se(evals.x, models, control, par.set, opt.path[idx.past, ])
       evals$se.min = evals$yhat - se.factor * evals$se
       evals$se.max = evals$yhat + se.factor * evals$se
     }

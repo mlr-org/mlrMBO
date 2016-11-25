@@ -75,14 +75,17 @@ proposePointsMOIMBO = function(opt.state, ...) {
   # Random inital population:
   X = generateDesign(mu, par.set, fun = randomLHS)
   Y = matrix(NA, mu, y.dim)
+  infill.mean = makeMBOInfillCriterionMeanResponse()
+  infill.se = makeMBOInfillCriterionStandardError()
+  infill.ei = makeMBOInfillCriterionEI()
   # mbo infill crits are always minimized
   if (objective == "mean.dist") {
-    Y[, 1] = infillCritMeanResponse(X, models, control, par.set, design)
+    Y[, 1] = infill.mean(X, models, control, par.set, design)
   } else if (objective == "ei.dist") {
-    Y[, 1] = infillCritEI(X, models, control, par.set, design)
+    Y[, 1] = infill.ei(X, models, control, par.set, design)
   } else if (objective %in% c("mean.se", "mean.se.dist")) {
-    Y[, 1] = infillCritMeanResponse(X, models, control, par.set, design)
-    Y[, 2] = infillCritStandardError(X, models, control, par.set, design)
+    Y[, 1] = infill.mean(X, models, control, par.set, design)
+    Y[, 2] = infill.se(X, models, control, par.set, design)
   }
 
   # use first Y criterion to for nearest better
@@ -106,12 +109,12 @@ proposePointsMOIMBO = function(opt.state, ...) {
       Y = rbind(Y, rep(NA, y.dim))
       # mbo infill crits are always minimized
       if (objective == "mean.dist") {
-        Y[nrow(Y), 1] = infillCritMeanResponse(child2, models, control, par.set, design)
+        Y[nrow(Y), 1] = infill.mean(child2, models, control, par.set, design)
       } else if (objective == "ei.dist") {
-        Y[nrow(Y), 1] = infillCritEI(child2, models, control, par.set, design)
+        Y[nrow(Y), 1] = infill.ei(child2, models, control, par.set, design)
       } else if (objective %in% c("mean.se", "mean.se.dist")) {
-        Y[nrow(Y), 1] = infillCritMeanResponse(child2, models, control, par.set, design)
-        Y[nrow(Y), 2] = infillCritStandardError(child2, models, control, par.set, design)
+        Y[nrow(Y), 1] = infill.mean(child2, models, control, par.set, design)
+        Y[nrow(Y), 2] = infill.se(child2, models, control, par.set, design)
       }
       # use first Y criterion to for nearest better
       if (objective %in% c("mean.dist", "ei.dist", "mean.se.dist"))
