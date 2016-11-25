@@ -10,7 +10,6 @@ test_that("infill crits", {
   )
   des = generateTestDesign(ninit, getParamSet(f1))
 
-
   mycontrol = function(minimize, crit) {
     ctrl = makeMBOControl(final.evals = 10L)
     ctrl = setMBOControlTermination(ctrl, iters = niters)
@@ -70,9 +69,9 @@ test_that("infill crits", {
     opt = "focussearch", opt.restarts = 1L,
     opt.focussearch.points = 300L)
   mbo(f1, des, learner = makeLearner("regr.km", predict.type = "se"), control = ctrl)
-  expect_error(setMBOControlInfill(ctrl, crit = makeMBOInfillCriterionCB(cb.lambda = 2, cb.pi = 0.5),
-    opt = "focussearch", opt.restarts = 1L,
-    opt.focussearch.points = 300L))
+
+  # should fail if both lambda and pi are not NULL
+  infill.crit = expect_error(makeMBOInfillCriterionCB(cb.lambda = 2, cb.pi = 0.5))
   ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCriterionCB(cb.lambda = NULL, cb.pi = 0.5),
     opt = "focussearch", opt.restarts = 1L,
     opt.focussearch.points = 300L)
@@ -80,8 +79,8 @@ test_that("infill crits", {
   expect_lt(or$y, 50)
 
   # check beta for eqi
-  expect_error(setMBOControlInfill(ctrl, crit = makeMBOInfillCriterionEQI(eqi.beta = 2),
-    opt = "focussearch", opt.restarts = 1L, opt.focussearch.points = 300L))
+  expect_error(makeMBOInfillCriterionEQI(eqi.beta = 2))
+
   ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCriterionEQI(eqi.beta = 0.6),
     opt = "focussearch", opt.restarts = 1L, opt.focussearch.points = 300L)
   or = mbo(f1, des, learner = makeLearner("regr.km", predict.type = "se", nugget.estim = TRUE), control = ctrl)

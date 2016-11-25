@@ -302,7 +302,7 @@ makeMBOInfillCriterionDIB = function() {
   # if these are only needed for the dib criterion we should make them
   # parameter of makeMBOInfillCriterionDIB()
   makeMBOInfillCriterion(
-    infillCritDIB = function(points, models, control, par.set, design, iter, attributes = FALSE) {
+    infill.fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
       # get ys and cb-value-matrix for new points, minimize version
       maximize.mult = ifelse(control$minimize, 1, -1)
       ys = as.matrix(design[, control$y.name]) %*% diag(maximize.mult)

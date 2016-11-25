@@ -107,20 +107,20 @@ checkStuff = function(fun, par.set, design, learner, control) {
           ifelse(hasLearnerProperties(learner, "se"), "",
             "\nBut this learner does not support prediction of standard errors!"))
       }
-      if (control$multipoint.method == "cl" && control$infill.crit != "ei")
-        stopf("Multipoint proposal using constant liar needs the infill criterion 'ei' (expected improvement), but you used '%s'!", control$infill.crit)
-      if (control$multipoint.method == "cb" && control$infill.crit != "cb")
-        stopf("Multipoint proposal using parallel cb needs the infill criterion 'cb' (confidence bound), but you used '%s'!", control$infill.crit)
+      if (control$multipoint.method == "cl" && infill.crit.id != "ei")
+        stopf("Multipoint proposal using constant liar needs the infill criterion 'ei' (expected improvement), but you used '%s'!", infill.crit.id)
+      if (control$multipoint.method == "cb" && infill.crit.id != "cb")
+        stopf("Multipoint proposal using parallel cb needs the infill criterion 'cb' (confidence bound), but you used '%s'!", infill.crit.id)
     }
   }
 
   # multicrit stuff
   if (control$n.objectives > 1L) {
     if (control$multicrit.method == "dib") {
-      if (control$infill.crit != "dib")
+      if (infill.crit.id != "dib")
         stopf("For multicrit 'dib' infil.crit must be set to 'dib'!")
     } else {
-      if (control$infill.crit == "dib")
+      if (infill.crit.id == "dib")
         stopf("For infill.crit 'dib', multicrit method 'dib' is needed!")
     }
     if (control$multicrit.method == "mspot" && control$infill.opt != "nsga2")

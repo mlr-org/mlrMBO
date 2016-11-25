@@ -25,7 +25,7 @@ test_that("exampleRunMulticrit", {
 
   ei = makeMBOInfillCriterionEI()
   cb = makeMBOInfillCriterionCB()
-  dib = makeMBOInfillCritDIB()
+  dib = makeMBOInfillCriterionDIB()
   doRun(method = "parego", crit = ei, prop.points = 1L)
   doRun(method = "parego", crit = ei, prop.points = 2L)
   doRun(method = "parego", crit = ei, prop.points = 2L, trafo.y.fun = trafoLog())
