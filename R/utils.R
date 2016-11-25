@@ -8,7 +8,7 @@ showInfo = function(show.info, ...) {
 # load required extra packages
 loadPackages = function(control) {
   if (control$infill.opt == "cmaes")
-    requirePackages("cmaes", why = "proposePoints")
+    requirePackages("cmaesr", why = "proposePoints")
   if (control$n.objectives == 1L && control$propose.points > 1L && control$multipoint.method == "multicrit")
     requirePackages("emoa", why = "proposePoints")
 }
