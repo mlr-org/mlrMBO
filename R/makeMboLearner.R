@@ -10,7 +10,9 @@
 #' The nugget effect is set to 10^-8 * Var(y) on each model training.
 #' For mixed parameter spaces the function returns a random forest regression learner.
 #' The method to estimate the variance is the standard deviation of the bagged predictions.
-#' Instead of the default \code{"BFGS"} optimization method we use \code{"rgen"} to circumvent model degeneration for some cases. 
+#' Instead of the default \code{"BFGS"} optimization method we use rgenoud (\code{"gen"}),
+#' which is a hybrid algorithm, to combine global search based on genetic algorithms and local search based on gradients.
+#' This may improve the model fit and will produce a constant surrogate model much less frequent.  
 #' You can override this setting in \code{...}.
 #' 
 #' @template arg_control
