@@ -49,7 +49,7 @@ test_that("mboFinalize", {
     save.file.path = save.file, n.objectives = 2L)
   ctrl = setMBOControlTermination(ctrl, iters = 7L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100L)
-  ctrl = setMBOControlMultiCrit(ctrl, method = "parego", parego.s = 100L)
+  ctrl = setMBOControlMultiObj(ctrl, method = "parego", parego.s = 100L)
   or = NULL
   expect_error(or <- mbo(f, des, learner = learner, control = ctrl), "foo")
   or = mboFinalize(save.file)

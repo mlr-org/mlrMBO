@@ -75,7 +75,7 @@ plotMBOExampleRun1DNumeric = function(x, iters, pause=TRUE,
               opt.direction * infillCritLCB(evals.x,
                 mod, ctrl2, par.set, op[ind.pasdes, ])
           }
-        } else if (ctrl$multipoint.method == "multicrit") {
+        } else if (ctrl$multipoint.method == "moimbo") {
           #FIXME add case for bicriteria
           evals[[name.crit]] = -1 * infillCritEI(evals.x,
             mod, ctrl, par.set, op[ind.pasdes, ])
@@ -162,7 +162,7 @@ plotMBOExampleRun1DNumeric = function(x, iters, pause=TRUE,
             xlab=name.x, ylab=name.crit, cex.axis=cex.axis, cex.lab=cex.lab)
           for (j in 1:proppoints)
             lines(xseq, evals[, sprintf("%s_%i", "lcb", j)], lty="dashed", lwd=lwd.lines)
-        } else if (ctrl$multipoint.method == "multicrit") {
+        } else if (ctrl$multipoint.method == "moimbo") {
           #FIXME add case for bicriteria
           plot(xseq, evals[, name.crit], xlim=xlim, type="l", lty="dashed",
             xlab=name.x, ylab=name.crit, lwd=lwd.lines, cex.axis=cex.axis, cex.lab=cex.lab)

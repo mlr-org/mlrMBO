@@ -1,4 +1,4 @@
-#' @title Perform an MBO run on a multi-criteria test function and and visualize what happens.
+#' @title Perform an MBO run on a multi-objective test function and and visualize what happens.
 #'
 #' @description
 #' Only available for 2D -> 2D examples,
@@ -22,9 +22,9 @@
 #'   Default is \code{list()}.
 #' @param ... [any]\cr
 #'   Further arguments passed to the learner.
-#' @return [\code{MBOExampleRunMultiCrit}]
+#' @return [\code{MBOExampleRunMultiObj}]
 #' @export
-exampleRunMultiCrit= function(fun, design = NULL, learner, control, points.per.dim = 50,
+exampleRunMultiObj= function(fun, design = NULL, learner, control, points.per.dim = 50,
   show.info = NULL, nsga2.args = list(), ...) {
 
   assertClass(fun, "smoof_multi_objective_function")
@@ -49,9 +49,9 @@ exampleRunMultiCrit= function(fun, design = NULL, learner, control, points.per.d
 
   # only allow 2D -> 2D for the moment, since the plot function can only handle this case
   if (ny != 2L)
-    stopf("exampleRunMultiCrit can only be applied for functions with 2 objectives, but you have %iD", ny)
+    stopf("exampleRunMultiObj can only be applied for functions with 2 objectives, but you have %iD", ny)
   if (n.params != 2L)
-    stopf("exampleRunMultiCrit can only be applied for functions with 2 parameters, but you have %iD", n.params)
+    stopf("exampleRunMultiObj can only be applied for functions with 2 parameters, but you have %iD", n.params)
 
   control$store.model.at = seq_len(control$iters)
   names.x = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
@@ -71,7 +71,7 @@ exampleRunMultiCrit= function(fun, design = NULL, learner, control, points.per.d
     lower.bounds = getLower(par.set), upper.bounds = getUpper(par.set),
     popsize = 60L, generations = 100L)
 
-  requirePackages("mco", why = "exampleRunMultiCrit")
+  requirePackages("mco", why = "exampleRunMultiObj")
   args = insert(args, nsga2.args)
   nsga2.res = do.call(mco::nsga2, args)
   nsga2.paretoset = setColNames(as.data.frame(nsga2.res$par[nsga2.res$pareto.optimal, , drop = FALSE]), names.x)
@@ -101,7 +101,7 @@ exampleRunMultiCrit= function(fun, design = NULL, learner, control, points.per.d
   mbo.pred.grid.x = NULL
   mbo.pred.grid.mean = NULL
   mbo.pred.grid.cb = NULL
-  if (control$multicrit.method %in% c("dib", "mspot")) {
+  if (control$multiobj.method %in% c("dib", "mspot")) {
     mbo.pred.grid.x = generateGridDesign(par.set, resolution = points.per.dim)
     mbo.pred.grid.mean = vector("list", control$iters)
     for (iter in seq_len(control$iters)) {
@@ -123,7 +123,7 @@ exampleRunMultiCrit= function(fun, design = NULL, learner, control, points.per.d
       }
     }
   }
-  makeS3Obj(c("MBOExampleRunMultiCrit"),
+  makeS3Obj(c("MBOExampleRunMultiObj"),
     par.set = par.set,
     n.params = n.params,
     par.types = par.types,
@@ -144,8 +144,8 @@ exampleRunMultiCrit= function(fun, design = NULL, learner, control, points.per.d
 }
 
 #' @export
-print.MBOExampleRunMultiCrit = function(x, ...) {
-  catf("MBOExampleRunMultiCrit")
+print.MBOExampleRunMultiObj = function(x, ...) {
+  catf("MBOExampleRunMultiObj")
   catf("Number of parameters          : %i", x$n.params)
   catf("Parameter names               : %s", collapse(x$names.x))
   catf("Parameter types               : %s", collapse(x$par.types))

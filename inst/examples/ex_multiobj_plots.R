@@ -14,7 +14,7 @@ ctrl = makeMBOControl(n.objectives = 2L,
 ctrl = setMBOControlTermination(ctrl, iters = 10L)
 ctrl = setMBOControlInfill(ctrl, crit = "ei", opt.focussearch.points = 1000L,
   opt.focussearch.maxit = 3L)
-ctrl = setMBOControlMultiCrit(ctrl, method = "parego")
+ctrl = setMBOControlMultiObj(ctrl, method = "parego")
 
 design = generateDesign(8L, getParamSet(obj.fun), fun = lhs::maximinLHS)
 

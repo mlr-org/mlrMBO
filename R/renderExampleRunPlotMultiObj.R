@@ -1,6 +1,6 @@
 # multi-objective
 #' @export
-renderExampleRunPlot.MBOExampleRunMultiCrit = function(object, iter, densregion = TRUE,
+renderExampleRunPlot.MBOExampleRunMultiObj = function(object, iter, densregion = TRUE,
   se.factor = 1, single.prop.point.plots = FALSE, xlim = NULL, ylim = NULL, point.size = 3,
   line.size = 1, trafo = NULL, colors = c("red", "blue", "green"), ...) {
 
@@ -15,7 +15,7 @@ renderExampleRunPlot.MBOExampleRunMultiCrit = function(object, iter, densregion 
   control = object$control
   x.name = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
   y.name = control$y.name
-  method = control$multicrit.method
+  method = control$multiobj.method
 
   # get x space and y space data
   data.y = as.data.frame(mbo.res$opt.path, include.x = FALSE, include.rest = FALSE)
@@ -113,7 +113,7 @@ makeYPlot = function(data.y, idx, idx.nsga2.paretofront, method, y.name, opt.pat
   pl.yspace = ggplot()
   pl.yspace = createBasicSpacePlot(pl.yspace, gg.points.yspace, iter, object, y.name, 0.4, "y", colors)
   if (method == "parego" && propose.points == 1L)
-    pl.yspace = addParegoWeightLines(pl.yspace, data.y, idx, opt.path, 1L, control$multicrit.parego.rho)
+    pl.yspace = addParegoWeightLines(pl.yspace, data.y, idx, opt.path, 1L, control$multiobj.parego.rho)
   pl.yspace = pl.yspace + ggtitle("YSpace")
   return(pl.yspace)
 }

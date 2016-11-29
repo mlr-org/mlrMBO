@@ -1,12 +1,12 @@
 #FIXME: briefly explain multipoint proposal for all thre methods
 
-#' @title Set multi-criteria options.
+#' @title Set multi-objective options.
 #' @description
-#' Extends MBO control object with multi-criteria specific options.
+#' Extends MBO control object with multi-objective specific options.
 #'
 #' @template arg_control
 #' @param method [\code{character(1)}]\cr
-#'   Which multicrit method should be used?
+#'   Which multi-objective method should be used?
 #'   \dQuote{parego}: The ParEGO algorithm.
 #'   \dQuote{dib}: Direct indicator-based method. Subsumes SMS-EGO and epsilon-EGO.
 #'   \dQuote{mspot}: Directly optimizes multcrit problem where we substitute the true
@@ -61,7 +61,7 @@
 #' @return [\code{\link{MBOControl}}].
 #'
 #' @references
-#' For more information on the implemented multi-criteria procedures the following
+#' For more information on the implemented multi-objective procedures the following
 #' sources might be helpful:
 #' Knowles, J.: ParEGO: A hybrid algorithm with on-line landscape
 #' approximation for expensive multiobjective optimization problems. IEEE
@@ -89,14 +89,14 @@
 #' Notes in Computer Science, ISBN 978-3-642-37139-4, pp. 756{770,
 #' doi:10.1007/978-3-642-37140-0 56}
 #'
-#' Jeong, S.; Obayashi, S.: Efficient global optimization (EGO) for multiobjective
-#' problem and data mining. In: Proc. IEEE Congress on
+#' Jeong, S.; Obayashi, S.: Efficient global optimization (EGO) for Multi-Objective Problem and Data Mining. 
+#' In: Proc. IEEE Congress on
 #' Evolutionary Computation (CEC 2005), Edinburgh, UK, Corne, D.;
 #' et al. (eds.), IEEE, 2005, ISBN 0-7803-9363-5, pp. 2138-2145
 #'
 #' @family MBOControl
 #' @export
-setMBOControlMultiCrit = function(control,
+setMBOControlMultiObj = function(control,
   method = NULL,
   ref.point.method = NULL,
   ref.point.offset = NULL,
@@ -114,28 +114,28 @@ setMBOControlMultiCrit = function(control,
   n.objectives = control$n.objectives
   propose.points = control$propose.points
   if (n.objectives == 1L)
-    stop("You are setting multicrit options, but have only 1 objective!")
-  requirePackages(c("mco", "emoa"), why = "multicrit optimization")
+    stop("You are setting multi-objective options, but have only 1 objective!")
+  requirePackages(c("mco", "emoa"), why = "multi-objective optimization")
 
-  control$multicrit.method = coalesce(method, control$multicrit.method, "dib")
-  assertChoice(control$multicrit.method, choices = c("parego", "mspot", "dib"))
+  control$multiobj.method = coalesce(method, control$multiobj.method, "dib")
+  assertChoice(control$multiobj.method, choices = c("parego", "mspot", "dib"))
 
   # Reference Point
-  control$multicrit.ref.point.method = coalesce(ref.point.method, control$multicrit.ref.point.method, "all")
-  assertChoice(control$multicrit.ref.point.method, choices = c("all", "front", "const"))
+  control$multiobj.ref.point.method = coalesce(ref.point.method, control$multiobj.ref.point.method, "all")
+  assertChoice(control$multiobj.ref.point.method, choices = c("all", "front", "const"))
 
-  control$multicrit.ref.point.offset = coalesce(ref.point.offset, control$multicrit.ref.point.offset, 1)
-  assertNumber(control$multicrit.ref.point.offset, lower = 0, finite = TRUE)
+  control$multiobj.ref.point.offset = coalesce(ref.point.offset, control$multiobj.ref.point.offset, 1)
+  assertNumber(control$multiobj.ref.point.offset, lower = 0, finite = TRUE)
 
-  if (control$multicrit.ref.point.method == "const") {
-    if (is.null(ref.point.val) & is.null(control$multicrit.ref.point.val))
+  if (control$multiobj.ref.point.method == "const") {
+    if (is.null(ref.point.val) & is.null(control$multiobj.ref.point.val))
       stopf("Constant reference point has to be specified.")
     else
-      control$multicrit.ref.point.val = coalesce(ref.point.val, control$multicrit.ref.point.val)
-      assertNumeric(control$multicrit.ref.point.val, any.missing = FALSE, finite = TRUE, len = n.objectives)
+      control$multiobj.ref.point.val = coalesce(ref.point.val, control$multiobj.ref.point.val)
+      assertNumeric(control$multiobj.ref.point.val, any.missing = FALSE, finite = TRUE, len = n.objectives)
   }
 
-  if (control$multicrit.method == "parego") {
+  if (control$multiobj.method == "parego") {
     if (missing(parego.s)) {
       parego.s = switch(min(n.objectives, 7L),
         1L,
@@ -148,42 +148,42 @@ setMBOControlMultiCrit = function(control,
     } else {
       parego.s = asInt(parego.s, na.ok = FALSE, lower = 1)
     }
-    control$multicrit.parego.s = coalesce(parego.s, control$multicrit.parego.s)
+    control$multiobj.parego.s = coalesce(parego.s, control$multiobj.parego.s)
 
-    control$multicrit.parego.rho = coalesce(parego.rho, control$multicrit.parego.rho, 0.05)
-    assertNumber(control$multicrit.parego.rho, na.ok = FALSE, lower = 0)
+    control$multiobj.parego.rho = coalesce(parego.rho, control$multiobj.parego.rho, 0.05)
+    assertNumber(control$multiobj.parego.rho, na.ok = FALSE, lower = 0)
 
     if (propose.points == 1L) {
       parego.sample.more.weights = 1L
     } else if (!is.null(parego.sample.more.weights)) {
       parego.sample.more.weights = asInt(parego.sample.more.weights)
     }
-    control$multicrit.parego.sample.more.weights = coalesce(parego.sample.more.weights, control$multicrit.parego.sample.more.weights, 5L)
-    assertInt(control$multicrit.parego.sample.more.weights, na.ok = FALSE, lower = 1)
+    control$multiobj.parego.sample.more.weights = coalesce(parego.sample.more.weights, control$multiobj.parego.sample.more.weights, 5L)
+    assertInt(control$multiobj.parego.sample.more.weights, na.ok = FALSE, lower = 1)
 
-    control$multicrit.parego.use.margin.points = coalesce(parego.use.margin.points, control$multicrit.parego.use.margin.points, rep(FALSE, control$n.objectives))
-    assertLogical(control$multicrit.parego.use.margin.points, len = n.objectives, any.missing = FALSE)
+    control$multiobj.parego.use.margin.points = coalesce(parego.use.margin.points, control$multiobj.parego.use.margin.points, rep(FALSE, control$n.objectives))
+    assertLogical(control$multiobj.parego.use.margin.points, len = n.objectives, any.missing = FALSE)
 
-    if (sum(control$multicrit.parego.use.margin.points) > propose.points)
+    if (sum(control$multiobj.parego.use.margin.points) > propose.points)
       stopf("Can't use %s margin points when only proposing %s points each iteration.",
-        sum(control$multicrit.parego.use.margin.points), propose.points)
+        sum(control$multiobj.parego.use.margin.points), propose.points)
 
     number.of.weights = choose(parego.s + n.objectives - 1L, n.objectives - 1L)
-    if (control$multicrit.parego.sample.more.weights * propose.points > number.of.weights)
+    if (control$multiobj.parego.sample.more.weights * propose.points > number.of.weights)
       stop("Trying to sample more weights than exists. Increase parego.s or decrease number of weights.")
 
-    control$multicrit.parego.normalize = coalesce(parego.normalize, control$multicrit.parego.normalize, "standard")
-    assertChoice(control$multicrit.parego.normalize, choices = c("standard", "front"))
+    control$multiobj.parego.normalize = coalesce(parego.normalize, control$multiobj.parego.normalize, "standard")
+    assertChoice(control$multiobj.parego.normalize, choices = c("standard", "front"))
   }
 
   # DIB
-  if (control$multicrit.method == "dib") {
-    control$multicrit.dib.indicator = coalesce(dib.indicator, control$multicrit.dib.indicator, "sms")
-    assertChoice(control$multicrit.dib.indicator, c("sms", "eps"))
+  if (control$multiobj.method == "dib") {
+    control$multiobj.dib.indicator = coalesce(dib.indicator, control$multiobj.dib.indicator, "sms")
+    assertChoice(control$multiobj.dib.indicator, c("sms", "eps"))
 
     if (!is.null(dib.sms.eps)) {
       assertNumber(dib.sms.eps, lower = 0, finite = TRUE)
-      control$multicrit.dib.sms.eps = dib.sms.eps
+      control$multiobj.dib.sms.eps = dib.sms.eps
     }
   }
 

@@ -16,7 +16,7 @@
 #'   the condition is checked after each iteration.
 #'   The default \code{NULL} means: There is no execution time budget.
 #' @param target.fun.value [\code{numeric(1)}] | NULL]\cr
-#'   Termination criterion for single crit optimization: Stop if a function evaluation
+#'   Termination criterion for single-objective optimization: Stop if a function evaluation
 #'   is better than this given target.value.
 #'   The default \code{NULL} means: The function value won't be taken into account for termination.
 #' @param max.evals [\code{integer(1) | NULL}]\cr
@@ -84,7 +84,7 @@ setMBOControlTermination = function(control,
 
   if (!is.null(target.fun.value)) {
     if (control$n.objectives > 1L)
-      stop("Specifying target.fun.value is only useful in single crit optimization.")
+      stop("Specifying target.fun.value is only useful in single-objective optimization.")
     stop.conds = c(stop.conds, makeMBOTerminationTargetFunValue(target.fun.value))
   }
 
