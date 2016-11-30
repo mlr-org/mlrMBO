@@ -11,11 +11,8 @@ infillOptFocus = function(infill.crit, models, control, par.set, opt.path, desig
   
   discrete.vector.pars = filterParams(par.set, type = c("discretevector", "logicalvector"))
   
-  all.requirements = extractSubList(par.set$pars, "requires", simplify = FALSE)
-  all.requirement.vars = unique(unlist(lapply(all.requirements, all.vars)))
-  if (any(all.requirement.vars %in% getParamIds(discrete.vector.pars))) {
+  if (any(ParamHelpers:::getRequiredParamNames.ParamSet(par.set) %in% getParamIds(discrete.vector.pars)))
     stop("Cannot do focus search when some variables have requirements that depend on discrete or logical vector parameters.")
-  }
   
 
   # perform multiple starts
