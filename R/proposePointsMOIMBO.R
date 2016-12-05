@@ -48,7 +48,7 @@ proposePointsMOIMBO = function(opt.state, ...) {
   control = getOptProblemControl(opt.problem)
   opt.path = getOptStateOptPath(opt.state)
 
-  requirePackages("emoa", why = "multipointInfillOptMulticrit")
+  requirePackages("emoa", why = "multipoint InfillOpt MOI-MBO")
 
   n = control$propose.points
   objective = control$multipoint.moimbo.objective

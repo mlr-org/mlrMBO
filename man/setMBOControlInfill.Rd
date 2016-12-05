@@ -146,29 +146,29 @@ Number of children generated in each generation.
 Default is 1.}
 
 \item{opt.nsga2.popsize}{[\code{numeric{1}}]\cr
-For \code{opt.multicrit.method = "nsga2"}.
+For \code{opt.multiobj.method = "nsga2"}.
 Population size of nsga2.
 Default is 100.}
 
 \item{opt.nsga2.generations}{[\code{numeric{1}}]\cr
-For \code{opt.multicrit.method = "nsga2"}.
+For \code{opt.multiobj.method = "nsga2"}.
 Number of populations for of nsga2.
 Default is 50.}
 
 \item{opt.nsga2.cprob}{[\code{numeric{1}}]\cr
-For \code{opt.multicrit.method = "nsga2"}.
+For \code{opt.multiobj.method = "nsga2"}.
 nsga2 param. Default is 0.7.}
 
 \item{opt.nsga2.cdist}{[\code{numeric{1}}]\cr
-For \code{opt.multicrit.method = "nsga2"}.
+For \code{opt.multiobj.method = "nsga2"}.
 nsga2 param. Default is 5.}
 
 \item{opt.nsga2.mprob}{[\code{numeric{1}}]\cr
-For \code{opt.multicrit.method = "nsga2"}.
+For \code{opt.multiobj.method = "nsga2"}.
 nsga2 param. Default is 0.2.}
 
 \item{opt.nsga2.mdist}{[\code{numeric{1}}]\cr
-For \code{opt.multicrit.method = "nsga2"}.
+For \code{opt.multiobj.method = "nsga2"}.
 nsga2 param. Default is 10.}
 }
 \value{
@@ -182,8 +182,8 @@ minimizes that.
 }
 \seealso{
 Other MBOControl: \code{\link{makeMBOControl}},
-  \code{\link{setMBOControlMultiCrit}},
   \code{\link{setMBOControlMultiFid}},
+  \code{\link{setMBOControlMultiObj}},
   \code{\link{setMBOControlMultiPoint}},
   \code{\link{setMBOControlTermination}}
 }

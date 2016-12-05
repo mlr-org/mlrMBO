@@ -1,6 +1,6 @@
 context("plot MBO Result")
 
-test_that("plot single crit", {
+test_that("plot single-objective", {
   f = makeSingleObjectiveFunction(
     fn = function(x) crossprod(x),
     par.set = makeNumericParamSet(len = 5L, lower = -1, upper = 1)
@@ -16,7 +16,7 @@ test_that("plot single crit", {
   plot(or, iters = 0:2, pause = FALSE)
 })
 
-test_that("plot multi crit", {
+test_that("plot multi-objective", {
   f = smoof::makeZDT1Function(2L)
   learner = makeLearner("regr.km", predict.type = "se")
   des = generateTestDesign(8L, getParamSet(f))
@@ -24,7 +24,7 @@ test_that("plot multi crit", {
   ctrl = setMBOControlTermination(ctrl, iters = 2L)
   ctrl = setMBOControlInfill(ctrl, crit = "ei", opt.focussearch.points = 100L,
     opt.focussearch.maxit = 3L, opt = "nsga2")
-  ctrl = setMBOControlMultiCrit(ctrl, method = "mspot")
+  ctrl = setMBOControlMultiObj(ctrl, method = "mspot")
   or = mbo(f, des, learner = learner, control = ctrl)
 
   plot(or, iters = 0:2, pause = FALSE)

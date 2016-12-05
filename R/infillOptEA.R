@@ -1,5 +1,5 @@
 # Simple EA that uses operators from emoa functions
-# kind of mimics our multicrit approach, so we can
+# kind of mimics our multi-objective approach, so we can
 # compare more honestly.
 # See infillOptCMAES.R for interface explanation.
 infillOptEA = function(infill.crit, models, control, par.set, opt.path, design, iter, ...) {

@@ -57,7 +57,7 @@ test_that("mboContinue", {
     save.file.path = save.file, n.objectives = 2L)
   ctrl = setMBOControlTermination(ctrl, iters = 7L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100)
-  ctrl = setMBOControlMultiCrit(ctrl, method = "parego", parego.s = 100)
+  ctrl = setMBOControlMultiObj(ctrl, method = "parego", parego.s = 100)
   or = NULL
   try({or = mbo(f, des, learner = learner, control = ctrl)}, silent = TRUE)
   for (i in 1:10) {

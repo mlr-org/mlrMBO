@@ -75,9 +75,9 @@ setOptProblemAllPossibleWeights = function(opt.problem, all.possible.weights) {
 
 getOptProblemAllPossibleWeights = function(opt.problem) {
   control = getOptProblemControl(opt.problem)
-  if (is.null(opt.problem$all.possible.weights) && control$n.objectives > 1L && control$multicrit.method == "parego") {
+  if (is.null(opt.problem$all.possible.weights) && control$n.objectives > 1L && control$multiobj.method == "parego") {
     # calculate all possible weight vectors and save them
-    all.possible.weights = combWithSum(control$multicrit.parego.s, control$n.objectives) / control$multicrit.parego.s
+    all.possible.weights = combWithSum(control$multiobj.parego.s, control$n.objectives) / control$multiobj.parego.s
     # rearrange them a bit - we want to have the margin weights on top of the matrix
     # tricky: all margin weights have maximal variance
     vars = apply(all.possible.weights, 1, var)

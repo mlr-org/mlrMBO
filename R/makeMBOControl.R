@@ -5,7 +5,7 @@
 #'
 #' @param n.objectives [\code{integer(1)}]\cr
 #'   How many objectives are to be optimized? \code{n.objectives = 1} implies normal single
-#'   criteria optimization, \code{n.objectives > 1} implies multicriteria optimization.
+#'   criteria optimization, \code{n.objectives > 1} implies multi-objective optimization.
 #'   Default is 1.
 #' @param propose.points [\code{integer(1)}]\cr
 #'   Number of proposed / really evaluated points each iteration.
@@ -149,7 +149,7 @@ makeMBOControl = function(n.objectives = 1L,
   if (n.objectives == 1L && propose.points > 1L)
     control = setMBOControlMultiPoint(control)
   if (n.objectives > 1L)
-    control = setMBOControlMultiCrit(control)
+    control = setMBOControlMultiObj(control)
   return(control)
 }
 
@@ -168,7 +168,7 @@ print.MBOControl = function(x, ...) {
   }
   catf("")
   if (x$n.objectives > 1L) {
-    catf("Multicrit Method              : %s", x$multicrit.method)
+    catf("Multi-objective Method        : %s", x$multiobj.method)
     catf("Infill criterion              : %s", x$infill.crit)
     catf("Infill optimizer              : %s", x$infill.opt)
     catf("Infill optimizer restarts     : %i", x$infill.opt.restarts)

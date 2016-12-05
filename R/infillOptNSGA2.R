@@ -1,8 +1,8 @@
-# Multicrit optimization of multiple infill.crits - one crit per target
+# Multi-objective optimization of multiple infill.crits - one crit per target
 # NSGA2 is used to create set of candidate soluation
 # Greedy cypervolume contribution selection is used to select prop.point from
 # from candidate points
-infillOptMultiCritNSGA2 = function(infill.crit, models, control, par.set, opt.path, design, iter, ...) {
+infillOptMultiObjNSGA2 = function(infill.crit, models, control, par.set, opt.path, design, iter, ...) {
 
   # build target function for vectorized nsga2 and run it
   rep.pids = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
@@ -46,7 +46,7 @@ infillOptMultiCritNSGA2 = function(infill.crit, models, control, par.set, opt.pa
   colnames(prop.vals) = control$y.name
   ys = design[, control$y.name]
 
-  ref.point = getMultiCritRefPoint(ys, control)
+  ref.point = getMultiObjRefPoint(ys, control)
   prop.hv.contrs = numeric(control$propose.points)
   for (i in seq_len(control$propose.points)) {
     hv.contrs = getHypervolumeContributions(xs = candidate.vals,

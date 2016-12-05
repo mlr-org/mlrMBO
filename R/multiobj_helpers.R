@@ -35,22 +35,22 @@ getHypervolumeContributions = function(xs, ys, ref.point, minimize) {
   return(hv.new - hv.old)
 }
 
-# determines the reference point for multicrit optimization
+# determines the reference point for multi-objective optimization
 # Returns reference-point, numeric vector of length n.objectives
-getMultiCritRefPoint = function (ys, control, minimize = control$minimize) {
-  switch(control$multicrit.ref.point.method,
-    const = control$multicrit.ref.point.val,
-    all = getWorstExtremePoint(ys, minimize) + control$multicrit.ref.point.offset,
+getMultiObjRefPoint = function (ys, control, minimize = control$minimize) {
+  switch(control$multiobj.ref.point.method,
+    const = control$multiobj.ref.point.val,
+    all = getWorstExtremePoint(ys, minimize) + control$multiobj.ref.point.offset,
     front = {
       front = getNonDominatedPoints(ys, minimize)
-      getWorstExtremePoint(front, control$minimize) + control$multicrit.ref.point.offset
+      getWorstExtremePoint(front, control$minimize) + control$multiobj.ref.point.offset
     }
   )
 }
 
-# evaluate an infill crit on multiple models (one per objective in multicrit)
+# evaluate an infill crit on multiple models (one per objective in multi-objective)
 # returns matrix of crit vals, rows = points, cols = crits
-evalCritFunForMultiCritModels = function(infill.crit.fun, points, models, control, par.set, design, iter) {
+evalCritFunForMultiObjModels = function(infill.crit.fun, points, models, control, par.set, design, iter) {
   asMatrixCols(lapply(seq_along(models), function(i) {
       # we need to make sure mininimize in control is a scalar, so we can multiply it in infill crits...
       control$minimize = control$minimize[i]

@@ -17,7 +17,7 @@ makeMBOControl(n.objectives = 1L, propose.points = 1L,
 \arguments{
 \item{n.objectives}{[\code{integer(1)}]\cr
 How many objectives are to be optimized? \code{n.objectives = 1} implies normal single
-criteria optimization, \code{n.objectives > 1} implies multicriteria optimization.
+criteria optimization, \code{n.objectives > 1} implies multi-objective optimization.
 Default is 1.}
 
 \item{propose.points}{[\code{integer(1)}]\cr
@@ -109,8 +109,8 @@ Creates a control object for MBO optimization.
 }
 \seealso{
 Other MBOControl: \code{\link{setMBOControlInfill}},
-  \code{\link{setMBOControlMultiCrit}},
   \code{\link{setMBOControlMultiFid}},
+  \code{\link{setMBOControlMultiObj}},
   \code{\link{setMBOControlMultiPoint}},
   \code{\link{setMBOControlTermination}}
 }

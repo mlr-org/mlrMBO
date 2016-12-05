@@ -1,6 +1,6 @@
-context("multipoint multicrit")
+context("multipoint multi-objective")
 
-test_that("multipoint multicrit", {
+test_that("multipoint multi-objective", {
   f = makeBraninFunction()
   f = setAttribute(f, "par.set", makeNumericParamSet(len = 2L, lower = 0, upper = 1))
 

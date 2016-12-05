@@ -66,7 +66,7 @@ runMBO = function(static, dynamic, method, crit, opt, prop.points, indicator = "
     opt.nsga2.generations = MSPOT_NSGA2_GENERATIONS,
     opt.nsga2.popsize = MSPOT_NSGA2_POPSIZE
   )
-  ctrl = setMBOControlMultiCrit(ctrl, method = method,
+  ctrl = setMBOControlMultiObj(ctrl, method = method,
     ref.point.method = MULTICRIT_REFPOINT, ref.point.offset = MULTICRIT_REFPOINT_OFFSET,
     dib.indicator = indicator, dib.sms.eps = DIB_SMS_EPS,
     parego.rho = PAREGO_RHO, parego.sample.more.weights = PAREGO_SAMPLE_MORE_WEIGHTS

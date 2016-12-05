@@ -9,7 +9,7 @@
 # @param control [\code{\link{MBOControl}}]\cr
 #   MBO control object.
 # @return [\code{list(\link[mlr]{SupervisedTask}})]
-makeTasksMultiCrit = function(opt.path, control) {
+makeTasksMultiObj = function(opt.path, control) {
   data = convertOptPathToDf(opt.path, control)
 
   # FIXME: trafo.y.fun should be a list of length y.name

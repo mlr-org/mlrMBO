@@ -4,7 +4,7 @@
 # @param opt.state
 # @param prop: result of proposePoints
 # @return [\code{numeric} | \code{matrix}] Numeric vector of y-vals or matrix
-#   (for multi-criteria problems).
+#   (for multi-objective problems).
 #
 # gets the getExtras, converts point data.frame to a list, repairs points out-of-bounds
 # then call evalTargetFun

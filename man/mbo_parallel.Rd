@@ -19,8 +19,8 @@ Details for the levels mentioned above are given below:
 }
 Details regarding the latter:
 \describe{
-\item{Singlecrit MBO with LCB multipoint}{Parallel optimization of LCBs for the lambda-values.}
-\item{Multicrit MBO with ParEGO}{Parallel optimization of scalarization functions.}
+\item{single-objective MBO with LCB multipoint}{Parallel optimization of LCBs for the lambda-values.}
+\item{Multi-objective MBO with ParEGO}{Parallel optimization of scalarization functions.}
 }
 }
 

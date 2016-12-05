@@ -1,4 +1,4 @@
-# proposes 1 or multi-points via direct multiobjective indicator optimization
+# proposes 1 or multi-points via direct multi-objective indicator optimization
 # the indicators we support are sms and epsilon
 #
 # 1-point proposal: we take the user-defined cb-lambda from the control, then simply optimize
@@ -18,7 +18,7 @@ proposePointsDIB = function(opt.state) {
   if (control$propose.points == 1L) {
     res = proposePointsByInfillOptimization(opt.state)
   } else {
-    # draw lambdas from exp dist + create 1 control for each for single crit with lambda-CB
+    # draw lambdas from exp dist + create 1 control for each for single-objective with lambda-CB
     #FIXME: it is unclear whether we want also randomly sample lambdas here too
     # talked with TW and we agreed to not do this for now but only do the CL idea with adding points
     # if we only use the const lambda, we also dont need it in optpath
@@ -31,7 +31,7 @@ proposePointsDIB = function(opt.state) {
       control2 = z$controls[[i]]
       prop = proposePointsByInfillOptimization(opt.state, control = control2, opt.path = opt.path2)
       design = convertOptPathToDf(opt.path, control)
-      cb = evalCritFunForMultiCritModels(infillCritCB, prop$prop.points, models, control2,
+      cb = evalCritFunForMultiObjModels(infillCritCB, prop$prop.points, models, control2,
         par.set, design, iter)[1L, ]
       x = dfRowToList(prop$prop.points, par.set, 1)
       addOptPathEl(opt.path2, x = x, y = cb, dob = dob)
