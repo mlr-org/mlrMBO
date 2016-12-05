@@ -60,7 +60,8 @@
 #'   How should SINGLE points be proposed by using the surrogate model. Possible values are:
 #'   \dQuote{focussearch}: In several iteration steps the parameter space is
 #'   focused on an especial promising region according to infill criterion.
-#'   \dQuote{cmaes}: Use CMAES to optimize infill criterion. If all CMAES runs fail, a random point is generated
+#'   \dQuote{cmaes}: Use CMA-ES (function \code{\link[cmaesr]{cmaes}} from package \pkg{cmaesr}
+#'   to optimize infill criterion. If all CMA-ES runs fail, a random point is generated
 #'   instead and a warning informs about it.
 #'   \dQuote{ea}: Use an (mu+1) EA to optimize infill criterion.
 #'   \dQuote{nsga2}: NSGA2 for multi obj. optimizationen. Needed for mspot.
@@ -83,7 +84,7 @@
 #' @param opt.cmaes.control [\code{list}]\cr
 #'   For \code{opt = "cmaes"}:
 #'   Control argument for cmaes optimizer.
-#'   Default is empty list.
+#'   For the default see the help page of the underlying optimizer \code{\link[cmaesr]{cmaes}}.
 #' @param opt.ea.maxit [\code{integer(1)}]\cr
 #'   For \code{opt = "ea"}:
 #'   Number of iterations / generations of EA.
