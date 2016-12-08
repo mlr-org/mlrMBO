@@ -159,7 +159,7 @@ setMBOControlInfill = function(control,
 
   assertClass(control, "MBOControl")
 
-  control$infill.crit = coalesce(crit, control$infill.crit, "mean")
+  control$infill.crit = as.character(coalesce(crit, control$infill.crit, "mean"))
   assertChoice(control$infill.crit, choices = getSupportedInfillCritFunctions())
 
   assertCount(interleave.random.points)
