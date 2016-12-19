@@ -81,5 +81,11 @@ test_that("infill crits", {
   ctrl = setMBOControlInfill(ctrl, crit = "eqi", opt = "focussearch", opt.restarts = 1L,
                              opt.focussearch.points = 300L, crit.eqi.beta = 0.6)
   or = mbo(f1, des, learner = makeLearner("regr.km", predict.type = "se", nugget.estim = TRUE), control = ctrl)
-  expect_true(or$y < 50)
+  expect_lt(or$y, 50)
+  
+  # check that infill crits as factor is parsed correctly
+  ctrl = setMBOControlInfill(ctrl, crit = factor("ei", levels = c( "should_not_be_a_problem", "ei")), 
+    opt = "focussearch", opt.restarts = 1L, opt.focussearch.points = 300L)
+  or = mbo(f1, des, learner = makeLearner("regr.km", predict.type = "se", nugget.estim = TRUE), control = ctrl)
+  expect_lt(or$y, 50)
 })
