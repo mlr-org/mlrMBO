@@ -44,7 +44,7 @@ makeMboLearner = function(control, fun, ...) {
     lrn = makeLearner("regr.km", predict.type = "se", covtype = "matern5_2", optim.method = "gen")
     if (!isNoisy(fun))
       lrn = setHyperPars(lrn, nugget.stability = 10^-8)
-    else if (is.null(getHyperPars(lrn)$nugget))
+    else
       lrn = setHyperPars(lrn, nugget.estim = TRUE, jitter = TRUE)
     if (!control$filter.proposed.points)
       warningf("filter.proposed.points is not set in the control object. This might lead to the 'leading minor of order ...' error during model fit.")
