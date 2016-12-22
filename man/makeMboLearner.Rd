@@ -2,7 +2,7 @@
 % Please edit documentation in R/makeMboLearner.R
 \name{makeMboLearner}
 \alias{makeMboLearner}
-\title{Automatically generate the right learner for the given problem}
+\title{Generate default learner.}
 \usage{
 makeMboLearner(control, fun, ...)
 }
@@ -14,25 +14,37 @@ Control object for mbo.}
 The same objective function which is also passed to \code{\link{mbo}}.}
 
 \item{...}{[any]\cr
-Parameters passed to \code{par.vals}.
-Will overwrite mlrMBOs recomendations.}
+Further parameters passed to the constructed learner.
+Will overwrite mlrMBO's defaults.}
 }
 \value{
 [\code{Learner}]
 }
 \description{
-This is a helper function that generates the right learner for the surrogate, based on criteria of the objective function.
-For numeric only parameter spaces it returns a Kriging regression learner with the following settings: \cr
-If the objective function is noisy the nugget effect will be estimated unless \code{nugget.estim = FALSE} is explicitly given in \code{...}.
-Also \code{jitter} is set to \code{TRUE} to circumvent a problem with DiceKriging where already trained input values produce the exact trained output.
-For further informations check the \code{$note} slot of the created learner.
-If the objective function is deterministic we add a small nugget effect to increase numerical stability which prevents crashes of DiceKriging. 
-The nugget effect is set to 10^-8 * Var(y) on each model training.
-For mixed parameter spaces the function returns a random forest regression learner.
-The method to estimate the variance is the standard deviation of the bagged predictions.
-Instead of the default \code{"BFGS"} optimization method we use rgenoud (\code{"gen"}),
-which is a hybrid algorithm, to combine global search based on genetic algorithms and local search based on gradients.
-This may improve the model fit and will produce a constant surrogate model much less frequent.  
-You can override this setting in \code{...}.
+This is a helper function that generates a default surrogate, based on properties of the objective function.
+
+For numeric-only parameter spaces (including integers):
+\itemize{
+\item{A Kriging model \dQuote{regr.km} with kernel \dQuote{matern5_2} is created.}
+\item{If the objective function is deterministic we add a small nugget effect (10^-8*Var(y),
+  y is vector of observed outcomes in current design) to increase numerical stability to
+  hopefully prevent crashes of DiceKriging.}
+\item{If the objective function is noisy the nugget effect will be estimated with
+  \code{nugget.estim = TRUE} (but you can override this in \code{...}.}
+  Also \code{jitter} is set to \code{TRUE} to circumvent a problem with DiceKriging where already
+  trained input values produce the exact trained output.
+  For further informations check the \code{$note} slot of the created learner.
+\item{Instead of the default \code{"BFGS"} optimization method we use rgenoud (\code{"gen"}),
+  which is a hybrid algorithm, to combine global search based on genetic algorithms and local search
+  based on gradients.
+  This may improve the model fit and will produce a constant surrogate model much less frequent.
+  You can also override this setting in \code{...}.}
+}
+
+For mixed numeric-categorical parameter spaces:
+\itemize{
+\item{A random regression forest \dQuote{regr.randomForest} is created.}
+\item{The method to estimate the variance is the standard deviation of the bagged predictions.}
+}
 }
 
