@@ -39,7 +39,7 @@
 #' # do three MBO iterations
 #' ctrl = setMBOControlTermination(ctrl, iters = 3L)
 #'
-#' # use 500 iterations in the focussearch (should be sufficient for 2d)
+#' # use 500 points in the focussearch (should be sufficient for 2d)
 #' ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 500)
 #' # create initial design
 #' des = generateDesign(n = 5L, getParamSet(obj.fun), fun = lhs::maximinLHS)
