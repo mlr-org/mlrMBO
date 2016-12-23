@@ -4,6 +4,8 @@ renderExampleRunPlot.MBOExampleRun = function(object, iter, densregion = TRUE,
   se.factor = 1, single.prop.point.plots = FALSE, xlim = NULL, ylim = NULL,
   point.size = 3, line.size = 1, trafo = NULL, colors = c("red", "blue", "green"), ...) {
 
+  requirePackages("ggplot2")
+
   iters.max = object$control$iters
   assertIntegerish(iter, lower = 0L, upper = iters.max, len = 1L, any.missing = FALSE)
   assertFlag(densregion)

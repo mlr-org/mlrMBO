@@ -71,9 +71,8 @@ renderExampleRunPlot.MBOExampleRunMultiObj = function(object, iter, densregion =
 
 makeXPlot = function(data.x, idx, idx.nsga2.paretofront, method, x.name, crit.name,
   models, control, par.set, opt.path, points.per.dim, iter, propose.points, object, colors) {
-
-  pl.xspace = ggplot()
-  pl.xspace = pl.xspace + guides(colour = FALSE, shape = FALSE)
+  pl.xspace = ggplot2::ggplot()
+  pl.xspace = pl.xspace + ggplot2::guides(colour = FALSE, shape = FALSE)
 
   gg.points.xspace = getPlotData(data.x, idx, idx.nsga2.paretofront, x.name)
   # first, fill background if possible. note: 2 different plots for mspot since
@@ -85,9 +84,9 @@ makeXPlot = function(data.x, idx, idx.nsga2.paretofront, method, x.name, crit.na
       control, par.set, opt.path[idx$past, ])
 
     crit1.plot = fillBackgroundWithInfillCrit(pl.xspace, data.crit1, x.name, crit.name) +
-      ggtitle("XSpace - model 1")
+      ggplot2::ggtitle("XSpace - model 1")
     crit2.plot = fillBackgroundWithInfillCrit(pl.xspace, data.crit2, x.name, crit.name) +
-      ggtitle("XSpace - model 2")
+      ggplot2::ggtitle("XSpace - model 2")
 
     pl.xspace = list(
       crit1 = createBasicSpacePlot(crit1.plot, gg.points.xspace, iter, object, x.name, 0.8, "x", colors),
@@ -99,7 +98,7 @@ makeXPlot = function(data.x, idx, idx.nsga2.paretofront, method, x.name, crit.na
       data.crit = getInfillCritGrid(crit.name, points.per.dim, models,
         control, par.set, opt.path[idx$past, ], iter)
       pl.xspace = fillBackgroundWithInfillCrit(pl.xspace, data.crit, x.name, crit.name) +
-        ggtitle("XSpace")
+        ggplot2::ggtitle("XSpace")
     }
     pl.xspace = createBasicSpacePlot(pl.xspace, gg.points.xspace, iter, object, x.name, 0.8, "x", colors)
   }
@@ -110,10 +109,10 @@ makeXPlot = function(data.x, idx, idx.nsga2.paretofront, method, x.name, crit.na
 makeYPlot = function(data.y, idx, idx.nsga2.paretofront, method, y.name, opt.path,
   control, iter, propose.points, object, colors) {
   gg.points.yspace = getPlotData(data.y, idx, idx.nsga2.paretofront, y.name)
-  pl.yspace = ggplot()
+  pl.yspace = ggplot2::ggplot()
   pl.yspace = createBasicSpacePlot(pl.yspace, gg.points.yspace, iter, object, y.name, 0.4, "y", colors)
   if (method == "parego" && propose.points == 1L)
     pl.yspace = addParegoWeightLines(pl.yspace, data.y, idx, opt.path, 1L, control$multiobj.parego.rho)
-  pl.yspace = pl.yspace + ggtitle("YSpace")
+  pl.yspace = pl.yspace + ggplot2::ggtitle("YSpace")
   return(pl.yspace)
 }

@@ -1,7 +1,6 @@
 #' @import backports
 #' @import BBmisc
 #' @import checkmate
-#' @import ggplot2
 #' @import grDevices
 #' @import mlr
 #' @import parallelMap
