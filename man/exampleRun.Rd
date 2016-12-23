@@ -9,7 +9,7 @@ exampleRun(fun, design = NULL, learner = NULL, control,
 }
 \arguments{
 \item{fun}{[\code{smoof_function}]\cr
-Fitness function to optimize. 
+Fitness function to optimize.
 For one dimensional target functions you can obtain a \code{smoof_function} by using \code{\link[smoof]{makeSingleObjectiveFunction}}.
 For multi dimensional functions use \code{\link[smoof]{makeMultiObjectiveFunction}}.
 It is possible to return even more information which will be stored
@@ -18,7 +18,7 @@ to the return value of the target function. This has to be a named list of scala
 Each of these values will be stored additionally in the optimization path.}
 
 \item{design}{[\code{data.frame}]\cr
-Initial design as data frame. 
+Initial design as data frame.
 If the y-values are not already present in design, mbo will evaluate the points.
 If the parameters have corresponding trafo functions, the design must not be transformed before it is passed!
 Functions to generate designs are available in \code{ParamHelpers}: \code{\link[ParamHelpers]{generateDesign}}, \code{\link[ParamHelpers]{generateGridDesign}}, \code{\link[ParamHelpers]{generateRandomDesign}}.
