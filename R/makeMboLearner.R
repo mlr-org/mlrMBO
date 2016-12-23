@@ -46,8 +46,6 @@ makeMboLearner = function(control, fun, ...) {
       lrn = setHyperPars(lrn, nugget.stability = 10^-8)
     else
       lrn = setHyperPars(lrn, nugget.estim = TRUE, jitter = TRUE)
-    if (!control$filter.proposed.points)
-      warningf("filter.proposed.points is not set in the control object. This might lead to the 'leading minor of order ...' error during model fit.")
   } else {
     lrn = makeLearner("regr.randomForest", predict.type = "se", se.method = "sd")
   }

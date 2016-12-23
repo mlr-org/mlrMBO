@@ -9,7 +9,7 @@ test_that("renderExampleRunPlot produces list of ggplot2 objects", {
     control = makeMBOControl()
     control = setMBOControlTermination(control, iters = n.iters)
     control = setMBOControlInfill(control, crit = crit, opt = "focussearch",
-      opt.focussearch.points = 10, filter.proposed.points = TRUE)
+      opt.focussearch.points = 10)
 
     run = exampleRun(obj.fn, learner = learner, control = control)
     return(renderExampleRunPlot(run, iter = 1L))
