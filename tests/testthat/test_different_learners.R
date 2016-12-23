@@ -34,7 +34,6 @@ test_that("mbo works with different learners", {
       lrn = setPredictType(lrn, "se")
       ctrl$infill.crit = "ei"
     }
-    ctrl$filter.proposed.points = TRUE
     des = generateTestDesign(10L, getParamSet(fun))
     mbo(fun, des, learner = lrn, control = ctrl)
   }
