@@ -12,6 +12,8 @@ renderExampleRunPlot1d = function(x, iter,
   point.size, line.size,
   trafo = NULL,
   colors = c("red", "blue", "green"), ...)  {
+  requirePackages("ggplot2")
+
   # extract relevant data from MBOExampleRun
   par.set = x$par.set
   names.x = x$names.x
@@ -145,30 +147,30 @@ renderExampleRunPlot1d = function(x, iter,
     }
 
     # finally build the ggplot object(s)
-    g = ggplot(data = gg.fun)
-    next.aes = aes_string(x = names.x, y = "value", color = "as.factor(.multifid.lvl)", group = "paste(variable,.multifid.lvl)", linetype = "variable")
+    g = ggplot2::ggplot(data = gg.fun)
+    next.aes = ggplot2::aes_string(x = names.x, y = "value", color = "as.factor(.multifid.lvl)", group = "paste(variable,.multifid.lvl)", linetype = "variable")
     if (!control$multifid) {
       next.aes = dropNamed(next.aes, c("group","colour"))
     }
-    g = g + geom_line(next.aes, size = line.size)
-    g = g + facet_grid(pane~., scales = "free")
+    g = g + ggplot2::geom_line(next.aes, size = line.size)
+    g = g + ggplot2::facet_grid(pane~., scales = "free")
     if (se & densregion) {
       #FIXME: We might lose transformation information here tr()
-      next.aes = aes_string(x = names.x, ymin = "value-se", ymax = "value+se", group = ".multifid.lvl")
+      next.aes = ggplot2::aes_string(x = names.x, ymin = "value-se", ymax = "value+se", group = ".multifid.lvl")
       if (!control$multifid) {
         next.aes = dropNamed(next.aes, "group")
       }
-      g = g + geom_ribbon(data = gg.fun[gg.fun$variable == "yhat", ], next.aes, alpha = 0.2)
+      g = g + ggplot2::geom_ribbon(data = gg.fun[gg.fun$variable == "yhat", ], next.aes, alpha = 0.2)
     }
-    g = g + geom_point(data = gg.points, aes_string(x = names.x, y = name.y, colour = "type", shape = "type"), size = point.size)
+    g = g + ggplot2::geom_point(data = gg.points, ggplot2::aes_string(x = names.x, y = name.y, colour = "type", shape = "type"), size = point.size)
     if (control$multifid) {
       mf.colors = tail(RColorBrewer::brewer.pal(n = length(control$multifid.lvls)+1, name = "PuBu"), -1)
       names(mf.colors) = levels(gg.fun$.multifid.lvl)
     } else {
       mf.colors = NULL
     }
-    g = g + scale_colour_manual(values = c(mf.colors, colors), name = "type")
-    g = g + scale_linetype(name = "type")
+    g = g + ggplot2::scale_colour_manual(values = c(mf.colors, colors), name = "type")
+    g = g + ggplot2::scale_linetype(name = "type")
 
     if (noisy) {
       if (!anyMissing(x$y.true)) {
@@ -182,10 +184,10 @@ renderExampleRunPlot1d = function(x, iter,
       gap = calculateGap(convertOptPathToDf(opt.path, control)[idx.pastpresent,, drop = FALSE], global.opt, control)
     }
 
-    g = g + ggtitle(sprintf("Iter = %i, Gap = %.4e", iter, gap))
-    g = g + ylab(NULL)
-    g = g + theme(
-      plot.title = element_text(size = 11, face = "bold")
+    g = g + ggplot2::ggtitle(sprintf("Iter = %i, Gap = %.4e", iter, gap))
+    g = g + ggplot2::ylab(NULL)
+    g = g + ggplot2::theme(
+      plot.title = ggplot2::element_text(size = 11, face = "bold")
     )
 
     plots = list(
@@ -206,23 +208,23 @@ renderExampleRunPlot1d = function(x, iter,
       gg.points$se.max = gg.points[[name.y]] + se.factor * gg.points$se
     }
 
-    pl.fun = ggplot(data = gg.points, aes_string(x = names.x, y = name.y, colour = "type", shape = "type"))
-    pl.fun = pl.fun + geom_point(size = point.size)
+    pl.fun = ggplot2::ggplot(data = gg.points, ggplot2::aes_string(x = names.x, y = name.y, colour = "type", shape = "type"))
+    pl.fun = pl.fun + ggplot2::geom_point(size = point.size)
     if (se & densregion) {
-      pl.fun = pl.fun + geom_errorbar(aes_string(ymin = "se.min", ymax = "se.max"), width = .1, alpha = .5)
+      pl.fun = pl.fun + ggplot2::geom_errorbar(ggplot2::aes_string(ymin = "se.min", ymax = "se.max"), width = .1, alpha = .5)
     }
 
-    pl.fun = pl.fun + xlab(names.x)
-    pl.fun = pl.fun + scale_colour_discrete(name = "type")
-    pl.fun = pl.fun + ggtitle(
+    pl.fun = pl.fun + ggplot2::xlab(names.x)
+    pl.fun = pl.fun + ggplot2::scale_colour_discrete(name = "type")
+    pl.fun = pl.fun + ggplot2::ggtitle(
       sprintf("Iter = %i, Gap = %.4e", iter,
       calculateGap(convertOptPathToDf(opt.path, control)[idx.pastpresent,, drop = FALSE], global.opt, control))
     )
 
-    pl.fun = pl.fun + theme(
+    pl.fun = pl.fun + ggplot2::theme(
       legend.position = "top",
       legend.box = "horizontal",
-      plot.title = element_text(size = 11, face = "bold")
+      plot.title = ggplot2::element_text(size = 11, face = "bold")
     )
 
     plots = list(
