@@ -103,17 +103,17 @@ renderExampleRunPlot2d = function(x, iter,
     # set up nice colour palette
     brewer.palette = colorRampPalette(RColorBrewer::brewer.pal(11, "Spectral"), interpolate = "spline")
 
-    pl = ggplot2::ggplot(data = data, ggplot2::aes_string(x = name.x1, y = name.x2, z = name.z))
+    pl = ggplot2::ggplot(data = data, ggplot2::aes_string(x = name.x1, y = name.x2))
     pl = pl + ggplot2::geom_tile(ggplot2::aes_string(fill = name.z))
     pl = pl + ggplot2::scale_fill_gradientn(colours = brewer.palette(200))
 
     # sometimes contour lines cannot be plotted for EI
     if (name.z != "ei") {
-      pl = pl + ggplot2::stat_contour(ggplot2::aes_string(fill = name.z), bins = 10, colour = "gray", alpha = 0.8)
+      pl = pl + ggplot2::stat_contour(ggplot2::aes_string(z = name.z), bins = 10, colour = "gray", alpha = 0.8)
     }
 
     # Keep in mind, that for the points the z value is always "name.y"
-    pl = pl + ggplot2::geom_point(data = points, ggplot2::aes_string(x = name.x1, y = name.x2, z = name.y,
+    pl = pl + ggplot2::geom_point(data = points, ggplot2::aes_string(x = name.x1, y = name.x2,
         colour = "type", shape = "type"), size = point.size)
 
     pl = pl + ggplot2::scale_colour_manual(name = "type", values = colors)# c("#000000", "red", "gray"))
