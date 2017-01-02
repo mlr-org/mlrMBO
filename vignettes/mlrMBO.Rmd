@@ -1,0 +1,82 @@
+---
+title: "Quick introduction to mlrMBO"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+vignette: >
+  %\VignetteIndexEntry{Quick introduction to mlrMBO}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE, cache = FALSE}
+library(mlrMBO)
+set.seed(123)
+knitr::opts_chunk$set(cache = TRUE)
+```
+
+**This guide gives an overview of the typical optimization workflow with mlrMBO for those familiar with model based optimization.**
+
+# Prerequisites
+
+We demonstrate the functionality of **mlrMBO** by optimizing different test functions.
+Instead of writing these function by hand, we make use of the [smoof](https://cran.r-project.org/package=smoof) package which offers many single objective functions frequently used for benchmarking of optimizers.
+[smoof](https://cran.r-project.org/package=smoof) is a dependency and get automatically attached with mlrMBO:
+```{r load_package}
+library(mlrMBO)
+```
+Note that you are not limited to these test functions bat can define arbitrary black box functions using the constructor `makeSingleObjectiveFunction()`.
+
+
+# Example run: 1d numeric
+For our simplest example we choose a cosine mixture function:
+```{r cosine_fun}
+obj.fun = makeCosineMixtureFunction(1)
+print(obj.fun)
+ggplot2::autoplot(obj.fun, show.optimum = TRUE) # FIXME: optimum is very strange?
+```
+We decide to use Kriging as our surrogate model and to do 10 sequential optimization steps using the Expected Improvement (EI) as the infill criterion.
+Furthermore, we provide an initial design on which we evaluate our first model in the beginning.
+We use `ParamHelpers::generateDesign` to generate 10 points via a latin hypercube.
+```{r cosine_setup}
+learner = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2",
+  control = list(trace = FALSE))
+control = makeMBOControl()
+control = setMBOControlTermination(control, iters = 10)
+control = setMBOControlInfill(control, crit = "ei")
+design = generateDesign(n = 10, par.set = getParamSet(obj.fun))
+```
+
+Finally, we start the optimization process and print the result object.
+
+```{r cosine_run}
+run = mbo(obj.fun, design = design, learner = learner, control = control, show.info = TRUE)
+print(run)
+```
+
+
+To get better insight into the MBO process, we can start the optimization with the function `exampleRun()` instead of `mbo()`.
+This specialized function augments the results of `mbo()` with additional information for plotting.
+Here, we opt to plot the optimization state at iterations 1, 3, and 10.
+```{r cosine_examplerun, results="hide"}
+run = exampleRun(obj.fun, learner = learner, control = control, show.info = FALSE)
+```
+
+```{r cosine_plot_examplerun, warning=FALSE}
+print(run)
+plotExampleRun(run, iters = c(1, 3, 10), pause = FALSE)
+```
+
+
+# Example run: 2d numeric
+
+We proceed with a slightly more realistic example and optimize the [Branin function](https://www.sfu.ca/~ssurjano/branin.html).
+```{r branin_fun}
+obj.fun = makeBraninFunction()
+print(obj.fun)
+ggplot2::autoplot(obj.fun, render.levels = TRUE, show.optimum = TRUE)
+```
+
