@@ -13,3 +13,4 @@ tests/testthat/Rplots.pdf
 vignettes/mlrMBO_cache/
 vignettes/mlrMBO_files/
 vignettes/*.html
+.Rproj.user
