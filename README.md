@@ -20,6 +20,6 @@ devtools::install_github("mlr-org/mlrMBO")
 
 # Resources
 
-* [Tutorial on github](http://mlr-org.github.io/mlrMBO/devel/html/) (*work in progress*)
+* [Documentation](https://mlr-org.github.io/mlrMBO/)
 * Developers mailing list at [google groups](https://groups.google.com/forum/?hl=de#!forum/mlrmbo-devel).
   The github-service-hook will also send commit messages to this list.
