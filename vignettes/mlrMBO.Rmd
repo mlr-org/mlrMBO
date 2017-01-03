@@ -7,7 +7,7 @@ output:
       collapsed: false
       smooth_scroll: false
 vignette: >
-  %\VignetteIndexEntry{mlrMBO: Quick introduction}
+  %\VignetteIndexEntry{Quick introduction}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

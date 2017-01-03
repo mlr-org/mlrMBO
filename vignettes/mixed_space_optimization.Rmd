@@ -1,0 +1,100 @@
+---
+title: "Mixed Space Optimization"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+vignette: >
+  %\VignetteIndexEntry{Mixed Space Optimization}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE, cache = FALSE}
+library(mlrMBO)
+set.seed(123)
+knitr::opts_chunk$set(cache = TRUE, collapse = FALSE, results = 'hold')
+knitr::knit_hooks$set(document = function(x){
+  gsub("```\n*```r*\n*", "", x)
+})
+```
+# Mixed Space Optimization
+
+## Objective Function
+The self-constructed function can be built with ``makeSingleObjetiveFunction``. The ``par.set`` argument has to be a ``ParamSet`` object from the **ParamHelpers** package, which provides information about the parameters of the objective function and their constraints for optimization.
+We define ``j`` in the interval [0,1] and ``k`` as an integer in {1, 2}. The Parameter ``method`` is categorical and can be either ``"a"`` or ``"b"``.
+In this case we want to maximize the function, so we have to set ``minimize = FALSE``.
+As the parameters are different types (e.g. numeric and categorical), the function expects a list instead of a vector as its argument 
+(This is specified by ``has.simple.signature = FALSE``).
+For further information about he **smoof** package we refer to the [github page](https://github.com/jakobbossek/smoof).
+
+```{r}
+foo = function(x) {
+  j = x[[1]]
+  k = x[[2]]
+  method = x[[3]]
+  perf = ifelse(method == "a", k * sin(j) + cos(j),
+               sin(j) + k * cos(j))
+  return(perf)
+}
+
+objfun2 = makeSingleObjectiveFunction(
+  name = "example",
+  fn = foo,
+  par.set = makeParamSet(
+    makeNumericParam("j", lower = 0,upper = 1),
+    makeIntegerParam("k", lower = 1L, upper = 2L),
+    makeDiscreteParam("method", values = c("a", "b"))
+  ),
+  has.simple.signature = FALSE,
+  minimize = FALSE
+)
+
+objfun2(list(j = 0.5, k = 1L, method = "a"))
+```
+
+```{r}
+surr.rf = makeLearner("regr.randomForest")
+```
+
+```{r}
+control2 = makeMBOControl()
+control2 = setMBOControlInfill(
+  control = control2,
+  crit = "mean"
+)
+control2 = setMBOControlTermination(
+  control = control2,
+  iters = 10
+)
+```
+
+## Optimization of objfun2
+
+Now let us use **mlrMBO** to optimize ``objfun2``, which contains one categorical variable.
+As we have already mentioned before, in case of factor variables only ``focussearch`` is suitable and kriging cannot be used as a surrogate model.
+If we use ``mean`` as the infill criterion, any kind of model which can handle factors variables is possible (like regression trees, random forests, linear models and many others).
+
+```{r, eval=TRUE, results='hide'}
+mbo2 = mbo(objfun2, design = design2, learner = surr.rf, control = control2, show.info = FALSE)
+```
+```{r, eval=TRUE}
+mbo2
+```
+
+If we want to use the expected improvement ``ei`` or (lower) confidence bound ``cb``, the ``predict.type`` attribute of the learner has be set to ``se``. A list of regression learners which support it can be viewed by:
+
+```{r eval=FALSE}
+listLearners(obj = "regr", properties = "se")
+```
+
+
+We modify the random forest to predict the standard error and optimize ``objfun2`` by the ``ei`` infill criterion.
+
+```{r, eval=TRUE}
+learner_rf = makeLearner("regr.randomForest", predict.type = "se")
+control2$infill.crit = "ei"
+mbo(objfun2, design = design2, learner = learner_rf, control = control2, show.info = FALSE)
+```
