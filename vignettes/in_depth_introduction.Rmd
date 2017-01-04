@@ -21,8 +21,6 @@ knitr::knit_hooks$set(document = function(x){
 })
 ```
 
-# mlrMBO: An in depth introduction
-
 This Vignette is supposed to give you a more in-depth introduction to **mlrMBO** and the principles and different approaches of model-based optimization.
 
 ## Optimizing a two-dimensional function
@@ -60,6 +58,7 @@ objfun1 = makeBraninFunction()
 ### Custom objective function
 
 You can create your own **smoof** function easily using `makeSingleObjectiveFunction()` (or `makeMultiObjectiveFunction()` for multi-objective optimization) from the package **smoof**.
+
 ```{r, message=FALSE, warning=FALSE, results='hide'}
 # just an example
 makeSingleObjectiveFunction(
@@ -81,16 +80,18 @@ Other possibilities to generate designs are for example `generateGridDesign` and
 _Note:_ If special designs are desired (e.g., orthogonal designs), they can be given as a `data.frame` but you have to make sure that the output resembles the output of `generateDesign()`.
 
 For our objective function `objfun1` we create a slightly larger number of initial points than the default suggests. 
+
 ```{r}
 n = 5 * getNumberOfParameters(objfun1)
-design1 = generateDesign(n = n, par.set = getParamSet(objfun1), fun = lhs::randomLHS)
+des = generateDesign(n = n, par.set = getParamSet(objfun1), fun = lhs::randomLHS)
 ```
 
 If the design does not include the results of the objective function *mbo* will automatically calculate them in advance.
 Sometimes it makes sense to precalculate the results because you might want to reuse the design.
 In our case it is quite easy:
+
 ```{r}
-design1$y = apply(design1, 1, objfun1)
+des$y = apply(des, 1, objfun1)
 ```
 
 _Note:_ *mlrMBO* uses `y` as a default name for the outcome of the objective function. 
@@ -115,29 +116,28 @@ It's use is explained in the Vignette for *mixed space optimization*.
 ## MBOControl
 
 The `MBOControl` object controls the optimization process and is created with `makeMBOControl()`. 
-General control arguments can be set when creating it.
 All parameters are documented in `?makeMBOControl`.
 Some that influence the way MBO works are e.g.:
 * `n.objectives`: The number of objectives. 1 implies normal single criteria optimization and is covered in this page. For values >1 see the Vignette for *multi-objective optimization*.
-* `propose.points`: The number of evaluated points in each iteration. The default is 1 and refers to the standard SMBO process. Higher values suggest that you want to do [parallelization](parallelization.md).
-* `final.method`: Defines how the final solution is proposed from the finished optimization process.
+* `propose.points`: The number of evaluated points in each iteration. The default is 1 and refers to the standard SMBO process. Higher values suggest that you want to do *parallelization* (see Vignette).
+* `final.method`: Defines how the final solution is proposed from the finished optimization process. The default is to return the best reached value of `y` and its corresponding `x`. However, this can give misleading results for noisy functions.
 
 
 ### MBOControlInfill
 
-With `setMBOControlInfill()` you can change the deault infill criterion settings set in the `MBOControl` object.
-It is highly recomended to adjust the settings to suit your optimization problem and the surrogate model.
+With `setMBOControlInfill()` you can change the default infill criterion settings in the `MBOControl` object.
+It is highly recommended to adjust the settings to suit your optimization problem and the surrogate model.
 
 #### Argument _crit_
 
-An important role plays the setting of how the next design points in the sequential loop are chosen. 
-5 different infill criteria can be set via the `crit` argument in `setMBOControlInfill`:
+An important role plays the choice of how the next design points in the sequential loop are chosen. 
+5 different infill criteria can be set via the `crit` argument in `setMBOControlInfill()`:
 
 * `mean`: mean response of the surrogate model.
-* `ei`: expected improvement of the surrogate model, which is the recomended setting if you use a *Kriging* surrogate.
+* `ei`: expected improvement of the surrogate model, which is the recommended setting if you use a *Kriging* surrogate.
 * `aei`: augmented expected improvement, which is especially useful for noisy functions.
 * `eqi`: expected quantile improvement.
-* `cb`: confidence bound, which is the additive combination of mean response and mean standard error estimation of the surrogate model (response - lambda * standard.error).
+* `cb`: confidence bound, which is the additive combination of mean response and mean standard error estimation of the surrogate model ($\hat{\mu} - \lambda \cdot \hat{s}$).
 
 Here you can also further configure the infill criterion (e.g. `crit.cb.lambds` for the lambda parameter if `crit == "cb"`).
 
@@ -150,56 +150,45 @@ Then points closer then the value of `filter.proposed.points.tol` to an already 
 
 The key idea behind model-based optimization is to substitute the expensive optimization on the black-box with optimization on the surrogate as this is deemed to be cheaper. 
 To optimize the infill criterion on the surrogate we also need an optimizer.
-The optimum of the infill criterion function gives us the next point that 
+The optimum of the infill criterion function gives us the candidate to be evaluated on the expensive function.
 Which one to use can be defined with the `opt` argument.
 The possibilities are:
 
 * `focussearch`: A Latin Hypercube design of size `opt.focussearch.points` (default 10000) is sampled in the parameter space (by `randomLHS`) and the design point with the best prediction of the infill criterion is determined. Then, the parameter space is shrunk around this point. This step is repeated `opt.focussearch.maxit` (default 5) times and the best observed point is passed back.
 * `cmaes`: The optimal point is found with a covariance matrix adapting evolutionary strategy from the **cmaes** package. If the strategy fails, a random point is generated and a warning is given. Further control arguments can be provided in `opt.cmaes.control` as a list. 
-* `ea`: Use an evolutionary multiobjective optimization algorithm from the package **emoa** to determine the best point. The population size mu can be set by  `opt.ea.mu` (default value is 10). (mu+1) means that in each population only one child is generated using crossover und mutation operators. The parameters `eta` and `p` of the latter two operators can be adjusted via the attributes `opt.ea.sbx.eta`, `opt.ea.sbx.p`,`opt.ea.pm.eta` and `opt.ea.pm.p`. The default number of EA iterations is 500 and can be changed by `opt.ea.maxit` attribute.
-* `nsga2`: Use the non-dominated sorting genetic algorithm from the package **nsga2R** to determine the best point. This algorithm should be used for [multi objective optimization](multi_objective_optimization.md).
+* `ea`: Use an evolutionary multiobjective optimization algorithm from the package **emoa** to determine the best point. The population size mu can be set by  `opt.ea.mu` (default value is 10). (mu+1) means that in each population only one child is generated using crossover and mutation operators. The parameters `eta` and `p` of the latter two operators can be adjusted via the attributes `opt.ea.sbx.eta`, `opt.ea.sbx.p`,`opt.ea.pm.eta` and `opt.ea.pm.p`. The default number of EA iterations is 500 and can be changed by `opt.ea.maxit` attribute.
+* `nsga2`: Use the non-dominated sorting genetic algorithm from the package **nsga2R** to determine the best point. This algorithm should be used for *multi objective optimization* (see Vignette).
 
 As all four infill optimization strategies do not guarantee to find the global optimum, users can set the number of restarts by the `opt.restarts` argument (default value is 1).
-After conducting the desired number of restarts the point with the best infill criterion value is passed back to the MBO loop.
+Of all restarts the best infill criterion value determines the candidate to be evaluated.
 
 _Note:_ Only the `focussearch` optimizer is suitable for for categorical parameters in the parameter set.
 
 
 ### setMBOControlTermination
 
-With this control function different criteria to stop the fitting process can be specified. You can set multiple different criteria and the first one that is met will terminate the optimization process.
-You can set: 
+With `setMBOControlTermination()` you can set multiple stopping criteria and the first one that is met will terminate the optimization process, e.g:
 
 * `iters`: The maximum number of iterations
 * `time.budget`: A maximum running time in seconds
-* `target.fun.value`: A treshold for function evaluation (stop if a evaluation is better than a given value)
+* `target.fun.value`: A threshold for function evaluation (stop if a evaluation is better than a given value)
 * `max.evals`: The maximum number of function evaluations
 
-_Note:_ You can also easily create your own stopping condition(s).
+_Note:_ You can also create your own stopping condition(s).
 
 ### setMBOControlMultiPoint
 
-This extends a MBO control object with options for multipoint proposal. Multipoint proposal means, that multiple points are proposed and evaluated, which is especially useful for parallel batch evaluation. For a detailed introduction, check the [multi-point tutorial](multipoint.md).
-
-#### Argument: _method_
-
-Define the method used for multipoint proposals, currently 3 different methods are supported:
-
-* `cb`: Proposes multiple points by optimizing the confidence bound criterion `propose.points` times with different lambda values. Generally this works the same way as for the single point case, i.e. specify `infill.opt`. The lambdas are drawn from an exp(1)-distribution.
-* `multicrit`: Use a evolutionary multicriteria optimization. This is a (mu+1) type evolutionary algorithm and runs for `multicrit.maxit` generations. The population size is set to `propose.points`.
-* `cl`: Proposes points by the constant liar strategy, which only makes sense if the confidence bound criterion is used as an infill criterion. In the first step the surrugate model is fitted based on the real data and the best point is calculated accordingly. Then, the function value of the best point is simply guessed by the worst seen function evaluation. This "lie"" is used to update the model in order to propose subsequent point. The procedure is applied until the number of points has reached `propose.points`.
+This extends a MBO control object with options for multipoint proposal. 
+Multipoint proposal means, that multiple points are proposed and evaluated, which is especially useful for parallel batch evaluation. For a detailed introduction, check the Vignette on parallelization.
 
 ### setMBOControlMultiCrit
 
-This adds multi-criteria optimization specific options to the control object. For details see the tutorial page on [multi-criteria optimization](multicrit.md).
-
-__note:__ The list of all attributes is provided in the software documentation.
+This adds multi-criteria optimization specific options to the control object. For details see the Vignette on *multi-criteria optimization*.
 
 
-# Experiments and Output
+### Experiments and Output
 
-
-Now we will apply the `mbo()` function to optimize the two objective functions.
+Although we presented various options we will mainly go with the defaults settings.
 
 ```{r eval=TRUE}
 ctrl = makeMBOControl()
@@ -213,28 +202,28 @@ ctrl = setMBOControlTermination(
 )
 ```
 
-## Optimization of objfun1
+Now we will apply the `mbo()` function to optimize the objective function.
 
 ```{r, eval=TRUE}
-mbo(objfun1, design = design1, learner = surr.km, control = ctrl, show.info = FALSE)
+res = mbo(objfun1, design = des, learner = surr.km, control = ctrl, show.info = FALSE)
+print(res)
 ```
 
-The default output of mbo contains the best found parameter set and the optimzation path. The `MBOResult` object contains additional information, most importantly:
+The default output of mbo contains the best found parameter set and the optimzation path. 
+The `MBOResult` object contains additional information, most importantly:
 
 * `x`: The best point of the parameter space
 * `y`: The associated best value of the objective function
-* `opt.path`: The optimization path. See `ParamHelpers::OptPath` for further information.
-* `models`: Depending on `store.model.at` in the `MBOControl` object, this contains zero, one or multiple surrogate models (default is to save the model generated after the last iteration).
-* ...
+* `opt.path`: The optimization path. See `?ParamHelpers::OptPath` for further information.
+* `models`: Depending on `store.model.at` in the `MBOControl` object, this contains zero, one or multiple surrogate models (default is to save the model generated at the last iteration).
+* ... (see `?MBOSingleObjResult`)
 
 We can also change some arguments of the `MBOControl` object and run `mbo()` again:
 
 ```{r, eval=FALSE}
 ctrl = setMBOControlInfill(ctrl, crit = "cb")
 ctrl = setMBOControlTermination(ctrl, iters = 5L)
-mbo(objfun1, design = design1, learner = surr.km, control = ctrl, show.info = FALSE)
+mbo(objfun1, design = des, learner = surr.km, control = ctrl, show.info = FALSE)
 ```
-
-Finally, if a learner, which does not support the `se` prediction type, should be applied for the optimization with the `ei` infill criterion, it is possible to create a bagging model. For details on how to do it take a look at the [bagging section](https://mlr-org.github.io/mlr-tutorial/devel/html/bagging/index.html) in the `mlr` tutorial.
 
 

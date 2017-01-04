@@ -21,8 +21,6 @@ knitr::knit_hooks$set(document = function(x){
 })
 ```
 
-# mlrMBO: A toolbox for Model-Based Optimization of Expensive Black-Box Functions
-
 This Vignette is supposed to give you a short introductory glance at the key features of `mlrMBO`.
 More detailed and in depth tutorials can be found in the other vignette files on our GitHub project page:
 
@@ -64,6 +62,7 @@ ggplot2::autoplot(obj.fun, show.optimum = TRUE) # FIXME: optimum is very strange
 We decide to use Kriging as our surrogate model and to do 10 sequential optimization steps using the Expected Improvement (EI) as the infill criterion.
 Furthermore, we provide an initial design on which we evaluate our first model in the beginning.
 We use `ParamHelpers::generateDesign` to generate 10 points via a latin hypercube.
+
 ```{r cosine_setup}
 learner = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2",
   control = list(trace = FALSE))
@@ -84,6 +83,7 @@ print(run)
 To get better insight into the MBO process, we can start the optimization with the function `exampleRun()` instead of `mbo()`.
 This specialized function augments the results of `mbo()` with additional information for plotting.
 Here, we opt to plot the optimization state at iterations 1, 3, and 10.
+
 ```{r cosine_examplerun, results="hide"}
 run = exampleRun(obj.fun, learner = learner, control = control, show.info = FALSE)
 ```
@@ -91,17 +91,5 @@ run = exampleRun(obj.fun, learner = learner, control = control, show.info = FALS
 ```{r cosine_plot_examplerun, warning=FALSE}
 print(run)
 plotExampleRun(run, iters = c(1L, 3L, 10L), pause = FALSE)
-```
-
-
-### Example run: 2d numeric
-
-We proceed with a slightly more realistic example and optimize the [Branin function](https://www.sfu.ca/~ssurjano/branin.html).
-```{r branin_fun}
-obj.fun2 = makeBraninFunction()
-ggplot2::autoplot(obj.fun2, render.levels = TRUE, show.optimum = TRUE)
-run2 = exampleRun(obj.fun2, learner = learner, control = control, show.info = FALSE)
-print(run2)
-plotExampleRun(run2, iters = c(1L, 3L, 10L))
 ```
 
