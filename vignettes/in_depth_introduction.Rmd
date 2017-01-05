@@ -23,51 +23,7 @@ knitr::knit_hooks$set(document = function(x){
 
 This Vignette is supposed to give you a more in-depth introduction to **mlrMBO** and the principles and different approaches of model-based optimization.
 
-## Optimizing a two-dimensional function
 
-We will use **mlrMBO** to minimize the two dimensional branin function with three global minimas.
-
-```{r, message=FALSE, warning=FALSE}
-library(mlrMBO)
-objfun1 = makeBraninFunction()
-ggplot2::autoplot(objfun1, render.levels = TRUE, show.optimum = TRUE)
-```
-
-The following steps are needed to start a surrogate-based optimization with our package. 
-Each step ends with an R object, which is then passed to `mbo()`, i.e., to the working horse of **mlrMBO**.
-
-1. define the **objective function** and its parameters by using the package `smoof`
-2. generate an **initial design**
-3. define a learner, i.e., the **surrogate model**
-4. set up a **MBO control** object
-5. finally start the optimization
-
-Step 2 and 3 are optional as `mbo()` will use default settings if no value is supplied.
-This tutorial page will provide you with an introduction on how to set the `mbo()` parameters for different kind of optimization scenarios.
-
-## Objective Function
-
-The first argument of `mbo()` is the the objective function that has to be minimized.
-It has to be a **smoof** function from the package of the same name.
-The package brings some predefined functions that are quite popular for benchmarking.
-
-```{r}
-objfun1 = makeBraninFunction()
-```
-
-### Custom objective function
-
-You can create your own **smoof** function easily using `makeSingleObjectiveFunction()` (or `makeMultiObjectiveFunction()` for multi-objective optimization) from the package **smoof**.
-
-```{r, message=FALSE, warning=FALSE, results='hide'}
-# just an example
-makeSingleObjectiveFunction(
-  name = "Sphere Function",
-  fn = function(x) sum(x[1]^2 + sin(x[2])),
-  par.set = makeNumericParamSet("x", len = 2L, lower = -3L, upper = 3L)
-)
-```
-For more details see `?makeSingleObjectiveFunction`.
 
 ## Initial Design
 

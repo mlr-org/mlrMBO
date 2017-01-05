@@ -22,7 +22,7 @@ knitr::knit_hooks$set(document = function(x){
 ```
 
 This Vignette is supposed to give you a short introductory glance at the key features of `mlrMBO`.
-More detailed and in depth tutorials can be found in the other vignette files on our GitHub project page:
+More detailed and in depth tutorials on special topics can be found in the other vignette files on our GitHub project page:
 
 - [Project Page](https://github.com/mlr-org/mlrMBO/)
 - Online documentation of [mlrMBO](https://mlr-org.github.io/mlrMBO/)
@@ -38,38 +38,96 @@ The main goal of `mlrMBO` is to optimize *Expensive Black-Box Functions* through
 
 ## Quickstart
 
-**This guide gives an overview of the typical optimization workflow with mlrMBO for those familiar with model based optimization.**
+**This guide gives an overview of the typical optimization workflow with mlrMBO.**
 
 ### Prerequisites
 
-We demonstrate the main functionality of **mlrMBO** by optimizing different test functions.
-Instead of writing these function by hand, we make use of the [smoof](https://cran.r-project.org/package=smoof) package which offers many single objective functions frequently used for benchmarking of optimizers.
-[smoof](https://cran.r-project.org/package=smoof) is a dependency and get automatically attached with mlrMBO:
+With the installation of `mlrMBO` the dependencies `mlr`, `ParamHelpers`, and `smoof` will be installed and also loaded, when you load `mlr`.
+However, for this tutorial you will need the Package `DiceKriging` for the surrogate learner and later `randomForest` for the surrogate model.
+
 ```{r load_package}
 library(mlrMBO)
 ```
-Note that you are not limited to these test functions bat can define arbitrary black box functions using the constructor `makeSingleObjectiveFunction()`.
+
+### General MBO Workflow
+
+The following steps are needed to start the optimization with `mbo()`.
+
+1. Define the **objective function** and its parameters by using the package `smoof`.
+2. Generate an **initial design**.
+3. Define a learner, i.e., the **surrogate model**.
+4. Set up a **MBO control** object.
+5. Finally start the optimization.
+
+Step 2 and 3 are optional as `mbo()` has defaults for these.
 
 
-### Example run: 1d numeric
-For our simplest example we choose a cosine mixture function:
+### Optimizing a one dimensional function.
+
+For a simple example we choose to minimize a cosine mixture function with an initial design of 5 points and 10 further evaluations.
+Meaning that in total the optimizer gets 15 evaluations on the objective function to find the optimum.
+
+#### Objective Function
+
+Instead of writing the objective function by hand, we use the [*smoof*](https://cran.r-project.org/package=smoof) package which offers many single objective functions frequently used for benchmarking of optimizers.
+[smoof](https://cran.r-project.org/package=smoof) is a dependency and gets automatically attached with mlrMBO.
+
+_Note:_ You are not limited to these test functions but can define arbitrary objective functions with *smoof*. 
+Check `?smoof::makeSingleObjectiveFunction` for an example.
+
 ```{r cosine_fun}
 obj.fun = makeCosineMixtureFunction(1)
 obj.fun = convertToMinimization(obj.fun)
 print(obj.fun)
-ggplot2::autoplot(obj.fun, show.optimum = TRUE) # FIXME: optimum is very strange?
+ggplot2::autoplot(obj.fun, show.optimum = TRUE)
 ```
-We decide to use Kriging as our surrogate model and to do 10 sequential optimization steps using the Expected Improvement (EI) as the infill criterion.
-Furthermore, we provide an initial design on which we evaluate our first model in the beginning.
-We use `ParamHelpers::generateDesign` to generate 10 points via a latin hypercube.
+
+#### Initial Design
+
+Before the MBO algorithm can starts it needs a set of already evaluated points - the *inital design*.
+If no design is given (i.e. `design = NULL`) `mbo()` will use a *Maximin Latin Hypercube* `lhs::maximinLHS()` design with `n = 4 * getNumberOfParameters(obj.fun)` points. 
+If the design does not include function outcomes `mbo()` will evaluate the design first before starting with the MBO algorithm.
+In this example we choose to generate our own design.
+
+```{r}
+des = generateDesign(n = 5, par.set = getParamSet(obj.fun), fun = lhs::randomLHS)
+```
+
+We will also precalculate the results:
+
+```{r}
+des$y = apply(des, 1, obj.fun)
+```
+
+_Note:_ *mlrMBO* uses `y` as a default name for the outcome of the objective function. 
+This can be changed in the control object.
+
+#### Surrogate Model
+
+We decide to use Kriging as our surrogate model because it is the most common for numerical model-based optimization and has prooven to be quite effective.
+`mbo()` will take any regression learner from **mlr**.
+
+```{r}
+surr.km = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2", control = list(trace = FALSE))
+```
+
+_Note:_ If no surrogate learner is defined, `mbo()` autmatically uses Kriging for a numerical domain, otherwise *random forest regression*.
+
+#### MBOControl
+
+The `MBOControl` object contains all further settings for `mbo()`.
+It is created with `makeMBOControl()`.
+For further customization there are the following functions:
+* `setMBOControlTermination()`: It is obligatory to define a terination criterion like the number of MBO iterations.
+* `setMBOControlInfill()`: It is recomended to set the infill criterion. For learners that support `predict.type = "se"` the Confidence Bound `"cb"` and the Expected Improvement `"ei"` are a good choice.
+* `setMBOControlMultiPoint()`: Needed, in case you want to evaluate more then just one point per MBO-Iteration you can control this process here. This makes sense for parallelization.
+* `setMBOControlMultiObj()`: Needed, in case you want to optimize a muli objective target function.
+
 
 ```{r cosine_setup}
-learner = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2",
-  control = list(trace = FALSE))
 control = makeMBOControl()
 control = setMBOControlTermination(control, iters = 10)
 control = setMBOControlInfill(control, crit = "ei")
-design = generateDesign(n = 10, par.set = getParamSet(obj.fun))
 ```
 
 Finally, we start the optimization process and print the result object.
