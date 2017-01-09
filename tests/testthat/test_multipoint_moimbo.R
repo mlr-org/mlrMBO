@@ -20,7 +20,7 @@ test_that("multipoint multi-objective", {
           moimbo.maxit = 30L
         )
 
-        res = mbo(f, des, learner = default.kriging, control = ctrl)
+        res = mbo(f, des, control = ctrl)
         expect_output(print(res), "Recommended parameters")
 
         gap = res$y - 0.3979

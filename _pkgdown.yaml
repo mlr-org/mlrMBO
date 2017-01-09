@@ -1,0 +1,25 @@
+navbar:
+  left:
+  - text: Quickstart
+    href: articles/mlrMBO.html
+  - text: Articles
+    href: articles/index.html
+  - text: Reference
+    href: reference/index.html
+
+articles:
+  - title: "mlrMBO: Quickstart"
+    desc: >
+      Gives an short introduction to those already familiar with model-based optimization.
+    contents:
+      - mlrMBO
+  - title: "In Depth Introduction"
+    desc: >
+      An in-depth introduction highlighting the key features of mlrMBO.
+    contents:
+      - in_depth_introduction
+  - title: "Advanced Topics"
+    desc: >
+      Detailed descriptions of advanced features of mlrMBO.
+    contents:
+      - mixed_space_optimization

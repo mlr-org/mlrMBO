@@ -19,7 +19,6 @@ testf.zdt1.2d = makeZDT1Function(dimensions = 2L)
 testp.zdt1.2d = getParamSet(testf.zdt1.2d)
 testd.zdt1.2d = generateTestDesign(10L, testp.zdt1.2d)
 
-default.kriging = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
 
 testfmco1 = makeMultiObjectiveFunction(
   fn = function(x) x^2,

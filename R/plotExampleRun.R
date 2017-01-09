@@ -77,8 +77,9 @@ plotExampleRun = function(object, iters, pause = TRUE,
   iters.max = object$control$iters
   if (missing(iters)) {
     iters = seq_len(iters.max)
+  } else {
+    iters = asInteger(iters, lower = 0L, upper = iters.max, any.missing = FALSE)
   }
-  assertIntegerish(iters, lower = 0L, upper = iters.max, any.missing = FALSE)
   assertFlag(pause)
   assertFlag(densregion)
   assertNumber(se.factor, lower = 0)

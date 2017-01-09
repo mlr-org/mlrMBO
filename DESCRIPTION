@@ -1,10 +1,16 @@
 Package: mlrMBO
-Title: Model-Based Optimization for mlr
-Description: A framework for the (sequential) model-based parameter
-    optimization. It offers methods to optimize numeric or discrete influence
-    parameters of non-linear black-box single- or multi-objective target
-    functions like an industrial simulator or a time-consuming algorithm using
-    cheap surrogate models.
+Title: A Toolbox for Model-Based Optimization of Expensive Black-Box Functions
+Description: Flexible and comprehensive R toolbox for model-based
+	optimization ('MBO'), also known as Bayesian optimization. It is designed for
+	both single- and multi-objective optimization with mixed continuous, categorical
+	and conditional parameters. The machine learning toolbox 'mlr' provide dozens
+	of regression learners to model the performance of the target algorithm with
+	respect to the parameter settings. It provides many different infill criteria to
+	guide the search process. Additional features include multipoint batch proposal,
+	parallel exectution as well as visualization and sophisticated logging mechanisms,
+	which is especially useful for teaching and understanding of algorithm behavior.
+	'mlrMBO' is implemented in a modular fashion, such that single components can
+	be easily replaced or adapted by the user for specific use cases.
 Authors@R: c(
     person("Bernd", "Bischl", email = "bernd_bischl@gmx.net", role = c("aut", "cre")),
     person("Jakob", "Bossek", email = "jakob.bossek@tu-dortmund.de", role = "aut"),
@@ -12,7 +18,7 @@ Authors@R: c(
     person("Daniel", "Horn", email = "daniel.horn@tu-dortmund.de", role = "aut"),
     person("Michel", "Lang", email = "michellang@gmail.com", role = "aut"),
     person("Janek", "Thomas", email = "janek.thomas@stat.uni-muenchen.de", role = "aut"))
-License: BSD_3_clause + file LICENSE
+License: BSD_2_clause + file LICENSE
 URL: https://github.com/mlr-org/mlrMBO
 BugReports: https://github.com/mlr-org/mlrMBO/issues
 Depends:
@@ -25,12 +31,12 @@ Imports:
     checkmate (>= 1.8.1),
     data.table,
     lhs,
-    ggplot2,
-    RColorBrewer,
     parallelMap (>= 1.1)
 Suggests:
     akima,
     cmaesr (>= 1.0.3),
+    ggplot2,
+    RColorBrewer,
     DiceKriging,
     DiceOptim,
     earth,

@@ -46,11 +46,13 @@
 #' @param filter.proposed.points [\code{logical(1)}]\cr
 #'   Design points located too close to each other can lead to
 #'   numerical problems when using e.g. kriging as a surrogate model.
+#'   This may solve the 'leading minor of order ...' error during model fit.
 #'   This parameter activates or deactivates a heuristic to handle this issue.
 #'   If \code{TRUE}, proposed points whose distance to design points or other current
 #'   candidate points is smaller than \code{filter.proposed.points.tol}, are replaced by random points.
 #'   If enabled, the column entry for \code{prop.type} is set to \dQuote{random_filter} in the resulting \code{opt.path},
 #'   so you can see whether such a replacement happened.
+#'   This does only work for numeric parameter sets without any discrete parameters.
 #'   Default is \code{FALSE}.
 #' @param filter.proposed.points.tol [\code{numeric(1)}]\cr
 #'   Tolerance value filtering of proposed points. We currently use a maximum metric
@@ -160,7 +162,7 @@ setMBOControlInfill = function(control,
 
   assertClass(control, "MBOControl")
 
-  control$infill.crit = coalesce(crit, control$infill.crit, "mean")
+  control$infill.crit = as.character(coalesce(crit, control$infill.crit, "mean"))
   assertChoice(control$infill.crit, choices = getSupportedInfillCritFunctions())
 
   assertCount(interleave.random.points)
