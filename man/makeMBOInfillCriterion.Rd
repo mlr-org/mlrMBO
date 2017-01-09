@@ -8,14 +8,14 @@ makeMBOInfillCriterion(infill.fun, name, id, minimize = TRUE,
   params = list())
 }
 \arguments{
-\item{name}{[\character{1}]\cr
+\item{name}{[\code{character(1)}]\cr
 Full name of the criterion.}
 
-\item{id}{[\character{1}]\cr
+\item{id}{[\code{character(1)}]\cr
 Short name of the criterion.
 Used internally and in plots.}
 
-\item{minimize}{[\character(1)]\cr
+\item{minimize}{[\code{character(1)}]\cr
 Shall the criterion be minimized or maximized?
 Default is \code{TRUE}.}
 

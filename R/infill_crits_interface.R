@@ -295,10 +295,10 @@ makeMBOInfillCriterionEQI = function(eqi.beta = 0.75) {
 # direct.sms LOWER CONFIDENCE BOUND of points, then HV contribution of these wrt to design
 # direct.eps: LOWER CONFIDENCE BOUND of points, then epsilon indicator contribution of these wrt to design
 # (useful for deterministic and stochastic MCO)
-#' @param crit.cb.lambda [\code{numeric(1)}]\cr
-#'   Lambda parameter for confidence bound infill criterion.
-#'   Only used if \code{crit == "cb"}, ignored otherwise.
-#'   Default is 1.
+# @param crit.cb.lambda [\code{numeric(1)}]\cr
+#   Lambda parameter for confidence bound infill criterion.
+#   Only used if \code{crit == "cb"}, ignored otherwise.
+#   Default is 1.
 makeMBOInfillCriterionDIB = function(cb.lambda = 1, cb.inflate.se = FALSE, cb.pi = NULL) {
   # lambda value for cb - either given, or set via given pi, the other one must be NULL!
   if (!is.null(cb.lambda) && !is.null(cb.pi))
