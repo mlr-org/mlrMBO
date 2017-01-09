@@ -15,6 +15,7 @@
 #'     \item{par.set [ParamSet]}{Parameter set.}
 #'     \item{design [data.frame]}{Design of already visited points.}
 #'     \item{iter [integer(1)]}{Current iteration.}
+#'   }
 #' @param name [\character{1}]\cr
 #'   Full name of the criterion.
 #' @param id [\character{1}]\cr
@@ -37,11 +38,11 @@ makeMBOInfillCriterion = function(
   id,
   minimize = TRUE,
   params = list()) {
-  assertFunction(
-    infill.fun,
-    args = c("points", "models", "control",
-      "par.set", "design", "iter", "attributes"),
-    ordered = TRUE)
+  # assertFunction(
+  #   infill.fun,
+  #   args = c("points", "models", "control",
+  #     "par.set", "design", "iter", "attributes"),
+  #   ordered = TRUE)
 
   #FIXME: add regexp check for names
   #FIXME: add length restriction for id?
@@ -294,11 +295,27 @@ makeMBOInfillCriterionEQI = function(eqi.beta = 0.75) {
 # direct.sms LOWER CONFIDENCE BOUND of points, then HV contribution of these wrt to design
 # direct.eps: LOWER CONFIDENCE BOUND of points, then epsilon indicator contribution of these wrt to design
 # (useful for deterministic and stochastic MCO)
-makeMBOInfillCriterionDIB = function() {
+#' @param crit.cb.lambda [\code{numeric(1)}]\cr
+#'   Lambda parameter for confidence bound infill criterion.
+#'   Only used if \code{crit == "cb"}, ignored otherwise.
+#'   Default is 1.
+makeMBOInfillCriterionDIB = function(cb.lambda = 1, cb.inflate.se = FALSE, cb.pi = NULL) {
+  # lambda value for cb - either given, or set via given pi, the other one must be NULL!
+  if (!is.null(cb.lambda) && !is.null(cb.pi))
+    stop("Please specify either 'cb.lambda' or 'cb.pi' for the CB crit, not both!")
+  if (is.null(cb.pi))
+    assertNumeric(cb.lambda, len = 1L, any.missing = FALSE, lower = 0)
+  if (is.null(cb.lambda)) {
+    assertNumeric(cb.pi, len = 1L, any.missing = FALSE, lower = 0, upper = 1)
+    # This is the formula from TW diss for setting lambda.
+    # Note, that alpha = -lambda, so we need the negative values
+    cb.lambda = -qnorm(0.5 * cb.pi^(1 / control$n.objectives))
+  }
+  assertFlag(cb.inflate.se)
   #FIXME: control$infill.crit.cb.lambda not avaialable! However,
   # if did needs this one, we need to pass cb.lambda to the dib
   # constructor
-  #FIXME: what about all those multicrit.dib.... vars?
+  #FIXME: what about all those multiobj.dib.... vars?
   # if these are only needed for the dib criterion we should make them
   # parameter of makeMBOInfillCriterionDIB()
   makeMBOInfillCriterion(
@@ -306,18 +323,19 @@ makeMBOInfillCriterionDIB = function() {
       # get ys and cb-value-matrix for new points, minimize version
       maximize.mult = ifelse(control$minimize, 1, -1)
       ys = as.matrix(design[, control$y.name]) %*% diag(maximize.mult)
+
       ps = lapply(models, predict, newdata = points)
       means = extractSubList(ps, c("data", "response"), simplify = "cols")
       ses = extractSubList(ps, c("data", "se"), simplify = "cols")
-      cbs = means %*% diag(maximize.mult) - control$infill.crit.cb.lambda * ses
+      cbs = means %*% diag(maximize.mult) - cb.lambda * ses
       # from here on ys and cbs are ALWAYS minimized
       all.mini = rep(TRUE, control$n.objectives)
 
       ys.front = getNonDominatedPoints(ys, minimize = all.mini)
 
-      if (control$multicrit.dib.indicator == "sms") {
+      if (control$multiobj.dib.indicator == "sms") {
         # get refpoint by ctrl-method, ys could be scaled by -1 (if yi = max!)
-        ref.point = getMultiCritRefPoint(ys, control, minimize = all.mini)
+        ref.point = getMultiObjRefPoint(ys, control, minimize = all.mini)
         # get epsilon for epsilon-dominace - set adaptively or use given constant value
         if (is.null(control$dib.sms.eps)) {
           c.val = 1 - 1 / 2^control$n.objectives
@@ -327,7 +345,7 @@ makeMBOInfillCriterionDIB = function() {
           })
         } else {
           # FIXME: user should be allowed to set a vector
-          eps = control$multicrit.dib.sms.eps
+          eps = control$multiobj.dib.sms.eps
         }
         ys.front = as.matrix(ys.front)
         # allocate mem for adding points to front for HV calculation in C

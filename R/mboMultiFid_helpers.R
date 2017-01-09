@@ -62,9 +62,24 @@ infillCritMultiFid = function(points, models, control, par.set, design, iter, at
   mf.res = infillCritMultiFid2(points, models, control, par.set, design, iter, attributes = FALSE, lvl.cors, lvl.sds, lvl, time.model)
   res = mf.res$crit
   if (attributes) {
-    res = setAttribute(res, "crit.components", do.call(cbind.data.frame, c(list(attr(res, "crit.components")), mf.res[-1])))  
+    res = setAttribute(res, "crit.components", do.call(cbind.data.frame, c(list(attr(res, "crit.components")), mf.res[-1])))
   }
   return(res)
+}
+
+makeMBOInfillCriterionMultiFid = function() {
+  makeMBOInfillCriterion(
+    infill.fun = function(points, models, control, par.set, design, iter, attributes = FALSE, lvl.cors, lvl.sds, lvl, time.model) {
+        mf.res = infillCritMultiFid2(points, models, control, par.set, design, iter, attributes = FALSE, lvl.cors, lvl.sds, lvl, time.model)
+      res = mf.res$crit
+      if (attributes) {
+        res = setAttribute(res, "crit.components", do.call(cbind.data.frame, c(list(attr(res, "crit.components")), mf.res[-1L])))
+      }
+      return(res)
+    },
+    name = "multifid",
+    id = "multifid"
+  )
 }
 
 # return all crap so we can plot it later
@@ -75,7 +90,7 @@ infillCritMultiFid2 = function(points, models, control, par.set, design, iter, a
   design.last = design[design$.multifid.lvl == nlvls, , drop = FALSE]
   # note: mbo returns the negated EI (and SE), so have to later minimize the huang crit.
   # which is done by default by our optimizer anyway
-  infill.crit.fun = getInfillCritFunction(control$infill.crit)
+  infill.crit.fun = control$infill.crit
   ei.last = infill.crit.fun(points.last, models, control, par.set, design.last, iter, attributes = TRUE)
   alpha1 = lvl.cors[lvl]
 

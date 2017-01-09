@@ -21,7 +21,9 @@ infillOptFocus = function(infill.crit, models, control, par.set, opt.path, desig
 
       # convert to param encoding our model was trained on and can use
       newdesign = convertDataFrameCols(newdesign, ints.as.num = TRUE, logicals.as.factor = TRUE)
+
       y = infill.crit(newdesign, models, control, ps.local, design, iter, ...)
+
 
       # get current best value
       local.index = getMinIndex(y, ties.method = "random")
