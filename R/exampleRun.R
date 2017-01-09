@@ -55,7 +55,7 @@ exampleRun = function(fun, design = NULL, learner = NULL, control,
     global.opt = NA_real_
 
   if (control$n.objectives != 1L)
-    stopf("exampleRun can only be applied for single objective functions, but you have %i objectives! Use 'exampleRunMultiCrit'!",
+    stopf("exampleRun can only be applied for single-objective functions, but you have %i objectives! Use 'exampleRunMultiObj'!",
       control$n.objectives)
   if (n.params >= 3L)
     stopf("exampleRun can only be applied for functions with at most 2 dimensions, but you have %iD", n.params)

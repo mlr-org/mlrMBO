@@ -23,20 +23,20 @@ checkStuff = function(fun, par.set, design, learner, control) {
       getNumberOfObjectives(fun), control$n.objectives)
   }
 
-  # at the moment we do not support noisy multicriteria optimization
+  # at the moment we do not support noisy multi-objective optimization
   if (getNumberOfObjectives(fun) > 1L && isNoisy(fun)) {
     stopf("Optimization of noisy multi-objective functions not supported in the moment.")
   }
 
-  # final.method and final.evals have no effect on multicriteria optimization
+  # final.method and final.evals have no effect on multi-objective optimization
   if (getNumberOfObjectives(fun) > 1L &&
       (control$final.method != "best.true.y" || control$final.evals > 0L)) {
-    stop("Setting of final.method and final.evals for multicriteria optimization not supported at the moment.")
+    stop("Setting of final.method and final.evals for multi-objective optimization not supported at the moment.")
   }
 
   # general parameter and learner checks
   if (any(vlapply(par.set$pars, inherits, what = "LearnerParam")))
-    stop("No parameter can be of class 'LearnerParam'! Use basic parameters instead to describe you region of interest!")
+    stop("No parameter can be of class 'LearnerParam'! Use basic parameters instead to describe your region of interest!")
 
   if (!hasFiniteBoxConstraints(par.set))
     stop("mbo requires finite box constraints!")
@@ -52,7 +52,7 @@ checkStuff = function(fun, par.set, design, learner, control) {
 
   # general infill stuff (relavant for single objective and parEGO)
   infill.crit = control$infill.crit
-  infill.crit.id = getMBOInfillCritId(control$infill.crit)
+  infill.crit.id = getMBOInfillCritId(infill.crit)
   if (infill.crit.id %in% c("se", "ei", "aei", "cb", "dib") && learner$predict.type != "se") {
     stopf("For infill criterion '%s' predict.type of learner %s must be set to 'se'!%s",
       infill.crit.id, learner$id,
@@ -92,7 +92,7 @@ checkStuff = function(fun, par.set, design, learner, control) {
   control$store.model.at = coalesce(control$store.model.at, control$iters + 1)
   control$resample.at = coalesce(control$resample.at, integer(0))
 
-  #  single objective
+  #  single-objective
   if (control$n.objectives == 1L) {
     if (control$propose.points == 1L) { # single point
     } else {                            # multi point
@@ -114,17 +114,17 @@ checkStuff = function(fun, par.set, design, learner, control) {
     }
   }
 
-  # multicrit stuff
+  # multi-objective stuff
   if (control$n.objectives > 1L) {
-    if (control$multicrit.method == "dib") {
+    if (control$multiobj.method == "dib") {
       if (infill.crit.id != "dib")
         stopf("For multicrit 'dib' infil.crit must be set to 'dib'!")
     } else {
       if (infill.crit.id == "dib")
         stopf("For infill.crit 'dib', multicrit method 'dib' is needed!")
     }
-    if (control$multicrit.method == "mspot" && control$infill.opt != "nsga2")
-      stopf("For multicrit 'mspot' infil.opt must be set to 'nsga2'!")
+    if (control$multiobj.method == "mspot" && control$infill.opt != "nsga2")
+      stopf("For multi-objective 'mspot' infil.opt must be set to 'nsga2'!")
   }
 
   # multifidelity stuff

@@ -91,7 +91,7 @@ test_that("impute y parego", {
     impute.y.fun = function(x, y, opt.path) c(100, 100))
   ctrl = setMBOControlTermination(ctrl, iters = 5L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10)
-  ctrl = setMBOControlMultiCrit(ctrl, method = "parego", parego.s = 100)
+  ctrl = setMBOControlMultiObj(ctrl, method = "parego", parego.s = 100)
   or = mbo(f1, des1, learner = learner, control = ctrl)
   op = as.data.frame(or$opt.path)
   expect_data_frame(op, nrow = 10 + 5)

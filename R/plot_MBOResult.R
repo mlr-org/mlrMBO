@@ -52,7 +52,7 @@ plot.MBOMultiObjResult = function(x, iters = NULL, pause = TRUE, ...) {
   y.names = opt.path$y.names
   infill.crit.id = getMBOInfillCritId(control$infill.crit)
 
-  if (control$multicrit.method == "mspot") {
+  if (control$multiobj.method == "mspot") {
     infill.crit = paste(infill.crit.id, opt.path$y.names, sep = ".")
   } else {
     infill.crit = infill.crit.id

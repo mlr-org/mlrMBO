@@ -20,7 +20,7 @@ getExtras = function(n, prop, train.time, control) {
   # this happens in init design
   infill.crit.id = getMBOInfillCritId(control$infill.crit)
   if (is.null(prop)) {
-    k = ifelse(control$n.objectives > 1L && control$multicrit.method == "mspot", control$n.objectives + 1, 1L)
+    k = ifelse(control$n.objectives > 1L && control$multiobj.method == "mspot", control$n.objectives + 1, 1L)
     # pregenerate a dummmy "prop" data structure
     prop = list(crit.vals = matrix(NA_real_, nrow = n, ncol = k), propose.time = NA_real_, errors.model = NA_character_, prop.type = rep("initdesign", n))
     ## make space for crit.components (not so fancy to do it here)
@@ -42,7 +42,7 @@ getExtras = function(n, prop, train.time, control) {
     errs = rep(errs, n)
   for (i in seq_len(n)) {
     # if we use mspot, store all crit.vals
-    if (control$n.objectives > 1L && control$multicrit.method == "mspot") {
+    if (control$n.objectives > 1L && control$multiobj.method == "mspot") {
       ex = as.list(prop$crit.vals[i, ])
       names(ex) = c(paste(infill.crit.id, control$y.name, sep = "."), "hv.contr")
       ex$error.model = errs[i]
@@ -60,7 +60,7 @@ getExtras = function(n, prop, train.time, control) {
       ex$multipoint.cb.lambda = lams[i]
     }
     # if we use parego, store weights
-    if (control$n.objectives > 1L && control$multicrit.method == "parego") {
+    if (control$n.objectives > 1L && control$multiobj.method == "parego") {
       weight.mat = prop$weight.mat
       if (is.null(weight.mat))
         weight.mat = matrix(NA_real_, nrow = n, ncol = control$n.objectives)

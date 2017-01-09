@@ -2,7 +2,7 @@ library(BBmisc)
 library(mlrMBO)
 library(parallelMap)
 library(emoa)
-source("todo-files/plot_multicritMBO.R")
+source("todo-files/plot_multiobjMBO.R")
 set.seed(1)
 
 # create parameter space
@@ -36,7 +36,7 @@ control = setMBOControlInfill (control,
                                crit = "lcb",
                                filter.proposed.points = TRUE,
                                filter.proposed.points.tol = 1e-2)
-control = setMBOControlMultiCrit (control,
+control = setMBOControlMultiObj (control,
                                   method = "parego",
                                   parego.use.margin.points = c(TRUE, FALSE))
 resMBO = mbo(f, ps, learner = learner, control = control)

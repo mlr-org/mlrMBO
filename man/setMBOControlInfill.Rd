@@ -36,11 +36,13 @@ Default is 0.}
 \item{filter.proposed.points}{[\code{logical(1)}]\cr
 Design points located too close to each other can lead to
 numerical problems when using e.g. kriging as a surrogate model.
+This may solve the 'leading minor of order ...' error during model fit.
 This parameter activates or deactivates a heuristic to handle this issue.
 If \code{TRUE}, proposed points whose distance to design points or other current
 candidate points is smaller than \code{filter.proposed.points.tol}, are replaced by random points.
 If enabled, the column entry for \code{prop.type} is set to \dQuote{random_filter} in the resulting \code{opt.path},
 so you can see whether such a replacement happened.
+This does only work for numeric parameter sets without any discrete parameters.
 Default is \code{FALSE}.}
 
 \item{filter.proposed.points.tol}{[\code{numeric(1)}]\cr
@@ -117,29 +119,29 @@ Number of children generated in each generation.
 Default is 1.}
 
 \item{opt.nsga2.popsize}{[\code{numeric{1}}]\cr
-For \code{opt.multicrit.method = "nsga2"}.
+For \code{opt.multiobj.method = "nsga2"}.
 Population size of nsga2.
 Default is 100.}
 
 \item{opt.nsga2.generations}{[\code{numeric{1}}]\cr
-For \code{opt.multicrit.method = "nsga2"}.
+For \code{opt.multiobj.method = "nsga2"}.
 Number of populations for of nsga2.
 Default is 50.}
 
 \item{opt.nsga2.cprob}{[\code{numeric{1}}]\cr
-For \code{opt.multicrit.method = "nsga2"}.
+For \code{opt.multiobj.method = "nsga2"}.
 nsga2 param. Default is 0.7.}
 
 \item{opt.nsga2.cdist}{[\code{numeric{1}}]\cr
-For \code{opt.multicrit.method = "nsga2"}.
+For \code{opt.multiobj.method = "nsga2"}.
 nsga2 param. Default is 5.}
 
 \item{opt.nsga2.mprob}{[\code{numeric{1}}]\cr
-For \code{opt.multicrit.method = "nsga2"}.
+For \code{opt.multiobj.method = "nsga2"}.
 nsga2 param. Default is 0.2.}
 
 \item{opt.nsga2.mdist}{[\code{numeric{1}}]\cr
-For \code{opt.multicrit.method = "nsga2"}.
+For \code{opt.multiobj.method = "nsga2"}.
 nsga2 param. Default is 10.}
 }
 \value{
@@ -153,8 +155,8 @@ minimizes that.
 }
 \seealso{
 Other MBOControl: \code{\link{makeMBOControl}},
-  \code{\link{setMBOControlMultiCrit}},
   \code{\link{setMBOControlMultiFid}},
+  \code{\link{setMBOControlMultiObj}},
   \code{\link{setMBOControlMultiPoint}},
   \code{\link{setMBOControlTermination}}
 }

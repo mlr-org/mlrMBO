@@ -13,7 +13,7 @@ test_that("plotEAF works", {
   ctrl = makeMBOControl(n.objectives = 2L)
   ctrl = setMBOControlTermination(ctrl, iters = 2L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10)
-  ctrl = setMBOControlMultiCrit(ctrl, method = "parego", parego.s = 100)
+  ctrl = setMBOControlMultiObj(ctrl, method = "parego", parego.s = 100)
 
   # build aritificial list of opt pathes for two algorithms
   n.reps = 3L

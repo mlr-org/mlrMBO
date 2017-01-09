@@ -23,11 +23,13 @@
 #' @param filter.proposed.points [\code{logical(1)}]\cr
 #'   Design points located too close to each other can lead to
 #'   numerical problems when using e.g. kriging as a surrogate model.
+#'   This may solve the 'leading minor of order ...' error during model fit.
 #'   This parameter activates or deactivates a heuristic to handle this issue.
 #'   If \code{TRUE}, proposed points whose distance to design points or other current
 #'   candidate points is smaller than \code{filter.proposed.points.tol}, are replaced by random points.
 #'   If enabled, the column entry for \code{prop.type} is set to \dQuote{random_filter} in the resulting \code{opt.path},
 #'   so you can see whether such a replacement happened.
+#'   This does only work for numeric parameter sets without any discrete parameters.
 #'   Default is \code{FALSE}.
 #' @param filter.proposed.points.tol [\code{numeric(1)}]\cr
 #'   Tolerance value filtering of proposed points. We currently use a maximum metric
@@ -90,24 +92,24 @@
 #'   Number of children generated in each generation.
 #'   Default is 1.
 #' @param opt.nsga2.popsize [\code{numeric{1}}]\cr
-#'   For \code{opt.multicrit.method = "nsga2"}.
+#'   For \code{opt.multiobj.method = "nsga2"}.
 #'   Population size of nsga2.
 #'   Default is 100.
 #' @param opt.nsga2.generations [\code{numeric{1}}]\cr
-#'   For \code{opt.multicrit.method = "nsga2"}.
+#'   For \code{opt.multiobj.method = "nsga2"}.
 #'   Number of populations for of nsga2.
 #'   Default is 50.
 #' @param opt.nsga2.cprob [\code{numeric{1}}]\cr
-#'   For \code{opt.multicrit.method = "nsga2"}.
+#'   For \code{opt.multiobj.method = "nsga2"}.
 #'   nsga2 param. Default is 0.7.
 #' @param opt.nsga2.cdist [\code{numeric{1}}]\cr
-#'   For \code{opt.multicrit.method = "nsga2"}.
+#'   For \code{opt.multiobj.method = "nsga2"}.
 #'   nsga2 param. Default is 5.
 #' @param opt.nsga2.mprob [\code{numeric{1}}]\cr
-#'   For \code{opt.multicrit.method = "nsga2"}.
+#'   For \code{opt.multiobj.method = "nsga2"}.
 #'   nsga2 param. Default is 0.2.
 #' @param opt.nsga2.mdist [\code{numeric{1}}]\cr
-#'   For \code{opt.multicrit.method = "nsga2"}.
+#'   For \code{opt.multiobj.method = "nsga2"}.
 #'   nsga2 param. Default is 10.
 #' @return [\code{\link{MBOControl}}].
 #' @family MBOControl
@@ -124,7 +126,7 @@ setMBOControlInfill = function(control,
   opt.ea.sbx.eta = NULL, opt.ea.sbx.p = NULL,
   opt.ea.pm.eta = NULL, opt.ea.pm.p = NULL,
   opt.ea.lambda = NULL,
-  #opt.multicrit.randomsearch.points = 50000L,
+  #opt.multiobj.randomsearch.points = 50000L,
   opt.nsga2.popsize = NULL, opt.nsga2.generations = NULL,
   opt.nsga2.cprob = NULL, opt.nsga2.cdist = NULL,
   opt.nsga2.mprob = NULL, opt.nsga2.mdist = NULL) {
@@ -187,9 +189,9 @@ setMBOControlInfill = function(control,
   assertCount(control$infill.opt.ea.lambda, na.ok = FALSE)
 
   # FIXME: Don't use for now
-  #control$infill.opt.multicrit.randomsearch.points = coalesce(opt.multicrit.randomsearch.points, control$infill.opt.multicrit.randomsearch.points)
-  #control$infill.opt.multicrit.randomsearch.points = asCount(control$infill.opt.multicrit.randomsearch.points)
-  #assertCount(control$infill.opt.multicrit.randomsearch.points, na.ok = FALSE, positive = TRUE)
+  #control$infill.opt.multiobj.randomsearch.points = coalesce(opt.multiobj.randomsearch.points, control$infill.opt.multiobj.randomsearch.points)
+  #control$infill.opt.multiobj.randomsearch.points = asCount(control$infill.opt.multiobj.randomsearch.points)
+  #assertCount(control$infill.opt.multiobj.randomsearch.points, na.ok = FALSE, positive = TRUE)
 
   control$infill.opt.nsga2.popsize = coalesce(opt.nsga2.popsize, control$infill.opt.nsga2.popsize, 100L)
   control$infill.opt.nsga2.popsize = asCount(control$infill.opt.nsga2.popsize)

@@ -49,7 +49,7 @@ addAlgorithm(reg, "parego", fun = function(static, normalization) {
     save.on.disk.at = integer(0L))
   ctrl = setMBOControlInfill(ctrl, crit = "ei", opt.focussearch.points = 10000L,
     opt.restarts = 3L, opt.focussearch.maxit = 3L)
-  ctrl = setMBOControlMultiCrit(ctrl, parego.normalize = normalization)
+  ctrl = setMBOControlMultiObj(ctrl, parego.normalize = normalization)
 
   res = mbo(makeMBOFunction(static$objective), static$par.set,
     learner = learner, control = ctrl, show.info = TRUE)

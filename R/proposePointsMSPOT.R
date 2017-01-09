@@ -22,7 +22,7 @@ proposePointsMSPOT = function(opt.state, ...) {
   })
 
   ppoints = prop.points$prop.points
-  crit.vals = evalCritFunForMultiCritModels(control$infill.crit, ppoints, models, control,
+  crit.vals = evalCritFunForMultiObjModels(control$infill.crit, ppoints, models, control,
     par.set, design, iter)
   crit.vals = cbind(crit.vals, prop.points$prop.hv.contrs)
   prop.type = rep(paste0("infill_", infill.crit.id), n)

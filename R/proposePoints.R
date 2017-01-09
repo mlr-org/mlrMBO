@@ -33,11 +33,11 @@ proposePoints.OptState = function(opt.state){
       }
     }
   } else {
-    if (control$multicrit.method == "parego") {
+    if (control$multiobj.method == "parego") {
       res = proposePointsParEGO(opt.state)
-    } else if (control$multicrit.method == "mspot") {
+    } else if (control$multiobj.method == "mspot") {
       res = proposePointsMSPOT(opt.state)
-    } else if (control$multicrit.method == "dib") {
+    } else if (control$multiobj.method == "dib") {
       res = proposePointsDIB(opt.state)
     }
   }
