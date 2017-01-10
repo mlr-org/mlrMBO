@@ -2,7 +2,7 @@
 #'
 #' @description
 #' Please note that internally all infill criteria are minimized. So for some of them,
-#' we internally compute their negated version, eg., for EI or also for CB when the objective is to
+#' we internally compute their negated version, e.g., for EI or also for CB when the objective is to
 #' be maximized. In the latter case mlrMBO actually computes the negative upper confidence bound and
 #' minimizes that.
 #'
@@ -72,8 +72,10 @@
 #' @param opt.restarts [\code{integer(1)}]\cr
 #'   Number of independent restarts for optimizer of infill criterion.
 #'   If \code{opt == "cmaes"} the first start point for the optimizer is always the
-#'   currently best point in the design of already visited points.
-#'   Subsequent restarts are started at random points.
+#'   currently best point in the design of already visited points. Subsequent starting
+#'   points are chosen according to the CMA-ES restart strategy introduced by Auger
+#'   and Hansen. For details see the corresponding paper in the references and the help
+#'   page of the underlying optimizer \code{\link[cmaesr]{cmaes}}.
 #'   Default is 1.
 #' @param opt.focussearch.maxit [\code{integer(1)}]\cr
 #'   For \code{opt = "focussearch"}:
