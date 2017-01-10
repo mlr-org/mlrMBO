@@ -5,7 +5,7 @@ test_that("infill optimizers", {
     ctrl = makeMBOControl()
     ctrl = setMBOControlTermination(ctrl, iters = 5L)
     ctrl = setMBOControlInfill(ctrl, opt = opt,
-      opt.cmaes.control = list(maxit = 10L))
+      opt.cmaes.control = list(stop.ons = list(stopOnMaxIters(10L))))
   }
   mycheck = function(or) {
     expect_equal(getOptPathLength(or$opt.path), nrow(testd.fsphere.2d) + 5L)
