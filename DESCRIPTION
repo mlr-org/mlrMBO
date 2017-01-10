@@ -34,9 +34,9 @@ Imports:
     parallelMap (>= 1.1)
 Suggests:
     akima,
+    cmaesr (>= 1.0.3),
     ggplot2,
     RColorBrewer,
-    cmaes,
     DiceKriging,
     DiceOptim,
     earth,
