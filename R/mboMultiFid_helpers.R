@@ -78,7 +78,8 @@ makeMBOInfillCriterionMultiFid = function() {
       return(res)
     },
     name = "multifid",
-    id = "multifid"
+    id = "multifid",
+    components = c("mf.ei.last", "mf.se", "mf.alpha1", "mf.alpha2", "mf.alpha3", "mf.sd")
   )
 }
 

@@ -24,6 +24,13 @@
 #' @param minimize [\code{character(1)}]\cr
 #'   Shall the criterion be minimized or maximized?
 #'   Default is \code{TRUE}.
+#' @param components [\code{character}]\cr
+#'   Infill criteria may not return proposed point(s) only. Additional
+#'   information can be returned by appending a named \code{list} \dQuote{crit.components}
+#'   to the returned value as an attribute.
+#'   The \code{components} argument takes a character vector of the names of the
+#'   meta information, i.e., the names of the named \dQuote{crit.components} list.
+#'   Default is the empty character vector.
 #' @param params [\code{list}]\cr
 #'   Name list of parameters. Infill criteria might depend on parameters.
 #'   These parameters should be stored in the \code{params} list in order
@@ -37,6 +44,7 @@ makeMBOInfillCriterion = function(
   name,
   id,
   minimize = TRUE,
+  components = character(0L),
   params = list()) {
   # assertFunction(
   #   infill.fun,
@@ -46,15 +54,16 @@ makeMBOInfillCriterion = function(
 
   #FIXME: add regexp check for names
   #FIXME: add length restriction for id?
-  #FIXME: handle crit.components
   assertString(name)
   assertString(id)
   assertFlag(minimize)
+  assertCharacter(components)
   assertList(params)
 
   infill.fun = setAttribute(infill.fun, "name", name)
   infill.fun = setAttribute(infill.fun, "id", id)
   infill.fun = setAttribute(infill.fun, "minimize", minimize)
+  infill.fun = setAttribute(infill.fun, "components", components)
   infill.fun = setAttribute(infill.fun, "params", params)
   infill.fun = addClasses(infill.fun, "MBOInfillCriterion")
   return(infill.fun)
@@ -84,6 +93,17 @@ getMBOInfillCritId = function(x) {
 getMBOInfillCritId = function(x) {
   assertClass(x, "MBOInfillCriterion")
   return(attr(x, "id"))
+}
+
+getMBOInfillCritComponents = function(x) {
+  assertClass(x, "MBOInfillCriterion")
+  return(attr(x, "components"))
+}
+
+getMBOInfillDummyCritComponents = function(x) {
+  assertClass(x, "MBOInfillCriterion")
+  ns = getMBOInfillCritComponents(x)
+  as.data.frame(BBmisc::namedList(ns, NA_real_))
 }
 
 getMBOInfillCritDirection = function(x) {
@@ -136,6 +156,7 @@ makeMBOInfillCriterionEI = function() {
     },
     name = "Expected improvement",
     id = "ei",
+    components = c("se", "mean"),
     minimize = FALSE
   )
 }
@@ -198,7 +219,8 @@ makeMBOInfillCriterionCB = function(cb.lambda = 1, cb.inflate.se = FALSE, cb.pi 
       return(res)
     },
     name = "Lower confidence bound",
-    id = "cb"
+    id = "cb",
+    components = c("se", "mean", "lambda")
   )
 }
 
@@ -242,7 +264,8 @@ makeMBOInfillCriterionAEI = function(aei.use.nugget = FALSE) {
       return(res)
     },
     name = "Augmeted expected improvement",
-    id = "aei"
+    id = "aei",
+    components = c("se", "mean", "tau")
   )
 }
 
