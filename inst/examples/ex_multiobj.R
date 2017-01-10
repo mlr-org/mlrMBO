@@ -12,7 +12,7 @@ learner = makeLearner("regr.km", nugget.estim = FALSE, predict.type = "se")
 
 ctrl = makeMBOControl(n.objectives = 2L, propose.points = 2L, save.on.disk.at = integer(0L))
 ctrl = setMBOControlTermination(ctrl, iters = 5L)
-ctrl = setMBOControlInfill(ctrl, crit = "dib",
+ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCriterionDIB(),
   opt.focussearch.points = 10000L)
 ctrl = setMBOControlMultiObj(ctrl, parego.s = 100)
 

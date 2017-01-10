@@ -27,7 +27,7 @@ ctrl = setMBOControlTermination(ctrl, iters = 5L)
 
 lrn = makeLearner("regr.km", predict.type = "se", nugget.estim = TRUE)
 
-ctrl = setMBOControlInfill(ctrl, crit = "ei", opt = "focussearch",
+ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCriterionEI(), opt = "focussearch",
   opt.focussearch.points = 500L)
 
 design = generateDesign(6L, getParamSet(obj.fun), fun = lhs::maximinLHS)
