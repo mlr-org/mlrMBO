@@ -26,7 +26,7 @@ plotMBOExampleRun2DNumeric = function(x, iters, pause=TRUE,
   x1 = unique(evals[, name.x1])
   x2 = unique(evals[, name.x2])
   name.crit = ctrl$infill.crit
-  critfun = getInfillCritFunction(name.crit)
+  critfun = getInfillCritFunction(name.crit)$fun
   opt.direction = 1
   if (name.crit %in% c("ei")) {
     opt.direction = -1

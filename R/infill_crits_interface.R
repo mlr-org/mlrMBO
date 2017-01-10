@@ -5,7 +5,7 @@
 #' confidence bound and others, are already implemented in mlrMBO. Moreover,
 #' the package allows for the creation of proprietary infill criteria.
 #'
-#' @param infill.fun [\code{function}]\cr
+#' @param infill.fun [\code{function(points, models, control, par.set, design, iter)}]\cr
 #'   A function which expects the following parameters in exactly this order
 #'   and return a numeric vector of criteria values at the points:
 #'   \describe{
@@ -32,16 +32,15 @@
 #'   meta information, i.e., the names of the named \dQuote{crit.components} list.
 #'   Default is the empty character vector.
 #' @return [\code{MBOInfillCriterion}]
-#'   Basically \code{infill.fun} with an additional class.
-#'   All other parameters are appended as attributes.
+#' @export
 makeMBOInfillCriterion = function(
-  infill.fun,
+  fun,
   name,
   id,
   minimize = TRUE,
   components = character(0L)) {
   assertFunction(
-    infill.fun,
+    fun,
     args = c("points", "models", "control",
       "par.set", "design", "iter", "attributes"),
     ordered = TRUE)
@@ -49,19 +48,21 @@ makeMBOInfillCriterion = function(
   assertString(name)
   assertString(id)
   assertFlag(minimize)
-  assertCharacter(components)
+  assertCharacter(components, unique = TRUE)
 
-  infill.fun = setAttribute(infill.fun, "name", name)
-  infill.fun = setAttribute(infill.fun, "id", id)
-  infill.fun = setAttribute(infill.fun, "minimize", minimize)
-  infill.fun = setAttribute(infill.fun, "components", components)
-  infill.fun = addClasses(infill.fun, "MBOInfillCriterion")
-  return(infill.fun)
+  ic = makeS3Obj("MBOInfillCriterion",
+    fun = fun,
+    name = name,
+    id = id,
+    minimize = minimize,
+    components = components
+  )
+  return(ic)
 }
 
 getMBOInfillCritParams = function(x) {
   assertClass(x, "MBOInfillCriterion")
-  return(attr(x, "params"))
+  return(x$params)
 }
 
 getMBOInfillCritParam = function(x, par.name) {
@@ -72,22 +73,22 @@ getMBOInfillCritParam = function(x, par.name) {
 
 getMBOInfillCritName = function(x) {
   assertClass(x, "MBOInfillCriterion")
-  return(attr(x, "name"))
+  return(x$name)
 }
 
 getMBOInfillCritId = function(x) {
   assertClass(x, "MBOInfillCriterion")
-  return(attr(x, "id"))
+  return(x$id)
 }
 
 getMBOInfillCritId = function(x) {
   assertClass(x, "MBOInfillCriterion")
-  return(attr(x, "id"))
+  return(x$id)
 }
 
 getMBOInfillCritComponents = function(x) {
   assertClass(x, "MBOInfillCriterion")
-  return(attr(x, "components"))
+  return(x$components)
 }
 
 getMBOInfillDummyCritComponents = function(x) {
@@ -98,7 +99,7 @@ getMBOInfillDummyCritComponents = function(x) {
 
 getMBOInfillCritDirection = function(x) {
   assertClass(x, "MBOInfillCriterion")
-  ifelse(attr(x, "minimize"), 1, -1)
+  ifelse(x$minimize, 1, -1)
 }
 
 #' @title Infill criteria.
@@ -141,7 +142,7 @@ NULL
 #' @rdname infillcrits
 makeMBOInfillCriterionMeanResponse = function() {
   makeMBOInfillCriterion(
-    infill.fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
+    fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
       ifelse(control$minimize, 1, -1) * predict(models[[1L]], newdata = points)$data$response
     },
     name = "Mean response",
@@ -153,7 +154,7 @@ makeMBOInfillCriterionMeanResponse = function() {
 #' @rdname infillcrits
 makeMBOInfillCriterionStandardError = function() {
   makeMBOInfillCriterion(
-    infill.fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
+    fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
       -predict(models[[1L]], newdata = points)$data$se
     },
     name = "Standard error",
@@ -165,7 +166,7 @@ makeMBOInfillCriterionStandardError = function() {
 #' @rdname infillcrits
 makeMBOInfillCriterionEI = function() {
   makeMBOInfillCriterion(
-    infill.fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
+    fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
       model = models[[1L]]
       maximize.mult = ifelse(control$minimize, 1, -1)
       y = maximize.mult * design[, control$y.name]
@@ -209,7 +210,7 @@ makeMBOInfillCriterionCB = function(cb.lambda = 1, cb.inflate.se = FALSE, cb.pi 
   }
   assertFlag(cb.inflate.se)
   makeMBOInfillCriterion(
-    infill.fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
+    fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
       force(cb.lambda)
       force(cb.inflate.se)
       force(cb.pi)
@@ -248,7 +249,7 @@ makeMBOInfillCriterionAEI = function(aei.use.nugget = FALSE) {
   force(aei.use.nugget)
 
   makeMBOInfillCriterion(
-    infill.fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
+    fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
       model = models[[1L]]
       maximize.mult = ifelse(control$minimize, 1, -1)
       p = predict(model, newdata = points)$data
@@ -289,7 +290,7 @@ makeMBOInfillCriterionEQI = function(eqi.beta = 0.75) {
   force(eqi.beta)
 
   makeMBOInfillCriterion(
-    infill.fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
+    fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
       model = models[[1L]]
       maximize.mult = ifelse(control$minimize, 1, -1)
       # compute q.min
@@ -344,7 +345,7 @@ makeMBOInfillCriterionDIB = function(cb.lambda = 1, cb.inflate.se = FALSE, cb.pi
   }
   assertFlag(cb.inflate.se)
   makeMBOInfillCriterion(
-    infill.fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
+    fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
       # get ys and cb-value-matrix for new points, minimize version
       maximize.mult = ifelse(control$minimize, 1, -1)
       ys = as.matrix(design[, control$y.name]) %*% diag(maximize.mult)
@@ -381,7 +382,7 @@ makeMBOInfillCriterionDIB = function(cb.lambda = 1, cb.inflate.se = FALSE, cb.pi
       }
       return(crit.vals)
     },
-    name = "Whatever dib stands for :-)",
+    name = "Directed Indicator Based Search",
     id = "dib"
   )
 }

@@ -34,7 +34,7 @@ renderExampleRunPlot1d = function(x, iter,
     infill.crit.id = "mfEI"
     critfun = infillCritMultiFid.external
   } else {
-    critfun = getInfillCritFunction(infill.crit.id)
+    critfun = getInfillCritFunction(infill.crit.id)$fun
   }
 
   # we need to maximize expected improvement
@@ -77,9 +77,9 @@ renderExampleRunPlot1d = function(x, iter,
 
   plots = list()
 
-  infill.mean = makeMBOInfillCriterionMeanResponse()
-  infill.ei = makeMBOInfillCriterionEI()
-  infill.se = makeMBOInfillCriterionStandardError()
+  infill.mean = makeMBOInfillCriterionMeanResponse()$fun
+  infill.ei = makeMBOInfillCriterionEI()$fun
+  infill.se = makeMBOInfillCriterionStandardError()$fun
 
   model = models[[iter]]
   type = vcapply(getOptPathDOB(opt.path), getType, iter = iter)

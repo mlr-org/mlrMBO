@@ -31,7 +31,7 @@ renderExampleRunPlot2d = function(x, iter,
   proppoints = control$propose.points
   mbo.res = x$mbo.res
   infill.crit.id = getMBOInfillCritId(control$infill.crit)
-  critfun = getInfillCritFunction(infill.crit.id)
+  critfun = getInfillCritFunction(infill.crit.id)$fun
   se = (x$learner$predict.type == "se")
 
   opt.direction = 1
@@ -52,9 +52,9 @@ renderExampleRunPlot2d = function(x, iter,
   idx.past = which(opt.path$dob < iter)
 
   model.ok = !inherits(models[[1L]], "FailureModel")
-  infill.mean = makeMBOInfillCriterionMeanResponse()
-  infill.ei = makeMBOInfillCriterionEI()
-  infill.se = makeMBOInfillCriterionStandardError()
+  infill.mean = makeMBOInfillCriterionMeanResponse()$fun
+  infill.ei = makeMBOInfillCriterionEI()$fun
+  infill.se = makeMBOInfillCriterionStandardError()$fun
 
   if (model.ok) {
     evals$yhat = ifelse(control$minimize, 1, -1) * infill.mean(evals.x, models, control, par.set, opt.path[idx.past, ])

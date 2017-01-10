@@ -18,11 +18,11 @@ proposePointsMSPOT = function(opt.state, ...) {
 
   # store time to propose single point
   secs = measureTime({
-    prop.points = infill.opt.fun(control$infill.crit, models, control, par.set, opt.path, design, iter, ...)
+    prop.points = infill.opt.fun(control$infill.crit$fun, models, control, par.set, opt.path, design, iter, ...)
   })
 
   ppoints = prop.points$prop.points
-  crit.vals = evalCritFunForMultiObjModels(control$infill.crit, ppoints, models, control,
+  crit.vals = evalCritFunForMultiObjModels(control$infill.crit$fun, ppoints, models, control,
     par.set, design, iter)
   crit.vals = cbind(crit.vals, prop.points$prop.hv.contrs)
   prop.type = rep(paste0("infill_", infill.crit.id), n)

@@ -39,7 +39,7 @@ proposePointsByInfillOptimization = function(opt.state, par.set = NULL, control 
   }
 
   design = convertOptPathToDf(opt.path, control)
-  infill.crit.fun = getInfillCritFunction(infill.crit.id)
+  infill.crit.fun = getInfillCritFunction(infill.crit.id)$fun
   infill.opt.fun = getInfillOptFunction(control$infill.opt)
   # store time to propose single point
   secs = measureTime({
