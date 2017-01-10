@@ -1,4 +1,4 @@
-#' @title Create an infill critertion.
+#' @title Create an infill criterion.
 #'
 #' @description The infill criterion guides the model based search process.
 #' The most prominent infill criteria, e.g., expected improvement, lower
@@ -10,7 +10,7 @@
 #'   and return a numeric vector of criteria values at the points:
 #'   \describe{
 #'     \item{points [\code{data.frame}]}{n points where to evaluate}.
-#'     \item{models [\code{\link[mlr]{WrappedModel} | \code{list}]}{Model(s) fitted on design.}
+#'     \item{models [\code{\link[mlr]{WrappedModel}} | \code{list}]}{Model(s) fitted on design.}
 #'     \item{control [\code{MBOControl}]}{Control object.}
 #'     \item{par.set [ParamSet]}{Parameter set.}
 #'     \item{design [data.frame]}{Design of already visited points.}
@@ -86,6 +86,10 @@ getMBOInfillCritId = function(x) {
   return(attr(x, "id"))
 }
 
+getMBOInfillCritDirection = function(x) {
+  assertClass(x, "MBOInfillCriterion")
+  ifelse(attr(x, "minimize"), 1, -1)
+}
 
 makeMBOInfillCriterionMeanResponse = function() {
   makeMBOInfillCriterion(
@@ -245,10 +249,10 @@ makeMBOInfillCriterionAEI = function(aei.use.nugget = FALSE) {
 # EXPECTED QUANTILE IMPROVEMENT
 # (useful for noisy functions)
 
-#' @param crit.eqi.beta [\code{numeric(1)}]\cr
-#'   Beta parameter for expected quantile improvement criterion.
-#'   Only used if \code{crit == "eqi"}, ignored otherwise.
-#'   Default is 0.75.
+# @param crit.eqi.beta [\code{numeric(1)}]\cr
+#   Beta parameter for expected quantile improvement criterion.
+#   Only used if \code{crit == "eqi"}, ignored otherwise.
+#   Default is 0.75.
 makeMBOInfillCriterionEQI = function(eqi.beta = 0.75) {
   assertNumber(eqi.beta, na.ok = FALSE, lower = 0.5, upper = 1)
   force(eqi.beta)
@@ -312,12 +316,6 @@ makeMBOInfillCriterionDIB = function(cb.lambda = 1, cb.inflate.se = FALSE, cb.pi
     cb.lambda = -qnorm(0.5 * cb.pi^(1 / control$n.objectives))
   }
   assertFlag(cb.inflate.se)
-  #FIXME: control$infill.crit.cb.lambda not avaialable! However,
-  # if did needs this one, we need to pass cb.lambda to the dib
-  # constructor
-  #FIXME: what about all those multiobj.dib.... vars?
-  # if these are only needed for the dib criterion we should make them
-  # parameter of makeMBOInfillCriterionDIB()
   makeMBOInfillCriterion(
     infill.fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
       # get ys and cb-value-matrix for new points, minimize version

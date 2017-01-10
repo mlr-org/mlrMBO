@@ -38,11 +38,7 @@ renderExampleRunPlot1d = function(x, iter,
   }
 
   # we need to maximize expected improvement
-  if (infill.crit.id %in% c("ei")) {
-    opt.direction = -1
-  } else {
-    opt.direction = 1
-  }
+  opt.direction = getMBOInfillCritDirection(control$infill.crit)
 
   # if no iterations provided take the total number of iterations in optimization process
   assertInteger(iter, lower = 0, upper = length(models), len = 1L, any.missing = FALSE)
