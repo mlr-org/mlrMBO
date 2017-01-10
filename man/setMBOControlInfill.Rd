@@ -158,7 +158,6 @@ minimizes that.
 }
 \seealso{
 Other MBOControl: \code{\link{makeMBOControl}},
-  \code{\link{setMBOControlMultiFid}},
   \code{\link{setMBOControlMultiObj}},
   \code{\link{setMBOControlMultiPoint}},
   \code{\link{setMBOControlTermination}}

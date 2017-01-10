@@ -122,7 +122,6 @@ et al. (eds.), IEEE, 2005, ISBN 0-7803-9363-5, pp. 2138-2145
 \seealso{
 Other MBOControl: \code{\link{makeMBOControl}},
   \code{\link{setMBOControlInfill}},
-  \code{\link{setMBOControlMultiFid}},
   \code{\link{setMBOControlMultiPoint}},
   \code{\link{setMBOControlTermination}}
 }

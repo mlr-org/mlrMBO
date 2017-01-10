@@ -109,7 +109,6 @@ Creates a control object for MBO optimization.
 }
 \seealso{
 Other MBOControl: \code{\link{setMBOControlInfill}},
-  \code{\link{setMBOControlMultiFid}},
   \code{\link{setMBOControlMultiObj}},
   \code{\link{setMBOControlMultiPoint}},
   \code{\link{setMBOControlTermination}}

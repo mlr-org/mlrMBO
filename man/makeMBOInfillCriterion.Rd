@@ -2,12 +2,24 @@
 % Please edit documentation in R/infill_crits_interface.R
 \name{makeMBOInfillCriterion}
 \alias{makeMBOInfillCriterion}
-\title{Create an infill critertion.}
+\title{Create an infill criterion.}
 \usage{
 makeMBOInfillCriterion(infill.fun, name, id, minimize = TRUE,
-  params = list())
+  components = character(0L))
 }
 \arguments{
+\item{infill.fun}{[\code{function}]\cr
+A function which expects the following parameters in exactly this order
+and return a numeric vector of criteria values at the points:
+\describe{
+  \item{points [\code{data.frame}]}{n points where to evaluate}.
+  \item{models [\code{\link[mlr]{WrappedModel}} | \code{list}]}{Model(s) fitted on design.}
+  \item{control [\code{MBOControl}]}{Control object.}
+  \item{par.set [ParamSet]}{Parameter set.}
+  \item{design [data.frame]}{Design of already visited points.}
+  \item{iter [integer(1)]}{Current iteration.}
+}}
+
 \item{name}{[\code{character(1)}]\cr
 Full name of the criterion.}
 
@@ -19,11 +31,13 @@ Used internally and in plots.}
 Shall the criterion be minimized or maximized?
 Default is \code{TRUE}.}
 
-\item{params}{[\code{list}]\cr
-Name list of parameters. Infill criteria might depend on parameters.
-These parameters should be stored in the \code{params} list in order
-to access them inside mlrMBO.
-Default is the empty list.}
+\item{components}{[\code{character}]\cr
+Infill criteria may not return proposed point(s) only. Additional
+information can be returned by appending a named \code{list} \dQuote{crit.components}
+to the returned value as an attribute.
+The \code{components} argument takes a character vector of the names of the
+meta information, i.e., the names of the named \dQuote{crit.components} list.
+Default is the empty character vector.}
 }
 \value{
 [\code{MBOInfillCriterion}]

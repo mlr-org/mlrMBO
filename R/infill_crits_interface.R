@@ -31,11 +31,6 @@
 #'   The \code{components} argument takes a character vector of the names of the
 #'   meta information, i.e., the names of the named \dQuote{crit.components} list.
 #'   Default is the empty character vector.
-#' @param params [\code{list}]\cr
-#'   Name list of parameters. Infill criteria might depend on parameters.
-#'   These parameters should be stored in the \code{params} list in order
-#'   to access them inside mlrMBO.
-#'   Default is the empty list.
 #' @return [\code{MBOInfillCriterion}]
 #'   Basically \code{infill.fun} with an additional class.
 #'   All other parameters are appended as attributes.
@@ -44,27 +39,22 @@ makeMBOInfillCriterion = function(
   name,
   id,
   minimize = TRUE,
-  components = character(0L),
-  params = list()) {
-  # assertFunction(
-  #   infill.fun,
-  #   args = c("points", "models", "control",
-  #     "par.set", "design", "iter", "attributes"),
-  #   ordered = TRUE)
+  components = character(0L)) {
+  assertFunction(
+    infill.fun,
+    args = c("points", "models", "control",
+      "par.set", "design", "iter", "attributes"),
+    ordered = TRUE)
 
-  #FIXME: add regexp check for names
-  #FIXME: add length restriction for id?
   assertString(name)
   assertString(id)
   assertFlag(minimize)
   assertCharacter(components)
-  assertList(params)
 
   infill.fun = setAttribute(infill.fun, "name", name)
   infill.fun = setAttribute(infill.fun, "id", id)
   infill.fun = setAttribute(infill.fun, "minimize", minimize)
   infill.fun = setAttribute(infill.fun, "components", components)
-  infill.fun = setAttribute(infill.fun, "params", params)
   infill.fun = addClasses(infill.fun, "MBOInfillCriterion")
   return(infill.fun)
 }
@@ -111,6 +101,44 @@ getMBOInfillCritDirection = function(x) {
   ifelse(attr(x, "minimize"), 1, -1)
 }
 
+#' @title Infill criteria.
+#' @name infillcrits
+#'
+#' @description
+#' \pkg{mlrMBO} contains most of the most popular infill criteria.
+#'
+#' @param cb.lambda [\code{numeric(1)}]\cr
+#'   Lambda parameter for confidence bound infill criterion.
+#'   Only used if \code{crit == "cb"}, ignored otherwise.
+#'   Default is 1.
+#' @param cb.pi [\code{numeric(1)}]\cr
+#'   Probability-of-improvement value to determine the lambda parameter for cb infill criterion.
+#'   It is an alternative to set the trade-off between \dQuote{mean} and \dQuote{se}.
+#'   Only used if \code{crit == "cb"}, ignored otherwise.
+#'   If specified, \code{cb.lambda == NULL} must hold.
+#'   Default is \code{NULL}.
+#' @param cb.inflate.se [\code{logical(1)}]\cr
+#'   Try to inflate or deflate the estimated standard error to get to the same scale as the mean?
+#'   Calculates the range of the mean and standard error and multiplies the standard error
+#'   with the quotient of theses ranges.
+#'   Default is \code{FALSE}.
+#' @param aei.use.nugget [\code{logical(1)}]\cr
+#'   Should the nugget effect be used for the pure variance estimation for augmented
+#'   expected improvement?
+#'   Default is \code{FALSE}.
+#' @param eqi.beta [\code{numeric(1)}]\cr
+#'   Beta parameter for expected quantile improvement criterion.
+#'   Default is 0.75.
+#' @name infillcrits
+#' @rdname infillcrits
+NULL
+
+# =====================
+# SINGLE-CRITERIA STUFF
+# =====================
+
+#' @export
+#' @rdname infillcrits
 makeMBOInfillCriterionMeanResponse = function() {
   makeMBOInfillCriterion(
     infill.fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
@@ -121,6 +149,8 @@ makeMBOInfillCriterionMeanResponse = function() {
   )
 }
 
+#' @export
+#' @rdname infillcrits
 makeMBOInfillCriterionStandardError = function() {
   makeMBOInfillCriterion(
     infill.fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
@@ -131,6 +161,8 @@ makeMBOInfillCriterionStandardError = function() {
   )
 }
 
+#' @export
+#' @rdname infillcrits
 makeMBOInfillCriterionEI = function() {
   makeMBOInfillCriterion(
     infill.fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
@@ -161,23 +193,8 @@ makeMBOInfillCriterionEI = function() {
   )
 }
 
-
-# @param crit.cb.lambda [\code{numeric(1)}]\cr
-#   Lambda parameter for confidence bound infill criterion.
-#   Only used if \code{crit == "cb"}, ignored otherwise.
-#   Default is 1.
-# FIXME: does this only make sense for multicrit? or single crit too?
-# @param crit.cb.pi [\code{numeric(1)}]\cr
-#   Probability-of-improvement value to determine the lambda parameter for cb infill criterion.
-#   It is an alternative to set the trade-off between \dQuote{mean} and \dQuote{se}.
-#   Only used if \code{crit == "cb"}, ignored otherwise.
-#   If specified, \code{crit.cb.lambda == NULL} must hold.
-#   Default is \code{NULL}.
-# @param crit.cb.inflate.se [\code{logical(1)}]\cr
-#   Try to inflate or deflate the estimated standard error to get to the same scale as the mean?
-#   Calculates the range of the mean and standard error and multiplies the standard error
-#   with the quotient of theses ranges.
-#   Default is \code{FALSE}.
+#' @export
+#' @rdname infillcrits
 makeMBOInfillCriterionCB = function(cb.lambda = 1, cb.inflate.se = FALSE, cb.pi = NULL) {
   # lambda value for cb - either given, or set via given pi, the other one must be NULL!
   if (!is.null(cb.lambda) && !is.null(cb.pi))
@@ -224,12 +241,8 @@ makeMBOInfillCriterionCB = function(cb.lambda = 1, cb.inflate.se = FALSE, cb.pi 
   )
 }
 
-# AUGMENTED EXPECTED IMPROVEMENT
-# (useful for noisy functions)
-
-# @param crit.aei.use.nugget [\code{logical(1)}]\cr
-#   Only used if \code{crit == "aei"}. Should the nugget effect be used for the
-#   pure variance estimation? Default is \code{FALSE}.
+#' @export
+#' @rdname infillcrits
 makeMBOInfillCriterionAEI = function(aei.use.nugget = FALSE) {
   assertFlag(aei.use.nugget)
   force(aei.use.nugget)
@@ -269,13 +282,8 @@ makeMBOInfillCriterionAEI = function(aei.use.nugget = FALSE) {
   )
 }
 
-# EXPECTED QUANTILE IMPROVEMENT
-# (useful for noisy functions)
-
-# @param crit.eqi.beta [\code{numeric(1)}]\cr
-#   Beta parameter for expected quantile improvement criterion.
-#   Only used if \code{crit == "eqi"}, ignored otherwise.
-#   Default is 0.75.
+#' @export
+#' @rdname infillcrits
 makeMBOInfillCriterionEQI = function(eqi.beta = 0.75) {
   assertNumber(eqi.beta, na.ok = FALSE, lower = 0.5, upper = 1)
   force(eqi.beta)
@@ -316,16 +324,12 @@ makeMBOInfillCriterionEQI = function(eqi.beta = 0.75) {
   )
 }
 
-######################  MCO criteria ###########################################################
+# ====================
+# MULTI-CRITERIA STUFF
+# ====================
 
-# SMS-EGO / DIB (direct indicator based):
-# direct.sms LOWER CONFIDENCE BOUND of points, then HV contribution of these wrt to design
-# direct.eps: LOWER CONFIDENCE BOUND of points, then epsilon indicator contribution of these wrt to design
-# (useful for deterministic and stochastic MCO)
-# @param crit.cb.lambda [\code{numeric(1)}]\cr
-#   Lambda parameter for confidence bound infill criterion.
-#   Only used if \code{crit == "cb"}, ignored otherwise.
-#   Default is 1.
+#' @export
+#' @rdname infillcrits
 makeMBOInfillCriterionDIB = function(cb.lambda = 1, cb.inflate.se = FALSE, cb.pi = NULL) {
   # lambda value for cb - either given, or set via given pi, the other one must be NULL!
   if (!is.null(cb.lambda) && !is.null(cb.pi))
