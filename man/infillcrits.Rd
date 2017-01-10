@@ -17,20 +17,21 @@ makeMBOInfillCriterionStandardError()
 
 makeMBOInfillCriterionEI()
 
-makeMBOInfillCriterionCB(cb.lambda = 1, cb.inflate.se = FALSE,
-  cb.pi = NULL)
+makeMBOInfillCriterionCB(cb.lambda = 1, cb.inflate.se = FALSE)
 
 makeMBOInfillCriterionAEI(aei.use.nugget = FALSE)
 
 makeMBOInfillCriterionEQI(eqi.beta = 0.75)
 
-makeMBOInfillCriterionDIB(cb.lambda = 1, cb.inflate.se = FALSE,
-  cb.pi = NULL)
+makeMBOInfillCriterionDIB(cb.lambda = 1, cb.inflate.se = FALSE)
 }
 \arguments{
 \item{cb.lambda}{[\code{numeric(1)}]\cr
 Lambda parameter for confidence bound infill criterion.
-Only used if \code{crit == "cb"}, ignored otherwise.
+In the multi-objective case we recommend to set this value to
+\eqn{q(0.5 \cdot \pi_{CB}^(1 / n))} where \eqn{q} is the quantile
+function of the standard normal distribution, \eqn{\pi_CB} is the probability
+of improvement value and \eqn{n} is the number of objectives of the considered problem.
 Default is 1.}
 
 \item{cb.inflate.se}{[\code{logical(1)}]\cr
@@ -38,13 +39,6 @@ Try to inflate or deflate the estimated standard error to get to the same scale 
 Calculates the range of the mean and standard error and multiplies the standard error
 with the quotient of theses ranges.
 Default is \code{FALSE}.}
-
-\item{cb.pi}{[\code{numeric(1)}]\cr
-Probability-of-improvement value to determine the lambda parameter for cb infill criterion.
-It is an alternative to set the trade-off between \dQuote{mean} and \dQuote{se}.
-Only used if \code{crit == "cb"}, ignored otherwise.
-If specified, \code{cb.lambda == NULL} must hold.
-Default is \code{NULL}.}
 
 \item{aei.use.nugget}{[\code{logical(1)}]\cr
 Should the nugget effect be used for the pure variance estimation for augmented

@@ -70,14 +70,6 @@ test_that("infill crits", {
     opt.focussearch.points = 300L)
   mbo(f1, des, learner = makeLearner("regr.km", predict.type = "se"), control = ctrl)
 
-  # should fail if both lambda and pi are not NULL
-  infill.crit = expect_error(makeMBOInfillCriterionCB(cb.lambda = 2, cb.pi = 0.5))
-  ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCriterionCB(cb.lambda = NULL, cb.pi = 0.5),
-    opt = "focussearch", opt.restarts = 1L,
-    opt.focussearch.points = 300L)
-  or = mbo(f1, des, learner = makeLearner("regr.km", predict.type = "se"), control = ctrl)
-  expect_lt(or$y, 50)
-
   # check beta for eqi
   expect_error(makeMBOInfillCriterionEQI(eqi.beta = 2))
 

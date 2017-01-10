@@ -31,7 +31,7 @@ proposePointsDIB = function(opt.state) {
       control2 = z$controls[[i]]
       prop = proposePointsByInfillOptimization(opt.state, control = control2, opt.path = opt.path2)
       design = convertOptPathToDf(opt.path, control)
-      cb = evalCritFunForMultiObjModels(makeMBOInfillCriterionCB(), prop$prop.points, models, control2,
+      cb = evalCritFunForMultiObjModels(makeMBOInfillCriterionCB()$fun, prop$prop.points, models, control2,
         par.set, design, iter)[1L, ]
       x = dfRowToList(prop$prop.points, par.set, 1)
       addOptPathEl(opt.path2, x = x, y = cb, dob = dob)

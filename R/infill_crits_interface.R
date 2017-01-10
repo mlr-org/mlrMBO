@@ -5,16 +5,18 @@
 #' confidence bound and others, are already implemented in mlrMBO. Moreover,
 #' the package allows for the creation of proprietary infill criteria.
 #'
-#' @param infill.fun [\code{function(points, models, control, par.set, design, iter)}]\cr
+#' @param fun [\code{function(points, models, control, par.set, design, iter)}]\cr
 #'   A function which expects the following parameters in exactly this order
 #'   and return a numeric vector of criteria values at the points:
 #'   \describe{
 #'     \item{points [\code{data.frame}]}{n points where to evaluate}.
 #'     \item{models [\code{\link[mlr]{WrappedModel}} | \code{list}]}{Model(s) fitted on design.}
 #'     \item{control [\code{MBOControl}]}{Control object.}
-#'     \item{par.set [ParamSet]}{Parameter set.}
-#'     \item{design [data.frame]}{Design of already visited points.}
-#'     \item{iter [integer(1)]}{Current iteration.}
+#'     \item{par.set [\code{ParamSet}]}{Parameter set.}
+#'     \item{design [\code{data.frame}]}{Design of already visited points.}
+#'     \item{iter [\code{integer(1)}]}{Current iteration.}
+#'     \item{attributes [\code{logical{1}}]}{Should attributes appended to the return
+#'      value by considered by \pkg{mlrMBO}?}
 #'   }
 #' @param name [\code{character(1)}]\cr
 #'   Full name of the criterion.
@@ -110,14 +112,11 @@ getMBOInfillCritDirection = function(x) {
 #'
 #' @param cb.lambda [\code{numeric(1)}]\cr
 #'   Lambda parameter for confidence bound infill criterion.
-#'   Only used if \code{crit == "cb"}, ignored otherwise.
+#'   In the multi-objective case we recommend to set this value to
+#'   \eqn{q(0.5 \cdot \pi_{CB}^(1 / n))} where \eqn{q} is the quantile
+#'   function of the standard normal distribution, \eqn{\pi_CB} is the probability
+#'   of improvement value and \eqn{n} is the number of objectives of the considered problem.
 #'   Default is 1.
-#' @param cb.pi [\code{numeric(1)}]\cr
-#'   Probability-of-improvement value to determine the lambda parameter for cb infill criterion.
-#'   It is an alternative to set the trade-off between \dQuote{mean} and \dQuote{se}.
-#'   Only used if \code{crit == "cb"}, ignored otherwise.
-#'   If specified, \code{cb.lambda == NULL} must hold.
-#'   Default is \code{NULL}.
 #' @param cb.inflate.se [\code{logical(1)}]\cr
 #'   Try to inflate or deflate the estimated standard error to get to the same scale as the mean?
 #'   Calculates the range of the mean and standard error and multiplies the standard error
@@ -196,24 +195,13 @@ makeMBOInfillCriterionEI = function() {
 
 #' @export
 #' @rdname infillcrits
-makeMBOInfillCriterionCB = function(cb.lambda = 1, cb.inflate.se = FALSE, cb.pi = NULL) {
-  # lambda value for cb - either given, or set via given pi, the other one must be NULL!
-  if (!is.null(cb.lambda) && !is.null(cb.pi))
-    stop("Please specify either 'cb.lambda' or 'cb.pi' for the CB crit, not both!")
-  if (is.null(cb.pi))
-    assertNumeric(cb.lambda, len = 1L, any.missing = FALSE, lower = 0)
-  if (is.null(cb.lambda)) {
-    assertNumeric(cb.pi, len = 1L, any.missing = FALSE, lower = 0, upper = 1)
-    # This is the formula from TW diss for setting lambda.
-    # Note, that alpha = -lambda, so we need the negative values
-    cb.lambda = -qnorm(0.5 * cb.pi^(1 / control$n.objectives))
-  }
+makeMBOInfillCriterionCB = function(cb.lambda = 1, cb.inflate.se = FALSE) {
+  assertNumber(cb.lambda, lower = 0)
   assertFlag(cb.inflate.se)
   makeMBOInfillCriterion(
     fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
       force(cb.lambda)
       force(cb.inflate.se)
-      force(cb.pi)
       model = models[[1L]]
       maximize.mult = ifelse(control$minimize, 1, -1)
       p = predict(model, newdata = points)$data
@@ -331,18 +319,8 @@ makeMBOInfillCriterionEQI = function(eqi.beta = 0.75) {
 
 #' @export
 #' @rdname infillcrits
-makeMBOInfillCriterionDIB = function(cb.lambda = 1, cb.inflate.se = FALSE, cb.pi = NULL) {
-  # lambda value for cb - either given, or set via given pi, the other one must be NULL!
-  if (!is.null(cb.lambda) && !is.null(cb.pi))
-    stop("Please specify either 'cb.lambda' or 'cb.pi' for the CB crit, not both!")
-  if (is.null(cb.pi))
-    assertNumeric(cb.lambda, len = 1L, any.missing = FALSE, lower = 0)
-  if (is.null(cb.lambda)) {
-    assertNumeric(cb.pi, len = 1L, any.missing = FALSE, lower = 0, upper = 1)
-    # This is the formula from TW diss for setting lambda.
-    # Note, that alpha = -lambda, so we need the negative values
-    cb.lambda = -qnorm(0.5 * cb.pi^(1 / control$n.objectives))
-  }
+makeMBOInfillCriterionDIB = function(cb.lambda = 1, cb.inflate.se = FALSE) {
+  assertNumber(cb.lambda, lower = 0)
   assertFlag(cb.inflate.se)
   makeMBOInfillCriterion(
     fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {

@@ -30,12 +30,12 @@ renderExampleRunPlot1d = function(x, iter,
 
   propose.points = control$propose.points
   infill.crit.id = getMBOInfillCritId(control$infill.crit)
-  if(control$multifid) {
-    infill.crit.id = "mfEI"
-    critfun = infillCritMultiFid.external
-  } else {
+  # if(control$multifid) {
+  #   infill.crit.id = "mfEI"
+  #   critfun = infillCritMultiFid.external
+  # } else {
     critfun = getInfillCritFunction(infill.crit.id)$fun
-  }
+  #}
 
   # we need to maximize expected improvement
   opt.direction = getMBOInfillCritDirection(control$infill.crit)
