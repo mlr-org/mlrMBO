@@ -161,7 +161,7 @@ makeMBOControl = function(n.objectives = 1L,
 #'   Not used.
 #' @export
 print.MBOControl = function(x, ...) {
-  infill.crit.id = getMBOInfillCritId(x$infill.crit)
+  infill.crit.id = getMBOInfillCriterionId(x$infill.crit)
   catf("Objectives                    : %s", x$n.objectives)
   catf("Points proposed per iter      : %i", x$propose.points)
   if (!is.null(x$trafo.y.fun)) {

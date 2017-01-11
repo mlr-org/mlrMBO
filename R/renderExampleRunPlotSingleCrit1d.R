@@ -29,7 +29,7 @@ renderExampleRunPlot1d = function(x, iter,
   se = (x$learner$predict.type == "se")
 
   propose.points = control$propose.points
-  infill.crit.id = getMBOInfillCritId(control$infill.crit)
+  infill.crit.id = getMBOInfillCriterionId(control$infill.crit)
   # if(control$multifid) {
   #   infill.crit.id = "mfEI"
   #   critfun = infillCritMultiFid.external
@@ -38,7 +38,7 @@ renderExampleRunPlot1d = function(x, iter,
   #}
 
   # we need to maximize expected improvement
-  opt.direction = getMBOInfillCritDirection(control$infill.crit)
+  opt.direction = getMBOInfillCriterionDirection(control$infill.crit)
 
   # if no iterations provided take the total number of iterations in optimization process
   assertInteger(iter, lower = 0, upper = length(models), len = 1L, any.missing = FALSE)

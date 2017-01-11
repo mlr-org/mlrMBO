@@ -7,14 +7,10 @@
 #' minimizes that.
 #'
 #' @template arg_control
-#' @param crit [\code{character(1)}]\cr
-#'   How should infill points be rated. Possible parameter values are:
-#'   \dQuote{mean}: Mean response.
-#'   \dQuote{ei}: Expected improvement.
-#'   \dQuote{aei}: Augmented expected improvement.
-#'   \dQuote{eqi}: Expected quantile improvement.
-#'   \dQuote{cb}: Confidence bound.
-#'   Alternatively, you may pass a function name as string.
+#' @param crit [\code{MBOInfillCriterion}]\cr
+#'   How should infill points be rated. See \code{\link{infillcrits}} for an overview
+#'   of available infill criteria or implement a custom one via \code{\link{makeMBOInfillCriterion}}.#
+#'   Default is \dQuote{mean response} (see \code{\link{makeMBOInfillCriterionMeanResponse}}).
 #' @param interleave.random.points [\code{integer(1)}]\cr
 #'   Add \code{interleave.random.points} uniformly sampled points additionally to the
 #'   regular proposed points in each step.
@@ -137,7 +133,7 @@ setMBOControlInfill = function(control,
   assertClass(control, "MBOControl")
 
   control$infill.crit = coalesce(crit, control$infill.crit, makeMBOInfillCriterionMeanResponse())
-  #assertChoice(control$infill.crit, choices = getSupportedInfillCritFunctions())
+  assertClass(control$infill.crit, "MBOInfillCriterion")
 
   assertCount(interleave.random.points)
   control$interleave.random.points = interleave.random.points

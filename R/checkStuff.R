@@ -52,7 +52,7 @@ checkStuff = function(fun, par.set, design, learner, control) {
 
   # general infill stuff (relavant for single objective and parEGO)
   infill.crit = control$infill.crit
-  infill.crit.id = getMBOInfillCritId(infill.crit)
+  infill.crit.id = getMBOInfillCriterionId(infill.crit)
   if (infill.crit.id %in% c("se", "ei", "aei", "cb", "dib") && learner$predict.type != "se") {
     stopf("For infill criterion '%s' predict.type of learner %s must be set to 'se'!%s",
       infill.crit.id, learner$id,
@@ -61,7 +61,7 @@ checkStuff = function(fun, par.set, design, learner, control) {
   }
 
   # If nugget estimation should be used, make sure learner is a km model with activated nugget estim
-  if (infill.crit.id == "aei" && getMBOInfillCritParam(infill.crit, "aei.use.nugget")) {
+  if (infill.crit.id == "aei" && getMBOInfillCriterionParam(infill.crit, "aei.use.nugget")) {
     if (learner$short.name != "km" || !isTRUE(getHyperPars(learner)$nugget.estim)) {
       stop("You have to turn on nugget estimation in your Kriging Model, if you want to use nugget estimation in the aei!")
     }

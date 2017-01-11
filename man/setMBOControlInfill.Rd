@@ -18,14 +18,10 @@ setMBOControlInfill(control, crit = NULL, interleave.random.points = 0L,
 \item{control}{[\code{\link{MBOControl}}]\cr
 Control object for mbo.}
 
-\item{crit}{[\code{character(1)}]\cr
-How should infill points be rated. Possible parameter values are:
-\dQuote{mean}: Mean response.
-\dQuote{ei}: Expected improvement.
-\dQuote{aei}: Augmented expected improvement.
-\dQuote{eqi}: Expected quantile improvement.
-\dQuote{cb}: Confidence bound.
-Alternatively, you may pass a function name as string.}
+\item{crit}{[\code{MBOInfillCriterion}]\cr
+How should infill points be rated. See \code{\link{infillcrits}} for an overview
+of available infill criteria or implement a custom one via \code{\link{makeMBOInfillCriterion}}.#
+Default is \dQuote{mean response} (see \code{\link{makeMBOInfillCriterionMeanResponse}}).}
 
 \item{interleave.random.points}{[\code{integer(1)}]\cr
 Add \code{interleave.random.points} uniformly sampled points additionally to the

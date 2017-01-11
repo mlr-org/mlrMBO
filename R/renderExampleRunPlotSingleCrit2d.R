@@ -30,7 +30,7 @@ renderExampleRunPlot2d = function(x, iter,
   control = x$control
   proppoints = control$propose.points
   mbo.res = x$mbo.res
-  infill.crit.id = getMBOInfillCritId(control$infill.crit)
+  infill.crit.id = getMBOInfillCriterionId(control$infill.crit)
   critfun = getInfillCritFunction(infill.crit.id)$fun
   se = (x$learner$predict.type == "se")
 

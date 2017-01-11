@@ -30,7 +30,7 @@ plot.MBOSingleObjResult = function(x, iters = NULL, pause = TRUE, ...) {
   opt.path = x$opt.path
   control = x$control
   y.names = opt.path$y.names
-  infill.crit.id = getMBOInfillCritId(control$infill.crit)
+  infill.crit.id = getMBOInfillCriterionId(control$infill.crit)
 
   if (is.null(iters))
     iters = max(getOptPathDOB(opt.path))
@@ -50,7 +50,7 @@ plot.MBOMultiObjResult = function(x, iters = NULL, pause = TRUE, ...) {
   opt.path = x$opt.path
   control = x$control
   y.names = opt.path$y.names
-  infill.crit.id = getMBOInfillCritId(control$infill.crit)
+  infill.crit.id = getMBOInfillCriterionId(control$infill.crit)
 
   if (control$multiobj.method == "mspot") {
     infill.crit = paste(infill.crit.id, opt.path$y.names, sep = ".")
