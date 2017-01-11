@@ -5,7 +5,7 @@
 \title{Create an infill criterion.}
 \usage{
 makeMBOInfillCriterion(fun, name, id, minimize = TRUE,
-  components = character(0L))
+  components = character(0L), params = list())
 }
 \arguments{
 \item{fun}{[\code{function(points, models, control, par.set, design, iter)}]\cr
@@ -40,6 +40,11 @@ to the returned value as an attribute.
 The \code{components} argument takes a character vector of the names of the
 meta information, i.e., the names of the named \dQuote{crit.components} list.
 Default is the empty character vector.}
+
+\item{params}{[\code{list}]\cr
+Named list of parameters for the infill criterion. There values may be used
+by \pkg{mlrMBO} internally.
+Default is the empty list.}
 }
 \value{
 [\code{MBOInfillCriterion}]

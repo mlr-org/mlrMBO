@@ -121,7 +121,8 @@ makeMBOInfillCriterionCB = function(cb.lambda = 1, cb.inflate.se = FALSE) {
     },
     name = "Lower confidence bound",
     id = "cb",
-    components = c("se", "mean", "lambda")
+    components = c("se", "mean", "lambda"),
+    params = list(cb.lambda = cb.lambda, cb.inflate.se = cb.inflate.se)
   )
 }
 
@@ -162,7 +163,8 @@ makeMBOInfillCriterionAEI = function(aei.use.nugget = FALSE) {
     },
     name = "Augmeted expected improvement",
     id = "aei",
-    components = c("se", "mean", "tau")
+    components = c("se", "mean", "tau"),
+    params = list(aei.use.nugget = aei.use.nugget)
   )
 }
 
@@ -204,7 +206,8 @@ makeMBOInfillCriterionEQI = function(eqi.beta = 0.75) {
       return(-eqi)
     },
     name = "Expected quantile improvement",
-    id = "eqi"
+    id = "eqi",
+    params = list(eqi.beta = eqi.beta)
   )
 }
 
@@ -256,6 +259,7 @@ makeMBOInfillCriterionDIB = function(cb.lambda = 1, cb.inflate.se = FALSE) {
       return(crit.vals)
     },
     name = "Directed Indicator Based Search",
-    id = "dib"
+    id = "dib",
+    params = list(cb.lambda = cb.lambda, cb.inflate.se = cb.inflate.se)
   )
 }

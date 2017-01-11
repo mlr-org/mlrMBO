@@ -33,10 +33,14 @@
 #'   The \code{components} argument takes a character vector of the names of the
 #'   meta information, i.e., the names of the named \dQuote{crit.components} list.
 #'   Default is the empty character vector.
+#' @param params [\code{list}]\cr
+#'   Named list of parameters for the infill criterion. There values may be used
+#'   by \pkg{mlrMBO} internally.
+#'   Default is the empty list.
 #' @return [\code{MBOInfillCriterion}]
 #' @export
 makeMBOInfillCriterion = function(fun, name, id,
-  minimize = TRUE, components = character(0L)) {
+  minimize = TRUE, components = character(0L), params = list()) {
   assertFunction(
     fun,
     args = c("points", "models", "control",
@@ -47,13 +51,15 @@ makeMBOInfillCriterion = function(fun, name, id,
   assertString(id)
   assertFlag(minimize)
   assertCharacter(components, unique = TRUE)
+  assertList(params)
 
   ic = makeS3Obj("MBOInfillCriterion",
     fun = fun,
     name = name,
     id = id,
     minimize = minimize,
-    components = components
+    components = components,
+    params = params
   )
   return(ic)
 }
