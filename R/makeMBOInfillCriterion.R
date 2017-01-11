@@ -63,3 +63,24 @@ makeMBOInfillCriterion = function(fun, name, id,
   )
   return(ic)
 }
+
+#' @export
+print.MBOInfillCriterion = function(x, ...) {
+  components = getMBOInfillCriterionComponents(x)
+  params = getMBOInfillCriterionParams(x)
+  catf("Infill criterion              : %s (%s)", getMBOInfillCriterionName(x),
+    getMBOInfillCriterionId(x))
+  if (length(components) > 0) {
+  catf("  Components:                 : %s", collapse(components, sep = ", "))
+  }
+  if (length(params) > 0) {
+  catf("  Parameters                  : %s", paramsToString(params))
+  }
+}
+
+paramsToString = function(params) {
+  str.params = sapply(names(params), function(n) {
+    paste0(n, "=", params[[n]])
+  })
+  collapse(str.params, ", ")
+}
