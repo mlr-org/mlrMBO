@@ -52,7 +52,6 @@ test_that("infill crits", {
         if (inherits(lrn, "regr.km"))
           lrn = setHyperPars(lrn, nugget.estim = noisy)
         for (crit in crits) {
-          #catf("%s %s %s %s", as.character(noisy), as.character(minimize), getMBOInfillCriterionId(crit), lrn$id)
           ctrl = mycontrol(crit)
           f = if (!noisy) f1 else f2
           f = if (!minimize) setAttribute(f, "minimize", FALSE) else f
