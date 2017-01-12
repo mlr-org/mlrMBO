@@ -89,7 +89,7 @@ makeMBOInfillCriterionEI = function(se.threshold = 1e-6) {
     name = "Expected improvement",
     id = "ei",
     components = c("se", "mean"),
-    param = list(se.threshold = se.threshold),
+    params = list(se.threshold = se.threshold),
     minimize = FALSE,
     requires.se = TRUE
   )
