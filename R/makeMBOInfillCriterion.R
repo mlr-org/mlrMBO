@@ -37,10 +37,15 @@
 #'   Named list of parameters for the infill criterion. There values may be used
 #'   by \pkg{mlrMBO} internally.
 #'   Default is the empty list.
+#' @param requires.se [\code{logical(1)}]\cr
+#'   Does the infill criterion require the regression learner to provide a standard
+#'   error estimation?
+#'   Default is \code{FALSE}.
 #' @return [\code{MBOInfillCriterion}]
 #' @export
 makeMBOInfillCriterion = function(fun, name, id,
-  minimize = TRUE, components = character(0L), params = list()) {
+  minimize = TRUE, components = character(0L), params = list(),
+  requires.se = FALSE) {
   assertFunction(
     fun,
     args = c("points", "models", "control",
@@ -52,6 +57,7 @@ makeMBOInfillCriterion = function(fun, name, id,
   assertFlag(minimize)
   assertCharacter(components, unique = TRUE)
   assertList(params)
+  assertFlag(requires.se)
 
   ic = makeS3Obj("MBOInfillCriterion",
     fun = fun,
@@ -59,7 +65,8 @@ makeMBOInfillCriterion = function(fun, name, id,
     id = id,
     minimize = minimize,
     components = components,
-    params = params
+    params = params,
+    requires.se = requires.se
   )
   return(ic)
 }
@@ -70,12 +77,12 @@ print.MBOInfillCriterion = function(x, ...) {
   params = getMBOInfillCriterionParams(x)
   catf("Infill criterion              : %s (%s)", getMBOInfillCriterionName(x),
     getMBOInfillCriterionId(x))
-  if (length(components) > 0) {
-  catf("  Components:                 : %s", collapse(components, sep = ", "))
-  }
-  if (length(params) > 0) {
-  catf("  Parameters                  : %s", paramsToString(params))
-  }
+  if (hasRequiresInfillCriterionStandardError(x))
+    catf("  Requirement                 :  SE estimation")
+  if (length(components) > 0)
+    catf("  Components                  : %s", collapse(components, sep = ", "))
+  if (length(params) > 0)
+    catf("  Parameters                  : %s", paramsToString(params))
 }
 
 paramsToString = function(params) {

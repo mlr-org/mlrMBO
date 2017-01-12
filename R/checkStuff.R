@@ -53,7 +53,7 @@ checkStuff = function(fun, par.set, design, learner, control) {
   # general infill stuff (relavant for single objective and parEGO)
   infill.crit = control$infill.crit
   infill.crit.id = getMBOInfillCriterionId(infill.crit)
-  if (infill.crit.id %in% c("se", "ei", "aei", "cb", "dib") && learner$predict.type != "se") {
+  if (hasRequiresInfillCriterionStandardError(infill.crit) && learner$predict.type != "se") {
     stopf("For infill criterion '%s' predict.type of learner %s must be set to 'se'!%s",
       infill.crit.id, learner$id,
       ifelse(hasLearnerProperties(learner, "se"), "",

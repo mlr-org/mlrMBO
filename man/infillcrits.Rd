@@ -15,7 +15,7 @@ makeMBOInfillCriterionMeanResponse()
 
 makeMBOInfillCriterionStandardError()
 
-makeMBOInfillCriterionEI()
+makeMBOInfillCriterionEI(se.threshold = 1e-06)
 
 makeMBOInfillCriterionCB(cb.lambda = 1, cb.inflate.se = FALSE)
 

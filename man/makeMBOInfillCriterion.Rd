@@ -5,7 +5,7 @@
 \title{Create an infill criterion.}
 \usage{
 makeMBOInfillCriterion(fun, name, id, minimize = TRUE,
-  components = character(0L), params = list())
+  components = character(0L), params = list(), requires.se = FALSE)
 }
 \arguments{
 \item{fun}{[\code{function(points, models, control, par.set, design, iter)}]\cr
@@ -45,6 +45,11 @@ Default is the empty character vector.}
 Named list of parameters for the infill criterion. There values may be used
 by \pkg{mlrMBO} internally.
 Default is the empty list.}
+
+\item{requires.se}{[\code{logical(1)}]\cr
+Does the infill criterion require the regression learner to provide a standard
+error estimation?
+Default is \code{FALSE}.}
 }
 \value{
 [\code{MBOInfillCriterion}]

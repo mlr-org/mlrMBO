@@ -5,6 +5,10 @@
 #' improvement, (lower) confidence bound etc. Moreover, custom infill criteria
 #' may be generated with the \code{\link{makeMBOInfillCriterion}} function.
 #'
+#' @param se.threshold [\code{numeric(1)}]\cr
+#'   In order to avoid numerical problems the standard error estimation is assumed to
+#'   be exactly zero, if it is below \code{se.threshold}.
+#'   Default is 1e-6.
 #' @param cb.lambda [\code{numeric(1)}]\cr
 #'   Lambda parameter for confidence bound infill criterion.
 #'   In the multi-objective case we recommend to set this value to
@@ -52,13 +56,16 @@ makeMBOInfillCriterionStandardError = function() {
       -predict(models[[1L]], newdata = points)$data$se
     },
     name = "Standard error",
-    id = "sd"
+    id = "sd",
+    requires.se = TRUE
   )
 }
 
 #' @export
 #' @rdname infillcrits
-makeMBOInfillCriterionEI = function() {
+makeMBOInfillCriterionEI = function(se.threshold = 1e-6) {
+  assertNumber(se.threshold, lower = 1e-20)
+  force(se.threshold)
   makeMBOInfillCriterion(
     fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
       model = models[[1L]]
@@ -73,9 +80,7 @@ makeMBOInfillCriterionEI = function() {
       xcr.prob = pnorm(xcr)
       xcr.dens = dnorm(xcr)
       ei = d * xcr.prob + p.se * xcr.dens
-      # FIXME: magic number
-      # if se too low set 0 (numerical problems), negate due to minimization
-      res = ifelse(p.se < 1e-6, 0, -ei)
+      res = ifelse(p.se < se.threshold, 0, -ei)
       if (attributes) {
         res = setAttribute(res, "crit.components", data.frame(se = p$se, mean = p$response))
       }
@@ -84,7 +89,9 @@ makeMBOInfillCriterionEI = function() {
     name = "Expected improvement",
     id = "ei",
     components = c("se", "mean"),
-    minimize = FALSE
+    param = list(se.threshold = se.threshold),
+    minimize = FALSE,
+    requires.se = TRUE
   )
 }
 
@@ -119,18 +126,21 @@ makeMBOInfillCriterionCB = function(cb.lambda = 1, cb.inflate.se = FALSE) {
       }
       return(res)
     },
-    name = "Lower confidence bound",
+    name = "Confidence bound",
     id = "cb",
     components = c("se", "mean", "lambda"),
-    params = list(cb.lambda = cb.lambda, cb.inflate.se = cb.inflate.se)
+    params = list(cb.lambda = cb.lambda, cb.inflate.se = cb.inflate.se),
+    requires.se = TRUE
   )
 }
 
 #' @export
 #' @rdname infillcrits
-makeMBOInfillCriterionAEI = function(aei.use.nugget = FALSE) {
+makeMBOInfillCriterionAEI = function(aei.use.nugget = FALSE, se.threshold = 1e-6) {
   assertFlag(aei.use.nugget)
+  assertNumber(se.threshold, lower = 1e-20)
   force(aei.use.nugget)
+  force(se.threshold)
 
   makeMBOInfillCriterion(
     fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
@@ -154,7 +164,7 @@ makeMBOInfillCriterionAEI = function(aei.use.nugget = FALSE) {
         estimateResidualVariance(model, data = design, target = control$y.name)
 
       tau = sqrt(pure.noise.var)
-      res = (-1) * ifelse(p.se < 1e-06, 0,
+      res = (-1) * ifelse(p.se < se.threshold, 0,
         (d * xcr.prob + p.se * xcr.dens) * (1 - tau / sqrt(tau^2 + p.se^2)))
       if (attributes) {
         res = setAttribute(res, "crit.components", data.frame(se = p$se, mean = p$response, tau = tau))
@@ -164,15 +174,18 @@ makeMBOInfillCriterionAEI = function(aei.use.nugget = FALSE) {
     name = "Augmeted expected improvement",
     id = "aei",
     components = c("se", "mean", "tau"),
-    params = list(aei.use.nugget = aei.use.nugget)
+    params = list(aei.use.nugget = aei.use.nugget),
+    requires.se = TRUE
   )
 }
 
 #' @export
 #' @rdname infillcrits
-makeMBOInfillCriterionEQI = function(eqi.beta = 0.75) {
-  assertNumber(eqi.beta, na.ok = FALSE, lower = 0.5, upper = 1)
+makeMBOInfillCriterionEQI = function(eqi.beta = 0.75, se.threshold = 1e-6) {
+  assertNumber(eqi.beta, lower = 0.5, upper = 1)
+  assertNumber(se.threshold, lower = 1e-20)
   force(eqi.beta)
+  force(se.threshold)
 
   makeMBOInfillCriterion(
     fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
@@ -202,12 +215,13 @@ makeMBOInfillCriterionEQI = function(eqi.beta = 0.75) {
       xcr.prob = pnorm(xcr)
       xcr.dens = dnorm(xcr)
 
-      eqi = ifelse(p.se < 1e-06, 0, (sq * (xcr * xcr.prob + xcr.dens)))
+      eqi = ifelse(p.se < se.threshold, 0, (sq * (xcr * xcr.prob + xcr.dens)))
       return(-eqi)
     },
     name = "Expected quantile improvement",
     id = "eqi",
-    params = list(eqi.beta = eqi.beta)
+    params = list(eqi.beta = eqi.beta),
+    requires.se = TRUE
   )
 }
 
@@ -260,6 +274,7 @@ makeMBOInfillCriterionDIB = function(cb.lambda = 1, cb.inflate.se = FALSE) {
     },
     name = "Directed Indicator Based Search",
     id = "dib",
-    params = list(cb.lambda = cb.lambda, cb.inflate.se = cb.inflate.se)
+    params = list(cb.lambda = cb.lambda, cb.inflate.se = cb.inflate.se),
+    requires.se = TRUE
   )
 }

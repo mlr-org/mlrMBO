@@ -42,6 +42,13 @@ getMBOInfillCriterionId = function(x) {
 
 #' @export
 #' @rdname getMBOInfillCriterion
+hasRequiresInfillCriterionStandardError = function(x) {
+  assertClass(x, "MBOInfillCriterion")
+  return(x$requires.se)
+}
+
+#' @export
+#' @rdname getMBOInfillCriterion
 getMBOInfillCriterionComponents = function(x) {
   assertClass(x, "MBOInfillCriterion")
   return(x$components)
