@@ -5,7 +5,7 @@ test_that("multi-objective dib works", {
   learner = makeLearner("regr.km", nugget.estim = TRUE, predict.type = "se")
   ctrl = makeMBOControl(n.objectives = 2L)
   ctrl = setMBOControlTermination(ctrl, iters = 5L)
-  ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCriterionDIB(),
+  ctrl = setMBOControlInfill(ctrl, crit = dib1,
     opt.focussearch.points = 10L, opt.focussearch.maxit = 5L)
   ctrl = setMBOControlMultiObj(ctrl, method = "dib")
   or = mbo(testfmco1, testdesmco1, learner = learner, control = ctrl)

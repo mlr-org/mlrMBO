@@ -34,15 +34,15 @@ test_that("renderExampleRunPlot produces list of ggplot2 objects", {
   }
 
   # without se
-  plot.list = doRun(obj.fn, "response", makeMBOInfillCriterionMeanResponse())
+  plot.list = doRun(obj.fn, "response", mr)
   checkPlotList(plot.list)
 
   # with se
-  plot.list = doRun(obj.fn, "se", makeMBOInfillCriterionEI())
+  plot.list = doRun(obj.fn, "se", ei)
   checkPlotList(plot.list)
 
   #default learner
-  plot.list = doRun(obj.fn, "response", makeMBOInfillCriterionEI())
+  plot.list = doRun(obj.fn, "response", ei)
   checkPlotList(plot.list)
 
   ### 2d MIXED
@@ -64,7 +64,7 @@ test_that("renderExampleRunPlot produces list of ggplot2 objects", {
     has.simple.signature = FALSE
   )
 
-  plot.list = doRun(obj.fn, "se", makeMBOInfillCriterionEI())
+  plot.list = doRun(obj.fn, "se", ei)
   checkPlotList(plot.list)
 
   ### 2D NUMERIC (MULTIPOINT)

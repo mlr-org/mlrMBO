@@ -32,7 +32,7 @@ test_that("mbo works with different learners", {
       if (bagging)
         lrn = makeBaggingWrapper(lrn, bw.iters = 5L)
       lrn = setPredictType(lrn, "se")
-      ctrl$infill.crit = makeMBOInfillCriterionEI()
+      ctrl$infill.crit = ei
     }
     des = generateTestDesign(10L, getParamSet(fun))
     mbo(fun, des, learner = lrn, control = ctrl)

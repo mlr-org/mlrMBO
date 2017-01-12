@@ -16,7 +16,7 @@
 #
 #   surrogate = makeLearner("regr.randomForest")
 #   ctrl = makeMBOControl(minimize = FALSE, iters=30)
-#   ctrl = setMBOControlInfill(crit = makeMBOInfillCriterionMeanResponse(), opt.focussearch.points = 100)
+#   ctrl = setMBOControlInfill(crit = mr, opt.focussearch.points = 100)
 #   opt = mbo(fit, easy, learner = surrogate, control= ctrl)
 #   expect_true(opt$x$x1 > 45 && opt$x$x1 <= 50 && is.na(opt$x$x2) && opt$x$x3 == "a" && opt$y > 68 && opt$y <= 70)
 #})

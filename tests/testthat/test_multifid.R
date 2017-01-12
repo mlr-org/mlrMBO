@@ -20,7 +20,7 @@
 #   control = setMBOControlTermination(control, iters = 5L)
 
 #   control = setMBOControlInfill(control = control,
-#                                 crit = makeMBOInfillCriterionEI(),
+#                                 crit = ei,
 #                                 opt = "focussearch",
 #                                 opt.restarts = 1L,
 #                                 opt.focussearch.maxit = 1L,

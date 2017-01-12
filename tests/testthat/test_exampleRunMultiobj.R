@@ -23,9 +23,9 @@ test_that("exampleRunMultiObj", {
     expect_list(res, min.len = 1L, types = c("ggplot", "list"))
   }
 
-  ei = makeMBOInfillCriterionEI()
-  cb = makeMBOInfillCriterionCB()
-  dib = makeMBOInfillCriterionDIB()
+  ei = ei
+  cb = cb1
+  dib = dib1
   doRun(method = "parego", crit = ei, prop.points = 1L)
   doRun(method = "parego", crit = ei, prop.points = 2L)
   doRun(method = "parego", crit = ei, prop.points = 2L, trafo.y.fun = trafoLog())
