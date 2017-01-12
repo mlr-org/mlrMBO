@@ -19,13 +19,18 @@ makeMBOInfillCriterionEI(se.threshold = 1e-06)
 
 makeMBOInfillCriterionCB(cb.lambda = 1, cb.inflate.se = FALSE)
 
-makeMBOInfillCriterionAEI(aei.use.nugget = FALSE)
+makeMBOInfillCriterionAEI(aei.use.nugget = FALSE, se.threshold = 1e-06)
 
-makeMBOInfillCriterionEQI(eqi.beta = 0.75)
+makeMBOInfillCriterionEQI(eqi.beta = 0.75, se.threshold = 1e-06)
 
 makeMBOInfillCriterionDIB(cb.lambda = 1, cb.inflate.se = FALSE)
 }
 \arguments{
+\item{se.threshold}{[\code{numeric(1)}]\cr
+In order to avoid numerical problems the standard error estimation is assumed to
+be exactly zero, if it is below \code{se.threshold}.
+Default is 1e-6.}
+
 \item{cb.lambda}{[\code{numeric(1)}]\cr
 Lambda parameter for confidence bound infill criterion.
 In the multi-objective case we recommend to set this value to

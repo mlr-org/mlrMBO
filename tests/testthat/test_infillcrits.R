@@ -46,8 +46,8 @@ test_that("infill crits", {
   # we have converged and just waste time. we need to detect this somehow, or cope with it
   for (noisy in c(TRUE, FALSE)) {
     for (minimize in c(TRUE, FALSE)) {
-      crits = if (!noisy) c(mr, ei)
-        else c(aei, eqi)
+      crits = if (!noisy) c(crit.mr, crit.ei)
+        else c(crit.aei, crit.eqi)
       for (lrn in learners) {
         if (inherits(lrn, "regr.km"))
           lrn = setHyperPars(lrn, nugget.estim = noisy)
@@ -65,7 +65,7 @@ test_that("infill crits", {
   # check lambda and pi for cb
   ctrl = makeMBOControl(final.evals = 10L)
   ctrl = setMBOControlTermination(ctrl, iters = niters)
-  ctrl = setMBOControlInfill(ctrl, crit = cb2,
+  ctrl = setMBOControlInfill(ctrl, crit = crit.cb2,
     opt = "focussearch", opt.restarts = 1L,
     opt.focussearch.points = 300L)
   mbo(f1, des, learner = makeLearner("regr.km", predict.type = "se"), control = ctrl)
