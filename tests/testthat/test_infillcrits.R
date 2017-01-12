@@ -46,12 +46,13 @@ test_that("infill crits", {
   # we have converged and just waste time. we need to detect this somehow, or cope with it
   for (noisy in c(TRUE, FALSE)) {
     for (minimize in c(TRUE, FALSE)) {
-      crits = if (!noisy) c(crit.mr, crit.ei)
-        else c(crit.aei, crit.eqi)
+      crits = if (!noisy) list(crit.mr, crit.ei)
+        else list(crit.aei, crit.eqi)
       for (lrn in learners) {
         if (inherits(lrn, "regr.km"))
           lrn = setHyperPars(lrn, nugget.estim = noisy)
         for (crit in crits) {
+          #catf("%s %s %s %s", as.character(noisy), as.character(minimize), getMBOInfillCriterionId(crit), lrn$id)
           ctrl = mycontrol(crit)
           f = if (!noisy) f1 else f2
           f = if (!minimize) setAttribute(f, "minimize", FALSE) else f
