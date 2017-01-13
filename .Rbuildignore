@@ -9,4 +9,4 @@ src/*.so
 ^\.Rproj\.user$
 ^man-roxygen
 ^.editorconfig$
-^\.agignore$
+^\.ignore$
