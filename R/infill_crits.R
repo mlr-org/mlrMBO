@@ -16,11 +16,12 @@
 #'   function of the standard normal distribution, \eqn{\pi_CB} is the probability
 #'   of improvement value and \eqn{n} is the number of objectives of the considered problem.
 #'   Default is 1.
-#' @param cb.inflate.se [\code{logical(1)}]\cr
-#'   Try to inflate or deflate the estimated standard error to get to the same scale as the mean?
-#'   Calculates the range of the mean and standard error and multiplies the standard error
-#'   with the quotient of theses ranges.
-#'   Default is \code{FALSE}.
+#FIXME: removed cb.inflate.se for now (see issue #309)
+# @param cb.inflate.se [\code{logical(1)}]\cr
+#   Try to inflate or deflate the estimated standard error to get to the same scale as the mean?
+#   Calculates the range of the mean and standard error and multiplies the standard error
+#   with the quotient of theses ranges.
+#   Default is \code{FALSE}.
 #' @param aei.use.nugget [\code{logical(1)}]\cr
 #'   Should the nugget effect be used for the pure variance estimation for augmented
 #'   expected improvement?
@@ -97,28 +98,27 @@ makeMBOInfillCriterionEI = function(se.threshold = 1e-6) {
 
 #' @export
 #' @rdname infillcrits
-makeMBOInfillCriterionCB = function(cb.lambda = 1, cb.inflate.se = FALSE) {
+makeMBOInfillCriterionCB = function(cb.lambda = 1) {
   assertNumber(cb.lambda, lower = 0)
-  assertFlag(cb.inflate.se)
   makeMBOInfillCriterion(
     fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
       force(cb.lambda)
-      force(cb.inflate.se)
       model = models[[1L]]
       maximize.mult = ifelse(control$minimize, 1, -1)
       p = predict(model, newdata = points)$data
-      if (cb.inflate.se) {
-        r.response = diff(range(p$response))
-        r.se = diff(range(p$se))
-        tol = .Machine$double.eps^0.5
-        if (r.response < tol)
-          return(r.se)
-        if (r.se < tol)
-          return(r.response)
-        inflate = r.response / r.se
-      } else {
-        inflate = 1
-      }
+      #FIXME: removed cb.inflate.se for now (see issue #309)
+      # if (cb.inflate.se) {
+      #   r.response = diff(range(p$response))
+      #   r.se = diff(range(p$se))
+      #   tol = .Machine$double.eps^0.5
+      #   if (r.response < tol)
+      #     return(r.se)
+      #   if (r.se < tol)
+      #     return(r.response)
+      #   inflate = r.response / r.se
+      # } else {
+      inflate = 1
+      #}
       res = maximize.mult * p$response - inflate * cb.lambda * p$se
       if (attributes) {
         res = setAttribute(res, "crit.components",
@@ -129,7 +129,7 @@ makeMBOInfillCriterionCB = function(cb.lambda = 1, cb.inflate.se = FALSE) {
     name = "Confidence bound",
     id = "cb",
     components = c("se", "mean", "lambda"),
-    params = list(cb.lambda = cb.lambda, cb.inflate.se = cb.inflate.se),
+    params = list(cb.lambda = cb.lambda),
     requires.se = TRUE
   )
 }
@@ -231,9 +231,8 @@ makeMBOInfillCriterionEQI = function(eqi.beta = 0.75, se.threshold = 1e-6) {
 
 #' @export
 #' @rdname infillcrits
-makeMBOInfillCriterionDIB = function(cb.lambda = 1, cb.inflate.se = FALSE) {
+makeMBOInfillCriterionDIB = function(cb.lambda = 1) {
   assertNumber(cb.lambda, lower = 0)
-  assertFlag(cb.inflate.se)
   makeMBOInfillCriterion(
     fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
       # get ys and cb-value-matrix for new points, minimize version
@@ -274,7 +273,7 @@ makeMBOInfillCriterionDIB = function(cb.lambda = 1, cb.inflate.se = FALSE) {
     },
     name = "Directed Indicator Based Search",
     id = "dib",
-    params = list(cb.lambda = cb.lambda, cb.inflate.se = cb.inflate.se),
+    params = list(cb.lambda = cb.lambda),
     requires.se = TRUE
   )
 }

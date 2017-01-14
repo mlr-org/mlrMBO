@@ -17,13 +17,13 @@ makeMBOInfillCriterionStandardError()
 
 makeMBOInfillCriterionEI(se.threshold = 1e-06)
 
-makeMBOInfillCriterionCB(cb.lambda = 1, cb.inflate.se = FALSE)
+makeMBOInfillCriterionCB(cb.lambda = 1)
 
 makeMBOInfillCriterionAEI(aei.use.nugget = FALSE, se.threshold = 1e-06)
 
 makeMBOInfillCriterionEQI(eqi.beta = 0.75, se.threshold = 1e-06)
 
-makeMBOInfillCriterionDIB(cb.lambda = 1, cb.inflate.se = FALSE)
+makeMBOInfillCriterionDIB(cb.lambda = 1)
 }
 \arguments{
 \item{se.threshold}{[\code{numeric(1)}]\cr
@@ -38,12 +38,6 @@ In the multi-objective case we recommend to set this value to
 function of the standard normal distribution, \eqn{\pi_CB} is the probability
 of improvement value and \eqn{n} is the number of objectives of the considered problem.
 Default is 1.}
-
-\item{cb.inflate.se}{[\code{logical(1)}]\cr
-Try to inflate or deflate the estimated standard error to get to the same scale as the mean?
-Calculates the range of the mean and standard error and multiplies the standard error
-with the quotient of theses ranges.
-Default is \code{FALSE}.}
 
 \item{aei.use.nugget}{[\code{logical(1)}]\cr
 Should the nugget effect be used for the pure variance estimation for augmented
