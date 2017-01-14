@@ -29,6 +29,9 @@
 #' @param eqi.beta [\code{numeric(1)}]\cr
 #'   Beta parameter for expected quantile improvement criterion.
 #'   Default is 0.75.
+#' @param sms.eps [\code{numeric(1)} | \code{NULL}]\cr
+#'   Epsilon for epsilon-dominance for \code{dib.indicator = "sms"}.
+#'   Default is \code{NULL}, in this case it is adaptively set.
 #' @name infillcrits
 #' @rdname infillcrits
 NULL
@@ -231,8 +234,10 @@ makeMBOInfillCriterionEQI = function(eqi.beta = 0.75, se.threshold = 1e-6) {
 
 #' @export
 #' @rdname infillcrits
-makeMBOInfillCriterionDIB = function(cb.lambda = 1) {
+makeMBOInfillCriterionDIB = function(cb.lambda = 1, sms.eps = NULL) {
   assertNumber(cb.lambda, lower = 0)
+  if (!is.null(sms.eps))
+    assertNumber(sms.eps, lower = 0, finite = TRUE)
   makeMBOInfillCriterion(
     fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
       # get ys and cb-value-matrix for new points, minimize version
@@ -252,20 +257,17 @@ makeMBOInfillCriterionDIB = function(cb.lambda = 1) {
         # get refpoint by ctrl-method, ys could be scaled by -1 (if yi = max!)
         ref.point = getMultiObjRefPoint(ys, control, minimize = all.mini)
         # get epsilon for epsilon-dominace - set adaptively or use given constant value
-        if (is.null(control$dib.sms.eps)) {
+        if (is.null(sms.eps)) {
           c.val = 1 - 1 / 2^control$n.objectives
-          eps = vnapply(seq_col(ys.front), function(i) {
+          sms.eps = vnapply(seq_col(ys.front), function(i) {
             (max(ys.front[, i]) - min(ys.front[, i])) /
               (ncol(ys.front) + c.val * (control$iters - iter))
           })
-        } else {
-          # FIXME: user should be allowed to set a vector
-          eps = control$multiobj.dib.sms.eps
         }
         ys.front = as.matrix(ys.front)
         # allocate mem for adding points to front for HV calculation in C
         front2 = t(rbind(ys.front, 0))
-        crit.vals = .Call("c_sms_indicator", PACKAGE = "mlrMBO", as.matrix(cbs), ys.front, front2, eps, ref.point)
+        crit.vals = .Call("c_sms_indicator", PACKAGE = "mlrMBO", as.matrix(cbs), ys.front, front2, sms.eps, ref.point)
       } else {
         crit.vals = .Call("c_eps_indicator", PACKAGE = "mlrMBO", as.matrix(cbs), as.matrix(ys.front))
       }
@@ -273,7 +275,7 @@ makeMBOInfillCriterionDIB = function(cb.lambda = 1) {
     },
     name = "Directed Indicator Based Search",
     id = "dib",
-    params = list(cb.lambda = cb.lambda),
+    params = list(cb.lambda = cb.lambda, sms.eps = sms.eps),
     requires.se = TRUE
   )
 }

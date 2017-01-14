@@ -23,7 +23,7 @@ makeMBOInfillCriterionAEI(aei.use.nugget = FALSE, se.threshold = 1e-06)
 
 makeMBOInfillCriterionEQI(eqi.beta = 0.75, se.threshold = 1e-06)
 
-makeMBOInfillCriterionDIB(cb.lambda = 1)
+makeMBOInfillCriterionDIB(cb.lambda = 1, sms.eps = NULL)
 }
 \arguments{
 \item{se.threshold}{[\code{numeric(1)}]\cr
@@ -47,6 +47,10 @@ Default is \code{FALSE}.}
 \item{eqi.beta}{[\code{numeric(1)}]\cr
 Beta parameter for expected quantile improvement criterion.
 Default is 0.75.}
+
+\item{sms.eps}{[\code{numeric(1)} | \code{NULL}]\cr
+Epsilon for epsilon-dominance for \code{dib.indicator = "sms"}.
+Default is \code{NULL}, in this case it is adaptively set.}
 }
 \description{
 \pkg{mlrMBO} contains most of the most popular infill criteria, e.g., expected

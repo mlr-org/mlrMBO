@@ -50,9 +50,6 @@
 #' @param dib.indicator [\code{character(1)}]\cr
 #'   Either \dQuote{sms} (SMS-EGO like algorithm) or \dQuote{eps} (epsilon-EGO like algorithm).
 #'   Default is \dQuote{sms}.
-#' @param dib.sms.eps [\code{numeric(1)} | \code{NULL}]\cr
-#'   Epsilon for epsilon-dominance for \code{dib.indicator = "sms"}.
-#'   Default is \code{NULL}, in this case it is adaptively set.
 #' @param mspot.select.crit [\code{character(1)}]\cr
 #'   Which infill.crit to use in the candidate selection. After the NSGA2
 #'   proposed a set of candidates, \dQuote{propose.points} are selected via
@@ -89,7 +86,7 @@
 #' Notes in Computer Science, ISBN 978-3-642-37139-4, pp. 756{770,
 #' doi:10.1007/978-3-642-37140-0 56}
 #'
-#' Jeong, S.; Obayashi, S.: Efficient global optimization (EGO) for Multi-Objective Problem and Data Mining. 
+#' Jeong, S.; Obayashi, S.: Efficient global optimization (EGO) for Multi-Objective Problem and Data Mining.
 #' In: Proc. IEEE Congress on
 #' Evolutionary Computation (CEC 2005), Edinburgh, UK, Corne, D.;
 #' et al. (eds.), IEEE, 2005, ISBN 0-7803-9363-5, pp. 2138-2145
@@ -107,7 +104,6 @@ setMBOControlMultiObj = function(control,
   parego.sample.more.weights = NULL,
   parego.normalize = NULL,
   dib.indicator = NULL,
-  dib.sms.eps = NULL,
   mspot.select.crit = NULL) {
 
   assertClass(control, "MBOControl")
@@ -180,11 +176,6 @@ setMBOControlMultiObj = function(control,
   if (control$multiobj.method == "dib") {
     control$multiobj.dib.indicator = coalesce(dib.indicator, control$multiobj.dib.indicator, "sms")
     assertChoice(control$multiobj.dib.indicator, c("sms", "eps"))
-
-    if (!is.null(dib.sms.eps)) {
-      assertNumber(dib.sms.eps, lower = 0, finite = TRUE)
-      control$multiobj.dib.sms.eps = dib.sms.eps
-    }
   }
 
   control$mspot.select.crit = coalesce(mspot.select.crit, control$mspot.select.crit, "mean")
