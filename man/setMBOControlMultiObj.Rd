@@ -8,7 +8,7 @@ setMBOControlMultiObj(control, method = NULL, ref.point.method = NULL,
   ref.point.offset = NULL, ref.point.val = NULL, parego.s = NULL,
   parego.rho = NULL, parego.use.margin.points = NULL,
   parego.sample.more.weights = NULL, parego.normalize = NULL,
-  dib.indicator = NULL, dib.sms.eps = NULL, mspot.select.crit = NULL)
+  dib.indicator = NULL, mspot.select.crit = NULL)
 }
 \arguments{
 \item{control}{[\code{\link{MBOControl}}]\cr
@@ -69,10 +69,6 @@ or just the paretofront (\code{front}).}
 Either \dQuote{sms} (SMS-EGO like algorithm) or \dQuote{eps} (epsilon-EGO like algorithm).
 Default is \dQuote{sms}.}
 
-\item{dib.sms.eps}{[\code{numeric(1)} | \code{NULL}]\cr
-Epsilon for epsilon-dominance for \code{dib.indicator = "sms"}.
-Default is \code{NULL}, in this case it is adaptively set.}
-
 \item{mspot.select.crit}{[\code{character(1)}]\cr
 Which infill.crit to use in the candidate selection. After the NSGA2
 proposed a set of candidates, \dQuote{propose.points} are selected via
@@ -114,7 +110,7 @@ C. M. Fonseca; S. Greco; J. Shaw, eds., 2013, vol. 7811 of Lecture
 Notes in Computer Science, ISBN 978-3-642-37139-4, pp. 756{770,
 doi:10.1007/978-3-642-37140-0 56}
 
-Jeong, S.; Obayashi, S.: Efficient global optimization (EGO) for Multi-Objective Problem and Data Mining. 
+Jeong, S.; Obayashi, S.: Efficient global optimization (EGO) for Multi-Objective Problem and Data Mining.
 In: Proc. IEEE Congress on
 Evolutionary Computation (CEC 2005), Edinburgh, UK, Corne, D.;
 et al. (eds.), IEEE, 2005, ISBN 0-7803-9363-5, pp. 2138-2145
@@ -122,7 +118,6 @@ et al. (eds.), IEEE, 2005, ISBN 0-7803-9363-5, pp. 2138-2145
 \seealso{
 Other MBOControl: \code{\link{makeMBOControl}},
   \code{\link{setMBOControlInfill}},
-  \code{\link{setMBOControlMultiFid}},
   \code{\link{setMBOControlMultiPoint}},
   \code{\link{setMBOControlTermination}}
 }

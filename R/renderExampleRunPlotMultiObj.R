@@ -16,6 +16,7 @@ renderExampleRunPlot.MBOExampleRunMultiObj = function(object, iter, densregion =
   x.name = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
   y.name = control$y.name
   method = control$multiobj.method
+  infill.crit.id = getMBOInfillCriterionId(control$infill.crit)
 
   # get x space and y space data
   data.y = as.data.frame(mbo.res$opt.path, include.x = FALSE, include.rest = FALSE)
@@ -31,7 +32,7 @@ renderExampleRunPlot.MBOExampleRunMultiObj = function(object, iter, densregion =
   if (control$propose.points == 1L || single.prop.point.plots) {
     # Render X Space Plot.
     pl.xspace = makeXPlot(data.x, idx, idx.nsga2.paretofront, method, x.name,
-      control$infill.crit, models, control, par.set, opt.path, object$points.per.dim,
+      infill.crit.id, models, control, par.set, opt.path, object$points.per.dim,
       iter, control$propose.points, object, colors)
 
     # Render Y Space Plot
@@ -55,7 +56,7 @@ renderExampleRunPlot.MBOExampleRunMultiObj = function(object, iter, densregion =
         prop.models = models
       }
       pl.xspace = makeXPlot(data.x, idx.propose, idx.nsga2.paretofront, method,
-        x.name, control$infill.crit, prop.models, control, par.set, opt.path,
+        x.name, infill.crit.id, prop.models, control, par.set, opt.path,
         object$points.per.dim, iter, 1L, object, colors)
 
       # Render Y Space Plot

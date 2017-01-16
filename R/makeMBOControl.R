@@ -169,12 +169,12 @@ print.MBOControl = function(x, ...) {
   catf("")
   if (x$n.objectives > 1L) {
     catf("Multi-objective Method        : %s", x$multiobj.method)
-    catf("Infill criterion              : %s", x$infill.crit)
+    print(x$infill.crit)
     catf("Infill optimizer              : %s", x$infill.opt)
     catf("Infill optimizer restarts     : %i", x$infill.opt.restarts)
   } else {
     if (x$propose.points == 1) {
-      catf("Infill criterion              : %s", x$infill.crit)
+      print(x$infill.crit)
       catf("Infill optimizer              : %s", x$infill.opt)
       catf("Infill optimizer restarts     : %i", x$infill.opt.restarts)
     } else {

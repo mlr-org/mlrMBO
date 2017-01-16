@@ -19,9 +19,9 @@ proposePoints.OptState = function(opt.state){
   m = control$n.objectives
   res = NULL
   if (m == 1L) {
-    if (control$multifid) {
-      res = proposePointsMultiFid(opt.state)
-    } else if (is.null(control$multipoint.method)) {
+    # if (control$multifid) {
+    #   res = proposePointsMultiFid(opt.state)
+    if (is.null(control$multipoint.method)) {
       res = proposePointsByInfillOptimization(opt.state)
     } else {
       if (control$multipoint.method == "cb")

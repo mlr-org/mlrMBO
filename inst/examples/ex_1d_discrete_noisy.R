@@ -31,7 +31,7 @@ ctrl = makeMBOControl()
 ctrl = setMBOControlTermination(ctrl, iters = 10L)
 
 # we can basically do an exhaustive search in 3 values
-ctrl = setMBOControlInfill(ctrl, crit = "ei",
+ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCriterionEI(),
   opt.restarts = 1L, opt.focussearch.points = 3L, opt.focussearch.maxit = 1L)
 
 design = generateDesign(20L, getParamSet(obj.fun), fun = lhs::maximinLHS)

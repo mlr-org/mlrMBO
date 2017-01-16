@@ -30,12 +30,12 @@ renderExampleRunPlot2d = function(x, iter,
   control = x$control
   proppoints = control$propose.points
   mbo.res = x$mbo.res
-  name.crit = control$infill.crit
-  critfun = getInfillCritFunction(name.crit)
+  infill.crit.id = getMBOInfillCriterionId(control$infill.crit)
+  critfun = getInfillCritFunction(infill.crit.id)$fun
   se = (x$learner$predict.type == "se")
 
   opt.direction = 1
-  if (name.crit %in% c("ei")) {
+  if (infill.crit.id %in% c("ei")) {
     opt.direction = -1
   }
   opt.path = as.data.frame(mbo.res$opt.path)
@@ -52,25 +52,28 @@ renderExampleRunPlot2d = function(x, iter,
   idx.past = which(opt.path$dob < iter)
 
   model.ok = !inherits(models[[1L]], "FailureModel")
+  infill.mean = makeMBOInfillCriterionMeanResponse()$fun
+  infill.ei = makeMBOInfillCriterionEI()$fun
+  infill.se = makeMBOInfillCriterionStandardError()$fun
 
   if (model.ok) {
-    evals$yhat = ifelse(control$minimize, 1, -1) * infillCritMeanResponse(evals.x, models, control, par.set, opt.path[idx.past, ])
+    evals$yhat = ifelse(control$minimize, 1, -1) * infill.mean(evals.x, models, control, par.set, opt.path[idx.past, ])
     if (se) {
-      evals$se = -infillCritStandardError(evals.x, models, control, par.set, opt.path[idx.past, ])
+      evals$se = -infill.se(evals.x, models, control, par.set, opt.path[idx.past, ])
     }
     if (proppoints == 1L) {
-      evals[[name.crit]] = opt.direction * critfun(evals.x, models, control, par.set, opt.path[idx.past, ])
+      evals[[infill.crit.id]] = opt.direction * critfun(evals.x, models, control, par.set, opt.path[idx.past, ])
     } else {
       objective = control$multipoint.moimbo.objective
       if (control$multipoint.method == "cb") {
-        evals[[name.crit]] = opt.direction * infillCritMeanResponse(evals.x, models, control, par.set, opt.path[idx.past, ])
+        evals[[infill.crit.id]] = opt.direction * infill.mean(evals.x, models, control, par.set, opt.path[idx.past, ])
       } else {
         if (objective == "mean.dist") {
-          evals[[name.crit]] = opt.direction * infillCritMeanResponse(evals.x, models, control, par.set, opt.path[idx.past, ])
+          evals[[infill.crit.id]] = opt.direction * infill.mean(evals.x, models, control, par.set, opt.path[idx.past, ])
         } else if (objective == "ei.dist") {
-          evals[[name.crit]] = opt.direction * infillCritEI(evals.x, models, control, par.set, opt.path[idx.past, ])
+          evals[[infill.crit.id]] = opt.direction * infill.ei(evals.x, models, control, par.set, opt.path[idx.past, ])
         } else if (objective %in% c("mean.se", "mean.se.dist")) {
-          evals[[name.crit]] = opt.direction * infillCritMeanResponse(evals.x, models, control, par.set, opt.path[idx.past, ])
+          evals[[infill.crit.id]] = opt.direction * infill.mean(evals.x, models, control, par.set, opt.path[idx.past, ])
         }
       }
     }
@@ -176,7 +179,7 @@ renderExampleRunPlot2d = function(x, iter,
     # FIXME: the following ~ 15 lines is copy and paste stuff (see exampleRun_autplot_1d.R)
     if (se) {
       evals.x = evals[, names.x, drop = FALSE]
-      evals$se = -infillCritStandardError(evals.x, models, control, par.set, opt.path[idx.past, ])
+      evals$se = -infill.se(evals.x, models, control, par.set, opt.path[idx.past, ])
       evals$se.min = evals$yhat - se.factor * evals$se
       evals$se.max = evals$yhat + se.factor * evals$se
     }
@@ -186,12 +189,12 @@ renderExampleRunPlot2d = function(x, iter,
       x1 = rep(evals[, names.x[1]], 2),
       x2 = rep(evals[, names.x[2]], 2),
       y = c(evals[, name.y], evals[, "yhat"]),
-      crit = rep(evals[, name.crit], 2),
+      crit = rep(evals[, infill.crit.id], 2),
       se.min = if (se) rep(evals[, "se.min"], 2) else NA,
       se.max = if (se) rep(evals[, "se.max"], 2) else NA,
       type = as.factor(rep(c(name.y, "yhat"), each = n))
     )
-    names(gg.fun2) = c(names.x, name.y, name.crit, "se.min", "se.max", "type")
+    names(gg.fun2) = c(names.x, name.y, infill.crit.id, "se.min", "se.max", "type")
     pl.fun = plotSingleFun(gg.fun2, gg.points, name.x1, name.x2, name.y, trafo = trafo[["y"]], marry.fun.and.mod = TRUE)
 
   } else {
@@ -201,7 +204,7 @@ renderExampleRunPlot2d = function(x, iter,
       pl.se = plotSingleFun(gg.fun, gg.points, name.x1, name.x2, "se", trafo = trafo[["se"]])
     }
   }
-  pl.crit = plotSingleFun(gg.fun, gg.points, name.x1, name.x2, name.crit, trafo = trafo[["crit"]])
+  pl.crit = plotSingleFun(gg.fun, gg.points, name.x1, name.x2, infill.crit.id, trafo = trafo[["crit"]])
 
   list(
     pl.fun = pl.fun,

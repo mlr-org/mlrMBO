@@ -13,19 +13,19 @@ proposePointsMSPOT = function(opt.state, ...) {
     return(ch$prop)
 
   design = convertOptPathToDf(opt.path, control)
-  infill.crit.fun = getInfillCritFunction(control$infill.crit)
+  infill.crit.id = getMBOInfillCriterionId(control$infill.crit)
   infill.opt.fun = getInfillOptFunction(control$infill.opt)
 
   # store time to propose single point
   secs = measureTime({
-    prop.points = infill.opt.fun(infill.crit.fun, models, control, par.set, opt.path, design, iter, ...)
+    prop.points = infill.opt.fun(control$infill.crit$fun, models, control, par.set, opt.path, design, iter, ...)
   })
 
   ppoints = prop.points$prop.points
-  crit.vals = evalCritFunForMultiObjModels(infill.crit.fun, ppoints, models, control,
+  crit.vals = evalCritFunForMultiObjModels(control$infill.crit$fun, ppoints, models, control,
     par.set, design, iter)
   crit.vals = cbind(crit.vals, prop.points$prop.hv.contrs)
-  prop.type = rep(paste0("infill_", control$infill.crit), n)
+  prop.type = rep(paste0("infill_", infill.crit.id), n)
 
   return(list(prop.points = ppoints, propose.time = secs, crit.vals = crit.vals, prop.type = prop.type, errors.model = NA_character_))
 }

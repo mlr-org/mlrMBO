@@ -4,7 +4,7 @@ test_that("infill optimizers", {
   mycontrol = function(opt, restarts) {
     ctrl = makeMBOControl()
     ctrl = setMBOControlTermination(ctrl, iters = 5L)
-    ctrl = setMBOControlInfill(ctrl, crit = "mean", opt = opt,
+    ctrl = setMBOControlInfill(ctrl, opt = opt,
       opt.cmaes.control = list(stop.ons = list(stopOnMaxIters(10L))))
   }
   mycheck = function(or) {

@@ -75,7 +75,6 @@ res = mbo(fn, control = ctrl)
 \seealso{
 Other MBOControl: \code{\link{makeMBOControl}},
   \code{\link{setMBOControlInfill}},
-  \code{\link{setMBOControlMultiFid}},
   \code{\link{setMBOControlMultiObj}},
   \code{\link{setMBOControlMultiPoint}}
 }

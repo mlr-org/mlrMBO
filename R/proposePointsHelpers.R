@@ -36,10 +36,12 @@ createRandomCBControls = function(control, crit, user.lambda = FALSE) {
   lambdas = rexp(control$propose.points)
   controls = lapply(lambdas, function(lambda) {
     ctrl = control;
-    ctrl$propose.points = 1L;
-    ctrl$infill.crit = crit
-    if (!user.lambda)
-      ctrl$infill.crit.cb.lambda = lambda
+    ctrl$propose.points = 1L
+    if (!user.lambda) {
+      ctrl$infill.crit = makeMBOInfillCriterionCB(cb.lambda = lambda)
+    } else {
+      ctrl$infill.crit = crit
+    }
     return(ctrl)
   })
   list(lambdas = lambdas, controls = controls)

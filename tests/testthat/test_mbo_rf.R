@@ -17,7 +17,7 @@ test_that("mbo works with rf", {
   # check errors
   ctrl = makeMBOControl()
   ctrl = setMBOControlTermination(ctrl, iters = 5L)
-  ctrl = setMBOControlInfill(ctrl, crit = "ei", opt.focussearch.points = 100L)
+  ctrl = setMBOControlInfill(ctrl, crit = crit.ei, opt.focussearch.points = 100L)
   expect_error(mbo(testf.fsphere.2d, testd.fsphere.2d, learner, ctrl), "must be set to 'se'")
   ctrl = makeMBOControl()
   ctrl = setMBOControlTermination(ctrl, iters = 5L)
@@ -185,7 +185,7 @@ test_that("mbo works with rf", {
 #   learner = makeBaggingWrapper(makeLearner("regr.gbm"), bag.iters = 10)
 #   learner = setPredictType(learner, "se")
 #   ctrl = makeMBOControl(init.design.points = 50, iters = 10)
-#   ctrl = setMBOControlInfill(ctrl, crit = "ei", opt = "focussearch",
+#   ctrl = setMBOControlInfill(ctrl, crit = crit.ei, opt = "focussearch",
 #     opt.restarts = 3, opt.focussearch.maxit = 3, opt.focussearch.points = 5000)
 #   or = mbo(f, ps, learner = learner, control = ctrl, show.info = TRUE)
 #   expect_true(!is.na(or$y))

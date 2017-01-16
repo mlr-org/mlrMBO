@@ -6,7 +6,7 @@ test_that("filter proposed points", {
   # now check min dist, set to "inf" so we always replace
   ctrl = makeMBOControl(propose.points = 2L)
   ctrl = setMBOControlTermination(ctrl, iters = 1L)
-  ctrl = setMBOControlInfill(ctrl, crit = "cb",
+  ctrl = setMBOControlInfill(ctrl, crit = crit.cb1,
     filter.proposed.points = TRUE, filter.proposed.points.tol = 1000,
     opt = "focussearch", opt.focussearch.points = 100L, opt.focussearch.maxit = 1L)
   ctrl = setMBOControlMultiPoint(ctrl, method = "cb")

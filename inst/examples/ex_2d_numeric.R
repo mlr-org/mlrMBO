@@ -13,7 +13,7 @@ obj.fun = makeBraninFunction()
 
 ctrl = makeMBOControl(propose.points = 1L)
 ctrl = setMBOControlTermination(ctrl, iters = 10L)
-ctrl = setMBOControlInfill(ctrl, crit = "ei", opt = "focussearch", opt.focussearch.points = 2000L)
+ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCriterionEI(), opt = "focussearch", opt.focussearch.points = 2000L)
 
 lrn = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
 

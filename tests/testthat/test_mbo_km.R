@@ -40,7 +40,8 @@ test_that("mbo works with km", {
   learner = setPredictType(learner, "se")
   ctrl = makeMBOControl()
   ctrl = setMBOControlTermination(ctrl, iters = 5L)
-  ctrl = setMBOControlInfill(ctrl, crit = "ei", opt.focussearch.points = 100L)
+  ctrl = setMBOControlInfill(ctrl, crit = crit.ei,
+    opt.focussearch.points = 100L)
   or = mbo(f, des, learner, ctrl)
   expect_number(or$y)
   expect_equal(getOptPathLength(or$opt.path), 15)

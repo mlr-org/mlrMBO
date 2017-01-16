@@ -9,7 +9,7 @@ test_that("plot single-objective", {
   des = generateTestDesign(8L, getParamSet(f))
   ctrl = makeMBOControl(propose.points = 1L)
   ctrl = setMBOControlTermination(ctrl, iters = 2L)
-  ctrl = setMBOControlInfill(ctrl, crit = "ei", opt.focussearch.points = 100L,
+  ctrl = setMBOControlInfill(ctrl, crit = crit.ei, opt.focussearch.points = 100L,
     opt.focussearch.maxit = 3L)
   or = mbo(f, des, learner = learner, control = ctrl)
 
@@ -22,7 +22,7 @@ test_that("plot multi-objective", {
   des = generateTestDesign(8L, getParamSet(f))
   ctrl = makeMBOControl(propose.points = 2L, n.objectives = 2L)
   ctrl = setMBOControlTermination(ctrl, iters = 2L)
-  ctrl = setMBOControlInfill(ctrl, crit = "ei", opt.focussearch.points = 100L,
+  ctrl = setMBOControlInfill(ctrl, crit = crit.ei, opt.focussearch.points = 100L,
     opt.focussearch.maxit = 3L, opt = "nsga2")
   ctrl = setMBOControlMultiObj(ctrl, method = "mspot")
   or = mbo(f, des, learner = learner, control = ctrl)
