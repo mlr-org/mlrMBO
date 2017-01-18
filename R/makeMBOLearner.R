@@ -23,8 +23,11 @@
 #'
 #' For mixed numeric-categorical parameter spaces:
 #' \itemize{
-#' \item{A random regression forest \dQuote{regr.randomForest} is created.}
-#' \item{The method to estimate the variance is the standard deviation of the bagged predictions.}
+#' \item{A random regression forest \dQuote{regr.randomForest} with 500 trees is created.}
+#' \item{The standard error of a prediction is estimated by computing the jackknife-after-bootstrap, 
+#' the mean-squared difference between the prediction made by only using trees which did not contain 
+#' said observation and the ensemble prediction. A Monte-Carlo bias correction is applied and, in the 
+#' case that this results in a negative variance estimate, the values are truncated at 0.}
 #' }
 #'
 #' @template arg_control
@@ -35,19 +38,19 @@
 #'   Will overwrite mlrMBO's defaults.
 #' @return [\code{Learner}]
 #' @export
-makeMboLearner = function(control, fun, ...) {
+makeMBOLearner = function(control, fun, ...) {
   assertClass(control, "MBOControl")
   assertClass(fun, "smoof_function")
 
   ps = getParamSet(fun)
   if (isNumeric(ps, include.int = TRUE)) {
-    lrn = makeLearner("regr.km", predict.type = "se", covtype = "matern5_2", optim.method = "gen")
+    lrn = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2", optim.method = "gen")
     if (!isNoisy(fun))
       lrn = setHyperPars(lrn, nugget.stability = 10^-8)
     else
       lrn = setHyperPars(lrn, nugget.estim = TRUE, jitter = TRUE)
   } else {
-    lrn = makeLearner("regr.randomForest", predict.type = "se", se.method = "sd")
+    lrn = makeLearner("regr.randomForest", predict.type = "se", se.method = "jackknife", keep.inbag = TRUE)
   }
   lrn = setHyperPars(lrn, ...)
   return(lrn)

@@ -10,7 +10,7 @@
 #' @param crit [\code{MBOInfillCriterion}]\cr
 #'   How should infill points be rated. See \code{\link{infillcrits}} for an overview
 #'   of available infill criteria or implement a custom one via \code{\link{makeMBOInfillCriterion}}.#
-#'   Default is \dQuote{mean response} (see \code{\link{makeMBOInfillCriterionMeanResponse}}).
+#'   Default is \dQuote{(lower) confidence bound} (see \code{\link{makeMBOInfillCriterionCB}}).
 #' @param interleave.random.points [\code{integer(1)}]\cr
 #'   Add \code{interleave.random.points} uniformly sampled points additionally to the
 #'   regular proposed points in each step.
@@ -49,7 +49,7 @@
 #'   points are chosen according to the CMA-ES restart strategy introduced by Auger
 #'   and Hansen. For details see the corresponding paper in the references and the help
 #'   page of the underlying optimizer \code{\link[cmaesr]{cmaes}}.
-#'   Default is 1.
+#'   Default is 3.
 #' @param opt.focussearch.maxit [\code{integer(1)}]\cr
 #'   For \code{opt = "focussearch"}:
 #'   Number of iteration to shrink local focus.
@@ -57,7 +57,7 @@
 #' @param opt.focussearch.points [\code{integer(1)}]\cr
 #'   For \code{opt = "focussearch"}:
 #'   Number of points in each iteration of the focus search optimizer.
-#'   Default is 10000.
+#'   Default is 1000.
 #' @param opt.cmaes.control [\code{list}]\cr
 #'   For \code{opt = "cmaes"}:
 #'   Control argument for cmaes optimizer.
@@ -132,7 +132,7 @@ setMBOControlInfill = function(control,
 
   assertClass(control, "MBOControl")
 
-  control$infill.crit = coalesce(crit, control$infill.crit, makeMBOInfillCriterionMeanResponse())
+  control$infill.crit = coalesce(crit, control$infill.crit, makeMBOInfillCriterionCB())
   assertClass(control$infill.crit, "MBOInfillCriterion")
 
   assertCount(interleave.random.points)
@@ -155,7 +155,7 @@ setMBOControlInfill = function(control,
   control$infill.opt.focussearch.maxit = asCount(control$infill.opt.focussearch.maxit)
   assertCount(control$infill.opt.focussearch.maxit, na.ok = FALSE, positive = TRUE)
 
-  control$infill.opt.focussearch.points = coalesce(opt.focussearch.points, control$infill.opt.focussearch.points, 10000L)
+  control$infill.opt.focussearch.points = coalesce(opt.focussearch.points, control$infill.opt.focussearch.points, 1000L)
 
   control$infill.opt.focussearch.points = asCount(control$infill.opt.focussearch.points)
   assertCount(control$infill.opt.focussearch.points, na.ok = FALSE, positive = TRUE)
