@@ -10,7 +10,7 @@ test_that("termination criteria works", {
   x.grid = seq(-2, 2, length.out = 10L)
   design = data.frame(x = x.grid, y = vnapply(x.grid, f))
 
-  learner = makeLearner("regr.randomForest")
+  learner = makeLearner("regr.randomForest", predict.type = "se", se.method = "sd")
 
   # time budget
   ctrl = makeMBOControl()

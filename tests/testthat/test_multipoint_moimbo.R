@@ -11,6 +11,7 @@ test_that("multipoint multi-objective", {
 
         des = generateTestDesign(10L, getParamSet(f))
         ctrl = makeMBOControl(propose.points = 4L)
+        ctrl = setMBOControlInfill(ctrl, crit = crit.mr)
         ctrl = setMBOControlTermination(ctrl, iters = 1L)
         ctrl = setMBOControlMultiPoint(ctrl,
           method = "moimbo",

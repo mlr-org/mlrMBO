@@ -9,7 +9,7 @@ test_that("plotEAF works", {
   des = generateTestDesign(5L, getParamSet(f))
 
   # Test normal run
-  learner = makeLearner("regr.km", nugget.estim = TRUE)
+  learner = makeLearner("regr.km", predict.type = "se", nugget.estim = TRUE)
   ctrl = makeMBOControl(n.objectives = 2L)
   ctrl = setMBOControlTermination(ctrl, iters = 2L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10)

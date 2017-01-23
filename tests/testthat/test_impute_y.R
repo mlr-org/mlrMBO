@@ -26,7 +26,7 @@ test_that("impute y", {
     par.set = par.set
   )
 
-  learner = makeLearner("regr.randomForest")
+  learner = makeLearner("regr.randomForest", predict.type = "se", se.method = "sd")
 
   n.focus.points = 100L
   des1 = generateTestDesign(10L, getParamSet(f1))
@@ -90,7 +90,7 @@ test_that("impute y parego", {
   ctrl = makeMBOControl(n.objectives = 2L,
     impute.y.fun = function(x, y, opt.path) c(100, 100))
   ctrl = setMBOControlTermination(ctrl, iters = 5L)
-  ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10)
+  ctrl = setMBOControlInfill(ctrl, crit = crit.mr, opt.focussearch.points = 10)
   ctrl = setMBOControlMultiObj(ctrl, method = "parego", parego.s = 100)
   or = mbo(f1, des1, learner = learner, control = ctrl)
   op = as.data.frame(or$opt.path)
