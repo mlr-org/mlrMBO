@@ -2,6 +2,7 @@
 % Please edit documentation in R/makeMBOLearner.R
 \name{makeMBOLearner}
 \alias{makeMBOLearner}
+\alias{mbo_default_learner}
 \title{Generate default learner.}
 \usage{
 makeMBOLearner(control, fun, ...)

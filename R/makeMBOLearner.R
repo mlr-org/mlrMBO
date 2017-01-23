@@ -37,6 +37,7 @@
 #'   Further parameters passed to the constructed learner.
 #'   Will overwrite mlrMBO's defaults.
 #' @return [\code{Learner}]
+#' @aliases mbo_default_learner
 #' @export
 makeMBOLearner = function(control, fun, ...) {
   assertClass(control, "MBOControl")
