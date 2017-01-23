@@ -15,7 +15,7 @@ makeMBOControl(n.objectives = 1L, propose.points = 1L,
   resample.measures = list(mse), output.num.format = "\%.3g",
   schedule.method = "none", schedule.nodes = 1L,
   schedule.priority = "infill", schedule.priority.time = FALSE,
-  schedule.fill.random = TRUE, schedule.cluster = FALSE,
+  schedule.fill.random = TRUE, schedule.cluster = "none",
   time.model.trafo.log = FALSE, asyn.wait.for.proposals = TRUE,
   asyn.skip.filtered.propsals = FALSE, asyn.cleanup = FALSE,
   asyn.impute.method = "min", asyn.impute.quantiles = c(0.25, 0.5, 0.75),
@@ -137,9 +137,13 @@ Priorize by time? Meaning short predicted jobs will run first. Default is \code{
 \item{schedule.fill.random}{[\code{logical(1)}]\cr
 If scheduling does not fill all nodes, should we fill it with random points which have fast enough runtime? Default is \code{TRUE}.}
 
-\item{schedule.cluster}{[\code{logical{1}}]\cr
-Should clustering be used to prevent points close to each other to be scheduled next to each other? 
-Default is \code{FALSE}.}
+\item{schedule.cluster}{[\code{character{1}}]\cr
+ How priority refinement via clustering is used for scheduling
+ \dQuote{none}: No priority refinement via clustering is used.
+ \dQuote{priority}: Refine job prioities based on their distance in the domain space, number of clusters < number of jobs
+ \dQuote{distance}: Refine job priorities based on their distance in the domain space, number of clusters = number of jobs
+ \dQuote{time}: Refine job priorities based on their distance in the domain space, number of clusters < number of jobs, shortest job per cluster gets highest priority.
+Default is \code{none}.}
 
 \item{time.model.trafo.log}{[\code{logical(1)}]\cr
 Should the time model be learned on log-transformed times? Default is \code{FALSE}.}
