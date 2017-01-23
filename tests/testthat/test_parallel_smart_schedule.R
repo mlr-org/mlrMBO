@@ -20,7 +20,7 @@ test_that("smart schedule works", {
     schedule.priority = c("infill", "explore", "balanced"),
     multipoint.cb.multiple = c("random", "random.quantiles"),
     schedule.priority.time = FALSE,
-    schedule.cluster = c(TRUE, FALSE),
+    schedule.cluster = c("priority", "distance"),
     crit.cb.lambda = c(1,4),
     stringsAsFactors = FALSE
     )

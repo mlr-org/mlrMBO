@@ -20,8 +20,9 @@
 # scheduled.on            integer(1) - cpu this job is beliefed to run on
 # scheduled.job           integer(1) - job number of generated jobs
 # scheduled.priority      numeric(1) - proiority value
+# ks.used                 logical(1) - true if job was scheduled via knapsack
 # multipoint.cb.lambda    numeric(1)
-# parego.weight.<j>         numeric(1)
+# parego.weight.<j>       numeric(1)
 #
 # Please document the content in doc_mbo_OptPath.R
 getExtras = function(n, prop, train.time, control) {
@@ -110,6 +111,9 @@ getExtras = function(n, prop, train.time, control) {
     } else if (control$schedule.method == "asyn") {
       ex$eval.state = prop$eval.state
       ex$scheduled.on = prop$scheduled.on
+    }
+    if(control$schedule.method == "scheduleKnapsack"){
+      ex$ks.used = FALSE
     }
     if (isTRUE(attr(prop$prop.points, "constant.model"))) {
       ex$constant.model = TRUE

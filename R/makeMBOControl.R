@@ -97,9 +97,13 @@
 #'    Priorize by time? Meaning short predicted jobs will run first. Default is \code{FALSE}.
 #' @param schedule.fill.random [\code{logical(1)}]\cr
 #'    If scheduling does not fill all nodes, should we fill it with random points which have fast enough runtime? Default is \code{TRUE}.
-#' @param schedule.cluster [\code{logical{1}}]\cr
-#'    Should clustering be used to prevent points close to each other to be scheduled next to each other? 
-#'    Default is \code{FALSE}.
+#' @param schedule.cluster [\code{character{1}}]\cr
+#'    How priority refinement via clustering is used for scheduling
+#'    \dQuote{none}: No priority refinement via clustering is used.
+#'    \dQuote{priority}: Refine job prioities based on their distance in the domain space, number of clusters < number of jobs
+#'    \dQuote{distance}: Refine job priorities based on their distance in the domain space, number of clusters = number of jobs
+#'    \dQuote{time}: Refine job priorities based on their distance in the domain space, number of clusters < number of jobs, shortest job per cluster gets highest priority.
+#'   Default is \code{none}.
 #' @param time.model.trafo.log [\code{logical(1)}]\cr
 #'    Should the time model be learned on log-transformed times? Default is \code{FALSE}.
 #' @param asyn.wait.for.proposals [\code{logical(1)}]\cr
@@ -150,7 +154,7 @@ makeMBOControl = function(n.objectives = 1L,
   schedule.priority = "infill",
   schedule.priority.time = FALSE,
   schedule.fill.random = TRUE,
-  schedule.cluster = FALSE,
+  schedule.cluster = "none",
   time.model.trafo.log = FALSE,
   asyn.wait.for.proposals = TRUE,
   asyn.skip.filtered.propsals = FALSE,
@@ -206,7 +210,7 @@ makeMBOControl = function(n.objectives = 1L,
   assertFlag(asyn.wait.for.proposals)
   assertFlag(asyn.skip.filtered.propsals)
   assertFlag(asyn.cleanup)
-  assertFlag(schedule.cluster)
+  assertChoice(schedule.cluster, choices = c("priority", "distance", "time","none"))
   assertChoice(asyn.impute.method, choices = c("min", "max", "mean", "noisymean", "quantilemean", "mc"))
   assertNumeric(asyn.impute.quantiles, lower = 0, upper = 1, any.missing = FALSE, null.ok = TRUE)
   assertInt(asyn.impute.mc.iters, lower = 1, null.ok = TRUE)

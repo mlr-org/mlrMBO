@@ -1,4 +1,14 @@
-# Determines priorities by cluster the proposed points by their config for better distributed priorities.
+# Refinement of job priorities to optimize job selection for
+# resource-aware parallel execution in an MBO-iteration.
+# Proposed points (jobs) are clustered by their distances in the domain space.
+# The priorities of candidates that have similar parameter settings are
+# decreased while priorities of candidates with different parameter 
+# configurations are increased to avoid unnecessary evaluations of very 
+# similar configurations.
+# Number of clusters < number of jobs
+# Shortest job per cluster gets highest priority.
+# The new priorities serve as input for scheduling.
+#
 # @param priorities[\code{numeric} \cr
 #   A Vector containing the priorities for the points in prop
 # @param prop [\code{list}] \cr
