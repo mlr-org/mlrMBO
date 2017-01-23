@@ -29,6 +29,11 @@
 #' said observation and the ensemble prediction. A Monte-Carlo bias correction is applied and, in the 
 #' case that this results in a negative variance estimate, the values are truncated at 0.}
 #' }
+#' For dependent parameter spaces an imputation method is added to the learner:
+#' \itemize{
+#' \item{If a numeric value is inactive, i.e., missing, it will be imputed by 2 times the maximum of observed values}
+#' \item{If a categorical value is inactive, i.e., missing, it will be imputed by the special class label \code{"__miss__"}}
+#' }
 #'
 #' @template arg_control
 #' @param fun [\code{smoof_function}] \cr
@@ -53,6 +58,10 @@ makeMBOLearner = function(control, fun, ...) {
   } else {
     lrn = makeLearner("regr.randomForest", predict.type = "se", se.method = "jackknife", keep.inbag = TRUE)
   }
+  
+  if (hasRequires(ps))
+    lrn = makeImputeWrapper(lrn, classes = list(numeric = imputeMax(2), factor = imputeConstant("__miss__")))
+  
   lrn = setHyperPars(lrn, ...)
   return(lrn)
 }

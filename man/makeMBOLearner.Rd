@@ -50,5 +50,10 @@ the mean-squared difference between the prediction made by only using trees whic
 said observation and the ensemble prediction. A Monte-Carlo bias correction is applied and, in the 
 case that this results in a negative variance estimate, the values are truncated at 0.}
 }
+For dependent parameter spaces an imputation method is added to the learner:
+\itemize{
+\item{If a numeric value is inactive, i.e., missing, it will be imputed by 2 times the maximum of observed values}
+\item{If a categorical value is inactive, i.e., missing, it will be imputed by the special class label \code{"__miss__"}}
+}
 }
 
