@@ -7,16 +7,13 @@ set.seed(1)
 configureMlr(show.learner.output = FALSE)
 pause = interactive()
 
-set.seed(423)
-
 obj.fun = makeBraninFunction()
 
 ctrl = makeMBOControl(propose.points = 1L)
 ctrl = setMBOControlTermination(ctrl, iters = 10L)
 ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCriterionEI(), opt = "focussearch", opt.focussearch.points = 2000L)
 
-lrn = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
-
+lrn = makeMBOLearner(ctrl, obj.fun)
 design = generateDesign(10L, getParamSet(obj.fun), fun = lhs::maximinLHS)
 
 run = exampleRun(obj.fun, design = design, learner = lrn, control = ctrl,

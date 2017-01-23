@@ -36,7 +36,7 @@ ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCriterionEI(),
 
 design = generateDesign(20L, getParamSet(obj.fun), fun = lhs::maximinLHS)
 
-lrn = makeLearner("regr.randomForest", predict.type = "se")
+lrn = makeMBOLearner(ctrl, obj.fun)
 
 run = exampleRun(obj.fun, design = design, learner = lrn, control = ctrl,
 	points.per.dim = 50L, show.info = TRUE)

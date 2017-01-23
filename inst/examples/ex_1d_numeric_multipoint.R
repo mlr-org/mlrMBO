@@ -16,7 +16,7 @@ obj.fun = makeSingleObjectiveFunction(
 
 ctrl = makeMBOControl(propose.points = 2L)
 ctrl = setMBOControlTermination(ctrl, iters = 10L)
-
+ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCriterionMeanResponse())
 ctrl = setMBOControlMultiPoint(
 	ctrl,
   method = "moimbo",
@@ -25,7 +25,7 @@ ctrl = setMBOControlMultiPoint(
   moimbo.maxit = 200L
 )
 
-lrn = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
+lrn = makeMBOLearner(ctrl, obj.fun)
 
 design = generateDesign(4L, getParamSet(obj.fun), fun = lhs::maximinLHS)
 

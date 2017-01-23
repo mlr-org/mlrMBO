@@ -8,13 +8,12 @@ pause = interactive()
 
 obj.fun = makeZDT1Function(dimensions = 2L)
 
-learner = makeLearner("regr.km", nugget.estim = FALSE, predict.type = "se")
-
 ctrl = makeMBOControl(n.objectives = 2L, propose.points = 2L, save.on.disk.at = integer(0L))
 ctrl = setMBOControlTermination(ctrl, iters = 5L)
 ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCriterionDIB(),
   opt.focussearch.points = 10000L)
 ctrl = setMBOControlMultiObj(ctrl, parego.s = 100)
+learner = makeMBOLearner(ctrl, obj.fun)
 
 design = generateDesign(5L, getParamSet(obj.fun), fun = lhs::maximinLHS)
 
