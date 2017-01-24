@@ -12,9 +12,9 @@
 #' @useDynLib mlrMBO c_sms_indicator c_eps_indicator
 NULL
 
-.onLoad = function(libname, pkgname) {
+.onLoad = function(libname, pkgname) { # nocov start
   parallelRegisterLevels(package = "mlrMBO", levels = c("propose.points", "feval"))
-}
+} # nocov end
 
 # some shortcuts for infill criteria
 crit.ei = makeMBOInfillCriterionEI()
