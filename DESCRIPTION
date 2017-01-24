@@ -51,7 +51,8 @@ Suggests:
     randomForest,
     rpart,
     testthat,
-    eaf
+    eaf,
+    covr
 LazyData: yes
 ByteCompile: yes
 Version: 1.0.0

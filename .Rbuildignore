@@ -10,3 +10,4 @@ src/*.so
 ^man-roxygen
 ^.editorconfig$
 ^\.ignore$
+^codecov\.yml$
