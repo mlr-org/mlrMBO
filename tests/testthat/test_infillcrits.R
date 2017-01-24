@@ -10,7 +10,7 @@ test_that("infill crits", {
   )
   des = generateTestDesign(ninit, getParamSet(f1))
 
-  mycontrol = function(minimize, crit) {
+  mycontrol = function(crit, minimize) {
     ctrl = makeMBOControl(final.evals = 10L)
     ctrl = setMBOControlTermination(ctrl, iters = niters)
     ctrl = setMBOControlInfill(ctrl, crit = crit, opt = "focussearch", opt.restarts = 1L,
@@ -25,14 +25,16 @@ test_that("infill crits", {
       expect_true(or$y < 25)
     else
       expect_true(or$y > 30)
+
     opdf = as.data.frame(or$opt.path)
-    if ("ei" %in% colnames(opdf)) {
-      expect_true(!any(is.na(opdf[21:23, c("ei","se","mean")])))
-    } else if ("cb" %in% colnames(opdf)) {
-      expect_true(!any(is.na(opdf[21:23, c("se","mean","lambda")])))
-    } else if ("aei" %in% colnames(opdf)) {
-      expect_true(!any(is.na(opdf[21:23, c("se","mean","tau")])))
-    }
+    opdf = split(opdf, opdf$prop.type)
+
+    if (!is.null(opdf$infill_ei))
+      expect_true(!anyMissing(opdf$infill_ei[, c("ei","se","mean")]))
+    if (!is.null(opdf$infill_cb))
+      expect_true(!anyMissing(opdf$infill_cb[, c("se","mean","lambda")]))
+    if (!is.null(opdf$infill_aei))
+      expect_true(!anyMissing(opdf$infill_cb[, c("se","mean","tau")]))
   }
 
   learners = list(
@@ -46,8 +48,7 @@ test_that("infill crits", {
   # we have converged and just waste time. we need to detect this somehow, or cope with it
   for (noisy in c(TRUE, FALSE)) {
     for (minimize in c(TRUE, FALSE)) {
-      crits = if (!noisy) list(crit.mr, crit.ei)
-        else list(crit.aei, crit.eqi)
+      crits = if (noisy) list(crit.aei, crit.eqi) else list(crit.mr, crit.ei)
       for (lrn in learners) {
         if (inherits(lrn, "regr.km"))
           lrn = setHyperPars(lrn, nugget.estim = noisy)
