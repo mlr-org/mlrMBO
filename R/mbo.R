@@ -26,6 +26,7 @@
 #' @param more.args [list]\cr
 #'   Further arguments passed to fitness function.
 #' @return [\code{\link{MBOSingleObjResult}} | \code{\link{MBOMultiObjResult}}]
+#' @export
 #' @examples
 #' # simple 2d objective function
 #' obj.fun = makeSingleObjectiveFunction(
@@ -49,7 +50,6 @@
 #'
 #' print(res)
 #' plot(res)
-#' @export
 mbo = function(fun, design = NULL, learner = NULL, control,
   show.info = getOption("mlrMBO.show.info", TRUE), more.args = list()) {
 

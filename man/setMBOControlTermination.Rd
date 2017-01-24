@@ -71,6 +71,7 @@ yTargetValueTerminator = function(y.val) {
 # assign custom termination condition
 ctrl = setMBOControlTermination(ctrl, more.termination.conds = list(yTargetValueTerminator(0.05)))
 res = mbo(fn, control = ctrl)
+print(res)
 }
 \seealso{
 Other MBOControl: \code{\link{makeMBOControl}},

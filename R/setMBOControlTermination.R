@@ -32,6 +32,8 @@
 #'     \item{message [\code{character(1)}]}{Termination message. At the moment we just allow \code{term.custom}.}
 #'   }
 #' @return [\code{\link{MBOControl}}].
+#' @family MBOControl
+#' @export
 #' @examples
 #' fn = smoof::makeSphereFunction(1L)
 #' ctrl = makeMBOControl()
@@ -52,8 +54,7 @@
 #' # assign custom termination condition
 #' ctrl = setMBOControlTermination(ctrl, more.termination.conds = list(yTargetValueTerminator(0.05)))
 #' res = mbo(fn, control = ctrl)
-#' @family MBOControl
-#' @export
+#' print(res)
 setMBOControlTermination = function(control,
   iters = NULL, time.budget = NULL, exec.time.budget = NULL, target.fun.value = NULL, max.evals = NULL, more.termination.conds = list()) {
 
