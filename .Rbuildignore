@@ -11,3 +11,5 @@ src/*.so
 ^.editorconfig$
 ^\.ignore$
 ^codecov\.yml$
+^_pkgdown\.yaml$
+^docs/$
