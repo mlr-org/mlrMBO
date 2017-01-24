@@ -29,13 +29,13 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../reference/index.html">Reference</a>
+  <a href="../articles/mlrMBO.html">Quickstart</a>
 </li>
 <li>
   <a href="../articles/index.html">Articles</a>
 </li>
 <li>
-  <a href="../news/index.html">News</a>
+  <a href="../reference/index.html">Reference</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
@@ -64,10 +64,7 @@
     
     
 <div class="contents">
-<div id="mlrmbo-a-toolbox-for-model-based-optimization-of-expensive-black-box-functions" class="section level1">
-<h1 class="hasAnchor">
-<html><body><a href="#mlrmbo-a-toolbox-for-model-based-optimization-of-expensive-black-box-functions" class="anchor"> </a></body></html>mlrMBO: A toolbox for Model-Based Optimization of Expensive Black-Box Functions</h1>
-<p>This Vignette is supposed to give you a short introductory glance at the key features of <code>mlrMBO</code>. More detailed and in depth tutorials can be found in the other vignette files on our GitHub project page:</p>
+<p>This Vignette is supposed to give you a short introductory glance at the key features of <code>mlrMBO</code>. More detailed and in depth tutorials on special topics can be found in the other vignette files on our GitHub project page:</p>
 <ul>
 <li><a href="https://github.com/mlr-org/mlrMBO/">Project Page</a></li>
 <li>Online documentation of <a href="https://mlr-org.github.io/mlrMBO/">mlrMBO</a>
@@ -87,22 +84,39 @@
 <div id="quickstart" class="section level2">
 <h2 class="hasAnchor">
 <html><body><a href="#quickstart" class="anchor"> </a></body></html>Quickstart</h2>
-<p><strong>This guide gives an overview of the typical optimization workflow with mlrMBO for those familiar with model based optimization.</strong></p>
+<p><strong>This guide gives an overview of the typical optimization workflow with mlrMBO.</strong></p>
 <div id="prerequisites" class="section level3">
 <h3 class="hasAnchor">
 <html><body><a href="#prerequisites" class="anchor"> </a></body></html>Prerequisites</h3>
-<p>We demonstrate the main functionality of <strong>mlrMBO</strong> by optimizing different test functions. Instead of writing these function by hand, we make use of the <a href="https://cran.r-project.org/package=smoof">smoof</a> package which offers many single objective functions frequently used for benchmarking of optimizers. <a href="https://cran.r-project.org/package=smoof">smoof</a> is a dependency and get automatically attached with mlrMBO:</p>
+<p>With the installation of <code>mlrMBO</code> the dependencies <code>mlr</code>, <code>ParamHelpers</code>, and <code>smoof</code> will be installed and also loaded, when you load <code>mlr</code>. However, for this tutorial you will need the Package <code>DiceKriging</code> for the surrogate learner and later <code>randomForest</code> for the surrogate model.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(mlrMBO)</code></pre></div>
-<p>Note that you are not limited to these test functions bat can define arbitrary black box functions using the constructor <code>makeSingleObjectiveFunction()</code>.</p>
 </div>
-<div id="example-run-1d-numeric" class="section level3">
+<div id="general-mbo-workflow" class="section level3">
 <h3 class="hasAnchor">
-<html><body><a href="#example-run-1d-numeric" class="anchor"> </a></body></html>Example run: 1d numeric</h3>
-<p>For our simplest example we choose a cosine mixture function:</p>
+<html><body><a href="#general-mbo-workflow" class="anchor"> </a></body></html>General MBO Workflow</h3>
+<p>The following steps are needed to start the optimization with <code><a href="../reference/mbo.html">mbo()</a></code>.</p>
+<ol style="list-style-type: decimal">
+<li>Define the <strong>objective function</strong> and its parameters by using the package <code>smoof</code>.</li>
+<li>Generate an <strong>initial design</strong>.</li>
+<li>Define a learner, i.e., the <strong>surrogate model</strong>.</li>
+<li>Set up a <strong>MBO control</strong> object.</li>
+<li>Finally start the optimization.</li>
+</ol>
+<p>Step 2 and 3 are optional as <code><a href="../reference/mbo.html">mbo()</a></code> has defaults for these.</p>
+</div>
+<div id="optimizing-a-one-dimensional-function-" class="section level3">
+<h3 class="hasAnchor">
+<html><body><a href="#optimizing-a-one-dimensional-function-" class="anchor"> </a></body></html>Optimizing a one dimensional function.</h3>
+<p>For a simple example we choose to minimize a cosine mixture function with an initial design of 5 points and 10 further evaluations. Meaning that in total the optimizer gets 15 evaluations on the objective function to find the optimum.</p>
+<div id="objective-function" class="section level4">
+<h4 class="hasAnchor">
+<html><body><a href="#objective-function" class="anchor"> </a></body></html>Objective Function</h4>
+<p>Instead of writing the objective function by hand, we use the <a href="https://cran.r-project.org/package=smoof"><em>smoof</em></a> package which offers many single objective functions frequently used for benchmarking of optimizers. <a href="https://cran.r-project.org/package=smoof">smoof</a> is a dependency and gets automatically attached with mlrMBO.</p>
+<p><em>Note:</em> You are not limited to these test functions but can define arbitrary objective functions with <em>smoof</em>. Check <code>?smoof::makeSingleObjectiveFunction</code> for an example.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">obj.fun =<span class="st"> </span><span class="kw">makeCosineMixtureFunction</span>(<span class="dv">1</span>)
 obj.fun =<span class="st"> </span><span class="kw">convertToMinimization</span>(obj.fun)
 <span class="kw">print</span>(obj.fun)
-ggplot2::<span class="kw">autoplot</span>(obj.fun, <span class="dt">show.optimum =</span> <span class="ot">TRUE</span>) <span class="co"># FIXME: optimum is very strange?</span></code></pre></div>
+ggplot2::<span class="kw">autoplot</span>(obj.fun, <span class="dt">show.optimum =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <p><img src="mlrMBO_files/figure-html/cosine_fun-1.png" width="672"></p>
 <pre><code>## Single-objective function
 ## Name: Cosine Mixture Function
@@ -117,67 +131,73 @@ ggplot2::<span class="kw">autoplot</span>(obj.fun, <span class="dt">show.optimum
 ## Global optimum objective value of -0.1000 at
 ##   x
 ## 1 0</code></pre>
-<p>We decide to use Kriging as our surrogate model and to do 10 sequential optimization steps using the Expected Improvement (EI) as the infill criterion. Furthermore, we provide an initial design on which we evaluate our first model in the beginning. We use <code>ParamHelpers::generateDesign</code> to generate 10 points via a latin hypercube.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">learner =<span class="st"> </span><span class="kw">makeLearner</span>(<span class="st">"regr.km"</span>, <span class="dt">predict.type =</span> <span class="st">"se"</span>, <span class="dt">covtype =</span> <span class="st">"matern3_2"</span>,
-  <span class="dt">control =</span> <span class="kw">list</span>(<span class="dt">trace =</span> <span class="ot">FALSE</span>))
-control =<span class="st"> </span><span class="kw"><a href="../reference/makeMBOControl.html">makeMBOControl</a></span>()
+</div>
+<div id="initial-design" class="section level4">
+<h4 class="hasAnchor">
+<html><body><a href="#initial-design" class="anchor"> </a></body></html>Initial Design</h4>
+<p>Before the MBO algorithm can starts it needs a set of already evaluated points - the <em>inital design</em>. If no design is given (i.e. <code>design = NULL</code>) <code><a href="../reference/mbo.html">mbo()</a></code> will use a <em>Maximin Latin Hypercube</em> <code>lhs::maximinLHS()</code> design with <code>n = 4 * getNumberOfParameters(obj.fun)</code> points. If the design does not include function outcomes <code><a href="../reference/mbo.html">mbo()</a></code> will evaluate the design first before starting with the MBO algorithm. In this example we choose to generate our own design.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">des =<span class="st"> </span><span class="kw">generateDesign</span>(<span class="dt">n =</span> <span class="dv">5</span>, <span class="dt">par.set =</span> <span class="kw">getParamSet</span>(obj.fun), <span class="dt">fun =</span> lhs::randomLHS)</code></pre></div>
+<p>We will also precalculate the results:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">des$y =<span class="st"> </span><span class="kw">apply</span>(des, <span class="dv">1</span>, obj.fun)</code></pre></div>
+<p><em>Note:</em> <em>mlrMBO</em> uses <code>y</code> as a default name for the outcome of the objective function. This can be changed in the control object.</p>
+</div>
+<div id="surrogate-model" class="section level4">
+<h4 class="hasAnchor">
+<html><body><a href="#surrogate-model" class="anchor"> </a></body></html>Surrogate Model</h4>
+<p>We decide to use Kriging as our surrogate model because it is the most common for numerical model-based optimization and has prooven to be quite effective. <code><a href="../reference/mbo.html">mbo()</a></code> will take any regression learner from <strong>mlr</strong>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">surr.km =<span class="st"> </span><span class="kw">makeLearner</span>(<span class="st">"regr.km"</span>, <span class="dt">predict.type =</span> <span class="st">"se"</span>, <span class="dt">covtype =</span> <span class="st">"matern3_2"</span>, <span class="dt">control =</span> <span class="kw">list</span>(<span class="dt">trace =</span> <span class="ot">FALSE</span>))</code></pre></div>
+<p><em>Note:</em> If no surrogate learner is defined, <code><a href="../reference/mbo.html">mbo()</a></code> autmatically uses Kriging for a numerical domain, otherwise <em>random forest regression</em>.</p>
+</div>
+<div id="mbocontrol" class="section level4">
+<h4 class="hasAnchor">
+<html><body><a href="#mbocontrol" class="anchor"> </a></body></html>MBOControl</h4>
+<p>The <code>MBOControl</code> object contains all further settings for <code><a href="../reference/mbo.html">mbo()</a></code>. It is created with <code><a href="../reference/makeMBOControl.html">makeMBOControl()</a></code>. For further customization there are the following functions: * <code><a href="../reference/setMBOControlTermination.html">setMBOControlTermination()</a></code>: It is obligatory to define a terination criterion like the number of MBO iterations. * <code><a href="../reference/setMBOControlInfill.html">setMBOControlInfill()</a></code>: It is recomended to set the infill criterion. For learners that support <code>predict.type = "se"</code> the Confidence Bound <code>"cb"</code> and the Expected Improvement <code>"ei"</code> are a good choice. * <code><a href="../reference/setMBOControlMultiPoint.html">setMBOControlMultiPoint()</a></code>: Needed, in case you want to evaluate more then just one point per MBO-Iteration you can control this process here. This makes sense for parallelization. * <code><a href="../reference/setMBOControlMultiObj.html">setMBOControlMultiObj()</a></code>: Needed, in case you want to optimize a muli objective target function.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">control =<span class="st"> </span><span class="kw"><a href="../reference/makeMBOControl.html">makeMBOControl</a></span>()
 control =<span class="st"> </span><span class="kw"><a href="../reference/setMBOControlTermination.html">setMBOControlTermination</a></span>(control, <span class="dt">iters =</span> <span class="dv">10</span>)
-control =<span class="st"> </span><span class="kw"><a href="../reference/setMBOControlInfill.html">setMBOControlInfill</a></span>(control, <span class="dt">crit =</span> <span class="st">"ei"</span>)
-design =<span class="st"> </span><span class="kw">generateDesign</span>(<span class="dt">n =</span> <span class="dv">10</span>, <span class="dt">par.set =</span> <span class="kw">getParamSet</span>(obj.fun))</code></pre></div>
+control =<span class="st"> </span><span class="kw"><a href="../reference/setMBOControlInfill.html">setMBOControlInfill</a></span>(control, <span class="dt">crit =</span> <span class="kw"><a href="../reference/infillcrits.html">makeMBOInfillCriterionEI</a></span>())</code></pre></div>
 <p>Finally, we start the optimization process and print the result object.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">run =<span class="st"> </span><span class="kw"><a href="../reference/mbo.html">mbo</a></span>(obj.fun, <span class="dt">design =</span> design, <span class="dt">learner =</span> learner, <span class="dt">control =</span> control, <span class="dt">show.info =</span> <span class="ot">TRUE</span>)
-## Computing y column(s) for design. Not provided.
-## [mbo] 0: x=0.191 : y = -0.0625 : 0.0 secs : initdesign
-## [mbo] 0: x=-0.909 : y = 0.812 : 0.0 secs : initdesign
-## [mbo] 0: x=-0.464 : y = 0.269 : 0.0 secs : initdesign
-## [mbo] 0: x=0.915 : y = 0.814 : 0.0 secs : initdesign
-## [mbo] 0: x=0.221 : y = -0.0462 : 0.0 secs : initdesign
-## [mbo] 0: x=0.78 : y = 0.703 : 0.0 secs : initdesign
-## [mbo] 0: x=-0.751 : y = 0.635 : 0.0 secs : initdesign
-## [mbo] 0: x=-0.392 : y = 0.252 : 0.0 secs : initdesign
-## [mbo] 0: x=0.466 : y = 0.268 : 0.0 secs : initdesign
-## [mbo] 0: x=-0.0091 : y = 0.0991 : 0.0 secs : initdesign
-## [mbo] 1: x=0.159 : y = -0.0546 : 0.0 secs : infill_ei
-## [mbo] 2: x=0.183 : y = -0.063 : 0.0 secs : infill_ei
-## [mbo] 3: x=0.186 : y = -0.063 : 0.0 secs : infill_ei
-## [mbo] 4: x=0.185 : y = -0.063 : 0.0 secs : infill_ei
-## [mbo] 5: x=0.178 : y = -0.0625 : 0.0 secs : infill_ei
-## [mbo] 6: x=0.185 : y = -0.063 : 0.0 secs : infill_ei
-## [mbo] 7: x=0.184 : y = -0.063 : 0.0 secs : infill_ei
-## [mbo] 8: x=0.185 : y = -0.063 : 0.0 secs : infill_ei
-## [mbo] 9: x=0.188 : y = -0.0629 : 0.0 secs : infill_ei
-## [mbo] 10: x=0.185 : y = -0.063 : 0.0 secs : infill_ei
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">run =<span class="st"> </span><span class="kw"><a href="../reference/mbo.html">mbo</a></span>(obj.fun, <span class="dt">design =</span> des, <span class="dt">learner =</span> surr.km, <span class="dt">control =</span> control, <span class="dt">show.info =</span> <span class="ot">TRUE</span>)
+## [mbo] 1: x=-0.161 : y = -0.0557 : 0.0 secs : infill_ei
+## [mbo] 2: x=-0.186 : y = -0.063 : 0.0 secs : infill_ei
+## [mbo] 3: x=-0.453 : y = 0.272 : 0.0 secs : infill_ei
+## [mbo] 4: x=-0.179 : y = -0.0626 : 0.0 secs : infill_ei
+## [mbo] 5: x=-0.194 : y = -0.062 : 0.0 secs : infill_ei
+## [mbo] 6: x=-0.183 : y = -0.063 : 0.0 secs : infill_ei
+## [mbo] 7: x=-0.188 : y = -0.0629 : 0.0 secs : infill_ei
+## [mbo] 8: x=-0.185 : y = -0.063 : 0.0 secs : infill_ei
+## [mbo] 9: x=-0.185 : y = -0.063 : 0.0 secs : infill_ei
+## [mbo] 10: x=-0.184 : y = -0.063 : 0.0 secs : infill_ei
 <span class="kw">print</span>(run)
 ## Recommended parameters:
-## x=0.185
+## x=-0.185
 ## Objective: y = -0.063
 ## 
 ## Optimization path
-## 10 + 10 entries in total, displaying last 10 (or less):
-##            x           y dob eol error.message exec.time            ei
-## 11 0.1588907 -0.05461903   1  NA          &lt;NA&gt;         0 -4.626660e-03
-## 12 0.1828983 -0.06296168   2  NA          &lt;NA&gt;         0 -8.159317e-04
-## 13 0.1859917 -0.06299592   3  NA          &lt;NA&gt;         0 -1.450776e-04
-## 14 0.1845963 -0.06301121   4  NA          &lt;NA&gt;         0 -3.102174e-05
-## 15 0.1784007 -0.06247260   5  NA          &lt;NA&gt;         0 -8.391437e-06
-## 16 0.1851540 -0.06301117   6  NA          &lt;NA&gt;         0 -5.207820e-06
-## 17 0.1840713 -0.06300386   7  NA          &lt;NA&gt;         0 -2.018038e-06
-## 18 0.1848782 -0.06301220   8  NA          &lt;NA&gt;         0 -1.774000e-06
-## 19 0.1875141 -0.06292131   9  NA          &lt;NA&gt;         0 -1.258150e-06
-## 20 0.1847485 -0.06301200  10  NA          &lt;NA&gt;         0 -3.099824e-07
-##    error.model train.time prop.type propose.time           se        mean
-## 11        &lt;NA&gt;      0.018 infill_ei        0.402 1.080984e-02 -0.06307507
-## 12        &lt;NA&gt;      0.016 infill_ei        0.428 1.482677e-03 -0.06286567
-## 13        &lt;NA&gt;      0.019 infill_ei        0.373 2.499575e-04 -0.06304215
-## 14        &lt;NA&gt;      0.018 infill_ei        0.261 5.465563e-05 -0.06301239
-## 15        &lt;NA&gt;      0.035 infill_ei        0.399 3.750125e-04 -0.06240517
-## 16        &lt;NA&gt;      0.021 infill_ei        0.264 1.337154e-05 -0.06301095
-## 17        &lt;NA&gt;      0.024 infill_ei        0.532 1.224342e-05 -0.06300369
-## 18        &lt;NA&gt;      0.046 infill_ei        0.460 3.018281e-06 -0.06301222
-## 19        &lt;NA&gt;      0.027 infill_ei        0.564 5.398735e-05 -0.06292588
-## 20        &lt;NA&gt;      0.036 infill_ei        0.548 1.008859e-06 -0.06301200</code></pre></div>
+## 5 + 10 entries in total, displaying last 10 (or less):
+##             x           y dob eol error.message exec.time            ei
+## 6  -0.1606667 -0.05569903   1  NA          &lt;NA&gt;     0.000 -2.544066e-02
+## 7  -0.1855231 -0.06300670   2  NA          &lt;NA&gt;     0.000 -3.963537e-03
+## 8  -0.4530693  0.27249249   3  NA          &lt;NA&gt;     0.000 -8.941453e-04
+## 9  -0.1792102 -0.06259867   4  NA          &lt;NA&gt;     0.000 -4.297711e-04
+## 10 -0.1936115 -0.06201151   5  NA          &lt;NA&gt;     0.000 -1.492891e-04
+## 11 -0.1833641 -0.06298269   6  NA          &lt;NA&gt;     0.001 -5.562469e-05
+## 12 -0.1878043 -0.06290020   7  NA          &lt;NA&gt;     0.000 -2.667342e-05
+## 13 -0.1846021 -0.06301125   8  NA          &lt;NA&gt;     0.000 -1.415215e-05
+## 14 -0.1850167 -0.06301193   9  NA          &lt;NA&gt;     0.000 -3.637684e-06
+## 15 -0.1841743 -0.06300587  10  NA          &lt;NA&gt;     0.000 -1.340960e-06
+##    error.model train.time prop.type propose.time           se         mean
+## 6         &lt;NA&gt;      0.017 infill_ei        0.215 7.674220e-02 -0.007971276
+## 7         &lt;NA&gt;      0.018 infill_ei        0.224 1.246695e-02 -0.053528542
+## 8         &lt;NA&gt;      0.017 infill_ei        0.337 1.535095e-01  0.265156088
+## 9         &lt;NA&gt;      0.020 infill_ei        0.186 1.517696e-03 -0.062615241
+## 10        &lt;NA&gt;      0.015 infill_ei        0.208 1.577773e-03 -0.061535717
+## 11        &lt;NA&gt;      0.016 infill_ei        0.217 1.666733e-04 -0.062983704
+## 12        &lt;NA&gt;      0.015 infill_ei        0.237 1.567049e-04 -0.062913560
+## 13        &lt;NA&gt;      0.018 infill_ei        0.355 2.959379e-05 -0.063011133
+## 14        &lt;NA&gt;      0.016 infill_ei        0.215 8.120184e-06 -0.063012018
+## 15        &lt;NA&gt;      0.016 infill_ei        0.215 9.058020e-06 -0.063005783</code></pre></div>
 <p>To get better insight into the MBO process, we can start the optimization with the function <code><a href="../reference/exampleRun.html">exampleRun()</a></code> instead of <code><a href="../reference/mbo.html">mbo()</a></code>. This specialized function augments the results of <code><a href="../reference/mbo.html">mbo()</a></code> with additional information for plotting. Here, we opt to plot the optimization state at iterations 1, 3, and 10.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">run =<span class="st"> </span><span class="kw"><a href="../reference/exampleRun.html">exampleRun</a></span>(obj.fun, <span class="dt">learner =</span> learner, <span class="dt">control =</span> control, <span class="dt">show.info =</span> <span class="ot">FALSE</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">run =<span class="st"> </span><span class="kw"><a href="../reference/exampleRun.html">exampleRun</a></span>(obj.fun, <span class="dt">learner =</span> surr.km, <span class="dt">control =</span> control, <span class="dt">show.info =</span> <span class="ot">FALSE</span>)</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(run)
 <span class="kw"><a href="../reference/plotExampleRun.html">plotExampleRun</a></span>(run, <span class="dt">iters =</span> <span class="kw">c</span>(1L, 3L, 10L), <span class="dt">pause =</span> <span class="ot">FALSE</span>)
 ## Loading required package: ggplot2</code></pre></div>
@@ -187,12 +207,15 @@ design =<span class="st"> </span><span class="kw">generateDesign</span>(<span cl
 ## Parameter names             : x
 ## Parameter types             : numericvector
 ## Global Opt (known)          : -1.0000e-01
-## Gap for best point          : 3.6989e-02
+## Gap for best point          : 3.6990e-02
 ## True points per dim.        : 50
 ## Objectives                    : 1
 ## Points proposed per iter      : 1
 ## 
-## Infill criterion              : ei
+## Infill criterion              : Expected improvement (ei)
+##   Requirement                 :  SE estimation
+##   Components                  : se, mean
+##   Parameters                  : se.threshold=1e-06
 ## Infill optimizer              : focussearch
 ## Infill optimizer restarts     : 1
 ## Final point by                : best.true.y
@@ -200,41 +223,8 @@ design =<span class="st"> </span><span class="kw">generateDesign</span>(<span cl
 ## Learner settings:
 ## jitter=FALSE,covtype=matern3_2,control=&lt;list&gt;
 ## Recommended parameters:
-## x=0.185
+## x=0.184
 ## Objective: y = -6.301e-02</code></pre>
-</div>
-<div id="example-run-2d-numeric" class="section level3">
-<h3 class="hasAnchor">
-<html><body><a href="#example-run-2d-numeric" class="anchor"> </a></body></html>Example run: 2d numeric</h3>
-<p>We proceed with a slightly more realistic example and optimize the <a href="https://www.sfu.ca/~ssurjano/branin.html">Branin function</a>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">obj.fun2 =<span class="st"> </span><span class="kw">makeBraninFunction</span>()
-ggplot2::<span class="kw">autoplot</span>(obj.fun2, <span class="dt">render.levels =</span> <span class="ot">TRUE</span>, <span class="dt">show.optimum =</span> <span class="ot">TRUE</span>)
-## Warning: Ignoring unknown aesthetics: fill</code></pre></div>
-<p><img src="mlrMBO_files/figure-html/branin_fun-1.png" width="672"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">run2 =<span class="st"> </span><span class="kw"><a href="../reference/exampleRun.html">exampleRun</a></span>(obj.fun2, <span class="dt">learner =</span> learner, <span class="dt">control =</span> control, <span class="dt">show.info =</span> <span class="ot">FALSE</span>)
-<span class="kw">print</span>(run2)
-<span class="kw"><a href="../reference/plotExampleRun.html">plotExampleRun</a></span>(run2, <span class="dt">iters =</span> <span class="kw">c</span>(1L, 3L, 10L))</code></pre></div>
-<p><img src="mlrMBO_files/figure-html/branin_fun-2.png" width="672"><img src="mlrMBO_files/figure-html/branin_fun-3.png" width="672"><img src="mlrMBO_files/figure-html/branin_fun-4.png" width="672"></p>
-<pre><code>## MBOExampleRun
-## Number of parameters        : 2
-## Parameter names             : x1,x2
-## Parameter types             : numericvector
-## Global Opt (known)          : 3.9789e-01
-## Gap for best point          : 1.9391e-01
-## True points per dim.        : 50
-## Objectives                    : 1
-## Points proposed per iter      : 1
-## 
-## Infill criterion              : ei
-## Infill optimizer              : focussearch
-## Infill optimizer restarts     : 1
-## Final point by                : best.true.y
-## Learner                     : regr.km
-## Learner settings:
-## jitter=FALSE,covtype=matern3_2,control=&lt;list&gt;
-## Recommended parameters:
-## x=3.34,2.02
-## Objective: y = 5.918e-01</code></pre>
 </div>
 </div>
 </div>
@@ -245,12 +235,8 @@ ggplot2::<span class="kw">autoplot</span>(obj.fun2, <span class="dt">render.leve
         <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-<li>
-<a href="#mlrmbo-a-toolbox-for-model-based-optimization-of-expensive-black-box-functions">mlrMBO: A toolbox for Model-Based Optimization of Expensive Black-Box Functions</a><ul class="nav nav-pills nav-stacked">
 <li><a href="#purpose">Purpose</a></li>
       <li><a href="#quickstart">Quickstart</a></li>
-      </ul>
-</li>
       </ul>
 </div>
       </div>

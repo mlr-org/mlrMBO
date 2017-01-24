@@ -72,7 +72,7 @@ Meaning that in total the optimizer gets 15 evaluations on the objective functio
 Instead of writing the objective function by hand, we use the [*smoof*](https://cran.r-project.org/package=smoof) package which offers many single objective functions frequently used for benchmarking of optimizers.
 [smoof](https://cran.r-project.org/package=smoof) is a dependency and gets automatically attached with mlrMBO.
 
-_Note:_ You are not limited to these test functions but can define arbitrary objective functions with *smoof*. 
+_Note:_ You are not limited to these test functions but can define arbitrary objective functions with *smoof*.
 Check `?smoof::makeSingleObjectiveFunction` for an example.
 
 ```{r cosine_fun}
@@ -85,7 +85,7 @@ ggplot2::autoplot(obj.fun, show.optimum = TRUE)
 #### Initial Design
 
 Before the MBO algorithm can starts it needs a set of already evaluated points - the *inital design*.
-If no design is given (i.e. `design = NULL`) `mbo()` will use a *Maximin Latin Hypercube* `lhs::maximinLHS()` design with `n = 4 * getNumberOfParameters(obj.fun)` points. 
+If no design is given (i.e. `design = NULL`) `mbo()` will use a *Maximin Latin Hypercube* `lhs::maximinLHS()` design with `n = 4 * getNumberOfParameters(obj.fun)` points.
 If the design does not include function outcomes `mbo()` will evaluate the design first before starting with the MBO algorithm.
 In this example we choose to generate our own design.
 
@@ -99,7 +99,7 @@ We will also precalculate the results:
 des$y = apply(des, 1, obj.fun)
 ```
 
-_Note:_ *mlrMBO* uses `y` as a default name for the outcome of the objective function. 
+_Note:_ *mlrMBO* uses `y` as a default name for the outcome of the objective function.
 This can be changed in the control object.
 
 #### Surrogate Model
@@ -127,13 +127,13 @@ For further customization there are the following functions:
 ```{r cosine_setup}
 control = makeMBOControl()
 control = setMBOControlTermination(control, iters = 10)
-control = setMBOControlInfill(control, crit = "ei")
+control = setMBOControlInfill(control, crit = makeMBOInfillCriterionEI())
 ```
 
 Finally, we start the optimization process and print the result object.
 
 ```{r cosine_run}
-run = mbo(obj.fun, design = design, learner = learner, control = control, show.info = TRUE)
+run = mbo(obj.fun, design = des, learner = surr.km, control = control, show.info = TRUE)
 print(run)
 ```
 
@@ -143,7 +143,7 @@ This specialized function augments the results of `mbo()` with additional inform
 Here, we opt to plot the optimization state at iterations 1, 3, and 10.
 
 ```{r cosine_examplerun, results="hide"}
-run = exampleRun(obj.fun, learner = learner, control = control, show.info = FALSE)
+run = exampleRun(obj.fun, learner = surr.km, control = control, show.info = FALSE)
 ```
 
 ```{r cosine_plot_examplerun, warning=FALSE}

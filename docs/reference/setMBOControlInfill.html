@@ -49,13 +49,13 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../reference/index.html">Reference</a>
+  <a href="../articles/mlrMBO.html">Quickstart</a>
 </li>
 <li>
   <a href="../articles/index.html">Articles</a>
 </li>
 <li>
-  <a href="../news/index.html">News</a>
+  <a href="../reference/index.html">Reference</a>
 </li>
       </ul>
       
@@ -82,14 +82,12 @@
 
     
     <p>Please note that internally all infill criteria are minimized. So for some of them,
-we internally compute their negated version, eg., for EI or also for CB when the objective is to
+we internally compute their negated version, e.g., for EI or also for CB when the objective is to
 be maximized. In the latter case mlrMBO actually computes the negative upper confidence bound and
 minimizes that.</p>
     
 
     <pre><span class='fu'>setMBOControlInfill</span>(<span class='no'>control</span>, <span class='kw'>crit</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>interleave.random.points</span> <span class='kw'>=</span> <span class='fl'>0L</span>,
-  <span class='kw'>crit.eqi.beta</span> <span class='kw'>=</span> <span class='fl'>0.75</span>, <span class='kw'>crit.cb.lambda</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>crit.cb.pi</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>crit.cb.inflate.se</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>crit.aei.use.nugget</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>filter.proposed.points</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>filter.proposed.points.tol</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>opt</span> <span class='kw'>=</span> <span class='st'>"focussearch"</span>, <span class='kw'>opt.restarts</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>opt.focussearch.maxit</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>opt.focussearch.points</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>opt.cmaes.control</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
@@ -105,47 +103,16 @@ minimizes that.</p>
       <dd>[<code><a href='makeMBOControl.html'>MBOControl</a></code>]
 Control object for mbo.</dd>
       <dt>crit</dt>
-      <dd>[<code>character(1)</code>]
-How should infill points be rated. Possible parameter values are:
-&#8220;mean&#8221;: Mean response.
-&#8220;ei&#8221;: Expected improvement.
-&#8220;aei&#8221;: Augmented expected improvement.
-&#8220;eqi&#8221;: Expected quantile improvement.
-&#8220;cb&#8221;: Confidence bound.
-Alternatively, you may pass a function name as string.</dd>
+      <dd>[<code>MBOInfillCriterion</code>]
+How should infill points be rated. See <code><a href='infillcrits.html'>infillcrits</a></code> for an overview
+of available infill criteria or implement a custom one via <code><a href='makeMBOInfillCriterion.html'>makeMBOInfillCriterion</a></code>.#
+Default is &#8220;mean response&#8221; (see <code><a href='infillcrits.html'>makeMBOInfillCriterionMeanResponse</a></code>).</dd>
       <dt>interleave.random.points</dt>
       <dd>[<code>integer(1)</code>]
 Add <code>interleave.random.points</code> uniformly sampled points additionally to the
 regular proposed points in each step.
 If <code>crit=&quot;random&quot;</code> this value will be neglected.
 Default is 0.</dd>
-      <dt>crit.eqi.beta</dt>
-      <dd>[<code>numeric(1)</code>]
-Beta parameter for expected quantile improvement criterion.
-Only used if <code>crit == &quot;eqi&quot;</code>, ignored otherwise.
-Default is 0.75.</dd>
-      <dt>crit.cb.lambda</dt>
-      <dd>[<code>numeric(1)</code>]
-Lambda parameter for confidence bound infill criterion.
-Only used if <code>crit == &quot;cb&quot;</code>, ignored otherwise.
-Default is 1.</dd>
-      <dt>crit.cb.pi</dt>
-      <dd>[<code>numeric(1)</code>]
-Probability-of-improvement value to determine the lambda parameter for cb infill criterion.
-It is an alternative to set the trade-off between &#8220;mean&#8221; and &#8220;se&#8221;.
-Only used if <code>crit == &quot;cb&quot;</code>, ignored otherwise.
-If specified, <code>crit.cb.lambda == NULL</code> must hold.
-Default is <code>NULL</code>.</dd>
-      <dt>crit.cb.inflate.se</dt>
-      <dd>[<code>logical(1)</code>]
-Try to inflate or deflate the estimated standard error to get to the same scale as the mean?
-Calculates the range of the mean and standard error and multiplies the standard error
-with the quotient of theses ranges.
-Default is <code>FALSE</code>.</dd>
-      <dt>crit.aei.use.nugget</dt>
-      <dd>[<code>logical(1)</code>]
-Only used if <code>crit == &quot;aei&quot;</code>. Should the nugget effect be used for the
-pure variance estimation? Default is <code>FALSE</code>.</dd>
       <dt>filter.proposed.points</dt>
       <dd>[<code>logical(1)</code>]
 Design points located too close to each other can lead to
@@ -168,7 +135,8 @@ Default is 0.0001.</dd>
 How should SINGLE points be proposed by using the surrogate model. Possible values are:
 &#8220;focussearch&#8221;: In several iteration steps the parameter space is
 focused on an especial promising region according to infill criterion.
-&#8220;cmaes&#8221;: Use CMAES to optimize infill criterion. If all CMAES runs fail, a random point is generated
+&#8220;cmaes&#8221;: Use CMA-ES (function <code><a href='http://www.rdocumentation.org/packages/cmaesr/topics/cmaes'>cmaes</a></code> from package <span class="pkg">cmaesr</span>
+to optimize infill criterion. If all CMA-ES runs fail, a random point is generated
 instead and a warning informs about it.
 &#8220;ea&#8221;: Use an (mu+1) EA to optimize infill criterion.
 &#8220;nsga2&#8221;: NSGA2 for multi obj. optimizationen. Needed for mspot.
@@ -178,8 +146,10 @@ Alternatively, you may pass a function name as string.</dd>
       <dd>[<code>integer(1)</code>]
 Number of independent restarts for optimizer of infill criterion.
 If <code>opt == &quot;cmaes&quot;</code> the first start point for the optimizer is always the
-currently best point in the design of already visited points.
-Subsequent restarts are started at random points.
+currently best point in the design of already visited points. Subsequent starting
+points are chosen according to the CMA-ES restart strategy introduced by Auger
+and Hansen. For details see the corresponding paper in the references and the help
+page of the underlying optimizer <code><a href='http://www.rdocumentation.org/packages/cmaesr/topics/cmaes'>cmaes</a></code>.
 Default is 1.</dd>
       <dt>opt.focussearch.maxit</dt>
       <dd>[<code>integer(1)</code>]
@@ -195,7 +165,7 @@ Default is 10000.</dd>
       <dd>[<code>list</code>]
 For <code>opt = &quot;cmaes&quot;</code>:
 Control argument for cmaes optimizer.
-Default is empty list.</dd>
+For the default see the help page of the underlying optimizer <code><a href='http://www.rdocumentation.org/packages/cmaesr/topics/cmaes'>cmaes</a></code>.</dd>
       <dt>opt.ea.maxit</dt>
       <dd>[<code>integer(1)</code>]
 For <code>opt = &quot;ea&quot;</code>:
@@ -266,7 +236,6 @@ nsga2 param. Default is 10.</dd>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <p>Other MBOControl: <code><a href='makeMBOControl.html'>makeMBOControl</a></code>,
-  <code><a href='setMBOControlMultiFid.html'>setMBOControlMultiFid</a></code>,
   <code><a href='setMBOControlMultiObj.html'>setMBOControlMultiObj</a></code>,
   <code><a href='setMBOControlMultiPoint.html'>setMBOControlMultiPoint</a></code>,
   <code><a href='setMBOControlTermination.html'>setMBOControlTermination</a></code></p>

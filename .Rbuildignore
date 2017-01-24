@@ -11,5 +11,8 @@ src/*.so
 ^.editorconfig$
 ^\.ignore$
 ^codecov\.yml$
-^_pkgdown\.yaml$
+^_pkgdown\.yml$
 ^docs/$
+^vignettes/mlrMBO_cache/
+^vignettes/mlrMBO_files/
+^vignettes/*.html

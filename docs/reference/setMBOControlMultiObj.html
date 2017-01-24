@@ -49,13 +49,13 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../reference/index.html">Reference</a>
+  <a href="../articles/mlrMBO.html">Quickstart</a>
 </li>
 <li>
   <a href="../articles/index.html">Articles</a>
 </li>
 <li>
-  <a href="../news/index.html">News</a>
+  <a href="../reference/index.html">Reference</a>
 </li>
       </ul>
       
@@ -88,7 +88,7 @@
   <span class='kw'>ref.point.offset</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ref.point.val</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>parego.s</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>parego.rho</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>parego.use.margin.points</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>parego.sample.more.weights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>parego.normalize</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>dib.indicator</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>dib.sms.eps</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>mspot.select.crit</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+  <span class='kw'>dib.indicator</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>mspot.select.crit</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
@@ -150,10 +150,6 @@ or just the paretofront (<code>front</code>).</dd>
       <dd>[<code>character(1)</code>]
 Either &#8220;sms&#8221; (SMS-EGO like algorithm) or &#8220;eps&#8221; (epsilon-EGO like algorithm).
 Default is &#8220;sms&#8221;.</dd>
-      <dt>dib.sms.eps</dt>
-      <dd>[<code>numeric(1)</code> | <code>NULL</code>]
-Epsilon for epsilon-dominance for <code>dib.indicator = &quot;sms&quot;</code>.
-Default is <code>NULL</code>, in this case it is adaptively set.</dd>
       <dt>mspot.select.crit</dt>
       <dd>[<code>character(1)</code>]
 Which infill.crit to use in the candidate selection. After the NSGA2
@@ -192,7 +188,7 @@ an Event Detection Software under Limited Budgets. In: Proc.
 C. M. Fonseca; S. Greco; J. Shaw, eds., 2013, vol. 7811 of Lecture
 Notes in Computer Science, ISBN 978-3-642-37139-4, pp. 756770,
 doi:10.1007/978-3-642-37140-0 56</p>
-    <p>Jeong, S.; Obayashi, S.: Efficient global optimization (EGO) for Multi-Objective Problem and Data Mining. 
+    <p>Jeong, S.; Obayashi, S.: Efficient global optimization (EGO) for Multi-Objective Problem and Data Mining.
 In: Proc. IEEE Congress on
 Evolutionary Computation (CEC 2005), Edinburgh, UK, Corne, D.;
 et al. (eds.), IEEE, 2005, ISBN 0-7803-9363-5, pp. 2138-2145</p>
@@ -201,7 +197,6 @@ et al. (eds.), IEEE, 2005, ISBN 0-7803-9363-5, pp. 2138-2145</p>
 
     <p>Other MBOControl: <code><a href='makeMBOControl.html'>makeMBOControl</a></code>,
   <code><a href='setMBOControlInfill.html'>setMBOControlInfill</a></code>,
-  <code><a href='setMBOControlMultiFid.html'>setMBOControlMultiFid</a></code>,
   <code><a href='setMBOControlMultiPoint.html'>setMBOControlMultiPoint</a></code>,
   <code><a href='setMBOControlTermination.html'>setMBOControlTermination</a></code></p>
     

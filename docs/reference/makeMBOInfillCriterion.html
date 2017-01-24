@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Transformation methods. — trafos • mlrMBO</title>
+<title>Create an infill criterion. — makeMBOInfillCriterion • mlrMBO</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -77,43 +77,70 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Transformation methods.</h1>
+    <h1>Create an infill criterion.</h1>
     </div>
 
     
-    <p><ul>
-<li><b>logTrafo</b> Natural logarithm.
-  </li>
-<li><b>sqrtTrafo</b> Square root.
-</li>
-</ul></p>
-
-    <p>If negative values occur and the trafo function can handle only positive values,
-a shift of the form x - min(x) + 1 is performed prior to the transformation if the
-argument <code>handle.violations</code> is set to &#8220;warn&#8221; which is the default
-value.</p>
+    <p>The infill criterion guides the model based search process.
+The most prominent infill criteria, e.g., expected improvement, lower
+confidence bound and others, are already implemented in mlrMBO. Moreover,
+the package allows for the creation of custom infill criteria.</p>
     
 
-    <pre><span class='fu'>trafoLog</span>(<span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>handle.violations</span> <span class='kw'>=</span> <span class='st'>"warn"</span>)
-
-<span class='fu'>trafoSqrt</span>(<span class='kw'>handle.violations</span> <span class='kw'>=</span> <span class='st'>"warn"</span>)</pre>
+    <pre><span class='fu'>makeMBOInfillCriterion</span>(<span class='no'>fun</span>, <span class='no'>name</span>, <span class='no'>id</span>, <span class='kw'>minimize</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>components</span> <span class='kw'>=</span> <span class='fu'>character</span>(<span class='fl'>0L</span>), <span class='kw'>params</span> <span class='kw'>=</span> <span class='fu'>list</span>(), <span class='kw'>requires.se</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
-      <dt>base</dt>
-      <dd>[<code>numeric(1)</code>]
-The base with respect to which logarithms are computed.
-Default is <code>10</code>.</dd>
-      <dt>handle.violations</dt>
+      <dt>fun</dt>
+      <dd>[<code>function(points, models, control, par.set, design, iter)</code>]
+A function which expects the following parameters in exactly this order
+and return a numeric vector of criteria values at the points:
+<dl class='dl-horizontal'>
+  <dt>points [<code>data.frame</code>]</dt><dd>n points where to evaluate</dd>.
+  <dt>models [<code><a href='http://www.rdocumentation.org/packages/mlr/topics/makeWrappedModel'>WrappedModel</a></code> | <code>list</code>]</dt><dd>Model(s) fitted on design.</dd>
+  <dt>control [<code>MBOControl</code>]</dt><dd>Control object.</dd>
+  <dt>par.set [<code>ParamSet</code>]</dt><dd>Parameter set.</dd>
+  <dt>design [<code>data.frame</code>]</dt><dd>Design of already visited points.</dd>
+  <dt>iter [<code>integer(1)</code>]</dt><dd>Current iteration.</dd>
+  <dt>attributes [<code>logical{1}</code>]</dt><dd>Should attributes appended to the return
+   value by considered by <span class="pkg">mlrMBO</span>?</dd>
+</dl>
+</dd>
+      <dt>name</dt>
       <dd>[<code>character(1)</code>]
-What should be done, if negative values occur? Setting this option to
-&#8220;warn&#8221;, which is the default, shifts the function. &#8220;error&#8221;
-stops the process immediately.</dd>
+Full name of the criterion.</dd>
+      <dt>id</dt>
+      <dd>[<code>character(1)</code>]
+Short name of the criterion.
+Used internally and in plots.</dd>
+      <dt>minimize</dt>
+      <dd>[<code>character(1)</code>]
+Shall the criterion be minimized or maximized?
+Default is <code>TRUE</code>.</dd>
+      <dt>components</dt>
+      <dd>[<code>character</code>]
+Infill criteria may not return proposed point(s) only. Additional
+information can be returned by appending a named <code>list</code> &#8220;crit.components&#8221;
+to the returned value as an attribute.
+The <code>components</code> argument takes a character vector of the names of the
+meta information, i.e., the names of the named &#8220;crit.components&#8221; list.
+Default is the empty character vector.</dd>
+      <dt>params</dt>
+      <dd>[<code>list</code>]
+Named list of parameters for the infill criterion. There values may be used
+by <span class="pkg">mlrMBO</span> internally.
+Default is the empty list.</dd>
+      <dt>requires.se</dt>
+      <dd>[<code>logical(1)</code>]
+Does the infill criterion require the regression learner to provide a standard
+error estimation?
+Default is <code>FALSE</code>.</dd>
     </dl>
     
-    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>None</p>
+    <p>[<code>MBOInfillCriterion</code>]</p>
     
 
   </div>
@@ -122,7 +149,7 @@ stops the process immediately.</dd>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#format">Format</a></li>
+      <li><a href="#value">Value</a></li>
           </ul>
 
   </div>
