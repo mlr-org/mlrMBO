@@ -86,7 +86,7 @@ print.MBOInfillCriterion = function(x, ...) {
 }
 
 paramsToString = function(params) {
-  str.params = sapply(names(params), function(n) {
+  str.params = vcapply(names(params), function(n) {
     paste0(n, "=", params[[n]])
   })
   collapse(str.params, ", ")
