@@ -12,7 +12,7 @@ src/*.so
 ^\.ignore$
 ^codecov\.yml$
 ^_pkgdown\.yml$
-^docs/$
+^docs
 ^vignettes/mlrMBO_cache/
 ^vignettes/mlrMBO_files/
 ^vignettes/*.html
