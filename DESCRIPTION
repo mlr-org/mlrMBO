@@ -45,6 +45,7 @@ Suggests:
     gridExtra,
     kernlab,
     kknn,
+    knitr,
     mco,
     nnet,
     party,
