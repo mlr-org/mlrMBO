@@ -26,6 +26,8 @@ ctrl = setMBOControlMultiPoint(
 )
 
 lrn = makeMBOLearner(ctrl, obj.fun)
+#FIXME: This should not be required, can be removed after #314 is fixed
+lrn = setPredictType(lrn, "se")
 
 design = generateDesign(4L, getParamSet(obj.fun), fun = lhs::maximinLHS)
 
