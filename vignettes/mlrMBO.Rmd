@@ -4,7 +4,7 @@ output:
   html_document:
     toc: true
     toc_float:
-      collapsed: false
+      collapsed: true
       smooth_scroll: false
 vignette: >
   %\VignetteIndexEntry{Quick introduction}

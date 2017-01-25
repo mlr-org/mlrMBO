@@ -4,7 +4,7 @@ output:
   html_document:
     toc: true
     toc_float:
-      collapsed: false
+      collapsed: true
       smooth_scroll: false
 vignette: >
   %\VignetteIndexEntry{Mixed Space Optimization}
@@ -119,7 +119,7 @@ Usually `generateDesign()` takes care that the points are spread uniformly.
 Finally, we start the maximation with `mbo()` with surpressed learner output from *mlr* and we print the result object to obtain the input that lead to the best objective:
 ```{r mbo_run, eval=TRUE}
 # Surpresses output of learners 
-mlr::configureMlr(show.info = FALSE, show.learner.output = FALSE)
+mlr::configureMlr(show.info = FALSE, show.learner.output = FALSE, on.learner.warning = "quiet")
 run2 = mbo(objfun2, design = design2, learner = surr.rf, control = control2, show.info = TRUE)
 print(run2)
 ```
