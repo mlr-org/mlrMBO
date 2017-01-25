@@ -154,7 +154,7 @@ renderExampleRunPlot1d = function(x, iter,
     }
     g = g + ggplot2::geom_line(next.aes, size = line.size)
     g = g + ggplot2::facet_grid(pane~., scales = "free")
-    if (se & densregion) {
+    if (se && densregion) {
       #FIXME: We might lose transformation information here tr()
       next.aes = ggplot2::aes_string(x = names.x, ymin = "value-se", ymax = "value+se", group = ".multifid.lvl")
       if (!control$multifid) {
@@ -201,7 +201,7 @@ renderExampleRunPlot1d = function(x, iter,
 
     gg.points = buildPointsData(opt.path, iter)
 
-    if (se & densregion) {
+    if (se && densregion) {
       gg.points$se = -infill.se(gg.points[, names.x, drop = FALSE],
         models, control, par.set, opt.path[idx.past, , drop = FALSE])
       gg.points$se.min = gg.points[[name.y]] - se.factor * gg.points$se
@@ -210,7 +210,7 @@ renderExampleRunPlot1d = function(x, iter,
 
     pl.fun = ggplot2::ggplot(data = gg.points, ggplot2::aes_string(x = names.x, y = name.y, colour = "type", shape = "type"))
     pl.fun = pl.fun + ggplot2::geom_point(size = point.size)
-    if (se & densregion) {
+    if (se && densregion) {
       pl.fun = pl.fun + ggplot2::geom_errorbar(ggplot2::aes_string(ymin = "se.min", ymax = "se.max"), width = .1, alpha = .5)
     }
 
