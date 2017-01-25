@@ -3,6 +3,9 @@ context("multipoint multi-objective")
 test_that("multipoint multi-objective", {
   f = makeBraninFunction()
   f = setAttribute(f, "par.set", makeNumericParamSet(len = 2L, lower = 0, upper = 1))
+  
+  #FIXME: Remove lrn after #314 is fixed
+  lrn = makeLearner("regr.km", predict.type = "se")
 
   #FIXME: how can we test this better?
   for (obj in c("ei.dist", "mean.se", "mean.se.dist")) {
@@ -21,7 +24,7 @@ test_that("multipoint multi-objective", {
           moimbo.maxit = 30L
         )
 
-        res = mbo(f, des, control = ctrl)
+        res = mbo(f, des, lrn, control = ctrl)
         expect_output(print(res), "Recommended parameters")
 
         gap = res$y - 0.3979
