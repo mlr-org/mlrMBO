@@ -22,11 +22,11 @@ Will overwrite mlrMBO's defaults.}
 [\code{Learner}]
 }
 \description{
-This is a helper function that generates a default surrogate, based on properties of the objective function.
+This is a helper function that generates a default surrogate, based on properties of the objective function and the selected infill criterion.
 
-For numeric-only parameter spaces (including integers):
+For numeric-only (including integers) parameter spaces without any dependencies :
 \itemize{
-\item{A Kriging model \dQuote{regr.km} with kernel \dQuote{matern5_2} is created.}
+\item{A Kriging model \dQuote{regr.km} with kernel \dQuote{matern3_2} is created.}
 \item{If the objective function is deterministic we add a small nugget effect (10^-8*Var(y),
   y is vector of observed outcomes in current design) to increase numerical stability to
   hopefully prevent crashes of DiceKriging.}
@@ -42,15 +42,15 @@ For numeric-only parameter spaces (including integers):
   You can also override this setting in \code{...}.}
 }
 
-For mixed numeric-categorical parameter spaces:
+For mixed numeric-categorical parameter spaces :
 \itemize{
 \item{A random regression forest \dQuote{regr.randomForest} with 500 trees is created.}
-\item{The standard error of a prediction is estimated by computing the jackknife-after-bootstrap, 
+\item{The standard error of a prediction (if required by the infill criterion) is estimated by computing the jackknife-after-bootstrap, 
 the mean-squared difference between the prediction made by only using trees which did not contain 
 said observation and the ensemble prediction. A Monte-Carlo bias correction is applied and, in the 
 case that this results in a negative variance estimate, the values are truncated at 0.}
 }
-For dependent parameter spaces an imputation method is added to the learner:
+If additionally dependencies are in present in the parameter space, an imputation method is added to the random forest:
 \itemize{
 \item{If a numeric value is inactive, i.e., missing, it will be imputed by 2 times the maximum of observed values}
 \item{If a categorical value is inactive, i.e., missing, it will be imputed by the special class label \code{"__miss__"}}
