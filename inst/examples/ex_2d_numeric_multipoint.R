@@ -19,8 +19,9 @@ ctrl = setMBOControlMultiPoint(ctrl,
   moimbo.maxit = 200L
 )
 
-lrn = makeMBOLearner(ctrl, obj.fun)
-
+#lrn = makeMBOLearner(ctrl, obj.fun)
+#FIXME: Remove lrn after #314 is fixed
+lrn = makeLearner("regr.km", predict.type = "se")
 design = generateDesign(10L, getParamSet(obj.fun), fun = lhs::maximinLHS)
 
 run = exampleRun(obj.fun, design = design, learner = lrn, control = ctrl,
