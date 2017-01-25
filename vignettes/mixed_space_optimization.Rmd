@@ -21,20 +21,25 @@ knitr::knit_hooks$set(document = function(x){
 })
 ```
 
-This Vignette is supposed to give you an introduction to use **mlrMBO**for mixed-space optimization, meaning to optimize an objective function with a domain that is not only real-valued but also contains discrete values like *names*.
+## Purpose
 
-# Mixed Space Optimization
+This Vignette is supposed to give you an introduction to use **mlrMBO** for mixed-space optimization, meaning to optimize an objective function with a domain that is not only real-valued but also contains discrete values like *names*.
 
-## Objective Function
-The self-constructed function can be built with `makeSingleObjetiveFunction()`. The `par.set` argument has to be a `ParamSet` object from the **ParamHelpers** package, which provides information about the parameters of the objective function and their constraints for optimization.
-We define `j` in the interval [0,1] and `k` as an integer in {1, 2}. The Parameter `method` is categorical and can be either `"a"` or `"b"`.
+## Mixed Space Optimization
+
+### Objective Function
+
+We construct an examplarly objective function using `smoof::makeSingleObjetiveFunction()`. 
+The `par.set` argument has to be a `ParamSet` object from the **ParamHelpers** package, which provides information about the parameters of the objective function and their constraints for optimization.
+The objective function will be 3-dimensional with the inputs `j`, `k` and `method`.
+`j` is in the interval [0,1] and `k` as an integer in {1, 2}. 
+The Parameter `method` is categorical and can be either `"a"` or `"b"`.
 In this case we want to maximize the function, so we have to set `minimize = FALSE`.
-As the parameters are different types (e.g. numeric and categorical), the function expects a list instead of a vector as its argument
-(This is specified by `has.simple.signature = FALSE`).
+As the parameters are of different types (e.g. numeric and categorical), the function expects a list instead of a vector as its argument, which is specified by `has.simple.signature = FALSE`.
 For further information about he **smoof** package we refer to the [github page](https://github.com/jakobbossek/smoof).
 
-```{r}
-foo = function(x) {
+```{r objective_function}
+fun = function(x) {
   j = x[[1]]
   k = x[[2]]
   method = x[[3]]
@@ -45,7 +50,7 @@ foo = function(x) {
 
 objfun2 = makeSingleObjectiveFunction(
   name = "example",
-  fn = foo,
+  fn = fun,
   par.set = makeParamSet(
     makeNumericParam("j", lower = 0,upper = 1),
     makeIntegerParam("k", lower = 1L, upper = 2L),
@@ -55,42 +60,109 @@ objfun2 = makeSingleObjectiveFunction(
   minimize = FALSE
 )
 
+# call the function for some values
 objfun2(list(j = 0.5, k = 1L, method = "a"))
 ```
 
-```{r}
-surr.rf = makeLearner("regr.randomForest", predict.type = "se", se.method = "sd")
-```
+### Sorrogate Learner
+
+For this kind of parameter space a regression method for the surrogate is necessary that supports *factors*.
+To list all *mlr* learners that support factors and uncertainty estimation you can run `listLearners("regr", properties = c("factors", "se"))`.
+A popular choice for these scenarios is the *Random Forest*.
 
 ```{r}
+surr.rf = makeLearner("regr.randomForest", predict.type = "se")
+```
+
+### Infill Criterion
+
+Although technically possible the *Expected Imrovement* that we used for the numerical parameter space and the *Kriging* surrogate, the *Confidence Bound* (`makeMBOInfillCriterionCB()`) or also called statistical upper/lower bound is recommended for *Random Forest* regression.
+The reason is, that the *Expected Improvement* is founded on the gaussian posterior distribution given by the Kriging estimator, which is not given by the Random Forest regression.
+For *maximization* the *upper* Confidence Bound is given by $UCB(x) = \hat{\mu}(x) - \lambda \cdot \hat{s}(x)$.
+We set $\lambda = 5$.
+For the infill criteria optimization we set `opt.focussearch.points = 500`, to increase the speed of the tutorial.
+
+```{r control_object}
 control2 = makeMBOControl()
 control2 = setMBOControlInfill(
   control = control2,
-  crit = makeMBOInfillCriterionCB(),
+  crit = makeMBOInfillCriterionCB(cb.lambda = 5),
   opt.focussearch.points = 500
 )
+```
+
+### Termination
+
+We want to stop after 10 MBO iterations, meaning 10 function evaluations in this example (not including the initial design):
+
+```{r termination}
 control2 = setMBOControlTermination(
   control = control2,
   iters = 10
 )
-design2 = generateDesign(n = 12, par.set = getParamSet(objfun2))
 ```
 
-## Optimization of objfun2
+### Initial Design
 
-Now let us use **mlrMBO** to optimize `objfun2`, which contains one categorical variable.
-As we have already mentioned before, in case of factor variables only `focussearch` is suitable and kriging cannot be used as a surrogate model.
-If we use `mean` as the infill criterion, any kind of model which can handle factors variables is possible (like regression trees, random forests, linear models and many others).
+The inital design is set to size of 12:
 
-```{r, eval=TRUE, results='hide'}
-mbo2 = mbo(objfun2, design = design2, learner = surr.rf, control = control2, show.info = FALSE)
-```
-```{r, eval=TRUE}
-mbo2
+```{r init_design}
+design2 = generateDesign(n = 4, par.set = getParamSet(objfun2))
 ```
 
-If we want to use the expected improvement `ei` or (lower) confidence bound `cb`, the `predict.type` attribute of the learner has be set to `se`. A list of regression learners which support it can be viewed by:
+Note that the initial design has to be big enough to cover all discrete values and ideally all combinations of discrete values including integers.
+If we had 2 discrete variables one with 5 and one with 3 discrete values the inital design should be at least of size 15.
+Usually `generateDesign()` takes care that the points are spread uniformly.
 
-```{r eval=FALSE}
-listLearners(obj = "regr", properties = "se")
+### Optimization
+
+Finally, we start the maximation with `mbo()` with surpressed learner output from *mlr* and we print the result object to obtain the input that lead to the best objective:
+```{r mbo_run, eval=TRUE}
+# Surpresses output of learners 
+mlr::configureMlr(show.info = FALSE, show.learner.output = FALSE)
+run2 = mbo(objfun2, design = design2, learner = surr.rf, control = control2, show.info = TRUE)
+print(run2)
+```
+
+## Visualization
+
+Visualization is only possible for 2-dimensional objective functions.
+Therefore we define a simplified objective function:
+
+```{r objective_function_2d}
+fun = function(x) {
+  j = x$j
+  method = x$method
+  perf = ifelse(method == "a", sin(j), cos(j))
+  return(perf)
+}
+
+objfun3 = makeSingleObjectiveFunction(
+  name = "2d_example",
+  fn = fun,
+  par.set = makeParamSet(
+    makeNumericParam("j", lower = 0,upper = pi),
+    makeDiscreteParam("method", values = c("a", "b"))
+  ),
+  has.simple.signature = FALSE,
+  minimize = FALSE
+)
+```
+
+We also generate a simplified design:
+
+```{r init_design_2d}
+design3 = generateGridDesign(getParamSet(objfun3), resolution = 4)
+```
+
+Let's start the optimization:
+
+```{r example_run_2d}
+ex.run3 = exampleRun(objfun3, design = design3, learner = surr.rf, control = control2)
+```
+
+And let's visualize the results:
+
+```{r plot_example_run_2d, warning=FALSE}
+plotExampleRun(ex.run3, iters = c(1L, 2L, 10L), pause = FALSE)
 ```

@@ -10,14 +10,9 @@ navbar:
 articles:
   - title: "mlrMBO: Quickstart"
     desc: >
-      Gives an short introduction to those already familiar with model-based optimization.
+      Gives an short introduction to the functions of mlrMBO.
     contents:
       - mlrMBO
-  - title: "In Depth Introduction"
-    desc: >
-      An in-depth introduction highlighting the key features of mlrMBO.
-    contents:
-      - in_depth_introduction
   - title: "Advanced Topics"
     desc: >
       Detailed descriptions of advanced features of mlrMBO.

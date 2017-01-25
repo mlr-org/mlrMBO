@@ -160,7 +160,29 @@ return a list with the following elements:
 
 <span class='co'># assign custom termination condition</span>
 <span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'>setMBOControlTermination</span>(<span class='no'>ctrl</span>, <span class='kw'>more.termination.conds</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='fu'>yTargetValueTerminator</span>(<span class='fl'>0.05</span>)))
-<span class='no'>res</span> <span class='kw'>=</span> <span class='fu'><a href='mbo.html'>mbo</a></span>(<span class='no'>fn</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='no'>ctrl</span>)</div></pre>
+<span class='no'>res</span> <span class='kw'>=</span> <span class='fu'><a href='mbo.html'>mbo</a></span>(<span class='no'>fn</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='no'>ctrl</span>)
+<span class='fu'>print</span>(<span class='no'>res</span>)</div><div class='output co'>#&gt; Recommended parameters:
+#&gt; x=-0.0883
+#&gt; Objective: y = 0.008
+#&gt; 
+#&gt; Optimization path
+#&gt; 4 + 3 entries in total, displaying last 10 (or less):
+#&gt;             x            y dob eol error.message exec.time       mean
+#&gt; 1 -0.76093228  0.579017935   0  NA          &lt;NA&gt;         0         NA
+#&gt; 2 -4.47445290 20.020728746   0  NA          &lt;NA&gt;         0         NA
+#&gt; 3  4.44616620 19.768393841   0  NA          &lt;NA&gt;         0         NA
+#&gt; 4  2.34827602  5.514400276   0  NA          &lt;NA&gt;         0         NA
+#&gt; 5 -2.98950445  8.937136856   1  NA          &lt;NA&gt;         0 11.4706352
+#&gt; 6  2.86197940  8.190926106   2  NA          &lt;NA&gt;         0 10.9639355
+#&gt; 7 -0.08827065  0.007791708   3  NA          &lt;NA&gt;         0  0.1666497
+#&gt;   error.model train.time   prop.type propose.time
+#&gt; 1        &lt;NA&gt;         NA  initdesign           NA
+#&gt; 2        &lt;NA&gt;         NA  initdesign           NA
+#&gt; 3        &lt;NA&gt;         NA  initdesign           NA
+#&gt; 4        &lt;NA&gt;         NA  initdesign           NA
+#&gt; 5        &lt;NA&gt;      0.032 infill_mean        0.209
+#&gt; 6        &lt;NA&gt;      0.023 infill_mean        0.327
+#&gt; 7        &lt;NA&gt;      0.038 infill_mean        0.221</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

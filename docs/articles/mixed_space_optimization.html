@@ -64,15 +64,19 @@
     
     
 <div class="contents">
-<p>This Vignette is supposed to give you an introduction to use <strong>mlrMBO</strong>for mixed-space optimization, meaning to optimize an objective function with a domain that is not only real-valued but also contains discrete values like <em>names</em>.</p>
-<div id="mixed-space-optimization" class="section level1">
-<h1 class="hasAnchor">
-<html><body><a href="#mixed-space-optimization" class="anchor"> </a></body></html>Mixed Space Optimization</h1>
-<div id="objective-function" class="section level2">
+<div id="purpose" class="section level2">
 <h2 class="hasAnchor">
-<html><body><a href="#objective-function" class="anchor"> </a></body></html>Objective Function</h2>
-<p>The self-constructed function can be built with <code>makeSingleObjetiveFunction()</code>. The <code>par.set</code> argument has to be a <code>ParamSet</code> object from the <strong>ParamHelpers</strong> package, which provides information about the parameters of the objective function and their constraints for optimization. We define <code>j</code> in the interval [0,1] and <code>k</code> as an integer in {1, 2}. The Parameter <code>method</code> is categorical and can be either <code>"a"</code> or <code>"b"</code>. In this case we want to maximize the function, so we have to set <code>minimize = FALSE</code>. As the parameters are different types (e.g. numeric and categorical), the function expects a list instead of a vector as its argument (This is specified by <code>has.simple.signature = FALSE</code>). For further information about he <strong>smoof</strong> package we refer to the <a href="https://github.com/jakobbossek/smoof">github page</a>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">foo =<span class="st"> </span>function(x) {
+<html><body><a href="#purpose" class="anchor"> </a></body></html>Purpose</h2>
+<p>This Vignette is supposed to give you an introduction to use <strong>mlrMBO</strong> for mixed-space optimization, meaning to optimize an objective function with a domain that is not only real-valued but also contains discrete values like <em>names</em>.</p>
+</div>
+<div id="mixed-space-optimization" class="section level2">
+<h2 class="hasAnchor">
+<html><body><a href="#mixed-space-optimization" class="anchor"> </a></body></html>Mixed Space Optimization</h2>
+<div id="objective-function" class="section level3">
+<h3 class="hasAnchor">
+<html><body><a href="#objective-function" class="anchor"> </a></body></html>Objective Function</h3>
+<p>We construct an examplarly objective function using <code>smoof::makeSingleObjetiveFunction()</code>. The <code>par.set</code> argument has to be a <code>ParamSet</code> object from the <strong>ParamHelpers</strong> package, which provides information about the parameters of the objective function and their constraints for optimization. The objective function will be 3-dimensional with the inputs <code>j</code>, <code>k</code> and <code>method</code>. <code>j</code> is in the interval [0,1] and <code>k</code> as an integer in {1, 2}. The Parameter <code>method</code> is categorical and can be either <code>"a"</code> or <code>"b"</code>. In this case we want to maximize the function, so we have to set <code>minimize = FALSE</code>. As the parameters are of different types (e.g. numeric and categorical), the function expects a list instead of a vector as its argument, which is specified by <code>has.simple.signature = FALSE</code>. For further information about he <strong>smoof</strong> package we refer to the <a href="https://github.com/jakobbossek/smoof">github page</a>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fun =<span class="st"> </span>function(x) {
   j =<span class="st"> </span>x[[<span class="dv">1</span>]]
   k =<span class="st"> </span>x[[<span class="dv">2</span>]]
   method =<span class="st"> </span>x[[<span class="dv">3</span>]]
@@ -83,7 +87,7 @@
 
 objfun2 =<span class="st"> </span><span class="kw">makeSingleObjectiveFunction</span>(
   <span class="dt">name =</span> <span class="st">"example"</span>,
-  <span class="dt">fn =</span> foo,
+  <span class="dt">fn =</span> fun,
   <span class="dt">par.set =</span> <span class="kw">makeParamSet</span>(
     <span class="kw">makeNumericParam</span>(<span class="st">"j"</span>, <span class="dt">lower =</span> <span class="dv">0</span>,<span class="dt">upper =</span> <span class="dv">1</span>),
     <span class="kw">makeIntegerParam</span>(<span class="st">"k"</span>, <span class="dt">lower =</span> 1L, <span class="dt">upper =</span> 2L),
@@ -93,58 +97,1375 @@ objfun2 =<span class="st"> </span><span class="kw">makeSingleObjectiveFunction</
   <span class="dt">minimize =</span> <span class="ot">FALSE</span>
 )
 
+<span class="co"># call the function for some values</span>
 <span class="kw">objfun2</span>(<span class="kw">list</span>(<span class="dt">j =</span> <span class="fl">0.5</span>, <span class="dt">k =</span> 1L, <span class="dt">method =</span> <span class="st">"a"</span>))
 ## [1] 1.357008</code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">surr.rf =<span class="st"> </span><span class="kw">makeLearner</span>(<span class="st">"regr.randomForest"</span>, <span class="dt">predict.type =</span> <span class="st">"se"</span>, <span class="dt">se.method =</span> <span class="st">"sd"</span>)</code></pre></div>
+</div>
+<div id="sorrogate-learner" class="section level3">
+<h3 class="hasAnchor">
+<html><body><a href="#sorrogate-learner" class="anchor"> </a></body></html>Sorrogate Learner</h3>
+<p>For this kind of parameter space a regression method for the surrogate is necessary that supports <em>factors</em>. To list all <em>mlr</em> learners that support factors and uncertainty estimation you can run <code>listLearners("regr", properties = c("factors", "se"))</code>. A popular choice for these scenarios is the <em>Random Forest</em>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">surr.rf =<span class="st"> </span><span class="kw">makeLearner</span>(<span class="st">"regr.randomForest"</span>, <span class="dt">predict.type =</span> <span class="st">"se"</span>)</code></pre></div>
+</div>
+<div id="infill-criterion" class="section level3">
+<h3 class="hasAnchor">
+<html><body><a href="#infill-criterion" class="anchor"> </a></body></html>Infill Criterion</h3>
+<p>Although technically possible the <em>Expected Imrovement</em> that we used for the numerical parameter space and the <em>Kriging</em> surrogate, the <em>Confidence Bound</em> (<code><a href="../reference/infillcrits.html">makeMBOInfillCriterionCB()</a></code>) or also called statistical upper/lower bound is recommended for <em>Random Forest</em> regression. The reason is, that the <em>Expected Improvement</em> is founded on the gaussian posterior distribution given by the Kriging estimator, which is not given by the Random Forest regression. For <em>maximization</em> the <em>upper</em> Confidence Bound is given by <span class="math inline">\(UCB(x) = \hat{\mu}(x) - \lambda \cdot \hat{s}(x)\)</span>. We set <span class="math inline">\(\lambda = 5\)</span>. For the infill criteria optimization we set <code>opt.focussearch.points = 500</code>, to increase the speed of the tutorial.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">control2 =<span class="st"> </span><span class="kw"><a href="../reference/makeMBOControl.html">makeMBOControl</a></span>()
 control2 =<span class="st"> </span><span class="kw"><a href="../reference/setMBOControlInfill.html">setMBOControlInfill</a></span>(
   <span class="dt">control =</span> control2,
-  <span class="dt">crit =</span> <span class="kw"><a href="../reference/infillcrits.html">makeMBOInfillCriterionCB</a></span>(),
+  <span class="dt">crit =</span> <span class="kw"><a href="../reference/infillcrits.html">makeMBOInfillCriterionCB</a></span>(<span class="dt">cb.lambda =</span> <span class="dv">5</span>),
   <span class="dt">opt.focussearch.points =</span> <span class="dv">500</span>
-)
-control2 =<span class="st"> </span><span class="kw"><a href="../reference/setMBOControlTermination.html">setMBOControlTermination</a></span>(
+)</code></pre></div>
+</div>
+<div id="termination" class="section level3">
+<h3 class="hasAnchor">
+<html><body><a href="#termination" class="anchor"> </a></body></html>Termination</h3>
+<p>We want to stop after 10 MBO iterations, meaning 10 function evaluations in this example (not including the initial design):</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">control2 =<span class="st"> </span><span class="kw"><a href="../reference/setMBOControlTermination.html">setMBOControlTermination</a></span>(
   <span class="dt">control =</span> control2,
   <span class="dt">iters =</span> <span class="dv">10</span>
-)
-design2 =<span class="st"> </span><span class="kw">generateDesign</span>(<span class="dt">n =</span> <span class="dv">12</span>, <span class="dt">par.set =</span> <span class="kw">getParamSet</span>(objfun2))</code></pre></div>
+)</code></pre></div>
 </div>
-<div id="optimization-of-objfun2" class="section level2">
-<h2 class="hasAnchor">
-<html><body><a href="#optimization-of-objfun2" class="anchor"> </a></body></html>Optimization of objfun2</h2>
-<p>Now let us use <strong>mlrMBO</strong> to optimize <code>objfun2</code>, which contains one categorical variable. As we have already mentioned before, in case of factor variables only <code>focussearch</code> is suitable and kriging cannot be used as a surrogate model. If we use <code>mean</code> as the infill criterion, any kind of model which can handle factors variables is possible (like regression trees, random forests, linear models and many others).</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mbo2 =<span class="st"> </span><span class="kw"><a href="../reference/mbo.html">mbo</a></span>(objfun2, <span class="dt">design =</span> design2, <span class="dt">learner =</span> surr.rf, <span class="dt">control =</span> control2, <span class="dt">show.info =</span> <span class="ot">FALSE</span>)</code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mbo2
+<div id="initial-design" class="section level3">
+<h3 class="hasAnchor">
+<html><body><a href="#initial-design" class="anchor"> </a></body></html>Initial Design</h3>
+<p>The inital design is set to size of 12:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">design2 =<span class="st"> </span><span class="kw">generateDesign</span>(<span class="dt">n =</span> <span class="dv">4</span>, <span class="dt">par.set =</span> <span class="kw">getParamSet</span>(objfun2))</code></pre></div>
+<p>Note that the initial design has to be big enough to cover all discrete values and ideally all combinations of discrete values including integers. If we had 2 discrete variables one with 5 and one with 3 discrete values the inital design should be at least of size 15. Usually <code>generateDesign()</code> takes care that the points are spread uniformly.</p>
+</div>
+<div id="optimization" class="section level3">
+<h3 class="hasAnchor">
+<html><body><a href="#optimization" class="anchor"> </a></body></html>Optimization</h3>
+<p>Finally, we start the maximation with <code><a href="../reference/mbo.html">mbo()</a></code> with surpressed learner output from <em>mlr</em> and we print the result object to obtain the input that lead to the best objective:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Surpresses output of learners </span>
+mlr::<span class="kw">configureMlr</span>(<span class="dt">show.info =</span> <span class="ot">FALSE</span>, <span class="dt">show.learner.output =</span> <span class="ot">FALSE</span>)
+run2 =<span class="st"> </span><span class="kw"><a href="../reference/mbo.html">mbo</a></span>(objfun2, <span class="dt">design =</span> design2, <span class="dt">learner =</span> surr.rf, <span class="dt">control =</span> control2, <span class="dt">show.info =</span> <span class="ot">TRUE</span>)
+## Computing y column(s) for design. Not provided.
+## [mbo] 0: j=0.169; k=1; method=b : y = 1.15 : 0.0 secs : initdesign
+## [mbo] 0: j=0.643; k=2; method=a : y = 2 : 0.0 secs : initdesign
+## [mbo] 0: j=0.276; k=2; method=a : y = 1.51 : 0.0 secs : initdesign
+## [mbo] 0: j=0.975; k=1; method=b : y = 1.39 : 0.0 secs : initdesign
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+## [mbo] 1: j=0.504; k=2; method=a : y = 1.84 : 0.0 secs : infill_cb
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+## [mbo] 2: j=0.584; k=2; method=a : y = 1.94 : 0.0 secs : infill_cb
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+## [mbo] 3: j=0.544; k=2; method=a : y = 1.89 : 0.0 secs : infill_cb
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+## [mbo] 4: j=0.741; k=2; method=a : y = 2.09 : 0.0 secs : infill_cb
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+## [mbo] 5: j=0.763; k=2; method=a : y = 2.1 : 0.0 secs : infill_cb
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+## [mbo] 6: j=0.849; k=2; method=a : y = 2.16 : 0.0 secs : infill_cb
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+## [mbo] 7: j=0.856; k=2; method=a : y = 2.17 : 0.0 secs : infill_cb
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+## [mbo] 8: j=0.811; k=2; method=a : y = 2.14 : 0.0 secs : infill_cb
+## [mbo] 9: j=0.848; k=2; method=a : y = 2.16 : 0.0 secs : infill_cb
+## [mbo] 10: j=0.882; k=2; method=a : y = 2.18 : 0.0 secs : infill_cb
+<span class="kw">print</span>(run2)
 ## Recommended parameters:
-## j=0.353; k=2; method=b
-## Objective: y = 2.222
+## j=0.882; k=2; method=a
+## Objective: y = 2.180
 ## 
 ## Optimization path
-## 12 + 10 entries in total, displaying last 10 (or less):
-##              j k method        y dob eol error.message exec.time        cb
-## 13 0.132966015 2      b 2.114921   1  NA          &lt;NA&gt;     0.000 -2.166904
-## 14 0.040087688 2      b 2.038470   2  NA          &lt;NA&gt;     0.000 -2.229632
-## 15 0.040880411 2      b 2.039198   3  NA          &lt;NA&gt;     0.000 -2.240200
-## 16 0.008632466 2      b 2.008558   4  NA          &lt;NA&gt;     0.000 -2.240524
-## 17 0.025641650 2      b 2.024981   5  NA          &lt;NA&gt;     0.001 -2.220855
-## 18 0.021430074 2      b 2.020969   6  NA          &lt;NA&gt;     0.000 -2.216404
-## 19 0.018744352 2      b 2.018392   7  NA          &lt;NA&gt;     0.000 -2.214736
-## 20 0.018163126 2      b 2.017832   8  NA          &lt;NA&gt;     0.000 -2.200436
-## 21 0.017691025 2      b 2.017377   9  NA          &lt;NA&gt;     0.000 -2.199487
-## 22 0.197707930 2      b 2.157461  10  NA          &lt;NA&gt;     0.000 -2.172174
-##    error.model train.time prop.type propose.time        se     mean lambda
-## 13        &lt;NA&gt;      0.011 infill_cb        0.278 0.3064412 1.860463      1
-## 14        &lt;NA&gt;      0.003 infill_cb        0.238 0.3929207 1.836711      1
-## 15        &lt;NA&gt;      0.004 infill_cb        0.142 0.2848477 1.955353      1
-## 16        &lt;NA&gt;      0.003 infill_cb        0.256 0.4091722 1.831352      1
-## 17        &lt;NA&gt;      0.004 infill_cb        0.139 0.2687141 1.952141      1
-## 18        &lt;NA&gt;      0.004 infill_cb        0.256 0.2957847 1.920620      1
-## 19        &lt;NA&gt;      0.005 infill_cb        0.261 0.3016631 1.913073      1
-## 20        &lt;NA&gt;      0.004 infill_cb        0.143 0.2705895 1.929846      1
-## 21        &lt;NA&gt;      0.116 infill_cb        0.255 0.2720653 1.927422      1
-## 22        &lt;NA&gt;      0.005 infill_cb        0.140 0.1883779 1.983796      1</code></pre></div>
-<p>If we want to use the expected improvement <code>ei</code> or (lower) confidence bound <code>cb</code>, the <code>predict.type</code> attribute of the learner has be set to <code>se</code>. A list of regression learners which support it can be viewed by:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">listLearners</span>(<span class="dt">obj =</span> <span class="st">"regr"</span>, <span class="dt">properties =</span> <span class="st">"se"</span>)</code></pre></div>
+## 4 + 10 entries in total, displaying last 10 (or less):
+##            j k method        y dob eol error.message exec.time        cb
+## 5  0.5036369 2      a 1.841061   1  NA          &lt;NA&gt;         0 -1.897968
+## 6  0.5835300 2      a 1.936469   2  NA          &lt;NA&gt;         0 -1.905928
+## 7  0.5437966 2      a 1.890528   3  NA          &lt;NA&gt;         0 -1.929048
+## 8  0.7408427 2      a 2.087720   4  NA          &lt;NA&gt;         0 -1.927953
+## 9  0.7630163 2      a 2.104964   5  NA          &lt;NA&gt;         0 -1.992328
+## 10 0.8493583 2      a 2.162179   6  NA          &lt;NA&gt;         0 -1.989379
+## 11 0.8564590 2      a 2.166172   7  NA          &lt;NA&gt;         0 -2.050080
+## 12 0.8108749 2      a 2.138645   8  NA          &lt;NA&gt;         0 -2.075394
+## 13 0.8483262 2      a 2.161589   9  NA          &lt;NA&gt;         0 -2.073537
+## 14 0.8818304 2      a 2.179547  10  NA          &lt;NA&gt;         0 -2.095740
+##    error.model train.time prop.type propose.time         se     mean
+## 5         &lt;NA&gt;      0.137 infill_cb        2.889 0.18213065 1.715837
+## 6         &lt;NA&gt;      0.117 infill_cb        2.799 0.14726683 1.758662
+## 7         &lt;NA&gt;      0.116 infill_cb        2.677 0.11873768 1.810310
+## 8         &lt;NA&gt;      0.138 infill_cb        2.649 0.07517932 1.852774
+## 9         &lt;NA&gt;      0.113 infill_cb        2.565 0.09140368 1.900924
+## 10        &lt;NA&gt;      0.106 infill_cb        2.590 0.07111206 1.918267
+## 11        &lt;NA&gt;      0.104 infill_cb        2.548 0.06913714 1.980943
+## 12        &lt;NA&gt;      0.121 infill_cb        2.942 0.05929428 2.016100
+## 13        &lt;NA&gt;      0.110 infill_cb        2.700 0.04049710 2.033040
+## 14        &lt;NA&gt;      0.103 infill_cb        2.643 0.05901558 2.036724
+##    lambda
+## 5       1
+## 6       1
+## 7       1
+## 8       1
+## 9       1
+## 10      1
+## 11      1
+## 12      1
+## 13      1
+## 14      1</code></pre></div>
 </div>
+</div>
+<div id="visualization" class="section level2">
+<h2 class="hasAnchor">
+<html><body><a href="#visualization" class="anchor"> </a></body></html>Visualization</h2>
+<p>Visualization is only possible for 2-dimensional objective functions. Therefore we define a simplified objective function:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fun =<span class="st"> </span>function(x) {
+  j =<span class="st"> </span>x$j
+  method =<span class="st"> </span>x$method
+  perf =<span class="st"> </span><span class="kw">ifelse</span>(method ==<span class="st"> "a"</span>, <span class="kw">sin</span>(j), <span class="kw">cos</span>(j))
+  <span class="kw">return</span>(perf)
+}
+
+objfun3 =<span class="st"> </span><span class="kw">makeSingleObjectiveFunction</span>(
+  <span class="dt">name =</span> <span class="st">"2d_example"</span>,
+  <span class="dt">fn =</span> fun,
+  <span class="dt">par.set =</span> <span class="kw">makeParamSet</span>(
+    <span class="kw">makeNumericParam</span>(<span class="st">"j"</span>, <span class="dt">lower =</span> <span class="dv">0</span>,<span class="dt">upper =</span> pi),
+    <span class="kw">makeDiscreteParam</span>(<span class="st">"method"</span>, <span class="dt">values =</span> <span class="kw">c</span>(<span class="st">"a"</span>, <span class="st">"b"</span>))
+  ),
+  <span class="dt">has.simple.signature =</span> <span class="ot">FALSE</span>,
+  <span class="dt">minimize =</span> <span class="ot">FALSE</span>
+)</code></pre></div>
+<p>We also generate a simplified design:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">design3 =<span class="st"> </span><span class="kw">generateGridDesign</span>(<span class="kw">getParamSet</span>(objfun3), <span class="dt">resolution =</span> <span class="dv">4</span>)</code></pre></div>
+<p>Let’s start the optimization:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ex.run3 =<span class="st"> </span><span class="kw"><a href="../reference/exampleRun.html">exampleRun</a></span>(objfun3, <span class="dt">design =</span> design3, <span class="dt">learner =</span> surr.rf, <span class="dt">control =</span> control2)
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?
+
+## Warning in randomForest.default(x = data[["data"]], y = data[["target"]], :
+## The response has five or fewer unique values. Are you sure you want to do
+## regression?</code></pre></div>
+<p>And let’s visualize the results:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/plotExampleRun.html">plotExampleRun</a></span>(ex.run3, <span class="dt">iters =</span> <span class="kw">c</span>(1L, 2L, 10L), <span class="dt">pause =</span> <span class="ot">FALSE</span>)
+## Loading required package: ggplot2</code></pre></div>
+<p><img src="mixed_space_optimization_files/figure-html/plot_example_run_2d-1.png" width="672"><img src="mixed_space_optimization_files/figure-html/plot_example_run_2d-2.png" width="672"><img src="mixed_space_optimization_files/figure-html/plot_example_run_2d-3.png" width="672"></p>
 </div>
 </div>
   </div>
@@ -153,12 +1474,9 @@ design2 =<span class="st"> </span><span class="kw">generateDesign</span>(<span c
         <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-<li>
-<a href="#mixed-space-optimization">Mixed Space Optimization</a><ul class="nav nav-pills nav-stacked">
-<li><a href="#objective-function">Objective Function</a></li>
-      <li><a href="#optimization-of-objfun2">Optimization of objfun2</a></li>
-      </ul>
-</li>
+<li><a href="#purpose">Purpose</a></li>
+      <li><a href="#mixed-space-optimization">Mixed Space Optimization</a></li>
+      <li><a href="#visualization">Visualization</a></li>
       </ul>
 </div>
       </div>

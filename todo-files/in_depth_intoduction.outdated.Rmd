@@ -62,7 +62,7 @@ This can be changed in the control object.
 
 ## Surrogate Model
 
-In our example we use *Kiriging* as a surrogate because it is the most common for numerical model-based optimization and has prooven to be quite effective.
+In our example we use *Kiriging* as a surrogate because it is the most common for numerical model-based optimization and has proven to be quite effective.
 We use **mlr** to generate the Kriging regression learner from the package **DiceKriging**.
 
 ```{r}
@@ -118,7 +118,7 @@ The possibilities are:
 
 * `focussearch`: A Latin Hypercube design of size `opt.focussearch.points` (default 10000) is sampled in the parameter space (by `randomLHS`) and the design point with the best prediction of the infill criterion is determined. Then, the parameter space is shrunk around this point. This step is repeated `opt.focussearch.maxit` (default 5) times and the best observed point is passed back.
 * `cmaes`: The optimal point is found with a covariance matrix adapting evolutionary strategy from the **cmaes** package. If the strategy fails, a random point is generated and a warning is given. Further control arguments can be provided in `opt.cmaes.control` as a list.
-* `ea`: Use an evolutionary multiobjective optimization algorithm from the package **emoa** to determine the best point. The population size mu can be set by  `opt.ea.mu` (default value is 10). (mu+1) means that in each population only one child is generated using crossover and mutation operators. The parameters `eta` and `p` of the latter two operators can be adjusted via the attributes `opt.ea.sbx.eta`, `opt.ea.sbx.p`,`opt.ea.pm.eta` and `opt.ea.pm.p`. The default number of EA iterations is 500 and can be changed by `opt.ea.maxit` attribute.
+* `ea`: Use an evolutionary multi-objective optimization algorithm from the package **emoa** to determine the best point. The population size mu can be set by  `opt.ea.mu` (default value is 10). (mu+1) means that in each population only one child is generated using crossover and mutation operators. The parameters `eta` and `p` of the latter two operators can be adjusted via the attributes `opt.ea.sbx.eta`, `opt.ea.sbx.p`,`opt.ea.pm.eta` and `opt.ea.pm.p`. The default number of EA iterations is 500 and can be changed by `opt.ea.maxit` attribute.
 * `nsga2`: Use the non-dominated sorting genetic algorithm from the package **nsga2R** to determine the best point. This algorithm should be used for *multi objective optimization* (see Vignette).
 
 As all four infill optimization strategies do not guarantee to find the global optimum, users can set the number of restarts by the `opt.restarts` argument (default value is 1).
@@ -171,7 +171,7 @@ res = mbo(objfun1, design = des, learner = surr.km, control = ctrl, show.info = 
 print(res)
 ```
 
-The default output of mbo contains the best found parameter set and the optimzation path.
+The default output of mbo contains the best found parameter set and the optimization path.
 The `MBOResult` object contains additional information, most importantly:
 
 * `x`: The best point of the parameter space

@@ -107,7 +107,7 @@
 <div id="optimizing-a-one-dimensional-function-" class="section level3">
 <h3 class="hasAnchor">
 <html><body><a href="#optimizing-a-one-dimensional-function-" class="anchor"> </a></body></html>Optimizing a one dimensional function.</h3>
-<p>For a simple example we choose to minimize a cosine mixture function with an initial design of 5 points and 10 further evaluations. Meaning that in total the optimizer gets 15 evaluations on the objective function to find the optimum.</p>
+<p>For a simple example we minimize a cosine mixture function with an initial design of 5 points and 10 further evaluations. Meaning that in total the optimizer gets 15 evaluations on the objective function to find the optimum.</p>
 <div id="objective-function" class="section level4">
 <h4 class="hasAnchor">
 <html><body><a href="#objective-function" class="anchor"> </a></body></html>Objective Function</h4>
@@ -116,7 +116,7 @@
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">obj.fun =<span class="st"> </span><span class="kw">makeCosineMixtureFunction</span>(<span class="dv">1</span>)
 obj.fun =<span class="st"> </span><span class="kw">convertToMinimization</span>(obj.fun)
 <span class="kw">print</span>(obj.fun)
-ggplot2::<span class="kw">autoplot</span>(obj.fun, <span class="dt">show.optimum =</span> <span class="ot">TRUE</span>)</code></pre></div>
+ggplot2::<span class="kw">autoplot</span>(obj.fun)</code></pre></div>
 <p><img src="mlrMBO_files/figure-html/cosine_fun-1.png" width="672"></p>
 <pre><code>## Single-objective function
 ## Name: Cosine Mixture Function
@@ -135,7 +135,7 @@ ggplot2::<span class="kw">autoplot</span>(obj.fun, <span class="dt">show.optimum
 <div id="initial-design" class="section level4">
 <h4 class="hasAnchor">
 <html><body><a href="#initial-design" class="anchor"> </a></body></html>Initial Design</h4>
-<p>Before the MBO algorithm can starts it needs a set of already evaluated points - the <em>inital design</em>. If no design is given (i.e. <code>design = NULL</code>) <code><a href="../reference/mbo.html">mbo()</a></code> will use a <em>Maximin Latin Hypercube</em> <code>lhs::maximinLHS()</code> design with <code>n = 4 * getNumberOfParameters(obj.fun)</code> points. If the design does not include function outcomes <code><a href="../reference/mbo.html">mbo()</a></code> will evaluate the design first before starting with the MBO algorithm. In this example we choose to generate our own design.</p>
+<p>Before the MBO algorithm can starts it needs a set of already evaluated points - the <em>inital design</em>. If no design is given (i.e. <code>design = NULL</code>) <code><a href="../reference/mbo.html">mbo()</a></code> will use a <em>Maximin Latin Hypercube</em> <code>lhs::maximinLHS()</code> design with <code>n = 4 * getNumberOfParameters(obj.fun)</code> points. If the design does not include function outcomes <code><a href="../reference/mbo.html">mbo()</a></code> will evaluate the design first before starting with the MBO algorithm. In this example we generate our own design.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">des =<span class="st"> </span><span class="kw">generateDesign</span>(<span class="dt">n =</span> <span class="dv">5</span>, <span class="dt">par.set =</span> <span class="kw">getParamSet</span>(obj.fun), <span class="dt">fun =</span> lhs::randomLHS)</code></pre></div>
 <p>We will also precalculate the results:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">des$y =<span class="st"> </span><span class="kw">apply</span>(des, <span class="dv">1</span>, obj.fun)</code></pre></div>
@@ -155,7 +155,7 @@ ggplot2::<span class="kw">autoplot</span>(obj.fun, <span class="dt">show.optimum
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">control =<span class="st"> </span><span class="kw"><a href="../reference/makeMBOControl.html">makeMBOControl</a></span>()
 control =<span class="st"> </span><span class="kw"><a href="../reference/setMBOControlTermination.html">setMBOControlTermination</a></span>(control, <span class="dt">iters =</span> <span class="dv">10</span>)
 control =<span class="st"> </span><span class="kw"><a href="../reference/setMBOControlInfill.html">setMBOControlInfill</a></span>(control, <span class="dt">crit =</span> <span class="kw"><a href="../reference/infillcrits.html">makeMBOInfillCriterionEI</a></span>())</code></pre></div>
-<p>Finally, we start the optimization process and print the result object.</p>
+<p>Finally, we start the optimization process and print the result object, which gives us the best found solution and the reached objective value. These can also be accessed using the ‘$’ operator.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">run =<span class="st"> </span><span class="kw"><a href="../reference/mbo.html">mbo</a></span>(obj.fun, <span class="dt">design =</span> des, <span class="dt">learner =</span> surr.km, <span class="dt">control =</span> control, <span class="dt">show.info =</span> <span class="ot">TRUE</span>)
 ## [mbo] 1: x=-0.161 : y = -0.0557 : 0.0 secs : infill_ei
 ## [mbo] 2: x=-0.186 : y = -0.063 : 0.0 secs : infill_ei
@@ -180,27 +180,31 @@ control =<span class="st"> </span><span class="kw"><a href="../reference/setMBOC
 ## 8  -0.4530693  0.27249249   3  NA          &lt;NA&gt;     0.000 -8.941453e-04
 ## 9  -0.1792102 -0.06259867   4  NA          &lt;NA&gt;     0.000 -4.297711e-04
 ## 10 -0.1936115 -0.06201151   5  NA          &lt;NA&gt;     0.000 -1.492891e-04
-## 11 -0.1833641 -0.06298269   6  NA          &lt;NA&gt;     0.001 -5.562469e-05
+## 11 -0.1833641 -0.06298269   6  NA          &lt;NA&gt;     0.000 -5.562469e-05
 ## 12 -0.1878043 -0.06290020   7  NA          &lt;NA&gt;     0.000 -2.667342e-05
-## 13 -0.1846021 -0.06301125   8  NA          &lt;NA&gt;     0.000 -1.415215e-05
-## 14 -0.1850167 -0.06301193   9  NA          &lt;NA&gt;     0.000 -3.637684e-06
-## 15 -0.1841743 -0.06300587  10  NA          &lt;NA&gt;     0.000 -1.340960e-06
+## 13 -0.1846021 -0.06301125   8  NA          &lt;NA&gt;     0.000 -1.415233e-05
+## 14 -0.1850167 -0.06301193   9  NA          &lt;NA&gt;     0.000 -3.637686e-06
+## 15 -0.1841743 -0.06300587  10  NA          &lt;NA&gt;     0.001 -1.340947e-06
 ##    error.model train.time prop.type propose.time           se         mean
-## 6         &lt;NA&gt;      0.017 infill_ei        0.215 7.674220e-02 -0.007971276
-## 7         &lt;NA&gt;      0.018 infill_ei        0.224 1.246695e-02 -0.053528542
-## 8         &lt;NA&gt;      0.017 infill_ei        0.337 1.535095e-01  0.265156088
-## 9         &lt;NA&gt;      0.020 infill_ei        0.186 1.517696e-03 -0.062615241
-## 10        &lt;NA&gt;      0.015 infill_ei        0.208 1.577773e-03 -0.061535717
-## 11        &lt;NA&gt;      0.016 infill_ei        0.217 1.666733e-04 -0.062983704
-## 12        &lt;NA&gt;      0.015 infill_ei        0.237 1.567049e-04 -0.062913560
-## 13        &lt;NA&gt;      0.018 infill_ei        0.355 2.959379e-05 -0.063011133
-## 14        &lt;NA&gt;      0.016 infill_ei        0.215 8.120184e-06 -0.063012018
-## 15        &lt;NA&gt;      0.016 infill_ei        0.215 9.058020e-06 -0.063005783</code></pre></div>
-<p>To get better insight into the MBO process, we can start the optimization with the function <code><a href="../reference/exampleRun.html">exampleRun()</a></code> instead of <code><a href="../reference/mbo.html">mbo()</a></code>. This specialized function augments the results of <code><a href="../reference/mbo.html">mbo()</a></code> with additional information for plotting. Here, we opt to plot the optimization state at iterations 1, 3, and 10.</p>
+## 6         &lt;NA&gt;      0.017 infill_ei        0.214 7.674220e-02 -0.007971276
+## 7         &lt;NA&gt;      0.021 infill_ei        0.218 1.246695e-02 -0.053528542
+## 8         &lt;NA&gt;      0.017 infill_ei        0.272 1.535095e-01  0.265156088
+## 9         &lt;NA&gt;      0.021 infill_ei        0.245 1.517696e-03 -0.062615241
+## 10        &lt;NA&gt;      0.034 infill_ei        0.230 1.577773e-03 -0.061535717
+## 11        &lt;NA&gt;      0.017 infill_ei        0.224 1.666733e-04 -0.062983704
+## 12        &lt;NA&gt;      0.019 infill_ei        0.233 1.567049e-04 -0.062913560
+## 13        &lt;NA&gt;      0.018 infill_ei        0.244 2.959425e-05 -0.063011133
+## 14        &lt;NA&gt;      0.019 infill_ei        0.245 8.120188e-06 -0.063012018
+## 15        &lt;NA&gt;      0.017 infill_ei        0.249 9.057979e-06 -0.063005783</code></pre></div>
+</div>
+</div>
+<div id="visualization" class="section level3">
+<h3 class="hasAnchor">
+<html><body><a href="#visualization" class="anchor"> </a></body></html>Visualization</h3>
+<p>To get better insight into the MBO process, we can start the previous optimization with the function <code><a href="../reference/exampleRun.html">exampleRun()</a></code> instead of <code><a href="../reference/mbo.html">mbo()</a></code>. This specialized function augments the results of <code><a href="../reference/mbo.html">mbo()</a></code> with additional information for plotting. Here, we plot the optimization state at iterations 1, 2, and 10.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">run =<span class="st"> </span><span class="kw"><a href="../reference/exampleRun.html">exampleRun</a></span>(obj.fun, <span class="dt">learner =</span> surr.km, <span class="dt">control =</span> control, <span class="dt">show.info =</span> <span class="ot">FALSE</span>)</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(run)
-<span class="kw"><a href="../reference/plotExampleRun.html">plotExampleRun</a></span>(run, <span class="dt">iters =</span> <span class="kw">c</span>(1L, 3L, 10L), <span class="dt">pause =</span> <span class="ot">FALSE</span>)
-## Loading required package: ggplot2</code></pre></div>
+<span class="kw"><a href="../reference/plotExampleRun.html">plotExampleRun</a></span>(run, <span class="dt">iters =</span> <span class="kw">c</span>(1L, 2L, 10L), <span class="dt">pause =</span> <span class="ot">FALSE</span>)</code></pre></div>
 <p><img src="mlrMBO_files/figure-html/cosine_plot_examplerun-1.png" width="672"><img src="mlrMBO_files/figure-html/cosine_plot_examplerun-2.png" width="672"><img src="mlrMBO_files/figure-html/cosine_plot_examplerun-3.png" width="672"></p>
 <pre><code>## MBOExampleRun
 ## Number of parameters        : 1
@@ -225,7 +229,6 @@ control =<span class="st"> </span><span class="kw"><a href="../reference/setMBOC
 ## Recommended parameters:
 ## x=0.184
 ## Objective: y = -6.301e-02</code></pre>
-</div>
 </div>
 </div>
 </div>
