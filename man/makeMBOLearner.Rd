@@ -22,9 +22,10 @@ Will overwrite mlrMBO's defaults.}
 [\code{Learner}]
 }
 \description{
-This is a helper function that generates a default surrogate, based on properties of the objective function and the selected infill criterion.
+This is a helper function that generates a default surrogate, based on properties of the objective
+function and the selected infill criterion.
 
-For numeric-only (including integers) parameter spaces without any dependencies :
+For numeric-only (including integers) parameter spaces without any dependencies:
 \itemize{
 \item{A Kriging model \dQuote{regr.km} with kernel \dQuote{matern3_2} is created.}
 \item{If the objective function is deterministic we add a small nugget effect (10^-8*Var(y),
@@ -34,26 +35,39 @@ For numeric-only (including integers) parameter spaces without any dependencies 
   \code{nugget.estim = TRUE} (but you can override this in \code{...}.}
   Also \code{jitter} is set to \code{TRUE} to circumvent a problem with DiceKriging where already
   trained input values produce the exact trained output.
-  For further informations check the \code{$note} slot of the created learner.
+  For further information check the \code{$note} slot of the created learner.
 \item{Instead of the default \code{"BFGS"} optimization method we use rgenoud (\code{"gen"}),
   which is a hybrid algorithm, to combine global search based on genetic algorithms and local search
   based on gradients.
-  This may improve the model fit and will produce a constant surrogate model much less frequent.
+  This may improve the model fit and will less frequently produce a constant surrogate model.
   You can also override this setting in \code{...}.}
 }
 
-For mixed numeric-categorical parameter spaces :
+For mixed numeric-categorical parameter spaces, or spaces with conditional parameters:
 \itemize{
 \item{A random regression forest \dQuote{regr.randomForest} with 500 trees is created.}
-\item{The standard error of a prediction (if required by the infill criterion) is estimated by computing the jackknife-after-bootstrap, 
-the mean-squared difference between the prediction made by only using trees which did not contain 
-said observation and the ensemble prediction. A Monte-Carlo bias correction is applied and, in the 
-case that this results in a negative variance estimate, the values are truncated at 0.}
+\item{The standard error of a prediction (if required by the infill criterion) is estimated
+  by computing the jackknife-after-bootstrap.
+  This is the \code{se.method = "jackknife"} option of the \code{\link[mlr]{regr.randomForest}},
+  see this page for further info and alternatives.
+  }
 }
-If additionally dependencies are in present in the parameter space, an imputation method is added to the random forest:
+
+If additionally dependencies are in present in the parameter space, inactive conditional parameters
+are represented by missing \code{NA} values in the training design data.frame.
+We simply handle those with an imputation method, added to the random forest:
 \itemize{
-\item{If a numeric value is inactive, i.e., missing, it will be imputed by 2 times the maximum of observed values}
-\item{If a categorical value is inactive, i.e., missing, it will be imputed by the special class label \code{"__miss__"}}
+\item{If a numeric value is inactive, i.e., missing, it will be imputed by 2 times the
+  maximum of observed values}
+\item{If a categorical value is inactive, i.e., missing, it will be imputed by the
+  special class label \code{"__miss__"}}
 }
+Both of these techniques make sense for tree-based methods and are usually hard to beat, see
+Ding et al. (2010).
+}
+\references{
+Ding, Yufeng, and Jeffrey S. Simonoff. An investigation of missing data methods for
+classification trees applied to binary response data.
+Journal of Machine Learning Research 11.Jan (2010): 131-170.
 }
 

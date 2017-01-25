@@ -86,9 +86,7 @@ test_that("renderExampleRunPlot produces list of ggplot2 objects", {
     moimbo.dist = "nearest.neighbor",
     moimbo.maxit = 200L
   )
-  #FIXME: Remove lrn after #314 is fixed
-  lrn = makeLearner("regr.km", predict.type = "se")
-  run = exampleRun(obj.fun, control = ctrl, learner = lrn, points.per.dim = 50L)
+  run = exampleRun(obj.fun, control = ctrl, points.per.dim = 50L)
 
   plot.list = renderExampleRunPlot(run, iter = 1L)
   checkPlotList(plot.list)
