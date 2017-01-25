@@ -4,7 +4,7 @@ evalFinalPoint = function(opt.state, final.points) {
   n = control$final.evals
   # do some final evaluations and compute mean of target fun values
   # FIXME: Do we really want the resampling of the last point be part of the opt.path and thus be part of a new model fit if we restart the problem?
-  showInfo(getOptProblemShowInfo(opt.problem), "Performing %i final evals", final.evals)
+  showInfo(getOptProblemShowInfo(opt.problem), "Performing %i final evals", n)
   xs = replicate(n, final.points$x, simplify = FALSE)
   prop = list(
     prop.points = xs,
