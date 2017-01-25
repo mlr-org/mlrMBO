@@ -19,7 +19,7 @@ ctrl = makeMBOControl(propose.points = 1)
 ctrl = setMBOControlTermination(ctrl, iters = 10L)
 ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCriterionEI(), opt = "focussearch", opt.focussearch.points = 500L)
 
-lrn = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
+lrn = makeMBOLearner(ctrl, obj.fun)
 
 design = generateDesign(6L, getParamSet(obj.fun), fun = lhs::maximinLHS)
 

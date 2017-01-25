@@ -15,13 +15,12 @@ test_that("simple random search, no dependencies, no focusing", {
     has.simple.signature = FALSE
   )
 
-  learner = makeLearner("regr.randomForest")
   des = generateTestDesign(20L, getParamSet(obj.fun))
   ctrl = makeMBOControl()
   ctrl = setMBOControlTermination(ctrl, iters = 2L)
   ctrl = setMBOControlInfill(ctrl, opt = "focussearch",
     opt.restarts = 1L, opt.focussearch.maxit = 1L, opt.focussearch.points = 30L)
-  or = mbo(obj.fun, des, learner = learner, control = ctrl)
+  or = mbo(obj.fun, des, control = ctrl)
   expect_number(or$y)
 })
 
@@ -40,7 +39,7 @@ test_that("dependent params, but no focusing", {
     has.simple.signature = FALSE
   )
 
-  learner = makeLearner("regr.randomForest")
+  learner = makeLearner("regr.randomForest", predict.type = "se", se.method = "sd")
   learner = makeImputeWrapper(learner, classes = list(numeric = imputeMedian(), factor = imputeMode()))
   des = generateTestDesign(20L, getParamSet(obj.fun))
   ctrl = makeMBOControl()
@@ -93,7 +92,7 @@ test_that("complex param space, dependencies, focusing, restarts", {
   ctrl = setMBOControlTermination(ctrl, iters = 2L)
   ctrl = setMBOControlInfill(ctrl, crit = crit.ei, opt = "focussearch",
     opt.restarts = 2L, opt.focussearch.maxit = 2L, opt.focussearch.points = 100L)
-  learner = makeLearner("regr.randomForest", predict.type = "se")
+  learner = makeLearner("regr.randomForest", predict.type = "se", se.method = "sd")
   learner = makeImputeWrapper(learner, classes = list(numeric = imputeMedian(), factor = imputeMode()))
 
   or = mbo(obj.fun, des, learner = learner, control = ctrl)

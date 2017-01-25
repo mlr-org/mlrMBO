@@ -13,7 +13,7 @@ test_that("infill optimizers", {
     expect_lt(or$y, 1)
   }
 
-  learner = makeLearner("regr.km", nugget.estim = TRUE)
+  learner = makeLearner("regr.km", predict.type = "se", nugget.estim = TRUE)
   ctrl = mycontrol("cmaes", 1L)
   or = mbo(testf.fsphere.2d, testd.fsphere.2d, learner, ctrl)
   mycheck(or)

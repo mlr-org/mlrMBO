@@ -27,7 +27,7 @@ ctrl = setMBOControlTermination(ctrl, iters = 10L)
 ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCriterionEI(), opt = "focussearch",
   opt.focussearch.points = 500L)
 
-lrn = makeLearner("regr.randomForest", predict.type = "se")
+lrn = makeMBOLearner(ctrl, obj.fun)
 
 design = generateDesign(4L, getParamSet(obj.fun), fun = lhs::maximinLHS)
 

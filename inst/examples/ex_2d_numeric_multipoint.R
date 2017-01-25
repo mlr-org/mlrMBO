@@ -10,6 +10,7 @@ pause = interactive()
 obj.fun = makeBraninFunction()
 
 ctrl = makeMBOControl(propose.points = 5L)
+ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCriterionMeanResponse())
 ctrl = setMBOControlTermination(ctrl, iters = 10L)
 ctrl = setMBOControlMultiPoint(ctrl,
   method = "moimbo",
@@ -18,8 +19,9 @@ ctrl = setMBOControlMultiPoint(ctrl,
   moimbo.maxit = 200L
 )
 
-lrn = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
-
+#lrn = makeMBOLearner(ctrl, obj.fun)
+#FIXME: Remove lrn after #314 is fixed
+lrn = makeLearner("regr.km", predict.type = "se")
 design = generateDesign(10L, getParamSet(obj.fun), fun = lhs::maximinLHS)
 
 run = exampleRun(obj.fun, design = design, learner = lrn, control = ctrl,

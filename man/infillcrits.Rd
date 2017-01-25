@@ -17,7 +17,7 @@ makeMBOInfillCriterionStandardError()
 
 makeMBOInfillCriterionEI(se.threshold = 1e-06)
 
-makeMBOInfillCriterionCB(cb.lambda = 1)
+makeMBOInfillCriterionCB(cb.lambda = NULL)
 
 makeMBOInfillCriterionAEI(aei.use.nugget = FALSE, se.threshold = 1e-06)
 
@@ -37,7 +37,7 @@ In the multi-objective case we recommend to set this value to
 \eqn{q(0.5 \cdot \pi_{CB}^(1 / n))} where \eqn{q} is the quantile
 function of the standard normal distribution, \eqn{\pi_CB} is the probability
 of improvement value and \eqn{n} is the number of objectives of the considered problem.
-Default is 1.}
+Default is 1 in case of a fully numeric parameter set and 2 otherwise.}
 
 \item{aei.use.nugget}{[\code{logical(1)}]\cr
 Should the nugget effect be used for the pure variance estimation for augmented

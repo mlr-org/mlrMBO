@@ -24,7 +24,7 @@ test_that("mboFinalize", {
   ctrl = makeMBOControl(save.on.disk.at = 0:4,
     save.file.path = save.file)
   ctrl = setMBOControlTermination(ctrl, iters = 3L)
-  ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10L)
+  ctrl = setMBOControlInfill(ctrl, crit = crit.mr, opt.focussearch.points = 10L)
   des = generateTestDesign(10L, getParamSet(f))
   expect_error(or <- mbo(f, des, learner = learner, control = ctrl), "foo")
   or = mboFinalize(save.file)
@@ -48,7 +48,7 @@ test_that("mboFinalize", {
   ctrl = makeMBOControl(save.on.disk.at = 0:8,
     save.file.path = save.file, n.objectives = 2L)
   ctrl = setMBOControlTermination(ctrl, iters = 7L)
-  ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100L)
+  ctrl = setMBOControlInfill(ctrl, crit = crit.mr, opt.focussearch.points = 100L)
   ctrl = setMBOControlMultiObj(ctrl, method = "parego", parego.s = 100L)
   or = NULL
   expect_error(or <- mbo(f, des, learner = learner, control = ctrl), "foo")
@@ -69,7 +69,7 @@ test_that("mboFinalize works when at end", {
   ctrl = makeMBOControl(save.on.disk.at = 0:2,
     save.file.path = save.file)
   ctrl = setMBOControlTermination(ctrl, iters = 1L)
-  ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10L)
+  ctrl = setMBOControlInfill(ctrl, crit = crit.mr, opt.focussearch.points = 10L)
   or = mbo(f, des, learner = learner, control = ctrl)
   expect_equal(getOptPathLength(or$opt.path), 11L)
   expect_warning({or = mboFinalize(save.file)}, "No need to finalize")

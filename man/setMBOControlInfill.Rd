@@ -21,7 +21,7 @@ Control object for mbo.}
 \item{crit}{[\code{MBOInfillCriterion}]\cr
 How should infill points be rated. See \code{\link{infillcrits}} for an overview
 of available infill criteria or implement a custom one via \code{\link{makeMBOInfillCriterion}}.#
-Default is \dQuote{mean response} (see \code{\link{makeMBOInfillCriterionMeanResponse}}).}
+Default is \dQuote{(lower) confidence bound} (see \code{\link{makeMBOInfillCriterionCB}}).}
 
 \item{interleave.random.points}{[\code{integer(1)}]\cr
 Add \code{interleave.random.points} uniformly sampled points additionally to the
@@ -65,7 +65,7 @@ currently best point in the design of already visited points. Subsequent startin
 points are chosen according to the CMA-ES restart strategy introduced by Auger
 and Hansen. For details see the corresponding paper in the references and the help
 page of the underlying optimizer \code{\link[cmaesr]{cmaes}}.
-Default is 1.}
+Default is 3.}
 
 \item{opt.focussearch.maxit}{[\code{integer(1)}]\cr
 For \code{opt = "focussearch"}:
@@ -75,7 +75,7 @@ Default is 5.}
 \item{opt.focussearch.points}{[\code{integer(1)}]\cr
 For \code{opt = "focussearch"}:
 Number of points in each iteration of the focus search optimizer.
-Default is 10000.}
+Default is 1000.}
 
 \item{opt.cmaes.control}{[\code{list}]\cr
 For \code{opt = "cmaes"}:

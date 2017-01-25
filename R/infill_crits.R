@@ -15,7 +15,7 @@
 #'   \eqn{q(0.5 \cdot \pi_{CB}^(1 / n))} where \eqn{q} is the quantile
 #'   function of the standard normal distribution, \eqn{\pi_CB} is the probability
 #'   of improvement value and \eqn{n} is the number of objectives of the considered problem.
-#'   Default is 1.
+#'   Default is 1 in case of a fully numeric parameter set and 2 otherwise.
 #FIXME: removed cb.inflate.se for now (see issue #309)
 # @param cb.inflate.se [\code{logical(1)}]\cr
 #   Try to inflate or deflate the estimated standard error to get to the same scale as the mean?
@@ -101,11 +101,13 @@ makeMBOInfillCriterionEI = function(se.threshold = 1e-6) {
 
 #' @export
 #' @rdname infillcrits
-makeMBOInfillCriterionCB = function(cb.lambda = 1) {
-  assertNumber(cb.lambda, lower = 0)
+makeMBOInfillCriterionCB = function(cb.lambda = NULL) {
+  assertNumber(cb.lambda, lower = 0, null.ok = TRUE)
   makeMBOInfillCriterion(
     fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
       force(cb.lambda)
+      if (is.null(cb.lambda))
+        cb.lambda = ifelse(isNumeric(par.set, include.int = TRUE), 1, 2)
       model = models[[1L]]
       maximize.mult = ifelse(control$minimize, 1, -1)
       p = predict(model, newdata = points)$data

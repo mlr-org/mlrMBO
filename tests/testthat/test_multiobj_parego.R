@@ -3,7 +3,7 @@ context("multi-objective: parego")
 test_that("mbo parego works", {
 
   # Test normal run
-  learner = makeLearner("regr.km", nugget.estim = TRUE)
+  learner = makeLearner("regr.km", predict.type = "se", nugget.estim = TRUE)
   ctrl = makeMBOControl(n.objectives = 2L)
   ctrl = setMBOControlTermination(ctrl, iters = 5L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10)
