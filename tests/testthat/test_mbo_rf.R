@@ -159,7 +159,7 @@ test_that("mbo works with rf", {
   )
 
   des = generateTestDesign(10L, getParamSet(f))
-  ctrl = makeMBOControl(trafo.y.fun = trafoLog(handle.violations = "error"))
+  ctrl = makeMBOControl(trafo.y.fun = trafoSqrt(handle.violations = "error"))
   ctrl = setMBOControlTermination(ctrl, iters = 2L)
   ctrl = setMBOControlInfill(ctrl, filter.proposed.points = TRUE)
   expect_error(mbo(f, control = ctrl, more.args = list(shift = -1)), "Negative function values occurred during transformation.")

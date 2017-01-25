@@ -19,6 +19,13 @@ test_that("termination criteria works", {
 
   expect_equal(or$final.state, "term.time")
 
+  # exec. time budget
+  ctrl = makeMBOControl()
+  ctrl = setMBOControlTermination(ctrl, exec.time.budget = time.budget)
+  or = mbo(f, design = design, learner = learner, control = ctrl)
+
+  expect_equal(or$final.state, "term.exectime")
+
   # target fun value
   ctrl = makeMBOControl()
   ctrl = setMBOControlTermination(ctrl, iters = iters, target.fun.value = target.fun.value)
