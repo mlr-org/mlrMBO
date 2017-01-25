@@ -58,12 +58,12 @@ test_that("complex param space, dependencies, focusing, restarts", {
     fn = function(x) {
       x = removeMissingValues(x)
       tmp1 = (sqrt(x$real1)) + x$int1^2 - mean(x$realVec) + sum(x$intVec)
-      if(x$real2 < 0) tmp2 = ifelse(x$disc1 == 'foo', -5, 5)
-      if(x$real2 > 0) tmp2 = 5 + x$real3
-      if(x$real2 == 0) tmp2 = 0
-      if(x$disc2 == 'a') tmp3 = log(x$realA) + x$intA^4 + ifelse(x$discA == 'm', 5, 0)
-      if(x$disc2 == 'b') tmp3 = exp(x$realB) + ifelse(x$discB == 'R', sin(x$realBR), sin(x$realBNR))
-      if(x$disc2 == "c") tmp3 = 500
+      if (x$real2 < 0) tmp2 = ifelse(x$disc1 == 'foo', -5, 5)
+      if (x$real2 > 0) tmp2 = 5 + x$real3
+      if (x$real2 == 0) tmp2 = 0
+      if (x$disc2 == 'a') tmp3 = log(x$realA) + x$intA^4 + ifelse(x$discA == 'm', 5, 0)
+      if (x$disc2 == 'b') tmp3 = exp(x$realB) + ifelse(x$discB == 'R', sin(x$realBR), sin(x$realBNR))
+      if (x$disc2 == "c") tmp3 = 500
       tmp1 + tmp2 + tmp3
     },
     par.set = makeParamSet(

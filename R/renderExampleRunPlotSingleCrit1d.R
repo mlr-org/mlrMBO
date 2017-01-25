@@ -30,7 +30,7 @@ renderExampleRunPlot1d = function(x, iter,
 
   propose.points = control$propose.points
   infill.crit.id = getMBOInfillCriterionId(control$infill.crit)
-  # if(control$multifid) {
+  # if (control$multifid) {
   #   infill.crit.id = "mfEI"
   #   critfun = infillCritMultiFid.external
   # } else {
@@ -56,11 +56,11 @@ renderExampleRunPlot1d = function(x, iter,
   # helper function for building up data frame of different points
   # i.e., initial design points, infilled points, proposed points for ggplot
   getType = function(x, iter) {
-    if(x == 0)
+    if (x == 0)
       return("init")
-    else if(x > 0 && x < iter)
+    else if (x > 0 && x < iter)
       return("seq")
-    else if(x == iter)
+    else if (x == iter)
       return("prop")
     else
       return ("future")
