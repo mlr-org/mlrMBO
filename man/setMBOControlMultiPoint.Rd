@@ -25,6 +25,7 @@ i. e., by specifying \code{infill.opt} and related stuff.
 The EA is a (mu+1) type of algorithm and runs for \code{moimbo.maxit} generations.
 The population size is set to \code{propose.points}.
 The selection criterion is \code{moimbo.selection}.
+If this method is selected the infill criterion in \code{setMBOInfillCrit} is ignored.
 \dQuote{cl}: Proposes points by constant liar strategy.
 Only meaningfull if \code{infill.crit == "cb"}
 In the first step the kriging model is fitted based on the real data and the best point is calculated

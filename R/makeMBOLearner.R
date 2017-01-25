@@ -76,7 +76,7 @@ makeMBOLearner = function(control, fun, ...) {
       lrn = makeImputeWrapper(lrn, classes = list(numeric = imputeMax(2), factor = imputeConstant("__miss__")))
   }
 
-  if (control$infill.crit$requires.se)
+  if (control$infill.crit$requires.se || (!is.null(control$multipoint.method) && control$multipoint.method == "moimbo"))
     lrn = setPredictType(lrn, "se")
 
   lrn = setHyperPars(lrn, ...)
