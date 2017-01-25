@@ -220,10 +220,14 @@ makeMBOInfillCriterionEQI = function(eqi.beta = 0.75, se.threshold = 1e-6) {
       xcr.prob = pnorm(xcr)
       xcr.dens = dnorm(xcr)
 
-      eqi = ifelse(p.se < se.threshold, 0, (sq * (xcr * xcr.prob + xcr.dens)))
-      return(-eqi)
+      res = -1 * ifelse(p.se < se.threshold, 0, (sq * (xcr * xcr.prob + xcr.dens)))
+      if (attributes) {
+        res = setAttribute(res, "crit.components", data.frame(se = p.se, mean = p.mu, tau = tau))
+      }
+      return(res)
     },
     name = "Expected quantile improvement",
+    components = c("se", "mean", "tau"),
     id = "eqi",
     params = list(eqi.beta = eqi.beta),
     requires.se = TRUE
