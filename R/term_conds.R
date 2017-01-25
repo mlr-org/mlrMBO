@@ -51,7 +51,7 @@ makeMBOTerminationMaxExecBudget = function(time.budget) {
   force(time.budget)
   function(opt.state) {
     opt.path = getOptStateOptPath(opt.state)
-    time.used = sum(getOptPathExecTimes(opt.path))
+    time.used = sum(getOptPathExecTimes(opt.path), na.rm = TRUE)
 
     term = (time.used > time.budget)
     message = if (!term) NA_character_ else sprintf("Execution time budged %f reached.", time.budget)

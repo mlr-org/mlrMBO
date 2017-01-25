@@ -3,6 +3,7 @@ context("termination criteria")
 test_that("termination criteria works", {
   iters = 30L
   time.budget = 3L # seconds
+  exec.time.budget = 0.00001 # seconds
   target.fun.value = 0.005
   max.evals = 13L
 
@@ -21,7 +22,7 @@ test_that("termination criteria works", {
 
   # exec. time budget
   ctrl = makeMBOControl()
-  ctrl = setMBOControlTermination(ctrl, exec.time.budget = time.budget)
+  ctrl = setMBOControlTermination(ctrl, exec.time.budget = exec.time.budget)
   or = mbo(f, design = design, learner = learner, control = ctrl)
 
   expect_equal(or$final.state, "term.exectime")
