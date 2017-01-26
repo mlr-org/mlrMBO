@@ -30,7 +30,7 @@ renderExampleRunPlot1d = function(x, iter,
 
   propose.points = control$propose.points
   infill.crit.id = getMBOInfillCriterionId(control$infill.crit)
-  # if(control$multifid) {
+  # if (control$multifid) {
   #   infill.crit.id = "mfEI"
   #   critfun = infillCritMultiFid.external
   # } else {
@@ -56,11 +56,11 @@ renderExampleRunPlot1d = function(x, iter,
   # helper function for building up data frame of different points
   # i.e., initial design points, infilled points, proposed points for ggplot
   getType = function(x, iter) {
-    if(x == 0)
+    if (x == 0)
       return("init")
-    else if(x > 0 && x < iter)
+    else if (x > 0 && x < iter)
       return("seq")
-    else if(x == iter)
+    else if (x == iter)
       return("prop")
     else
       return ("future")
@@ -154,7 +154,7 @@ renderExampleRunPlot1d = function(x, iter,
     }
     g = g + ggplot2::geom_line(next.aes, size = line.size)
     g = g + ggplot2::facet_grid(pane~., scales = "free")
-    if (se & densregion) {
+    if (se && densregion) {
       #FIXME: We might lose transformation information here tr()
       next.aes = ggplot2::aes_string(x = names.x, ymin = "value-se", ymax = "value+se", group = ".multifid.lvl")
       if (!control$multifid) {
@@ -201,7 +201,7 @@ renderExampleRunPlot1d = function(x, iter,
 
     gg.points = buildPointsData(opt.path, iter)
 
-    if (se & densregion) {
+    if (se && densregion) {
       gg.points$se = -infill.se(gg.points[, names.x, drop = FALSE],
         models, control, par.set, opt.path[idx.past, , drop = FALSE])
       gg.points$se.min = gg.points[[name.y]] - se.factor * gg.points$se
@@ -210,7 +210,7 @@ renderExampleRunPlot1d = function(x, iter,
 
     pl.fun = ggplot2::ggplot(data = gg.points, ggplot2::aes_string(x = names.x, y = name.y, colour = "type", shape = "type"))
     pl.fun = pl.fun + ggplot2::geom_point(size = point.size)
-    if (se & densregion) {
+    if (se && densregion) {
       pl.fun = pl.fun + ggplot2::geom_errorbar(ggplot2::aes_string(ymin = "se.min", ymax = "se.max"), width = .1, alpha = .5)
     }
 

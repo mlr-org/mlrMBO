@@ -11,7 +11,7 @@
 #   errors.models [character] : model errors, resulting in randomly proposed points.
 #                               length is one string PER PROPOSED POINT, not per element of <models>
 #                               NA if the model was Ok, or the (first) error message if some model crashed
-proposePoints.OptState = function(opt.state){
+proposePoints.OptState = function(opt.state) {
 
   opt.problem = getOptStateOptProblem(opt.state)
   control = getOptProblemControl(opt.problem)

@@ -124,7 +124,7 @@ setMBOControlMultiObj = function(control,
   assertNumber(control$multiobj.ref.point.offset, lower = 0, finite = TRUE)
 
   if (control$multiobj.ref.point.method == "const") {
-    if (is.null(ref.point.val) & is.null(control$multiobj.ref.point.val))
+    if (is.null(ref.point.val) && is.null(control$multiobj.ref.point.val))
       stopf("Constant reference point has to be specified.")
     else
       control$multiobj.ref.point.val = coalesce(ref.point.val, control$multiobj.ref.point.val)

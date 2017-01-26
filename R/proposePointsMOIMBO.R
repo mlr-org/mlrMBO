@@ -59,7 +59,7 @@ proposePointsMOIMBO = function(opt.state, ...) {
     return(ch$prop)
   }
 
-  y.dim = if(objective == "mean.se.dist") 3L else 2L
+  y.dim = if (objective == "mean.se.dist") 3L else 2L
   repids = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
   mu = n
   # FIXME: what are good defaults?
