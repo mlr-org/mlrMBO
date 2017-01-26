@@ -34,7 +34,9 @@ test_that("infill crits", {
     if (!is.null(opdf$infill_cb))
       expect_true(!anyMissing(opdf$infill_cb[, c("se","mean","lambda")]))
     if (!is.null(opdf$infill_aei))
-      expect_true(!anyMissing(opdf$infill_cb[, c("se","mean","tau")]))
+      expect_true(!anyMissing(opdf$infill_aei[, c("se","mean","tau")]))
+    if (!is.null(opdf$infill_eqi))
+      expect_true(!anyMissing(opdf$infill_eqi[, c("se","mean","tau")]))
   }
 
   learners = list(
