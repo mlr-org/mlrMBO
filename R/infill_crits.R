@@ -57,10 +57,10 @@ makeMBOInfillCriterionMeanResponse = function() {
 makeMBOInfillCriterionStandardError = function() {
   makeMBOInfillCriterion(
     fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
-      -predict(models[[1L]], newdata = points)$data$se
+      ifelse(control$minimize, 1, -1) * predict(models[[1L]], newdata = points)$data$se
     },
     name = "Standard error",
-    id = "sd",
+    id = "se",
     requires.se = TRUE
   )
 }

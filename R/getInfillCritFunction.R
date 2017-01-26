@@ -18,7 +18,6 @@ getInfillCritFunction = function(infill.crit) {
     # mq  = makeMBOInfillCriterionMQ(),
     # eipi  =  makeMBOInfillCriterionEIPI(),
     dib = makeMBOInfillCriterionDIB(),
-    #multifid = makeMBOInfillCriterionMultiFid(),
-    match.fun(infill.crit)
+    #multifid = makeMBOInfillCriterionMultiFid()
   )
 }
