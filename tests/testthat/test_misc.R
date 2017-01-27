@@ -22,7 +22,7 @@
 #})
 
 #  test_that("complex paramset" , {
-#   if(isExpensiveExampleOk()) {
+#   if (isExpensiveExampleOk()) {
 #     ps = makeParamSet(
 #       makeLogicalParam("use.clinical"),
 #       makeDiscreteParam("filter", values = c("none", "var", "uni", "kratz", "top21", "fmrmr", "pamr")),

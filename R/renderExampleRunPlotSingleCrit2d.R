@@ -134,7 +134,7 @@ renderExampleRunPlot2d = function(x, iter,
       pl = pl + ggplot2::geom_line()
     }
     # draw standard error in y/yhat-plot
-    if (se & densregion & name.y == "y") {
+    if (se && densregion && name.y == "y") {
       pl = pl + ggplot2::geom_ribbon(ggplot2::aes_string(x = name.x1, ymin = "se.min", ymax = "se.max"), alpha = 0.2)
     }
     if (name.y %in% c(x$name.y)) {

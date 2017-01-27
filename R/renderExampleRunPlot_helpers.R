@@ -30,7 +30,7 @@ buildTrafoList = function(n.params, input.trafo) {
   } else {
     # otherwise check if all elements are of an appropriate type
     lapply(input.trafo, function(t)
-      if(!is.null(t)) assertClass(t, "MBOTrafoFunction")
+      if (!is.null(t)) assertClass(t, "MBOTrafoFunction")
     )
     trafo = trafo.defaults
     trafo[names(input.trafo)] = input.trafo
@@ -92,11 +92,11 @@ createBasicSpacePlot = function(pl, points, iter, object, name, alpha, space, co
   pl = pl + ggplot2::scale_shape_manual(values = c(16, 16, 17, 15))
 
   # add appr. of non dominated model points
-  grid = if(space == "x") object$mbo.pred.grid.x else object$mbo.pred.grid.mean[[iter]]
+  grid = if (space == "x") object$mbo.pred.grid.x else object$mbo.pred.grid.mean[[iter]]
   pl = addApproxMBO(pl, grid, name, object$mbo.pred.grid.mean[[iter]]$.is.dom, "brown", "solid")
 
   # add appr. of cb of non dominated model points
-  grid = if(space == "x") object$mbo.pred.grid.x else object$mbo.pred.grid.cb[[iter]]
+  grid = if (space == "x") object$mbo.pred.grid.x else object$mbo.pred.grid.cb[[iter]]
   pl = addApproxMBO(pl, grid, name, object$mbo.pred.grid.cb[[iter]]$.is.dom, "brown", "dotted")
   return(pl)
 }

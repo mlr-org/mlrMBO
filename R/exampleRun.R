@@ -66,8 +66,8 @@ exampleRun = function(fun, design = NULL, learner = NULL, control,
 
   if (show.info) {
     messagef("Evaluating true objective function at %s points.",
-      if(!noisy) {
-        if(n.params == 1) {
+      if (!noisy) {
+        if (n.params == 1) {
           sprintf("%i", points.per.dim)
         } else {
           sprintf("%i x %i", points.per.dim, points.per.dim)
