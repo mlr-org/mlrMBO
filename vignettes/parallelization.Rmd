@@ -1,3 +1,17 @@
+---
+title: "Parallelization"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: true
+      smooth_scroll: false
+vignette: >
+  %\VignetteIndexEntry{Parallelization}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
 # Work in progress!
 
 # Parallelization
