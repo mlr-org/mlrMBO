@@ -13,7 +13,7 @@ test_that("multipoint cb", {
   expect_true(all(is.na(op$multipoint.cb.lambda[1:5])))
   expect_numeric(op$multipoint.cb.lambda[6:15], any.missing = FALSE)
   expect_is(res, "MBOResult")
-  expect_lt(res$y, 0.1)
+  expect_lt(res$y, 0.15)
 })
 
 
