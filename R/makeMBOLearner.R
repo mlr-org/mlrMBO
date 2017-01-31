@@ -65,6 +65,7 @@ makeMBOLearner = function(control, fun, ...) {
 
   ps = getParamSet(fun)
   if (isNumeric(ps, include.int = TRUE) && !hasRequires(ps)) {
+    requirePackages(packs = "rgenoud", why = "fitting the Kriging Surrogate")
     lrn = makeLearner("regr.km", covtype = "matern3_2", optim.method = "gen")
     if (!isNoisy(fun))
       lrn = setHyperPars(lrn, nugget.stability = 10^-8)
