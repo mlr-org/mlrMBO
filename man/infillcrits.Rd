@@ -2,13 +2,13 @@
 % Please edit documentation in R/infill_crits.R
 \name{infillcrits}
 \alias{infillcrits}
-\alias{makeMBOInfillCriterionAEI}
-\alias{makeMBOInfillCriterionCB}
-\alias{makeMBOInfillCriterionDIB}
-\alias{makeMBOInfillCriterionEI}
-\alias{makeMBOInfillCriterionEQI}
 \alias{makeMBOInfillCriterionMeanResponse}
 \alias{makeMBOInfillCriterionStandardError}
+\alias{makeMBOInfillCriterionEI}
+\alias{makeMBOInfillCriterionCB}
+\alias{makeMBOInfillCriterionAEI}
+\alias{makeMBOInfillCriterionEQI}
+\alias{makeMBOInfillCriterionDIB}
 \title{Infill criteria.}
 \usage{
 makeMBOInfillCriterionMeanResponse()
@@ -57,4 +57,3 @@ Default is \code{NULL}, in this case it is adaptively set.}
 improvement, (lower) confidence bound etc. Moreover, custom infill criteria
 may be generated with the \code{\link{makeMBOInfillCriterion}} function.
 }
-

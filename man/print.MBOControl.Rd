@@ -16,4 +16,3 @@ Not used.}
 \description{
 Print mbo control object.
 }
-
