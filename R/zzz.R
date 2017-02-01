@@ -20,7 +20,7 @@ NULL
 crit.ei = makeMBOInfillCriterionEI()
 crit.mr = makeMBOInfillCriterionMeanResponse()
 crit.se = makeMBOInfillCriterionStandardError()
-crit.cb1 = makeMBOInfillCriterionCB()
+crit.cb = makeMBOInfillCriterionCB()
 crit.cb1 = makeMBOInfillCriterionCB(cb.lambda = 1)
 crit.cb2 = makeMBOInfillCriterionCB(cb.lambda = 2)
 crit.cb3 = makeMBOInfillCriterionCB(cb.lambda = 3)
