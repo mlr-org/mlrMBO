@@ -26,20 +26,44 @@ obj.fun = makeSingleObjectiveFunction(
   has.simple.signature = FALSE, # function expects a named list of parameter values
   noisy = TRUE
 )
+obj.fun = convertToMaximization(obj.fun)
 
 ctrl = makeMBOControl()
 ctrl = setMBOControlTermination(ctrl, iters = 10L)
 
 # we can basically do an exhaustive search in 3 values
-ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCriterionEI(),
+ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCriterionCB(),
   opt.restarts = 1L, opt.focussearch.points = 3L, opt.focussearch.maxit = 1L)
 
 design = generateDesign(20L, getParamSet(obj.fun), fun = lhs::maximinLHS)
 
 lrn = makeMBOLearner(ctrl, obj.fun)
 
-run = exampleRun(obj.fun, design = design, learner = lrn, control = ctrl,
-	points.per.dim = 50L, show.info = TRUE)
+newExampleRun = function(fun, design = NULL, learner = NULL, control, show.info = FALSE, more.args = NULL) {
+  control.mod = control
+  control.mod$store.model.at = 1:1024L
+  mbo.res = mbo(fun = fun, design = design, learner = learner, control = control.mod, show.info = show.info, more.args = more.args)
+  list(mbo.res = mbo.res, obj.fun = fun, control = control)
+}
 
-print(run)
-plotExampleRun(run, pause = pause, densregion = TRUE, gg.objects = list(theme_bw()))
+run = newExampleRun(obj.fun, design = design, learner = lrn, control = ctrl)
+
+resolution = 400
+
+# start plot
+obj.fun = run$obj.fun
+obj.fun.mean = coalesce(smoof::getMeanFunction(obj.fun), obj.fun)
+par.set = getParamSet(run$obj.fun)
+control = run$control
+draw.design = generateGridDesign(par.set = par.set, resolution = resolution, trafo = FALSE)
+draw.design$y.real = vnapply(dfRowsToList(draw.design, par.set = par.set), obj.fun.mean)
+
+iter = 1
+draw.design.iter = draw.design
+# predict the mean of the outcome
+this.model = run$mbo.res$models[[iter]]
+prediction = predict(this.model, newdata = draw.design.iter)
+draw.design.iter$y.predict = getPredictionResponse(prediction)
+draw.design.iter$y.se = getPredictionSE(prediction)
+# get the infill crit value
+infill.fun = c
