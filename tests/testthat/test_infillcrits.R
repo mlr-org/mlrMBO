@@ -31,8 +31,10 @@ test_that("infill crits", {
 
     if (!is.null(opdf$infill_ei))
       expect_true(!anyMissing(opdf$infill_ei[, c("ei","se","mean")]))
-    if (!is.null(opdf$infill_cb))
+    if (!is.null(opdf$infill_cb)) {
       expect_true(!anyMissing(opdf$infill_cb[, c("se","mean","lambda")]))
+      expect_true(all(opdf$infill_cb$lambda == 5))
+    }
     if (!is.null(opdf$infill_aei))
       expect_true(!anyMissing(opdf$infill_aei[, c("se","mean","tau")]))
     if (!is.null(opdf$infill_eqi))
@@ -51,7 +53,7 @@ test_that("infill crits", {
   # we have converged and just waste time. we need to detect this somehow, or cope with it
   for (noisy in c(TRUE, FALSE)) {
     for (minimize in c(TRUE, FALSE)) {
-      crits = if (noisy) list(crit.aei, crit.eqi) else list(crit.mr, crit.se, crit.ei)
+      crits = if (noisy) list(crit.aei, crit.eqi) else list(crit.mr, crit.se, crit.ei, crit.cb5)
       for (lrn in learners) {
         if (inherits(lrn, "regr.km"))
           lrn = setHyperPars(lrn, nugget.estim = noisy)
@@ -65,14 +67,6 @@ test_that("infill crits", {
       }
     }
   }
-
-  # check lambda and pi for cb
-  ctrl = makeMBOControl(final.evals = 10L)
-  ctrl = setMBOControlTermination(ctrl, iters = niters)
-  ctrl = setMBOControlInfill(ctrl, crit = crit.cb2,
-    opt = "focussearch", opt.restarts = 1L,
-    opt.focussearch.points = 300L)
-  mbo(f1, des, learner = makeLearner("regr.km", predict.type = "se"), control = ctrl)
 
   # check beta for eqi
   expect_error(makeMBOInfillCriterionEQI(eqi.beta = 2))
