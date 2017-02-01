@@ -27,4 +27,3 @@ The extras are:
 Moreover, the user may pass additional \dQuote{user extras} by appending a named list
 of scalar values to the return value of the objective function.
 }
-

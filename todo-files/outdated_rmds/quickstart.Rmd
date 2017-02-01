@@ -1,0 +1,66 @@
+# Introductory example
+
+**Info:** this guide gives an overview of the typical optimization workflow with **mlrMBO** for those familiar with model based optimization.
+For a much more detailed introduction see [the next chapter](in_depth_introduction.md).
+
+In this example we aim to maximize a one dimensional mixed cosine function using model-based optimization. 
+Instead of writing this function by hand, we make use of the smoof package, which offers a lot of common single objective optimization functions.
+
+```{r}
+library(mlrMBO)
+obj.fun = makeCosineMixtureFunction(1)
+plot(obj.fun)
+```
+
+We decide to use kriging as our surrogate model and to do 10 sequential optimization steps. 
+Furthermore we use Expected Improvement (EI) as the infill criterion.
+
+As a last step we have to generate an initial design on which we evaluate our model in the beginning. We use `ParamHelpers::generateDesign` to generate 10 points in a latin hypercube design.
+
+```{r}
+learner = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2", 
+  control = list(trace = FALSE))
+control = makeMBOControl()
+control = setMBOControlTermination(control, iters = 10)
+control = setMBOControlInfill(control, crit = "ei")
+design = generateDesign(n = 10, par.set = getParamSet(obj.fun))
+```
+
+Finally we start the optimization process and print the result object.
+
+```{r}
+result = mbo(obj.fun, design = design, learner = learner, control = control, 
+             show.info = TRUE)
+print(result)
+```
+
+# Example run
+
+There is also the function `exampleRun`, which is useful to figure out how **MBO**works and to visualize the results.
+
+```{r, results="hide"}
+ex = exampleRun(obj.fun, learner = learner, control = control, show.info = FALSE)
+```
+```{r, fig.height=5, warning=FALSE}
+print(ex)
+plotExampleRun(ex, iters = c(1L, 3L, 10L))
+```
+
+
+Or alternatively for a two dimensional function:
+
+```{r, results="hide", warning=FALSE}
+obj.fun2 = makeCosineMixtureFunction(2L)
+plot(obj.fun2)
+ex2 = exampleRun(obj.fun2, learner = learner, control = control, show.info = FALSE)
+```
+```{r, fig.height=5, warning=FALSE}
+print(ex2)
+plotExampleRun(ex2, iters = c(1L, 3L, 10L))
+```
+
+
+
+
+
+

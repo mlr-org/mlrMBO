@@ -60,4 +60,3 @@ The most prominent infill criteria, e.g., expected improvement, lower
 confidence bound and others, are already implemented in mlrMBO. Moreover,
 the package allows for the creation of custom infill criteria.
 }
-

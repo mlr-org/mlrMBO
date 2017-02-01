@@ -62,4 +62,3 @@ What is displayed is documented here: \code{\link{plotExampleRun}}.
 If the passed objective function has no associated reference point max(y_i) + 1
 of the nsga2 front is used.
 }
-

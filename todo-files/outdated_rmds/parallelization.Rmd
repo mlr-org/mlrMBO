@@ -1,0 +1,67 @@
+# Work in progress!
+
+# Parallelization
+
+It is possible to parallelize the evaluation of the target function to speed up the computation. Internally the
+evaluation of the target function is realized with the R package `parallelMap`. This package offers simple parallelization with various different backends. For details on the usage see the [parallelMap github page](https://github.com/berndbischl/parallelMap#parallelmap), which offers a nice tutorial and describes all possible backends thorougly.  For our usage we use a *multicore* backend. Note, that the multicore parallelization does _not_ work on windows machines.
+
+```{r eval=FALSE}
+library(mlrMBO)
+library(parallelMap)
+
+obj.fun = makeSphereFunction(1)
+learner = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
+control = makeMBOControl()
+control = setMBOControlTermination(control, iters = 3)
+design = generateDesign(n = 6, par.set = getParamSet(obj.fun))
+
+parallelStartMulticore(cpus = 2) # use 2 CPUs
+res = mbo(obj.fun, learner = learner, control = control)
+parallelStop()
+```
+
+
+
+Since mbo is a sequential method we cannot gain any improvement in the running time in this setup. But there are multiple two situations in which parallelization can be utilized  _noisy functions_ and _multi point proposals_.
+
+
+## Noisy functions
+
+If our target function is not deterministic (e.g. the accuracy of a machine learning model) it is advisable to take the crossvalidation error. For the crossvalidation error, the model is fitted multuple times on slightly different training data. This process can be easily parallelized with `parallelMap`.
+
+```{r, eval = FALSE}
+library(mlr)
+
+fn = function(x) {
+  lrn = makeLearner("classif.ksvm", par.vals = x)
+  
+  rdesc = makeResampleDesc("CV", iters = 10L)
+  
+  res = resample(learner = lrn, iris.task, rdesc, show.info = FALSE)
+  
+  res$aggr
+}
+
+
+par.set = filterParams(mlr::getParamSet("classif.ksvm"), ids = c("C", "sigma"))
+
+par.set = makeParamSet(makeNumericParam("C", lower = -10, upper = 10, trafo = function(x) 2^x),
+                       makeNumericParam("sigma", lower = -10, upper = 10, trafo = function(x) 2^x))
+
+obj.fun = makeSingleObjectiveFunction(name = "noisy_example",
+                                      fn = fn,
+                                      has.simple.signature = FALSE,
+                                      par.set = par.set)
+
+
+control = makeMBOControl()
+control = setMBOControlTermination(control, iters = 10L)
+
+design = generateDesign(n = 10, getParamSet(obj.fun), trafo = TRUE)
+
+parallelStartMulticore(cpus = 4L)
+exampleRun(obj.fun, design = design, control = control)
+parallelStop()
+
+```
+

@@ -18,4 +18,3 @@ See \code{\link{mbo}}.
 Useful if your optimization is likely to crash,
 so you can continue from a save point and will not lose too much information and runtime.
 }
-

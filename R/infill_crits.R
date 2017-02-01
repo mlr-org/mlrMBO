@@ -103,9 +103,9 @@ makeMBOInfillCriterionEI = function(se.threshold = 1e-6) {
 #' @rdname infillcrits
 makeMBOInfillCriterionCB = function(cb.lambda = NULL) {
   assertNumber(cb.lambda, lower = 0, null.ok = TRUE)
+  force(cb.lambda)
   makeMBOInfillCriterion(
     fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
-      force(cb.lambda)
       if (is.null(cb.lambda))
         cb.lambda = ifelse(isNumeric(par.set, include.int = TRUE), 1, 2)
       model = models[[1L]]
