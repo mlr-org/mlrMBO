@@ -41,7 +41,9 @@
 #'   Does the infill criterion require the regression learner to provide a standard
 #'   error estimation?
 #'   Default is \code{FALSE}.
-#' @return [\code{MBOInfillCriterion}]
+#' @return [\code{\link{MBOInfillCriterion}}]
+#' @rdname MBOInfillCriterion
+#' @aliases MBOInfillCriterion
 #' @export
 makeMBOInfillCriterion = function(fun, name, id,
   minimize = TRUE, components = character(0L), params = list(),
@@ -75,19 +77,36 @@ makeMBOInfillCriterion = function(fun, name, id,
 print.MBOInfillCriterion = function(x, ...) {
   components = getMBOInfillCriterionComponents(x)
   params = getMBOInfillCriterionParams(x)
-  catf("Infill criterion              : %s (%s)", getMBOInfillCriterionName(x),
+    catf("Infill criterion : %s (%s)", getMBOInfillCriterionName(x),
     getMBOInfillCriterionId(x))
   if (hasRequiresInfillCriterionStandardError(x))
-    catf("  Requirement                 :  SE estimation")
+    catf("  Requirement    : SE estimation")
   if (length(components) > 0)
-    catf("  Components                  : %s", collapse(components, sep = ", "))
+    catf("  Components     : %s", collapse(components, sep = ", "))
   if (length(params) > 0)
-    catf("  Parameters                  : %s", paramsToString(params))
+    catf("  Parameters     : %s", paramsToString(params))
 }
 
 paramsToString = function(params) {
-  str.params = vcapply(names(params), function(n) {
-    paste0(n, "=", params[[n]])
-  })
-  collapse(str.params, ", ")
+  collapsef("%s=%s", names(params), vcapply(params, valueToString), sep = ", ")
+}
+
+# FIXME: Shamelessly copied from ParamHelpers/R/paramValueToString. Remove if exported there!
+valueToString = function(x, num.format = "%.3g") {
+  cl = class(x)[1L]
+
+  if (cl == "numeric")
+    paste(sprintf(num.format, x), collapse=",")
+  else if (cl == "integer")
+    paste(as.character(x), collapse=",")
+  else if (cl == "logical")
+    paste(as.character(x), collapse=",")
+  else if (cl == "character")
+    collapse(x)
+  else if (cl == "function")
+    "<function>"
+  else if (cl == "expression")
+    as.character(x)
+  else
+    sprintf("<%s>", cl)
 }

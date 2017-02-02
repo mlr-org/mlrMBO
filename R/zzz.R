@@ -17,18 +17,81 @@ NULL
 } # nocov end
 
 # some shortcuts for infill criteria
+
+#' @rdname MBOInfillCriterion
+#' @section Predefined standard infill criteria:
+#' \describe{
+#' \item{crit.ei}{Expected Improvement}
+#' \item{crit.mr}{Mean response}
+#' \item{crit.se}{Standard error}
+#' \item{crit.cb}{Confidence bound with lambda dependent on parameter space}
+#' \item{crit.cb1}{Confidence bound with lambda=1}
+#' \item{crit.cb2}{Confidence bound with lambda=2}
+#' \item{crit.aei}{Augmeted expected improvement}
+#' \item{crit.eqi}{Expected quantile improvement}
+#' \item{crit.dib1}{Directed indicator based search with lambda=1}
+#' }
+#' 
+#' @rdname MBOInfillCriterion
+#' @export
+#' @usage NULL
+#' @docType NULL
+#' @format NULL
+#' @keywords NULL
 crit.ei = makeMBOInfillCriterionEI()
+#' @rdname MBOInfillCriterion
+#' @export
+#' @usage NULL
+#' @docType NULL
+#' @format NULL
+#' @keywords NULL
 crit.mr = makeMBOInfillCriterionMeanResponse()
+#' @rdname MBOInfillCriterion
+#' @export
+#' @usage NULL
+#' @docType NULL
+#' @format NULL
+#' @keywords NULL
 crit.se = makeMBOInfillCriterionStandardError()
-crit.cb1 = makeMBOInfillCriterionCB()
+#' @rdname MBOInfillCriterion
+#' @export
+#' @usage NULL
+#' @docType NULL
+#' @format NULL
+#' @keywords NULL
+crit.cb = makeMBOInfillCriterionCB()
+#' @rdname MBOInfillCriterion
+#' @export
+#' @usage NULL
+#' @docType NULL
+#' @format NULL
+#' @keywords NULL
+crit.cb1 = makeMBOInfillCriterionCB(cb.lambda = 1)
+#' @rdname MBOInfillCriterion
+#' @export
+#' @usage NULL
+#' @docType NULL
+#' @format NULL
+#' @keywords NULL
 crit.cb2 = makeMBOInfillCriterionCB(cb.lambda = 2)
-crit.cb3 = makeMBOInfillCriterionCB(cb.lambda = 3)
-crit.cb4 = makeMBOInfillCriterionCB(cb.lambda = 4)
-crit.cb5 = makeMBOInfillCriterionCB(cb.lambda = 5)
+#' @rdname MBOInfillCriterion
+#' @export
+#' @usage NULL
+#' @docType NULL
+#' @format NULL
+#' @keywords NULL
 crit.aei = makeMBOInfillCriterionAEI()
+#' @rdname MBOInfillCriterion
+#' @export
+#' @usage NULL
+#' @docType NULL
+#' @format NULL
+#' @keywords NULL
 crit.eqi = makeMBOInfillCriterionEQI()
-crit.dib1 = makeMBOInfillCriterionDIB()
-crit.dib2 = makeMBOInfillCriterionDIB(cb.lambda = 2)
-crit.dib3 = makeMBOInfillCriterionDIB(cb.lambda = 3)
-crit.dib4 = makeMBOInfillCriterionDIB(cb.lambda = 4)
-crit.dib5 = makeMBOInfillCriterionDIB(cb.lambda = 5)
+#' @rdname MBOInfillCriterion
+#' @export
+#' @usage NULL
+#' @docType NULL
+#' @format NULL
+#' @keywords NULL
+crit.dib1 = makeMBOInfillCriterionDIB(cb.lambda = 1)

@@ -28,3 +28,4 @@
   \item{control [\code{MBOControl}] Control object used in optimization}
 }
 }
+
