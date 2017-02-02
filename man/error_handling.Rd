@@ -76,3 +76,4 @@ You will get a warning if you turn on saving in general, but not for the the fin
 this seems a bit stupid. \code{save.file.path} defines the path of the RData file where
 the state is stored. It is overwritten (= extended) in each saving iteration.
 }
+

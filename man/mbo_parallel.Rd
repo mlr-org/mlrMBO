@@ -23,3 +23,4 @@ Details regarding the latter:
 \item{Multi-objective MBO with ParEGO}{Parallel optimization of scalarization functions.}
 }
 }
+
