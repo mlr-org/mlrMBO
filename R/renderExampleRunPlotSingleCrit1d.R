@@ -34,7 +34,7 @@ renderExampleRunPlot1d = function(x, iter,
   #   infill.crit.id = "mfEI"
   #   critfun = infillCritMultiFid.external
   # } else {
-    critfun = getInfillCritFunction(infill.crit.id)$fun
+    critfun = control$infill.crit$fun
   #}
 
   # we need to maximize expected improvement

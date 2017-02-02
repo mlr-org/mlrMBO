@@ -38,8 +38,6 @@ NULL
 #' \item{crit.dib3}{Directed Indicator Based Search with Lambda=3}
 #' \item{crit.dib4}{Directed Indicator Based Search with Lambda=4}
 #' \item{crit.dib5}{Directed Indicator Based Search with Lambda=5}
-#' 
-#' \item{cv10}{10-fold cross-validation}
 #' }
 #' 
 #' @rdname MBOInfillCriterion

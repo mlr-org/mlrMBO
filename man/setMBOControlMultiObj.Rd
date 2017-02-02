@@ -69,11 +69,11 @@ or just the paretofront (\code{front}).}
 Either \dQuote{sms} (SMS-EGO like algorithm) or \dQuote{eps} (epsilon-EGO like algorithm).
 Default is \dQuote{sms}.}
 
-\item{mspot.select.crit}{[\code{character(1)}]\cr
+\item{mspot.select.crit}{[\code{\link{MBOInfillCriterion}}]\cr
 Which infill.crit to use in the candidate selection. After the NSGA2
 proposed a set of candidates, \dQuote{propose.points} are selected via
 the hypervoume contribution of this infill.crit.
-Possible values are \dQuote{mean} and \dQuote{cb}, default ist \dQuote{mean}}
+Possible values are \dQuote{crit.mr} and \dQuote{crit.cb} (or any other InfillCriterion generated with \code{\link{makeMBOInfillCriterionCB}}), default is \dQuote{crit.mr}.}
 }
 \value{
 [\code{\link{MBOControl}}].
@@ -121,3 +121,4 @@ Other MBOControl: \code{\link{makeMBOControl}},
   \code{\link{setMBOControlMultiPoint}},
   \code{\link{setMBOControlTermination}}
 }
+

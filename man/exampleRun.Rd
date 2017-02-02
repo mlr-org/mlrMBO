@@ -68,3 +68,4 @@ Please note the following things:
 - If the passed objective function \code{fun} does not provide the true, unnoisy objective function
   some features will not be displayed (for example the gap between the best point so far and the global optimum).
 }
+

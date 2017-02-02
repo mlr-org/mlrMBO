@@ -1,16 +1,17 @@
 Package: mlrMBO
 Title: A Toolbox for Model-Based Optimization of Expensive Black-Box Functions
-Description: Flexible and comprehensive R toolbox for model-based
-	optimization ('MBO'), also known as Bayesian optimization. It is designed for
-	both single- and multi-objective optimization with mixed continuous, categorical
-	and conditional parameters. The machine learning toolbox 'mlr' provide dozens
-	of regression learners to model the performance of the target algorithm with
-	respect to the parameter settings. It provides many different infill criteria to
-	guide the search process. Additional features include multipoint batch proposal,
-	parallel exectution as well as visualization and sophisticated logging mechanisms,
-	which is especially useful for teaching and understanding of algorithm behavior.
-	'mlrMBO' is implemented in a modular fashion, such that single components can
-	be easily replaced or adapted by the user for specific use cases.
+Description: Flexible and comprehensive R toolbox for model-based optimization
+    ('MBO'), also known as Bayesian optimization. It is designed for both single-
+    and multi-objective optimization with mixed continuous, categorical and
+    conditional parameters. The machine learning toolbox 'mlr' provide dozens
+    of regression learners to model the performance of the target algorithm with
+    respect to the parameter settings. It provides many different infill criteria
+    to guide the search process. Additional features include multipoint batch
+    proposal, parallel exectution as well as visualization and sophisticated
+    logging mechanisms, which is especially useful for teaching and understanding
+    of algorithm behavior. 'mlrMBO' is implemented in a modular fashion, such that
+    single components can be easily replaced or adapted by the user for specific use
+    cases.
 Authors@R: c(
     person("Bernd", "Bischl", email = "bernd_bischl@gmx.net", role = c("aut", "cre")),
     person("Jakob", "Bossek", email = "jakob.bossek@tu-dortmund.de", role = "aut"),
@@ -57,5 +58,5 @@ Suggests:
 LazyData: yes
 ByteCompile: yes
 Version: 1.0.0
-RoxygenNote: 6.0.0
+RoxygenNote: 5.0.1
 VignetteBuilder: knitr

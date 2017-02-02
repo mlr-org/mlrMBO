@@ -16,3 +16,4 @@ Object of type \code{MBOExampleRun}.}
 \description{
 Helper function which returns the (estimated) global optimum.
 }
+

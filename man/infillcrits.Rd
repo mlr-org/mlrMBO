@@ -2,14 +2,13 @@
 % Please edit documentation in R/infill_crits.R, R/zzz.R
 \name{infillcrits}
 \alias{infillcrits}
+\alias{makeMBOInfillCriterionAEI}
+\alias{makeMBOInfillCriterionCB}
+\alias{makeMBOInfillCriterionDIB}
+\alias{makeMBOInfillCriterionEI}
+\alias{makeMBOInfillCriterionEQI}
 \alias{makeMBOInfillCriterionMeanResponse}
 \alias{makeMBOInfillCriterionStandardError}
-\alias{makeMBOInfillCriterionEI}
-\alias{makeMBOInfillCriterionCB}
-\alias{makeMBOInfillCriterionAEI}
-\alias{makeMBOInfillCriterionEQI}
-\alias{makeMBOInfillCriterionDIB}
-\alias{crit.ei}
 \title{Infill criteria.}
 \usage{
 makeMBOInfillCriterionMeanResponse()
@@ -78,8 +77,5 @@ For commonly used settings of the Infill criteria:
 \item{crit.dib3}{Directed Indicator Based Search with Lambda=3}
 \item{crit.dib4}{Directed Indicator Based Search with Lambda=4}
 \item{crit.dib5}{Directed Indicator Based Search with Lambda=5}
-
-\item{cv10}{10-fold cross-validation}
+} 
 }
-}
-
