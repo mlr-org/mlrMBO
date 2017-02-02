@@ -10,7 +10,8 @@
 #' @param crit [\code{\link{MBOInfillCriterion}}]\cr
 #'   How should infill points be rated. See \code{\link{infillcrits}} for an overview
 #'   of available infill criteria or implement a custom one via \code{\link{makeMBOInfillCriterion}}.#
-#'   Default is \dQuote{(lower) confidence bound} (see \code{\link{makeMBOInfillCriterionCB}}).
+#'   Default is \dQuote{(lower) confidence bound} (see \code{\link{makeMBOInfillCriterionCB}}) with 
+#'   \code{cb.lambda = 1} in case of a fully numeric parameter set and 2 otherwise.
 #' @param interleave.random.points [\code{integer(1)}]\cr
 #'   Add \code{interleave.random.points} uniformly sampled points additionally to the
 #'   regular proposed points in each step.
