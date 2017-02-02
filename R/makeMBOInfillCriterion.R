@@ -43,6 +43,7 @@
 #'   Default is \code{FALSE}.
 #' @return [\code{\link{MBOInfillCriterion}}]
 #' @rdname MBOInfillCriterion
+#' @aliases MBOInfillCriterion
 #' @export
 makeMBOInfillCriterion = function(fun, name, id,
   minimize = TRUE, components = character(0L), params = list(),
