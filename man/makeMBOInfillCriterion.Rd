@@ -52,7 +52,7 @@ error estimation?
 Default is \code{FALSE}.}
 }
 \value{
-[\code{MBOInfillCriterion}]
+[\code{\link{MBOInfillCriterion}}]
 }
 \description{
 The infill criterion guides the model based search process.

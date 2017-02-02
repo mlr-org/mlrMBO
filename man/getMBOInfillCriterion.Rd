@@ -26,7 +26,7 @@ getMBOInfillCriterionComponents(x)
 getMBOInfillCriterionDirection(x)
 }
 \arguments{
-\item{x}{[\code{MBOInfillCriterion}]\cr
+\item{x}{[\code{\link{MBOInfillCriterion}}]\cr
 Infill criterion.}
 
 \item{par.name}{[\code{character(1)}]\cr

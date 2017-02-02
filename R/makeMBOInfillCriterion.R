@@ -41,7 +41,7 @@
 #'   Does the infill criterion require the regression learner to provide a standard
 #'   error estimation?
 #'   Default is \code{FALSE}.
-#' @return [\code{MBOInfillCriterion}]
+#' @return [\code{\link{MBOInfillCriterion}}]
 #' @export
 makeMBOInfillCriterion = function(fun, name, id,
   minimize = TRUE, components = character(0L), params = list(),

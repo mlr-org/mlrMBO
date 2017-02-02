@@ -7,7 +7,7 @@
 #' minimizes that.
 #'
 #' @template arg_control
-#' @param crit [\code{MBOInfillCriterion}]\cr
+#' @param crit [\code{\link{MBOInfillCriterion}}]\cr
 #'   How should infill points be rated. See \code{\link{infillcrits}} for an overview
 #'   of available infill criteria or implement a custom one via \code{\link{makeMBOInfillCriterion}}.#
 #'   Default is \dQuote{(lower) confidence bound} (see \code{\link{makeMBOInfillCriterionCB}}).

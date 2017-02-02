@@ -69,7 +69,7 @@ or just the paretofront (\code{front}).}
 Either \dQuote{sms} (SMS-EGO like algorithm) or \dQuote{eps} (epsilon-EGO like algorithm).
 Default is \dQuote{sms}.}
 
-\item{mspot.select.crit}{[\code{MBOInfillCriterion}]\cr
+\item{mspot.select.crit}{[\code{\link{MBOInfillCriterion}}]\cr
 Which infill.crit to use in the candidate selection. After the NSGA2
 proposed a set of candidates, \dQuote{propose.points} are selected via
 the hypervoume contribution of this infill.crit.

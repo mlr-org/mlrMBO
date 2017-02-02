@@ -3,7 +3,7 @@
 #' @description
 #' Returns properties of an infill criterion, e.g., name or id.
 #'
-#' @param x [\code{MBOInfillCriterion}]\cr
+#' @param x [\code{\link{MBOInfillCriterion}}]\cr
 #'   Infill criterion.
 #' @param par.name [\code{character(1)}]\cr
 #'   Parameter name.

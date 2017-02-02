@@ -50,7 +50,7 @@
 #' @param dib.indicator [\code{character(1)}]\cr
 #'   Either \dQuote{sms} (SMS-EGO like algorithm) or \dQuote{eps} (epsilon-EGO like algorithm).
 #'   Default is \dQuote{sms}.
-#' @param mspot.select.crit [\code{MBOInfillCriterion}]\cr
+#' @param mspot.select.crit [\code{\link{MBOInfillCriterion}}]\cr
 #'   Which infill.crit to use in the candidate selection. After the NSGA2
 #'   proposed a set of candidates, \dQuote{propose.points} are selected via
 #'   the hypervoume contribution of this infill.crit.
