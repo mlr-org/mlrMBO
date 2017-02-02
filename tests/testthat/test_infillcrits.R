@@ -76,3 +76,12 @@ test_that("infill crits", {
   or = mbo(f1, des, learner = makeLearner("regr.km", predict.type = "se", nugget.estim = TRUE), control = ctrl)
   expect_lt(or$y, 50)
 })
+
+
+test_that("infill crit printer works",  {
+  # had a problem here that the NULL default was not displayed
+  expect_output(print(crit.cb), "cb.lambda=<NULL>")
+
+  expect_output(print(crit.ei), "Minimize       : FALSE")
+})
+

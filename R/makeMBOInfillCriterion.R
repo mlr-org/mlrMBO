@@ -77,8 +77,9 @@ makeMBOInfillCriterion = function(fun, name, id,
 print.MBOInfillCriterion = function(x, ...) {
   components = getMBOInfillCriterionComponents(x)
   params = getMBOInfillCriterionParams(x)
-    catf("Infill criterion : %s (%s)", getMBOInfillCriterionName(x),
+  catf("Infill criterion : %s (%s)", getMBOInfillCriterionName(x),
     getMBOInfillCriterionId(x))
+    catf("  Minimize       : %s", x$minimize)
   if (hasRequiresInfillCriterionStandardError(x))
     catf("  Requirement    : SE estimation")
   if (length(components) > 0)

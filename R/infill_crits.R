@@ -5,17 +5,19 @@
 #' improvement, (lower) confidence bound etc. Moreover, custom infill criteria
 #' may be generated with the \code{\link{makeMBOInfillCriterion}} function.
 #'
+#' @details
+#' In the multi-objective case we recommend to set \code{cb.lambda} to
+#' \eqn{q(0.5 \cdot \pi_{CB}^(1 / n))} where \eqn{q} is the quantile
+#' function of the standard normal distribution, \eqn{\pi_CB} is the probability
+#' of improvement value and \eqn{n} is the number of objectives of the considered problem.
+#'
 #' @param se.threshold [\code{numeric(1)}]\cr
 #'   In order to avoid numerical problems the standard error estimation is assumed to
 #'   be exactly zero, if it is below \code{se.threshold}.
 #'   Default is 1e-6.
-#' @param cb.lambda [\code{numeric(1)}]\cr
+#' @param cb.lambda [\code{numeric(1)} | \code{NULL}]\cr
 #'   Lambda parameter for confidence bound infill criterion.
-#'   In the multi-objective case we recommend to set this value to
-#'   \eqn{q(0.5 \cdot \pi_{CB}^(1 / n))} where \eqn{q} is the quantile
-#'   function of the standard normal distribution, \eqn{\pi_CB} is the probability
-#'   of improvement value and \eqn{n} is the number of objectives of the considered problem.
-#'   Default is 1 in case of a fully numeric parameter set and 2 otherwise.
+#'   Default is \code{NULL}, which means 1 in case of a fully numeric parameter set and 2 otherwise.
 #FIXME: removed cb.inflate.se for now (see issue #309)
 # @param cb.inflate.se [\code{logical(1)}]\cr
 #   Try to inflate or deflate the estimated standard error to get to the same scale as the mean?
