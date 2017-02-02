@@ -61,9 +61,11 @@ checkStuff = function(fun, par.set, design, learner, control) {
   }
   
   # set default lambda parameter for cb infill crit
-  if (infill.crit.id == "cb" && is.null(control$infill.crit$params$cb.lambda))
-    control$infill.crit = makeMBOInfillCriterionCB(ifelse(isNumeric(par.set, include.int = TRUE), 1, 2))
-  
+  if (infill.crit.id == "cb" && is.null(control$infill.crit$params$cb.lambda)) {
+    lambda = ifelse(isNumeric(par.set, include.int = TRUE), 1, 2)
+    control$infill.crit = makeMBOInfillCriterionCB()
+  }
+
   # If nugget estimation should be used, make sure learner is a km model with activated nugget estim
   if (infill.crit.id == "aei" && getMBOInfillCriterionParam(infill.crit, "aei.use.nugget")) {
     if (learner$short.name != "km" || !isTRUE(getHyperPars(learner)$nugget.estim)) {
