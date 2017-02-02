@@ -22,3 +22,4 @@ Creates a transformation function for MBOExampleRun.
 \seealso{
 \link{trafos}
 }
+

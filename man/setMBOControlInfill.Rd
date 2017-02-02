@@ -158,3 +158,4 @@ Other MBOControl: \code{\link{makeMBOControl}},
   \code{\link{setMBOControlMultiPoint}},
   \code{\link{setMBOControlTermination}}
 }
+

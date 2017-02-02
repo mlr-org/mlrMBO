@@ -86,3 +86,4 @@ the model and the (infill) points. The lower plot shows the infill criterion.
 - For bi-criteria target functions the upper plot shows the target space and the lower
   plot displays the x-space.
 }
+

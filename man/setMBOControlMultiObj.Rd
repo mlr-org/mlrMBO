@@ -73,7 +73,7 @@ Default is \dQuote{sms}.}
 Which infill.crit to use in the candidate selection. After the NSGA2
 proposed a set of candidates, \dQuote{propose.points} are selected via
 the hypervoume contribution of this infill.crit.
-Possible values are \dQuote{makeMBOInfillCriterionMean()} and \dQuote{makeMBOInfillCriterionCB()}, default ist \dQuote{makeMBOInfillCriterionMean()}}
+Possible values are \dQuote{crit.mr} and \dQuote{crit.cb} (or any other InfillCriterion generated with \code{\link{makeMBOInfillCriterionCB}}), default is \dQuote{crit.mr}.}
 }
 \value{
 [\code{\link{MBOControl}}].
@@ -121,3 +121,4 @@ Other MBOControl: \code{\link{makeMBOControl}},
   \code{\link{setMBOControlMultiPoint}},
   \code{\link{setMBOControlTermination}}
 }
+

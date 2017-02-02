@@ -17,3 +17,4 @@ See \code{\link{mbo}}.
 \description{
 Useful if your optimization didn't terminate but you want a results nonetheless.
 }
+

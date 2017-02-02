@@ -69,3 +69,4 @@ res = mbo(obj.fun, design = des, control = ctrl)
 print(res)
 plot(res)
 }
+

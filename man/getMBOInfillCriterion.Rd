@@ -2,13 +2,13 @@
 % Please edit documentation in R/getMBOInfillCrit.R
 \name{getMBOInfillCriterion}
 \alias{getMBOInfillCriterion}
-\alias{getMBOInfillCriterionParams}
-\alias{getMBOInfillCriterionParam}
-\alias{getMBOInfillCriterionName}
-\alias{getMBOInfillCriterionId}
-\alias{hasRequiresInfillCriterionStandardError}
 \alias{getMBOInfillCriterionComponents}
 \alias{getMBOInfillCriterionDirection}
+\alias{getMBOInfillCriterionId}
+\alias{getMBOInfillCriterionName}
+\alias{getMBOInfillCriterionParam}
+\alias{getMBOInfillCriterionParams}
+\alias{hasRequiresInfillCriterionStandardError}
 \title{Get properties of MBO infill criterion.}
 \usage{
 getMBOInfillCriterionParams(x)
@@ -35,3 +35,4 @@ Parameter name.}
 \description{
 Returns properties of an infill criterion, e.g., name or id.
 }
+
