@@ -103,13 +103,11 @@ makeMBOInfillCriterionEI = function(se.threshold = 1e-6) {
 
 #' @export
 #' @rdname infillcrits
-makeMBOInfillCriterionCB = function(cb.lambda = NULL) {
+makeMBOInfillCriterionCB = function(cb.lambda = 1) {
   assertNumber(cb.lambda, lower = 0, null.ok = TRUE)
   force(cb.lambda)
   makeMBOInfillCriterion(
     fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
-      if (is.null(cb.lambda))
-        cb.lambda = ifelse(isNumeric(par.set, include.int = TRUE), 1, 2)
       model = models[[1L]]
       maximize.mult = ifelse(control$minimize, 1, -1)
       p = predict(model, newdata = points)$data
