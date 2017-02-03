@@ -12,4 +12,3 @@ getSupportedMultipointInfillOptFunctions()
 \description{
 Returns all names of supported multipoint infill-criteria optimizers.
 }
-

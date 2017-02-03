@@ -12,4 +12,3 @@ getSupportedInfillOptFunctions()
 \description{
 None.
 }
-

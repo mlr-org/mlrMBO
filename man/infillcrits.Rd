@@ -2,13 +2,13 @@
 % Please edit documentation in R/infill_crits.R
 \name{infillcrits}
 \alias{infillcrits}
-\alias{makeMBOInfillCriterionAEI}
-\alias{makeMBOInfillCriterionCB}
-\alias{makeMBOInfillCriterionDIB}
-\alias{makeMBOInfillCriterionEI}
-\alias{makeMBOInfillCriterionEQI}
 \alias{makeMBOInfillCriterionMeanResponse}
 \alias{makeMBOInfillCriterionStandardError}
+\alias{makeMBOInfillCriterionEI}
+\alias{makeMBOInfillCriterionCB}
+\alias{makeMBOInfillCriterionAEI}
+\alias{makeMBOInfillCriterionEQI}
+\alias{makeMBOInfillCriterionDIB}
 \title{Infill criteria.}
 \usage{
 makeMBOInfillCriterionMeanResponse()
@@ -31,13 +31,9 @@ In order to avoid numerical problems the standard error estimation is assumed to
 be exactly zero, if it is below \code{se.threshold}.
 Default is 1e-6.}
 
-\item{cb.lambda}{[\code{numeric(1)}]\cr
+\item{cb.lambda}{[\code{numeric(1)} | \code{NULL}]\cr
 Lambda parameter for confidence bound infill criterion.
-In the multi-objective case we recommend to set this value to
-\eqn{q(0.5 \cdot \pi_{CB}^(1 / n))} where \eqn{q} is the quantile
-function of the standard normal distribution, \eqn{\pi_CB} is the probability
-of improvement value and \eqn{n} is the number of objectives of the considered problem.
-Default is 1 in case of a fully numeric parameter set and 2 otherwise.}
+Default is \code{NULL}, which means 1 in case of a fully numeric parameter set and 2 otherwise.}
 
 \item{aei.use.nugget}{[\code{logical(1)}]\cr
 Should the nugget effect be used for the pure variance estimation for augmented
@@ -57,4 +53,9 @@ Default is \code{NULL}, in this case it is adaptively set.}
 improvement, (lower) confidence bound etc. Moreover, custom infill criteria
 may be generated with the \code{\link{makeMBOInfillCriterion}} function.
 }
-
+\details{
+In the multi-objective case we recommend to set \code{cb.lambda} to
+\eqn{q(0.5 \cdot \pi_{CB}^(1 / n))} where \eqn{q} is the quantile
+function of the standard normal distribution, \eqn{\pi_CB} is the probability
+of improvement value and \eqn{n} is the number of objectives of the considered problem.
+}
