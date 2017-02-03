@@ -103,7 +103,7 @@ makeMBOInfillCriterionEI = function(se.threshold = 1e-6) {
 
 #' @export
 #' @rdname infillcrits
-makeMBOInfillCriterionCB = function(cb.lambda = 1) {
+makeMBOInfillCriterionCB = function(cb.lambda = NULL) {
   assertNumber(cb.lambda, lower = 0, null.ok = TRUE)
   force(cb.lambda)
   makeMBOInfillCriterion(
