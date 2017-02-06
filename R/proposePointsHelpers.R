@@ -32,12 +32,12 @@ checkFailedModels = function(models, par.set, npoints, control) {
 
 
 # create control objects with random lamda values for parallel cb multi-point
-createRandomCBControls = function(control, crit, user.lambda = FALSE) {
+createRandomCBControls = function(control, crit, random.lambda = TRUE) {
   lambdas = rexp(control$propose.points)
   controls = lapply(lambdas, function(lambda) {
     ctrl = control;
     ctrl$propose.points = 1L
-    if (!user.lambda) {
+    if (!random.lambda) {
       ctrl$infill.crit = makeMBOInfillCriterionCB(cb.lambda = lambda)
     } else {
       ctrl$infill.crit = crit
