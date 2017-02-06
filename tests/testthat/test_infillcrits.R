@@ -81,7 +81,6 @@ test_that("infill crits", {
 test_that("infill crit printer works",  {
   # had a problem here that the NULL default was not displayed
   expect_output(print(crit.cb), "cb.lambda=<NULL>")
-
-  expect_output(print(crit.ei), "Minimize       : FALSE")
+  expect_output(print(crit.ei), "Direction of optimization : maximize")
 })
 
