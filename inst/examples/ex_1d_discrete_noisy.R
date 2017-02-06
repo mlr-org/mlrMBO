@@ -23,16 +23,17 @@ obj.fun = makeSingleObjectiveFunction(
     makeDiscreteParam("foo", values = letters[1:3]),
     makeNumericParam("bar", lower = -5, upper = 5)
   ),
+  global.opt.value = 3,
   has.simple.signature = FALSE, # function expects a named list of parameter values
   noisy = TRUE
 )
 
-ctrl = makeMBOControl(propose.points = 3)
+ctrl = makeMBOControl(propose.points = 1)
 ctrl = setMBOControlMultiPoint(ctrl, method = "cb")
 ctrl = setMBOControlTermination(ctrl, iters = 10L)
 
 # we can basically do an exhaustive search in 3 values
-ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCriterionCB(cb.lambda = 5),
+ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCriterionEI(),
   opt.restarts = 1L, opt.focussearch.points = 3L, opt.focussearch.maxit = 1L)
 
 design = generateDesign(20L, getParamSet(obj.fun), fun = lhs::maximinLHS)
@@ -77,17 +78,28 @@ draw.design.iter$y.predict = getPredictionResponse(prediction)
 draw.design.iter$y.se = getPredictionSE(prediction)
 # get the infill crit value
 infill.crit = control$infill.crit$fun(points = draw.design.iter, models = list(this.model), control = control, par.set = par.set, design = this.design, iter = iter, attributes = TRUE)
-draw.design.iter$infill.value = infill.crit
+draw.design.iter$infill.value = setAttribute(infill.crit, "crit.components", NULL)
 draw.design.iter = cbind(draw.design.iter, attr(infill.crit, "crit.components"))
 
 # opt path for this iteration
 this.op.df = op.df[op.df$dob <= iter, ]
-this.op.df$variable = "y.predict"
+this.op.df$variable = y.names[1]
 this.op.df$state = ifelse(this.op.df$dob == 0, "init", ifelse(this.op.df$dob == iter, "prop", "seq"))
-#plot the stuff
+# melt data for plotting
 mdata = reshape2::melt(draw.design.iter, measure.vars = c("y.predict", "infill.value"))
+# rename the melted columns according to input
+mdata$variable = plyr::revalue(mdata$variable, replace = c(y.predict = y.names[1], infill.value = control$infill.crit$id))
+mdata$variable = factor(mdata$variable, levels = c(y.names[1], control$infill.crit$id))
+this.op.df$variable = factor(this.op.df$variable, levels = c(y.names[1], control$infill.crit$id))
+# put name of discrete vector in front (like foo: a, foo: b, ...)
+mdata[[x.name.discrete]] = factor(mdata[[x.name.discrete]], labels = sprintf("%s: %s", x.name.discrete, levels(mdata[[x.name.discrete]])))
+this.op.df[[x.name.discrete]] = factor(this.op.df[[x.name.discrete]], labels = sprintf("%s: %s", x.name.discrete, levels(this.op.df[[x.name.discrete]])))
+
 g = ggplot()
 g = g + geom_line(data = mdata, mapping = aes_string(x = x.name.numeric, y = "value"))
-g = g + geom_line(data = mdata[mdata$variable == "y.predict",], mapping = aes_string(x = x.name.numeric, y = "y.real"), linetype = 2)
+g = g + geom_line(data = mdata[mdata$variable == y.names[1],], mapping = aes_string(x = x.name.numeric, y = "y.real"), linetype = 2)
 g = g + geom_point(data = this.op.df, mapping = aes_string(x = x.name.numeric, y = y.names, shape = "state", color = "state"), size = 3)
-g + facet_grid(as.formula(sprintf("%s~%s", "variable", x.name.discrete)), scales = "free")
+g = g + facet_grid(as.formula(sprintf("%s~%s", "variable", x.name.discrete)), scales = "free")
+g = g + theme(axis.title.y = element_blank())
+g + labs(title = sprintf("%s, Iteration: %s", getName(run$obj.fun), iter), subtitle = "bla")
+
