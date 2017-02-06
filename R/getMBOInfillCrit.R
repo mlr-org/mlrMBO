@@ -64,5 +64,5 @@ getMBOInfillCriterionDummyComponents = function(x) {
 #' @rdname getMBOInfillCriterion
 getMBOInfillCriterionDirection = function(x) {
   assertClass(x, "MBOInfillCriterion")
-  ifelse(x$minimize, 1, -1)
+  ifelse(x$opt.direction == "minimize", 1, -1)
 }

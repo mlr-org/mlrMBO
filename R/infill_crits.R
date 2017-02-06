@@ -98,7 +98,7 @@ makeMBOInfillCriterionEI = function(se.threshold = 1e-6) {
     id = "ei",
     components = c("se", "mean"),
     params = list(se.threshold = se.threshold),
-    opt.direction = "maximize"
+    opt.direction = "maximize",
     requires.se = TRUE
   )
 }
