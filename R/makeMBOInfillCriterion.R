@@ -85,29 +85,5 @@ print.MBOInfillCriterion = function(x, ...) {
   if (length(components) > 0)
     catf("  Components     : %s", collapse(components, sep = ", "))
   if (length(params) > 0)
-    catf("  Parameters     : %s", paramsToString(params))
-}
-
-paramsToString = function(params) {
-  collapsef("%s=%s", names(params), vcapply(params, valueToString), sep = ", ")
-}
-
-# FIXME: Shamelessly copied from ParamHelpers/R/paramValueToString. Remove if exported there!
-valueToString = function(x, num.format = "%.3g") {
-  cl = class(x)[1L]
-
-  if (cl == "numeric")
-    paste(sprintf(num.format, x), collapse=",")
-  else if (cl == "integer")
-    paste(as.character(x), collapse=",")
-  else if (cl == "logical")
-    paste(as.character(x), collapse=",")
-  else if (cl == "character")
-    collapse(x)
-  else if (cl == "function")
-    "<function>"
-  else if (cl == "expression")
-    as.character(x)
-  else
-    sprintf("<%s>", cl)
+    catf("  Parameters     : %s", convertToShortString(params))
 }
