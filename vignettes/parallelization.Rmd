@@ -12,17 +12,53 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-# Work in progress!
+```{r setup, include = FALSE, cache = FALSE}
+library(mlrMBO)
+set.seed(123)
+knitr::opts_chunk$set(cache = TRUE, collapse = FALSE, results = 'hold')
+knitr::knit_hooks$set(document = function(x){
+  gsub("```\n*```r*\n*", "", x)
+})
+```
 
-# Parallelization
+## Purpose
 
-#### Argument: _method_
+This vignette will give you a short introduction how **mlrMBO** can be configured to make use of multicore or other parallel infrastructures by evaluating multiple points (each on one CPU) per MBO iteration, to improve the speed of the model-based optimization.
 
-Define the method used for multipoint proposals, currently 3 different methods are supported:
+## Parallelization through multi point proposals
 
+Like always let's start with the function we want to optimize:
+```{r objective_function}
+library(mlrMBO)
+obj.fun = makeBraninFunction()
+# visualize the function
+autoplot(obj.fun, render.levels = TRUE, show.optimum = TRUE)
+```
+
+In our example we will have *two CPUs* that we want to utelize for the evaluation of the black-box function.
+
+```{r control}
+library(mlrMBO)
+ctrl = makeMBOControl(propose.points = 2)
+```
+
+There are multiple methods available to propse multiple points.
+Each has it's advantages and disadvantages.
+The choice is mostly bound to your choice of the infill criterion, so we will decide for that first.
+As we have a real valued parameter space of our objective function, the **expected improvement** is usually the best choice
+
+```{r infill}
+ctrl = setMBOControlInfill(ctrl, crit = crit.ei)
+```
+
+The different methods to propose multiple points are as follows:
+* `cl`: Proposes points by the constant liar strategy. 
+This is usually a good choice for the **augmented expected** and the **expected improvement**.
+In the first step the surrogate model is fitted based on the real data and the best point is calculated accordingly. 
+Then, the function value of the best point is simply guessed by the worst seen function evaluation. This "lie"" is used to update the model in order to propose subsequent point. The procedure is applied until the number of points has reached `propose.points`.
 * `cb`: Proposes multiple points by optimizing the confidence bound criterion `propose.points` times with different lambda values. Generally this works the same way as for the single point case, i.e. specify `infill.opt`. The lambdas are drawn from an exp(1)-distribution.
 * `multicrit`: Use a evolutionary multicriteria optimization. This is a (mu+1) type evolutionary algorithm and runs for `multicrit.maxit` generations. The population size is set to `propose.points`.
-* `cl`: Proposes points by the constant liar strategy, which only makes sense if the confidence bound criterion is used as an infill criterion. In the first step the surrogate model is fitted based on the real data and the best point is calculated accordingly. Then, the function value of the best point is simply guessed by the worst seen function evaluation. This "lie"" is used to update the model in order to propose subsequent point. The procedure is applied until the number of points has reached `propose.points`.
+
 
 It is possible to parallelize the evaluation of the target function to speed up the computation. Internally the
 evaluation of the target function is realized with the R package `parallelMap`. This package offers simple parallelization with various different backends. For details on the usage see the [parallelMap github page](https://github.com/berndbischl/parallelMap#parallelmap), which offers a nice tutorial and describes all possible backends thorougly.  For our usage we use a *multicore* backend. Note, that the multicore parallelization does _not_ work on windows machines.
