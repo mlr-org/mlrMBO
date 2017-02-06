@@ -50,7 +50,8 @@ makeMBOInfillCriterionMeanResponse = function() {
       ifelse(control$minimize, 1, -1) * predict(models[[1L]], newdata = points)$data$response
     },
     name = "Mean response",
-    id = "mean"
+    id = "mean",
+    opt.direction = "objective"
   )
 }
 
@@ -63,7 +64,8 @@ makeMBOInfillCriterionStandardError = function() {
     },
     name = "Standard error",
     id = "se",
-    requires.se = TRUE
+    requires.se = TRUE,
+    opt.direction = "maximize"
   )
 }
 
@@ -96,7 +98,7 @@ makeMBOInfillCriterionEI = function(se.threshold = 1e-6) {
     id = "ei",
     components = c("se", "mean"),
     params = list(se.threshold = se.threshold),
-    minimize = FALSE,
+    opt.direction = "maximize"
     requires.se = TRUE
   )
 }
@@ -137,6 +139,7 @@ makeMBOInfillCriterionCB = function(cb.lambda = NULL) {
     id = "cb",
     components = c("se", "mean", "lambda"),
     params = list(cb.lambda = cb.lambda),
+    opt.direction = "objective",
     requires.se = TRUE
   )
 }
@@ -182,6 +185,7 @@ makeMBOInfillCriterionAEI = function(aei.use.nugget = FALSE, se.threshold = 1e-6
     id = "aei",
     components = c("se", "mean", "tau"),
     params = list(aei.use.nugget = aei.use.nugget),
+    opt.direction = "maximize",
     requires.se = TRUE
   )
 }
@@ -232,6 +236,7 @@ makeMBOInfillCriterionEQI = function(eqi.beta = 0.75, se.threshold = 1e-6) {
     components = c("se", "mean", "tau"),
     id = "eqi",
     params = list(eqi.beta = eqi.beta),
+    opt.direction = "maximize",
     requires.se = TRUE
   )
 }
@@ -284,6 +289,7 @@ makeMBOInfillCriterionDIB = function(cb.lambda = 1, sms.eps = NULL) {
     name = "Directed Indicator Based Search",
     id = "dib",
     params = list(cb.lambda = cb.lambda, sms.eps = sms.eps),
+    opt.direction = "maximize",
     requires.se = TRUE
   )
 }

@@ -18,14 +18,16 @@
 #'     \item{attributes [\code{logical{1}}]}{Should attributes appended to the return
 #'      value by considered by \pkg{mlrMBO}?}
 #'   }
+#'  Important: This function will be minimized. So the proposals will be where this function is low.
 #' @param name [\code{character(1)}]\cr
 #'   Full name of the criterion.
 #' @param id [\code{character(1)}]\cr
 #'   Short name of the criterion.
 #'   Used internally and in plots.
-#' @param minimize [\code{character(1)}]\cr
-#'   Shall the criterion be minimized or maximized?
-#'   Default is \code{TRUE}.
+#' @param opt.direction [\code{character(1)}]\cr
+#'   Shall the criterion be minimized (\code{minimize}), maximized (\code{maximize}) or is the direction the same as for the objective function (\code{objective})?
+#'   This information is just of interest for plotting.
+#'   Default is \code{minimize}.
 #' @param components [\code{character}]\cr
 #'   Infill criteria may not return proposed point(s) only. Additional
 #'   information can be returned by appending a named \code{list} \dQuote{crit.components}
@@ -46,7 +48,7 @@
 #' @aliases MBOInfillCriterion
 #' @export
 makeMBOInfillCriterion = function(fun, name, id,
-  minimize = TRUE, components = character(0L), params = list(),
+  opt.direction = "minimize", components = character(0L), params = list(),
   requires.se = FALSE) {
   assertFunction(
     fun,
@@ -56,7 +58,7 @@ makeMBOInfillCriterion = function(fun, name, id,
 
   assertString(name)
   assertString(id)
-  assertFlag(minimize)
+  assertChoice(opt.direction, c("minimize", "maximize", "objective"))
   assertCharacter(components, unique = TRUE)
   assertList(params)
   assertFlag(requires.se)
@@ -65,7 +67,7 @@ makeMBOInfillCriterion = function(fun, name, id,
     fun = fun,
     name = name,
     id = id,
-    minimize = minimize,
+    opt.direction = opt.direction,
     components = components,
     params = params,
     requires.se = requires.se
@@ -77,15 +79,15 @@ makeMBOInfillCriterion = function(fun, name, id,
 print.MBOInfillCriterion = function(x, ...) {
   components = getMBOInfillCriterionComponents(x)
   params = getMBOInfillCriterionParams(x)
-  catf("Infill criterion : %s (%s)", getMBOInfillCriterionName(x),
+  catf("Infill criterion            : %s (%s)", getMBOInfillCriterionName(x),
     getMBOInfillCriterionId(x))
-    catf("  Minimize       : %s", x$minimize)
+    catf("  Direction of optimization : %s", x$opt.direction)
   if (hasRequiresInfillCriterionStandardError(x))
-    catf("  Requirement    : SE estimation")
+    catf("  Requirement               : SE estimation")
   if (length(components) > 0)
-    catf("  Components     : %s", collapse(components, sep = ", "))
+    catf("  Components                : %s", collapse(components, sep = ", "))
   if (length(params) > 0)
-    catf("  Parameters     : %s", paramsToString(params))
+    catf("  Parameters                : %s", paramsToString(params))
 }
 
 paramsToString = function(params) {
