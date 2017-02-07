@@ -32,19 +32,20 @@ checkFailedModels = function(models, par.set, npoints, control) {
 
 
 # create control objects with random lamda values for parallel cb multi-point
-createRandomCBControls = function(control, crit, random.lambda = TRUE) {
-  lambdas = rexp(control$propose.points)
-  controls = lapply(lambdas, function(lambda) {
+# @arg crit: MBOInfillCriterion
+# @arg crit.pars: list of length propose.points. 
+#   Each list item contains a list with the arguments the infill crit should be initialized
+createSinglePointControls = function(control, crit, crit.pars = NULL) {
+  if (is.null(crit.pars)) {
+    crit.pars = vector("list", control$propose.points)
+  }
+  assertList(crit.pars, len = control$propose.points)
+  lapply(crit.pars, function(crit.par) {
     ctrl = control;
     ctrl$propose.points = 1L
-    if (!random.lambda) {
-      ctrl$infill.crit = makeMBOInfillCriterionCB(cb.lambda = lambda)
-    } else {
-      ctrl$infill.crit = crit
-    }
+    ctrl$infill.crit = do.call(crit, crit.par)
     return(ctrl)
   })
-  list(lambdas = lambdas, controls = controls)
 }
 
 # perform a deep copy of an opt.path object
