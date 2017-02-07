@@ -28,7 +28,7 @@ Depends:
     smoof (>= 1.3)
 Imports:
     backports,
-    BBmisc (>= 1.111.11),
+    BBmisc (>= 1.11),
     checkmate (>= 1.8.1),
     data.table,
     lhs,
