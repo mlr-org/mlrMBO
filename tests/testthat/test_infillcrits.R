@@ -33,7 +33,7 @@ test_that("infill crits", {
       expect_true(!anyMissing(opdf$infill_ei[, c("ei","se","mean")]))
     if (!is.null(opdf$infill_cb)) {
       expect_true(!anyMissing(opdf$infill_cb[, c("se","mean","lambda")]))
-      expect_true(all(opdf$infill_cb$lambda == 2))
+      expect_true(all(opdf$infill_cb$lambda == 1))
     }
     if (!is.null(opdf$infill_aei))
       expect_true(!anyMissing(opdf$infill_aei[, c("se","mean","tau")]))
