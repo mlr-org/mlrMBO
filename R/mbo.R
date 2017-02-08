@@ -65,6 +65,7 @@ mbo = function(fun, design = NULL, learner = NULL, control,
     assertDataFrame(design, min.rows = 1L, min.cols = 1L)
   learner = checkLearner(learner, par.set, control, fun)
   control = checkStuff(fun, par.set, design, learner, control)
+  control$infill.crit = initializeCriterion(control$infill.crit, par.set, design, learner, control)
 
   loadPackages(control)
 

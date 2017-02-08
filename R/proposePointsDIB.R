@@ -27,11 +27,12 @@ proposePointsDIB = function(opt.state) {
     # copy opt.path so we can store already proposed points in it
     opt.path2 = deepCopyOptPath(opt.path)
     dob = max(getOptPathDOB(opt.path)) + 1
+    cbfun = initializeCriterion(makeMBOInfillCriterionCB(), par.set)$fun
     for (i in seq_len(control$propose.points)) {
       control2 = z$controls[[i]]
       prop = proposePointsByInfillOptimization(opt.state, control = control2, opt.path = opt.path2)
       design = convertOptPathToDf(opt.path, control)
-      cb = evalCritFunForMultiObjModels(makeMBOInfillCriterionCB()$fun, prop$prop.points, models, control2,
+      cb = evalCritFunForMultiObjModels(cbfun, prop$prop.points, models, control2,
         par.set, design, iter)[1L, ]
       x = dfRowToList(prop$prop.points, par.set, 1)
       addOptPathEl(opt.path2, x = x, y = cb, dob = dob)
