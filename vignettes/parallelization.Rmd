@@ -25,9 +25,18 @@ knitr::knit_hooks$set(document = function(x){
 
 This vignette will give you a short introduction how **mlrMBO** can be configured to make use of multicore or other parallel infrastructures by evaluating multiple points (each on one CPU) per MBO iteration, to improve the speed of the model-based optimization.
 
+## Prerequisites
+
+The parallelization of multiple evaluations of the target function is realized internally with the R package `parallelMap`. 
+This package offers simple parallelization with various different backends. 
+For details on the usage see the [parallelMap github page](https://github.com/berndbischl/parallelMap#readme), which offers a nice tutorial and describes all possible backends thorougly.
+In this example we use a *multicore* backend, which is also the most common use-case.
+Note, that the multicore parallelization does _not_ work on windows machines.
+
 ## Parallelization through multi point proposals
 
 Like always let's start with the function we want to optimize:
+
 ```{r objective_function}
 library(mlrMBO)
 obj.fun = makeBraninFunction()
@@ -51,9 +60,11 @@ As we have a real valued parameter space of our objective function, the **expect
 ctrl = setMBOControlInfill(ctrl, crit = crit.ei)
 ```
 
+### Multi point proposal methods
+
 The available methods to propose multiple points are as follows:
 * `cl`: Proposes points by the constant liar strategy. 
-This is usually a good choice for the **augmented expected - ** and the **expected improvement**.
+The constant liar is usually a good choice for the **augmented expected - ** and the **expected improvement**.
 The first point is optained by the ordinary infill optimization, like it is used to propose one point.
 To obtain the 2nd point we assume that the evaluation at the first point is finished.
 As we don't really have an outcome yet, we set the outcome to a lie.
@@ -62,17 +73,41 @@ This *lie* is used to update the model in order to propose subsequent point.
 The procedure is repeated until `propose.points` proposals are generated.
 * `cb`: As learnt from Vignette for *Mixed Space Optimization* we prefer the **lower/upper confidence bound** (CB) when we use a *random forest* as a regression method for the surrogate.
 For the *CB* the parameter $\lambda$ is not fixed. 
-This characteristic can be used to obtain multiple proposals by optimizing the *CB* for different lambda values.
-The lambdas are drawn from an exp(1)-distribution.
-* `multicrit`: Use a evolutionary multicriteria optimization. This is a (mu+1) type evolutionary algorithm and runs for `multicrit.maxit` generations. The population size is set to `propose.points`.
+This characteristic can be used to obtain multiple proposals by optimizing the *CB* for different lambda values, which are drawn from an exp(1)-distribution.
+Each lambda value leads to a slightly different infill criteria function with different optima resulting in different proposals.
+* `multicrit`: Use a evolutionary multicriteria optimization. 
+This is a (mu+1) type evolutionary algorithm and runs for `multicrit.maxit` generations.
+The population size is set to `propose.points`.
+For a detailed description of the algorithm check the paper [MOI-MBO: Multiobjective Infill for Parallel Model-Based Optimization](http://link.springer.com/chapter/10.1007/978-3-319-09584-4_17).
 
+### Constant Liar
 
-It is possible to parallelize the evaluation of the target function to speed up the computation. Internally the
-evaluation of the target function is realized with the R package `parallelMap`. This package offers simple parallelization with various different backends. For details on the usage see the [parallelMap github page](https://github.com/berndbischl/parallelMap#parallelmap), which offers a nice tutorial and describes all possible backends thorougly.  For our usage we use a *multicore* backend. Note, that the multicore parallelization does _not_ work on windows machines.
+After having said that, and as we already decided for the **expected improvement** because we want to use Kriging for the surrogate as we have a purely numeric parameter space we decide for the **constant liar** as a multi point proposal method.
+So we have to define:
 
-```{r eval=FALSE}
-library(mlrMBO)
+```{r cl}
+ctrl = setMBOControlMultiPoint(ctrl, method = "cl", cl.lie = "min")
+```
+
+For parallelization the termination criterion offers two usefull options.
+We can limit the number of total evaluations of the objective function as well as we can limit the number of MBO iterations. 
+Assuming our initial design is of size 8 and we allow 10 iterations we will get 28 evaluations of the objective function as we decided to have two evaluations per iteration by setting `propose.points = 2`.
+so for our example the following two settings will lead to the same result:
+
+```{r}
+ctrl = setMBOControlTermination(ctrl, iters = 10)
+ctrl = setMBOControlTermination(ctrl, max.evals = 28) # for the choosen settings will result in the same number of evaluations.
+```
+
+For simplification we will let MBO automatically decide for the regression method and the initial design.
+As the parameter space is purely numeric MBO will use Kriging, which is exactly what we want.
+
+All we have to do now to initialize the parallel execution of the objective function is to call `parallelStartMulticore()` from the `parallelMap` package.
+
+```{r cl_prallelEval}
 library(parallelMap)
+
+ctrl = makeIn
 
 obj.fun = makeSphereFunction(1)
 learner = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
