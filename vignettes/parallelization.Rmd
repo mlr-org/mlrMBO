@@ -14,7 +14,7 @@ vignette: >
 
 ```{r setup, include = FALSE, cache = FALSE}
 library(mlrMBO)
-set.seed(123)
+set.seed(1)
 knitr::opts_chunk$set(cache = TRUE, collapse = FALSE, results = 'hold')
 knitr::knit_hooks$set(document = function(x){
   gsub("```\n*```r*\n*", "", x)
@@ -39,6 +39,7 @@ Like always let's start with the function we want to optimize:
 
 ```{r objective_function}
 library(mlrMBO)
+library(ggplot2)
 obj.fun = makeBraninFunction()
 # visualize the function
 autoplot(obj.fun, render.levels = TRUE, show.optimum = TRUE)
@@ -86,17 +87,17 @@ After having said that, and as we already decided for the **expected improvement
 So we have to define:
 
 ```{r cl}
-ctrl = setMBOControlMultiPoint(ctrl, method = "cl", cl.lie = "min")
+ctrl = setMBOControlMultiPoint(ctrl, method = "cl", cl.lie = min)
 ```
 
 For parallelization the termination criterion offers two usefull options.
 We can limit the number of total evaluations of the objective function as well as we can limit the number of MBO iterations. 
-Assuming our initial design is of size 8 and we allow 10 iterations we will get 28 evaluations of the objective function as we decided to have two evaluations per iteration by setting `propose.points = 2`.
+Assuming our initial design is of size 8 and we allow 6 iterations we will get 20 evaluations of the objective function as we decided to have two evaluations per iteration by setting `propose.points = 2`.
 so for our example the following two settings will lead to the same result:
 
 ```{r}
-ctrl = setMBOControlTermination(ctrl, iters = 10)
-ctrl = setMBOControlTermination(ctrl, max.evals = 28) # for the choosen settings will result in the same number of evaluations.
+ctrl = setMBOControlTermination(ctrl, iters = 6)
+ctrl = setMBOControlTermination(ctrl, max.evals = 20) # for the choosen settings will result in the same number of evaluations.
 ```
 
 For simplification we will let MBO automatically decide for the regression method and the initial design.
@@ -105,63 +106,108 @@ As the parameter space is purely numeric MBO will use Kriging, which is exactly 
 All we have to do now to initialize the parallel execution of the objective function is to call `parallelStartMulticore()` from the `parallelMap` package.
 
 ```{r cl_prallelEval}
+# Kriging can create a lot of console output, which we want tu surpress here:
+configureMlr(on.learner.warning = "quiet", show.learner.output = FALSE)
+
 library(parallelMap)
-
-ctrl = makeIn
-
-obj.fun = makeSphereFunction(1)
-learner = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
-control = makeMBOControl()
-control = setMBOControlTermination(control, iters = 3)
-design = generateDesign(n = 6, par.set = getParamSet(obj.fun))
-
-parallelStartMulticore(cpus = 2) # use 2 CPUs
-res = mbo(obj.fun, learner = learner, control = control)
+parallelStartMulticore(cpus = 2, show.info = TRUE)
+res = mbo(obj.fun, control = ctrl, show.info = FALSE)
 parallelStop()
 ```
 
+As you can see from the console output of `parallelMap` the intial design will also be evaluated in parallel.
+
+In the end a small plot that uses the `opt.path` which is stored in the result of the MBO Optimization process to visualize which points were proposed in which iteration.
+The zeros are the points from the initial design, 1 for the first iteration and so on.
+```{r cl_res}
+autoplot(obj.fun, render.levels = TRUE, show.optimum = TRUE) + geom_text(data = as.data.frame(res$opt.path), mapping = aes(label = dob), color = "white")
+```
+
+### Confidence Bound
+
+If we decided to use the **confidence bound** as an infill criterion, because e.g. the parameter space contains discrete values and we decided for the random forest as an infill criterion, then we suggest to use the **random lambda** method to generate multiple proposals per iteration.
+Note that this time we rely on MBO to autmaically use the random forest for the surrogate as the objective function contains the discrete variable `x1`.
+Also we now specify the number of initial desing points manually according to the number of levels of the discrete variable.
+
+```{r obj.fun.dis}
+obj.fun = makeSwiler2014Function()
+autoplot(obj.fun, render.levels = TRUE)
+ctrl = makeMBOControl(propose.points = 2)
+ctrl = setMBOControlInfill(ctrl, crit = crit.cb)
+ctrl = setMBOControlMultiPoint(ctrl, method = "cb")
+ctrl = setMBOControlTermination(control = iters = 5)
+design = generateDesign(n = 5*8, par.set = getParamSet(obj.fun))
+library(parallelMap)
+parallelStartMulticore(cpus = 2, show.info = FALSE)
+res = mbo(obj.fun, control = ctrl, design = design, show.info = FALSE)
+parallelStop()
+autoplot(obj.fun, render.levels = TRUE) + geom_text(data = as.data.frame(res$opt.path), mapping = aes(label = dob), color = "white")
+```
 
 
-Since mbo is a sequential method we cannot gain any improvement in the running time in this setup. But there are multiple two situations in which parallelization can be utilized  _noisy functions_ and _multi point proposals_.
+## Parallelization of the objective function
 
+In some cases it is acutally possible to parallize the objective function.
+This can also be done with the help of `parallelMap`.
 
-## Noisy functions
+### Custom objective function
 
-If our target function is not deterministic (e.g. the accuracy of a machine learning model) it is advisable to take the crossvalidation error. For the crossvalidation error, the model is fitted multuple times on slightly different training data. This process can be easily parallelized with `parallelMap`.
+One simple case to make use of parallelization is when we have a noisy function and we just evaluate it repeatadly to reduce the noisyness.
+The following example illustrates that, but also can be usefull to show you how to parallize your objective in a more sophisticated way.
+
+Let's start with the normal approach:
+
+```{r custom_noisy_obj}
+# noisy objective function
+fn = function(x) {
+  sin(x[1]) + cos(x[2]) + sum(x^2) + rnorm(1, sd = 1 + abs(prod(x)))
+}
+
+# very noisy normal smoof function
+ps = makeNumericParamSet("x", len = 2, lower =  -5, upper = 5)
+obj.fun.single = makeSingleObjectiveFunction(name = "noisy", fn = fn, noisy = TRUE, par.set = ps)
+
+# unified color scale for better comparison later
+brewer.div = colorRampPalette(RColorBrewer::brewer.pal(11, "Spectral"), interpolate = "spline")
+general.scale = scale_fill_gradientn(limits = c(-10, 110), colors = brewer.div(200))
+
+# noisy output
+autoplot(obj.fun.single, render.levels = TRUE) + general.scale
+```
+
+Now let's create an objective function that uses parallelization internally by using the function `parallelMap()` of the equally named package.
+
+```{r custom_noisy_parallel}
+parallelRegisterLevels(levels = "objective")
+obj.fun.parallel = makeSingleObjectiveFunction(
+  name = "noisy_example",
+  fn = function(x) {
+    rep.x = replicate(4, x, simplify = FALSE)
+    res = parallelMap(fn, rep.x, simplify = TRUE, level = "custom.objective")
+    mean(res)
+  }, 
+  noisy = TRUE, 
+  par.set = makeNumericParamSet(id = "x", len = 2, lower = -5, upper = 5), 
+  vectorized = FALSE,
+  has.simple.signature = TRUE
+)
+autoplot(obj.fun.parallel, render.levels = TRUE) + general.scale
+```
+
+As we can easily see the replicated and averaged evaluation of the target function apparently smoothed the output.
+This will improve optimization directly.
+However the objective function is still noisy and we have to adapt the settings a little.
+Details are given in the Vignette about noisy optimization.
 
 ```{r, eval = FALSE}
 library(mlr)
-
-fn = function(x) {
-  lrn = makeLearner("classif.ksvm", par.vals = x)
-  
-  rdesc = makeResampleDesc("CV", iters = 10L)
-  
-  res = resample(learner = lrn, iris.task, rdesc, show.info = FALSE)
-  
-  res$aggr
-}
-
-
-par.set = filterParams(mlr::getParamSet("classif.ksvm"), ids = c("C", "sigma"))
-
-par.set = makeParamSet(makeNumericParam("C", lower = -10, upper = 10, trafo = function(x) 2^x),
-                       makeNumericParam("sigma", lower = -10, upper = 10, trafo = function(x) 2^x))
-
-obj.fun = makeSingleObjectiveFunction(name = "noisy_example",
-                                      fn = fn,
-                                      has.simple.signature = FALSE,
-                                      par.set = par.set)
-
-
-control = makeMBOControl()
-control = setMBOControlTermination(control, iters = 10L)
-
-design = generateDesign(n = 10, getParamSet(obj.fun), trafo = TRUE)
-
-parallelStartMulticore(cpus = 4L)
-exampleRun(obj.fun, design = design, control = control)
+ctrl = makeMBOControl(final.method = "best.predicted")
+ctrl = setMBOControlTermination(ctrl, iters = 5L)
+ctrl = setMBOControlInfill(ctrl, crit = crit.aei)
+parallelStartMulticore(cpus = 4L, show.info = TRUE, level = "custom.objective")
+res.parallel = mbo(obj.fun.parallel, control = ctrl, show.info = FALSE)
 parallelStop()
-
+res.parallel
 ```
-
+As you can see in the output of `parallelMap` we now parallize the level `custom.objective` and not as previously `mlrMBO.feval`.
+If you forget to register your own level `parallelMap` will parellelize the first call of `parallelMap` and that would be the call we do internally to evaluate the proposed points.
