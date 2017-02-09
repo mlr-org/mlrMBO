@@ -43,6 +43,7 @@ measureTime = function(expr, ee = parent.frame()) {
 }
 
 # checks if a parameter or par.set is only numeric and has no dependencies/requires
+# FIXME: remove as soon as this is in ParamHelper
 isSimpleNumeric = function(par) {
   isNumeric(par, include.int = TRUE) && !hasRequires(par)
 }

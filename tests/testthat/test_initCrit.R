@@ -5,8 +5,8 @@ test_that("infill crit initialization", {
     makeIntegerParam("x2", lower = -1, upper = 2)
   )
   
-  expect_equal(crit.cb1, initializeCriterion(crit.cb, ps))
-  expect_equal(crit.ei, initializeCriterion(crit.ei, ps))
+  expect_equal(crit.cb1, initCrit(crit.cb, ps))
+  expect_equal(crit.ei, initCrit(crit.ei, ps))
   
   ps = makeParamSet(
     makeNumericParam("x1", lower = -2, upper = 1),
@@ -14,6 +14,6 @@ test_that("infill crit initialization", {
     makeDiscreteParam("x3", values = c("a", "b"))
   )
   
-  expect_equal(crit.cb2, initializeCriterion(crit.cb, ps))
+  expect_equal(crit.cb2, initCrit(crit.cb, ps))
   
 })

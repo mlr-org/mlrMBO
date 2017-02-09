@@ -27,7 +27,7 @@ proposePointsDIB = function(opt.state) {
     # copy opt.path so we can store already proposed points in it
     opt.path2 = deepCopyOptPath(opt.path)
     dob = max(getOptPathDOB(opt.path)) + 1
-    cbfun = initializeCriterion(makeMBOInfillCriterionCB(), par.set)$fun
+    cbfun = initCrit(makeMBOInfillCriterionCB(), par.set)$fun
     for (i in seq_len(control$propose.points)) {
       control2 = z$controls[[i]]
       prop = proposePointsByInfillOptimization(opt.state, control = control2, opt.path = opt.path2)
