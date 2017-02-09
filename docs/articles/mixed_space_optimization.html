@@ -75,7 +75,7 @@
 <div id="objective-function" class="section level3">
 <h3 class="hasAnchor">
 <html><body><a href="#objective-function" class="anchor"> </a></body></html>Objective Function</h3>
-<p>We construct an examplarly objective function using <code>smoof::makeSingleObjetiveFunction()</code>. The <code>par.set</code> argument has to be a <code>ParamSet</code> object from the <strong>ParamHelpers</strong> package, which provides information about the parameters of the objective function and their constraints for optimization. The objective function will be 3-dimensional with the inputs <code>j</code>, <code>k</code> and <code>method</code>. <code>j</code> is in the interval [0,1] and <code>k</code> as an integer in {1, 2}. The Parameter <code>method</code> is categorical and can be either <code>"a"</code> or <code>"b"</code>. In this case we want to maximize the function, so we have to set <code>minimize = FALSE</code>. As the parameters are of different types (e.g. numeric and categorical), the function expects a list instead of a vector as its argument, which is specified by <code>has.simple.signature = FALSE</code>. For further information about he <strong>smoof</strong> package we refer to the <a href="https://github.com/jakobbossek/smoof">github page</a>.</p>
+<p>We construct an exemplary objective function using <code>smoof::makeSingleObjetiveFunction()</code>. The <code>par.set</code> argument has to be a <code>ParamSet</code> object from the <strong>ParamHelpers</strong> package, which provides information about the parameters of the objective function and their constraints for optimization. The objective function will be 3-dimensional with the inputs <code>j</code>, <code>k</code> and <code>method</code>. <code>j</code> is in the interval [0,1] and <code>k</code> as an integer in {1, 2}. The Parameter <code>method</code> is categorical and can be either <code>"a"</code> or <code>"b"</code>. In this case we want to maximize the function, so we have to set <code>minimize = FALSE</code>. As the parameters are of different types (e.g. numeric and categorical), the function expects a list instead of a vector as its argument, which is specified by <code>has.simple.signature = FALSE</code>. For further information about he <strong>smoof</strong> package we refer to the <a href="https://github.com/jakobbossek/smoof">github page</a>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fun =<span class="st"> </span>function(x) {
   j =<span class="st"> </span>x[[<span class="dv">1</span>]]
   k =<span class="st"> </span>x[[<span class="dv">2</span>]]
@@ -130,14 +130,14 @@ control2 =<span class="st"> </span><span class="kw"><a href="../reference/setMBO
 <div id="initial-design" class="section level3">
 <h3 class="hasAnchor">
 <html><body><a href="#initial-design" class="anchor"> </a></body></html>Initial Design</h3>
-<p>The inital design is set to size of 12:</p>
+<p>The initial design is set to size of 12:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">design2 =<span class="st"> </span><span class="kw">generateDesign</span>(<span class="dt">n =</span> <span class="dv">4</span>, <span class="dt">par.set =</span> <span class="kw">getParamSet</span>(objfun2))</code></pre></div>
-<p>Note that the initial design has to be big enough to cover all discrete values and ideally all combinations of discrete values including integers. If we had 2 discrete variables one with 5 and one with 3 discrete values the inital design should be at least of size 15. Usually <code>generateDesign()</code> takes care that the points are spread uniformly.</p>
+<p>Note that the initial design has to be big enough to cover all discrete values and ideally all combinations of discrete values including integers. If we had 2 discrete variables one with 5 and one with 3 discrete values the initial design should be at least of size 15. Usually <code>generateDesign()</code> takes care that the points are spread uniformly.</p>
 </div>
 <div id="optimization" class="section level3">
 <h3 class="hasAnchor">
 <html><body><a href="#optimization" class="anchor"> </a></body></html>Optimization</h3>
-<p>Finally, we start the maximation with <code><a href="../reference/mbo.html">mbo()</a></code> with surpressed learner output from <em>mlr</em> and we print the result object to obtain the input that lead to the best objective:</p>
+<p>Finally, we start the maximization with <code><a href="../reference/mbo.html">mbo()</a></code> with suppressed learner output from <em>mlr</em> and we print the result object to obtain the input that lead to the best objective:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Surpresses output of learners </span>
 mlr::<span class="kw">configureMlr</span>(<span class="dt">show.info =</span> <span class="ot">FALSE</span>, <span class="dt">show.learner.output =</span> <span class="ot">FALSE</span>, <span class="dt">on.learner.warning =</span> <span class="st">"quiet"</span>)
 run2 =<span class="st"> </span><span class="kw"><a href="../reference/mbo.html">mbo</a></span>(objfun2, <span class="dt">design =</span> design2, <span class="dt">learner =</span> surr.rf, <span class="dt">control =</span> control2, <span class="dt">show.info =</span> <span class="ot">TRUE</span>)
@@ -147,55 +147,55 @@ run2 =<span class="st"> </span><span class="kw"><a href="../reference/mbo.html">
 ## [mbo] 0: j=0.276; k=2; method=a : y = 1.51 : 0.0 secs : initdesign
 ## [mbo] 0: j=0.975; k=1; method=b : y = 1.39 : 0.0 secs : initdesign
 ## [mbo] 1: j=0.504; k=2; method=a : y = 1.84 : 0.0 secs : infill_cb
-## [mbo] 2: j=0.584; k=2; method=a : y = 1.94 : 0.0 secs : infill_cb
-## [mbo] 3: j=0.544; k=2; method=a : y = 1.89 : 0.0 secs : infill_cb
-## [mbo] 4: j=0.741; k=2; method=a : y = 2.09 : 0.0 secs : infill_cb
-## [mbo] 5: j=0.763; k=2; method=a : y = 2.1 : 0.0 secs : infill_cb
-## [mbo] 6: j=0.849; k=2; method=a : y = 2.16 : 0.0 secs : infill_cb
-## [mbo] 7: j=0.856; k=2; method=a : y = 2.17 : 0.0 secs : infill_cb
-## [mbo] 8: j=0.811; k=2; method=a : y = 2.14 : 0.0 secs : infill_cb
-## [mbo] 9: j=0.848; k=2; method=a : y = 2.16 : 0.0 secs : infill_cb
-## [mbo] 10: j=0.882; k=2; method=a : y = 2.18 : 0.0 secs : infill_cb
+## [mbo] 2: j=0.477; k=2; method=a : y = 1.81 : 0.0 secs : infill_cb
+## [mbo] 3: j=0.799; k=2; method=a : y = 2.13 : 0.0 secs : infill_cb
+## [mbo] 4: j=0.772; k=2; method=a : y = 2.11 : 0.0 secs : infill_cb
+## [mbo] 5: j=0.878; k=2; method=a : y = 2.18 : 0.0 secs : infill_cb
+## [mbo] 6: j=0.959; k=1; method=b : y = 1.39 : 0.0 secs : infill_cb
+## [mbo] 7: j=0.906; k=2; method=a : y = 2.19 : 0.0 secs : infill_cb
+## [mbo] 8: j=0.911; k=2; method=a : y = 2.19 : 0.0 secs : infill_cb
+## [mbo] 9: j=0.939; k=2; method=a : y = 2.2 : 0.0 secs : infill_cb
+## [mbo] 10: j=0.948; k=2; method=a : y = 2.21 : 0.0 secs : infill_cb
 <span class="kw">print</span>(run2)
 ## Recommended parameters:
-## j=0.882; k=2; method=a
-## Objective: y = 2.180
+## j=0.948; k=2; method=a
+## Objective: y = 2.208
 ## 
 ## Optimization path
 ## 4 + 10 entries in total, displaying last 10 (or less):
 ##            j k method        y dob eol error.message exec.time        cb
-## 5  0.5036369 2      a 1.841061   1  NA          &lt;NA&gt;     0.000 -1.897968
-## 6  0.5835300 2      a 1.936469   2  NA          &lt;NA&gt;     0.000 -1.905928
-## 7  0.5437966 2      a 1.890528   3  NA          &lt;NA&gt;     0.000 -1.929048
-## 8  0.7408427 2      a 2.087720   4  NA          &lt;NA&gt;     0.000 -1.927953
-## 9  0.7630163 2      a 2.104964   5  NA          &lt;NA&gt;     0.000 -1.992328
-## 10 0.8493583 2      a 2.162179   6  NA          &lt;NA&gt;     0.000 -1.989379
-## 11 0.8564590 2      a 2.166172   7  NA          &lt;NA&gt;     0.001 -2.050080
-## 12 0.8108749 2      a 2.138645   8  NA          &lt;NA&gt;     0.000 -2.075394
-## 13 0.8483262 2      a 2.161589   9  NA          &lt;NA&gt;     0.000 -2.073537
-## 14 0.8818304 2      a 2.179547  10  NA          &lt;NA&gt;     0.000 -2.095740
+## 5  0.5036369 2      a 1.841061   1  NA          &lt;NA&gt;         0 -2.626490
+## 6  0.4765116 2      a 1.805965   2  NA          &lt;NA&gt;         0 -2.512480
+## 7  0.7988000 2      a 2.130606   3  NA          &lt;NA&gt;         0 -2.226910
+## 8  0.7720200 2      a 2.111671   4  NA          &lt;NA&gt;         0 -2.464691
+## 9  0.8783610 2      a 2.177801   5  NA          &lt;NA&gt;         0 -2.394129
+## 10 0.9586573 1      b 1.393040   6  NA          &lt;NA&gt;         0 -2.512661
+## 11 0.9060944 2      a 2.191026   7  NA          &lt;NA&gt;         0 -2.492262
+## 12 0.9107256 2      a 2.193070   8  NA          &lt;NA&gt;         0 -2.390633
+## 13 0.9394645 2      a 2.204705   9  NA          &lt;NA&gt;         0 -2.411191
+## 14 0.9478463 2      a 2.207755  10  NA          &lt;NA&gt;         0 -2.432445
 ##    error.model train.time prop.type propose.time         se     mean
-## 5         &lt;NA&gt;      0.132 infill_cb        3.011 0.18213065 1.715837
-## 6         &lt;NA&gt;      0.152 infill_cb        2.880 0.14726683 1.758662
-## 7         &lt;NA&gt;      0.121 infill_cb        2.372 0.11873768 1.810310
-## 8         &lt;NA&gt;      0.109 infill_cb        2.559 0.07517932 1.852774
-## 9         &lt;NA&gt;      0.116 infill_cb        2.509 0.09140368 1.900924
-## 10        &lt;NA&gt;      0.102 infill_cb        2.528 0.07111206 1.918267
-## 11        &lt;NA&gt;      0.117 infill_cb        2.691 0.06913714 1.980943
-## 12        &lt;NA&gt;      0.100 infill_cb        2.557 0.05929428 2.016100
-## 13        &lt;NA&gt;      0.122 infill_cb        2.611 0.04049710 2.033040
-## 14        &lt;NA&gt;      0.103 infill_cb        2.547 0.05901558 2.036724
+## 5         &lt;NA&gt;      0.130 infill_cb        2.836 0.18213065 1.715837
+## 6         &lt;NA&gt;      0.137 infill_cb        2.531 0.15268376 1.749061
+## 7         &lt;NA&gt;      0.115 infill_cb        2.521 0.08976253 1.778097
+## 8         &lt;NA&gt;      0.113 infill_cb        2.571 0.12378079 1.845787
+## 9         &lt;NA&gt;      0.111 infill_cb        2.816 0.09790746 1.904591
+## 10        &lt;NA&gt;      0.106 infill_cb        2.664 0.19508534 1.537234
+## 11        &lt;NA&gt;      0.111 infill_cb        2.607 0.11275147 1.928505
+## 12        &lt;NA&gt;      0.106 infill_cb        2.787 0.07791046 2.001081
+## 13        &lt;NA&gt;      0.121 infill_cb        2.834 0.08865719 1.967905
+## 14        &lt;NA&gt;      0.112 infill_cb        2.729 0.08554056 2.004742
 ##    lambda
-## 5       1
-## 6       1
-## 7       1
-## 8       1
-## 9       1
-## 10      1
-## 11      1
-## 12      1
-## 13      1
-## 14      1</code></pre></div>
+## 5       5
+## 6       5
+## 7       5
+## 8       5
+## 9       5
+## 10      5
+## 11      5
+## 12      5
+## 13      5
+## 14      5</code></pre></div>
 </div>
 </div>
 <div id="visualization" class="section level2">

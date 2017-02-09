@@ -92,7 +92,7 @@ may be generated with the <code><a href='makeMBOInfillCriterion.html'>makeMBOInf
 
 <span class='fu'>makeMBOInfillCriterionEI</span>(<span class='kw'>se.threshold</span> <span class='kw'>=</span> <span class='fl'>1e-06</span>)
 
-<span class='fu'>makeMBOInfillCriterionCB</span>(<span class='kw'>cb.lambda</span> <span class='kw'>=</span> <span class='fl'>1</span>)
+<span class='fu'>makeMBOInfillCriterionCB</span>(<span class='kw'>cb.lambda</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
 
 <span class='fu'>makeMBOInfillCriterionAEI</span>(<span class='kw'>aei.use.nugget</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>se.threshold</span> <span class='kw'>=</span> <span class='fl'>1e-06</span>)
 
@@ -108,13 +108,9 @@ In order to avoid numerical problems the standard error estimation is assumed to
 be exactly zero, if it is below <code>se.threshold</code>.
 Default is 1e-6.</dd>
       <dt>cb.lambda</dt>
-      <dd>[<code>numeric(1)</code>]
+      <dd>[<code>numeric(1)</code> | <code>NULL</code>]
 Lambda parameter for confidence bound infill criterion.
-In the multi-objective case we recommend to set this value to
-\(q(0.5 \cdot \pi_{CB}^(1 / n))\) where \(q\) is the quantile
-function of the standard normal distribution, \(\pi_CB\) is the probability
-of improvement value and \(n\) is the number of objectives of the considered problem.
-Default is 1.</dd>
+Default is <code>NULL</code>, which means 1 in case of a fully numeric parameter set and 2 otherwise.</dd>
       <dt>aei.use.nugget</dt>
       <dd>[<code>logical(1)</code>]
 Should the nugget effect be used for the pure variance estimation for augmented
@@ -130,13 +126,22 @@ Epsilon for epsilon-dominance for <code>dib.indicator = &quot;sms&quot;</code>.
 Default is <code>NULL</code>, in this case it is adaptively set.</dd>
     </dl>
     
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>In the multi-objective case we recommend to set <code>cb.lambda</code> to
+\(q(0.5 \cdot \pi_{CB}^(1 / n))\) where \(q\) is the quantile
+function of the standard normal distribution, \(\pi_CB\) is the probability
+of improvement value and \(n\) is the number of objectives of the considered problem.</p>
+    
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-                </ul>
+      
+      <li><a href="#details">Details</a></li>
+          </ul>
 
   </div>
 </div>
