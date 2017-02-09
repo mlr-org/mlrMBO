@@ -6,7 +6,7 @@
 #'   To actually set these default values, this function is called, which returns a fully 
 #'   initialized [\code{\link{MBOInfillCriterion}}].
 #'   This function is mainly for internal use. If a custom infill criterion is created, it may be 
-#'   required to create a seperate method \code{initCrit.InfillCRitID} where \code{ID} is the 
+#'   required to create a seperate method \code{initCrit.InfillCritID} where \code{ID} is the 
 #'   \code{id} of the custom \link{MBOInfillCriterion}.
 #'
 #' @param crit [\code{\link{MBOInfillCriterion}}]\cr
