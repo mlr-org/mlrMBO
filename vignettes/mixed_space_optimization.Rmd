@@ -138,5 +138,5 @@ ex.run2 = exampleRun(objfun2, design = design2, learner = surr.rf, control = con
 And let's visualize the results:
 
 ```{r plot_example_run_2d, warning=FALSE}
-plotExampleRun(ex.run3, iters = c(1L, 2L, 10L), pause = FALSE)
+plotExampleRun(ex.run2, iters = c(1L, 2L, 10L), pause = FALSE)
 ```
