@@ -21,56 +21,49 @@ knitr::knit_hooks$set(document = function(x){
 })
 ```
 
-This Vignette is supposed to give you a short introductory glance at the key features of `mlrMBO`.
-More detailed and in depth tutorials on special topics can be found in the other vignette files on our GitHub project page:
 
-- [Project Page](https://github.com/mlr-org/mlrMBO/)
-- Online documentation of [mlrMBO](https://mlr-org.github.io/mlrMBO/)
+# Purpose
 
-## Purpose
+This vignette is supposed to give a short introduction to the key features of `mlrMBO`.
+The main goal of `mlrMBO` is to optimize *Expensive Black-Box Functions* through *Model-Based Optimization* and to provide a unified interface for different MBO flavours and optimization tasks.
+Supported are, among other things:
 
-The main goal of `mlrMBO` is to optimize *Expensive Black-Box Functions* through *Model-Based Optimization* and to provide a unified interface for different MBO flavours and optimization tasks, namely:
-
-- Efficient global optimization of problems with numerical domain and Kriging as surrogate
-- Multi-criteria optimization using different strategies
-- Allowing arbitary regression models interfacing [mlr](https://github.com/mlr-org/mlr/) to be used as a surrogate
+- Efficient global optimization (EGO) of problems with numerical domain and Kriging as surrogate
+- Interfacing arbitrary regression models implemented in [mlr](https://github.com/mlr-org/mlr/) to use as surrogat
 - Built-in parallelization using multi point proposals
+- Multi-criteria optimization
 
-## Quickstart
+# Quickstart
 
 **This guide gives an overview of the typical optimization workflow with mlrMBO.**
 
-### Prerequisites
+## Prerequisites
 
-With the installation of `mlrMBO` the dependencies `mlr`, `ParamHelpers`, and `smoof` will be installed and also loaded, when you load `mlr`.
-However, for this tutorial you will need the Package `DiceKriging` for the surrogate learner and later `randomForest` for the surrogate model.
+With the installation of `mlrMBO` the dependencies `mlr`, `ParamHelpers`, and `smoof` will be installed and also loaded when you load `mlrMBO`.
+For this tutorial, you will need the additional packages `DiceKriging` and `randomForest`.
 
 ```{r load_package}
 library(mlrMBO)
 ```
 
-### General MBO Workflow
+## General MBO Workflow
 
-The following steps are needed to start the optimization with `mbo()`.
+The following steps are needed to start the optimization:
 
-1. Define the **objective function** and its parameters by using the package `smoof`.
-2. Generate an **initial design**.
-3. Define a learner, i.e., the **surrogate model**.
+1. Define the **objective function** and its parameters using the package `smoof`.
+2. Generate an **initial design** (optional).
+3. Define a `mlr` learner for the **surrogate model** (optional).
 4. Set up a **MBO control** object.
-5. Finally start the optimization.
+5. Finally start the optimization with `mbo()`.
 
-Step 2 and 3 are optional as `mbo()` has defaults for these.
+For a simple example we minimize a cosine mixture function with an initial design of 5 points and 10 sequential MBO iterations.
+Thus, the optimizer gets in total 15 evaluations of the objective function to find the optimum.
 
 
-### Optimizing a one dimensional function.
-
-For a simple example we minimize a cosine mixture function with an initial design of 5 points and 10 further evaluations.
-Meaning that in total the optimizer gets 15 evaluations on the objective function to find the optimum.
-
-#### Objective Function
+### Objective Function
 
 Instead of writing the objective function by hand, we use the [*smoof*](https://cran.r-project.org/package=smoof) package which offers many single objective functions frequently used for benchmarking of optimizers.
-[smoof](https://cran.r-project.org/package=smoof) is a dependency and gets automatically attached with mlrMBO.
+[smoof](https://cran.r-project.org/package=smoof) is a dependency and gets automatically attached with `mlrMBO`.
 
 _Note:_ You are not limited to these test functions but can define arbitrary objective functions with *smoof*.
 Check `?smoof::makeSingleObjectiveFunction` for an example.
@@ -82,10 +75,10 @@ print(obj.fun)
 ggplot2::autoplot(obj.fun)
 ```
 
-#### Initial Design
+### Initial Design
 
 Before the MBO algorithm can starts it needs a set of already evaluated points - the *inital design*.
-If no design is given (i.e. `design = NULL`) `mbo()` will use a *Maximin Latin Hypercube* `lhs::maximinLHS()` design with `n = 4 * getNumberOfParameters(obj.fun)` points.
+If no design is given (i.e. `design = NULL`), `mbo()` will use a *Maximin Latin Hypercube* `lhs::maximinLHS()` design with `n = 4 * getNumberOfParameters(obj.fun)` points.
 If the design does not include function outcomes `mbo()` will evaluate the design first before starting with the MBO algorithm.
 In this example we generate our own design.
 
@@ -102,26 +95,26 @@ des$y = apply(des, 1, obj.fun)
 _Note:_ *mlrMBO* uses `y` as a default name for the outcome of the objective function.
 This can be changed in the control object.
 
-#### Surrogate Model
+### Surrogate Model
 
-We decide to use Kriging as our surrogate model because it is the most common for numerical model-based optimization and has prooven to be quite effective.
-`mbo()` will take any regression learner from **mlr**.
+We decide to use Kriging as our surrogate model because it has proven to be quite effective for numerical domains.
+The surrogate must be specified as a mlr regression learner:
 
 ```{r}
 surr.km = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2", control = list(trace = FALSE))
 ```
 
-_Note:_ If no surrogate learner is defined, `mbo()` autmatically uses Kriging for a numerical domain, otherwise *random forest regression*.
+_Note:_ If no surrogate learner is defined, `mbo()` automatically uses Kriging for a numerical domain, otherwise *random forest regression*.
 
-#### MBOControl
+### MBOControl
 
 The `MBOControl` object contains all further settings for `mbo()`.
-It is created with `makeMBOControl()`.
-For further customization there are the following functions:
-* `setMBOControlTermination()`: It is obligatory to define a terination criterion like the number of MBO iterations.
-* `setMBOControlInfill()`: It is recomended to set the infill criterion. For learners that support `predict.type = "se"` the Confidence Bound `"cb"` and the Expected Improvement `"ei"` are a good choice.
+It is created with `makeMBOControl()`. For further customization there are the following functions:
+
+* `setMBOControlTermination()`: It is obligatory to define a termination criterion like the number of MBO iterations.
+* `setMBOControlInfill()`: It is recommended to set the infill criterion. For learners that support `predict.type = "se"` the Confidence Bound `"cb"` and the Expected Improvement `"ei"` are a good choice.
 * `setMBOControlMultiPoint()`: Needed, in case you want to evaluate more then just one point per MBO-Iteration you can control this process here. This makes sense for parallelization.
-* `setMBOControlMultiObj()`: Needed, in case you want to optimize a muli objective target function.
+* `setMBOControlMultiObj()`: Needed, in case you want to optimize a multi-objective target function.
 
 
 ```{r cosine_setup}
@@ -130,15 +123,15 @@ control = setMBOControlTermination(control, iters = 10)
 control = setMBOControlInfill(control, crit = makeMBOInfillCritEI())
 ```
 
+### Start the optimization
 Finally, we start the optimization process and print the result object, which gives us the best found solution and the reached objective value.
-These can also be accessed using the '$' operator.
 
 ```{r cosine_run}
 run = mbo(obj.fun, design = des, learner = surr.km, control = control, show.info = TRUE)
 print(run)
 ```
 
-### Visualization
+## Visualization
 
 To get better insight into the MBO process, we can start the previous optimization with the function `exampleRun()` instead of `mbo()`.
 This specialized function augments the results of `mbo()` with additional information for plotting.
@@ -152,4 +145,3 @@ run = exampleRun(obj.fun, learner = surr.km, control = control, show.info = FALS
 print(run)
 plotExampleRun(run, iters = c(1L, 2L, 10L), pause = FALSE)
 ```
-
