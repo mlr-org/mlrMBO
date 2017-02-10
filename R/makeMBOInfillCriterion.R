@@ -45,7 +45,7 @@
 #' @rdname MBOInfillCriterion
 #' @aliases MBOInfillCriterion
 #' @export
-makeMBOInfillCriterion = function(fun, name, id,
+makeMBOInfillCrit = function(fun, name, id,
   minimize = TRUE, components = character(0L), params = list(),
   requires.se = FALSE) {
   assertFunction(
@@ -74,7 +74,7 @@ makeMBOInfillCriterion = function(fun, name, id,
 }
 
 #' @export
-print.MBOInfillCriterion = function(x, ...) {
+print.MBOInfillCrit = function(x, ...) {
   components = getMBOInfillCritComponents(x)
   params = getMBOInfillCritParams(x)
   catf("Infill criterion : %s (%s)", getMBOInfillCritName(x),
