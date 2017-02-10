@@ -156,7 +156,7 @@ Although we presented various options we will mainly go with the defaults settin
 ctrl = makeMBOControl()
 ctrl = setMBOControlInfill(
   control = ctrl,
-  crit = makeMBOInfillCriterionEI()
+  crit = makeMBOInfillCritEI()
 )
 ctrl = setMBOControlTermination(
   control = ctrl,
@@ -183,7 +183,7 @@ The `MBOResult` object contains additional information, most importantly:
 We can also change some arguments of the `MBOControl` object and run `mbo()` again:
 
 ```{r, eval=FALSE}
-ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCriterionCB())
+ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCriterCB())
 ctrl = setMBOControlTermination(ctrl, iters = 5L)
 mbo(objfun1, design = des, learner = surr.km, control = ctrl, show.info = FALSE)
 ```

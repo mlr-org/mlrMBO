@@ -76,7 +76,7 @@ surr.rf = makeLearner("regr.randomForest", predict.type = "se")
 
 ### Infill Criterion
 
-Although technically possible the *Expected Imrovement* that we used for the numerical parameter space and the *Kriging* surrogate, the *Confidence Bound* (`makeMBOInfillCriterionCB()`) or also called statistical upper/lower bound is recommended for *Random Forest* regression.
+Although technically possible the *Expected Imrovement* that we used for the numerical parameter space and the *Kriging* surrogate, the *Confidence Bound* (`makeMBOInfillCritCB()`) or also called statistical upper/lower bound is recommended for *Random Forest* regression.
 The reason is, that the *Expected Improvement* is founded on the gaussian posterior distribution given by the Kriging estimator, which is not given by the Random Forest regression.
 For *maximization* the *upper* Confidence Bound is given by $UCB(x) = \hat{\mu}(x) - \lambda \cdot \hat{s}(x)$.
 We set $\lambda = 5$.
@@ -86,7 +86,7 @@ For the infill criteria optimization we set `opt.focussearch.points = 500`, to i
 control2 = makeMBOControl()
 control2 = setMBOControlInfill(
   control = control2,
-  crit = makeMBOInfillCriterionCB(cb.lambda = 5),
+  crit = makeMBOInfillCritCB(cb.lambda = 5),
   opt.focussearch.points = 500
 )
 ```

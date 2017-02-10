@@ -127,7 +127,7 @@ For further customization there are the following functions:
 ```{r cosine_setup}
 control = makeMBOControl()
 control = setMBOControlTermination(control, iters = 10)
-control = setMBOControlInfill(control, crit = makeMBOInfillCriterionEI())
+control = setMBOControlInfill(control, crit = makeMBOInfillCritEI())
 ```
 
 Finally, we start the optimization process and print the result object, which gives us the best found solution and the reached objective value.
