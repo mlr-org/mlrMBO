@@ -38,60 +38,60 @@ NULL
 #' @docType NULL
 #' @format NULL
 #' @keywords NULL
-crit.ei = makeMBOInfillCriterionEI()
+crit.ei = makeMBOInfillCritEI()
 #' @rdname MBOInfillCriterion
 #' @export
 #' @usage NULL
 #' @docType NULL
 #' @format NULL
 #' @keywords NULL
-crit.mr = makeMBOInfillCriterionMeanResponse()
+crit.mr = makeMBOInfillCritMeanResponse()
 #' @rdname MBOInfillCriterion
 #' @export
 #' @usage NULL
 #' @docType NULL
 #' @format NULL
 #' @keywords NULL
-crit.se = makeMBOInfillCriterionStandardError()
+crit.se = makeMBOInfillCritStandardError()
 #' @rdname MBOInfillCriterion
 #' @export
 #' @usage NULL
 #' @docType NULL
 #' @format NULL
 #' @keywords NULL
-crit.cb = makeMBOInfillCriterionCB()
+crit.cb = makeMBOInfillCritCB()
 #' @rdname MBOInfillCriterion
 #' @export
 #' @usage NULL
 #' @docType NULL
 #' @format NULL
 #' @keywords NULL
-crit.cb1 = makeMBOInfillCriterionCB(cb.lambda = 1)
+crit.cb1 = makeMBOInfillCritCB(cb.lambda = 1)
 #' @rdname MBOInfillCriterion
 #' @export
 #' @usage NULL
 #' @docType NULL
 #' @format NULL
 #' @keywords NULL
-crit.cb2 = makeMBOInfillCriterionCB(cb.lambda = 2)
+crit.cb2 = makeMBOInfillCritCB(cb.lambda = 2)
 #' @rdname MBOInfillCriterion
 #' @export
 #' @usage NULL
 #' @docType NULL
 #' @format NULL
 #' @keywords NULL
-crit.aei = makeMBOInfillCriterionAEI()
+crit.aei = makeMBOInfillCritAEI()
 #' @rdname MBOInfillCriterion
 #' @export
 #' @usage NULL
 #' @docType NULL
 #' @format NULL
 #' @keywords NULL
-crit.eqi = makeMBOInfillCriterionEQI()
+crit.eqi = makeMBOInfillCritEQI()
 #' @rdname MBOInfillCriterion
 #' @export
 #' @usage NULL
 #' @docType NULL
 #' @format NULL
 #' @keywords NULL
-crit.dib1 = makeMBOInfillCriterionDIB(cb.lambda = 1)
+crit.dib1 = makeMBOInfillCritDIB(cb.lambda = 1)

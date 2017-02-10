@@ -19,19 +19,19 @@
 getExtras = function(n, prop, train.time, control) {
   # this happens in init design
   infill.crit = control$infill.crit
-  infill.crit.id = getMBOInfillCriterionId(control$infill.crit)
+  infill.crit.id = getMBOInfillCritId(control$infill.crit)
   if (is.null(prop)) {
     k = ifelse(control$n.objectives > 1L && control$multiobj.method == "mspot", control$n.objectives + 1, 1L)
     # pregenerate a dummmy "prop" data structure
     prop = list(crit.vals = matrix(NA_real_, nrow = n, ncol = k), propose.time = NA_real_, errors.model = NA_character_, prop.type = rep("initdesign", n))
     # a) no infill crit components for MCO 
     # b) infill crit is ignored for multipoint moimbo, in which case we don't use any components
-    if (control$n.objectives == 1L && !is.null(getMBOInfillCriterionComponents(infill.crit)) && 
+    if (control$n.objectives == 1L && !is.null(getMBOInfillCritComponents(infill.crit)) && 
         (is.null(control$multipoint.method) || control$multipoint.method != "moimbo")) {
-      prop$crit.components = getMBOInfillCriterionDummyComponents(infill.crit)
+      prop$crit.components = getMBOInfillCritDummyComponents(infill.crit)
     }
     # if (control$multifid) {
-    #   prop$crit.components = cbind.data.frame(prop$crit.components, getMBOInfillCriterionDummyComponents((makeMBOInfillCriterionMultiFid()))
+    #   prop$crit.components = cbind.data.frame(prop$crit.components, getMBOInfillCritDummyComponents((makeMBOInfillCritMultiFid()))
     # }
   }
   exs = vector("list", n)

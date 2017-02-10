@@ -35,5 +35,5 @@ initCrit.InfillCritCB = function(crit, par.set, design, learner, control) {
   cb.lambda = crit$params$cb.lambda
   if (is.null(cb.lambda))
     cb.lambda = ifelse(isSimpleNumeric(par.set), 1, 2)
-  makeMBOInfillCriterionCB(cb.lambda)
+  makeMBOInfillCritCB(cb.lambda)
 }

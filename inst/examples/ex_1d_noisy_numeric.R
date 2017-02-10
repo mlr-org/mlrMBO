@@ -24,7 +24,7 @@ ctrl = makeMBOControl(
 )
 ctrl = setMBOControlTermination(ctrl, iters = 5L)
 
-ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCriterionEI(), opt = "focussearch",
+ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCritEI(), opt = "focussearch",
   opt.focussearch.points = 500L)
 
 lrn = makeMBOLearner(ctrl, obj.fun)

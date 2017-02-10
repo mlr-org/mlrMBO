@@ -8,7 +8,7 @@ test_that("infill crit initialization", {
   expect_equal(crit.cb1, initCrit(crit.cb, ps))
   expect_equal(crit.ei, initCrit(crit.ei, ps))
   
-  crit.cb3 = makeMBOInfillCriterionCB(3)
+  crit.cb3 = makeMBOInfillCritCB(3)
   
   expect_equal(crit.cb3, initCrit(crit.cb3, ps))
   

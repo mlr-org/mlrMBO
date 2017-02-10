@@ -67,7 +67,7 @@
 #   return(res)
 # }
 
-# makeMBOInfillCriterionMultiFid = function() {
+# makeMBOInfillCritMultiFid = function() {
 #   makeMBOInfillCriterion(
 #     infill.fun = function(points, models, control, par.set, design, iter, attributes = FALSE, lvl.cors, lvl.sds, lvl, time.model) {
 #         mf.res = infillCritMultiFid2(points, models, control, par.set, design, iter, attributes = FALSE, lvl.cors, lvl.sds, lvl, time.model)

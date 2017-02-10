@@ -75,9 +75,9 @@ proposePointsMOIMBO = function(opt.state, ...) {
   # Random inital population:
   X = generateDesign(mu, par.set, fun = randomLHS)
   Y = matrix(NA, mu, y.dim)
-  infill.mean = makeMBOInfillCriterionMeanResponse()$fun
-  infill.se = makeMBOInfillCriterionStandardError()$fun
-  infill.ei = makeMBOInfillCriterionEI()$fun
+  infill.mean = makeMBOInfillCritMeanResponse()$fun
+  infill.se = makeMBOInfillCritStandardError()$fun
+  infill.ei = makeMBOInfillCritEI()$fun
   # mbo infill crits are always minimized
   if (objective == "mean.dist") {
     Y[, 1] = infill.mean(X, models, control, par.set, design)

@@ -9,7 +9,7 @@ evalFinalPoint = function(opt.state, final.points) {
   prop = list(
     prop.points = xs,
     crit.vals = matrix(rep.int(NA_real_, n), nrow = n, ncol = 1L),
-    crit.components = getMBOInfillCriterionDummyComponents(control$infill.crit),
+    crit.components = getMBOInfillCritDummyComponents(control$infill.crit),
     propose.time = rep.int(NA_real_, n),
     prop.type = rep("final_eval", n),
     errors.model = rep.int(NA_character_, n)

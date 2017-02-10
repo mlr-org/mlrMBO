@@ -44,7 +44,7 @@ NULL
 
 #' @export
 #' @rdname infillcrits
-makeMBOInfillCriterionMeanResponse = function() {
+makeMBOInfillCritMeanResponse = function() {
   makeMBOInfillCriterion(
     fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
       ifelse(control$minimize, 1, -1) * predict(models[[1L]], newdata = points)$data$response
@@ -56,7 +56,7 @@ makeMBOInfillCriterionMeanResponse = function() {
 
 #' @export
 #' @rdname infillcrits
-makeMBOInfillCriterionStandardError = function() {
+makeMBOInfillCritStandardError = function() {
   makeMBOInfillCriterion(
     fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
        -predict(models[[1L]], newdata = points)$data$se
@@ -69,7 +69,7 @@ makeMBOInfillCriterionStandardError = function() {
 
 #' @export
 #' @rdname infillcrits
-makeMBOInfillCriterionEI = function(se.threshold = 1e-6) {
+makeMBOInfillCritEI = function(se.threshold = 1e-6) {
   assertNumber(se.threshold, lower = 1e-20)
   force(se.threshold)
   makeMBOInfillCriterion(
@@ -103,7 +103,7 @@ makeMBOInfillCriterionEI = function(se.threshold = 1e-6) {
 
 #' @export
 #' @rdname infillcrits
-makeMBOInfillCriterionCB = function(cb.lambda = NULL) {
+makeMBOInfillCritCB = function(cb.lambda = NULL) {
   assertNumber(cb.lambda, lower = 0, null.ok = TRUE)
   force(cb.lambda)
   makeMBOInfillCriterion(
@@ -141,7 +141,7 @@ makeMBOInfillCriterionCB = function(cb.lambda = NULL) {
 
 #' @export
 #' @rdname infillcrits
-makeMBOInfillCriterionAEI = function(aei.use.nugget = FALSE, se.threshold = 1e-6) {
+makeMBOInfillCritAEI = function(aei.use.nugget = FALSE, se.threshold = 1e-6) {
   assertFlag(aei.use.nugget)
   assertNumber(se.threshold, lower = 1e-20)
   force(aei.use.nugget)
@@ -186,7 +186,7 @@ makeMBOInfillCriterionAEI = function(aei.use.nugget = FALSE, se.threshold = 1e-6
 
 #' @export
 #' @rdname infillcrits
-makeMBOInfillCriterionEQI = function(eqi.beta = 0.75, se.threshold = 1e-6) {
+makeMBOInfillCritEQI = function(eqi.beta = 0.75, se.threshold = 1e-6) {
   assertNumber(eqi.beta, lower = 0.5, upper = 1)
   assertNumber(se.threshold, lower = 1e-20)
   force(eqi.beta)
@@ -240,7 +240,7 @@ makeMBOInfillCriterionEQI = function(eqi.beta = 0.75, se.threshold = 1e-6) {
 
 #' @export
 #' @rdname infillcrits
-makeMBOInfillCriterionDIB = function(cb.lambda = 1, sms.eps = NULL) {
+makeMBOInfillCritDIB = function(cb.lambda = 1, sms.eps = NULL) {
   assertNumber(cb.lambda, lower = 0)
   if (!is.null(sms.eps))
     assertNumber(sms.eps, lower = 0, finite = TRUE)
