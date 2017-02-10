@@ -2,28 +2,28 @@
 % Please edit documentation in R/infill_crits.R
 \name{infillcrits}
 \alias{infillcrits}
-\alias{makeMBOInfillCriterionMeanResponse}
-\alias{makeMBOInfillCriterionStandardError}
-\alias{makeMBOInfillCriterionEI}
-\alias{makeMBOInfillCriterionCB}
-\alias{makeMBOInfillCriterionAEI}
-\alias{makeMBOInfillCriterionEQI}
-\alias{makeMBOInfillCriterionDIB}
+\alias{makeMBOInfillCritMeanResponse}
+\alias{makeMBOInfillCritStandardError}
+\alias{makeMBOInfillCritEI}
+\alias{makeMBOInfillCritCB}
+\alias{makeMBOInfillCritAEI}
+\alias{makeMBOInfillCritEQI}
+\alias{makeMBOInfillCritDIB}
 \title{Infill criteria.}
 \usage{
-makeMBOInfillCriterionMeanResponse()
+makeMBOInfillCritMeanResponse()
 
-makeMBOInfillCriterionStandardError()
+makeMBOInfillCritStandardError()
 
-makeMBOInfillCriterionEI(se.threshold = 1e-06)
+makeMBOInfillCritEI(se.threshold = 1e-06)
 
-makeMBOInfillCriterionCB(cb.lambda = NULL)
+makeMBOInfillCritCB(cb.lambda = NULL)
 
-makeMBOInfillCriterionAEI(aei.use.nugget = FALSE, se.threshold = 1e-06)
+makeMBOInfillCritAEI(aei.use.nugget = FALSE, se.threshold = 1e-06)
 
-makeMBOInfillCriterionEQI(eqi.beta = 0.75, se.threshold = 1e-06)
+makeMBOInfillCritEQI(eqi.beta = 0.75, se.threshold = 1e-06)
 
-makeMBOInfillCriterionDIB(cb.lambda = 1, sms.eps = NULL)
+makeMBOInfillCritDIB(cb.lambda = 1, sms.eps = NULL)
 }
 \arguments{
 \item{se.threshold}{[\code{numeric(1)}]\cr
@@ -51,7 +51,7 @@ Default is \code{NULL}, in this case it is adaptively set.}
 \description{
 \pkg{mlrMBO} contains most of the most popular infill criteria, e.g., expected
 improvement, (lower) confidence bound etc. Moreover, custom infill criteria
-may be generated with the \code{\link{makeMBOInfillCriterion}} function.
+may be generated with the \code{\link{makeMBOInfillCrit}} function.
 }
 \details{
 In the multi-objective case we recommend to set \code{cb.lambda} to
