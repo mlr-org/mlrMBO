@@ -18,7 +18,7 @@ NULL
 
 # some shortcuts for infill criteria
 
-#' @rdname MBOInfillCriterion
+#' @rdname MBOInfillCrit
 #' @section Predefined standard infill criteria:
 #' \describe{
 #' \item{crit.ei}{Expected Improvement}
@@ -32,63 +32,63 @@ NULL
 #' \item{crit.dib1}{Directed indicator based search with lambda=1}
 #' }
 #'
-#' @rdname MBOInfillCriterion
+#' @rdname MBOInfillCrit
 #' @export
 #' @usage NULL
 #' @docType NULL
 #' @format NULL
 #' @keywords NULL
 crit.ei = makeMBOInfillCritEI()
-#' @rdname MBOInfillCriterion
+#' @rdname MBOInfillCrit
 #' @export
 #' @usage NULL
 #' @docType NULL
 #' @format NULL
 #' @keywords NULL
 crit.mr = makeMBOInfillCritMeanResponse()
-#' @rdname MBOInfillCriterion
+#' @rdname MBOInfillCrit
 #' @export
 #' @usage NULL
 #' @docType NULL
 #' @format NULL
 #' @keywords NULL
 crit.se = makeMBOInfillCritStandardError()
-#' @rdname MBOInfillCriterion
+#' @rdname MBOInfillCrit
 #' @export
 #' @usage NULL
 #' @docType NULL
 #' @format NULL
 #' @keywords NULL
 crit.cb = makeMBOInfillCritCB()
-#' @rdname MBOInfillCriterion
+#' @rdname MBOInfillCrit
 #' @export
 #' @usage NULL
 #' @docType NULL
 #' @format NULL
 #' @keywords NULL
 crit.cb1 = makeMBOInfillCritCB(cb.lambda = 1)
-#' @rdname MBOInfillCriterion
+#' @rdname MBOInfillCrit
 #' @export
 #' @usage NULL
 #' @docType NULL
 #' @format NULL
 #' @keywords NULL
 crit.cb2 = makeMBOInfillCritCB(cb.lambda = 2)
-#' @rdname MBOInfillCriterion
+#' @rdname MBOInfillCrit
 #' @export
 #' @usage NULL
 #' @docType NULL
 #' @format NULL
 #' @keywords NULL
 crit.aei = makeMBOInfillCritAEI()
-#' @rdname MBOInfillCriterion
+#' @rdname MBOInfillCrit
 #' @export
 #' @usage NULL
 #' @docType NULL
 #' @format NULL
 #' @keywords NULL
 crit.eqi = makeMBOInfillCritEQI()
-#' @rdname MBOInfillCriterion
+#' @rdname MBOInfillCrit
 #' @export
 #' @usage NULL
 #' @docType NULL
