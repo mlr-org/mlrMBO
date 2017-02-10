@@ -83,22 +83,22 @@
     
     <p><span class="pkg">mlrMBO</span> contains most of the most popular infill criteria, e.g., expected
 improvement, (lower) confidence bound etc. Moreover, custom infill criteria
-may be generated with the <code><a href='makeMBOInfillCriterion.html'>makeMBOInfillCriterion</a></code> function.</p>
+may be generated with the <code><a href='makeMBOInfillCrit.html'>makeMBOInfillCrit</a></code> function.</p>
     
 
-    <pre><span class='fu'>makeMBOInfillCriterionMeanResponse</span>()
+    <pre><span class='fu'>makeMBOInfillCritMeanResponse</span>()
 
-<span class='fu'>makeMBOInfillCriterionStandardError</span>()
+<span class='fu'>makeMBOInfillCritStandardError</span>()
 
-<span class='fu'>makeMBOInfillCriterionEI</span>(<span class='kw'>se.threshold</span> <span class='kw'>=</span> <span class='fl'>1e-06</span>)
+<span class='fu'>makeMBOInfillCritEI</span>(<span class='kw'>se.threshold</span> <span class='kw'>=</span> <span class='fl'>1e-06</span>)
 
-<span class='fu'>makeMBOInfillCriterionCB</span>(<span class='kw'>cb.lambda</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
+<span class='fu'>makeMBOInfillCritCB</span>(<span class='kw'>cb.lambda</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
 
-<span class='fu'>makeMBOInfillCriterionAEI</span>(<span class='kw'>aei.use.nugget</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>se.threshold</span> <span class='kw'>=</span> <span class='fl'>1e-06</span>)
+<span class='fu'>makeMBOInfillCritAEI</span>(<span class='kw'>aei.use.nugget</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>se.threshold</span> <span class='kw'>=</span> <span class='fl'>1e-06</span>)
 
-<span class='fu'>makeMBOInfillCriterionEQI</span>(<span class='kw'>eqi.beta</span> <span class='kw'>=</span> <span class='fl'>0.75</span>, <span class='kw'>se.threshold</span> <span class='kw'>=</span> <span class='fl'>1e-06</span>)
+<span class='fu'>makeMBOInfillCritEQI</span>(<span class='kw'>eqi.beta</span> <span class='kw'>=</span> <span class='fl'>0.75</span>, <span class='kw'>se.threshold</span> <span class='kw'>=</span> <span class='fl'>1e-06</span>)
 
-<span class='fu'>makeMBOInfillCriterionDIB</span>(<span class='kw'>cb.lambda</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>sms.eps</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+<span class='fu'>makeMBOInfillCritDIB</span>(<span class='kw'>cb.lambda</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>sms.eps</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">

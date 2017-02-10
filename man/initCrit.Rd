@@ -7,7 +7,7 @@
 initCrit(crit, par.set, design, learner, control)
 }
 \arguments{
-\item{crit}{[\code{\link{MBOInfillCriterion}}]\cr
+\item{crit}{[\code{\link{MBOInfillCrit}}]\cr
 Uninitialized infill criterion.}
 
 \item{par.set}{[\code{\link[ParamHelpers]{ParamSet}}]\cr
@@ -22,14 +22,14 @@ Regression learner from mlr, which is used as a surrogate to model our fitness f
 MBO control object.}
 }
 \value{
-[\code{\link{MBOInfillCriterion}}]
+[\code{\link{MBOInfillCrit}}]
 }
 \description{
 Some infill criteria have parameters that are dependent on values in the parameter set, design,
   used learner or other control settings.
   To actually set these default values, this function is called, which returns a fully 
-  initialized [\code{\link{MBOInfillCriterion}}].
+  initialized [\code{\link{MBOInfillCrit}}].
   This function is mainly for internal use. If a custom infill criterion is created, it may be 
   required to create a seperate method \code{initCrit.InfillCritID} where \code{ID} is the 
-  \code{id} of the custom \link{MBOInfillCriterion}.
+  \code{id} of the custom \link{MBOInfillCrit}.
 }

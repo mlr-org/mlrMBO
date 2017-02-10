@@ -3,66 +3,66 @@
 #' @description
 #' Returns properties of an infill criterion, e.g., name or id.
 #'
-#' @param x [\code{\link{MBOInfillCriterion}}]\cr
+#' @param x [\code{\link{MBOInfillCrit}}]\cr
 #'   Infill criterion.
 #' @param par.name [\code{character(1)}]\cr
 #'   Parameter name.
-#' @name getMBOInfillCriterion
-#' @rdname getMBOInfillCriterion
+#' @name getMBOInfillCrit
+#' @rdname getMBOInfillCrit
 NULL
 
 #' @export
-#' @rdname getMBOInfillCriterion
-getMBOInfillCriterionParams = function(x) {
-  assertClass(x, "MBOInfillCriterion")
+#' @rdname getMBOInfillCrit
+getMBOInfillCritParams = function(x) {
+  assertClass(x, "MBOInfillCrit")
   return(x$params)
 }
 
 #' @export
-#' @rdname getMBOInfillCriterion
-getMBOInfillCriterionParam = function(x, par.name) {
-  assertClass(x, "MBOInfillCriterion")
+#' @rdname getMBOInfillCrit
+getMBOInfillCritParam = function(x, par.name) {
+  assertClass(x, "MBOInfillCrit")
   assertString(par.name)
-  return(getMBOInfillCriterionParams(x)[[par.name]])
+  return(getMBOInfillCritParams(x)[[par.name]])
 }
 
 #' @export
-#' @rdname getMBOInfillCriterion
-getMBOInfillCriterionName = function(x) {
-  assertClass(x, "MBOInfillCriterion")
+#' @rdname getMBOInfillCrit
+getMBOInfillCritName = function(x) {
+  assertClass(x, "MBOInfillCrit")
   return(x$name)
 }
 
 #' @export
-#' @rdname getMBOInfillCriterion
-getMBOInfillCriterionId = function(x) {
-  assertClass(x, "MBOInfillCriterion")
+#' @rdname getMBOInfillCrit
+getMBOInfillCritId = function(x) {
+  assertClass(x, "MBOInfillCrit")
   return(x$id)
 }
 
 #' @export
-#' @rdname getMBOInfillCriterion
-hasRequiresInfillCriterionStandardError = function(x) {
-  assertClass(x, "MBOInfillCriterion")
+#' @rdname getMBOInfillCrit
+hasRequiresInfillCritStandardError = function(x) {
+  assertClass(x, "MBOInfillCrit")
   return(x$requires.se)
 }
 
 #' @export
-#' @rdname getMBOInfillCriterion
-getMBOInfillCriterionComponents = function(x) {
-  assertClass(x, "MBOInfillCriterion")
+#' @rdname getMBOInfillCrit
+getMBOInfillCritComponents = function(x) {
+  assertClass(x, "MBOInfillCrit")
   return(x$components)
 }
 
-getMBOInfillCriterionDummyComponents = function(x) {
-  assertClass(x, "MBOInfillCriterion")
-  ns = getMBOInfillCriterionComponents(x)
+getMBOInfillCritDummyComponents = function(x) {
+  assertClass(x, "MBOInfillCrit")
+  ns = getMBOInfillCritComponents(x)
   as.data.frame(BBmisc::namedList(ns, NA_real_))
 }
 
 #' @export
-#' @rdname getMBOInfillCriterion
-getMBOInfillCriterionDirection = function(x) {
-  assertClass(x, "MBOInfillCriterion")
+#' @rdname getMBOInfillCrit
+getMBOInfillCritDirection = function(x) {
+  assertClass(x, "MBOInfillCrit")
   ifelse(x$minimize, 1, -1)
 }

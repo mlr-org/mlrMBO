@@ -18,7 +18,7 @@ NULL
 
 # some shortcuts for infill criteria
 
-#' @rdname MBOInfillCriterion
+#' @rdname MBOInfillCrit
 #' @section Predefined standard infill criteria:
 #' \describe{
 #' \item{crit.ei}{Expected Improvement}
@@ -32,66 +32,66 @@ NULL
 #' \item{crit.dib1}{Directed indicator based search with lambda=1}
 #' }
 #'
-#' @rdname MBOInfillCriterion
+#' @rdname MBOInfillCrit
 #' @export
 #' @usage NULL
 #' @docType NULL
 #' @format NULL
 #' @keywords NULL
-crit.ei = makeMBOInfillCriterionEI()
-#' @rdname MBOInfillCriterion
+crit.ei = makeMBOInfillCritEI()
+#' @rdname MBOInfillCrit
 #' @export
 #' @usage NULL
 #' @docType NULL
 #' @format NULL
 #' @keywords NULL
-crit.mr = makeMBOInfillCriterionMeanResponse()
-#' @rdname MBOInfillCriterion
+crit.mr = makeMBOInfillCritMeanResponse()
+#' @rdname MBOInfillCrit
 #' @export
 #' @usage NULL
 #' @docType NULL
 #' @format NULL
 #' @keywords NULL
-crit.se = makeMBOInfillCriterionStandardError()
-#' @rdname MBOInfillCriterion
+crit.se = makeMBOInfillCritStandardError()
+#' @rdname MBOInfillCrit
 #' @export
 #' @usage NULL
 #' @docType NULL
 #' @format NULL
 #' @keywords NULL
-crit.cb = makeMBOInfillCriterionCB()
-#' @rdname MBOInfillCriterion
+crit.cb = makeMBOInfillCritCB()
+#' @rdname MBOInfillCrit
 #' @export
 #' @usage NULL
 #' @docType NULL
 #' @format NULL
 #' @keywords NULL
-crit.cb1 = makeMBOInfillCriterionCB(cb.lambda = 1)
-#' @rdname MBOInfillCriterion
+crit.cb1 = makeMBOInfillCritCB(cb.lambda = 1)
+#' @rdname MBOInfillCrit
 #' @export
 #' @usage NULL
 #' @docType NULL
 #' @format NULL
 #' @keywords NULL
-crit.cb2 = makeMBOInfillCriterionCB(cb.lambda = 2)
-#' @rdname MBOInfillCriterion
+crit.cb2 = makeMBOInfillCritCB(cb.lambda = 2)
+#' @rdname MBOInfillCrit
 #' @export
 #' @usage NULL
 #' @docType NULL
 #' @format NULL
 #' @keywords NULL
-crit.aei = makeMBOInfillCriterionAEI()
-#' @rdname MBOInfillCriterion
+crit.aei = makeMBOInfillCritAEI()
+#' @rdname MBOInfillCrit
 #' @export
 #' @usage NULL
 #' @docType NULL
 #' @format NULL
 #' @keywords NULL
-crit.eqi = makeMBOInfillCriterionEQI()
-#' @rdname MBOInfillCriterion
+crit.eqi = makeMBOInfillCritEQI()
+#' @rdname MBOInfillCrit
 #' @export
 #' @usage NULL
 #' @docType NULL
 #' @format NULL
 #' @keywords NULL
-crit.dib1 = makeMBOInfillCriterionDIB(cb.lambda = 1)
+crit.dib1 = makeMBOInfillCritDIB(cb.lambda = 1)

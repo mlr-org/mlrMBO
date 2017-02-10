@@ -10,7 +10,7 @@ obj.fun = makeZDT1Function(dimensions = 2L)
 
 ctrl = makeMBOControl(n.objectives = 2L, propose.points = 2L, save.on.disk.at = integer(0L))
 ctrl = setMBOControlTermination(ctrl, iters = 5L)
-ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCriterionDIB(),
+ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCritDIB(),
   opt.focussearch.points = 10000L)
 ctrl = setMBOControlMultiObj(ctrl, parego.s = 100)
 learner = makeMBOLearner(ctrl, obj.fun)

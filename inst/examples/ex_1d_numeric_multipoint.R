@@ -16,7 +16,7 @@ obj.fun = makeSingleObjectiveFunction(
 
 ctrl = makeMBOControl(propose.points = 2L)
 ctrl = setMBOControlTermination(ctrl, iters = 10L)
-ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCriterionMeanResponse())
+ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCritMeanResponse())
 ctrl = setMBOControlMultiPoint(
 	ctrl,
   method = "moimbo",

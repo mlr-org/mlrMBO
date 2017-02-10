@@ -19,7 +19,7 @@ proposePointsByInfillOptimization = function(opt.state, par.set = NULL, control 
   control = coalesce(control, getOptProblemControl(opt.problem))
   opt.path = coalesce(opt.path, getOptStateOptPath(opt.state))
   iter = getOptStateLoop(opt.state)
-  infill.crit.id = getMBOInfillCriterionId(control$infill.crit)
+  infill.crit.id = getMBOInfillCritId(control$infill.crit)
 
   #FIXME: maybe better do this in setMBOControlMultifid?
   if (control$multifid) {

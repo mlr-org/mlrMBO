@@ -120,7 +120,7 @@ It is created with `makeMBOControl()`. For further customization there are the f
 ```{r cosine_setup}
 control = makeMBOControl()
 control = setMBOControlTermination(control, iters = 10)
-control = setMBOControlInfill(control, crit = makeMBOInfillCriterionEI())
+control = setMBOControlInfill(control, crit = makeMBOInfillCritEI())
 ```
 
 ### Start the optimization
