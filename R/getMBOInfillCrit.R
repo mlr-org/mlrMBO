@@ -62,7 +62,7 @@ getMBOInfillCriterionDummyComponents = function(x) {
 
 #' @export
 #' @rdname getMBOInfillCriterion
-getMBOInfillCriterionDirection = function(x) {
+getMBOInfillCritMultiplier = function(x) {
   assertClass(x, "MBOInfillCriterion")
   ifelse(x$opt.direction == "minimize", 1, -1)
 }

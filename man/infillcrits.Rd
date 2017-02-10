@@ -59,3 +59,6 @@ In the multi-objective case we recommend to set \code{cb.lambda} to
 function of the standard normal distribution, \eqn{\pi_CB} is the probability
 of improvement value and \eqn{n} is the number of objectives of the considered problem.
 }
+\seealso{
+\code{\link{MBOInfillCrit}}
+}

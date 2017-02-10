@@ -22,16 +22,16 @@ makeMBOInfillCriterion(fun, name, id, opt.direction = "minimize",
  A function which expects the following parameters in exactly this order
  and return a numeric vector of criteria values at the points:
  \describe{
-   \item{points [\code{data.frame}]}{n points where to evaluate}.
+   \item{points [\code{data.frame}]}{n points where to evaluate.}
    \item{models [\code{\link[mlr]{WrappedModel}} | \code{list}]}{Model(s) fitted on design.}
    \item{control [\code{MBOControl}]}{Control object.}
    \item{par.set [\code{ParamSet}]}{Parameter set.}
    \item{design [\code{data.frame}]}{Design of already visited points.}
    \item{iter [\code{integer(1)}]}{Current iteration.}
-   \item{attributes [\code{logical{1}}]}{Should attributes appended to the return
-    value by considered by \pkg{mlrMBO}?}
+   \item{attributes [\code{logical{1}}]}{Are there attributes appended to the return
+    value that should be added to the \code{OptPath}?}
  }
-Important: This function will be minimized. So the proposals will be where this function is low.}
+Important: Internally, this function will be minimized. So the proposals will be where this function is low.}
 
 \item{name}{[\code{character(1)}]\cr
 Full name of the criterion.}
@@ -41,8 +41,7 @@ Short name of the criterion.
 Used internally and in plots.}
 
 \item{opt.direction}{[\code{character(1)}]\cr
-Shall the criterion be minimized (\code{minimize}), maximized (\code{maximize}) or is the direction the same as for the objective function (\code{objective})?
-This information is just of interest for plotting.
+Only for visualization: Shall this criterion be plotted as if it were to be minimized (\code{minimize}), maximized (\code{maximize}) or is the direction the same as for the objective function (\code{objective})?
 Default is \code{minimize}.}
 
 \item{components}{[\code{character}]\cr
@@ -87,3 +86,6 @@ the package allows for the creation of custom infill criteria.
 }
 }
 
+\seealso{
+\code{\link{infillcrits}}
+}

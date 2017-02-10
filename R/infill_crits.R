@@ -35,6 +35,7 @@
 #'   Epsilon for epsilon-dominance for \code{dib.indicator = "sms"}.
 #'   Default is \code{NULL}, in this case it is adaptively set.
 #' @name infillcrits
+#' @seealso \code{\link{MBOInfillCrit}}
 #' @rdname infillcrits
 NULL
 
