@@ -110,11 +110,11 @@ objfun2 =<span class="st"> </span><span class="kw">makeSingleObjectiveFunction</
 <div id="infill-criterion" class="section level3">
 <h3 class="hasAnchor">
 <html><body><a href="#infill-criterion" class="anchor"> </a></body></html>Infill Criterion</h3>
-<p>Although technically possible the <em>Expected Imrovement</em> that we used for the numerical parameter space and the <em>Kriging</em> surrogate, the <em>Confidence Bound</em> (<code><a href="../reference/infillcrits.html">makeMBOInfillCriterionCB()</a></code>) or also called statistical upper/lower bound is recommended for <em>Random Forest</em> regression. The reason is, that the <em>Expected Improvement</em> is founded on the gaussian posterior distribution given by the Kriging estimator, which is not given by the Random Forest regression. For <em>maximization</em> the <em>upper</em> Confidence Bound is given by <span class="math inline">\(UCB(x) = \hat{\mu}(x) - \lambda \cdot \hat{s}(x)\)</span>. We set <span class="math inline">\(\lambda = 5\)</span>. For the infill criteria optimization we set <code>opt.focussearch.points = 500</code>, to increase the speed of the tutorial.</p>
+<p>Although technically possible the <em>Expected Imrovement</em> that we used for the numerical parameter space and the <em>Kriging</em> surrogate, the <em>Confidence Bound</em> (<code><a href="../reference/infillcrits.html">makeMBOInfillCritCB()</a></code>) or also called statistical upper/lower bound is recommended for <em>Random Forest</em> regression. The reason is, that the <em>Expected Improvement</em> is founded on the gaussian posterior distribution given by the Kriging estimator, which is not given by the Random Forest regression. For <em>maximization</em> the <em>upper</em> Confidence Bound is given by <span class="math inline">\(UCB(x) = \hat{\mu}(x) - \lambda \cdot \hat{s}(x)\)</span>. We set <span class="math inline">\(\lambda = 5\)</span>. For the infill criteria optimization we set <code>opt.focussearch.points = 500</code>, to increase the speed of the tutorial.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">control2 =<span class="st"> </span><span class="kw"><a href="../reference/makeMBOControl.html">makeMBOControl</a></span>()
 control2 =<span class="st"> </span><span class="kw"><a href="../reference/setMBOControlInfill.html">setMBOControlInfill</a></span>(
   <span class="dt">control =</span> control2,
-  <span class="dt">crit =</span> <span class="kw"><a href="../reference/infillcrits.html">makeMBOInfillCriterionCB</a></span>(<span class="dt">cb.lambda =</span> <span class="dv">5</span>),
+  <span class="dt">crit =</span> <span class="kw"><a href="../reference/infillcrits.html">makeMBOInfillCritCB</a></span>(<span class="dt">cb.lambda =</span> <span class="dv">5</span>),
   <span class="dt">opt.focussearch.points =</span> <span class="dv">500</span>
 )</code></pre></div>
 </div>
@@ -164,27 +164,27 @@ run2 =<span class="st"> </span><span class="kw"><a href="../reference/mbo.html">
 ## Optimization path
 ## 4 + 10 entries in total, displaying last 10 (or less):
 ##            j k method        y dob eol error.message exec.time        cb
-## 5  0.5036369 2      a 1.841061   1  NA          &lt;NA&gt;         0 -2.626490
-## 6  0.4765116 2      a 1.805965   2  NA          &lt;NA&gt;         0 -2.512480
-## 7  0.7988000 2      a 2.130606   3  NA          &lt;NA&gt;         0 -2.226910
-## 8  0.7720200 2      a 2.111671   4  NA          &lt;NA&gt;         0 -2.464691
-## 9  0.8783610 2      a 2.177801   5  NA          &lt;NA&gt;         0 -2.394129
-## 10 0.9586573 1      b 1.393040   6  NA          &lt;NA&gt;         0 -2.512661
-## 11 0.9060944 2      a 2.191026   7  NA          &lt;NA&gt;         0 -2.492262
-## 12 0.9107256 2      a 2.193070   8  NA          &lt;NA&gt;         0 -2.390633
-## 13 0.9394645 2      a 2.204705   9  NA          &lt;NA&gt;         0 -2.411191
-## 14 0.9478463 2      a 2.207755  10  NA          &lt;NA&gt;         0 -2.432445
+## 5  0.5036369 2      a 1.841061   1  NA          &lt;NA&gt;     0.001 -2.626490
+## 6  0.4765116 2      a 1.805965   2  NA          &lt;NA&gt;     0.000 -2.512480
+## 7  0.7988000 2      a 2.130606   3  NA          &lt;NA&gt;     0.000 -2.226910
+## 8  0.7720200 2      a 2.111671   4  NA          &lt;NA&gt;     0.000 -2.464691
+## 9  0.8783610 2      a 2.177801   5  NA          &lt;NA&gt;     0.000 -2.394129
+## 10 0.9586573 1      b 1.393040   6  NA          &lt;NA&gt;     0.000 -2.512661
+## 11 0.9060944 2      a 2.191026   7  NA          &lt;NA&gt;     0.000 -2.492262
+## 12 0.9107256 2      a 2.193070   8  NA          &lt;NA&gt;     0.000 -2.390633
+## 13 0.9394645 2      a 2.204705   9  NA          &lt;NA&gt;     0.001 -2.411191
+## 14 0.9478463 2      a 2.207755  10  NA          &lt;NA&gt;     0.000 -2.432445
 ##    error.model train.time prop.type propose.time         se     mean
-## 5         &lt;NA&gt;      0.130 infill_cb        2.836 0.18213065 1.715837
-## 6         &lt;NA&gt;      0.137 infill_cb        2.531 0.15268376 1.749061
-## 7         &lt;NA&gt;      0.115 infill_cb        2.521 0.08976253 1.778097
-## 8         &lt;NA&gt;      0.113 infill_cb        2.571 0.12378079 1.845787
-## 9         &lt;NA&gt;      0.111 infill_cb        2.816 0.09790746 1.904591
-## 10        &lt;NA&gt;      0.106 infill_cb        2.664 0.19508534 1.537234
-## 11        &lt;NA&gt;      0.111 infill_cb        2.607 0.11275147 1.928505
-## 12        &lt;NA&gt;      0.106 infill_cb        2.787 0.07791046 2.001081
-## 13        &lt;NA&gt;      0.121 infill_cb        2.834 0.08865719 1.967905
-## 14        &lt;NA&gt;      0.112 infill_cb        2.729 0.08554056 2.004742
+## 5         &lt;NA&gt;      0.129 infill_cb        2.983 0.18213065 1.715837
+## 6         &lt;NA&gt;      0.121 infill_cb        2.676 0.15268376 1.749061
+## 7         &lt;NA&gt;      0.117 infill_cb        2.672 0.08976253 1.778097
+## 8         &lt;NA&gt;      0.118 infill_cb        2.708 0.12378079 1.845787
+## 9         &lt;NA&gt;      0.120 infill_cb        2.718 0.09790746 1.904591
+## 10        &lt;NA&gt;      0.112 infill_cb        2.719 0.19508534 1.537234
+## 11        &lt;NA&gt;      0.113 infill_cb        2.767 0.11275147 1.928505
+## 12        &lt;NA&gt;      0.113 infill_cb        2.765 0.07791046 2.001081
+## 13        &lt;NA&gt;      0.122 infill_cb        2.771 0.08865719 1.967905
+## 14        &lt;NA&gt;      0.115 infill_cb        2.751 0.08554056 2.004742
 ##    lambda
 ## 5       5
 ## 6       5

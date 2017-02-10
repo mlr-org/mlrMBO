@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Infill criteria. — infillcrits • mlrMBO</title>
+<title>Get properties of MBO infill criterion. — getMBOInfillCrit • mlrMBO</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -77,61 +77,36 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Infill criteria.</h1>
+    <h1>Get properties of MBO infill criterion.</h1>
     </div>
 
     
-    <p><span class="pkg">mlrMBO</span> contains most of the most popular infill criteria, e.g., expected
-improvement, (lower) confidence bound etc. Moreover, custom infill criteria
-may be generated with the <code><a href='makeMBOInfillCrit.html'>makeMBOInfillCrit</a></code> function.</p>
+    <p>Returns properties of an infill criterion, e.g., name or id.</p>
     
 
-    <pre><span class='fu'>makeMBOInfillCritMeanResponse</span>()
+    <pre><span class='fu'>getMBOInfillCritParams</span>(<span class='no'>x</span>)
 
-<span class='fu'>makeMBOInfillCritStandardError</span>()
+<span class='fu'>getMBOInfillCritParam</span>(<span class='no'>x</span>, <span class='no'>par.name</span>)
 
-<span class='fu'>makeMBOInfillCritEI</span>(<span class='kw'>se.threshold</span> <span class='kw'>=</span> <span class='fl'>1e-06</span>)
+<span class='fu'>getMBOInfillCritName</span>(<span class='no'>x</span>)
 
-<span class='fu'>makeMBOInfillCritCB</span>(<span class='kw'>cb.lambda</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
+<span class='fu'>getMBOInfillCritId</span>(<span class='no'>x</span>)
 
-<span class='fu'>makeMBOInfillCritAEI</span>(<span class='kw'>aei.use.nugget</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>se.threshold</span> <span class='kw'>=</span> <span class='fl'>1e-06</span>)
+<span class='fu'>hasRequiresInfillCritStandardError</span>(<span class='no'>x</span>)
 
-<span class='fu'>makeMBOInfillCritEQI</span>(<span class='kw'>eqi.beta</span> <span class='kw'>=</span> <span class='fl'>0.75</span>, <span class='kw'>se.threshold</span> <span class='kw'>=</span> <span class='fl'>1e-06</span>)
+<span class='fu'>getMBOInfillCritComponents</span>(<span class='no'>x</span>)
 
-<span class='fu'>makeMBOInfillCritDIB</span>(<span class='kw'>cb.lambda</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>sms.eps</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+<span class='fu'>getMBOInfillCritDirection</span>(<span class='no'>x</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
-      <dt>se.threshold</dt>
-      <dd>[<code>numeric(1)</code>]
-In order to avoid numerical problems the standard error estimation is assumed to
-be exactly zero, if it is below <code>se.threshold</code>.
-Default is 1e-6.</dd>
-      <dt>cb.lambda</dt>
-      <dd>[<code>numeric(1)</code> | <code>NULL</code>]
-Lambda parameter for confidence bound infill criterion.
-Default is <code>NULL</code>, which means 1 in case of a fully numeric parameter set and 2 otherwise.</dd>
-      <dt>aei.use.nugget</dt>
-      <dd>[<code>logical(1)</code>]
-Should the nugget effect be used for the pure variance estimation for augmented
-expected improvement?
-Default is <code>FALSE</code>.</dd>
-      <dt>eqi.beta</dt>
-      <dd>[<code>numeric(1)</code>]
-Beta parameter for expected quantile improvement criterion.
-Default is 0.75.</dd>
-      <dt>sms.eps</dt>
-      <dd>[<code>numeric(1)</code> | <code>NULL</code>]
-Epsilon for epsilon-dominance for <code>dib.indicator = &quot;sms&quot;</code>.
-Default is <code>NULL</code>, in this case it is adaptively set.</dd>
+      <dt>x</dt>
+      <dd>[<code><a href='makeMBOInfillCrit.html'>MBOInfillCrit</a></code>]
+Infill criterion.</dd>
+      <dt>par.name</dt>
+      <dd>[<code>character(1)</code>]
+Parameter name.</dd>
     </dl>
-    
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>In the multi-objective case we recommend to set <code>cb.lambda</code> to
-\(q(0.5 \cdot \pi_{CB}^(1 / n))\) where \(q\) is the quantile
-function of the standard normal distribution, \(\pi_CB\) is the probability
-of improvement value and \(n\) is the number of objectives of the considered problem.</p>
     
 
   </div>
@@ -139,9 +114,7 @@ of improvement value and \(n\) is the number of objectives of the considered pro
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#details">Details</a></li>
-          </ul>
+                </ul>
 
   </div>
 </div>
