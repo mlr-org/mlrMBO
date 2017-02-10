@@ -3,66 +3,66 @@
 #' @description
 #' Returns properties of an infill criterion, e.g., name or id.
 #'
-#' @param x [\code{\link{MBOInfillCriterion}}]\cr
+#' @param x [\code{\link{MBOInfillCrit}}]\cr
 #'   Infill criterion.
 #' @param par.name [\code{character(1)}]\cr
 #'   Parameter name.
-#' @name getMBOInfillCriterion
-#' @rdname getMBOInfillCriterion
+#' @name getMBOInfillCrit
+#' @rdname getMBOInfillCrit
 NULL
 
 #' @export
-#' @rdname getMBOInfillCriterion
+#' @rdname getMBOInfillCrit
 getMBOInfillCritParams = function(x) {
-  assertClass(x, "MBOInfillCriterion")
+  assertClass(x, "MBOInfillCrit")
   return(x$params)
 }
 
 #' @export
-#' @rdname getMBOInfillCriterion
+#' @rdname getMBOInfillCrit
 getMBOInfillCritParam = function(x, par.name) {
-  assertClass(x, "MBOInfillCriterion")
+  assertClass(x, "MBOInfillCrit")
   assertString(par.name)
   return(getMBOInfillCritParams(x)[[par.name]])
 }
 
 #' @export
-#' @rdname getMBOInfillCriterion
+#' @rdname getMBOInfillCrit
 getMBOInfillCritName = function(x) {
-  assertClass(x, "MBOInfillCriterion")
+  assertClass(x, "MBOInfillCrit")
   return(x$name)
 }
 
 #' @export
-#' @rdname getMBOInfillCriterion
+#' @rdname getMBOInfillCrit
 getMBOInfillCritId = function(x) {
-  assertClass(x, "MBOInfillCriterion")
+  assertClass(x, "MBOInfillCrit")
   return(x$id)
 }
 
 #' @export
-#' @rdname getMBOInfillCriterion
+#' @rdname getMBOInfillCrit
 hasRequiresInfillCritStandardError = function(x) {
-  assertClass(x, "MBOInfillCriterion")
+  assertClass(x, "MBOInfillCrit")
   return(x$requires.se)
 }
 
 #' @export
-#' @rdname getMBOInfillCriterion
+#' @rdname getMBOInfillCrit
 getMBOInfillCritComponents = function(x) {
-  assertClass(x, "MBOInfillCriterion")
+  assertClass(x, "MBOInfillCrit")
   return(x$components)
 }
 
 getMBOInfillCritDummyComponents = function(x) {
-  assertClass(x, "MBOInfillCriterion")
+  assertClass(x, "MBOInfillCrit")
   ns = getMBOInfillCritComponents(x)
   as.data.frame(BBmisc::namedList(ns, NA_real_))
 }
 
 #' @export
-#' @rdname getMBOInfillCriterion
+#' @rdname getMBOInfillCrit
 getMBOInfillCritDirection = function(x) {
-  assertClass(x, "MBOInfillCriterion")
+  assertClass(x, "MBOInfillCrit")
   ifelse(x$minimize, 1, -1)
 }

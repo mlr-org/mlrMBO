@@ -41,9 +41,9 @@
 #'   Does the infill criterion require the regression learner to provide a standard
 #'   error estimation?
 #'   Default is \code{FALSE}.
-#' @return [\code{\link{MBOInfillCriterion}}]
-#' @rdname MBOInfillCriterion
-#' @aliases MBOInfillCriterion
+#' @return [\code{\link{MBOInfillCrit}}]
+#' @rdname MBOInfillCrit
+#' @aliases MBOInfillCrit
 #' @export
 makeMBOInfillCrit = function(fun, name, id,
   minimize = TRUE, components = character(0L), params = list(),
@@ -61,7 +61,7 @@ makeMBOInfillCrit = function(fun, name, id,
   assertList(params)
   assertFlag(requires.se)
 
-  ic = makeS3Obj(c(paste0("InfillCrit", toupper(id)), "MBOInfillCriterion"),
+  ic = makeS3Obj(c(paste0("InfillCrit", toupper(id)), "MBOInfillCrit"),
     fun = fun,
     name = name,
     id = id,

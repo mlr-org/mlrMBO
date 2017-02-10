@@ -4,12 +4,12 @@
 #'   Some infill criteria have parameters that are dependent on values in the parameter set, design,
 #'   used learner or other control settings.
 #'   To actually set these default values, this function is called, which returns a fully 
-#'   initialized [\code{\link{MBOInfillCriterion}}].
+#'   initialized [\code{\link{MBOInfillCrit}}].
 #'   This function is mainly for internal use. If a custom infill criterion is created, it may be 
 #'   required to create a seperate method \code{initCrit.InfillCritID} where \code{ID} is the 
-#'   \code{id} of the custom \link{MBOInfillCriterion}.
+#'   \code{id} of the custom \link{MBOInfillCrit}.
 #'
-#' @param crit [\code{\link{MBOInfillCriterion}}]\cr
+#' @param crit [\code{\link{MBOInfillCrit}}]\cr
 #'   Uninitialized infill criterion.
 #' @param par.set [\code{\link[ParamHelpers]{ParamSet}}]\cr
 #'   Collection of parameters and their constraints for optimization.
@@ -19,7 +19,7 @@
 #'   Regression learner from mlr, which is used as a surrogate to model our fitness function.
 #' @param control [\code{\link{MBOControl}}]\cr
 #'   MBO control object.
-#' @return [\code{\link{MBOInfillCriterion}}]
+#' @return [\code{\link{MBOInfillCrit}}]
 #' @export
 initCrit = function(crit, par.set, design, learner, control) {
   UseMethod("initCrit")

@@ -7,9 +7,9 @@
 #' minimizes that.
 #'
 #' @template arg_control
-#' @param crit [\code{\link{MBOInfillCriterion}}]\cr
+#' @param crit [\code{\link{MBOInfillCrit}}]\cr
 #'   How should infill points be rated. See \code{\link{infillcrits}} for an overview
-#'   of available infill criteria or implement a custom one via \code{\link{makeMBOInfillCriterion}}.#
+#'   of available infill criteria or implement a custom one via \code{\link{makeMBOInfillCrit}}.#
 #'   Default is \dQuote{(lower) confidence bound} (see \code{\link{makeMBOInfillCritCB}}).
 #' @param interleave.random.points [\code{integer(1)}]\cr
 #'   Add \code{interleave.random.points} uniformly sampled points additionally to the
@@ -133,7 +133,7 @@ setMBOControlInfill = function(control,
   assertClass(control, "MBOControl")
 
   control$infill.crit = coalesce(crit, control$infill.crit, makeMBOInfillCritCB())
-  assertClass(control$infill.crit, "MBOInfillCriterion")
+  assertClass(control$infill.crit, "MBOInfillCrit")
 
   assertCount(interleave.random.points)
   control$interleave.random.points = interleave.random.points

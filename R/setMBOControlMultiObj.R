@@ -50,7 +50,7 @@
 #' @param dib.indicator [\code{character(1)}]\cr
 #'   Either \dQuote{sms} (SMS-EGO like algorithm) or \dQuote{eps} (epsilon-EGO like algorithm).
 #'   Default is \dQuote{sms}.
-#' @param mspot.select.crit [\code{\link{MBOInfillCriterion}}]\cr
+#' @param mspot.select.crit [\code{\link{MBOInfillCrit}}]\cr
 #'   Which infill.crit to use in the candidate selection. After the NSGA2
 #'   proposed a set of candidates, \dQuote{propose.points} are selected via
 #'   the hypervoume contribution of this infill.crit.
@@ -179,7 +179,7 @@ setMBOControlMultiObj = function(control,
   }
 
   control$mspot.select.crit = coalesce(mspot.select.crit, control$mspot.select.crit, makeMBOInfillCritMeanResponse())
-  assertClass(control$mspot.select.crit, "MBOInfillCriterion")
+  assertClass(control$mspot.select.crit, "MBOInfillCrit")
   #FIXME: should we allow more freedom here?
   assertChoice(control$mspot.select.crit$id, choices = c("mean", "cb"))
 
