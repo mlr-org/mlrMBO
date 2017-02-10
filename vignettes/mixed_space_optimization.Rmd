@@ -29,39 +29,39 @@ This Vignette is supposed to give you an introduction to use **mlrMBO** for mixe
 
 ### Objective Function
 
-We construct an examplarly objective function using `smoof::makeSingleObjetiveFunction()`. 
+We construct an exemplary objective function using `smoof::makeSingleObjetiveFunction()`. 
 The `par.set` argument has to be a `ParamSet` object from the **ParamHelpers** package, which provides information about the parameters of the objective function and their constraints for optimization.
-The objective function will be 3-dimensional with the inputs `j`, `k` and `method`.
-`j` is in the interval [0,1] and `k` as an integer in {1, 2}. 
+The objective function will be 3-dimensional with the inputs `j` and `method`.
+`j` is in the interval $[0,2\pi]$
 The Parameter `method` is categorical and can be either `"a"` or `"b"`.
-In this case we want to maximize the function, so we have to set `minimize = FALSE`.
+In this case we want to minimize the function, so we have to set `minimize = TRUE`.
 As the parameters are of different types (e.g. numeric and categorical), the function expects a list instead of a vector as its argument, which is specified by `has.simple.signature = FALSE`.
 For further information about he **smoof** package we refer to the [github page](https://github.com/jakobbossek/smoof).
 
 ```{r objective_function}
+library(mlrMBO)
+library(ggplot2)
+
 fun = function(x) {
-  j = x[[1]]
-  k = x[[2]]
-  method = x[[3]]
-  perf = ifelse(method == "a", k * sin(j) + cos(j),
-               sin(j) + k * cos(j))
+  j = x$j
+  method = x$method
+  perf = ifelse(method == "a", sin(j), cos(j))
   return(perf)
 }
 
 objfun2 = makeSingleObjectiveFunction(
-  name = "example",
+  name = "mixed_example",
   fn = fun,
   par.set = makeParamSet(
-    makeNumericParam("j", lower = 0,upper = 1),
-    makeIntegerParam("k", lower = 1L, upper = 2L),
+    makeNumericParam("j", lower = 0,upper = 2 * pi),
     makeDiscreteParam("method", values = c("a", "b"))
   ),
   has.simple.signature = FALSE,
-  minimize = FALSE
+  minimize = TRUE
 )
 
-# call the function for some values
-objfun2(list(j = 0.5, k = 1L, method = "a"))
+# visualize the function
+autoplot(objfun2)
 ```
 
 ### Sorrogate Learner
@@ -76,9 +76,9 @@ surr.rf = makeLearner("regr.randomForest", predict.type = "se")
 
 ### Infill Criterion
 
-Although technically possible the *Expected Imrovement* that we used for the numerical parameter space and the *Kriging* surrogate, the *Confidence Bound* (`makeMBOInfillCriterionCB()`) or also called statistical upper/lower bound is recommended for *Random Forest* regression.
-The reason is, that the *Expected Improvement* is founded on the gaussian posterior distribution given by the Kriging estimator, which is not given by the Random Forest regression.
-For *maximization* the *upper* Confidence Bound is given by $UCB(x) = \hat{\mu}(x) - \lambda \cdot \hat{s}(x)$.
+Although technically possible the *Expected Imrovement* that we used for the numerical parameter space and the *Kriging* surrogate, the *Confidence Bound* (`makeMBOInfillCritCB()`) or also called statistical upper/lower bound is recommended for *Random Forest* regression.
+The reason is, that the *Expected Improvement* is founded on the Gaussian posterior distribution given by the Kriging estimator, which is not given by the Random Forest regression.
+For *minimization* the *lower* Confidence Bound is given by $UCB(x) = \hat{\mu}(x) - \lambda \cdot \hat{s}(x)$.
 We set $\lambda = 5$.
 For the infill criteria optimization we set `opt.focussearch.points = 500`, to increase the speed of the tutorial.
 
@@ -86,7 +86,7 @@ For the infill criteria optimization we set `opt.focussearch.points = 500`, to i
 control2 = makeMBOControl()
 control2 = setMBOControlInfill(
   control = control2,
-  crit = makeMBOInfillCriterionCB(cb.lambda = 5),
+  crit = makeMBOInfillCritCB(cb.lambda = 5),
   opt.focussearch.points = 500
 )
 ```
@@ -104,19 +104,19 @@ control2 = setMBOControlTermination(
 
 ### Initial Design
 
-The inital design is set to size of 12:
+The initial design is set to size of 8:
 
 ```{r init_design}
-design2 = generateDesign(n = 4, par.set = getParamSet(objfun2))
+design2 = generateDesign(n = 8, par.set = getParamSet(objfun2))
 ```
 
 Note that the initial design has to be big enough to cover all discrete values and ideally all combinations of discrete values including integers.
-If we had 2 discrete variables one with 5 and one with 3 discrete values the inital design should be at least of size 15.
+If we had 2 discrete variables one with 5 and one with 3 discrete values the initial design should be at least of size 15.
 Usually `generateDesign()` takes care that the points are spread uniformly.
 
 ### Optimization
 
-Finally, we start the maximation with `mbo()` with surpressed learner output from *mlr* and we print the result object to obtain the input that lead to the best objective:
+Finally, we start the optimization with `mbo()` with suppressed learner output from *mlr* and we print the result object to obtain the input that lead to the best objective:
 ```{r mbo_run, eval=TRUE}
 # Surpresses output of learners 
 mlr::configureMlr(show.info = FALSE, show.learner.output = FALSE, on.learner.warning = "quiet")
@@ -126,43 +126,17 @@ print(run2)
 
 ## Visualization
 
-Visualization is only possible for 2-dimensional objective functions.
-Therefore we define a simplified objective function:
+Visualization is only possible for 2-dimensional objective functions, of which one is the categorical dimension.
+Exactly like in our exemplary function.
 
-```{r objective_function_2d}
-fun = function(x) {
-  j = x$j
-  method = x$method
-  perf = ifelse(method == "a", sin(j), cos(j))
-  return(perf)
-}
-
-objfun3 = makeSingleObjectiveFunction(
-  name = "2d_example",
-  fn = fun,
-  par.set = makeParamSet(
-    makeNumericParam("j", lower = 0,upper = pi),
-    makeDiscreteParam("method", values = c("a", "b"))
-  ),
-  has.simple.signature = FALSE,
-  minimize = FALSE
-)
-```
-
-We also generate a simplified design:
-
-```{r init_design_2d}
-design3 = generateGridDesign(getParamSet(objfun3), resolution = 4)
-```
-
-Let's start the optimization:
+Again, to obtain all the data that is necessary to generate the plot we have to call the optimization through `exampleRun()`:
 
 ```{r example_run_2d}
-ex.run3 = exampleRun(objfun3, design = design3, learner = surr.rf, control = control2)
+ex.run2 = exampleRun(objfun2, design = design2, learner = surr.rf, control = control2)
 ```
 
 And let's visualize the results:
 
 ```{r plot_example_run_2d, warning=FALSE}
-plotExampleRun(ex.run3, iters = c(1L, 2L, 10L), pause = FALSE)
+plotExampleRun(ex.run2, iters = c(1L, 2L, 10L), pause = FALSE)
 ```

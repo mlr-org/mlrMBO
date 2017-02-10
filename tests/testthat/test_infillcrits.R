@@ -69,9 +69,9 @@ test_that("infill crits", {
   }
 
   # check beta for eqi
-  expect_error(makeMBOInfillCriterionEQI(eqi.beta = 2))
+  expect_error(makeMBOInfillCritEQI(eqi.beta = 2))
 
-  ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCriterionEQI(eqi.beta = 0.6),
+  ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCritEQI(eqi.beta = 0.6),
     opt = "focussearch", opt.restarts = 1L, opt.focussearch.points = 300L)
   or = mbo(f1, des, learner = makeLearner("regr.km", predict.type = "se", nugget.estim = TRUE), control = ctrl)
   expect_lt(or$y, 50)

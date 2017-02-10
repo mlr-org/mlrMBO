@@ -18,3 +18,4 @@ articles:
       Detailed descriptions of advanced features of mlrMBO.
     contents:
       - mixed_space_optimization
+      - parallelization

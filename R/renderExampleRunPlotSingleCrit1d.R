@@ -29,7 +29,7 @@ renderExampleRunPlot1d = function(x, iter,
   se = (x$learner$predict.type == "se")
 
   propose.points = control$propose.points
-  infill.crit.id = getMBOInfillCriterionId(control$infill.crit)
+  infill.crit.id = getMBOInfillCritId(control$infill.crit)
   # if (control$multifid) {
   #   infill.crit.id = "mfEI"
   #   critfun = infillCritMultiFid.external
@@ -77,9 +77,9 @@ renderExampleRunPlot1d = function(x, iter,
 
   plots = list()
 
-  infill.mean = makeMBOInfillCriterionMeanResponse()$fun
-  infill.ei = makeMBOInfillCriterionEI()$fun
-  infill.se = makeMBOInfillCriterionStandardError()$fun
+  infill.mean = makeMBOInfillCritMeanResponse()$fun
+  infill.ei = makeMBOInfillCritEI()$fun
+  infill.se = makeMBOInfillCritStandardError()$fun
 
   model = models[[iter]]
   type = vcapply(getOptPathDOB(opt.path), getType, iter = iter)

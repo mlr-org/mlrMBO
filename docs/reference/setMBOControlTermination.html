@@ -162,27 +162,27 @@ return a list with the following elements:
 <span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'>setMBOControlTermination</span>(<span class='no'>ctrl</span>, <span class='kw'>more.termination.conds</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='fu'>yTargetValueTerminator</span>(<span class='fl'>0.05</span>)))
 <span class='no'>res</span> <span class='kw'>=</span> <span class='fu'><a href='mbo.html'>mbo</a></span>(<span class='no'>fn</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='no'>ctrl</span>)
 <span class='fu'>print</span>(<span class='no'>res</span>)</div><div class='output co'>#&gt; Recommended parameters:
-#&gt; x=-0.0883
-#&gt; Objective: y = 0.008
+#&gt; x=-0.0819
+#&gt; Objective: y = 0.007
 #&gt; 
 #&gt; Optimization path
 #&gt; 4 + 3 entries in total, displaying last 10 (or less):
-#&gt;             x            y dob eol error.message exec.time       mean
-#&gt; 1 -0.76093228  0.579017935   0  NA          &lt;NA&gt;         0         NA
-#&gt; 2 -4.47445290 20.020728746   0  NA          &lt;NA&gt;         0         NA
-#&gt; 3  4.44616620 19.768393841   0  NA          &lt;NA&gt;         0         NA
-#&gt; 4  2.34827602  5.514400276   0  NA          &lt;NA&gt;         0         NA
-#&gt; 5 -2.98950445  8.937136856   1  NA          &lt;NA&gt;         0 11.4706352
-#&gt; 6  2.86197940  8.190926106   2  NA          &lt;NA&gt;         0 10.9639355
-#&gt; 7 -0.08827065  0.007791708   3  NA          &lt;NA&gt;         0  0.1666497
-#&gt;   error.model train.time   prop.type propose.time
-#&gt; 1        &lt;NA&gt;         NA  initdesign           NA
-#&gt; 2        &lt;NA&gt;         NA  initdesign           NA
-#&gt; 3        &lt;NA&gt;         NA  initdesign           NA
-#&gt; 4        &lt;NA&gt;         NA  initdesign           NA
-#&gt; 5        &lt;NA&gt;      0.036 infill_mean        0.244
-#&gt; 6        &lt;NA&gt;      0.025 infill_mean        0.386
-#&gt; 7        &lt;NA&gt;      0.040 infill_mean        0.246</div></pre>
+#&gt;             x           y dob eol error.message exec.time         cb
+#&gt; 1 -0.76093228  0.57901794   0  NA          &lt;NA&gt;     0.000         NA
+#&gt; 2 -4.47445290 20.02072875   0  NA          &lt;NA&gt;     0.000         NA
+#&gt; 3  4.44616620 19.76839384   0  NA          &lt;NA&gt;     0.000         NA
+#&gt; 4  2.34827602  5.51440028   0  NA          &lt;NA&gt;     0.000         NA
+#&gt; 5 -1.86224059  3.46794003   1  NA          &lt;NA&gt;     0.000  2.8674242
+#&gt; 6  0.48176513  0.23209764   2  NA          &lt;NA&gt;     0.001 -3.0416373
+#&gt; 7 -0.08188474  0.00670511   3  NA          &lt;NA&gt;     0.000 -0.6685445
+#&gt;   error.model train.time  prop.type propose.time        se        mean lambda
+#&gt; 1        &lt;NA&gt;         NA initdesign           NA        NA          NA     NA
+#&gt; 2        &lt;NA&gt;         NA initdesign           NA        NA          NA     NA
+#&gt; 3        &lt;NA&gt;         NA initdesign           NA        NA          NA     NA
+#&gt; 4        &lt;NA&gt;         NA initdesign           NA        NA          NA     NA
+#&gt; 5        &lt;NA&gt;      0.028  infill_cb        0.044 8.6032110 11.47063520      1
+#&gt; 6        &lt;NA&gt;      0.032  infill_cb        0.045 5.1908987  2.14926140      1
+#&gt; 7        &lt;NA&gt;      0.036  infill_cb        0.053 0.7453475  0.07680299      1</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

@@ -3,7 +3,7 @@
 #' @description
 #' \pkg{mlrMBO} contains most of the most popular infill criteria, e.g., expected
 #' improvement, (lower) confidence bound etc. Moreover, custom infill criteria
-#' may be generated with the \code{\link{makeMBOInfillCriterion}} function.
+#' may be generated with the \code{\link{makeMBOInfillCrit}} function.
 #'
 #' @details
 #' In the multi-objective case we recommend to set \code{cb.lambda} to
@@ -45,8 +45,8 @@ NULL
 
 #' @export
 #' @rdname infillcrits
-makeMBOInfillCriterionMeanResponse = function() {
-  makeMBOInfillCriterion(
+makeMBOInfillCritMeanResponse = function() {
+  makeMBOInfillCrit(
     fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
       ifelse(control$minimize, 1, -1) * predict(models[[1L]], newdata = points)$data$response
     },
@@ -58,8 +58,8 @@ makeMBOInfillCriterionMeanResponse = function() {
 
 #' @export
 #' @rdname infillcrits
-makeMBOInfillCriterionStandardError = function() {
-  makeMBOInfillCriterion(
+makeMBOInfillCritStandardError = function() {
+  makeMBOInfillCrit(
     fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
        -predict(models[[1L]], newdata = points)$data$se
     },
@@ -72,10 +72,10 @@ makeMBOInfillCriterionStandardError = function() {
 
 #' @export
 #' @rdname infillcrits
-makeMBOInfillCriterionEI = function(se.threshold = 1e-6) {
+makeMBOInfillCritEI = function(se.threshold = 1e-6) {
   assertNumber(se.threshold, lower = 1e-20)
   force(se.threshold)
-  makeMBOInfillCriterion(
+  makeMBOInfillCrit(
     fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
       model = models[[1L]]
       maximize.mult = ifelse(control$minimize, 1, -1)
@@ -106,13 +106,11 @@ makeMBOInfillCriterionEI = function(se.threshold = 1e-6) {
 
 #' @export
 #' @rdname infillcrits
-makeMBOInfillCriterionCB = function(cb.lambda = NULL) {
+makeMBOInfillCritCB = function(cb.lambda = NULL) {
   assertNumber(cb.lambda, lower = 0, null.ok = TRUE)
   force(cb.lambda)
-  makeMBOInfillCriterion(
+  makeMBOInfillCrit(
     fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
-      if (is.null(cb.lambda))
-        cb.lambda = ifelse(isNumeric(par.set, include.int = TRUE), 1, 2)
       model = models[[1L]]
       maximize.mult = ifelse(control$minimize, 1, -1)
       p = predict(model, newdata = points)$data
@@ -147,13 +145,13 @@ makeMBOInfillCriterionCB = function(cb.lambda = NULL) {
 
 #' @export
 #' @rdname infillcrits
-makeMBOInfillCriterionAEI = function(aei.use.nugget = FALSE, se.threshold = 1e-6) {
+makeMBOInfillCritAEI = function(aei.use.nugget = FALSE, se.threshold = 1e-6) {
   assertFlag(aei.use.nugget)
   assertNumber(se.threshold, lower = 1e-20)
   force(aei.use.nugget)
   force(se.threshold)
 
-  makeMBOInfillCriterion(
+  makeMBOInfillCrit(
     fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
       model = models[[1L]]
       maximize.mult = ifelse(control$minimize, 1, -1)
@@ -193,13 +191,13 @@ makeMBOInfillCriterionAEI = function(aei.use.nugget = FALSE, se.threshold = 1e-6
 
 #' @export
 #' @rdname infillcrits
-makeMBOInfillCriterionEQI = function(eqi.beta = 0.75, se.threshold = 1e-6) {
+makeMBOInfillCritEQI = function(eqi.beta = 0.75, se.threshold = 1e-6) {
   assertNumber(eqi.beta, lower = 0.5, upper = 1)
   assertNumber(se.threshold, lower = 1e-20)
   force(eqi.beta)
   force(se.threshold)
 
-  makeMBOInfillCriterion(
+  makeMBOInfillCrit(
     fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
       model = models[[1L]]
       maximize.mult = ifelse(control$minimize, 1, -1)
@@ -248,11 +246,11 @@ makeMBOInfillCriterionEQI = function(eqi.beta = 0.75, se.threshold = 1e-6) {
 
 #' @export
 #' @rdname infillcrits
-makeMBOInfillCriterionDIB = function(cb.lambda = 1, sms.eps = NULL) {
+makeMBOInfillCritDIB = function(cb.lambda = 1, sms.eps = NULL) {
   assertNumber(cb.lambda, lower = 0)
   if (!is.null(sms.eps))
     assertNumber(sms.eps, lower = 0, finite = TRUE)
-  makeMBOInfillCriterion(
+  makeMBOInfillCrit(
     fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
       # get ys and cb-value-matrix for new points, minimize version
       maximize.mult = ifelse(control$minimize, 1, -1)

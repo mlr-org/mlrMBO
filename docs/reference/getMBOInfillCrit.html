@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Generate default learner. — makeMboLearner • mlrMBO</title>
+<title>Get properties of MBO infill criterion. — getMBOInfillCrit • mlrMBO</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -77,62 +77,36 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Generate default learner.</h1>
+    <h1>Get properties of MBO infill criterion.</h1>
     </div>
 
     
-    <p>This is a helper function that generates a default surrogate, based on properties of the objective function.</p>
-
-    <p>For numeric-only parameter spaces (including integers):
-<ul>
-<li>A Kriging model &#8220;regr.km&#8221; with kernel &#8220;matern5_2&#8221; is created.
-</li>
-<li>If the objective function is deterministic we add a small nugget effect (10^-8*Var(y),
-  y is vector of observed outcomes in current design) to increase numerical stability to
-  hopefully prevent crashes of DiceKriging.
-</li>
-<li>If the objective function is noisy the nugget effect will be estimated with
-  <code>nugget.estim = TRUE</code> (but you can override this in <code>...</code>.
-  Also <code>jitter</code> is set to <code>TRUE</code> to circumvent a problem with DiceKriging where already
-  trained input values produce the exact trained output.
-  For further informations check the <code>$note</code> slot of the created learner.
-</li>
-<li>Instead of the default <code>&quot;BFGS&quot;</code> optimization method we use rgenoud (<code>&quot;gen&quot;</code>),
-  which is a hybrid algorithm, to combine global search based on genetic algorithms and local search
-  based on gradients.
-  This may improve the model fit and will produce a constant surrogate model much less frequent.
-  You can also override this setting in <code>...</code>.
-</li>
-</ul></p>
-
-    <p>For mixed numeric-categorical parameter spaces:
-<ul>
-<li>A random regression forest &#8220;regr.randomForest&#8221; is created.
-</li>
-<li>The method to estimate the variance is the standard deviation of the bagged predictions.
-</li>
-</ul></p>
+    <p>Returns properties of an infill criterion, e.g., name or id.</p>
     
 
-    <pre><span class='fu'>makeMboLearner</span>(<span class='no'>control</span>, <span class='no'>fun</span>, <span class='no'>...</span>)</pre>
+    <pre><span class='fu'>getMBOInfillCritParams</span>(<span class='no'>x</span>)
+
+<span class='fu'>getMBOInfillCritParam</span>(<span class='no'>x</span>, <span class='no'>par.name</span>)
+
+<span class='fu'>getMBOInfillCritName</span>(<span class='no'>x</span>)
+
+<span class='fu'>getMBOInfillCritId</span>(<span class='no'>x</span>)
+
+<span class='fu'>hasRequiresInfillCritStandardError</span>(<span class='no'>x</span>)
+
+<span class='fu'>getMBOInfillCritComponents</span>(<span class='no'>x</span>)
+
+<span class='fu'>getMBOInfillCritDirection</span>(<span class='no'>x</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
-      <dt>control</dt>
-      <dd>[<code><a href='makeMBOControl.html'>MBOControl</a></code>]
-Control object for mbo.</dd>
-      <dt>fun</dt>
-      <dd>[<code>smoof_function</code>] 
-The same objective function which is also passed to <code><a href='mbo.html'>mbo</a></code>.</dd>
-      <dt>...</dt>
-      <dd>[any]
-Further parameters passed to the constructed learner.
-Will overwrite mlrMBO&#39;s defaults.</dd>
+      <dt>x</dt>
+      <dd>[<code><a href='makeMBOInfillCrit.html'>MBOInfillCrit</a></code>]
+Infill criterion.</dd>
+      <dt>par.name</dt>
+      <dd>[<code>character(1)</code>]
+Parameter name.</dd>
     </dl>
-    
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>[<code>Learner</code>]</p>
     
 
   </div>
@@ -140,9 +114,7 @@ Will overwrite mlrMBO&#39;s defaults.</dd>
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#value">Value</a></li>
-          </ul>
+                </ul>
 
   </div>
 </div>

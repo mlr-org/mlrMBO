@@ -86,19 +86,20 @@
     <p>The extras are:
 <dl class='dl-horizontal'>
 <dt>train.time</dt><dd>Time to train the model(s) that produced the points. Only the first slot of the vector is used (if we have multiple points), rest are NA.</dd>
-<dt>propose.time</dt><dd>Time needed to propose the point. If we have indivual timings from the proposal mechanism, we have one differrent value per point here. If all were generated in one go, we only have one timing, we store it in the slot for the first point, rest are NA.</dd>
+<dt>propose.time</dt><dd>Time needed to propose the point. If we have individual timings from the proposal mechanism, we have one different value per point here. If all were generated in one go, we only have one timing, we store it in the slot for the first point, rest are NA.</dd>
 <dt>errors.model</dt><dd>Possible Error Messages. If point-producing model(s) crashed they are replicated for all n points, if only one error message was passed we store it for the first point, rest are NA.</dd>
-<dt>prop.type</dt><dd>Type of point porposal. Possible values are
+<dt>prop.type</dt><dd>Type of point proposal. Possible values are
   <dl class='dl-horizontal'>
   <dt>initdesign</dt><dd>Points actually not proposed, but in the initial design.</dd>
   <dt>infill\_x</dt><dd>Here x is a placeholder for the selected infill criterion, e.g., infill\_ei for expected improvement.</dd>
   <dt>random\_interleave</dt><dd>Uniformly sampled points added additionally to the proposed points.</dd>
   <dt>random\_filtered</dt><dd>If filtering of proposed points located too close to each other is active, these are replaced by random points.</dd>
+  <dt>final\_eval</dt><dd>If <code>final.evals</code> is set in <code><a href='makeMBOControl.html'>makeMBOControl</a></code>: Final evaluations of the proposed solution to reduce noise in y.</dd>
   </dl></p>
 
     <p></dd>
-<dt>multipoint.cb.lambda</dt><dd>Random lambda-value used in q-CB point proposal. One lambda for each point in that case.</dd>
 <dt>parego.weight</dt><dd>Weight vector sampled for multipoint ParEGO</dd>
+<dt>...</dt><dd>Depending on the chosen infill criterion there will be additional columns, e.g. <code>se</code> and <code>mean</code> for the Expected Improvement)</dd>
 </dl></p>
 
     <p>Moreover, the user may pass additional &#8220;user extras&#8221; by appending a named list
