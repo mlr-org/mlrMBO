@@ -61,7 +61,7 @@ makeMBOInfillCriterion = function(fun, name, id,
   assertList(params)
   assertFlag(requires.se)
 
-  ic = makeS3Obj("MBOInfillCriterion",
+  ic = makeS3Obj(c(paste0("InfillCrit", toupper(id)), "MBOInfillCriterion"),
     fun = fun,
     name = name,
     id = id,
