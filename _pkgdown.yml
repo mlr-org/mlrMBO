@@ -19,3 +19,4 @@ articles:
     contents:
       - mixed_space_optimization
       - parallelization
+      - infill_criteria
