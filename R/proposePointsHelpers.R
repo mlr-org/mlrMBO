@@ -32,7 +32,7 @@ checkFailedModels = function(models, par.set, npoints, control) {
 
 
 # create control objects with random lamda values for parallel cb multi-point
-# @arg crit: MBOInfillCriterion
+# @arg crit: MBOInfillCrit
 # @arg crit.pars: list of length propose.points.
 #   Each list item contains a list with the arguments the infill crit should be initialized
 createSinglePointControls = function(control, crit, crit.pars = NULL) {
