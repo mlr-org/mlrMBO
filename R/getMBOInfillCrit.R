@@ -60,9 +60,12 @@ getMBOInfillCritDummyComponents = function(x) {
   as.data.frame(BBmisc::namedList(ns, NA_real_))
 }
 
-#' @export
-#' @rdname getMBOInfillCriterion
 getMBOInfillCritMultiplier = function(x) {
-  assertClass(x, "MBOInfillCriterion")
-  ifelse(x$opt.direction == "minimize", 1, -1)
+  assertClass(x, "MBOInfillCrit")
+  if (x$opt.direction == "minimize")
+    return(1)
+  else if (x$opt.direction == "maximize")
+    return(-1)
+  else
+    stopf("The direction of the infill criterion is '%s' but should be 'minimize' or 'maximize' at this point.", x$opt.direction)
 }

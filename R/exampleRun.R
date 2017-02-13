@@ -125,7 +125,7 @@ exampleRun = function(fun, design = NULL, learner = NULL, control,
     global.opt = global.opt,
     global.opt.estim = global.opt.estim,
     learner = learner,
-    control = control,
+    control = res$control,
     mbo.res = res
   )
 }

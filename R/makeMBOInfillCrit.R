@@ -75,13 +75,13 @@ makeMBOInfillCrit = function(fun, name, id,
 }
 
 #' @export
-print.MBOInfillCriterion = function(x, ...) {
-  components = getMBOInfillCriterionComponents(x)
-  params = getMBOInfillCriterionParams(x)
-  catf("Infill criterion            : %s (%s)", getMBOInfillCriterionName(x),
-    getMBOInfillCriterionId(x))
+print.MBOInfillCrit = function(x, ...) {
+  components = getMBOInfillCritComponents(x)
+  params = getMBOInfillCritParams(x)
+  catf("Infill criterion            : %s (%s)", getMBOInfillCritName(x),
+    getMBOInfillCritId(x))
     catf("  Direction of optimization : %s", x$opt.direction)
-  if (hasRequiresInfillCriterionStandardError(x))
+  if (hasRequiresInfillCritStandardError(x))
     catf("  Requirement               : SE estimation")
   if (length(components) > 0)
     catf("  Components                : %s", collapse(components, sep = ", "))

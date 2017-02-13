@@ -1,25 +1,18 @@
 test_that("infill crit initialization", {
 
-  ps = makeParamSet(
-    makeNumericParam("x1", lower = -2, upper = 1),
-    makeIntegerParam("x2", lower = -1, upper = 2)
-  )
-  
-  expect_equal(crit.cb1, initCrit(crit.cb, ps))
-  expect_equal(crit.ei, initCrit(crit.ei, ps))
-  
+  fn = makeSphereFunction(2) # 2d continous space
+
+  expect_equal(crit.cb1, initCrit(crit.cb, fn))
+  expect_equal(crit.ei, initCrit(crit.ei, fn))
+
   crit.cb3 = makeMBOInfillCritCB(3)
-  
-  expect_equal(crit.cb3, initCrit(crit.cb3, ps))
-  
-  ps = makeParamSet(
-    makeNumericParam("x1", lower = -2, upper = 1),
-    makeIntegerParam("x2", lower = -1, upper = 2),
-    makeDiscreteParam("x3", values = c("a", "b"))
-  )
-  
-  expect_equal(crit.cb2, initCrit(crit.cb, ps))
-  expect_equal(crit.cb3, initCrit(crit.cb3, ps))
-  
-  
+
+  expect_equal(crit.cb3, initCrit(crit.cb3, fn))
+
+  fn = makeSwiler2014Function() # 2d continous space + 1 factor variable
+
+  expect_equal(crit.cb2, initCrit(crit.cb, fn))
+  expect_equal(crit.cb3, initCrit(crit.cb3, fn))
+
+
 })
