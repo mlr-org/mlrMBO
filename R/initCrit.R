@@ -43,16 +43,7 @@ initCrit.InfillCritCB = function(crit, fun, design, learner, control) {
 # sets the opt.direction to minimize or maximize depending on the object function.
 initCritOptDirection = function(crit, fun) {
   if (crit$opt.direction == "objective") {
-    ifelse
-    if (isTRUE(all(shouldBeMinimized(fun)))) {
-      crit$opt.direction = "minimize"
-    } else if (isFALSE(any(shouldBeMinimized(fun)))) {
-      crit$opt.direction = "maximize"
-    } else if (is.logical(shouldBeMinimized(fun))) {
-      stop("Don't know how to handle multi-objective functions with mixed optimization directions.")
-    } else {
-      stop("Attribute 'minimize' has to be set for objective function.")
-    }
+    crit$opt.direction = ifelse(shouldBeMinimized(fun), "minimize", "maximize")
   }
   crit
 }
