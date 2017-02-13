@@ -23,12 +23,12 @@ License: BSD_2_clause + file LICENSE
 URL: https://github.com/mlr-org/mlrMBO
 BugReports: https://github.com/mlr-org/mlrMBO/issues
 Depends:
-    mlr (>= 2.7),
+    mlr (>= 2.10),
     ParamHelpers (>= 1.8),
     smoof (>= 1.3)
 Imports:
     backports,
-    BBmisc (>= 1.7),
+    BBmisc (>= 1.11),
     checkmate (>= 1.8.1),
     data.table,
     lhs,
@@ -51,6 +51,7 @@ Suggests:
     nnet,
     party,
     randomForest,
+    rmarkdown,
     rpart,
     testthat,
     eaf,
@@ -58,5 +59,5 @@ Suggests:
 LazyData: yes
 ByteCompile: yes
 Version: 1.0.0
-RoxygenNote: 6.0.0
+RoxygenNote: 6.0.1
 VignetteBuilder: knitr

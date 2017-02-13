@@ -13,7 +13,7 @@ proposePointsMSPOT = function(opt.state, ...) {
     return(ch$prop)
 
   design = convertOptPathToDf(opt.path, control)
-  infill.crit.id = getMBOInfillCriterionId(control$infill.crit)
+  infill.crit.id = getMBOInfillCritId(control$infill.crit)
   infill.opt.fun = getInfillOptFunction(control$infill.opt)
 
   # store time to propose single point

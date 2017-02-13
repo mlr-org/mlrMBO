@@ -23,13 +23,13 @@ test_that("makeMBOLearner", {
   expect_output(print(mbo(f, control = ctrl, learner = lrn)), "Recommended parameters")
   
   # fully numeric, without se prediction
-  ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCriterionMeanResponse())
+  ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCritMeanResponse())
   lrn = makeMBOLearner(ctrl, f)
   expect_equal(lrn, makeLearner("regr.km", 
     par.vals = list(covtype = "matern3_2", optim.method = "gen", nugget.stability = 10^-8)))
   expect_output(print(mbo(f, control = ctrl, learner = lrn)), "Recommended parameters")
   
-  ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCriterionCB())
+  ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCritCB())
   
   # fully numeric, noisy case
   f = makeSingleObjectiveFunction(
@@ -71,13 +71,13 @@ test_that("makeMBOLearner", {
   expect_output(print(mbo(f, control = ctrl, learner = lrn)), "Recommended parameters")
   
   # discrete case, without se estimation
-  ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCriterionMeanResponse())
+  ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCritMeanResponse())
   lrn = makeMBOLearner(ctrl, f)
   expect_equal(lrn, makeLearner("regr.randomForest",
     par.vals = list(se.method = "jackknife", keep.inbag = TRUE)))
   expect_output(print(mbo(f, control = ctrl, learner = lrn)), "Recommended parameters")
   
-  ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCriterionCB())
+  ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCritCB())
   
   
   # discrete dependend case

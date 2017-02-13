@@ -103,10 +103,10 @@ minimizes that.</p>
       <dd>[<code><a href='makeMBOControl.html'>MBOControl</a></code>]
 Control object for mbo.</dd>
       <dt>crit</dt>
-      <dd>[<code>MBOInfillCriterion</code>]
+      <dd>[<code><a href='makeMBOInfillCrit.html'>MBOInfillCrit</a></code>]
 How should infill points be rated. See <code><a href='infillcrits.html'>infillcrits</a></code> for an overview
-of available infill criteria or implement a custom one via <code><a href='makeMBOInfillCriterion.html'>makeMBOInfillCriterion</a></code>.#
-Default is &#8220;mean response&#8221; (see <code><a href='infillcrits.html'>makeMBOInfillCriterionMeanResponse</a></code>).</dd>
+of available infill criteria or implement a custom one via <code><a href='makeMBOInfillCrit.html'>makeMBOInfillCrit</a></code>.#
+Default is &#8220;(lower) confidence bound&#8221; (see <code><a href='infillcrits.html'>makeMBOInfillCritCB</a></code>).</dd>
       <dt>interleave.random.points</dt>
       <dd>[<code>integer(1)</code>]
 Add <code>interleave.random.points</code> uniformly sampled points additionally to the
@@ -150,7 +150,7 @@ currently best point in the design of already visited points. Subsequent startin
 points are chosen according to the CMA-ES restart strategy introduced by Auger
 and Hansen. For details see the corresponding paper in the references and the help
 page of the underlying optimizer <code><a href='http://www.rdocumentation.org/packages/cmaesr/topics/cmaes'>cmaes</a></code>.
-Default is 1.</dd>
+Default is 3.</dd>
       <dt>opt.focussearch.maxit</dt>
       <dd>[<code>integer(1)</code>]
 For <code>opt = &quot;focussearch&quot;</code>:
@@ -160,7 +160,7 @@ Default is 5.</dd>
       <dd>[<code>integer(1)</code>]
 For <code>opt = &quot;focussearch&quot;</code>:
 Number of points in each iteration of the focus search optimizer.
-Default is 10000.</dd>
+Default is 1000.</dd>
       <dt>opt.cmaes.control</dt>
       <dd>[<code>list</code>]
 For <code>opt = &quot;cmaes&quot;</code>:

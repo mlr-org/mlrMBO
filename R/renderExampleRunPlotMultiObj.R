@@ -16,7 +16,7 @@ renderExampleRunPlot.MBOExampleRunMultiObj = function(object, iter, densregion =
   x.name = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
   y.name = control$y.name
   method = control$multiobj.method
-  infill.crit.id = getMBOInfillCriterionId(control$infill.crit)
+  infill.crit.id = getMBOInfillCritId(control$infill.crit)
 
   # get x space and y space data
   data.y = as.data.frame(mbo.res$opt.path, include.x = FALSE, include.rest = FALSE)

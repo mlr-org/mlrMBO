@@ -30,7 +30,7 @@ test_that("multipoint multi-objective", {
   }
   
   #test that infill crit is ignored
-  crits = list(makeMBOInfillCriterionCB(), makeMBOInfillCriterionEI(), makeMBOInfillCriterionMeanResponse())
+  crits = list(makeMBOInfillCritCB(), makeMBOInfillCritEI(), makeMBOInfillCritMeanResponse())
   for (i in seq_along(crits)) {
     ctrl = setMBOControlInfill(ctrl, crit = crits[[i]])
     res = mbo(f, control = ctrl)

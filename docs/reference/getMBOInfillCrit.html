@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Create an infill criterion. — makeMBOInfillCriterion • mlrMBO</title>
+<title>Get properties of MBO infill criterion. — getMBOInfillCrit • mlrMBO</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -77,70 +77,36 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Create an infill criterion.</h1>
+    <h1>Get properties of MBO infill criterion.</h1>
     </div>
 
     
-    <p>The infill criterion guides the model based search process.
-The most prominent infill criteria, e.g., expected improvement, lower
-confidence bound and others, are already implemented in mlrMBO. Moreover,
-the package allows for the creation of custom infill criteria.</p>
+    <p>Returns properties of an infill criterion, e.g., name or id.</p>
     
 
-    <pre><span class='fu'>makeMBOInfillCriterion</span>(<span class='no'>fun</span>, <span class='no'>name</span>, <span class='no'>id</span>, <span class='kw'>minimize</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>components</span> <span class='kw'>=</span> <span class='fu'>character</span>(<span class='fl'>0L</span>), <span class='kw'>params</span> <span class='kw'>=</span> <span class='fu'>list</span>(), <span class='kw'>requires.se</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre><span class='fu'>getMBOInfillCritParams</span>(<span class='no'>x</span>)
+
+<span class='fu'>getMBOInfillCritParam</span>(<span class='no'>x</span>, <span class='no'>par.name</span>)
+
+<span class='fu'>getMBOInfillCritName</span>(<span class='no'>x</span>)
+
+<span class='fu'>getMBOInfillCritId</span>(<span class='no'>x</span>)
+
+<span class='fu'>hasRequiresInfillCritStandardError</span>(<span class='no'>x</span>)
+
+<span class='fu'>getMBOInfillCritComponents</span>(<span class='no'>x</span>)
+
+<span class='fu'>getMBOInfillCritDirection</span>(<span class='no'>x</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
-      <dt>fun</dt>
-      <dd>[<code>function(points, models, control, par.set, design, iter)</code>]
-A function which expects the following parameters in exactly this order
-and return a numeric vector of criteria values at the points:
-<dl class='dl-horizontal'>
-  <dt>points [<code>data.frame</code>]</dt><dd>n points where to evaluate</dd>.
-  <dt>models [<code><a href='http://www.rdocumentation.org/packages/mlr/topics/makeWrappedModel'>WrappedModel</a></code> | <code>list</code>]</dt><dd>Model(s) fitted on design.</dd>
-  <dt>control [<code>MBOControl</code>]</dt><dd>Control object.</dd>
-  <dt>par.set [<code>ParamSet</code>]</dt><dd>Parameter set.</dd>
-  <dt>design [<code>data.frame</code>]</dt><dd>Design of already visited points.</dd>
-  <dt>iter [<code>integer(1)</code>]</dt><dd>Current iteration.</dd>
-  <dt>attributes [<code>logical{1}</code>]</dt><dd>Should attributes appended to the return
-   value by considered by <span class="pkg">mlrMBO</span>?</dd>
-</dl>
-</dd>
-      <dt>name</dt>
+      <dt>x</dt>
+      <dd>[<code><a href='makeMBOInfillCrit.html'>MBOInfillCrit</a></code>]
+Infill criterion.</dd>
+      <dt>par.name</dt>
       <dd>[<code>character(1)</code>]
-Full name of the criterion.</dd>
-      <dt>id</dt>
-      <dd>[<code>character(1)</code>]
-Short name of the criterion.
-Used internally and in plots.</dd>
-      <dt>minimize</dt>
-      <dd>[<code>character(1)</code>]
-Shall the criterion be minimized or maximized?
-Default is <code>TRUE</code>.</dd>
-      <dt>components</dt>
-      <dd>[<code>character</code>]
-Infill criteria may not return proposed point(s) only. Additional
-information can be returned by appending a named <code>list</code> &#8220;crit.components&#8221;
-to the returned value as an attribute.
-The <code>components</code> argument takes a character vector of the names of the
-meta information, i.e., the names of the named &#8220;crit.components&#8221; list.
-Default is the empty character vector.</dd>
-      <dt>params</dt>
-      <dd>[<code>list</code>]
-Named list of parameters for the infill criterion. There values may be used
-by <span class="pkg">mlrMBO</span> internally.
-Default is the empty list.</dd>
-      <dt>requires.se</dt>
-      <dd>[<code>logical(1)</code>]
-Does the infill criterion require the regression learner to provide a standard
-error estimation?
-Default is <code>FALSE</code>.</dd>
+Parameter name.</dd>
     </dl>
-    
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>[<code>MBOInfillCriterion</code>]</p>
     
 
   </div>
@@ -148,9 +114,7 @@ Default is <code>FALSE</code>.</dd>
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#value">Value</a></li>
-          </ul>
+                </ul>
 
   </div>
 </div>
