@@ -38,7 +38,7 @@ createRandomCBControls = function(control, crit, user.lambda = FALSE) {
     ctrl = control;
     ctrl$propose.points = 1L
     if (!user.lambda) {
-      ctrl$infill.crit = makeMBOInfillCriterionCB(cb.lambda = lambda)
+      ctrl$infill.crit = makeMBOInfillCritCB(cb.lambda = lambda)
     } else {
       ctrl$infill.crit = crit
     }

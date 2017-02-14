@@ -75,31 +75,31 @@
 <div id="objective-function" class="section level3">
 <h3 class="hasAnchor">
 <html><body><a href="#objective-function" class="anchor"> </a></body></html>Objective Function</h3>
-<p>We construct an exemplary objective function using <code>smoof::makeSingleObjetiveFunction()</code>. The <code>par.set</code> argument has to be a <code>ParamSet</code> object from the <strong>ParamHelpers</strong> package, which provides information about the parameters of the objective function and their constraints for optimization. The objective function will be 3-dimensional with the inputs <code>j</code>, <code>k</code> and <code>method</code>. <code>j</code> is in the interval [0,1] and <code>k</code> as an integer in {1, 2}. The Parameter <code>method</code> is categorical and can be either <code>"a"</code> or <code>"b"</code>. In this case we want to maximize the function, so we have to set <code>minimize = FALSE</code>. As the parameters are of different types (e.g. numeric and categorical), the function expects a list instead of a vector as its argument, which is specified by <code>has.simple.signature = FALSE</code>. For further information about he <strong>smoof</strong> package we refer to the <a href="https://github.com/jakobbossek/smoof">github page</a>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fun =<span class="st"> </span>function(x) {
-  j =<span class="st"> </span>x[[<span class="dv">1</span>]]
-  k =<span class="st"> </span>x[[<span class="dv">2</span>]]
-  method =<span class="st"> </span>x[[<span class="dv">3</span>]]
-  perf =<span class="st"> </span><span class="kw">ifelse</span>(method ==<span class="st"> "a"</span>, k *<span class="st"> </span><span class="kw">sin</span>(j) +<span class="st"> </span><span class="kw">cos</span>(j),
-               <span class="kw">sin</span>(j) +<span class="st"> </span>k *<span class="st"> </span><span class="kw">cos</span>(j))
+<p>We construct an exemplary objective function using <code>smoof::makeSingleObjetiveFunction()</code>. The <code>par.set</code> argument has to be a <code>ParamSet</code> object from the <strong>ParamHelpers</strong> package, which provides information about the parameters of the objective function and their constraints for optimization. The objective function will be 3-dimensional with the inputs <code>j</code> and <code>method</code>. <code>j</code> is in the interval <span class="math inline">\([0,2\pi]\)</span> The Parameter <code>method</code> is categorical and can be either <code>"a"</code> or <code>"b"</code>. In this case we want to minimize the function, so we have to set <code>minimize = TRUE</code>. As the parameters are of different types (e.g. numeric and categorical), the function expects a list instead of a vector as its argument, which is specified by <code>has.simple.signature = FALSE</code>. For further information about he <strong>smoof</strong> package we refer to the <a href="https://github.com/jakobbossek/smoof">github page</a>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(mlrMBO)
+<span class="kw">library</span>(ggplot2)
+
+fun =<span class="st"> </span>function(x) {
+  j =<span class="st"> </span>x$j
+  method =<span class="st"> </span>x$method
+  perf =<span class="st"> </span><span class="kw">ifelse</span>(method ==<span class="st"> "a"</span>, <span class="kw">sin</span>(j), <span class="kw">cos</span>(j))
   <span class="kw">return</span>(perf)
 }
 
 objfun2 =<span class="st"> </span><span class="kw">makeSingleObjectiveFunction</span>(
-  <span class="dt">name =</span> <span class="st">"example"</span>,
+  <span class="dt">name =</span> <span class="st">"mixed_example"</span>,
   <span class="dt">fn =</span> fun,
   <span class="dt">par.set =</span> <span class="kw">makeParamSet</span>(
-    <span class="kw">makeNumericParam</span>(<span class="st">"j"</span>, <span class="dt">lower =</span> <span class="dv">0</span>,<span class="dt">upper =</span> <span class="dv">1</span>),
-    <span class="kw">makeIntegerParam</span>(<span class="st">"k"</span>, <span class="dt">lower =</span> 1L, <span class="dt">upper =</span> 2L),
+    <span class="kw">makeNumericParam</span>(<span class="st">"j"</span>, <span class="dt">lower =</span> <span class="dv">0</span>,<span class="dt">upper =</span> <span class="dv">2</span> *<span class="st"> </span>pi),
     <span class="kw">makeDiscreteParam</span>(<span class="st">"method"</span>, <span class="dt">values =</span> <span class="kw">c</span>(<span class="st">"a"</span>, <span class="st">"b"</span>))
   ),
   <span class="dt">has.simple.signature =</span> <span class="ot">FALSE</span>,
-  <span class="dt">minimize =</span> <span class="ot">FALSE</span>
+  <span class="dt">minimize =</span> <span class="ot">TRUE</span>
 )
 
-<span class="co"># call the function for some values</span>
-<span class="kw">objfun2</span>(<span class="kw">list</span>(<span class="dt">j =</span> <span class="fl">0.5</span>, <span class="dt">k =</span> 1L, <span class="dt">method =</span> <span class="st">"a"</span>))
-## [1] 1.357008</code></pre></div>
+<span class="co"># visualize the function</span>
+<span class="kw">autoplot</span>(objfun2)</code></pre></div>
+<p><img src="mixed_space_optimization_files/figure-html/objective_function-1.png" width="672"></p>
 </div>
 <div id="sorrogate-learner" class="section level3">
 <h3 class="hasAnchor">
@@ -110,7 +110,7 @@ objfun2 =<span class="st"> </span><span class="kw">makeSingleObjectiveFunction</
 <div id="infill-criterion" class="section level3">
 <h3 class="hasAnchor">
 <html><body><a href="#infill-criterion" class="anchor"> </a></body></html>Infill Criterion</h3>
-<p>Although technically possible the <em>Expected Imrovement</em> that we used for the numerical parameter space and the <em>Kriging</em> surrogate, the <em>Confidence Bound</em> (<code><a href="../reference/infillcrits.html">makeMBOInfillCriterionCB()</a></code>) or also called statistical upper/lower bound is recommended for <em>Random Forest</em> regression. The reason is, that the <em>Expected Improvement</em> is founded on the gaussian posterior distribution given by the Kriging estimator, which is not given by the Random Forest regression. For <em>maximization</em> the <em>upper</em> Confidence Bound is given by <span class="math inline">\(UCB(x) = \hat{\mu}(x) - \lambda \cdot \hat{s}(x)\)</span>. We set <span class="math inline">\(\lambda = 5\)</span>. For the infill criteria optimization we set <code>opt.focussearch.points = 500</code>, to increase the speed of the tutorial.</p>
+<p>Although technically possible the <em>Expected Imrovement</em> that we used for the numerical parameter space and the <em>Kriging</em> surrogate, the <em>Confidence Bound</em> (<code><a href="../reference/infillcrits.html">makeMBOInfillCriterionCB()</a></code>) or also called statistical upper/lower bound is recommended for <em>Random Forest</em> regression. The reason is, that the <em>Expected Improvement</em> is founded on the Gaussian posterior distribution given by the Kriging estimator, which is not given by the Random Forest regression. For <em>minimization</em> the <em>lower</em> Confidence Bound is given by <span class="math inline">\(UCB(x) = \hat{\mu}(x) - \lambda \cdot \hat{s}(x)\)</span>. We set <span class="math inline">\(\lambda = 5\)</span>. For the infill criteria optimization we set <code>opt.focussearch.points = 500</code>, to increase the speed of the tutorial.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">control2 =<span class="st"> </span><span class="kw"><a href="../reference/makeMBOControl.html">makeMBOControl</a></span>()
 control2 =<span class="st"> </span><span class="kw"><a href="../reference/setMBOControlInfill.html">setMBOControlInfill</a></span>(
   <span class="dt">control =</span> control2,
@@ -130,102 +130,86 @@ control2 =<span class="st"> </span><span class="kw"><a href="../reference/setMBO
 <div id="initial-design" class="section level3">
 <h3 class="hasAnchor">
 <html><body><a href="#initial-design" class="anchor"> </a></body></html>Initial Design</h3>
-<p>The initial design is set to size of 12:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">design2 =<span class="st"> </span><span class="kw">generateDesign</span>(<span class="dt">n =</span> <span class="dv">4</span>, <span class="dt">par.set =</span> <span class="kw">getParamSet</span>(objfun2))</code></pre></div>
+<p>The initial design is set to size of 8:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">design2 =<span class="st"> </span><span class="kw">generateDesign</span>(<span class="dt">n =</span> <span class="dv">8</span>, <span class="dt">par.set =</span> <span class="kw">getParamSet</span>(objfun2))</code></pre></div>
 <p>Note that the initial design has to be big enough to cover all discrete values and ideally all combinations of discrete values including integers. If we had 2 discrete variables one with 5 and one with 3 discrete values the initial design should be at least of size 15. Usually <code>generateDesign()</code> takes care that the points are spread uniformly.</p>
 </div>
 <div id="optimization" class="section level3">
 <h3 class="hasAnchor">
 <html><body><a href="#optimization" class="anchor"> </a></body></html>Optimization</h3>
-<p>Finally, we start the maximization with <code><a href="../reference/mbo.html">mbo()</a></code> with suppressed learner output from <em>mlr</em> and we print the result object to obtain the input that lead to the best objective:</p>
+<p>Finally, we start the optimization with <code><a href="../reference/mbo.html">mbo()</a></code> with suppressed learner output from <em>mlr</em> and we print the result object to obtain the input that lead to the best objective:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Surpresses output of learners </span>
 mlr::<span class="kw">configureMlr</span>(<span class="dt">show.info =</span> <span class="ot">FALSE</span>, <span class="dt">show.learner.output =</span> <span class="ot">FALSE</span>, <span class="dt">on.learner.warning =</span> <span class="st">"quiet"</span>)
 run2 =<span class="st"> </span><span class="kw"><a href="../reference/mbo.html">mbo</a></span>(objfun2, <span class="dt">design =</span> design2, <span class="dt">learner =</span> surr.rf, <span class="dt">control =</span> control2, <span class="dt">show.info =</span> <span class="ot">TRUE</span>)
 ## Computing y column(s) for design. Not provided.
-## [mbo] 0: j=0.169; k=1; method=b : y = 1.15 : 0.0 secs : initdesign
-## [mbo] 0: j=0.643; k=2; method=a : y = 2 : 0.0 secs : initdesign
-## [mbo] 0: j=0.276; k=2; method=a : y = 1.51 : 0.0 secs : initdesign
-## [mbo] 0: j=0.975; k=1; method=b : y = 1.39 : 0.0 secs : initdesign
-## [mbo] 1: j=0.504; k=2; method=a : y = 1.84 : 0.0 secs : infill_cb
-## [mbo] 2: j=0.477; k=2; method=a : y = 1.81 : 0.0 secs : infill_cb
-## [mbo] 3: j=0.799; k=2; method=a : y = 2.13 : 0.0 secs : infill_cb
-## [mbo] 4: j=0.772; k=2; method=a : y = 2.11 : 0.0 secs : infill_cb
-## [mbo] 5: j=0.878; k=2; method=a : y = 2.18 : 0.0 secs : infill_cb
-## [mbo] 6: j=0.959; k=1; method=b : y = 1.39 : 0.0 secs : infill_cb
-## [mbo] 7: j=0.906; k=2; method=a : y = 2.19 : 0.0 secs : infill_cb
-## [mbo] 8: j=0.911; k=2; method=a : y = 2.19 : 0.0 secs : infill_cb
-## [mbo] 9: j=0.939; k=2; method=a : y = 2.2 : 0.0 secs : infill_cb
-## [mbo] 10: j=0.948; k=2; method=a : y = 2.21 : 0.0 secs : infill_cb
+## [mbo] 0: j=4.12; method=b : y = -0.558 : 0.0 secs : initdesign
+## [mbo] 0: j=0.033; method=a : y = 0.033 : 0.0 secs : initdesign
+## [mbo] 0: j=1.83; method=a : y = 0.967 : 0.0 secs : initdesign
+## [mbo] 0: j=5.46; method=a : y = -0.732 : 0.0 secs : initdesign
+## [mbo] 0: j=1.48; method=b : y = 0.0866 : 0.0 secs : initdesign
+## [mbo] 0: j=2.9; method=b : y = -0.971 : 0.0 secs : initdesign
+## [mbo] 0: j=6; method=b : y = 0.96 : 0.0 secs : initdesign
+## [mbo] 0: j=3.92; method=a : y = -0.704 : 0.0 secs : initdesign
+## [mbo] 1: j=6.13; method=b : y = 0.988 : 0.0 secs : infill_cb
+## [mbo] 2: j=5.54; method=b : y = 0.735 : 0.0 secs : infill_cb
+## [mbo] 3: j=2.82; method=b : y = -0.95 : 0.0 secs : infill_cb
+## [mbo] 4: j=2.23; method=a : y = 0.789 : 0.0 secs : infill_cb
+## [mbo] 5: j=5.44; method=a : y = -0.744 : 0.0 secs : infill_cb
+## [mbo] 6: j=2.54; method=b : y = -0.824 : 0.0 secs : infill_cb
+## [mbo] 7: j=2.37; method=a : y = 0.697 : 0.0 secs : infill_cb
+## [mbo] 8: j=5.42; method=a : y = -0.759 : 0.0 secs : infill_cb
+## [mbo] 9: j=2.6; method=b : y = -0.856 : 0.0 secs : infill_cb
+## [mbo] 10: j=5.49; method=a : y = -0.71 : 0.0 secs : infill_cb
 <span class="kw">print</span>(run2)
 ## Recommended parameters:
-## j=0.948; k=2; method=a
-## Objective: y = 2.208
+## j=2.9; method=b
+## Objective: y = -0.971
 ## 
 ## Optimization path
-## 4 + 10 entries in total, displaying last 10 (or less):
-##            j k method        y dob eol error.message exec.time        cb
-## 5  0.5036369 2      a 1.841061   1  NA          &lt;NA&gt;         0 -2.626490
-## 6  0.4765116 2      a 1.805965   2  NA          &lt;NA&gt;         0 -2.512480
-## 7  0.7988000 2      a 2.130606   3  NA          &lt;NA&gt;         0 -2.226910
-## 8  0.7720200 2      a 2.111671   4  NA          &lt;NA&gt;         0 -2.464691
-## 9  0.8783610 2      a 2.177801   5  NA          &lt;NA&gt;         0 -2.394129
-## 10 0.9586573 1      b 1.393040   6  NA          &lt;NA&gt;         0 -2.512661
-## 11 0.9060944 2      a 2.191026   7  NA          &lt;NA&gt;         0 -2.492262
-## 12 0.9107256 2      a 2.193070   8  NA          &lt;NA&gt;         0 -2.390633
-## 13 0.9394645 2      a 2.204705   9  NA          &lt;NA&gt;         0 -2.411191
-## 14 0.9478463 2      a 2.207755  10  NA          &lt;NA&gt;         0 -2.432445
-##    error.model train.time prop.type propose.time         se     mean
-## 5         &lt;NA&gt;      0.130 infill_cb        2.836 0.18213065 1.715837
-## 6         &lt;NA&gt;      0.137 infill_cb        2.531 0.15268376 1.749061
-## 7         &lt;NA&gt;      0.115 infill_cb        2.521 0.08976253 1.778097
-## 8         &lt;NA&gt;      0.113 infill_cb        2.571 0.12378079 1.845787
-## 9         &lt;NA&gt;      0.111 infill_cb        2.816 0.09790746 1.904591
-## 10        &lt;NA&gt;      0.106 infill_cb        2.664 0.19508534 1.537234
-## 11        &lt;NA&gt;      0.111 infill_cb        2.607 0.11275147 1.928505
-## 12        &lt;NA&gt;      0.106 infill_cb        2.787 0.07791046 2.001081
-## 13        &lt;NA&gt;      0.121 infill_cb        2.834 0.08865719 1.967905
-## 14        &lt;NA&gt;      0.112 infill_cb        2.729 0.08554056 2.004742
+## 8 + 10 entries in total, displaying last 10 (or less):
+##           j method          y dob eol error.message exec.time        cb
+## 9  6.126175      b  0.9876992   1  NA          &lt;NA&gt;         0 -2.363056
+## 10 5.538504      b  0.7353037   2  NA          &lt;NA&gt;         0 -2.127535
+## 11 2.823311      b -0.9497746   3  NA          &lt;NA&gt;         0 -1.987095
+## 12 2.232971      a  0.7886569   4  NA          &lt;NA&gt;         0 -2.120281
+## 13 5.444482      a -0.7437771   5  NA          &lt;NA&gt;         0 -1.953434
+## 14 2.539619      b -0.8242197   6  NA          &lt;NA&gt;         0 -2.068242
+## 15 2.369699      a  0.6974936   7  NA          &lt;NA&gt;         0 -1.984044
+## 16 5.421863      a -0.7587046   8  NA          &lt;NA&gt;         0 -1.811662
+## 17 2.599061      b -0.8564045   9  NA          &lt;NA&gt;         0 -1.849306
+## 18 5.493041      a -0.7104545  10  NA          &lt;NA&gt;         0 -1.991820
+##    error.model train.time prop.type propose.time        se         mean
+## 9         &lt;NA&gt;      0.114 infill_cb        3.034 0.4628766 -0.048672921
+## 10        &lt;NA&gt;      0.103 infill_cb        2.649 0.4631915  0.188422765
+## 11        &lt;NA&gt;      0.122 infill_cb        2.519 0.3683672 -0.145258694
+## 12        &lt;NA&gt;      0.158 infill_cb        2.674 0.4072867 -0.083847711
+## 13        &lt;NA&gt;      0.103 infill_cb        2.555 0.3878092 -0.014387535
+## 14        &lt;NA&gt;      0.106 infill_cb        2.568 0.3468163 -0.334160501
+## 15        &lt;NA&gt;      0.105 infill_cb        2.596 0.3975127  0.003519339
+## 16        &lt;NA&gt;      0.132 infill_cb        2.763 0.3159202 -0.232061075
+## 17        &lt;NA&gt;      0.120 infill_cb        2.960 0.2803607 -0.447503034
+## 18        &lt;NA&gt;      0.115 infill_cb        2.624 0.3490036 -0.246801378
 ##    lambda
-## 5       5
-## 6       5
-## 7       5
-## 8       5
 ## 9       5
 ## 10      5
 ## 11      5
 ## 12      5
 ## 13      5
-## 14      5</code></pre></div>
+## 14      5
+## 15      5
+## 16      5
+## 17      5
+## 18      5</code></pre></div>
 </div>
 </div>
 <div id="visualization" class="section level2">
 <h2 class="hasAnchor">
 <html><body><a href="#visualization" class="anchor"> </a></body></html>Visualization</h2>
-<p>Visualization is only possible for 2-dimensional objective functions. Therefore we define a simplified objective function:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fun =<span class="st"> </span>function(x) {
-  j =<span class="st"> </span>x$j
-  method =<span class="st"> </span>x$method
-  perf =<span class="st"> </span><span class="kw">ifelse</span>(method ==<span class="st"> "a"</span>, <span class="kw">sin</span>(j), <span class="kw">cos</span>(j))
-  <span class="kw">return</span>(perf)
-}
-
-objfun3 =<span class="st"> </span><span class="kw">makeSingleObjectiveFunction</span>(
-  <span class="dt">name =</span> <span class="st">"2d_example"</span>,
-  <span class="dt">fn =</span> fun,
-  <span class="dt">par.set =</span> <span class="kw">makeParamSet</span>(
-    <span class="kw">makeNumericParam</span>(<span class="st">"j"</span>, <span class="dt">lower =</span> <span class="dv">0</span>,<span class="dt">upper =</span> pi),
-    <span class="kw">makeDiscreteParam</span>(<span class="st">"method"</span>, <span class="dt">values =</span> <span class="kw">c</span>(<span class="st">"a"</span>, <span class="st">"b"</span>))
-  ),
-  <span class="dt">has.simple.signature =</span> <span class="ot">FALSE</span>,
-  <span class="dt">minimize =</span> <span class="ot">FALSE</span>
-)</code></pre></div>
-<p>We also generate a simplified design:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">design3 =<span class="st"> </span><span class="kw">generateGridDesign</span>(<span class="kw">getParamSet</span>(objfun3), <span class="dt">resolution =</span> <span class="dv">4</span>)</code></pre></div>
-<p>Let’s start the optimization:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ex.run3 =<span class="st"> </span><span class="kw"><a href="../reference/exampleRun.html">exampleRun</a></span>(objfun3, <span class="dt">design =</span> design3, <span class="dt">learner =</span> surr.rf, <span class="dt">control =</span> control2)</code></pre></div>
+<p>Visualization is only possible for 2-dimensional objective functions, of which one is the categorical dimension. Exactly like in our exemplary function.</p>
+<p>Again to obtain all the data that is necessary to generate the plot we have to call the optimization through <code><a href="../reference/exampleRun.html">exampleRun()</a></code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ex.run2 =<span class="st"> </span><span class="kw"><a href="../reference/exampleRun.html">exampleRun</a></span>(objfun2, <span class="dt">design =</span> design2, <span class="dt">learner =</span> surr.rf, <span class="dt">control =</span> control2)</code></pre></div>
 <p>And let’s visualize the results:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/plotExampleRun.html">plotExampleRun</a></span>(ex.run3, <span class="dt">iters =</span> <span class="kw">c</span>(1L, 2L, 10L), <span class="dt">pause =</span> <span class="ot">FALSE</span>)
-## Loading required package: ggplot2</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/plotExampleRun.html">plotExampleRun</a></span>(ex.run2, <span class="dt">iters =</span> <span class="kw">c</span>(1L, 2L, 10L), <span class="dt">pause =</span> <span class="ot">FALSE</span>)</code></pre></div>
 <p><img src="mixed_space_optimization_files/figure-html/plot_example_run_2d-1.png" width="672"><img src="mixed_space_optimization_files/figure-html/plot_example_run_2d-2.png" width="672"><img src="mixed_space_optimization_files/figure-html/plot_example_run_2d-3.png" width="672"></p>
 </div>
 </div>

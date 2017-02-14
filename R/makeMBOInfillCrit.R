@@ -41,11 +41,11 @@
 #'   Does the infill criterion require the regression learner to provide a standard
 #'   error estimation?
 #'   Default is \code{FALSE}.
-#' @return [\code{\link{MBOInfillCriterion}}]
-#' @rdname MBOInfillCriterion
-#' @aliases MBOInfillCriterion
+#' @return [\code{\link{MBOInfillCrit}}]
+#' @rdname MBOInfillCrit
+#' @aliases MBOInfillCrit
 #' @export
-makeMBOInfillCriterion = function(fun, name, id,
+makeMBOInfillCrit = function(fun, name, id,
   minimize = TRUE, components = character(0L), params = list(),
   requires.se = FALSE) {
   assertFunction(
@@ -61,7 +61,7 @@ makeMBOInfillCriterion = function(fun, name, id,
   assertList(params)
   assertFlag(requires.se)
 
-  ic = makeS3Obj("MBOInfillCriterion",
+  ic = makeS3Obj(c(paste0("InfillCrit", toupper(id)), "MBOInfillCrit"),
     fun = fun,
     name = name,
     id = id,
@@ -74,13 +74,13 @@ makeMBOInfillCriterion = function(fun, name, id,
 }
 
 #' @export
-print.MBOInfillCriterion = function(x, ...) {
-  components = getMBOInfillCriterionComponents(x)
-  params = getMBOInfillCriterionParams(x)
-  catf("Infill criterion : %s (%s)", getMBOInfillCriterionName(x),
-    getMBOInfillCriterionId(x))
+print.MBOInfillCrit = function(x, ...) {
+  components = getMBOInfillCritComponents(x)
+  params = getMBOInfillCritParams(x)
+  catf("Infill criterion : %s (%s)", getMBOInfillCritName(x),
+    getMBOInfillCritId(x))
     catf("  Minimize       : %s", x$minimize)
-  if (hasRequiresInfillCriterionStandardError(x))
+  if (hasRequiresInfillCritStandardError(x))
     catf("  Requirement    : SE estimation")
   if (length(components) > 0)
     catf("  Components     : %s", collapse(components, sep = ", "))

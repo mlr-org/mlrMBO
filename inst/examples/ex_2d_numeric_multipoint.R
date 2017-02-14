@@ -10,7 +10,7 @@ pause = interactive()
 obj.fun = makeBraninFunction()
 
 ctrl = makeMBOControl(propose.points = 5L)
-ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCriterionMeanResponse())
+ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCritMeanResponse())
 ctrl = setMBOControlTermination(ctrl, iters = 10L)
 ctrl = setMBOControlMultiPoint(ctrl,
   method = "moimbo",

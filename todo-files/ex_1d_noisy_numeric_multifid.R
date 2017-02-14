@@ -39,7 +39,7 @@ ctrl = setMBOControlTermination(ctrl, iters = 5L)
 
 lrn = makeLearner("regr.km", predict.type = "se", nugget.estim = TRUE)
 
-ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCriterionEI(), opt = "focussearch",
+ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCritEI(), opt = "focussearch",
   opt.focussearch.points = 500L)
 ctrl = mlrMBO:::setMBOControlMultiFid(ctrl, lvls = c(0.1, 1), costs = c(1, 4), param = "p")
 
