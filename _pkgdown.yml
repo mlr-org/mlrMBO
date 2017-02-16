@@ -1,21 +1,69 @@
+templates:
+  params:
+    bootswatch: cosmo
+
 navbar:
   left:
   - text: Quickstart
     href: articles/mlrMBO.html
-  - text: Articles
-    href: articles/index.html
+    icon: fa-bolt
+  - text: Topics
+    icon: fa-file-text-o
+    menu:
+      - text: Mixed Space Optimization
+        href: articles/mixed_space_optimization.html
+      - text: Parallelization
+        href: articles/parallelization.html
   - text: Reference
+    icon: fa-book
     href: reference/index.html
 
-articles:
-  - title: "mlrMBO: Quickstart"
-    desc: >
-      Gives an short introduction to the functions of mlrMBO.
+reference:
+  - title: "mlrMBO Control"
+    desc: "Functions for setting and manipulating the mlrMBO Control Object."
     contents:
-      - mlrMBO
-  - title: "Advanced Topics"
-    desc: >
-      Detailed descriptions of advanced features of mlrMBO.
+      - makeMBOControl
+      - starts_with("setMBOControl")
+  - title: "Start MBO"
+    desc: "How to start and continue MBO runs."
     contents:
-      - mixed_space_optimization
-      - parallelization
+      - mbo
+      - mboContinue
+      - mboFinalize
+      - mbo_parallel
+  - title: "Infill Criteria"
+    desc: "Infill Criteria and Functions to generate and interact with Infill Criteria"
+    contents:
+      - setMBOControlInfill
+      - infillcrits
+      - starts_with("crit.")
+      - starts_with("makeMBOInfill")
+      - getMBOInfillCrit
+      - MBOInfillCrit
+      - initCrit
+  - title: "MBO Results"
+    desc: "Understanding the results."
+    contents:
+      - MBOMultiObjResult
+      - MBOSingleObjResult
+      - mbo_OptPath
+  - title: "Example Runs"
+    desc: "Visualize MBO runs using Example Runs"
+    contents:
+      - starts_with("exampleRun")
+      - plotExampleRun
+      - renderExampleRun
+  - title: "Other"
+    contents:
+      - error_handling
+      - getGlobalOpt
+      - getSupportedInfillOptFunctions
+      - getSupportedMultipointInfillOptFunctions
+      - makeMBOLearner
+      - makeMBOTrafoFunction
+      - OptProblem
+      - OptResult
+      - OptState
+      - print.MBOControl
+      - trafos
+
