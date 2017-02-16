@@ -104,7 +104,8 @@
 <span class="kw">library</span>(ggplot2)
 obj.fun =<span class="st"> </span><span class="kw">makeBraninFunction</span>()
 <span class="co"># visualize the function</span>
-<span class="kw">autoplot</span>(obj.fun, <span class="dt">render.levels =</span> <span class="ot">TRUE</span>, <span class="dt">show.optimum =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<span class="kw">autoplot</span>(obj.fun, <span class="dt">render.levels =</span> <span class="ot">TRUE</span>, <span class="dt">show.optimum =</span> <span class="ot">TRUE</span>)
+## Warning: Ignoring unknown aesthetics: fill</code></pre></div>
 <p><img src="parallelization_files/figure-html/objective_function-1.png" width="672"></p>
 <p>In our example we will have <em>two CPUs</em> that we want to utelize for the evaluation of the black-box function.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(mlrMBO)
@@ -144,7 +145,8 @@ res =<span class="st"> </span><span class="kw"><a href="../reference/mbo.html">m
 ## Stopped parallelization. All cleaned up.</code></pre></div>
 <p>As you can see from the console output of <code>parallelMap</code> the intial design will also be evaluated in parallel.</p>
 <p>In the end a small plot that uses the <code>opt.path</code> which is stored in the result of the MBO Optimization process to visualize which points were proposed in which iteration. The zeros are the points from the initial design, 1 for the first iteration and so on.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">autoplot</span>(obj.fun, <span class="dt">render.levels =</span> <span class="ot">TRUE</span>, <span class="dt">show.optimum =</span> <span class="ot">TRUE</span>) +<span class="st"> </span><span class="kw">geom_text</span>(<span class="dt">data =</span> <span class="kw">as.data.frame</span>(res$opt.path), <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">label =</span> dob), <span class="dt">color =</span> <span class="st">"white"</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">autoplot</span>(obj.fun, <span class="dt">render.levels =</span> <span class="ot">TRUE</span>, <span class="dt">show.optimum =</span> <span class="ot">TRUE</span>) +<span class="st"> </span><span class="kw">geom_text</span>(<span class="dt">data =</span> <span class="kw">as.data.frame</span>(res$opt.path), <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">label =</span> dob), <span class="dt">color =</span> <span class="st">"white"</span>)
+## Warning: Ignoring unknown aesthetics: fill</code></pre></div>
 <p><img src="parallelization_files/figure-html/cl_res-1.png" width="672"></p>
 </div>
 <div id="confidence-bound" class="section level3">
@@ -152,7 +154,8 @@ res =<span class="st"> </span><span class="kw"><a href="../reference/mbo.html">m
 <html><body><a href="#confidence-bound" class="anchor"> </a></body></html>Confidence Bound</h3>
 <p>If we decided to use the <strong>confidence bound</strong> as an infill criterion, because e.g. the parameter space contains discrete values and we decided for the random forest as an infill criterion, then we suggest to use the <strong>random lambda</strong> method to generate multiple proposals per iteration. Note that this time we rely on MBO to autmaically use the random forest for the surrogate as the objective function contains the discrete variable <code>x1</code>. Also we now specify the number of initial desing points manually according to the number of levels of the discrete variable.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">obj.fun =<span class="st"> </span><span class="kw">makeSwiler2014Function</span>()
-<span class="kw">autoplot</span>(obj.fun, <span class="dt">render.levels =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<span class="kw">autoplot</span>(obj.fun, <span class="dt">render.levels =</span> <span class="ot">TRUE</span>)
+## Warning: Ignoring unknown aesthetics: fill</code></pre></div>
 <p><img src="parallelization_files/figure-html/obj.fun.dis-1.png" width="672"></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ctrl =<span class="st"> </span><span class="kw"><a href="../reference/makeMBOControl.html">makeMBOControl</a></span>(<span class="dt">propose.points =</span> <span class="dv">2</span>)
 ctrl =<span class="st"> </span><span class="kw"><a href="../reference/setMBOControlInfill.html">setMBOControlInfill</a></span>(ctrl, <span class="dt">crit =</span> crit.cb)
@@ -163,7 +166,8 @@ design =<span class="st"> </span><span class="kw">generateDesign</span>(<span cl
 <span class="kw">parallelStartMulticore</span>(<span class="dt">cpus =</span> <span class="dv">2</span>, <span class="dt">show.info =</span> <span class="ot">FALSE</span>)
 res =<span class="st"> </span><span class="kw"><a href="../reference/mbo.html">mbo</a></span>(obj.fun, <span class="dt">control =</span> ctrl, <span class="dt">design =</span> design, <span class="dt">show.info =</span> <span class="ot">FALSE</span>)
 <span class="kw">parallelStop</span>()
-<span class="kw">autoplot</span>(obj.fun, <span class="dt">render.levels =</span> <span class="ot">TRUE</span>) +<span class="st"> </span><span class="kw">geom_text</span>(<span class="dt">data =</span> <span class="kw">as.data.frame</span>(res$opt.path), <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">label =</span> dob), <span class="dt">color =</span> <span class="st">"white"</span>)</code></pre></div>
+<span class="kw">autoplot</span>(obj.fun, <span class="dt">render.levels =</span> <span class="ot">TRUE</span>) +<span class="st"> </span><span class="kw">geom_text</span>(<span class="dt">data =</span> <span class="kw">as.data.frame</span>(res$opt.path), <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">label =</span> dob), <span class="dt">color =</span> <span class="st">"white"</span>)
+## Warning: Ignoring unknown aesthetics: fill</code></pre></div>
 <p><img src="parallelization_files/figure-html/obj.fun.dis-2.png" width="672"></p>
 </div>
 </div>
@@ -191,6 +195,7 @@ general.scale =<span class="st"> </span><span class="kw">scale_fill_gradientn</s
 
 <span class="co"># noisy output</span>
 <span class="kw">autoplot</span>(obj.fun.single, <span class="dt">render.levels =</span> <span class="ot">TRUE</span>) +<span class="st"> </span>general.scale
+## Warning: Ignoring unknown aesthetics: fill
 ## Scale for 'fill' is already present. Adding another scale for 'fill',
 ## which will replace the existing scale.</code></pre></div>
 <p><img src="parallelization_files/figure-html/custom_noisy_obj-1.png" width="672"></p>
@@ -209,6 +214,7 @@ obj.fun.parallel =<span class="st"> </span><span class="kw">makeSingleObjectiveF
   <span class="dt">has.simple.signature =</span> <span class="ot">TRUE</span>
 )
 <span class="kw">autoplot</span>(obj.fun.parallel, <span class="dt">render.levels =</span> <span class="ot">TRUE</span>) +<span class="st"> </span>general.scale
+## Warning: Ignoring unknown aesthetics: fill
 ## Scale for 'fill' is already present. Adding another scale for 'fill',
 ## which will replace the existing scale.</code></pre></div>
 <p><img src="parallelization_files/figure-html/custom_noisy_parallel-1.png" width="672"></p>
