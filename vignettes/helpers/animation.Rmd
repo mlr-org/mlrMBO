@@ -37,7 +37,7 @@ opts_knit$set(animation.fun = function(x, options, format = "gif") {
 opts_chunk$set(cache = TRUE, message = FALSE, warning = FALSE, fig.show = "animate", dpi = 50, dev = "png", dev.args = list(pointsize = 8))
 ```
 
-```{r animation, echo=FALSE, eval=TRUE, results='hide', fig.width=5, fig.height=3}
+```{r animation, echo=FALSE, eval=TRUE, results='hide', fig.width=7, fig.height=4}
 ##### optimizing a simple sin(x) with mbo / EI #####
 
 set.seed(2)
