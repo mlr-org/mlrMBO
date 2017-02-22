@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>A Toolbox for Model-Based Optimization of Expensive Black-Box Functions • mlrMBO</title>
-<!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 <!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="jquery.sticky-kit.min.js"></script><script src="pkgdown.js"></script><!-- mathjax --><script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
@@ -29,13 +29,35 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="articles/mlrMBO.html">Quickstart</a>
+  <a href="articles/mlrMBO.html">
+    <span class="fa fa-bolt"></span>
+     
+    Quickstart
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-file-text-o"></span>
+     
+    Topics
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="articles/mixed_space_optimization.html">Mixed Space Optimization</a>
+    </li>
+    <li>
+      <a href="articles/parallelization.html">Parallelization</a>
+    </li>
+  </ul>
 </li>
 <li>
-  <a href="articles/index.html">Articles</a>
-</li>
-<li>
-  <a href="reference/index.html">Reference</a>
+  <a href="reference/index.html">
+    <span class="fa fa-book"></span>
+     
+    Reference
+  </a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
@@ -62,6 +84,10 @@
 <a href="#mlrmbo" class="anchor"> </a>mlrMBO</h1></div>
 
 <p>Model-based optimization with <a href="https://github.com/mlr-org/mlr/">mlr</a>.</p>
+<ul>
+<li><a href="https://mlr-org.github.io/mlrMBO/">Documentation</a></li>
+<li><a href="https://github.com/mlr-org/mlrMBO/issues">Issues, Requests and Bug Tracker</a></li>
+</ul>
 </div>
 <div id="installation" class="section level1">
 <h1 class="hasAnchor">
@@ -71,12 +97,32 @@
 devtools::<span class="kw">install_github</span>(<span class="st">"mlr-org/mlr"</span>)
 devtools::<span class="kw">install_github</span>(<span class="st">"mlr-org/mlrMBO"</span>)</code></pre></div>
 </div>
-<div id="resources" class="section level1">
+<div id="introduction" class="section level1">
 <h1 class="hasAnchor">
-<a href="#resources" class="anchor"> </a>Resources</h1>
+<a href="#introduction" class="anchor"> </a>Introduction</h1>
+<p><img src="https://raw.githubusercontent.com/mlr-org/mlrMBO/master/docs/articles/helpers/animation_files/figure-html/animation-.gif" alt="MBO demo"></p>
+<p><code>mlrMBO</code> is a toolbox for Model-Based Optimization for Black-Box functions in R. It is suitable for the following expensive optimization tasks:</p>
 <ul>
-<li><a href="https://mlr-org.github.io/mlrMBO/">Documentation</a></li>
-<li>Developers mailing list at <a href="https://groups.google.com/forum/?hl=de#!forum/mlrmbo-devel">google groups</a>. The github-service-hook will also send commit messages to this list.</li>
+<li>Global optimization of functions on numeric search space.</li>
+<li>Optimization on mixed search space including categorical variables.</li>
+<li>Multi-Criteria Optimization through approximated Pareto fronts.</li>
+<li>Parallelization through multi-point proposals.</li>
+<li>Optimization of noisy objective functions.</li>
+</ul>
+<p>With a highly configurable algorithm it allows for optimization of many practical optimization tasks that are of a black-box nature and are very time-consuming. It implements the popular EGO algorithm by <a href="http://link.springer.com/article/10.1023/A:1008306431147">Jones et al. (1998)</a> for optimizing black-box functions on numerical search spaces which uses <em>Gaussian processes</em> coupled with the <em>expected improvement</em> criterion for point proposal. But thanks to it’s modular design it can be configured to solve many more optimization tasks.</p>
+<p>For the regression method of the <em>surrogate</em> <code>mlrMBO</code> relies on <a href="https://github.com/mlr-org/mlr"><code>mlr</code></a> so you are free to use:</p>
+<ul>
+<li>Kriging aka. Gaussian processes (i.e. <code>DiceKriging</code>)</li>
+<li>random Forests (i.e. <code>randomForest</code>)</li>
+<li>and many more…</li>
+</ul>
+<p>For the point proposal various <em>infill criteria</em> (aka. <em>acquisition functions</em>) are available:</p>
+<ul>
+<li>Expected Improvement</li>
+<li>Upper/Lower Confidence Bound (aka. Statistical Lower or Upper Bound)</li>
+<li>Augmented Expected Improvement</li>
+<li>Expected Quantile Improvement</li>
+<li>Accessible interface to implement your own infill criterion.</li>
 </ul>
 </div>
 
