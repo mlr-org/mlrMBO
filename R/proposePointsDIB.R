@@ -3,8 +3,8 @@
 #
 # 1-point proposal: we take the user-defined cb-lambda from the control, then simply optimize
 #
-# n-point proposal: we sample n random cb-lambdas, then propose a point normally,
-#   then add it to the design (fake add) with the its cb-vector as fake output. then iterate.
+# n-point proposal: Each point is proposed using the user-defined cb-lambda. 
+# Proposals are feed back to the surrogate following the surrogate "believer" approach.
 
 proposePointsDIB = function(opt.state) {
 
@@ -22,7 +22,7 @@ proposePointsDIB = function(opt.state) {
     control2 = control
     control2$propose.points == 1L
     # Create CB crit fun
-    cbFun = makeMBOInfillCritCB(cb.lambda = control2$infill.crit$params$cb.lambda)$fun
+    cbFun = control2$infill.crit$fun
     props = list()
     # copy opt.path so we can store already proposed points in it
     opt.path2 = deepCopyOptPath(opt.path)
