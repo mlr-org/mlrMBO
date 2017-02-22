@@ -22,7 +22,7 @@ proposePointsDIB = function(opt.state) {
     control2 = control
     control2$propose.points == 1L
     # Create CB crit fun
-    cbFun = control2$infill.crit$fun
+    cbFun = makeMBOInfillCritCB(cb.lambda = control2$infill.crit$params$cb.lambda)$fun
     props = list()
     # copy opt.path so we can store already proposed points in it
     opt.path2 = deepCopyOptPath(opt.path)
