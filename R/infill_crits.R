@@ -285,7 +285,7 @@ makeMBOInfillCritDIB = function(cb.lambda = 1, sms.eps = NULL) {
       }
       return(crit.vals)
     },
-    name = "Direct Indicator Based Search",
+    name = "Direct indicator-based",
     id = "dib",
     params = list(cb.lambda = cb.lambda, sms.eps = sms.eps),
     opt.direction = "maximize",
