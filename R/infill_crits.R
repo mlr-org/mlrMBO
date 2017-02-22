@@ -288,7 +288,7 @@ makeMBOInfillCritDIB = function(cb.lambda = 1, sms.eps = NULL) {
     name = "Direct Indicator Based Search",
     id = "dib",
     params = list(cb.lambda = cb.lambda, sms.eps = sms.eps),
-    opt.direction = "minimize",
+    opt.direction = "maximize",
     requires.se = TRUE
   )
 }
