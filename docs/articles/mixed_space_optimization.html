@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mixed Space Optimization • mlrMBO</title>
-<!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 <!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script><script src="../pkgdown.js"></script><!-- mathjax --><script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
@@ -29,13 +29,35 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../articles/mlrMBO.html">Quickstart</a>
+  <a href="../articles/mlrMBO.html">
+    <span class="fa fa-bolt"></span>
+     
+    Quickstart
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-file-text-o"></span>
+     
+    Topics
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="../articles/mixed_space_optimization.html">Mixed Space Optimization</a>
+    </li>
+    <li>
+      <a href="../articles/parallelization.html">Parallelization</a>
+    </li>
+  </ul>
 </li>
 <li>
-  <a href="../articles/index.html">Articles</a>
-</li>
-<li>
-  <a href="../reference/index.html">Reference</a>
+  <a href="../reference/index.html">
+    <span class="fa fa-book"></span>
+     
+    Reference
+  </a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
@@ -110,11 +132,11 @@ objfun2 =<span class="st"> </span><span class="kw">makeSingleObjectiveFunction</
 <div id="infill-criterion" class="section level3">
 <h3 class="hasAnchor">
 <html><body><a href="#infill-criterion" class="anchor"> </a></body></html>Infill Criterion</h3>
-<p>Although technically possible the <em>Expected Imrovement</em> that we used for the numerical parameter space and the <em>Kriging</em> surrogate, the <em>Confidence Bound</em> (<code><a href="../reference/infillcrits.html">makeMBOInfillCriterionCB()</a></code>) or also called statistical upper/lower bound is recommended for <em>Random Forest</em> regression. The reason is, that the <em>Expected Improvement</em> is founded on the Gaussian posterior distribution given by the Kriging estimator, which is not given by the Random Forest regression. For <em>minimization</em> the <em>lower</em> Confidence Bound is given by <span class="math inline">\(UCB(x) = \hat{\mu}(x) - \lambda \cdot \hat{s}(x)\)</span>. We set <span class="math inline">\(\lambda = 5\)</span>. For the infill criteria optimization we set <code>opt.focussearch.points = 500</code>, to increase the speed of the tutorial.</p>
+<p>Although technically possible the <em>Expected Imrovement</em> that we used for the numerical parameter space and the <em>Kriging</em> surrogate, the <em>Confidence Bound</em> (<code><a href="../reference/infillcrits.html">makeMBOInfillCritCB()</a></code>) or also called statistical upper/lower bound is recommended for <em>Random Forest</em> regression. The reason is, that the <em>Expected Improvement</em> is founded on the Gaussian posterior distribution given by the Kriging estimator, which is not given by the Random Forest regression. For <em>minimization</em> the <em>lower</em> Confidence Bound is given by <span class="math inline">\(UCB(x) = \hat{\mu}(x) - \lambda \cdot \hat{s}(x)\)</span>. We set <span class="math inline">\(\lambda = 5\)</span>. For the infill criteria optimization we set <code>opt.focussearch.points = 500</code>, to increase the speed of the tutorial.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">control2 =<span class="st"> </span><span class="kw"><a href="../reference/makeMBOControl.html">makeMBOControl</a></span>()
 control2 =<span class="st"> </span><span class="kw"><a href="../reference/setMBOControlInfill.html">setMBOControlInfill</a></span>(
   <span class="dt">control =</span> control2,
-  <span class="dt">crit =</span> <span class="kw"><a href="../reference/infillcrits.html">makeMBOInfillCriterionCB</a></span>(<span class="dt">cb.lambda =</span> <span class="dv">5</span>),
+  <span class="dt">crit =</span> <span class="kw"><a href="../reference/infillcrits.html">makeMBOInfillCritCB</a></span>(<span class="dt">cb.lambda =</span> <span class="dv">5</span>),
   <span class="dt">opt.focussearch.points =</span> <span class="dv">500</span>
 )</code></pre></div>
 </div>
@@ -179,16 +201,16 @@ run2 =<span class="st"> </span><span class="kw"><a href="../reference/mbo.html">
 ## 17 2.599061      b -0.8564045   9  NA          &lt;NA&gt;         0 -1.849306
 ## 18 5.493041      a -0.7104545  10  NA          &lt;NA&gt;         0 -1.991820
 ##    error.model train.time prop.type propose.time        se         mean
-## 9         &lt;NA&gt;      0.114 infill_cb        3.034 0.4628766 -0.048672921
-## 10        &lt;NA&gt;      0.103 infill_cb        2.649 0.4631915  0.188422765
-## 11        &lt;NA&gt;      0.122 infill_cb        2.519 0.3683672 -0.145258694
-## 12        &lt;NA&gt;      0.158 infill_cb        2.674 0.4072867 -0.083847711
-## 13        &lt;NA&gt;      0.103 infill_cb        2.555 0.3878092 -0.014387535
-## 14        &lt;NA&gt;      0.106 infill_cb        2.568 0.3468163 -0.334160501
-## 15        &lt;NA&gt;      0.105 infill_cb        2.596 0.3975127  0.003519339
-## 16        &lt;NA&gt;      0.132 infill_cb        2.763 0.3159202 -0.232061075
-## 17        &lt;NA&gt;      0.120 infill_cb        2.960 0.2803607 -0.447503034
-## 18        &lt;NA&gt;      0.115 infill_cb        2.624 0.3490036 -0.246801378
+## 9         &lt;NA&gt;      0.115 infill_cb        2.822 0.4628766 -0.048672921
+## 10        &lt;NA&gt;      0.104 infill_cb        2.506 0.4631915  0.188422765
+## 11        &lt;NA&gt;      0.111 infill_cb        2.521 0.3683672 -0.145258694
+## 12        &lt;NA&gt;      0.104 infill_cb        2.672 0.4072867 -0.083847711
+## 13        &lt;NA&gt;      0.107 infill_cb        2.531 0.3878092 -0.014387535
+## 14        &lt;NA&gt;      0.103 infill_cb        2.545 0.3468163 -0.334160501
+## 15        &lt;NA&gt;      0.111 infill_cb        2.573 0.3975127  0.003519339
+## 16        &lt;NA&gt;      0.112 infill_cb        2.542 0.3159202 -0.232061075
+## 17        &lt;NA&gt;      0.111 infill_cb        2.631 0.2803607 -0.447503034
+## 18        &lt;NA&gt;      0.132 infill_cb        2.619 0.3490036 -0.246801378
 ##    lambda
 ## 9       5
 ## 10      5
@@ -206,7 +228,7 @@ run2 =<span class="st"> </span><span class="kw"><a href="../reference/mbo.html">
 <h2 class="hasAnchor">
 <html><body><a href="#visualization" class="anchor"> </a></body></html>Visualization</h2>
 <p>Visualization is only possible for 2-dimensional objective functions, of which one is the categorical dimension. Exactly like in our exemplary function.</p>
-<p>Again to obtain all the data that is necessary to generate the plot we have to call the optimization through <code><a href="../reference/exampleRun.html">exampleRun()</a></code>:</p>
+<p>Again, to obtain all the data that is necessary to generate the plot we have to call the optimization through <code><a href="../reference/exampleRun.html">exampleRun()</a></code>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ex.run2 =<span class="st"> </span><span class="kw"><a href="../reference/exampleRun.html">exampleRun</a></span>(objfun2, <span class="dt">design =</span> design2, <span class="dt">learner =</span> surr.rf, <span class="dt">control =</span> control2)</code></pre></div>
 <p>And let’s visualize the results:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/plotExampleRun.html">plotExampleRun</a></span>(ex.run2, <span class="dt">iters =</span> <span class="kw">c</span>(1L, 2L, 10L), <span class="dt">pause =</span> <span class="ot">FALSE</span>)</code></pre></div>
