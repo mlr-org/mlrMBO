@@ -197,7 +197,7 @@ makeMBOInfillCritEQI = function(eqi.beta = 0.75, se.threshold = 1e-6) {
       model = models[[1L]]
       maximize.mult = ifelse(control$minimize, 1, -1)
       # compute q.min
-      design_x = design[, (colnames(design) %nin% control$y.name)]
+      design_x = design[, (colnames(design) %nin% control$y.name), drop = FALSE]
       p.current.model = predict(object = model, newdata = design_x)$data
       q.min = min(maximize.mult * p.current.model$response + qnorm(eqi.beta) * p.current.model$se)
 

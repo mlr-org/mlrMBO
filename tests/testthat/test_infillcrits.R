@@ -3,12 +3,27 @@ context("infill crits")
 test_that("infill crits", {
   ninit = 20L
   niters = 3L
-  f1 = smoof::makeSphereFunction(2L)
-  f2 = smoof::makeSingleObjectiveFunction(
-    fn = function(x) sum(x^2) + rnorm(1, 0, 0.03),
-    par.set = getParamSet(f1)
+  funs = list(
+    "2D" = list(
+      f1 = smoof::makeSphereFunction(2L),
+      f2 = smoof::makeSingleObjectiveFunction(
+        fn = function(x) sum(x^2) + rnorm(1, 0, 0.5),
+        par.set = makeNumericParamSet("x", 2, -5, 5),
+        noisy = TRUE
+      )
+    ),
+    "1D" = list(
+      f1 = smoof::makeSingleObjectiveFunction(
+        fn = function(x) x^2,
+        par.set = makeNumericParamSet("x", 1, -7, 7)
+      ),
+      f2 = smoof::makeSingleObjectiveFunction(
+        fn = function(x) x^2 + rnorm(1, 0, 0.5),
+        par.set = makeNumericParamSet("x", 1, -7, 7),
+        noisy = TRUE
+      )
+    )
   )
-  des = generateTestDesign(ninit, getParamSet(f1))
 
   mycontrol = function(crit, minimize) {
     ctrl = makeMBOControl(final.evals = 10L)
@@ -22,7 +37,7 @@ test_that("infill crits", {
     expect_equal(getOptPathLength(or$opt.path), ninit + niters + 10L)
     expect_number(or$y)
     if (minimize)
-      expect_true(or$y < 25)
+      expect_true(or$y < 10)
     else
       expect_true(or$y > 30)
 
@@ -43,7 +58,7 @@ test_that("infill crits", {
   }
 
   learners = list(
-    makeLearner("regr.km", predict.type = "se"),
+    makeLearner("regr.km", predict.type = "se", nugget.stability = 1e-5),
     makeLearner("regr.randomForest", ntree = 10L, predict.type = "se")
   )
 
@@ -59,10 +74,13 @@ test_that("infill crits", {
           lrn = setHyperPars(lrn, nugget.estim = noisy)
         for (crit in crits) {
           ctrl = mycontrol(crit)
-          f = if (!noisy) f1 else f2
-          f = if (!minimize) setAttribute(f, "minimize", FALSE) else f
-          or = mbo(f, des, learner = lrn, control = ctrl)
-          mycheck(or, minimize)
+          for (set in funs) {
+            f = if (!noisy) set$f1 else set$f2
+            f = if (!minimize) setAttribute(f, "minimize", FALSE) else f
+            des = generateTestDesign(ninit, getParamSet(f))
+            or = mbo(f, des, learner = lrn, control = ctrl)
+            mycheck(or, minimize)
+          }
         }
       }
     }
@@ -73,7 +91,7 @@ test_that("infill crits", {
 
   ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCritEQI(eqi.beta = 0.6),
     opt = "focussearch", opt.restarts = 1L, opt.focussearch.points = 300L)
-  or = mbo(f1, des, learner = makeLearner("regr.km", predict.type = "se", nugget.estim = TRUE), control = ctrl)
+  or = mbo(funs[[1]]$f1, des, learner = makeLearner("regr.km", predict.type = "se", nugget.estim = TRUE), control = ctrl)
   expect_lt(or$y, 50)
 })
 
