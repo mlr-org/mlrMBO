@@ -91,6 +91,7 @@ test_that("infill crits", {
 
   ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCritEQI(eqi.beta = 0.6),
     opt = "focussearch", opt.restarts = 1L, opt.focussearch.points = 300L)
+  des = generateTestDesign(ninit, getParamSet(funs[[1]]$f1))
   or = mbo(funs[[1]]$f1, des, learner = makeLearner("regr.km", predict.type = "se", nugget.estim = TRUE), control = ctrl)
   expect_lt(or$y, 50)
 })
