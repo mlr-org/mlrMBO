@@ -14,6 +14,8 @@ navbar:
         href: articles/mixed_space_optimization.html
       - text: Parallelization
         href: articles/parallelization.html
+      - text: Noisy Optimization
+        href: articles/noisy_optimization.html
   - text: Reference
     icon: fa-book
     href: reference/index.html

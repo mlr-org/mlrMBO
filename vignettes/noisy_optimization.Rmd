@@ -25,15 +25,18 @@ knitr::knit_hooks$set(document = function(x){
 
 This vignette will give you a short overview about techniques in **mlrMBO** to handle optimization of noisy objective functions.
 
+You can also try to reduce noise by using parallel evalauations of the same setting as explained in the Vignette about parallelization.
+
 ## Infill criteria for noiy optimization
 
-Like always let's start with the function we want to optimize, but this time it will be noisy and even heteroscedastic.
+Like always let's start with the function we want to optimize, but this time it will be noisy.
+Note that Kriging requires heteroscedasticity but slight dependencies of the variance on the `x` can be accapatble like in the following example:
 
 ```{r objective_function}
 library(mlrMBO)
 library(ggplot2)
 fun = function(x) {
-  rnorm(1, mean = x^2, sd = 0.5 + 0.75* x+5)
+  rnorm(1, mean = x^2, sd = 0.1 + 0.1* x+5)
 }
 obj.fun = makeSingleObjectiveFunction(name = "noisy_parable", fn = fun, has.simple.signature = TRUE, par.set = makeNumericParamSet("x", 1, -5, 5), noisy = TRUE)
 # visualize the function
@@ -41,6 +44,9 @@ autoplot(obj.fun, render.levels = TRUE, show.optimum = TRUE)
 ```
 
 As you can see the function is more noisy for large values of `x` so that the true optimum at `x=0` appears to be hidden.
+It is important to consider the way the final solution is generated (`final.method`).
+By default the best observed `y` value and its corresponding `x`-values are returned as the optimal solution but in the case of noisy optimization the lowest observed `y` value can just be the result of noise.
+Preferably the _best predicted_ value of `y` is taken as the prediction of the surrogate reflects the mean and is less affected by the noise. 
 
 ```{r control}
 ctrl = makeMBOControl(final.method = "best.predicted", final.evals = 10)
@@ -53,7 +59,7 @@ For noisy optimization we there are two infill.criteria that are recomended:
 ### Expected Quantile Improvement
 
 ```{r infill}
-ctrl = setMBOControlInfill(ctrl, crit = crit.aei)
+ctrl = setMBOControlInfill(ctrl, crit = crit.eqi)
 ```
 
 
@@ -71,5 +77,25 @@ res = mbo(obj.fun, control = ctrl, show.info = FALSE)
 res
 ```
 
+As you can see the optimization got fairly close to the minimum at `x = 0` even though the noise in this area is pretty high.
+
+```{r noise}
+(final.y = getOptPathY(res$opt.path, dob = 7))
+var(final.y)
+```
 
 ### Augmented Expected Improvement
+
+We can conduct the same optimization using the aei criterion.
+This time we will make use of `exampleRun` to visualize the optimization.
+
+```{r infill}
+ctrl = setMBOControlInfill(ctrl, crit = crit.aei)
+# Kriging can create a lot of console output, which we want tu surpress here:
+configureMlr(on.learner.warning = "quiet", show.learner.output = FALSE)
+res = exampleRun(obj.fun, control = ctrl, show.info = FALSE)
+plotExampleRun(res, pause = FALSE)
+res$mbo.res
+```
+
+*work in progress*
