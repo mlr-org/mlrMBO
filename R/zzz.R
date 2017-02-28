@@ -29,7 +29,7 @@ NULL
 #' \item{crit.cb2}{Confidence bound with lambda=2}
 #' \item{crit.aei}{Augmeted expected improvement}
 #' \item{crit.eqi}{Expected quantile improvement}
-#' \item{crit.dib1}{Directed indicator based search with lambda=1}
+#' \item{crit.dib1}{Direct indicator-based with lambda=1}
 #' }
 #'
 #' @rdname MBOInfillCrit

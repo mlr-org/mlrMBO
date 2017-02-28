@@ -35,6 +35,7 @@
 #'   Epsilon for epsilon-dominance for \code{dib.indicator = "sms"}.
 #'   Default is \code{NULL}, in this case it is adaptively set.
 #' @name infillcrits
+#' @seealso \code{\link{MBOInfillCrit}}
 #' @rdname infillcrits
 NULL
 
@@ -50,7 +51,8 @@ makeMBOInfillCritMeanResponse = function() {
       ifelse(control$minimize, 1, -1) * predict(models[[1L]], newdata = points)$data$response
     },
     name = "Mean response",
-    id = "mean"
+    id = "mean",
+    opt.direction = "objective"
   )
 }
 
@@ -63,7 +65,8 @@ makeMBOInfillCritStandardError = function() {
     },
     name = "Standard error",
     id = "se",
-    requires.se = TRUE
+    requires.se = TRUE,
+    opt.direction = "maximize"
   )
 }
 
@@ -96,7 +99,7 @@ makeMBOInfillCritEI = function(se.threshold = 1e-6) {
     id = "ei",
     components = c("se", "mean"),
     params = list(se.threshold = se.threshold),
-    minimize = FALSE,
+    opt.direction = "maximize",
     requires.se = TRUE
   )
 }
@@ -135,6 +138,7 @@ makeMBOInfillCritCB = function(cb.lambda = NULL) {
     id = "cb",
     components = c("se", "mean", "lambda"),
     params = list(cb.lambda = cb.lambda),
+    opt.direction = "objective",
     requires.se = TRUE
   )
 }
@@ -180,6 +184,7 @@ makeMBOInfillCritAEI = function(aei.use.nugget = FALSE, se.threshold = 1e-6) {
     id = "aei",
     components = c("se", "mean", "tau"),
     params = list(aei.use.nugget = aei.use.nugget),
+    opt.direction = "maximize",
     requires.se = TRUE
   )
 }
@@ -230,6 +235,7 @@ makeMBOInfillCritEQI = function(eqi.beta = 0.75, se.threshold = 1e-6) {
     components = c("se", "mean", "tau"),
     id = "eqi",
     params = list(eqi.beta = eqi.beta),
+    opt.direction = "maximize",
     requires.se = TRUE
   )
 }
@@ -279,9 +285,10 @@ makeMBOInfillCritDIB = function(cb.lambda = 1, sms.eps = NULL) {
       }
       return(crit.vals)
     },
-    name = "Directed Indicator Based Search",
+    name = "Direct indicator-based",
     id = "dib",
     params = list(cb.lambda = cb.lambda, sms.eps = sms.eps),
+    opt.direction = "maximize",
     requires.se = TRUE
   )
 }
