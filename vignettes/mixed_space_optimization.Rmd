@@ -29,7 +29,7 @@ This Vignette is supposed to give you an introduction to use **mlrMBO** for mixe
 
 ### Objective Function
 
-We construct an exemplary objective function using `smoof::makeSingleObjetiveFunction()`. 
+We construct an exemplary objective function using `smoof::makeSingleObjetiveFunction()`.
 The `par.set` argument has to be a `ParamSet` object from the **ParamHelpers** package, which provides information about the parameters of the objective function and their constraints for optimization.
 The objective function will be 3-dimensional with the inputs `j` and `method`.
 `j` is in the interval $[0,2\pi]$
@@ -117,11 +117,19 @@ Usually `generateDesign()` takes care that the points are spread uniformly.
 ### Optimization
 
 Finally, we start the optimization with `mbo()` with suppressed learner output from *mlr* and we print the result object to obtain the input that lead to the best objective:
-```{r mbo_run, eval=TRUE}
-# Surpresses output of learners 
+
+```{r mbo_run}
+# Surpresses output of learners
 mlr::configureMlr(show.info = FALSE, show.learner.output = FALSE, on.learner.warning = "quiet")
 run2 = mbo(objfun2, design = design2, learner = surr.rf, control = control2, show.info = TRUE)
-print(run2)
+```
+The console output gives a live overview of all all evaluated points.
+
+Let's look at the parts of the result that tell us the optimal reached value and its corresponding setting:
+
+```{r mbo_res}
+run2$y
+run2$x
 ```
 
 ## Visualization
@@ -132,7 +140,7 @@ Exactly like in our exemplary function.
 Again, to obtain all the data that is necessary to generate the plot we have to call the optimization through `exampleRun()`:
 
 ```{r example_run_2d}
-ex.run2 = exampleRun(objfun2, design = design2, learner = surr.rf, control = control2)
+ex.run2 = exampleRun(objfun2, design = design2, learner = surr.rf, control = control2, show.info = FALSE)
 ```
 
 And let's visualize the results:
