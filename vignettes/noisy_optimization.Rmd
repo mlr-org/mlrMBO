@@ -58,7 +58,7 @@ For noisy optimization we there are two infill.criteria that are recomended:
 
 ### Expected Quantile Improvement
 
-```{r infill}
+```{r infill.eqi}
 ctrl = setMBOControlInfill(ctrl, crit = crit.eqi)
 ```
 
@@ -89,7 +89,7 @@ var(final.y)
 We can conduct the same optimization using the aei criterion.
 This time we will make use of `exampleRun` to visualize the optimization.
 
-```{r infill}
+```{r infill.aei}
 ctrl = setMBOControlInfill(ctrl, crit = crit.aei)
 # Kriging can create a lot of console output, which we want tu surpress here:
 configureMlr(on.learner.warning = "quiet", show.learner.output = FALSE)
