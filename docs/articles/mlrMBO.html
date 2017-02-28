@@ -50,6 +50,9 @@
     <li>
       <a href="../articles/parallelization.html">Parallelization</a>
     </li>
+    <li>
+      <a href="../articles/noisy_optimization.html">Noisy Optimization</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -200,27 +203,27 @@ control =<span class="st"> </span><span class="kw"><a href="../reference/setMBOC
 ## Optimization path
 ## 5 + 10 entries in total, displaying last 10 (or less):
 ##             x           y dob eol error.message exec.time            ei
-## 6  -0.1606555 -0.05569243   1  NA          &lt;NA&gt;     0.000 -2.544066e-02
-## 7  -0.1855267 -0.06300664   2  NA          &lt;NA&gt;     0.000 -3.965762e-03
-## 8  -0.4530156  0.27250626   3  NA          &lt;NA&gt;     0.000 -8.941899e-04
-## 9  -0.1791857 -0.06259511   4  NA          &lt;NA&gt;     0.001 -4.302329e-04
-## 10 -0.1936351 -0.06200608   5  NA          &lt;NA&gt;     0.000 -1.493771e-04
-## 11 -0.1833775 -0.06298321   6  NA          &lt;NA&gt;     0.000 -5.596284e-05
-## 12 -0.1877692 -0.06290288   7  NA          &lt;NA&gt;     0.001 -2.664588e-05
-## 13 -0.1846145 -0.06301134   8  NA          &lt;NA&gt;     0.000 -1.413386e-05
-## 14 -0.1849927 -0.06301202   9  NA          &lt;NA&gt;     0.000 -3.516386e-06
-## 15 -0.1842604 -0.06300733  10  NA          &lt;NA&gt;     0.000 -1.292013e-06
+## 6  -0.1606555 -0.05569243   1  NA          &lt;NA&gt;         0 -2.544066e-02
+## 7  -0.1855267 -0.06300664   2  NA          &lt;NA&gt;         0 -3.965762e-03
+## 8  -0.4530156  0.27250626   3  NA          &lt;NA&gt;         0 -8.941899e-04
+## 9  -0.1791857 -0.06259511   4  NA          &lt;NA&gt;         0 -4.302329e-04
+## 10 -0.1936351 -0.06200608   5  NA          &lt;NA&gt;         0 -1.493771e-04
+## 11 -0.1833775 -0.06298321   6  NA          &lt;NA&gt;         0 -5.596284e-05
+## 12 -0.1877692 -0.06290288   7  NA          &lt;NA&gt;         0 -2.664588e-05
+## 13 -0.1846145 -0.06301134   8  NA          &lt;NA&gt;         0 -1.413386e-05
+## 14 -0.1849927 -0.06301202   9  NA          &lt;NA&gt;         0 -3.516386e-06
+## 15 -0.1842604 -0.06300733  10  NA          &lt;NA&gt;         0 -1.292013e-06
 ##    error.model train.time prop.type propose.time           se         mean
-## 6         &lt;NA&gt;      0.019 infill_ei        0.050 7.674768e-02 -0.007966397
-## 7         &lt;NA&gt;      0.018 infill_ei        0.048 1.247202e-02 -0.053522488
-## 8         &lt;NA&gt;      0.024 infill_ei        0.046 1.534806e-01  0.265081259
-## 9         &lt;NA&gt;      0.020 infill_ei        0.051 1.523041e-03 -0.062611157
-## 10        &lt;NA&gt;      0.020 infill_ei        0.046 1.583207e-03 -0.061528160
-## 11        &lt;NA&gt;      0.021 infill_ei        0.051 1.669101e-04 -0.062984191
-## 12        &lt;NA&gt;      0.022 infill_ei        0.053 1.545918e-04 -0.062915952
-## 13        &lt;NA&gt;      0.022 infill_ei        0.048 2.933588e-05 -0.063011220
-## 14        &lt;NA&gt;      0.020 infill_ei        0.052 7.823809e-06 -0.063012096
-## 15        &lt;NA&gt;      0.021 infill_ei        0.050 7.784748e-06 -0.063007267</code></pre></div>
+## 6         &lt;NA&gt;      0.022 infill_ei        0.045 7.674768e-02 -0.007966397
+## 7         &lt;NA&gt;      0.021 infill_ei        0.055 1.247202e-02 -0.053522488
+## 8         &lt;NA&gt;      0.020 infill_ei        0.048 1.534806e-01  0.265081259
+## 9         &lt;NA&gt;      0.020 infill_ei        0.053 1.523041e-03 -0.062611157
+## 10        &lt;NA&gt;      0.021 infill_ei        0.048 1.583207e-03 -0.061528160
+## 11        &lt;NA&gt;      0.024 infill_ei        0.049 1.669101e-04 -0.062984191
+## 12        &lt;NA&gt;      0.023 infill_ei        0.051 1.545918e-04 -0.062915952
+## 13        &lt;NA&gt;      0.022 infill_ei        0.052 2.933588e-05 -0.063011220
+## 14        &lt;NA&gt;      0.024 infill_ei        0.050 7.823809e-06 -0.063012096
+## 15        &lt;NA&gt;      0.022 infill_ei        0.056 7.784748e-06 -0.063007267</code></pre></div>
 </div>
 </div>
 <div id="visualization" class="section level2">
@@ -241,11 +244,11 @@ control =<span class="st"> </span><span class="kw"><a href="../reference/setMBOC
 ## Objectives                    : 1
 ## Points proposed per iter      : 1
 ## 
-## Infill criterion : Expected improvement (ei)
-##   Minimize       : FALSE
-##   Requirement    : SE estimation
-##   Components     : se, mean
-##   Parameters     : se.threshold=1e-06
+## Infill criterion            : Expected improvement (ei)
+##   Direction of optimization : maximize
+##   Requirement               : SE estimation
+##   Components                : se, mean
+##   Parameters                : se.threshold=1e-06
 ## Infill optimizer              : focussearch
 ## Infill optimizer restarts     : 1
 ## Final point by                : best.true.y

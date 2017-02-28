@@ -50,6 +50,9 @@
     <li>
       <a href="../articles/parallelization.html">Parallelization</a>
     </li>
+    <li>
+      <a href="../articles/noisy_optimization.html">Noisy Optimization</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -160,7 +163,7 @@ control2 =<span class="st"> </span><span class="kw"><a href="../reference/setMBO
 <h3 class="hasAnchor">
 <html><body><a href="#optimization" class="anchor"> </a></body></html>Optimization</h3>
 <p>Finally, we start the optimization with <code><a href="../reference/mbo.html">mbo()</a></code> with suppressed learner output from <em>mlr</em> and we print the result object to obtain the input that lead to the best objective:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Surpresses output of learners </span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Surpresses output of learners</span>
 mlr::<span class="kw">configureMlr</span>(<span class="dt">show.info =</span> <span class="ot">FALSE</span>, <span class="dt">show.learner.output =</span> <span class="ot">FALSE</span>, <span class="dt">on.learner.warning =</span> <span class="st">"quiet"</span>)
 run2 =<span class="st"> </span><span class="kw"><a href="../reference/mbo.html">mbo</a></span>(objfun2, <span class="dt">design =</span> design2, <span class="dt">learner =</span> surr.rf, <span class="dt">control =</span> control2, <span class="dt">show.info =</span> <span class="ot">TRUE</span>)
 ## Computing y column(s) for design. Not provided.
@@ -181,47 +184,17 @@ run2 =<span class="st"> </span><span class="kw"><a href="../reference/mbo.html">
 ## [mbo] 7: j=2.37; method=a : y = 0.697 : 0.0 secs : infill_cb
 ## [mbo] 8: j=5.42; method=a : y = -0.759 : 0.0 secs : infill_cb
 ## [mbo] 9: j=2.6; method=b : y = -0.856 : 0.0 secs : infill_cb
-## [mbo] 10: j=5.49; method=a : y = -0.71 : 0.0 secs : infill_cb
-<span class="kw">print</span>(run2)
-## Recommended parameters:
-## j=2.9; method=b
-## Objective: y = -0.971
+## [mbo] 10: j=5.49; method=a : y = -0.71 : 0.0 secs : infill_cb</code></pre></div>
+<p>The console output gives a live overview of all all evaluated points.</p>
+<p>Let’s look at the parts of the result that tell us the optimal reached value and its corresponding setting:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">run2$y
+run2$x
+## [1] -0.9710349
+## $j
+## [1] 2.900321
 ## 
-## Optimization path
-## 8 + 10 entries in total, displaying last 10 (or less):
-##           j method          y dob eol error.message exec.time        cb
-## 9  6.126175      b  0.9876992   1  NA          &lt;NA&gt;         0 -2.363056
-## 10 5.538504      b  0.7353037   2  NA          &lt;NA&gt;         0 -2.127535
-## 11 2.823311      b -0.9497746   3  NA          &lt;NA&gt;         0 -1.987095
-## 12 2.232971      a  0.7886569   4  NA          &lt;NA&gt;         0 -2.120281
-## 13 5.444482      a -0.7437771   5  NA          &lt;NA&gt;         0 -1.953434
-## 14 2.539619      b -0.8242197   6  NA          &lt;NA&gt;         0 -2.068242
-## 15 2.369699      a  0.6974936   7  NA          &lt;NA&gt;         0 -1.984044
-## 16 5.421863      a -0.7587046   8  NA          &lt;NA&gt;         0 -1.811662
-## 17 2.599061      b -0.8564045   9  NA          &lt;NA&gt;         0 -1.849306
-## 18 5.493041      a -0.7104545  10  NA          &lt;NA&gt;         0 -1.991820
-##    error.model train.time prop.type propose.time        se         mean
-## 9         &lt;NA&gt;      0.115 infill_cb        2.822 0.4628766 -0.048672921
-## 10        &lt;NA&gt;      0.104 infill_cb        2.506 0.4631915  0.188422765
-## 11        &lt;NA&gt;      0.111 infill_cb        2.521 0.3683672 -0.145258694
-## 12        &lt;NA&gt;      0.104 infill_cb        2.672 0.4072867 -0.083847711
-## 13        &lt;NA&gt;      0.107 infill_cb        2.531 0.3878092 -0.014387535
-## 14        &lt;NA&gt;      0.103 infill_cb        2.545 0.3468163 -0.334160501
-## 15        &lt;NA&gt;      0.111 infill_cb        2.573 0.3975127  0.003519339
-## 16        &lt;NA&gt;      0.112 infill_cb        2.542 0.3159202 -0.232061075
-## 17        &lt;NA&gt;      0.111 infill_cb        2.631 0.2803607 -0.447503034
-## 18        &lt;NA&gt;      0.132 infill_cb        2.619 0.3490036 -0.246801378
-##    lambda
-## 9       5
-## 10      5
-## 11      5
-## 12      5
-## 13      5
-## 14      5
-## 15      5
-## 16      5
-## 17      5
-## 18      5</code></pre></div>
+## $method
+## [1] "b"</code></pre></div>
 </div>
 </div>
 <div id="visualization" class="section level2">
@@ -229,7 +202,7 @@ run2 =<span class="st"> </span><span class="kw"><a href="../reference/mbo.html">
 <html><body><a href="#visualization" class="anchor"> </a></body></html>Visualization</h2>
 <p>Visualization is only possible for 2-dimensional objective functions, of which one is the categorical dimension. Exactly like in our exemplary function.</p>
 <p>Again, to obtain all the data that is necessary to generate the plot we have to call the optimization through <code><a href="../reference/exampleRun.html">exampleRun()</a></code>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ex.run2 =<span class="st"> </span><span class="kw"><a href="../reference/exampleRun.html">exampleRun</a></span>(objfun2, <span class="dt">design =</span> design2, <span class="dt">learner =</span> surr.rf, <span class="dt">control =</span> control2)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ex.run2 =<span class="st"> </span><span class="kw"><a href="../reference/exampleRun.html">exampleRun</a></span>(objfun2, <span class="dt">design =</span> design2, <span class="dt">learner =</span> surr.rf, <span class="dt">control =</span> control2, <span class="dt">show.info =</span> <span class="ot">FALSE</span>)</code></pre></div>
 <p>And let’s visualize the results:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/plotExampleRun.html">plotExampleRun</a></span>(ex.run2, <span class="dt">iters =</span> <span class="kw">c</span>(1L, 2L, 10L), <span class="dt">pause =</span> <span class="ot">FALSE</span>)</code></pre></div>
 <p><img src="mixed_space_optimization_files/figure-html/plot_example_run_2d-1.png" width="672"><img src="mixed_space_optimization_files/figure-html/plot_example_run_2d-2.png" width="672"><img src="mixed_space_optimization_files/figure-html/plot_example_run_2d-3.png" width="672"></p>

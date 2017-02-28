@@ -70,6 +70,9 @@
     <li>
       <a href="../articles/parallelization.html">Parallelization</a>
     </li>
+    <li>
+      <a href="../articles/noisy_optimization.html">Noisy Optimization</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -109,26 +112,27 @@ confidence bound and others, are already implemented in mlrMBO. Moreover,
 the package allows for the creation of custom infill criteria.</p>
     
 
-    <pre><span class='fu'>makeMBOInfillCrit</span>(<span class='no'>fun</span>, <span class='no'>name</span>, <span class='no'>id</span>, <span class='kw'>minimize</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+    <pre><span class='fu'>makeMBOInfillCrit</span>(<span class='no'>fun</span>, <span class='no'>name</span>, <span class='no'>id</span>, <span class='kw'>opt.direction</span> <span class='kw'>=</span> <span class='st'>"minimize"</span>,
   <span class='kw'>components</span> <span class='kw'>=</span> <span class='fu'>character</span>(<span class='fl'>0L</span>), <span class='kw'>params</span> <span class='kw'>=</span> <span class='fu'>list</span>(), <span class='kw'>requires.se</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
       <dt>fun</dt>
       <dd>[<code>function(points, models, control, par.set, design, iter)</code>]
-A function which expects the following parameters in exactly this order
-and return a numeric vector of criteria values at the points:
-<dl class='dl-horizontal'>
-  <dt>points [<code>data.frame</code>]</dt><dd>n points where to evaluate</dd>.
-  <dt>models [<code><a href='http://www.rdocumentation.org/packages/mlr/topics/makeWrappedModel'>WrappedModel</a></code> | <code>list</code>]</dt><dd>Model(s) fitted on design.</dd>
-  <dt>control [<code>MBOControl</code>]</dt><dd>Control object.</dd>
-  <dt>par.set [<code>ParamSet</code>]</dt><dd>Parameter set.</dd>
-  <dt>design [<code>data.frame</code>]</dt><dd>Design of already visited points.</dd>
-  <dt>iter [<code>integer(1)</code>]</dt><dd>Current iteration.</dd>
-  <dt>attributes [<code>logical{1}</code>]</dt><dd>Should attributes appended to the return
-   value by considered by <span class="pkg">mlrMBO</span>?</dd>
-</dl>
-</dd>
+ A function which expects the following parameters in exactly this order
+ and return a numeric vector of criteria values at the points:
+ <dl class='dl-horizontal'>
+   <dt>points [<code>data.frame</code>]</dt><dd>n points where to evaluate.</dd>
+   <dt>models [<code><a href='http://www.rdocumentation.org/packages/mlr/topics/makeWrappedModel'>WrappedModel</a></code> | <code>list</code>]</dt><dd>Model(s) fitted on design.</dd>
+   <dt>control [<code>MBOControl</code>]</dt><dd>Control object.</dd>
+   <dt>par.set [<code>ParamSet</code>]</dt><dd>Parameter set.</dd>
+   <dt>design [<code>data.frame</code>]</dt><dd>Design of already visited points.</dd>
+   <dt>iter [<code>integer(1)</code>]</dt><dd>Current iteration.</dd>
+   <dt>attributes [<code>logical{1}</code>]</dt><dd>Are there attributes appended to the return
+    value that should be added to the <code>OptPath</code>?</dd>
+ </dl>
+
+Important: Internally, this function will be minimized. So the proposals will be where this function is low.</dd>
       <dt>name</dt>
       <dd>[<code>character(1)</code>]
 Full name of the criterion.</dd>
@@ -136,10 +140,10 @@ Full name of the criterion.</dd>
       <dd>[<code>character(1)</code>]
 Short name of the criterion.
 Used internally and in plots.</dd>
-      <dt>minimize</dt>
+      <dt>opt.direction</dt>
       <dd>[<code>character(1)</code>]
-Shall the criterion be minimized or maximized?
-Default is <code>TRUE</code>.</dd>
+Only for visualization: Shall this criterion be plotted as if it were to be minimized (<code>minimize</code>), maximized (<code>maximize</code>) or is the direction the same as for the objective function (<code>objective</code>)?
+Default is <code>minimize</code>.</dd>
       <dt>components</dt>
       <dd>[<code>character</code>]
 Infill criteria may not return proposed point(s) only. Additional
