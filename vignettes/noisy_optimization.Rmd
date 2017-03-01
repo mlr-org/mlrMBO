@@ -27,7 +27,7 @@ This vignette will give you a short overview about techniques in **mlrMBO** to h
 
 You can also try to reduce noise by using parallel evaluations of the same setting as explained in the Vignette about parallelization.
 
-## Infill criteria for noiy optimization
+## Infill criteria for noisy optimization
 
 Like always let's start with the function we want to optimize, but this time it will be noisy.
 Note that Kriging requires heteroscedasticity but slight dependencies of the variance on the $\boldsymbol{x}$ can be acceptable like in the following example:
