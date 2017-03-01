@@ -104,10 +104,10 @@
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(mlrMBO)
 <span class="kw">library</span>(ggplot2)
 
-fun =<span class="st"> </span>function(x) {
-  j =<span class="st"> </span>x$j
-  method =<span class="st"> </span>x$method
-  perf =<span class="st"> </span><span class="kw">ifelse</span>(method ==<span class="st"> "a"</span>, <span class="kw">sin</span>(j), <span class="kw">cos</span>(j))
+fun =<span class="st"> </span><span class="cf">function</span>(x) {
+  j =<span class="st"> </span>x<span class="op">$</span>j
+  method =<span class="st"> </span>x<span class="op">$</span>method
+  perf =<span class="st"> </span><span class="kw">ifelse</span>(method <span class="op">==</span><span class="st"> "a"</span>, <span class="kw">sin</span>(j), <span class="kw">cos</span>(j))
   <span class="kw">return</span>(perf)
 }
 
@@ -115,7 +115,7 @@ objfun2 =<span class="st"> </span><span class="kw">makeSingleObjectiveFunction</
   <span class="dt">name =</span> <span class="st">"mixed_example"</span>,
   <span class="dt">fn =</span> fun,
   <span class="dt">par.set =</span> <span class="kw">makeParamSet</span>(
-    <span class="kw">makeNumericParam</span>(<span class="st">"j"</span>, <span class="dt">lower =</span> <span class="dv">0</span>,<span class="dt">upper =</span> <span class="dv">2</span> *<span class="st"> </span>pi),
+    <span class="kw">makeNumericParam</span>(<span class="st">"j"</span>, <span class="dt">lower =</span> <span class="dv">0</span>,<span class="dt">upper =</span> <span class="dv">2</span> <span class="op">*</span><span class="st"> </span>pi),
     <span class="kw">makeDiscreteParam</span>(<span class="st">"method"</span>, <span class="dt">values =</span> <span class="kw">c</span>(<span class="st">"a"</span>, <span class="st">"b"</span>))
   ),
   <span class="dt">has.simple.signature =</span> <span class="ot">FALSE</span>,
@@ -164,7 +164,7 @@ control2 =<span class="st"> </span><span class="kw"><a href="../reference/setMBO
 <html><body><a href="#optimization" class="anchor"> </a></body></html>Optimization</h3>
 <p>Finally, we start the optimization with <code><a href="../reference/mbo.html">mbo()</a></code> with suppressed learner output from <em>mlr</em> and we print the result object to obtain the input that lead to the best objective:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Surpresses output of learners</span>
-mlr::<span class="kw">configureMlr</span>(<span class="dt">show.info =</span> <span class="ot">FALSE</span>, <span class="dt">show.learner.output =</span> <span class="ot">FALSE</span>, <span class="dt">on.learner.warning =</span> <span class="st">"quiet"</span>)
+mlr<span class="op">::</span><span class="kw">configureMlr</span>(<span class="dt">show.info =</span> <span class="ot">FALSE</span>, <span class="dt">show.learner.output =</span> <span class="ot">FALSE</span>, <span class="dt">on.learner.warning =</span> <span class="st">"quiet"</span>)
 run2 =<span class="st"> </span><span class="kw"><a href="../reference/mbo.html">mbo</a></span>(objfun2, <span class="dt">design =</span> design2, <span class="dt">learner =</span> surr.rf, <span class="dt">control =</span> control2, <span class="dt">show.info =</span> <span class="ot">TRUE</span>)
 ## Computing y column(s) for design. Not provided.
 ## [mbo] 0: j=4.12; method=b : y = -0.558 : 0.0 secs : initdesign
@@ -187,8 +187,8 @@ run2 =<span class="st"> </span><span class="kw"><a href="../reference/mbo.html">
 ## [mbo] 10: j=5.49; method=a : y = -0.71 : 0.0 secs : infill_cb</code></pre></div>
 <p>The console output gives a live overview of all all evaluated points.</p>
 <p>Let’s look at the parts of the result that tell us the optimal reached value and its corresponding setting:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">run2$y
-run2$x
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">run2<span class="op">$</span>y
+run2<span class="op">$</span>x
 ## [1] -0.9710349
 ## $j
 ## [1] 2.900321
@@ -207,6 +207,66 @@ run2$x
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/plotExampleRun.html">plotExampleRun</a></span>(ex.run2, <span class="dt">iters =</span> <span class="kw">c</span>(1L, 2L, 10L), <span class="dt">pause =</span> <span class="ot">FALSE</span>)</code></pre></div>
 <p><img src="mixed_space_optimization_files/figure-html/plot_example_run_2d-1.png" width="672"><img src="mixed_space_optimization_files/figure-html/plot_example_run_2d-2.png" width="672"><img src="mixed_space_optimization_files/figure-html/plot_example_run_2d-3.png" width="672"></p>
 </div>
+<div id="improved-example-for-dependent-parameters" class="section level2">
+<h2 class="hasAnchor">
+<html><body><a href="#improved-example-for-dependent-parameters" class="anchor"> </a></body></html>Improved Example for Dependent Parameters</h2>
+<p>Looking back at our example we notice that the behavior of the function for <span class="math inline">\(j\)</span> totally changes depending on the chosen <em>method</em>. If such dependency is known beforehand it totally makes sense to let the surrogate know that <span class="math inline">\(j\)</span> should be treated differently depending on the chosen <em>method</em>. This is done by introducing a new variable for each <em>method</em>. Assuming we can not change the objective function <code>fun</code> we can easily build a <em>wrapper</em> to achieve that.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">wrap.fun =<span class="st"> </span><span class="cf">function</span>(x) {
+  x<span class="op">$</span>j =<span class="st"> </span><span class="cf">if</span> (x<span class="op">$</span>method <span class="op">==</span><span class="st"> "a"</span>) x<span class="op">$</span>ja <span class="cf">else</span> x<span class="op">$</span>jb
+  x =<span class="st"> </span><span class="kw">dropNamed</span>(x, <span class="kw">c</span>(<span class="st">"ja"</span>, <span class="st">"jb"</span>))
+  <span class="kw">fun</span>(x)
+}</code></pre></div>
+<p>We have to also change the parameter space accordingly:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ps.wrap =<span class="st"> </span><span class="kw">makeParamSet</span>(
+  <span class="kw">makeDiscreteParam</span>(<span class="st">"method"</span>, <span class="dt">values =</span> <span class="kw">c</span>(<span class="st">"a"</span>, <span class="st">"b"</span>)),
+  <span class="kw">makeNumericParam</span>(<span class="st">"ja"</span>, <span class="dt">lower =</span> <span class="dv">0</span>,<span class="dt">upper =</span> <span class="dv">2</span> <span class="op">*</span><span class="st"> </span>pi, <span class="dt">requires =</span> <span class="kw">quote</span>(method <span class="op">==</span><span class="st"> "a"</span>)),
+  <span class="kw">makeNumericParam</span>(<span class="st">"jb"</span>, <span class="dt">lower =</span> <span class="dv">0</span>,<span class="dt">upper =</span> <span class="dv">2</span> <span class="op">*</span><span class="st"> </span>pi, <span class="dt">requires =</span> <span class="kw">quote</span>(method <span class="op">==</span><span class="st"> "b"</span>))
+  )</code></pre></div>
+<p>Let’s wrap this up in a new objective function using <code>smoof</code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">objfun3 =<span class="st"> </span><span class="kw">makeSingleObjectiveFunction</span>(
+  <span class="dt">name =</span> <span class="st">"mixed_example: Dependent J"</span>,
+  <span class="dt">fn =</span> wrap.fun,
+  <span class="dt">par.set =</span> ps.wrap,
+  <span class="dt">has.simple.signature =</span> <span class="ot">FALSE</span>,
+  <span class="dt">minimize =</span> <span class="ot">TRUE</span>
+)</code></pre></div>
+<p>And now let’s directly run the optimization without further changing the control object from above:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">design3 =<span class="st"> </span><span class="kw">generateDesign</span>(<span class="dt">n =</span> <span class="dv">8</span>, <span class="dt">par.set =</span> <span class="kw">getParamSet</span>(objfun3))
+run3 =<span class="st"> </span><span class="kw"><a href="../reference/mbo.html">mbo</a></span>(objfun3, <span class="dt">design =</span> design3, <span class="dt">control =</span> control2, <span class="dt">show.info =</span> <span class="ot">FALSE</span>)
+run3<span class="op">$</span>x
+run3<span class="op">$</span>y
+## $method
+## [1] "a"
+## 
+## $ja
+## [1] 4.964501
+## 
+## $jb
+## [1] NA
+## 
+## [1] -0.9683878</code></pre></div>
+<p>Unfortunately our problem is now categorical and 3-dimensional to the eyes of <code>mlrMBO</code> so there is no implemented method to visualize the optimization. However we can analyze the residuals to see which surrogate was more accurate:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">op2 =<span class="st"> </span><span class="kw">as.data.frame</span>(run2<span class="op">$</span>opt.path)
+op3 =<span class="st"> </span><span class="kw">as.data.frame</span>(run3<span class="op">$</span>opt.path)
+
+<span class="co"># residual variance of the surrogate model for the first example</span>
+<span class="kw">var</span>(op2<span class="op">$</span>mean <span class="op">-</span><span class="st"> </span>op2<span class="op">$</span>y, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)
+<span class="co"># residual variance of the advanced surrogate model with independetly treat ed jaand jb</span>
+<span class="kw">var</span>(op3<span class="op">$</span>mean <span class="op">-</span><span class="st"> </span>op3<span class="op">$</span>y, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)
+## [1] 0.5208306
+## [1] 0.2127401</code></pre></div>
+<p>As you can see our new approach could improve the accuracy of the surrogate.</p>
+</div>
+<div id="remarks" class="section level2">
+<h2 class="hasAnchor">
+<html><body><a href="#remarks" class="anchor"> </a></body></html>Remarks</h2>
+<p>In comparison to optimization on a purely numerical search space with functions that are not too crazy mixed space optimization comes with some twists that we want to mention here.</p>
+<div id="random-forests-as-surrogate" class="section level3">
+<h3 class="hasAnchor">
+<html><body><a href="#random-forests-as-surrogate" class="anchor"> </a></body></html>Random Forests as surrogate</h3>
+<p>The biggest drawback of using <em>random forests</em> versus <em>Kriging</em> is the lack of <em>“spacial uncertainty”</em>. Whereas in Kriging can model uncertainty in areas where no observations are made thanks to the co-variance that gets higher for points that are far away from already visited points, the random forest lacks of this information. For the random forest the uncertainty is based on the diversity of the results of the individual individual forests. Naturally, the diversity is higher in areas where the results of the objective function are diverse. For deterministic functions or functions with just a little noise this is mainly the case in the proximity of steep slopes of the objective function. This can lead to proposed points that are located at slopes but not actually in the <em>valley</em>. Furthermore the diversity of the prediction of the individual trees can also be quite low outside the area of observed values leading to less proposals in the area between proposed points and the actual boundaries of the search space. To combat this problem it can make sense to manually add points at the boundaries of the search space to the initial design.</p>
+</div>
+</div>
 </div>
   </div>
 
@@ -217,6 +277,8 @@ run2$x
 <li><a href="#purpose">Purpose</a></li>
       <li><a href="#mixed-space-optimization">Mixed Space Optimization</a></li>
       <li><a href="#visualization">Visualization</a></li>
+      <li><a href="#improved-example-for-dependent-parameters">Improved Example for Dependent Parameters</a></li>
+      <li><a href="#remarks">Remarks</a></li>
       </ul>
 </div>
       </div>
