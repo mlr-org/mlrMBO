@@ -23,7 +23,7 @@ knitr::knit_hooks$set(document = function(x){
 
 ## Purpose
 
-This vignette will give you a short introduction how **mlrMBO** can be configured to make use of multicore or other parallel infrastructures by evaluating multiple points (each on one CPU) per MBO iteration, to improve the speed of the model-based optimization.
+This Vignette will give you a short introduction how **mlrMBO** can be configured to make use of multicore or other parallel infrastructures by evaluating multiple points (each on one CPU) per MBO iteration, to improve the speed of the model-based optimization.
 
 ## Prerequisites
 

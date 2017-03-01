@@ -53,7 +53,22 @@ ctrl = makeMBOControl(final.method = "best.predicted", final.evals = 10)
 ```
 
 For noisy optimization we there are two infill.criteria that are recommended:
-* `aei`: Augmented Expected Improvement
+* `aei`: In contrast to the _Expected Improvement_ the **Augmented Expected Improvement** does not look at the best observed value for reference but at the effective best solution: 
+$$y^{\ast}_{\min} := \min\limits_{\boldsymbol{x} \in \{\boldsymbol{x}^{(1)}, \ldots, \boldsymbol{x}^{(j)}\}} \hat{\mu}(\boldsymbol{x}) - \hat{s}(\boldsymbol{x})$$
+The final acquistion function is then similar to the _Expected Improvement_:
+\(
+\newcommand{\xv}{\boldsymbol{x}}       % observed x vector
+\newcommand{\yv}{\boldsymbol{y}}       % observed y vector
+\newcommand{\fh}{\hat{f}}              % surrogate model
+\newcommand{\fx}{f(\xv)}               % bbox function
+\newcommand{\sh}{\hat{s}}              % local estimated uncertainty
+\newcommand{\shx}{\sh(\xv)}            % local estimated uncertainty at point x
+\newcommand{\vhx}{\sh^2(\xv)}          % local estimated variance at point x
+\newcommand{\mh}{\hat{\mu}}            % local estimated mean
+\newcommand{\mhx}{\mh(\boldsymbol{x})} % local estimated mean at point x
+\)
+
+$$\operatorname{AEI}(\xv) = \left( y^{\ast}_{\min} - \mhx \right) \Phi \left( \frac{y^{\ast}_{\min} - \mhx)}{\shx} \right) + \shx \phi \left( \frac{y^{\ast}_{\min} - \mhx}{\shx} \right) \cdot \left(1 - \frac{\sde}{\sqrt{\sde^2 + \vhx}} \right)$$
 * `eqi`: Expected Quantile Improvement
 
 ### Expected Quantile Improvement
