@@ -101,12 +101,12 @@
 <p>Like always let’s start with the function we want to optimize, but this time it will be noisy. Note that Kriging requires heteroscedasticity but slight dependencies of the variance on the <span class="math inline">\(\boldsymbol{x}\)</span> can be acceptable like in the following example:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(mlrMBO)
 <span class="kw">library</span>(ggplot2)
-fun =<span class="st"> </span><span class="cf">function</span>(x) {
-  <span class="kw">rnorm</span>(<span class="dv">1</span>, <span class="dt">mean =</span> x<span class="op">^</span><span class="dv">2</span>, <span class="dt">sd =</span> <span class="fl">0.1</span> <span class="op">+</span><span class="st"> </span><span class="fl">0.1</span><span class="op">*</span><span class="st"> </span>x<span class="op">+</span><span class="dv">5</span>)
+fun =<span class="st"> </span>function(x) {
+  <span class="kw">rnorm</span>(<span class="dv">1</span>, <span class="dt">mean =</span> x^<span class="dv">2</span>, <span class="dt">sd =</span> <span class="fl">0.5</span> +<span class="st"> </span><span class="fl">0.5</span>*(x<span class="dv">+5</span>))
 }
-obj.fun =<span class="st"> </span><span class="kw">makeSingleObjectiveFunction</span>(<span class="dt">name =</span> <span class="st">"noisy_parable"</span>, <span class="dt">fn =</span> fun, <span class="dt">has.simple.signature =</span> <span class="ot">TRUE</span>, <span class="dt">par.set =</span> <span class="kw">makeNumericParamSet</span>(<span class="st">"x"</span>, <span class="dv">1</span>, <span class="op">-</span><span class="dv">5</span>, <span class="dv">5</span>), <span class="dt">noisy =</span> <span class="ot">TRUE</span>)
+obj.fun =<span class="st"> </span><span class="kw">makeSingleObjectiveFunction</span>(<span class="dt">name =</span> <span class="st">"noisy_parable"</span>, <span class="dt">fn =</span> fun, <span class="dt">has.simple.signature =</span> <span class="ot">TRUE</span>, <span class="dt">par.set =</span> <span class="kw">makeNumericParamSet</span>(<span class="st">"x"</span>, <span class="dv">1</span>, -<span class="dv">5</span>, <span class="dv">5</span>), <span class="dt">noisy =</span> <span class="ot">TRUE</span>)
 <span class="co"># visualize the function</span>
-<span class="kw">autoplot</span>(obj.fun, <span class="dt">render.levels =</span> <span class="ot">TRUE</span>, <span class="dt">show.optimum =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<span class="kw">autoplot</span>(obj.fun, <span class="dt">length.out =</span> <span class="dv">200</span>)</code></pre></div>
 <p><img src="noisy_optimization_files/figure-html/objective_function-1.png" width="672"></p>
 <p>As you can see the function is more noisy for large values of <span class="math inline">\(\boldsymbol{x}\)</span> so that the true optimum at <code>x=0</code> appears to be hidden. It is important to consider the way the final solution is generated (<code>final.method</code>). By default the best observed <span class="math inline">\(y\)</span> value and its corresponding <span class="math inline">\(\boldsymbol{x}\)</span>-values are returned as the optimal solution but in the case of noisy optimization the lowest observed <span class="math inline">\(y\)</span> value can just be the result of noise. Preferably the <em>best predicted</em> value of <span class="math inline">\(y\)</span> is taken as the prediction of the surrogate reflects the mean and is less affected by the noise.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ctrl =<span class="st"> </span><span class="kw"><a href="../reference/makeMBOControl.html">makeMBOControl</a></span>(<span class="dt">final.method =</span> <span class="st">"best.predicted"</span>, <span class="dt">final.evals =</span> <span class="dv">10</span>)</code></pre></div>
@@ -123,23 +123,22 @@ obj.fun =<span class="st"> </span><span class="kw">makeSingleObjectiveFunction</
 <h3 class="hasAnchor">
 <html><body><a href="#example-expected-quantile-improvement" class="anchor"> </a></body></html>Example: Expected Quantile Improvement</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ctrl =<span class="st"> </span><span class="kw"><a href="../reference/setMBOControlInfill.html">setMBOControlInfill</a></span>(ctrl, <span class="dt">crit =</span> crit.eqi)
-ctrl =<span class="st"> </span><span class="kw"><a href="../reference/setMBOControlTermination.html">setMBOControlTermination</a></span>(ctrl, <span class="dt">iters =</span> <span class="dv">6</span>)</code></pre></div>
+ctrl =<span class="st"> </span><span class="kw"><a href="../reference/setMBOControlTermination.html">setMBOControlTermination</a></span>(ctrl, <span class="dt">iters =</span> <span class="dv">7</span>)</code></pre></div>
 <p>For simplification we will let MBO automatically decide for the regression method and the initial design. As the parameter space is purely numeric MBO will use Kriging, which is exactly what we want.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Kriging can create a lot of console output, which we want tu surpress here:</span>
 <span class="kw">configureMlr</span>(<span class="dt">on.learner.warning =</span> <span class="st">"quiet"</span>, <span class="dt">show.learner.output =</span> <span class="ot">FALSE</span>)
 res =<span class="st"> </span><span class="kw"><a href="../reference/mbo.html">mbo</a></span>(obj.fun, <span class="dt">control =</span> ctrl, <span class="dt">show.info =</span> <span class="ot">FALSE</span>)
-res<span class="op">$</span>x
-res<span class="op">$</span>y
+res$x
 ## $x
-## [1] 2.440427
-## 
-## [1] 4.40593</code></pre></div>
+## [1] -0.3911328
+res$y
+## [1] 1.057121</code></pre></div>
 <p>As you can see the optimization got fairly close to the minimum at <span class="math inline">\(x = 0\)</span> even though the noise in this area is pretty high.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(<span class="dt">final.y =</span> <span class="kw">getOptPathY</span>(res<span class="op">$</span>opt.path, <span class="dt">dob =</span> <span class="dv">7</span>))
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(<span class="dt">final.y =</span> <span class="kw">getOptPathY</span>(res$opt.path, <span class="dt">dob =</span> <span class="dv">8</span>))
+##  [1] -3.4648914  6.6905946  1.0066289 -1.8517431  0.5180135  1.8740134
+##  [7]  2.5199326  2.1839418 -2.1259112  3.2206329
 <span class="kw">var</span>(final.y)
-##  [1]  4.4603116 -0.4012965 11.1891347 -2.2141046 -4.0648537  5.4177340
-##  [7]  9.3219022 11.2333877  4.2733438  4.8437404
-## [1] 28.52414</code></pre></div>
+## [1] 8.869848</code></pre></div>
 </div>
 <div id="example-augmented-expected-improvement" class="section level3">
 <h3 class="hasAnchor">
@@ -148,16 +147,16 @@ res<span class="op">$</span>y
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ctrl =<span class="st"> </span><span class="kw"><a href="../reference/setMBOControlInfill.html">setMBOControlInfill</a></span>(ctrl, <span class="dt">crit =</span> crit.aei)
 <span class="co"># Kriging can create a lot of console output, which we want tu surpress here:</span>
 <span class="kw">configureMlr</span>(<span class="dt">on.learner.warning =</span> <span class="st">"quiet"</span>, <span class="dt">show.learner.output =</span> <span class="ot">FALSE</span>)
-res =<span class="st"> </span><span class="kw"><a href="../reference/exampleRun.html">exampleRun</a></span>(obj.fun, <span class="dt">control =</span> ctrl, <span class="dt">show.info =</span> <span class="ot">FALSE</span>)</code></pre></div>
+<span class="kw">set.seed</span>(<span class="dv">1</span>)
+res =<span class="st"> </span><span class="kw"><a href="../reference/exampleRun.html">exampleRun</a></span>(obj.fun, <span class="dt">control =</span> ctrl, <span class="dt">show.info =</span> <span class="ot">FALSE</span>, <span class="dt">points.per.dim =</span> <span class="dv">200</span>, <span class="dt">noisy.evals =</span> <span class="dv">1</span>)</code></pre></div>
 <p>First we have a look at the optimization result which is similar to the one obtained with the <code>eqi</code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res<span class="op">$</span>mbo.res<span class="op">$</span>x
-res<span class="op">$</span>mbo.res<span class="op">$</span>y
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res$mbo.res$x
 ## $x
-## [1] 0.1128333
-## 
-## [1] -0.02795779</code></pre></div>
-<p>Looking at the surrogate fit during the run we can see that the noise makes it difficult for the Kriging to find the right fit and so it falls back to the mean regression. This leads to the infill criterion to be constant and to a purely random proposal, which is not necceseraly that bad as long as it does not happen too often.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/plotExampleRun.html">plotExampleRun</a></span>(res, <span class="dt">pause =</span> <span class="ot">FALSE</span>, <span class="dt">iters =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>, <span class="dv">6</span>))</code></pre></div>
+## [1] 0.6092365
+res$mbo.res$y
+## [1] -0.7259763</code></pre></div>
+<p>Looking at the surrogate fit during the run we can see that the noise makes it difficult for the Kriging to find the right fit and so it falls back to the mean regression. This leads to the infill criterion to be constant and to a purely random proposal, which is not necessarily that bad as long as it does not happen too often.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/plotExampleRun.html">plotExampleRun</a></span>(res, <span class="dt">pause =</span> <span class="ot">FALSE</span>, <span class="dt">iters =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">7</span>))</code></pre></div>
 <p><img src="noisy_optimization_files/figure-html/unnamed-chunk-1-1.png" width="672"><img src="noisy_optimization_files/figure-html/unnamed-chunk-1-2.png" width="672"><img src="noisy_optimization_files/figure-html/unnamed-chunk-1-3.png" width="672"></p>
 </div>
 </div>

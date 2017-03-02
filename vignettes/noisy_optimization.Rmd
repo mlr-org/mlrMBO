@@ -15,7 +15,7 @@ vignette: >
 ```{r setup, include = FALSE, cache = FALSE}
 library(mlrMBO)
 set.seed(1)
-knitr::opts_chunk$set(cache = TRUE, collapse = FALSE, results = 'hold')
+knitr::opts_chunk$set(cache = TRUE, collapse = FALSE)
 knitr::knit_hooks$set(document = function(x){
   gsub("```\n*```r*\n*", "", x)
 })
@@ -36,11 +36,11 @@ Note that Kriging requires heteroscedasticity but slight dependencies of the var
 library(mlrMBO)
 library(ggplot2)
 fun = function(x) {
-  rnorm(1, mean = x^2, sd = 0.1 + 0.1* x+5)
+  rnorm(1, mean = x^2, sd = 0.5 + 0.5*(x+5))
 }
 obj.fun = makeSingleObjectiveFunction(name = "noisy_parable", fn = fun, has.simple.signature = TRUE, par.set = makeNumericParamSet("x", 1, -5, 5), noisy = TRUE)
 # visualize the function
-autoplot(obj.fun, render.levels = TRUE, show.optimum = TRUE)
+autoplot(obj.fun, length.out = 200)
 ```
 
 As you can see the function is more noisy for large values of $\boldsymbol{x}$ so that the true optimum at `x=0` appears to be hidden.
@@ -66,7 +66,7 @@ $$\operatorname{EQI}(\boldsymbol{x}) = \left(q_{\min} - q(\boldsymbol{x}) \right
 
 ```{r infill.eqi}
 ctrl = setMBOControlInfill(ctrl, crit = crit.eqi)
-ctrl = setMBOControlTermination(ctrl, iters = 6)
+ctrl = setMBOControlTermination(ctrl, iters = 7)
 ```
 
 For simplification we will let MBO automatically decide for the regression method and the initial design.
@@ -83,7 +83,7 @@ res$y
 As you can see the optimization got fairly close to the minimum at $x = 0$ even though the noise in this area is pretty high.
 
 ```{r noise}
-(final.y = getOptPathY(res$opt.path, dob = 7))
+(final.y = getOptPathY(res$opt.path, dob = 8))
 var(final.y)
 ```
 
@@ -96,13 +96,15 @@ This time we will make use of `exampleRun` to visualize the optimization.
 ctrl = setMBOControlInfill(ctrl, crit = crit.aei)
 # Kriging can create a lot of console output, which we want tu surpress here:
 configureMlr(on.learner.warning = "quiet", show.learner.output = FALSE)
-res = exampleRun(obj.fun, control = ctrl, show.info = FALSE)
+set.seed(1)
+res = exampleRun(obj.fun, control = ctrl, show.info = FALSE, points.per.dim = 200, noisy.evals = 1)
 ```
 
 First we have a look at the optimization result which is similar to the one obtained with the `eqi`.
 
 ```{r aei.res}
 res$mbo.res$x
+
 res$mbo.res$y
 ```
 
@@ -110,5 +112,5 @@ Looking at the surrogate fit during the run we can see that the noise makes it d
 This leads to the infill criterion to be constant and to a purely random proposal, which is not necessarily that bad as long as it does not happen too often.
 
 ```{r}
-plotExampleRun(res, pause = FALSE, iters = c(1,2, 6))
+plotExampleRun(res, pause = FALSE, iters = c(1,2,7))
 ```

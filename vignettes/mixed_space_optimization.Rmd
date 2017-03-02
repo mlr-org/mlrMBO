@@ -15,7 +15,7 @@ vignette: >
 ```{r setup, include = FALSE, cache = FALSE}
 library(mlrMBO)
 set.seed(123)
-knitr::opts_chunk$set(cache = TRUE, collapse = FALSE, results = 'hold')
+knitr::opts_chunk$set(cache = TRUE, collapse = FALSE)
 knitr::knit_hooks$set(document = function(x){
   gsub("```\n*```r*\n*", "", x)
 })
@@ -118,7 +118,7 @@ Usually `generateDesign()` takes care that the points are spread uniformly.
 
 Finally, we start the optimization with `mbo()` with suppressed learner output from *mlr* and we print the result object to obtain the input that lead to the best objective:
 
-```{r mbo_run}
+```{r mbo_run, results='hold'}
 # Surpresses output of learners
 mlr::configureMlr(show.info = FALSE, show.learner.output = FALSE, on.learner.warning = "quiet")
 run2 = mbo(objfun2, design = design2, learner = surr.rf, control = control2, show.info = TRUE)
@@ -154,7 +154,6 @@ plotExampleRun(ex.run2, iters = c(1L, 2L, 10L), pause = FALSE)
 Looking back at our example we notice that the behavior of the function for $j$ totally changes depending on the chosen _method_.
 If such dependency is known beforehand it totally makes sense to let the surrogate know that $j$ should be treated differently depending on the chosen _method_.
 This is done by introducing a new variable for each _method_.
-Assuming we can not change the objective function `fun` we can easily build a _wrapper_ to achieve that.
 
 ```{r wrapper}
 wrap.fun = function(x) {
@@ -186,11 +185,30 @@ objfun3 = makeSingleObjectiveFunction(
 )
 ```
 
-And now let's directly run the optimization without further changing the control object from above:
+As we have dependent parameters now there will be missing values in the design for the surrogate.
+This means e.g. that when we use `method=a` the parameter `jb` will be `NA`.
+Hence, our learner for the surrogate has to be able to deal with missing values.
+The random forest is not natively able to do that but works perfect using the _separate-class method_ [Ding et. al. An investigation of missing data methods for classification trees applied to binary response data.](http://people.stern.nyu.edu/jsimonof/jmlr10.pdf).
+When no learner is supplied, mlrMBO takes care of that automatically, by using a _random forest_ wrapped in an _impute wrapper_.
+
+You can do it manually like this:
+
+```{r impute_wrapper}
+lrn = makeLearner("regr.randomForest", predict.type = "se", ntree = 200)
+lrn = makeImputeWrapper(lrn, classes = list(numeric = imputeMax(2), factor = imputeConstant("__miss__")))
+```
+
+Or you call `makeMBOLearner` which is exactly what happens when no learner is supplied to `mbo()` with the advantage that now you can change the parameters manually before calling `mbo()`.
+
+```{r makeMBOLearner}
+lrn = makeMBOLearner(control = control2, fun = objfun3, ntree = 200)
+```
+
+And now let's directly run the optimization without further changing the control object from above.
 
 ```{r wrapper_run}
 design3 = generateDesign(n = 8, par.set = getParamSet(objfun3))
-run3 = mbo(objfun3, design = design3, control = control2, show.info = FALSE)
+run3 = mbo(objfun3, learner = lrn, design = design3, control = control2, show.info = FALSE)
 run3$x
 run3$y
 ```
@@ -206,7 +224,7 @@ var(op2$mean - op2$y, na.rm = TRUE)
 # residual variance of the advanced surrogate model with independetly treat ed jaand jb
 var(op3$mean - op3$y, na.rm = TRUE)
 ```
-As you can see our new approach could improve the accuracy of the surrogate.
+As you can see our new approach could improve the fit of the surrogate.
 
 
 ## Remarks

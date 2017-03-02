@@ -15,7 +15,7 @@ vignette: >
 ```{r setup, include = FALSE, cache = FALSE}
 library(mlrMBO)
 set.seed(123)
-knitr::opts_chunk$set(cache = TRUE, collapse = FALSE, results = 'hold')
+knitr::opts_chunk$set(cache = TRUE, collapse = FALSE)
 knitr::knit_hooks$set(document = function(x){
   gsub("```\n*```r*\n*", "", x)
 })
@@ -126,7 +126,7 @@ control = setMBOControlInfill(control, crit = makeMBOInfillCritEI())
 ### Start the optimization
 Finally, we start the optimization process and print the result object, which gives us the best found solution and the reached objective value.
 
-```{r cosine_run}
+```{r cosine_run, results='hold'}
 run = mbo(obj.fun, design = des, learner = surr.km, control = control, show.info = TRUE)
 print(run)
 ```
