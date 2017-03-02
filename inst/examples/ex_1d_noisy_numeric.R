@@ -31,10 +31,8 @@ lrn = makeMBOLearner(ctrl, obj.fun)
 
 design = generateDesign(6L, getParamSet(obj.fun), fun = lhs::maximinLHS)
 
-run = exampleRun(obj.fun, design = design, learner = lrn,
-  control = ctrl, points.per.dim = 200L, noisy.evals = 50L,
-  show.info = TRUE)
+run = exampleRun(obj.fun, design = design, learner = lrn, control = ctrl, show.info = TRUE)
 
 print(run)
 
-plotExampleRun(run, pause = pause, densregion = TRUE, gg.objects = list(theme_bw()))
+plotExampleRun(run, densregion = TRUE, resolution = 200)

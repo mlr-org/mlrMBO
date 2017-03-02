@@ -1,27 +1,15 @@
 #' @title Renders plots for exampleRun objects and displays them.
 #'
 #' @description
-#' The graphical output depends on the target function at hand.
-#' - For 1D numeric functions the upper plot shows the true function (if known),
-#' the model and the (infill) points. The lower plot shows the infill criterion.
-#' - For 2D mixed target functions only one plot is displayed.
-#' - For 2D numeric only target functions up to four plots are presented to the
-#'   viewer:
-#'   - levelplot of the true function landscape (with [infill] points),
-#'   - levelplot of the model landscape (with [infill] points),
-#'   - levelplot of the infill criterion
-#'   - levelplot of the standard error (only if learner supports standard error estimation).
-#' - For bi-criteria target functions the upper plot shows the target space and the lower
-#'   plot displays the x-space.
+#'  Plots the intermediate states for 1-dimensional optimization problems
 #'
-#' @param object [\code{function}]\cr
-#'   \code{MBOExampleRun} object from \code{exampleRun} or
-#'   \code{MBOExampleRunMultiObj} object from \code{exampleRunMultiObj}.
+#' @param object [\code{MBOExampleRun}]\cr
+#'   \code{MBOExampleRun} object from \code{exampleRun}.
 #' @param iters [\code{integer}]\cr
 #'   Selected iterations of \code{object} to produce plots.
 #'   Default is all iterations.
-#' @param pause [\code{logical(1)}]\cr
-#'   Should the process be paused after each iteration?
+#' @param print [\code{logical(1)}]\cr
+#'   Should the result be directly printed (\code{TRUE}) or returned as a list of ggplot objects (\code{FALSE})?
 #'   Default is \code{TRUE}.
 #' @param densregion [\code{logical(1)}]\cr
 #'   Should the background be shaded? Default is \code{TRUE}.
@@ -31,105 +19,115 @@
 #'   in addition to the mean response \code{yhat(x) +- se.factor * se(x)}
 #'   is plotted above and below.
 #'   Default is 1.
-#' @param single.prop.point.plots [\code{logical(1)}]\cr
-#'   Parameter for MOI-MBO Multipoint proposal: Should every proposed point
-#'   be displayed in a single plot - or one plot per Iteration? Default is FALSE
-#'   indicating single plots per proposed points.
-#' @param xlim [\code{numeric(2)}]\cr
-#'   For 1D: \code{xlim} parameter for first and second plot.
-#'   Default is range of x-values evaluated in run object \code{x}.
-#' @param ylim [\code{numeric(2)}]\cr
-#'   For 1D: \code{ylim} parameter for first plot, for the second plot \code{ylim} is always set
-#'   automatically, depending on the range of the evaluated infill criterion.
-#'   Default for the first plot is a heuristic to have the true function
-#'   and \code{yhat(x) +- se.factor2 * se(x)} both in the plot. Note that this heuristic might
-#'   change the \code{ylim} setting between plot iterations.
-#' @param point.size [\code{numeric(1)}]\cr
-#'   Point size for ploted points. Default ist 3.
-#' @param line.size [\code{numeric(1)}]\cr
-#'   Line width of the graphs of plotted functions.
-#' @param trafo [\code{list}]\cr
-#'   List of transformation functions of type \code{MBOTrafoFunction} for
-#'   the different plots.
-#'   For 1D: The list elements should be named with \dQuote{y} (applied to objective function and model)
-#'   or \dQuote{crit} (applied to the criterion). Only applied to plots with numeric parameters.
-#'   For 2D: The list should contain at least one element \dQuote{y}, \dQuote{yhat}, \dQuote{crit}
-#'   or \dQuote{se}.
-#'   This way one can specify different transformations for different plots.
-#'   If a single function is provided, this function is used for all plots.
-#' @param colors [\code{character(3)}]
-#'   Specify colors for point in the plots. Must be a vector of length 3,
-#'   each element a color for the type design, prop and seq respectivly.
-#'   Default is red for the initial design, blue for allready proposed points
-#'   and green for the actual iteration.
-#' @param gg.objects [\code{list)}]
-#'   List of \code{gg} objects that should be added to all ggplots.
+#' @param resolution [\code{integer(1)}]
+#'   For how many points should the true objective function and the infill be calculated?
+#'   The higher this number the more accurate the plot.
+#'   For lower numbers the maxima of the infill might not be visible!
 #' @param ... [any]\cr
 #'   Currently not used.
 #' @return Nothing.
 #' @export
-plotExampleRun = function(object, iters, pause = TRUE,
-  densregion = TRUE, se.factor = 1, single.prop.point.plots = FALSE,
-  xlim = NULL, ylim = NULL,
-  point.size = 3, line.size = 1,
-  trafo = NULL, colors = c("red", "blue", "green"), gg.objects = list(), ...) {
+plotExampleRun = function(object, iters, print = TRUE, densregion = TRUE, se.factor = 1, resolution = 100) {
 
-  iters.max = object$control$iters
+  iters.max = object$mbo.res$control$iters
   if (missing(iters)) {
     iters = seq_len(iters.max)
   } else {
     iters = asInteger(iters, lower = 0L, upper = iters.max, any.missing = FALSE)
   }
-  assertFlag(pause)
+  assertFlag(print)
   assertFlag(densregion)
   assertNumber(se.factor, lower = 0)
-  assertNumber(point.size, lower = 1)
-  assertNumber(line.size, lower = 1)
+  assertInt(resolution, lower = 1)
 
-  if (!is.null(xlim))
-    assertNumeric(xlim, len = 2L, any.missing = FALSE)
-  if (!is.null(ylim))
-    assertNumeric(ylim, len = 2L, any.missing = FALSE)
+  run = object
 
-  multi.crit = object$control$n.objectives > 1
+  # start plot
+  obj.fun = run$obj.fun
+  obj.fun.mean = coalesce(smoof::getMeanFunction(obj.fun), obj.fun)
+  par.set = getParamSet(run$obj.fun)
+  control = run$mbo.res$control
+  x.names = getParamIds(run$mbo.res$opt.path$par.set)
+  x.types = getParamTypes(run$mbo.res$opt.path$par.set)
+  x.name.numeric = x.names[x.types %in% ParamHelpers::getTypeStringsNumeric()]
+  x.name.discrete = x.names[x.types %nin% ParamHelpers::getTypeStringsNumeric()]
+  y.names = run$mbo.res$opt.path$y.names
+  draw.design = generateGridDesign(par.set = par.set, resolution = resolution, trafo = FALSE)
+  draw.design[[y.names[1]]] = vnapply(dfRowsToList(draw.design, par.set = par.set), obj.fun.mean)
 
-  # Helper to arrange plot via gridExtra and pause process
-  arrangePlots = function(plots, multi.crit) {
-    plots = Filter(Negate(isScalarNA), plots)
-    plots = lapply(plots, addGgsToGgplot, gg.objects)
-    n.plots = length(plots)
-    if (n.plots > 1) {
-      requirePackages("gridExtra", why = "plotExampleRun")
-      if (multi.crit) {
-        if (!inherits(plots[[1L]], "ggplot")) {
-          # for mspot first arrange the two plots for X-Space
-          plots[[1L]] = do.call(gridExtra::arrangeGrob, c(plots[[1L]], nrow = 2))
-        }
-        do.call(gridExtra::grid.arrange, c(plots, ncol = 2))
-      } else {
-        do.call(gridExtra::grid.arrange, c(plots, nrow = 2))
-      }
-    } else {
-      print(plots[[1]])
+  # opt path to data.frame
+  op = run$mbo.res$opt.path
+  op.df = as.data.frame(op)
+
+  res = lapply(iters, function(iter) {
+    draw.design.iter = draw.design
+    # predict the mean of the outcome
+    this.model = run$mbo.res$models[[iter]]
+    this.design = op.df[this.model$subset, c(x.names, y.names)]
+    prediction = predict(this.model, newdata = draw.design.iter)
+    draw.design.iter$y.predict = getPredictionResponse(prediction)
+    draw.design.iter$y.se = getPredictionSE(prediction)
+    # get the infill crit value
+    infill.crit = control$infill.crit$fun(points = draw.design.iter[, c(x.names, y.names)], models = list(this.model), control = control, par.set = par.set, design = this.design, iter = iter, attributes = TRUE)
+    draw.design.iter$infill.value = setAttribute(infill.crit, "crit.components", NULL)
+    draw.design.iter = cbind(draw.design.iter, attr(infill.crit, "crit.components"))
+
+    # opt path for this iteration
+    this.op.df = op.df[op.df$dob <= iter, ]
+    # hacky subset OptPath
+    this.op = deepCopyOptPath(op)
+    this.op$env$path = this.op$env$path[seq_row(this.op.df), ]
+    this.op$env$dob = this.op$env$dob[seq_row(this.op.df)]
+    this.op$env$eol = this.op$env$eol[seq_row(this.op.df)]
+    this.op.df$variable = y.names[1]
+    this.op.df$state = ifelse(this.op.df$dob == 0, "init", ifelse(this.op.df$dob == iter, "prop", "seq"))
+    # melt data for plotting
+    mdata = reshape2::melt(draw.design.iter, measure.vars = c("y.predict", "infill.value"))
+    # rename the melted columns according to input
+    mdata$variable = plyr::revalue(mdata$variable, replace = c(y.predict = y.names[1], infill.value = control$infill.crit$id))
+    mdata$variable = factor(mdata$variable, levels = c(y.names[1], control$infill.crit$id))
+    this.op.df$variable = factor(this.op.df$variable, levels = c(y.names[1], control$infill.crit$id))
+    # put name of discrete vector in front (like foo: a, foo: b, ...)
+    if (length(x.name.discrete)>0) {
+      mdata[[x.name.discrete]] = factor(mdata[[x.name.discrete]], labels = sprintf("%s: %s", x.name.discrete, levels(mdata[[x.name.discrete]])))
+      this.op.df[[x.name.discrete]] = factor(this.op.df[[x.name.discrete]], labels = sprintf("%s: %s", x.name.discrete, levels(this.op.df[[x.name.discrete]])))
     }
+
+    # calculate gap if possible
+    opt.value = getGlobalOptimum(obj.fun)$value
+    if (!is.null(opt.value) && !is.na(opt.value)) {
+      gap = opt.value - getOptPathY(op)[chooseFinalPoint2(control = control, opt.path = this.op, model = this.model, task = makeTaskSingleObj(opt.path = this.op, control = control))]
+      gap.subtitle = sprintf("Gap: %.4g", gap)
+    } else {
+      gap.subtitle = character()
+    }
+
+    g = ggplot()
+    if (densregion) {
+      # uncertainty area (plot first so everything else is above)
+      g = g + geom_ribbon(data = mdata[mdata$variable == y.names[1],], aes_string(ymin = "value - se * se.factor", ymax = "value + se * se.factor", x = x.name.numeric), fill = "black", alpha = 0.2)
+    }
+    # lines for the mean prediction- and the infill criteria values
+    g = g + geom_line(data = mdata, mapping = aes_string(x = x.name.numeric, y = "value"))
+    # lines for the true objective function values
+    g = g + geom_line(data = mdata[mdata$variable == y.names[1],], mapping = aes_string(x = x.name.numeric, y = y.names[1]), linetype = 2)
+    # points for past evaluations
+    g = g + geom_point(data = this.op.df, mapping = aes_string(x = x.name.numeric, y = y.names, shape = "state", color = "state"), size = 3)
+    # split categorical to horizontal and function/infill vertically
+    g = g + facet_grid(as.formula(sprintf("%s~%s", "variable", if (length(x.name.discrete)>0) x.name.discrete else ".")), scales = "free")
+    # drop "y" from y axis as it's in the grid label
+    g = g + theme(axis.title.y = element_blank())
+    # Title Information
+    g = g + labs(title = sprintf("%s, Iteration: %s", getName(run$obj.fun), iter), subtitle = gap.subtitle)
+    g
+  })
+
+  if (print) {
+    for (g in res) {
+      print(g)
+    }
+  } else {
+    return(res)
   }
 
-  for (iter in iters) {
-    # get rendered plot data
-    plots = renderExampleRunPlot(object, iter = iter, densregion = densregion, se.factor = se.factor,
-      single.prop.point.plots = single.prop.point.plots, xlim = xlim, ylim = ylim,
-      point.size = point.size, line.size = line.size, trafo = trafo, colors = colors, gg.objects = gg.objects, ...)
-    if (!any(vlapply(plots, inherits, what = "ggplot"))) {
-      # in this case we have multi-objective multipoint proposal: list of plots for each proposed point
-      for (jter in seq_along(plots)) {
-        arrangePlots(plots[[jter]], multi.crit)
-        if (pause && !(iter == getLast(iters) && jter == length(plots)))
-          pause()
-      }
-    } else {
-      arrangePlots(plots, multi.crit)
-      if (pause && iter != getLast(iters))
-        pause()
-    }
-  }
 }
