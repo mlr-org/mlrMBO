@@ -3,6 +3,7 @@
 ### optimizing a simple sin(x) with mbo / EI
 ###
 #####################################################
+\dontrun{
 library(ggplot2)
 library(mlrMBO)
 configureMlr(show.learner.output = FALSE)
@@ -28,3 +29,4 @@ run = exampleRun(obj.fun, design = design, learner = lrn,
   control = ctrl, points.per.dim = 100, show.info = TRUE)
 
 plotExampleRun(run, densregion = TRUE, gg.objects = list(theme_bw()))
+}

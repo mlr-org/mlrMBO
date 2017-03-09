@@ -3,6 +3,7 @@
 ### optimizing a simple noisy sin(x) with mbo / EI
 ###
 #####################################################
+\dontrun{
 library(mlrMBO)
 library(ggplot2)
 set.seed(1)
@@ -39,3 +40,4 @@ run = exampleRun(obj.fun, design = design, learner = lrn,
 print(run)
 
 plotExampleRun(run, densregion = TRUE, gg.objects = list(theme_bw()))
+}

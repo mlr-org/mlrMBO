@@ -4,6 +4,7 @@
 ### noisy outout with random forest
 ###
 #####################################################
+\dontrun{
 library(mlrMBO)
 library(ggplot2)
 set.seed(1)
@@ -44,3 +45,4 @@ run = exampleRun(obj.fun, design = design, learner = lrn, control = ctrl,
 
 print(run)
 plotExampleRun(run, densregion = TRUE, gg.objects = list(theme_bw()))
+}
