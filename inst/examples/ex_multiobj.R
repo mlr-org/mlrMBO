@@ -3,6 +3,7 @@
 ### optimizing multi-objective function
 ###
 #####################################################
+\dontrun{
 library(mlrMBO)
 library(ggplot2)
 set.seed(1)

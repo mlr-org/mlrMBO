@@ -7,7 +7,7 @@ Description: Flexible and comprehensive R toolbox for model-based optimization
     of regression learners to model the performance of the target algorithm with
     respect to the parameter settings. It provides many different infill criteria
     to guide the search process. Additional features include multipoint batch
-    proposal, parallel exectution as well as visualization and sophisticated
+    proposal, parallel execution as well as visualization and sophisticated
     logging mechanisms, which is especially useful for teaching and understanding
     of algorithm behavior. 'mlrMBO' is implemented in a modular fashion, such that
     single components can be easily replaced or adapted by the user for specific use
