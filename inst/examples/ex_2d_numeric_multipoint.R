@@ -3,12 +3,10 @@
 ### optimizing branin in 2D with multipoint proposal #####
 ###
 #####################################################
-\dontrun{
 library(mlrMBO)
 library(ggplot2)
 set.seed(2)
 configureMlr(show.learner.output = FALSE)
-pause = interactive()
 
 obj.fun = makeBraninFunction()
 
@@ -30,5 +28,4 @@ run = exampleRun(obj.fun, design = design, learner = lrn, control = ctrl,
 
 print(run)
 
-plotExampleRun(run, pause = pause, gg.objects = list(theme_bw()))
-}
+plotExampleRun(run, gg.objects = list(theme_bw()))

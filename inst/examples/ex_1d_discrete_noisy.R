@@ -4,12 +4,10 @@
 ### noisy outout with random forest
 ###
 #####################################################
-\dontrun{
 library(mlrMBO)
 library(ggplot2)
 set.seed(1)
 configureMlr(show.learner.output = FALSE)
-pause = interactive()
 
 obj.fun = makeSingleObjectiveFunction(
   name = "Mixed decision space function",
@@ -45,5 +43,4 @@ run = exampleRun(obj.fun, design = design, learner = lrn, control = ctrl,
 	points.per.dim = 50L, show.info = TRUE)
 
 print(run)
-plotExampleRun(run, pause = pause, densregion = TRUE, gg.objects = list(theme_bw()))
-}
+plotExampleRun(run, densregion = TRUE, gg.objects = list(theme_bw()))

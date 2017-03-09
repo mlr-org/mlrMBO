@@ -3,12 +3,10 @@
 ### optimizing a simple noisy sin(x) with mbo / EI
 ###
 #####################################################
-\dontrun{
 library(mlrMBO)
 library(ggplot2)
 set.seed(1)
 configureMlr(show.learner.output = FALSE)
-pause = interactive()
 
 # function with noise
 obj.fun = makeSingleObjectiveFunction(
@@ -40,5 +38,4 @@ run = exampleRun(obj.fun, design = design, learner = lrn,
 
 print(run)
 
-plotExampleRun(run, pause = pause, densregion = TRUE, gg.objects = list(theme_bw()))
-}
+plotExampleRun(run, densregion = TRUE, gg.objects = list(theme_bw()))

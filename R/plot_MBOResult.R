@@ -15,7 +15,7 @@
 #'   Iterations to be plotted, 0 indicates the initial design. Default is all iterations.
 #' @param pause [\code{logical(1)}]\cr
 #'   Should the process be paused after each iteration?
-#'   Default is \code{TRUE}.
+#'   Default is \code{interactive()}.
 #' @param ...
 #'  Additional parameters for the \code{\link[ParamHelpers]{plotOptPath}}
 #'  function in package \code{ParamHelpers}.
@@ -24,7 +24,7 @@ NULL
 
 #' @rdname plotMBOResult
 #' @export
-plot.MBOSingleObjResult = function(x, iters = NULL, pause = TRUE, ...) {
+plot.MBOSingleObjResult = function(x, iters = NULL, pause = interactive(), ...) {
 
   # extract and set params
   opt.path = x$opt.path
@@ -44,7 +44,7 @@ plot.MBOSingleObjResult = function(x, iters = NULL, pause = TRUE, ...) {
 
 #' @rdname plotMBOResult
 #' @export
-plot.MBOMultiObjResult = function(x, iters = NULL, pause = TRUE, ...) {
+plot.MBOMultiObjResult = function(x, iters = NULL, pause = interactive(), ...) {
 
   # extract and set params
   opt.path = x$opt.path

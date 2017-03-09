@@ -3,12 +3,10 @@
 ### optimizing multi objective function and plots
 ###
 #####################################################
-\dontrun{
 library(mlrMBO)
 library(ggplot2)
 set.seed(1)
 configureMlr(show.learner.output = FALSE)
-pause = interactive()
 
 obj.fun = makeDTLZ1Function(dimensions = 5L, n.objectives = 2L)
 
@@ -24,5 +22,4 @@ design = generateDesign(8L, getParamSet(obj.fun), fun = lhs::maximinLHS)
 
 res = mbo(obj.fun, design = design, learner = lrn, control = ctrl, show.info = TRUE)
 
-plot(res, pause = pause)
-}
+plot(res)

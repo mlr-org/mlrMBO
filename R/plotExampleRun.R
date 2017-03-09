@@ -22,7 +22,7 @@
 #'   Default is all iterations.
 #' @param pause [\code{logical(1)}]\cr
 #'   Should the process be paused after each iteration?
-#'   Default is \code{TRUE}.
+#'   Default is \code{interactive()}.
 #' @param densregion [\code{logical(1)}]\cr
 #'   Should the background be shaded? Default is \code{TRUE}.
 #'   Only used if learner supports computation of standard error.
@@ -68,7 +68,7 @@
 #'   Currently not used.
 #' @return Nothing.
 #' @export
-plotExampleRun = function(object, iters, pause = TRUE,
+plotExampleRun = function(object, iters, pause = interactive(),
   densregion = TRUE, se.factor = 1, single.prop.point.plots = FALSE,
   xlim = NULL, ylim = NULL,
   point.size = 3, line.size = 1,
