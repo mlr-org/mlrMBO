@@ -178,7 +178,7 @@ autoplot(obj.fun.single, render.levels = TRUE) + general.scale
 Now let's create an objective function that uses parallelization internally by using the function `parallelMap()` of the equally named package.
 
 ```{r custom_noisy_parallel}
-parallelRegisterLevels(levels = "objective")
+# parallelRegisterLevels(levels = "objective")
 obj.fun.parallel = makeSingleObjectiveFunction(
   name = "noisy_example",
   fn = function(x) {
