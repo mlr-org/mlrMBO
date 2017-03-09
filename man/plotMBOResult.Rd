@@ -6,9 +6,11 @@
 \alias{plot.MBOMultiObjResult}
 \title{MBO Result Plotting}
 \usage{
-\method{plot}{MBOSingleObjResult}(x, iters = NULL, pause = TRUE, ...)
+\method{plot}{MBOSingleObjResult}(x, iters = NULL, pause = interactive(),
+  ...)
 
-\method{plot}{MBOMultiObjResult}(x, iters = NULL, pause = TRUE, ...)
+\method{plot}{MBOMultiObjResult}(x, iters = NULL, pause = interactive(),
+  ...)
 }
 \arguments{
 \item{x}{[\code{MBOResult}]\cr
@@ -19,7 +21,7 @@ Iterations to be plotted, 0 indicates the initial design. Default is all iterati
 
 \item{pause}{[\code{logical(1)}]\cr
 Should the process be paused after each iteration?
-Default is \code{TRUE}.}
+Default is \code{interactive()}.}
 
 \item{...}{Additional parameters for the \code{\link[ParamHelpers]{plotOptPath}}
 function in package \code{ParamHelpers}.}

@@ -7,7 +7,6 @@ library(mlrMBO)
 library(ggplot2)
 set.seed(1)
 configureMlr(show.learner.output = FALSE)
-pause = interactive()
 
 obj.fun = makeSingleObjectiveFunction(
   name = "Sine",
@@ -36,4 +35,4 @@ run = exampleRun(obj.fun, design = design, learner = lrn,
 
 print(run)
 
-plotExampleRun(run, pause = pause, densregion = TRUE, gg.objects = list(theme_bw()))
+plotExampleRun(run, densregion = TRUE, gg.objects = list(theme_bw()))
