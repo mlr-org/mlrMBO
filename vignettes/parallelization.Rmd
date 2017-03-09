@@ -110,7 +110,7 @@ All we have to do now to initialize the parallel execution of the objective func
 configureMlr(on.learner.warning = "quiet", show.learner.output = FALSE)
 
 # library(parallelMap)
-parallelStartMulticore(cpus = 2, show.info = TRUE)
+# parallelStartMulticore(cpus = 2, show.info = TRUE)
 res = mbo(obj.fun, control = ctrl, show.info = FALSE)
 # parallelStop()
 ```
@@ -138,7 +138,7 @@ ctrl = setMBOControlMultiPoint(ctrl, method = "cb")
 ctrl = setMBOControlTermination(ctrl, iters = 5)
 design = generateDesign(n = 5*8, par.set = getParamSet(obj.fun))
 # library(parallelMap)
-parallelStartMulticore(cpus = 2, show.info = FALSE)
+# parallelStartMulticore(cpus = 2, show.info = FALSE)
 res = mbo(obj.fun, control = ctrl, design = design, show.info = FALSE)
 # parallelStop()
 autoplot(obj.fun, render.levels = TRUE) + geom_text(data = as.data.frame(res$opt.path), mapping = aes(label = dob), color = "white")
