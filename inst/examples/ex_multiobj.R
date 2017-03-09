@@ -1,3 +1,6 @@
+###
+### optimizing multi-objective function
+###
 library(mlrMBO)
 library(ggplot2)
 library(smoof)
