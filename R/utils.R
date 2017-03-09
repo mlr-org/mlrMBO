@@ -47,3 +47,11 @@ measureTime = function(expr, ee = parent.frame()) {
 isSimpleNumeric = function(par) {
   isNumeric(par, include.int = TRUE) && !hasRequires(par)
 }
+
+getHyperParsString2 = function(learner, show.missing.values = TRUE) {
+  hps = getHyperPars(learner)
+  ns = names(hps)
+  pars = getParamSet(learner)$pars[ns]
+  s = mapply(paramValueToString, pars, hps, MoreArgs = list(show.missing.values = show.missing.values))
+  stri_paste(ns, s, sep = "=", collapse = ",")
+}
