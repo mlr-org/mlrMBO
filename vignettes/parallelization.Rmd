@@ -204,7 +204,7 @@ library(mlr)
 ctrl = makeMBOControl(final.method = "best.predicted")
 ctrl = setMBOControlTermination(ctrl, iters = 5L)
 ctrl = setMBOControlInfill(ctrl, crit = crit.aei)
-# parallelStartMulticore(cpus = 4L, show.info = TRUE, level = "custom.objective")
+# parallelStartMulticore(cpus = 2L, show.info = TRUE, level = "custom.objective")
 res.parallel = mbo(obj.fun.parallel, control = ctrl, show.info = FALSE)
 # parallelStop()
 res.parallel
