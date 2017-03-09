@@ -3,8 +3,8 @@
 ^.travis.yml$
 ^appveyor.yml$
 ^.*tar.gz$
-^src/*.o$
-^src/*.so$
+^src/.*.o$
+^src/.*.so$
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^man-roxygen$
@@ -13,6 +13,6 @@
 ^codecov\.yml$
 ^_pkgdown\.yml$
 ^docs$
-^vignettes/*_cache
-^vignettes/*_files
-^vignettes/*.html
+^vignettes/.+_cache$
+^vignettes/.+_files$
+^vignettes/.+.html$
