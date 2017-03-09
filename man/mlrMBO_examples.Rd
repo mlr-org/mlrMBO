@@ -7,12 +7,13 @@
 Different scenarios of the usage of mlrMBO and visualizations.
 }
 \examples{
-##### optimizing a simple sin(x) with mbo / EI #####
-
-#library(mlrMBO)
+#####################################################
+###
+### optimizing a simple sin(x) with mbo / EI
+###
+#####################################################
 library(ggplot2)
 library(mlrMBO)
-library(smoof)
 configureMlr(show.learner.output = FALSE)
 pause = interactive()
 set.seed(1)
@@ -36,11 +37,13 @@ run = exampleRun(obj.fun, design = design, learner = lrn,
   control = ctrl, points.per.dim = 100, show.info = TRUE)
 
 plotExampleRun(run, pause = pause, densregion = TRUE, gg.objects = list(theme_bw()))
-##### optimizing branin in 2D with mbo / EI #####
-
+#####################################################
+###
+### optimizing branin in 2D with mbo / EI #####
+###
+#####################################################
 library(mlrMBO)
 library(ggplot2)
-library(smoof)
 set.seed(1)
 configureMlr(show.learner.output = FALSE)
 pause = interactive()
@@ -60,11 +63,13 @@ run = exampleRun(obj.fun, design = design, learner = lrn, control = ctrl,
 print(run)
 
 plotExampleRun(run, pause = pause, gg.objects = list(theme_bw()))
-##### optimizing a simple sin(x) with multipoint proposal #####
-
+#####################################################
+###
+### optimizing a simple sin(x) with multipoint proposal
+###
+#####################################################
 library(mlrMBO)
 library(ggplot2)
-library(smoof)
 set.seed(1)
 configureMlr(show.learner.output = FALSE)
 pause = interactive()
@@ -97,12 +102,14 @@ run = exampleRun(obj.fun, design = design, learner = lrn,
 print(run)
 
 plotExampleRun(run, pause = pause, densregion = TRUE, gg.objects = list(theme_bw()))
-##### optimizing branin in 2D with multipoint proposal #####
-
+#####################################################
+###
+### optimizing branin in 2D with multipoint proposal #####
+###
+#####################################################
 library(mlrMBO)
 library(ggplot2)
-library(smoof)
-set.seed(2) # FIXME: does not work for seed == 1
+set.seed(2)
 configureMlr(show.learner.output = FALSE)
 pause = interactive()
 
@@ -118,8 +125,6 @@ ctrl = setMBOControlMultiPoint(ctrl,
   moimbo.maxit = 200L
 )
 
-#lrn = makeMBOLearner(ctrl, obj.fun)
-#FIXME: Remove lrn after #314 is fixed
 lrn = makeLearner("regr.km", predict.type = "se")
 design = generateDesign(10L, getParamSet(obj.fun), fun = lhs::maximinLHS)
 
@@ -129,11 +134,13 @@ run = exampleRun(obj.fun, design = design, learner = lrn, control = ctrl,
 print(run)
 
 plotExampleRun(run, pause = pause, gg.objects = list(theme_bw()))
-##### optimizing a simple noisy sin(x) with mbo / EI
-
+#####################################################
+###
+### optimizing a simple noisy sin(x) with mbo / EI
+###
+#####################################################
 library(mlrMBO)
 library(ggplot2)
-library(smoof)
 set.seed(1)
 configureMlr(show.learner.output = FALSE)
 pause = interactive()
@@ -169,12 +176,14 @@ run = exampleRun(obj.fun, design = design, learner = lrn,
 print(run)
 
 plotExampleRun(run, pause = pause, densregion = TRUE, gg.objects = list(theme_bw()))
-##### optimizing 1D fun with 3 categorical level and
-##### noisy outout with random forest
-
+#####################################################
+###
+### optimizing 1D fun with 3 categorical level and
+### noisy outout with random forest
+###
+#####################################################
 library(mlrMBO)
 library(ggplot2)
-library(smoof)
 set.seed(1)
 configureMlr(show.learner.output = FALSE)
 pause = interactive()
@@ -214,13 +223,13 @@ run = exampleRun(obj.fun, design = design, learner = lrn, control = ctrl,
 
 print(run)
 plotExampleRun(run, pause = pause, densregion = TRUE, gg.objects = list(theme_bw()))
+#####################################################
 ###
 ### optimizing mixed space function
 ###
-
+#####################################################
 library(mlrMBO)
 library(ggplot2)
-library(smoof)
 set.seed(1)
 configureMlr(show.learner.output = FALSE)
 pause = interactive()
@@ -256,13 +265,13 @@ run = exampleRun(obj.fun, design = design, learner = lrn,
 print(run)
 
 plotExampleRun(run, pause = pause, densregion = TRUE, gg.objects = list(theme_bw()))
+#####################################################
 ###
 ### optimizing multi-objective function
 ###
+#####################################################
 library(mlrMBO)
 library(ggplot2)
-library(smoof)
-
 set.seed(1)
 configureMlr(show.learner.output = FALSE)
 pause = interactive()
@@ -282,13 +291,13 @@ run = exampleRunMultiObj(obj.fun, design = design, learner = learner, ctrl, poin
   show.info = TRUE, nsga2.args = list())
 
 plotExampleRun(run, pause = pause, gg.objects = list(theme_bw()))
+#####################################################
 ###
 ### optimizing multi objective function and plots
 ###
+#####################################################
 library(mlrMBO)
-library(smoof)
 library(ggplot2)
-
 set.seed(1)
 configureMlr(show.learner.output = FALSE)
 pause = interactive()

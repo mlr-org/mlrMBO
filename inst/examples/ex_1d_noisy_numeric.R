@@ -1,8 +1,10 @@
-##### optimizing a simple noisy sin(x) with mbo / EI
-
+#####################################################
+###
+### optimizing a simple noisy sin(x) with mbo / EI
+###
+#####################################################
 library(mlrMBO)
 library(ggplot2)
-library(smoof)
 set.seed(1)
 configureMlr(show.learner.output = FALSE)
 pause = interactive()

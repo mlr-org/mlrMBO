@@ -1,9 +1,11 @@
-##### optimizing 1D fun with 3 categorical level and
-##### noisy outout with random forest
-
+#####################################################
+###
+### optimizing 1D fun with 3 categorical level and
+### noisy outout with random forest
+###
+#####################################################
 library(mlrMBO)
 library(ggplot2)
-library(smoof)
 set.seed(1)
 configureMlr(show.learner.output = FALSE)
 pause = interactive()

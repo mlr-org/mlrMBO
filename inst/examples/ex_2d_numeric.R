@@ -1,8 +1,10 @@
-##### optimizing branin in 2D with mbo / EI #####
-
+#####################################################
+###
+### optimizing branin in 2D with mbo / EI #####
+###
+#####################################################
 library(mlrMBO)
 library(ggplot2)
-library(smoof)
 set.seed(1)
 configureMlr(show.learner.output = FALSE)
 pause = interactive()

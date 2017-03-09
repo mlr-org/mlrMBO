@@ -1,8 +1,10 @@
-##### optimizing a simple sin(x) with multipoint proposal #####
-
+#####################################################
+###
+### optimizing a simple sin(x) with multipoint proposal
+###
+#####################################################
 library(mlrMBO)
 library(ggplot2)
-library(smoof)
 set.seed(1)
 configureMlr(show.learner.output = FALSE)
 pause = interactive()

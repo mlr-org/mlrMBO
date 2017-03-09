@@ -1,9 +1,10 @@
-##### optimizing a simple sin(x) with mbo / EI #####
-
-#library(mlrMBO)
+#####################################################
+###
+### optimizing a simple sin(x) with mbo / EI
+###
+#####################################################
 library(ggplot2)
 library(mlrMBO)
-library(smoof)
 configureMlr(show.learner.output = FALSE)
 pause = interactive()
 set.seed(1)

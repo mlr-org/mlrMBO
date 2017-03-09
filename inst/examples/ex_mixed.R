@@ -1,10 +1,10 @@
+#####################################################
 ###
 ### optimizing mixed space function
 ###
-
+#####################################################
 library(mlrMBO)
 library(ggplot2)
-library(smoof)
 set.seed(1)
 configureMlr(show.learner.output = FALSE)
 pause = interactive()
