@@ -13,6 +13,6 @@
 ^codecov\.yml$
 ^_pkgdown\.yml$
 ^docs$
-^vignettes/mlrMBO_cache/
-^vignettes/mlrMBO_files/
+^vignettes/*_cache
+^vignettes/*_files
 ^vignettes/*.html
