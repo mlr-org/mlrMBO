@@ -59,7 +59,7 @@ test_that("infill crits", {
 
   learners = list(
     makeLearner("regr.km", predict.type = "se", nugget.stability = 1e-5),
-    makeLearner("regr.randomForest", ntree = 10L, predict.type = "se")
+    makeLearner("regr.randomForest", ntree = 30L, predict.type = "se")
   )
 
   # FIXME: we see a problem with crit = "mean" here.

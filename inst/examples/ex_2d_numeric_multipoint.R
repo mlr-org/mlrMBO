@@ -1,11 +1,12 @@
-##### optimizing branin in 2D with multipoint proposal #####
-
+#####################################################
+###
+### optimizing branin in 2D with multipoint proposal #####
+###
+#####################################################
 library(mlrMBO)
 library(ggplot2)
-library(smoof)
-set.seed(2) # FIXME: does not work for seed == 1
+set.seed(2)
 configureMlr(show.learner.output = FALSE)
-pause = interactive()
 
 obj.fun = makeBraninFunction()
 
@@ -19,8 +20,6 @@ ctrl = setMBOControlMultiPoint(ctrl,
   moimbo.maxit = 200L
 )
 
-#lrn = makeMBOLearner(ctrl, obj.fun)
-#FIXME: Remove lrn after #314 is fixed
 lrn = makeLearner("regr.km", predict.type = "se")
 design = generateDesign(10L, getParamSet(obj.fun), fun = lhs::maximinLHS)
 
@@ -29,4 +28,4 @@ run = exampleRun(obj.fun, design = design, learner = lrn, control = ctrl,
 
 print(run)
 
-plotExampleRun(run, pause = pause, gg.objects = list(theme_bw()))
+plotExampleRun(run, gg.objects = list(theme_bw()))

@@ -1,11 +1,12 @@
-##### optimizing a simple sin(x) with multipoint proposal #####
-
+#####################################################
+###
+### optimizing a simple sin(x) with multipoint proposal
+###
+#####################################################
 library(mlrMBO)
 library(ggplot2)
-library(smoof)
 set.seed(1)
 configureMlr(show.learner.output = FALSE)
-pause = interactive()
 
 obj.fun = makeSingleObjectiveFunction(
   name = "Sine",
@@ -34,4 +35,4 @@ run = exampleRun(obj.fun, design = design, learner = lrn,
 
 print(run)
 
-plotExampleRun(run, pause = pause, densregion = TRUE, gg.objects = list(theme_bw()))
+plotExampleRun(run, densregion = TRUE, gg.objects = list(theme_bw()))
