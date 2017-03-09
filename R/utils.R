@@ -53,5 +53,5 @@ getHyperParsString2 = function(learner, show.missing.values = TRUE) {
   ns = names(hps)
   pars = getParamSet(learner)$pars[ns]
   s = mapply(paramValueToString, pars, hps, MoreArgs = list(show.missing.values = show.missing.values))
-  stri_paste(ns, s, sep = "=", collapse = ",")
+  paste(ns, s, sep = "=", collapse = ",")
 }

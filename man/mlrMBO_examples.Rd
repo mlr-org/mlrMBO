@@ -54,8 +54,8 @@ obj.fun = makeBraninFunction()
 
 ctrl = makeMBOControl(propose.points = 1L)
 ctrl = setMBOControlTermination(ctrl, iters = 10L)
-ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCritEI(), opt = "focussearch",
-  opt.focussearch.points = 2000L)
+ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCritEI(), 
+  opt = "focussearch", opt.focussearch.points = 2000L)
 
 lrn = makeMBOLearner(ctrl, obj.fun)
 design = generateDesign(10L, getParamSet(obj.fun), fun = lhs::maximinLHS)
@@ -260,8 +260,8 @@ obj.fun = makeSingleObjectiveFunction(
 
 ctrl = makeMBOControl(propose.points = 1L)
 ctrl = setMBOControlTermination(ctrl, iters = 10L)
-ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCritEI(), opt = "focussearch",
-  opt.focussearch.points = 500L)
+ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCritEI(), 
+  opt = "focussearch", opt.focussearch.points = 500L)
 
 lrn = makeMBOLearner(ctrl, obj.fun)
 
