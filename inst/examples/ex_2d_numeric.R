@@ -3,6 +3,7 @@
 ### optimizing branin in 2D with mbo / EI #####
 ###
 #####################################################
+\dontrun{
 library(mlrMBO)
 library(ggplot2)
 set.seed(1)
@@ -13,7 +14,8 @@ obj.fun = makeBraninFunction()
 
 ctrl = makeMBOControl(propose.points = 1L)
 ctrl = setMBOControlTermination(ctrl, iters = 10L)
-ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCritEI(), opt = "focussearch", opt.focussearch.points = 2000L)
+ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCritEI(), opt = "focussearch", 
+  opt.focussearch.points = 2000L)
 
 lrn = makeMBOLearner(ctrl, obj.fun)
 design = generateDesign(10L, getParamSet(obj.fun), fun = lhs::maximinLHS)
@@ -24,3 +26,4 @@ run = exampleRun(obj.fun, design = design, learner = lrn, control = ctrl,
 print(run)
 
 plotExampleRun(run, pause = pause, gg.objects = list(theme_bw()))
+}

@@ -3,6 +3,7 @@
 ### optimizing multi objective function and plots
 ###
 #####################################################
+\dontrun{
 library(mlrMBO)
 library(ggplot2)
 set.seed(1)
@@ -24,3 +25,4 @@ design = generateDesign(8L, getParamSet(obj.fun), fun = lhs::maximinLHS)
 res = mbo(obj.fun, design = design, learner = lrn, control = ctrl, show.info = TRUE)
 
 plot(res, pause = pause)
+}
