@@ -14,4 +14,3 @@ if (identical(Sys.getenv("TRAVIS"), "true") || identical(Sys.getenv("R_EXPENSIVE
 } else {
   test_check("mlrMBO", filter = "((mbo_rf)|(mbo_km))")
 }
-
