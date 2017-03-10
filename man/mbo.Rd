@@ -67,5 +67,7 @@ des = generateDesign(n = 5L, getParamSet(obj.fun), fun = lhs::maximinLHS)
 res = mbo(obj.fun, design = des, control = ctrl)
 
 print(res)
+\dontrun{
 plot(res)
+}
 }

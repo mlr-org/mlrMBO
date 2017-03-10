@@ -49,7 +49,9 @@
 #' res = mbo(obj.fun, design = des, control = ctrl)
 #'
 #' print(res)
+#' \dontrun{
 #' plot(res)
+#' }
 mbo = function(fun, design = NULL, learner = NULL, control,
   show.info = getOption("mlrMBO.show.info", TRUE), more.args = list()) {
 
