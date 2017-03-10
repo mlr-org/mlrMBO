@@ -3,6 +3,7 @@
 ### optimizing mixed space function
 ###
 #####################################################
+\dontrun{
 library(mlrMBO)
 library(ggplot2)
 set.seed(1)
@@ -26,8 +27,8 @@ obj.fun = makeSingleObjectiveFunction(
 
 ctrl = makeMBOControl(propose.points = 1L)
 ctrl = setMBOControlTermination(ctrl, iters = 10L)
-ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCritEI(), opt = "focussearch",
-  opt.focussearch.points = 500L)
+ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCritEI(), 
+  opt = "focussearch", opt.focussearch.points = 500L)
 
 lrn = makeMBOLearner(ctrl, obj.fun)
 
@@ -39,3 +40,4 @@ run = exampleRun(obj.fun, design = design, learner = lrn,
 print(run)
 
 plotExampleRun(run, densregion = TRUE, gg.objects = list(theme_bw()))
+}

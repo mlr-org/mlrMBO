@@ -12,6 +12,7 @@ Different scenarios of the usage of mlrMBO and visualizations.
 ### optimizing a simple sin(x) with mbo / EI
 ###
 #####################################################
+\dontrun{
 library(ggplot2)
 library(mlrMBO)
 configureMlr(show.learner.output = FALSE)
@@ -26,8 +27,8 @@ obj.fun = makeSingleObjectiveFunction(
 
 ctrl = makeMBOControl(propose.points = 1)
 ctrl = setMBOControlTermination(ctrl, iters = 10L)
-ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCritEI(), opt = "focussearch",
-  opt.focussearch.points = 500L)
+ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCritEI(), 
+  opt = "focussearch", opt.focussearch.points = 500L)
 
 lrn = makeMBOLearner(ctrl, obj.fun)
 
@@ -37,11 +38,13 @@ run = exampleRun(obj.fun, design = design, learner = lrn,
   control = ctrl, points.per.dim = 100, show.info = TRUE)
 
 plotExampleRun(run, densregion = TRUE, gg.objects = list(theme_bw()))
+}
 #####################################################
 ###
 ### optimizing branin in 2D with mbo / EI #####
 ###
 #####################################################
+\dontrun{
 library(mlrMBO)
 library(ggplot2)
 set.seed(1)
@@ -51,8 +54,8 @@ obj.fun = makeBraninFunction()
 
 ctrl = makeMBOControl(propose.points = 1L)
 ctrl = setMBOControlTermination(ctrl, iters = 10L)
-ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCritEI(), opt = "focussearch",
-  opt.focussearch.points = 2000L)
+ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCritEI(), 
+  opt = "focussearch", opt.focussearch.points = 2000L)
 
 lrn = makeMBOLearner(ctrl, obj.fun)
 design = generateDesign(10L, getParamSet(obj.fun), fun = lhs::maximinLHS)
@@ -63,11 +66,13 @@ run = exampleRun(obj.fun, design = design, learner = lrn, control = ctrl,
 print(run)
 
 plotExampleRun(run, gg.objects = list(theme_bw()))
+}
 #####################################################
 ###
 ### optimizing a simple sin(x) with multipoint proposal
 ###
 #####################################################
+\dontrun{
 library(mlrMBO)
 library(ggplot2)
 set.seed(1)
@@ -101,11 +106,13 @@ run = exampleRun(obj.fun, design = design, learner = lrn,
 print(run)
 
 plotExampleRun(run, densregion = TRUE, gg.objects = list(theme_bw()))
+}
 #####################################################
 ###
 ### optimizing branin in 2D with multipoint proposal #####
 ###
 #####################################################
+\dontrun{
 library(mlrMBO)
 library(ggplot2)
 set.seed(2)
@@ -132,11 +139,13 @@ run = exampleRun(obj.fun, design = design, learner = lrn, control = ctrl,
 print(run)
 
 plotExampleRun(run, gg.objects = list(theme_bw()))
+}
 #####################################################
 ###
 ### optimizing a simple noisy sin(x) with mbo / EI
 ###
 #####################################################
+\dontrun{
 library(mlrMBO)
 library(ggplot2)
 set.seed(1)
@@ -159,8 +168,8 @@ ctrl = makeMBOControl(
 )
 ctrl = setMBOControlTermination(ctrl, iters = 5L)
 
-ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCritEI(), opt = "focussearch",
-  opt.focussearch.points = 500L)
+ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCritEI(),
+ opt = "focussearch", opt.focussearch.points = 500L)
 
 lrn = makeMBOLearner(ctrl, obj.fun)
 
@@ -173,12 +182,14 @@ run = exampleRun(obj.fun, design = design, learner = lrn,
 print(run)
 
 plotExampleRun(run, densregion = TRUE, gg.objects = list(theme_bw()))
+}
 #####################################################
 ###
 ### optimizing 1D fun with 3 categorical level and
 ### noisy outout with random forest
 ###
 #####################################################
+\dontrun{
 library(mlrMBO)
 library(ggplot2)
 set.seed(1)
@@ -219,11 +230,13 @@ run = exampleRun(obj.fun, design = design, learner = lrn, control = ctrl,
 
 print(run)
 plotExampleRun(run, densregion = TRUE, gg.objects = list(theme_bw()))
+}
 #####################################################
 ###
 ### optimizing mixed space function
 ###
 #####################################################
+\dontrun{
 library(mlrMBO)
 library(ggplot2)
 set.seed(1)
@@ -247,8 +260,8 @@ obj.fun = makeSingleObjectiveFunction(
 
 ctrl = makeMBOControl(propose.points = 1L)
 ctrl = setMBOControlTermination(ctrl, iters = 10L)
-ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCritEI(), opt = "focussearch",
-  opt.focussearch.points = 500L)
+ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCritEI(), 
+  opt = "focussearch", opt.focussearch.points = 500L)
 
 lrn = makeMBOLearner(ctrl, obj.fun)
 
@@ -260,6 +273,7 @@ run = exampleRun(obj.fun, design = design, learner = lrn,
 print(run)
 
 plotExampleRun(run, densregion = TRUE, gg.objects = list(theme_bw()))
+}
 #####################################################
 ###
 ### optimizing multi-objective function
@@ -286,11 +300,13 @@ run = exampleRunMultiObj(obj.fun, design = design, learner = learner, ctrl, poin
   show.info = TRUE, nsga2.args = list())
 
 plotExampleRun(run, gg.objects = list(theme_bw()))
+}
 #####################################################
 ###
 ### optimizing multi objective function and plots
 ###
 #####################################################
+\dontrun{
 library(mlrMBO)
 library(ggplot2)
 set.seed(1)
@@ -311,4 +327,5 @@ design = generateDesign(8L, getParamSet(obj.fun), fun = lhs::maximinLHS)
 res = mbo(obj.fun, design = design, learner = lrn, control = ctrl, show.info = TRUE)
 
 plot(res)
+}
 }

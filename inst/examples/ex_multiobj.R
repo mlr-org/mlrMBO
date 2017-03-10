@@ -24,3 +24,4 @@ run = exampleRunMultiObj(obj.fun, design = design, learner = learner, ctrl, poin
   show.info = TRUE, nsga2.args = list())
 
 plotExampleRun(run, gg.objects = list(theme_bw()))
+}
