@@ -109,10 +109,10 @@ All we have to do now to initialize the parallel execution of the objective func
 # Kriging can create a lot of console output, which we want tu surpress here:
 configureMlr(on.learner.warning = "quiet", show.learner.output = FALSE)
 
-# library(parallelMap)
-# parallelStartMulticore(cpus = 2, show.info = TRUE)
+library(parallelMap)
+parallelStartMulticore(cpus = 2, show.info = TRUE)
 res = mbo(obj.fun, control = ctrl, show.info = FALSE)
-# parallelStop()
+parallelStop()
 ```
 
 As you can see from the console output of `parallelMap` the initial design will also be evaluated in parallel.
@@ -138,9 +138,9 @@ ctrl = setMBOControlMultiPoint(ctrl, method = "cb")
 ctrl = setMBOControlTermination(ctrl, iters = 5)
 design = generateDesign(n = 5*8, par.set = getParamSet(obj.fun))
 library(parallelMap)
-# parallelStartMulticore(cpus = 2, show.info = FALSE)
+parallelStartMulticore(cpus = 2, show.info = FALSE)
 res = mbo(obj.fun, control = ctrl, design = design, show.info = FALSE)
-# parallelStop()
+parallelStop()
 autoplot(obj.fun, render.levels = TRUE) + geom_text(data = as.data.frame(res$opt.path), mapping = aes(label = dob), color = "white")
 ```
 
@@ -204,9 +204,9 @@ library(mlr)
 ctrl = makeMBOControl(final.method = "best.predicted")
 ctrl = setMBOControlTermination(ctrl, iters = 5L)
 ctrl = setMBOControlInfill(ctrl, crit = crit.aei)
-# parallelStartMulticore(cpus = 2L, show.info = TRUE, level = "custom.objective")
+parallelStartMulticore(cpus = 2L, show.info = TRUE, level = "custom.objective")
 res.parallel = mbo(obj.fun.parallel, control = ctrl, show.info = FALSE)
-# parallelStop()
+parallelStop()
 res.parallel
 ```
 As you can see in the output of `parallelMap` we now parallelize the level `custom.objective` and not as previously `mlrMBO.feval`.
