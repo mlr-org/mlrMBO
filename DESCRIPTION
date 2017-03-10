@@ -30,10 +30,10 @@ Depends:
 Imports:
     backports,
     BBmisc (>= 1.11),
-    checkmate (>= 1.8.1),
+    checkmate (>= 1.8.2),
     data.table,
     lhs,
-    parallelMap (>= 1.1)
+    parallelMap (>= 1.3)
 Suggests:
     akima,
     cmaesr (>= 1.0.3),
