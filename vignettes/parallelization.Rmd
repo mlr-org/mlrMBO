@@ -21,6 +21,7 @@ knitr::knit_hooks$set(document = function(x){
 })
 
 # cheat and secretly don't do parallelization for windows compatibility.
+library(parallelMap)
 parallelStartMulticore = parallelStop = function(...) invisible()
 ```
 
