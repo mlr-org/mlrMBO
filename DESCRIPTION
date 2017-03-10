@@ -13,10 +13,9 @@ Description: Flexible and comprehensive R toolbox for model-based optimization
     single components can be easily replaced or adapted by the user for specific use
     cases.
 Authors@R: c(
-    person("Bernd", "Bischl", email = "bernd_bischl@gmx.net", role = c("aut",
-    "cre")),
+    person("Bernd", "Bischl", email = "bernd_bischl@gmx.net", role = c("aut")),
     person("Jakob", "Bossek", email = "jakob.bossek@tu-dortmund.de", role = "aut"),
-    person("Jakob", "Richter", email = "code@jakob-r.de", role = c("aut")),
+    person("Jakob", "Richter", email = "code@jakob-r.de", role = c("aut", "cre")),
     person("Daniel", "Horn", email = "daniel.horn@tu-dortmund.de", role = "aut"),
     person("Michel", "Lang", email = "michellang@gmail.com", role = "aut"),
     person("Janek", "Thomas", email = "janek.thomas@stat.uni-muenchen.de", role = "aut"))
@@ -60,6 +59,6 @@ Suggests:
 LazyData: yes
 Encoding: UTF-8
 ByteCompile: yes
-Version: 1.0.1
+Version: 1.0.0
 RoxygenNote: 6.0.1
 VignetteBuilder: knitr
