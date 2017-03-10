@@ -12,6 +12,6 @@ library(mlrMBO)
 if (identical(Sys.getenv("TRAVIS"), "true") || identical(Sys.getenv("R_EXPENSIVE_TEST_OK"), "true")) {
   test_check("mlrMBO")
 } else {
-  test_check("mlrMBO", filter = "mbo_rf")
+  test_check("mlrMBO", filter = "((mbo_rf)|(mbo_km))")
 }
 
