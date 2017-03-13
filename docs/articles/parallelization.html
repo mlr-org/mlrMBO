@@ -135,17 +135,8 @@ ctrl =<span class="st"> </span><span class="kw"><a href="../reference/setMBOCont
 
 <span class="kw">library</span>(parallelMap)
 <span class="kw">parallelStartMulticore</span>(<span class="dt">cpus =</span> <span class="dv">2</span>, <span class="dt">show.info =</span> <span class="ot">TRUE</span>)
-## Starting parallelization in mode=multicore with cpus=2.
 res =<span class="st"> </span><span class="kw"><a href="../reference/mbo.html">mbo</a></span>(obj.fun, <span class="dt">control =</span> ctrl, <span class="dt">show.info =</span> <span class="ot">FALSE</span>)
-## Mapping in parallel: mode = multicore; level = mlrMBO.feval; cpus = 2; elements = 8.
-## Mapping in parallel: mode = multicore; level = mlrMBO.feval; cpus = 2; elements = 2.
-## Mapping in parallel: mode = multicore; level = mlrMBO.feval; cpus = 2; elements = 2.
-## Mapping in parallel: mode = multicore; level = mlrMBO.feval; cpus = 2; elements = 2.
-## Mapping in parallel: mode = multicore; level = mlrMBO.feval; cpus = 2; elements = 2.
-## Mapping in parallel: mode = multicore; level = mlrMBO.feval; cpus = 2; elements = 2.
-## Mapping in parallel: mode = multicore; level = mlrMBO.feval; cpus = 2; elements = 2.
-<span class="kw">parallelStop</span>()
-## Stopped parallelization. All cleaned up.</code></pre></div>
+<span class="kw">parallelStop</span>()</code></pre></div>
 <p>As you can see from the console output of <code>parallelMap</code> the initial design will also be evaluated in parallel.</p>
 <p>In the end a small plot that uses the <code>opt.path</code> which is stored in the result of the MBO Optimization process to visualize which points were proposed in which iteration. The zeros are the points from the initial design, 1 for the first iteration and so on.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">autoplot</span>(obj.fun, <span class="dt">render.levels =</span> <span class="ot">TRUE</span>, <span class="dt">show.optimum =</span> <span class="ot">TRUE</span>) +<span class="st"> </span><span class="kw">geom_text</span>(<span class="dt">data =</span> <span class="kw">as.data.frame</span>(res$opt.path), <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">label =</span> dob), <span class="dt">color =</span> <span class="st">"white"</span>)
@@ -226,7 +217,7 @@ obj.fun.parallel =<span class="st"> </span><span class="kw">makeSingleObjectiveF
 ctrl =<span class="st"> </span><span class="kw"><a href="../reference/makeMBOControl.html">makeMBOControl</a></span>(<span class="dt">final.method =</span> <span class="st">"best.predicted"</span>)
 ctrl =<span class="st"> </span><span class="kw"><a href="../reference/setMBOControlTermination.html">setMBOControlTermination</a></span>(ctrl, <span class="dt">iters =</span> 5L)
 ctrl =<span class="st"> </span><span class="kw"><a href="../reference/setMBOControlInfill.html">setMBOControlInfill</a></span>(ctrl, <span class="dt">crit =</span> crit.aei)
-<span class="kw">parallelStartMulticore</span>(<span class="dt">cpus =</span> 4L, <span class="dt">show.info =</span> <span class="ot">TRUE</span>, <span class="dt">level =</span> <span class="st">"custom.objective"</span>)
+<span class="kw">parallelStartMulticore</span>(<span class="dt">cpus =</span> 2L, <span class="dt">show.info =</span> <span class="ot">TRUE</span>, <span class="dt">level =</span> <span class="st">"custom.objective"</span>)
 res.parallel =<span class="st"> </span><span class="kw"><a href="../reference/mbo.html">mbo</a></span>(obj.fun.parallel, <span class="dt">control =</span> ctrl, <span class="dt">show.info =</span> <span class="ot">FALSE</span>)
 <span class="kw">parallelStop</span>()
 res.parallel</code></pre></div>

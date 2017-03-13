@@ -120,7 +120,7 @@ the model and the (infill) points. The lower plot shows the infill criterion.
   plot displays the x-space.</p>
     
 
-    <pre><span class='fu'>plotExampleRun</span>(<span class='no'>object</span>, <span class='no'>iters</span>, <span class='kw'>pause</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>densregion</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+    <pre><span class='fu'>plotExampleRun</span>(<span class='no'>object</span>, <span class='no'>iters</span>, <span class='kw'>pause</span> <span class='kw'>=</span> <span class='fu'>interactive</span>(), <span class='kw'>densregion</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>se.factor</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>single.prop.point.plots</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>xlim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>ylim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>point.size</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='kw'>line.size</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>trafo</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>colors</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"red"</span>, <span class='st'>"blue"</span>, <span class='st'>"green"</span>), <span class='kw'>gg.objects</span> <span class='kw'>=</span> <span class='fu'>list</span>(), <span class='no'>...</span>)</pre>
@@ -138,7 +138,7 @@ Default is all iterations.</dd>
       <dt>pause</dt>
       <dd>[<code>logical(1)</code>]
 Should the process be paused after each iteration?
-Default is <code>TRUE</code>.</dd>
+Default is <code>interactive()</code>.</dd>
       <dt>densregion</dt>
       <dd>[<code>logical(1)</code>]
 Should the background be shaded? Default is <code>TRUE</code>.
