@@ -112,10 +112,12 @@ the optimization path are available. This function uses
     
 
     <pre><span class='co'># S3 method for MBOSingleObjResult</span>
-<span class='fu'>plot</span>(<span class='no'>x</span>, <span class='kw'>iters</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>pause</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)
+<span class='fu'>plot</span>(<span class='no'>x</span>, <span class='kw'>iters</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>pause</span> <span class='kw'>=</span> <span class='fu'>interactive</span>(),
+  <span class='no'>...</span>)
 
 <span class='co'># S3 method for MBOMultiObjResult</span>
-<span class='fu'>plot</span>(<span class='no'>x</span>, <span class='kw'>iters</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>pause</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>plot</span>(<span class='no'>x</span>, <span class='kw'>iters</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>pause</span> <span class='kw'>=</span> <span class='fu'>interactive</span>(),
+  <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
@@ -128,7 +130,7 @@ Iterations to be plotted, 0 indicates the initial design. Default is all iterati
       <dt>pause</dt>
       <dd>[<code>logical(1)</code>]
 Should the process be paused after each iteration?
-Default is <code>TRUE</code>.</dd>
+Default is <code>interactive()</code>.</dd>
       <dt>...</dt>
       <dd>Additional parameters for the <code><a href='http://www.rdocumentation.org/packages/ParamHelpers/topics/plotOptPath'>plotOptPath</a></code>
 function in package <code>ParamHelpers</code>.</dd>

@@ -33,8 +33,10 @@ reference:
       - mboContinue
       - mboFinalize
       - mbo_parallel
+      - mlrMBO_examples
+      
   - title: "Infill Criteria"
-    desc: "Infill Criteria and Functions to generate and interact with Infill Criteria"
+    desc: "Infill Criteria and Functions to generate and interact with Infill Criteria."
     contents:
       - setMBOControlInfill
       - infillcrits
@@ -49,12 +51,13 @@ reference:
       - MBOMultiObjResult
       - MBOSingleObjResult
       - mbo_OptPath
+      - plotMBOResult
   - title: "Example Runs"
-    desc: "Visualize MBO runs using Example Runs"
+    desc: "Visualize MBO runs using Example Runs."
     contents:
       - starts_with("exampleRun")
       - plotExampleRun
-      - renderExampleRun
+      - renderExampleRunPlot
   - title: "Other"
     contents:
       - error_handling
