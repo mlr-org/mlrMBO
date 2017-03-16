@@ -32,7 +32,7 @@ Features:
 * Parallelization through multi-point batch proposals
 * Parallelization on many parallel back-ends and clusters through [batchtools](https://github.com/mllg/batchtools) and [parallelMap](https://github.com/berndbischl/parallelMap)
 
-For the *surrogate*, mlrMBO`allows any regression learner from [`mlr`](https://github.com/mlr-org/mlr), including:
+For the *surrogate*, `mlrMBO` allows any regression learner from [`mlr`](https://github.com/mlr-org/mlr), including:
 * Kriging aka. Gaussian processes (i.e. `DiceKriging`)
 * random Forests (i.e. `randomForest`)
 * and many more...
