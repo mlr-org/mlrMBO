@@ -41,7 +41,7 @@ renderExampleRunPlot1d = function(x, iter,
   opt.direction = getMBOInfillCritMultiplier(control$infill.crit)
 
   # if no iterations provided take the total number of iterations in optimization process
-  assertInteger(iter, lower = 0, upper = length(models), len = 1L, any.missing = FALSE)
+  iter = asInt(iter, lower = 0, upper = length(models))
 
   if (!is.na(x$global.opt)) {
     global.opt = x$global.opt
