@@ -70,12 +70,12 @@ ggplot2::autoplot(obj.fun)
 
 You are not limited to these test functions but can define arbitrary objective functions with *smoof*.
 
-```{r}
+```{r smoof_custom_objective}
 makeSingleObjectiveFunction(
   name = "my_sphere",
   fn = function(x) {
     sum(x*x) + 7
-  }
+  },
   par.set = makeParamSet(
     makeNumericVectorParam("x", len = 2L, lower = -5, upper = 5)
   ),
