@@ -32,7 +32,7 @@ Features:
 * Parallelization through multi-point batch proposals
 * Parallelization on many parallel back-ends and clusters through [batchtools](https://github.com/mllg/batchtools) and [parallelMap](https://github.com/berndbischl/parallelMap)
 
-For the *surrogate*, mlrMBO`allows any regression learner from [`mlr`](https://github.com/mlr-org/mlr), including:
+For the *surrogate*, `mlrMBO` allows any regression learner from [`mlr`](https://github.com/mlr-org/mlr), including:
 * Kriging aka. Gaussian processes (i.e. `DiceKriging`)
 * random Forests (i.e. `randomForest`)
 * and many more...
@@ -43,3 +43,11 @@ Various *infill criteria* (aka. _acquisition functions_) are available:
 * Augmented expected improvement (AEI)
 * Expected quantile improvement (EQI)
 * API for custom infill criteria
+
+Objective functions are created with package [smoof](https://github.com/jakobbossek/smoof), which also offers many test functions for example runs or benchmarks.
+
+Parameter spaces and initial designs are created with package [ParamHelpers](https://github.com/berndbischl/ParamHelpers).
+
+
+
+
