@@ -37,7 +37,7 @@ Supported are, among other things:
 
 ## Prerequisites
 
-Installing `mlrMBO` will also install and load the dependencies `mlr`, `ParamHelpers`, and `smoof`
+Installing `mlrMBO` will also install and load the dependencies `mlr`, `ParamHelpers`, and `smoof`.
 For this tutorial, you also need the additional packages `DiceKriging` and `randomForest`.
 
 ```{r load_package}
@@ -68,8 +68,7 @@ print(obj.fun)
 ggplot2::autoplot(obj.fun)
 ```
 
-You are not limited to these test functions but can define arbitrary objective functions with
-*smoof*.
+You are not limited to these test functions but can define arbitrary objective functions with *smoof*.
 
 ```{r}
 makeSingleObjectiveFunction(
@@ -89,8 +88,7 @@ Check `?smoof::makeSingleObjectiveFunction` for further details.
 
 ### Initial Design
 
-Before MBO can really start, it needs a set of already evaluated points - the *inital design*, as we
-have to initially learn our first machine learning regression model to propose new points for evaluation.
+Before MBO can really start, it needs a set of already evaluated points - the *inital design*, as we have to initially learn our first machine learning regression model to propose new points for evaluation.
 If no design is given (i.e. `design = NULL`), `mbo()` will use a *Maximin Latin Hypercube* `lhs::maximinLHS()` design with `n = 4 * getNumberOfParameters(obj.fun)` points.
 If the design does not include function outcomes `mbo()` will evaluate the design first before starting with the MBO algorithm.
 In this example we generate our own design.
@@ -140,6 +138,7 @@ control = setMBOControlInfill(control, crit = makeMBOInfillCritEI())
 ```
 
 ### Start the optimization
+
 Finally, we start the optimization process and print the result object.
 It contains the best best found solution and its corresponding objective value.
 
