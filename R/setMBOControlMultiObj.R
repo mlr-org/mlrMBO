@@ -152,10 +152,9 @@ setMBOControlMultiObj = function(control,
     if (propose.points == 1L) {
       parego.sample.more.weights = 1L
     } else if (!is.null(parego.sample.more.weights)) {
-      parego.sample.more.weights = asInt(parego.sample.more.weights)
+      parego.sample.more.weights = asInt(parego.sample.more.weights, lower = 1, na.ok = FALSE)
     }
     control$multiobj.parego.sample.more.weights = coalesce(parego.sample.more.weights, control$multiobj.parego.sample.more.weights, 5L)
-    assertInt(control$multiobj.parego.sample.more.weights, na.ok = FALSE, lower = 1)
 
     control$multiobj.parego.use.margin.points = coalesce(parego.use.margin.points, control$multiobj.parego.use.margin.points, rep(FALSE, control$n.objectives))
     assertLogical(control$multiobj.parego.use.margin.points, len = n.objectives, any.missing = FALSE)
