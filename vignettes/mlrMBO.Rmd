@@ -34,6 +34,9 @@ Supported are, among other things:
 - Mixed-space optimization with categorical and subordinate parameters, for parameter configuration and tuning
 - Multi-criteria optimization
 
+This vignette gives a brief overview of the features of `mlrMBO`.
+A more detailed documentation can be found on: <http://mlr-org.github.io/mlrMBO/>.
+
 # Quickstart
 
 ## Prerequisites

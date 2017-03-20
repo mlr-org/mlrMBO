@@ -8,8 +8,8 @@
 <title>Parallelization • mlrMBO</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
-<!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script><script src="../pkgdown.js"></script><!-- mathjax --><script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
+<!-- pkgdown --><link href="../../pkgdown.css" rel="stylesheet">
+<script src="../../jquery.sticky-kit.min.js"></script><script src="../../pkgdown.js"></script><!-- mathjax --><script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
@@ -24,12 +24,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">mlrMBO</a>
+      <a class="navbar-brand" href="../../index.html">mlrMBO</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../articles/mlrMBO.html">
+  <a href="../../articles/mlrMBO.html">
     <span class="fa fa-bolt"></span>
      
     Quickstart
@@ -45,18 +45,18 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/mixed_space_optimization.html">Mixed Space Optimization</a>
+      <a href="../../articles/supplementary/mixed_space_optimization.html">Mixed Space Optimization</a>
     </li>
     <li>
-      <a href="../articles/parallelization.html">Parallelization</a>
+      <a href="../../articles/supplementary/parallelization.html">Parallelization</a>
     </li>
     <li>
-      <a href="../articles/noisy_optimization.html">Noisy Optimization</a>
+      <a href="../../articles/supplementary/noisy_optimization.html">Noisy Optimization</a>
     </li>
   </ul>
 </li>
 <li>
-  <a href="../reference/index.html">
+  <a href="../../reference/index.html">
     <span class="fa fa-book"></span>
      
     Reference
@@ -112,9 +112,9 @@ obj.fun =<span class="st"> </span><span class="kw">makeBraninFunction</span>()
 <p><img src="parallelization_files/figure-html/objective_function-1.png" width="672"></p>
 <p>In our example we will have <em>two CPUs</em> that we want to utilize for the evaluation of the black-box function.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(mlrMBO)
-ctrl =<span class="st"> </span><span class="kw"><a href="../reference/makeMBOControl.html">makeMBOControl</a></span>(<span class="dt">propose.points =</span> <span class="dv">2</span>)</code></pre></div>
+ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span>(<span class="dt">propose.points =</span> <span class="dv">2</span>)</code></pre></div>
 <p>There are multiple methods available to propose multiple points. Each has it’s advantages and disadvantages. The choice is mostly bound to your choice of the infill criterion, so we will decide for that first. As we have a real valued parameter space of our objective function, the <strong>expected improvement</strong> is usually the best choice</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ctrl =<span class="st"> </span><span class="kw"><a href="../reference/setMBOControlInfill.html">setMBOControlInfill</a></span>(ctrl, <span class="dt">crit =</span> crit.ei)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/setMBOControlInfill.html">setMBOControlInfill</a></span>(ctrl, <span class="dt">crit =</span> crit.ei)</code></pre></div>
 <div id="multi-point-proposal-methods" class="section level3">
 <h3 class="hasAnchor">
 <html><body><a href="#multi-point-proposal-methods" class="anchor"> </a></body></html>Multi point proposal methods</h3>
@@ -124,10 +124,10 @@ ctrl =<span class="st"> </span><span class="kw"><a href="../reference/makeMBOCon
 <h3 class="hasAnchor">
 <html><body><a href="#constant-liar" class="anchor"> </a></body></html>Constant Liar</h3>
 <p>After having said that, and as we already decided for the <strong>expected improvement</strong> because we want to use Kriging for the surrogate as we have a purely numeric parameter space we decide for the <strong>constant liar</strong> as a multi point proposal method. So we have to define:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ctrl =<span class="st"> </span><span class="kw"><a href="../reference/setMBOControlMultiPoint.html">setMBOControlMultiPoint</a></span>(ctrl, <span class="dt">method =</span> <span class="st">"cl"</span>, <span class="dt">cl.lie =</span> min)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/setMBOControlMultiPoint.html">setMBOControlMultiPoint</a></span>(ctrl, <span class="dt">method =</span> <span class="st">"cl"</span>, <span class="dt">cl.lie =</span> min)</code></pre></div>
 <p>For parallelization the termination criterion offers two useful options. We can limit the number of total evaluations of the objective function as well as we can limit the number of MBO iterations. Assuming our initial design is of size 8 and we allow 6 iterations we will get 20 evaluations of the objective function as we decided to have two evaluations per iteration by setting <code>propose.points = 2</code>. so for our example the following two settings will lead to the same result:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ctrl =<span class="st"> </span><span class="kw"><a href="../reference/setMBOControlTermination.html">setMBOControlTermination</a></span>(ctrl, <span class="dt">iters =</span> <span class="dv">6</span>)
-ctrl =<span class="st"> </span><span class="kw"><a href="../reference/setMBOControlTermination.html">setMBOControlTermination</a></span>(ctrl, <span class="dt">max.evals =</span> <span class="dv">20</span>) <span class="co"># for the choosen settings will result in the same number of evaluations.</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span>(ctrl, <span class="dt">iters =</span> <span class="dv">6</span>)
+ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span>(ctrl, <span class="dt">max.evals =</span> <span class="dv">20</span>) <span class="co"># for the choosen settings will result in the same number of evaluations.</span></code></pre></div>
 <p>For simplification we will let MBO automatically decide for the regression method and the initial design. As the parameter space is purely numeric MBO will use Kriging, which is exactly what we want.</p>
 <p>All we have to do now to initialize the parallel execution of the objective function is to call <code>parallelStartMulticore()</code> from the <code>parallelMap</code> package.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Kriging can create a lot of console output, which we want tu surpress here:</span>
@@ -135,7 +135,7 @@ ctrl =<span class="st"> </span><span class="kw"><a href="../reference/setMBOCont
 
 <span class="kw">library</span>(parallelMap)
 <span class="kw">parallelStartMulticore</span>(<span class="dt">cpus =</span> <span class="dv">2</span>, <span class="dt">show.info =</span> <span class="ot">TRUE</span>)
-res =<span class="st"> </span><span class="kw"><a href="../reference/mbo.html">mbo</a></span>(obj.fun, <span class="dt">control =</span> ctrl, <span class="dt">show.info =</span> <span class="ot">FALSE</span>)
+res =<span class="st"> </span><span class="kw"><a href="../../reference/mbo.html">mbo</a></span>(obj.fun, <span class="dt">control =</span> ctrl, <span class="dt">show.info =</span> <span class="ot">FALSE</span>)
 <span class="kw">parallelStop</span>()</code></pre></div>
 <p>As you can see from the console output of <code>parallelMap</code> the initial design will also be evaluated in parallel.</p>
 <p>In the end a small plot that uses the <code>opt.path</code> which is stored in the result of the MBO Optimization process to visualize which points were proposed in which iteration. The zeros are the points from the initial design, 1 for the first iteration and so on.</p>
@@ -151,14 +151,14 @@ res =<span class="st"> </span><span class="kw"><a href="../reference/mbo.html">m
 <span class="kw">autoplot</span>(obj.fun, <span class="dt">render.levels =</span> <span class="ot">TRUE</span>)
 ## Warning: Ignoring unknown aesthetics: fill</code></pre></div>
 <p><img src="parallelization_files/figure-html/obj.fun.dis-1.png" width="672"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ctrl =<span class="st"> </span><span class="kw"><a href="../reference/makeMBOControl.html">makeMBOControl</a></span>(<span class="dt">propose.points =</span> <span class="dv">2</span>)
-ctrl =<span class="st"> </span><span class="kw"><a href="../reference/setMBOControlInfill.html">setMBOControlInfill</a></span>(ctrl, <span class="dt">crit =</span> crit.cb)
-ctrl =<span class="st"> </span><span class="kw"><a href="../reference/setMBOControlMultiPoint.html">setMBOControlMultiPoint</a></span>(ctrl, <span class="dt">method =</span> <span class="st">"cb"</span>)
-ctrl =<span class="st"> </span><span class="kw"><a href="../reference/setMBOControlTermination.html">setMBOControlTermination</a></span>(ctrl, <span class="dt">iters =</span> <span class="dv">5</span>)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span>(<span class="dt">propose.points =</span> <span class="dv">2</span>)
+ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/setMBOControlInfill.html">setMBOControlInfill</a></span>(ctrl, <span class="dt">crit =</span> crit.cb)
+ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/setMBOControlMultiPoint.html">setMBOControlMultiPoint</a></span>(ctrl, <span class="dt">method =</span> <span class="st">"cb"</span>)
+ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span>(ctrl, <span class="dt">iters =</span> <span class="dv">5</span>)
 design =<span class="st"> </span><span class="kw">generateDesign</span>(<span class="dt">n =</span> <span class="dv">5</span>*<span class="dv">8</span>, <span class="dt">par.set =</span> <span class="kw">getParamSet</span>(obj.fun))
 <span class="kw">library</span>(parallelMap)
 <span class="kw">parallelStartMulticore</span>(<span class="dt">cpus =</span> <span class="dv">2</span>, <span class="dt">show.info =</span> <span class="ot">FALSE</span>)
-res =<span class="st"> </span><span class="kw"><a href="../reference/mbo.html">mbo</a></span>(obj.fun, <span class="dt">control =</span> ctrl, <span class="dt">design =</span> design, <span class="dt">show.info =</span> <span class="ot">FALSE</span>)
+res =<span class="st"> </span><span class="kw"><a href="../../reference/mbo.html">mbo</a></span>(obj.fun, <span class="dt">control =</span> ctrl, <span class="dt">design =</span> design, <span class="dt">show.info =</span> <span class="ot">FALSE</span>)
 <span class="kw">parallelStop</span>()
 <span class="kw">autoplot</span>(obj.fun, <span class="dt">render.levels =</span> <span class="ot">TRUE</span>) +<span class="st"> </span><span class="kw">geom_text</span>(<span class="dt">data =</span> <span class="kw">as.data.frame</span>(res$opt.path), <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">label =</span> dob), <span class="dt">color =</span> <span class="st">"white"</span>)
 ## Warning: Ignoring unknown aesthetics: fill</code></pre></div>
@@ -214,11 +214,11 @@ obj.fun.parallel =<span class="st"> </span><span class="kw">makeSingleObjectiveF
 <p><img src="parallelization_files/figure-html/custom_noisy_parallel-1.png" width="672"></p>
 <p>As we can easily see the replicated and averaged evaluation of the target function apparently smoothed the output. This will improve optimization directly. However the objective function is still noisy and we have to adapt the settings a little. Details are given in the Vignette about noisy optimization.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(mlr)
-ctrl =<span class="st"> </span><span class="kw"><a href="../reference/makeMBOControl.html">makeMBOControl</a></span>(<span class="dt">final.method =</span> <span class="st">"best.predicted"</span>)
-ctrl =<span class="st"> </span><span class="kw"><a href="../reference/setMBOControlTermination.html">setMBOControlTermination</a></span>(ctrl, <span class="dt">iters =</span> 5L)
-ctrl =<span class="st"> </span><span class="kw"><a href="../reference/setMBOControlInfill.html">setMBOControlInfill</a></span>(ctrl, <span class="dt">crit =</span> crit.aei)
+ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span>(<span class="dt">final.method =</span> <span class="st">"best.predicted"</span>)
+ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span>(ctrl, <span class="dt">iters =</span> 5L)
+ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/setMBOControlInfill.html">setMBOControlInfill</a></span>(ctrl, <span class="dt">crit =</span> crit.aei)
 <span class="kw">parallelStartMulticore</span>(<span class="dt">cpus =</span> 2L, <span class="dt">show.info =</span> <span class="ot">TRUE</span>, <span class="dt">level =</span> <span class="st">"custom.objective"</span>)
-res.parallel =<span class="st"> </span><span class="kw"><a href="../reference/mbo.html">mbo</a></span>(obj.fun.parallel, <span class="dt">control =</span> ctrl, <span class="dt">show.info =</span> <span class="ot">FALSE</span>)
+res.parallel =<span class="st"> </span><span class="kw"><a href="../../reference/mbo.html">mbo</a></span>(obj.fun.parallel, <span class="dt">control =</span> ctrl, <span class="dt">show.info =</span> <span class="ot">FALSE</span>)
 <span class="kw">parallelStop</span>()
 res.parallel</code></pre></div>
 <p>As you can see in the output of <code>parallelMap</code> we now parallelize the level <code>custom.objective</code> and not as previously <code>mlrMBO.feval</code>. If you forget to register your own level <code>parallelMap</code> will parallelize the first call of <code>parallelMap</code> and that would be the call we do internally to evaluate the proposed points.</p>
