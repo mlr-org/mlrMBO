@@ -17,7 +17,7 @@ navbar:
       - text: Noisy Optimization
         href: articles/supplementary/noisy_optimization.html
       - text: Infill Criteria
-        href: articles/infill_criteria
+        href: articles/supplementary/infill_criteria
   - text: Reference
     icon: fa-book
     href: reference/index.html
