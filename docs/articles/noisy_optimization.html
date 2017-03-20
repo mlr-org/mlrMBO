@@ -101,10 +101,10 @@
 <p>Like always let’s start with the function we want to optimize, but this time it will be noisy. Note that Kriging requires heteroscedasticity but slight dependencies of the variance on the <span class="math inline">\(\boldsymbol{x}\)</span> can be acceptable like in the following example:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(mlrMBO)
 <span class="kw">library</span>(ggplot2)
-fun =<span class="st"> </span><span class="cf">function</span>(x) {
-  <span class="kw">rnorm</span>(<span class="dv">1</span>, <span class="dt">mean =</span> x<span class="op">^</span><span class="dv">2</span>, <span class="dt">sd =</span> <span class="fl">0.5</span> <span class="op">+</span><span class="st"> </span><span class="fl">0.5</span><span class="op">*</span>(x<span class="op">+</span><span class="dv">5</span>))
+fun =<span class="st"> </span>function(x) {
+  <span class="kw">rnorm</span>(<span class="dv">1</span>, <span class="dt">mean =</span> x^<span class="dv">2</span>, <span class="dt">sd =</span> <span class="fl">0.5</span> +<span class="st"> </span><span class="fl">0.5</span>*(x<span class="dv">+5</span>))
 }
-obj.fun =<span class="st"> </span><span class="kw">makeSingleObjectiveFunction</span>(<span class="dt">name =</span> <span class="st">"noisy_parable"</span>, <span class="dt">fn =</span> fun, <span class="dt">has.simple.signature =</span> <span class="ot">TRUE</span>, <span class="dt">par.set =</span> <span class="kw">makeNumericParamSet</span>(<span class="st">"x"</span>, <span class="dv">1</span>, <span class="op">-</span><span class="dv">5</span>, <span class="dv">5</span>), <span class="dt">noisy =</span> <span class="ot">TRUE</span>)
+obj.fun =<span class="st"> </span><span class="kw">makeSingleObjectiveFunction</span>(<span class="dt">name =</span> <span class="st">"noisy_parable"</span>, <span class="dt">fn =</span> fun, <span class="dt">has.simple.signature =</span> <span class="ot">TRUE</span>, <span class="dt">par.set =</span> <span class="kw">makeNumericParamSet</span>(<span class="st">"x"</span>, <span class="dv">1</span>, -<span class="dv">5</span>, <span class="dv">5</span>), <span class="dt">noisy =</span> <span class="ot">TRUE</span>)
 <span class="co"># visualize the function</span>
 <span class="kw">autoplot</span>(obj.fun, <span class="dt">length.out =</span> <span class="dv">200</span>)</code></pre></div>
 <p><img src="noisy_optimization_files/figure-html/objective_function-1.png" width="672"></p>
@@ -128,13 +128,13 @@ ctrl =<span class="st"> </span><span class="kw"><a href="../reference/setMBOCont
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Kriging can create a lot of console output, which we want tu surpress here:</span>
 <span class="kw">configureMlr</span>(<span class="dt">on.learner.warning =</span> <span class="st">"quiet"</span>, <span class="dt">show.learner.output =</span> <span class="ot">FALSE</span>)
 res =<span class="st"> </span><span class="kw"><a href="../reference/mbo.html">mbo</a></span>(obj.fun, <span class="dt">control =</span> ctrl, <span class="dt">show.info =</span> <span class="ot">FALSE</span>)
-res<span class="op">$</span>x
+res$x
 ## $x
 ## [1] -0.3911328
-res<span class="op">$</span>y
+res$y
 ## [1] 1.057121</code></pre></div>
 <p>As you can see the optimization got fairly close to the minimum at <span class="math inline">\(x = 0\)</span> even though the noise in this area is pretty high.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(<span class="dt">final.y =</span> <span class="kw">getOptPathY</span>(res<span class="op">$</span>opt.path, <span class="dt">dob =</span> <span class="dv">8</span>))
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(<span class="dt">final.y =</span> <span class="kw">getOptPathY</span>(res$opt.path, <span class="dt">dob =</span> <span class="dv">8</span>))
 ##  [1] -3.4648914  6.6905946  1.0066289 -1.8517431  0.5180135  1.8740134
 ##  [7]  2.5199326  2.1839418 -2.1259112  3.2206329
 <span class="kw">var</span>(final.y)
@@ -150,10 +150,10 @@ res<span class="op">$</span>y
 <span class="kw">set.seed</span>(<span class="dv">1</span>)
 res =<span class="st"> </span><span class="kw"><a href="../reference/exampleRun.html">exampleRun</a></span>(obj.fun, <span class="dt">control =</span> ctrl, <span class="dt">show.info =</span> <span class="ot">FALSE</span>, <span class="dt">points.per.dim =</span> <span class="dv">200</span>, <span class="dt">noisy.evals =</span> <span class="dv">1</span>)</code></pre></div>
 <p>First we have a look at the optimization result which is similar to the one obtained with the <code>eqi</code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res<span class="op">$</span>mbo.res<span class="op">$</span>x
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res$mbo.res$x
 ## $x
 ## [1] -0.4177344
-res<span class="op">$</span>mbo.res<span class="op">$</span>y
+res$mbo.res$y
 ## [1] -1.037675</code></pre></div>
 <p>Looking at the surrogate fit during the run we can see that the noise makes it difficult for the Kriging to find the right fit and so it falls back to the mean regression. This leads to the infill criterion to be constant and to a purely random proposal, which is not necessarily that bad as long as it does not happen too often.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/plotExampleRun.html">plotExampleRun</a></span>(res, <span class="dt">pause =</span> <span class="ot">FALSE</span>, <span class="dt">iters =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">7</span>))</code></pre></div>

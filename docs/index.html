@@ -95,38 +95,41 @@
 <div id="installation" class="section level1">
 <h1 class="hasAnchor">
 <a href="#installation" class="anchor"> </a>Installation</h1>
-<p><code>mlrMBO</code> currently needs the development versions of the packages <a href="https://github.com/mlr-org/mlr/">mlr</a> and <a href="https://github.com/berndbischl/ParamHelpers">ParamHelpers</a>. To install <code>mlrMBO</code> with all dependencies, run the following lines:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">"berndbischl/ParamHelpers"</span>)
-devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">"mlr-org/mlr"</span>)
-devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">"mlr-org/mlrMBO"</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">"mlr-org/mlrMBO"</span>)</code></pre></div>
 </div>
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"> </a>Introduction</h1>
 <p><img src="https://raw.githubusercontent.com/mlr-org/mlrMBO/master/docs/articles/helpers/animation_files/figure-html/animation-.gif" alt="MBO demo"></p>
-<p><code>mlrMBO</code> is a toolbox for Model-Based Optimization for Black-Box functions in R. It is suitable for the following expensive optimization tasks:</p>
+<p><code>mlrMBO</code> is a highly configurable R toolbox for model-based / Bayesian optimization of black-box functions.</p>
+<p>Features:</p>
 <ul>
-<li>Global optimization of functions on numeric search space.</li>
-<li>Optimization on mixed search space including categorical variables.</li>
-<li>Multi-Criteria Optimization through approximated Pareto fronts.</li>
-<li>Parallelization through multi-point proposals.</li>
-<li>Optimization of noisy objective functions.</li>
+<li>EGO-type algorithms (Kriging with expected improvement) on purely numerical search spaces, see <a href="http://link.springer.com/article/10.1023/A:1008306431147">Jones et al. (1998)</a>
+</li>
+<li>Mixed search spaces with numerical, integer, categorical and subordinate parameters</li>
+<li>Arbitrary parameter transformation allowing to optimize on, e.g., logscale</li>
+<li>Optimization of noisy objective functions</li>
+<li>Multi-Criteria optimization with approximated Pareto fronts</li>
+<li>Parallelization through multi-point batch proposals</li>
+<li>Parallelization on many parallel back-ends and clusters through <a href="https://github.com/mllg/batchtools">batchtools</a> and <a href="https://github.com/berndbischl/parallelMap">parallelMap</a>
+</li>
 </ul>
-<p>With a highly configurable algorithm it allows for optimization of many practical optimization tasks that are of a black-box nature and are very time-consuming. It implements the popular EGO algorithm by <a href="http://link.springer.com/article/10.1023/A:1008306431147">Jones et al. (1998)</a> for optimizing black-box functions on numerical search spaces which uses <em>Gaussian processes</em> coupled with the <em>expected improvement</em> criterion for point proposal. But thanks to it’s modular design it can be configured to solve many more optimization tasks.</p>
-<p>For the regression method of the <em>surrogate</em> <code>mlrMBO</code> relies on <a href="https://github.com/mlr-org/mlr"><code>mlr</code></a> so you are free to use:</p>
+<p>For the <em>surrogate</em>, <code>mlrMBO</code> allows any regression learner from <a href="https://github.com/mlr-org/mlr"><code>mlr</code></a>, including:</p>
 <ul>
 <li>Kriging aka. Gaussian processes (i.e. <code>DiceKriging</code>)</li>
 <li>random Forests (i.e. <code>randomForest</code>)</li>
 <li>and many more…</li>
 </ul>
-<p>For the point proposal various <em>infill criteria</em> (aka. <em>acquisition functions</em>) are available:</p>
+<p>Various <em>infill criteria</em> (aka. <em>acquisition functions</em>) are available:</p>
 <ul>
-<li>Expected Improvement</li>
-<li>Upper/Lower Confidence Bound (aka. Statistical Lower or Upper Bound)</li>
-<li>Augmented Expected Improvement</li>
-<li>Expected Quantile Improvement</li>
-<li>Accessible interface to implement your own infill criterion.</li>
+<li>Expected improvement (EI)</li>
+<li>Upper/Lower confidence bound (LCB, aka. statistical lower or upper bound)</li>
+<li>Augmented expected improvement (AEI)</li>
+<li>Expected quantile improvement (EQI)</li>
+<li>API for custom infill criteria</li>
 </ul>
+<p>Objective functions are created with package <a href="https://github.com/jakobbossek/smoof">smoof</a>, which also offers many test functions for example runs or benchmarks.</p>
+<p>Parameter spaces and initial designs are created with package <a href="https://github.com/berndbischl/ParamHelpers">ParamHelpers</a>.</p>
 </div>
 
   </div>

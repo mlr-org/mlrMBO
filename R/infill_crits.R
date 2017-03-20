@@ -7,7 +7,7 @@
 #'
 #' @details
 #' In the multi-objective case we recommend to set \code{cb.lambda} to
-#' \eqn{q(0.5 \cdot \pi_{CB}^(1 / n))} where \eqn{q} is the quantile
+#' \eqn{q(0.5 \cdot \pi_{CB}^{(1 / n)})} where \eqn{q} is the quantile
 #' function of the standard normal distribution, \eqn{\pi_CB} is the probability
 #' of improvement value and \eqn{n} is the number of objectives of the considered problem.
 #'
@@ -35,7 +35,7 @@
 #'   Epsilon for epsilon-dominance for \code{dib.indicator = "sms"}.
 #'   Default is \code{NULL}, in this case it is adaptively set.
 #' @name infillcrits
-#' @seealso \code{\link{MBOInfillCrit}}
+#' @seealso \code{\link{makeMBOInfillCrit}}
 #' @rdname infillcrits
 NULL
 

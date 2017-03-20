@@ -141,16 +141,16 @@ obj.fun =<span class="st"> </span><span class="kw">convertToMinimization</span>(
 ## Global optimum objective value of -0.1000 at
 ##   x
 ## 1 0
-ggplot2<span class="op">::</span><span class="kw">autoplot</span>(obj.fun)</code></pre></div>
+ggplot2::<span class="kw">autoplot</span>(obj.fun)</code></pre></div>
 <p><img src="mlrMBO_files/figure-html/cosine_fun-1.png" width="672"></p>
 <p>You are not limited to these test functions but can define arbitrary objective functions with <em>smoof</em>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">makeSingleObjectiveFunction</span>(
   <span class="dt">name =</span> <span class="st">"my_sphere"</span>,
-  <span class="dt">fn =</span> <span class="cf">function</span>(x) {
-    <span class="kw">sum</span>(x<span class="op">*</span>x) <span class="op">+</span><span class="st"> </span><span class="dv">7</span>
+  <span class="dt">fn =</span> function(x) {
+    <span class="kw">sum</span>(x*x) +<span class="st"> </span><span class="dv">7</span>
   },
   <span class="dt">par.set =</span> <span class="kw">makeParamSet</span>(
-    <span class="kw">makeNumericVectorParam</span>(<span class="st">"x"</span>, <span class="dt">len =</span> 2L, <span class="dt">lower =</span> <span class="op">-</span><span class="dv">5</span>, <span class="dt">upper =</span> <span class="dv">5</span>)
+    <span class="kw">makeNumericVectorParam</span>(<span class="st">"x"</span>, <span class="dt">len =</span> 2L, <span class="dt">lower =</span> -<span class="dv">5</span>, <span class="dt">upper =</span> <span class="dv">5</span>)
   ),
   <span class="dt">minimize =</span> <span class="ot">TRUE</span>
 )
@@ -170,9 +170,9 @@ ggplot2<span class="op">::</span><span class="kw">autoplot</span>(obj.fun)</code
 <h3 class="hasAnchor">
 <html><body><a href="#initial-design" class="anchor"> </a></body></html>Initial Design</h3>
 <p>Before MBO can really start, it needs a set of already evaluated points - the <em>inital design</em>, as we have to initially learn our first machine learning regression model to propose new points for evaluation. If no design is given (i.e. <code>design = NULL</code>), <code><a href="../reference/mbo.html">mbo()</a></code> will use a <em>Maximin Latin Hypercube</em> <code>lhs::maximinLHS()</code> design with <code>n = 4 * getNumberOfParameters(obj.fun)</code> points. If the design does not include function outcomes <code><a href="../reference/mbo.html">mbo()</a></code> will evaluate the design first before starting with the MBO algorithm. In this example we generate our own design.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">des =<span class="st"> </span><span class="kw">generateDesign</span>(<span class="dt">n =</span> <span class="dv">5</span>, <span class="dt">par.set =</span> <span class="kw">getParamSet</span>(obj.fun), <span class="dt">fun =</span> lhs<span class="op">::</span>randomLHS)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">des =<span class="st"> </span><span class="kw">generateDesign</span>(<span class="dt">n =</span> <span class="dv">5</span>, <span class="dt">par.set =</span> <span class="kw">getParamSet</span>(obj.fun), <span class="dt">fun =</span> lhs::randomLHS)</code></pre></div>
 <p>We will also precalculate the results:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">des<span class="op">$</span>y =<span class="st"> </span><span class="kw">apply</span>(des, <span class="dv">1</span>, obj.fun)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">des$y =<span class="st"> </span><span class="kw">apply</span>(des, <span class="dv">1</span>, obj.fun)</code></pre></div>
 <p><em>Note:</em> <em>mlrMBO</em> uses <code>y</code> as a default name for the outcome of the objective function. This can be changed in the control object.</p>
 </div>
 <div id="surrogate-model" class="section level3">
@@ -224,27 +224,27 @@ control =<span class="st"> </span><span class="kw"><a href="../reference/setMBOC
 ## Optimization path
 ## 5 + 10 entries in total, displaying last 10 (or less):
 ##             x           y dob eol error.message exec.time            ei
-## 6  -0.1606555 -0.05569243   1  NA          &lt;NA&gt;         0 -2.544066e-02
-## 7  -0.1855267 -0.06300664   2  NA          &lt;NA&gt;         0 -3.965762e-03
-## 8  -0.4530156  0.27250626   3  NA          &lt;NA&gt;         0 -8.941899e-04
-## 9  -0.1791857 -0.06259511   4  NA          &lt;NA&gt;         0 -4.302329e-04
-## 10 -0.1936351 -0.06200608   5  NA          &lt;NA&gt;         0 -1.493771e-04
-## 11 -0.1833775 -0.06298321   6  NA          &lt;NA&gt;         0 -5.596284e-05
-## 12 -0.1877692 -0.06290288   7  NA          &lt;NA&gt;         0 -2.664588e-05
-## 13 -0.1846145 -0.06301134   8  NA          &lt;NA&gt;         0 -1.413386e-05
-## 14 -0.1849927 -0.06301202   9  NA          &lt;NA&gt;         0 -3.516386e-06
-## 15 -0.1842604 -0.06300733  10  NA          &lt;NA&gt;         0 -1.292013e-06
+## 6  -0.1606555 -0.05569243   1  NA          &lt;NA&gt;     0.001 -2.544066e-02
+## 7  -0.1855267 -0.06300664   2  NA          &lt;NA&gt;     0.000 -3.965762e-03
+## 8  -0.4530156  0.27250626   3  NA          &lt;NA&gt;     0.000 -8.941899e-04
+## 9  -0.1791857 -0.06259511   4  NA          &lt;NA&gt;     0.001 -4.302329e-04
+## 10 -0.1936351 -0.06200608   5  NA          &lt;NA&gt;     0.001 -1.493771e-04
+## 11 -0.1833775 -0.06298321   6  NA          &lt;NA&gt;     0.000 -5.596284e-05
+## 12 -0.1877692 -0.06290288   7  NA          &lt;NA&gt;     0.001 -2.664588e-05
+## 13 -0.1846145 -0.06301134   8  NA          &lt;NA&gt;     0.000 -1.413386e-05
+## 14 -0.1849927 -0.06301202   9  NA          &lt;NA&gt;     0.000 -3.516386e-06
+## 15 -0.1842604 -0.06300733  10  NA          &lt;NA&gt;     0.000 -1.292013e-06
 ##    error.model train.time prop.type propose.time           se         mean
-## 6         &lt;NA&gt;      0.022 infill_ei        0.069 7.674768e-02 -0.007966397
-## 7         &lt;NA&gt;      0.020 infill_ei        0.055 1.247202e-02 -0.053522488
-## 8         &lt;NA&gt;      0.023 infill_ei        0.059 1.534806e-01  0.265081259
-## 9         &lt;NA&gt;      0.022 infill_ei        0.056 1.523041e-03 -0.062611157
-## 10        &lt;NA&gt;      0.022 infill_ei        0.060 1.583207e-03 -0.061528160
-## 11        &lt;NA&gt;      0.022 infill_ei        0.060 1.669101e-04 -0.062984191
-## 12        &lt;NA&gt;      0.023 infill_ei        0.060 1.545918e-04 -0.062915952
-## 13        &lt;NA&gt;      0.025 infill_ei        0.059 2.933588e-05 -0.063011220
-## 14        &lt;NA&gt;      0.022 infill_ei        0.063 7.823809e-06 -0.063012096
-## 15        &lt;NA&gt;      0.022 infill_ei        0.063 7.784748e-06 -0.063007267</code></pre></div>
+## 6         &lt;NA&gt;      0.020 infill_ei        0.050 7.674768e-02 -0.007966397
+## 7         &lt;NA&gt;      0.019 infill_ei        0.045 1.247202e-02 -0.053522488
+## 8         &lt;NA&gt;      0.020 infill_ei        0.049 1.534806e-01  0.265081259
+## 9         &lt;NA&gt;      0.020 infill_ei        0.050 1.523041e-03 -0.062611157
+## 10        &lt;NA&gt;      0.020 infill_ei        0.054 1.583207e-03 -0.061528160
+## 11        &lt;NA&gt;      0.021 infill_ei        0.047 1.669101e-04 -0.062984191
+## 12        &lt;NA&gt;      0.023 infill_ei        0.053 1.545918e-04 -0.062915952
+## 13        &lt;NA&gt;      0.022 infill_ei        0.052 2.933588e-05 -0.063011220
+## 14        &lt;NA&gt;      0.019 infill_ei        0.049 7.823809e-06 -0.063012096
+## 15        &lt;NA&gt;      0.021 infill_ei        0.054 7.784748e-06 -0.063007267</code></pre></div>
 </div>
 </div>
 <div id="visualization" class="section level2">
@@ -273,7 +273,7 @@ control =<span class="st"> </span><span class="kw"><a href="../reference/setMBOC
 ## Final point by                : best.true.y
 ## Learner                     : regr.km
 ## Learner settings:
-## jitter=FALSE,covtype=matern3_2,control=&lt;list&gt;
+## jitter=FALSE,covtype=matern3_2,control=trace=FALSE
 ## Recommended parameters:
 ## x=-0.186
 ## Objective: y = -6.298e-02

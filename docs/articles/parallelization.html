@@ -139,7 +139,7 @@ res =<span class="st"> </span><span class="kw"><a href="../reference/mbo.html">m
 <span class="kw">parallelStop</span>()</code></pre></div>
 <p>As you can see from the console output of <code>parallelMap</code> the initial design will also be evaluated in parallel.</p>
 <p>In the end a small plot that uses the <code>opt.path</code> which is stored in the result of the MBO Optimization process to visualize which points were proposed in which iteration. The zeros are the points from the initial design, 1 for the first iteration and so on.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">autoplot</span>(obj.fun, <span class="dt">render.levels =</span> <span class="ot">TRUE</span>, <span class="dt">show.optimum =</span> <span class="ot">TRUE</span>) <span class="op">+</span><span class="st"> </span><span class="kw">geom_text</span>(<span class="dt">data =</span> <span class="kw">as.data.frame</span>(res<span class="op">$</span>opt.path), <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">label =</span> dob), <span class="dt">color =</span> <span class="st">"white"</span>)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">autoplot</span>(obj.fun, <span class="dt">render.levels =</span> <span class="ot">TRUE</span>, <span class="dt">show.optimum =</span> <span class="ot">TRUE</span>) +<span class="st"> </span><span class="kw">geom_text</span>(<span class="dt">data =</span> <span class="kw">as.data.frame</span>(res$opt.path), <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">label =</span> dob), <span class="dt">color =</span> <span class="st">"white"</span>)
 ## Warning: Ignoring unknown aesthetics: fill</code></pre></div>
 <p><img src="parallelization_files/figure-html/cl_res-1.png" width="672"></p>
 </div>
@@ -155,12 +155,12 @@ res =<span class="st"> </span><span class="kw"><a href="../reference/mbo.html">m
 ctrl =<span class="st"> </span><span class="kw"><a href="../reference/setMBOControlInfill.html">setMBOControlInfill</a></span>(ctrl, <span class="dt">crit =</span> crit.cb)
 ctrl =<span class="st"> </span><span class="kw"><a href="../reference/setMBOControlMultiPoint.html">setMBOControlMultiPoint</a></span>(ctrl, <span class="dt">method =</span> <span class="st">"cb"</span>)
 ctrl =<span class="st"> </span><span class="kw"><a href="../reference/setMBOControlTermination.html">setMBOControlTermination</a></span>(ctrl, <span class="dt">iters =</span> <span class="dv">5</span>)
-design =<span class="st"> </span><span class="kw">generateDesign</span>(<span class="dt">n =</span> <span class="dv">5</span><span class="op">*</span><span class="dv">8</span>, <span class="dt">par.set =</span> <span class="kw">getParamSet</span>(obj.fun))
+design =<span class="st"> </span><span class="kw">generateDesign</span>(<span class="dt">n =</span> <span class="dv">5</span>*<span class="dv">8</span>, <span class="dt">par.set =</span> <span class="kw">getParamSet</span>(obj.fun))
 <span class="kw">library</span>(parallelMap)
 <span class="kw">parallelStartMulticore</span>(<span class="dt">cpus =</span> <span class="dv">2</span>, <span class="dt">show.info =</span> <span class="ot">FALSE</span>)
 res =<span class="st"> </span><span class="kw"><a href="../reference/mbo.html">mbo</a></span>(obj.fun, <span class="dt">control =</span> ctrl, <span class="dt">design =</span> design, <span class="dt">show.info =</span> <span class="ot">FALSE</span>)
 <span class="kw">parallelStop</span>()
-<span class="kw">autoplot</span>(obj.fun, <span class="dt">render.levels =</span> <span class="ot">TRUE</span>) <span class="op">+</span><span class="st"> </span><span class="kw">geom_text</span>(<span class="dt">data =</span> <span class="kw">as.data.frame</span>(res<span class="op">$</span>opt.path), <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">label =</span> dob), <span class="dt">color =</span> <span class="st">"white"</span>)
+<span class="kw">autoplot</span>(obj.fun, <span class="dt">render.levels =</span> <span class="ot">TRUE</span>) +<span class="st"> </span><span class="kw">geom_text</span>(<span class="dt">data =</span> <span class="kw">as.data.frame</span>(res$opt.path), <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">label =</span> dob), <span class="dt">color =</span> <span class="st">"white"</span>)
 ## Warning: Ignoring unknown aesthetics: fill</code></pre></div>
 <p><img src="parallelization_files/figure-html/obj.fun.dis-2.png" width="672"></p>
 </div>
@@ -175,20 +175,20 @@ res =<span class="st"> </span><span class="kw"><a href="../reference/mbo.html">m
 <p>One simple case to make use of parallelization is when we have a noisy function and we just evaluate it repeatedly to reduce the noisiness. The following example illustrates that, but also can be useful to show you how to parallelize your objective in a more sophisticated way.</p>
 <p>Let’s start with the normal approach:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># noisy objective function</span>
-fn =<span class="st"> </span><span class="cf">function</span>(x) {
-  <span class="kw">sin</span>(x[<span class="dv">1</span>]) <span class="op">+</span><span class="st"> </span><span class="kw">cos</span>(x[<span class="dv">2</span>]) <span class="op">+</span><span class="st"> </span><span class="kw">sum</span>(x<span class="op">^</span><span class="dv">2</span>) <span class="op">+</span><span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">1</span>, <span class="dt">sd =</span> <span class="dv">1</span> <span class="op">+</span><span class="st"> </span><span class="kw">abs</span>(<span class="kw">prod</span>(x)))
+fn =<span class="st"> </span>function(x) {
+  <span class="kw">sin</span>(x[<span class="dv">1</span>]) +<span class="st"> </span><span class="kw">cos</span>(x[<span class="dv">2</span>]) +<span class="st"> </span><span class="kw">sum</span>(x^<span class="dv">2</span>) +<span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">1</span>, <span class="dt">sd =</span> <span class="dv">1</span> +<span class="st"> </span><span class="kw">abs</span>(<span class="kw">prod</span>(x)))
 }
 
 <span class="co"># very noisy normal smoof function</span>
-ps =<span class="st"> </span><span class="kw">makeNumericParamSet</span>(<span class="st">"x"</span>, <span class="dt">len =</span> <span class="dv">2</span>, <span class="dt">lower =</span>  <span class="op">-</span><span class="dv">5</span>, <span class="dt">upper =</span> <span class="dv">5</span>)
+ps =<span class="st"> </span><span class="kw">makeNumericParamSet</span>(<span class="st">"x"</span>, <span class="dt">len =</span> <span class="dv">2</span>, <span class="dt">lower =</span>  -<span class="dv">5</span>, <span class="dt">upper =</span> <span class="dv">5</span>)
 obj.fun.single =<span class="st"> </span><span class="kw">makeSingleObjectiveFunction</span>(<span class="dt">name =</span> <span class="st">"noisy"</span>, <span class="dt">fn =</span> fn, <span class="dt">noisy =</span> <span class="ot">TRUE</span>, <span class="dt">par.set =</span> ps)
 
 <span class="co"># unified color scale for better comparison later</span>
-brewer.div =<span class="st"> </span><span class="kw">colorRampPalette</span>(RColorBrewer<span class="op">::</span><span class="kw">brewer.pal</span>(<span class="dv">11</span>, <span class="st">"Spectral"</span>), <span class="dt">interpolate =</span> <span class="st">"spline"</span>)
-general.scale =<span class="st"> </span><span class="kw">scale_fill_gradientn</span>(<span class="dt">limits =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">10</span>, <span class="dv">110</span>), <span class="dt">colors =</span> <span class="kw">brewer.div</span>(<span class="dv">200</span>))
+brewer.div =<span class="st"> </span><span class="kw">colorRampPalette</span>(RColorBrewer::<span class="kw">brewer.pal</span>(<span class="dv">11</span>, <span class="st">"Spectral"</span>), <span class="dt">interpolate =</span> <span class="st">"spline"</span>)
+general.scale =<span class="st"> </span><span class="kw">scale_fill_gradientn</span>(<span class="dt">limits =</span> <span class="kw">c</span>(-<span class="dv">10</span>, <span class="dv">110</span>), <span class="dt">colors =</span> <span class="kw">brewer.div</span>(<span class="dv">200</span>))
 
 <span class="co"># noisy output</span>
-<span class="kw">autoplot</span>(obj.fun.single, <span class="dt">render.levels =</span> <span class="ot">TRUE</span>) <span class="op">+</span><span class="st"> </span>general.scale
+<span class="kw">autoplot</span>(obj.fun.single, <span class="dt">render.levels =</span> <span class="ot">TRUE</span>) +<span class="st"> </span>general.scale
 ## Warning: Ignoring unknown aesthetics: fill
 ## Scale for 'fill' is already present. Adding another scale for 'fill',
 ## which will replace the existing scale.</code></pre></div>
@@ -197,17 +197,17 @@ general.scale =<span class="st"> </span><span class="kw">scale_fill_gradientn</s
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">parallelRegisterLevels</span>(<span class="dt">levels =</span> <span class="st">"objective"</span>)
 obj.fun.parallel =<span class="st"> </span><span class="kw">makeSingleObjectiveFunction</span>(
   <span class="dt">name =</span> <span class="st">"noisy_example"</span>,
-  <span class="dt">fn =</span> <span class="cf">function</span>(x) {
+  <span class="dt">fn =</span> function(x) {
     rep.x =<span class="st"> </span><span class="kw">replicate</span>(<span class="dv">4</span>, x, <span class="dt">simplify =</span> <span class="ot">FALSE</span>)
     res =<span class="st"> </span><span class="kw">parallelMap</span>(fn, rep.x, <span class="dt">simplify =</span> <span class="ot">TRUE</span>, <span class="dt">level =</span> <span class="st">"custom.objective"</span>)
     <span class="kw">mean</span>(res)
   }, 
   <span class="dt">noisy =</span> <span class="ot">TRUE</span>, 
-  <span class="dt">par.set =</span> <span class="kw">makeNumericParamSet</span>(<span class="dt">id =</span> <span class="st">"x"</span>, <span class="dt">len =</span> <span class="dv">2</span>, <span class="dt">lower =</span> <span class="op">-</span><span class="dv">5</span>, <span class="dt">upper =</span> <span class="dv">5</span>), 
+  <span class="dt">par.set =</span> <span class="kw">makeNumericParamSet</span>(<span class="dt">id =</span> <span class="st">"x"</span>, <span class="dt">len =</span> <span class="dv">2</span>, <span class="dt">lower =</span> -<span class="dv">5</span>, <span class="dt">upper =</span> <span class="dv">5</span>), 
   <span class="dt">vectorized =</span> <span class="ot">FALSE</span>,
   <span class="dt">has.simple.signature =</span> <span class="ot">TRUE</span>
 )
-<span class="kw">autoplot</span>(obj.fun.parallel, <span class="dt">render.levels =</span> <span class="ot">TRUE</span>) <span class="op">+</span><span class="st"> </span>general.scale
+<span class="kw">autoplot</span>(obj.fun.parallel, <span class="dt">render.levels =</span> <span class="ot">TRUE</span>) +<span class="st"> </span>general.scale
 ## Warning: Ignoring unknown aesthetics: fill
 ## Scale for 'fill' is already present. Adding another scale for 'fill',
 ## which will replace the existing scale.</code></pre></div>
