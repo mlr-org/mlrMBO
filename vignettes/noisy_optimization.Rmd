@@ -6,6 +6,7 @@ output:
     toc_float:
       collapsed: true
       smooth_scroll: false
+    dev: svg
 vignette: >
   %\VignetteIndexEntry{Noisy Optimization}
   %\VignetteEngine{knitr::rmarkdown}
@@ -15,7 +16,7 @@ vignette: >
 ```{r setup, include = FALSE, cache = FALSE}
 library(mlrMBO)
 set.seed(1)
-knitr::opts_chunk$set(cache = TRUE, collapse = FALSE)
+knitr::opts_chunk$set(cache = TRUE, collapse = FALSE, dev = "svg")
 knitr::knit_hooks$set(document = function(x){
   gsub("```\n*```r*\n*", "", x)
 })
@@ -46,7 +47,7 @@ autoplot(obj.fun, length.out = 200)
 As you can see the function is more noisy for large values of $\boldsymbol{x}$ so that the true optimum at `x=0` appears to be hidden.
 It is important to consider the way the final solution is generated (`final.method`).
 By default the best observed $y$ value and its corresponding $\boldsymbol{x}$-values are returned as the optimal solution but in the case of noisy optimization the lowest observed $y$ value can just be the result of noise.
-Preferably the _best predicted_ value of $y$ is taken as the prediction of the surrogate reflects the mean and is less affected by the noise. 
+Preferably the _best predicted_ value of $y$ is taken as the prediction of the surrogate reflects the mean and is less affected by the noise.
 
 ```{r control}
 ctrl = makeMBOControl(final.method = "best.predicted", final.evals = 10)
@@ -54,7 +55,7 @@ ctrl = makeMBOControl(final.method = "best.predicted", final.evals = 10)
 
 For noisy optimization we there are two _infill criteria_ that are recommended:
 
-* `aei`: In contrast to the _Expected Improvement_ the **Augmented Expected Improvement** does not look at the best observed value for reference but at the effective best solution: 
+* `aei`: In contrast to the _Expected Improvement_ the **Augmented Expected Improvement** does not look at the best observed value for reference but at the effective best solution:
 $$y^{\ast}_{\min} := \min\limits_{\boldsymbol{x} \in \{\boldsymbol{x}^{(1)}, \ldots, \boldsymbol{x}^{(j)}\}} \hat{\mu}(\boldsymbol{x}) - \hat{s}(\boldsymbol{x})$$
 The final acquisition function is then similar to the _Expected Improvement_ except from an additional factor that takes the nugget effect $\sigma_{\epsilon}$ into account (_Note_: Only supported for _DiceKriging_, for other surrogates $\sigma_{\epsilon}$ will be estimated by the square root of the residuals variance.):
 $$\operatorname{AEI}(\boldsymbol{x}) = \left( y^{\ast}_{\min} - \hat{\mu}(\boldsymbol{x}) \right) \Phi \left( \frac{y^{\ast}_{\min} - \hat{\mu}(\boldsymbol{x}))}{\hat{s}(\boldsymbol{x})} \right) + \hat{s}(\boldsymbol{x}) \phi \left( \frac{y^{\ast}_{\min} - \hat{\mu}(\boldsymbol{x})}{\hat{s}(\boldsymbol{x})} \right) \cdot \left(1 - \frac{\sigma_{\epsilon}}{\sqrt{\sigma_{\epsilon}^2 + \hat{s}^2(\boldsymbol{x})}} \right)$$

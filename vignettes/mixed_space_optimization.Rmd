@@ -6,6 +6,7 @@ output:
     toc_float:
       collapsed: true
       smooth_scroll: false
+    dev: svg
 vignette: >
   %\VignetteIndexEntry{Mixed Space Optimization}
   %\VignetteEngine{knitr::rmarkdown}
@@ -15,7 +16,7 @@ vignette: >
 ```{r setup, include = FALSE, cache = FALSE}
 library(mlrMBO)
 set.seed(123)
-knitr::opts_chunk$set(cache = TRUE, collapse = FALSE)
+knitr::opts_chunk$set(cache = TRUE, collapse = FALSE, dev = "svg")
 knitr::knit_hooks$set(document = function(x){
   gsub("```\n*```r*\n*", "", x)
 })
@@ -239,6 +240,6 @@ For the random forest the uncertainty is based on the diversity of the results o
 Naturally, the diversity is higher in areas where the results of the objective function are diverse.
 For deterministic functions or functions with just a little noise this is mainly the case in the proximity of steep slopes of the objective function.
 This can lead to proposed points that are located at slopes but not actually in the _valley_.
-Furthermore the diversity of the prediction of the individual trees can also be quite low outside the area of observed values leading to less proposals in the area between proposed points and the actual boundaries of the search space. 
-To combat this problem it can make sense to manually add points at the boundaries of the search space to the initial design. 
+Furthermore the diversity of the prediction of the individual trees can also be quite low outside the area of observed values leading to less proposals in the area between proposed points and the actual boundaries of the search space.
+To combat this problem it can make sense to manually add points at the boundaries of the search space to the initial design.
 
