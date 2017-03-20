@@ -49,7 +49,9 @@
 #' res = mbo(obj.fun, design = des, control = ctrl)
 #'
 #' print(res)
+#' \dontrun{
 #' plot(res)
+#' }
 mbo = function(fun, design = NULL, learner = NULL, control,
   show.info = getOption("mlrMBO.show.info", TRUE), more.args = list()) {
 
@@ -65,7 +67,7 @@ mbo = function(fun, design = NULL, learner = NULL, control,
     assertDataFrame(design, min.rows = 1L, min.cols = 1L)
   learner = checkLearner(learner, par.set, control, fun)
   control = checkStuff(fun, par.set, design, learner, control)
-  control$infill.crit = initCrit(control$infill.crit, par.set, design, learner, control)
+  control$infill.crit = initCrit(control$infill.crit, fun, design, learner, control)
 
   loadPackages(control)
 

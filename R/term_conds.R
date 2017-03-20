@@ -87,7 +87,7 @@ makeMBOTerminationTargetFunValue = function(target.fun.value) {
 # @param max.evals [integer(1)]
 #   Maximal number of function evaluations.
 makeMBOTerminationMaxEvals = function(max.evals) {
-  assertInt(max.evals, na.ok = FALSE, lower = 1L)
+  max.evals = asInt(max.evals, na.ok = FALSE, lower = 1L)
   force(max.evals)
   function(opt.state) {
     opt.path = getOptStateOptPath(opt.state)

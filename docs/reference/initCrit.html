@@ -11,8 +11,8 @@
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
+<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 
-<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
@@ -49,13 +49,38 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../articles/mlrMBO.html">Quickstart</a>
+  <a href="../articles/mlrMBO.html">
+    <span class="fa fa-bolt"></span>
+     
+    Quickstart
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-file-text-o"></span>
+     
+    Topics
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/mixed_space_optimization.html">Mixed Space Optimization</a>
+    </li>
+    <li>
+      <a href="../articles/parallelization.html">Parallelization</a>
+    </li>
+    <li>
+      <a href="../articles/noisy_optimization.html">Noisy Optimization</a>
+    </li>
+  </ul>
 </li>
 <li>
-  <a href="../articles/index.html">Articles</a>
-</li>
-<li>
-  <a href="../reference/index.html">Reference</a>
+  <a href="../reference/index.html">
+    <span class="fa fa-book"></span>
+     
+    Reference
+  </a>
 </li>
       </ul>
       
@@ -83,23 +108,23 @@
     
     <p>Some infill criteria have parameters that are dependent on values in the parameter set, design,
   used learner or other control settings.
-  To actually set these default values, this function is called, which returns a fully 
-  initialized [<code><a href='makeMBOInfillCriterion.html'>MBOInfillCriterion</a></code>].
-  This function is mainly for internal use. If a custom infill criterion is created, it may be 
-  required to create a seperate method <code>initCrit.InfillCritID</code> where <code>ID</code> is the 
-  <code>id</code> of the custom <a href='makeMBOInfillCriterion.html'>MBOInfillCriterion</a>.</p>
+  To actually set these default values, this function is called, which returns a fully
+  initialized [<code><a href='makeMBOInfillCrit.html'>MBOInfillCrit</a></code>].
+  This function is mainly for internal use. If a custom infill criterion is created, it may be
+  required to create a seperate method <code>initCrit.InfillCritID</code> where <code>ID</code> is the
+  <code>id</code> of the custom <a href='makeMBOInfillCrit.html'>MBOInfillCrit</a>.</p>
     
 
-    <pre><span class='fu'>initCrit</span>(<span class='no'>crit</span>, <span class='no'>par.set</span>, <span class='no'>design</span>, <span class='no'>learner</span>, <span class='no'>control</span>)</pre>
+    <pre><span class='fu'>initCrit</span>(<span class='no'>crit</span>, <span class='no'>fun</span>, <span class='no'>design</span>, <span class='no'>learner</span>, <span class='no'>control</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
       <dt>crit</dt>
-      <dd>[<code><a href='makeMBOInfillCriterion.html'>MBOInfillCriterion</a></code>]
+      <dd>[<code><a href='makeMBOInfillCrit.html'>MBOInfillCrit</a></code>]
 Uninitialized infill criterion.</dd>
-      <dt>par.set</dt>
-      <dd>[<code><a href='http://www.rdocumentation.org/packages/ParamHelpers/topics/makeParamSet'>ParamSet</a></code>]
-Collection of parameters and their constraints for optimization.</dd>
+      <dt>fun</dt>
+      <dd>[<code>smoof_function</code>]
+Fitness function to optimize.</dd>
       <dt>design</dt>
       <dd>Sampling plan.</dd>
       <dt>learner</dt>
@@ -112,7 +137,7 @@ MBO control object.</dd>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>[<code><a href='makeMBOInfillCriterion.html'>MBOInfillCriterion</a></code>]</p>
+    <p>[<code><a href='makeMBOInfillCrit.html'>MBOInfillCrit</a></code>]</p>
     
 
   </div>

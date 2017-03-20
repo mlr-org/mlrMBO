@@ -11,8 +11,8 @@
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
+<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 
-<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
@@ -49,13 +49,38 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../articles/mlrMBO.html">Quickstart</a>
+  <a href="../articles/mlrMBO.html">
+    <span class="fa fa-bolt"></span>
+     
+    Quickstart
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-file-text-o"></span>
+     
+    Topics
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/mixed_space_optimization.html">Mixed Space Optimization</a>
+    </li>
+    <li>
+      <a href="../articles/parallelization.html">Parallelization</a>
+    </li>
+    <li>
+      <a href="../articles/noisy_optimization.html">Noisy Optimization</a>
+    </li>
+  </ul>
 </li>
 <li>
-  <a href="../articles/index.html">Articles</a>
-</li>
-<li>
-  <a href="../reference/index.html">Reference</a>
+  <a href="../reference/index.html">
+    <span class="fa fa-book"></span>
+     
+    Reference
+  </a>
 </li>
       </ul>
       
@@ -162,27 +187,25 @@ return a list with the following elements:
 <span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'>setMBOControlTermination</span>(<span class='no'>ctrl</span>, <span class='kw'>more.termination.conds</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='fu'>yTargetValueTerminator</span>(<span class='fl'>0.05</span>)))
 <span class='no'>res</span> <span class='kw'>=</span> <span class='fu'><a href='mbo.html'>mbo</a></span>(<span class='no'>fn</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='no'>ctrl</span>)
 <span class='fu'>print</span>(<span class='no'>res</span>)</div><div class='output co'>#&gt; Recommended parameters:
-#&gt; x=-0.0819
-#&gt; Objective: y = 0.007
+#&gt; x=-0.0345
+#&gt; Objective: y = 0.001
 #&gt; 
 #&gt; Optimization path
-#&gt; 4 + 3 entries in total, displaying last 10 (or less):
-#&gt;             x           y dob eol error.message exec.time         cb
-#&gt; 1 -0.76093228  0.57901794   0  NA          &lt;NA&gt;     0.000         NA
-#&gt; 2 -4.47445290 20.02072875   0  NA          &lt;NA&gt;     0.000         NA
-#&gt; 3  4.44616620 19.76839384   0  NA          &lt;NA&gt;     0.000         NA
-#&gt; 4  2.34827602  5.51440028   0  NA          &lt;NA&gt;     0.000         NA
-#&gt; 5 -1.86224059  3.46794003   1  NA          &lt;NA&gt;     0.000  2.8674242
-#&gt; 6  0.48176513  0.23209764   2  NA          &lt;NA&gt;     0.001 -3.0416373
-#&gt; 7 -0.08188474  0.00670511   3  NA          &lt;NA&gt;     0.000 -0.6685445
+#&gt; 4 + 2 entries in total, displaying last 10 (or less):
+#&gt;             x            y dob eol error.message exec.time         cb
+#&gt; 1 -2.89180013  8.362507992   0  NA          &lt;NA&gt;     0.000         NA
+#&gt; 2  0.99578447  0.991586701   0  NA          &lt;NA&gt;     0.000         NA
+#&gt; 3 -0.32306312  0.104369778   0  NA          &lt;NA&gt;     0.000         NA
+#&gt; 4  3.92858627 15.433790059   0  NA          &lt;NA&gt;     0.000         NA
+#&gt; 5  0.28001838  0.078410292   1  NA          &lt;NA&gt;     0.000 -2.1626904
+#&gt; 6 -0.03450988  0.001190932   2  NA          &lt;NA&gt;     0.001 -0.3275574
 #&gt;   error.model train.time  prop.type propose.time        se        mean lambda
 #&gt; 1        &lt;NA&gt;         NA initdesign           NA        NA          NA     NA
 #&gt; 2        &lt;NA&gt;         NA initdesign           NA        NA          NA     NA
 #&gt; 3        &lt;NA&gt;         NA initdesign           NA        NA          NA     NA
 #&gt; 4        &lt;NA&gt;         NA initdesign           NA        NA          NA     NA
-#&gt; 5        &lt;NA&gt;      0.028  infill_cb        0.044 8.6032110 11.47063520      1
-#&gt; 6        &lt;NA&gt;      0.032  infill_cb        0.045 5.1908987  2.14926140      1
-#&gt; 7        &lt;NA&gt;      0.036  infill_cb        0.053 0.7453475  0.07680299      1</div></pre>
+#&gt; 5        &lt;NA&gt;      0.028  infill_cb        0.044 1.9675182 -0.19517220      1
+#&gt; 6        &lt;NA&gt;      0.031  infill_cb        0.044 0.3035529 -0.02400451      1</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

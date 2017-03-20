@@ -1,5 +1,5 @@
 ---
-title: "mlrMBO: Quick introduction"
+title: "mlrMBO: A brief introduction"
 output:
   html_document:
     toc: true
@@ -15,58 +15,51 @@ vignette: >
 ```{r setup, include = FALSE, cache = FALSE}
 library(mlrMBO)
 set.seed(123)
-knitr::opts_chunk$set(cache = TRUE, collapse = FALSE, results = 'hold')
+knitr::opts_chunk$set(cache = TRUE, collapse = FALSE)
 knitr::knit_hooks$set(document = function(x){
   gsub("```\n*```r*\n*", "", x)
 })
 ```
 
 
-# Purpose
+# Overview
 
-This vignette is supposed to give a short introduction to the key features of `mlrMBO`.
-The main goal of `mlrMBO` is to optimize *Expensive Black-Box Functions* through *Model-Based Optimization* and to provide a unified interface for different MBO flavours and optimization tasks.
+The main goal of `mlrMBO` is to optimize *expensive black-box functions* by *model-based optimization* (aka Bayesian optimization) and to provide a unified interface for different optimization tasks and algorithmic MBO variants.
 Supported are, among other things:
 
 - Efficient global optimization (EGO) of problems with numerical domain and Kriging as surrogate
-- Interfacing arbitrary regression models implemented in [mlr](https://github.com/mlr-org/mlr/) to use as surrogat
-- Built-in parallelization using multi point proposals
+- Using arbitrary regression models from [mlr](https://github.com/mlr-org/mlr/) as surrogates
+- Built-in parallelization using multi-point proposals
+- Mixed-space optimization with categorical and subordinate parameters, for parameter configuration and tuning
 - Multi-criteria optimization
 
 # Quickstart
 
-**This guide gives an overview of the typical optimization workflow with mlrMBO.**
-
 ## Prerequisites
 
-With the installation of `mlrMBO` the dependencies `mlr`, `ParamHelpers`, and `smoof` will be installed and also loaded when you load `mlrMBO`.
-For this tutorial, you will need the additional packages `DiceKriging` and `randomForest`.
+Installing `mlrMBO` will also install and load the dependencies `mlr`, `ParamHelpers`, and `smoof`.
+For this tutorial, you also need the additional packages `DiceKriging` and `randomForest`.
 
 ```{r load_package}
 library(mlrMBO)
 ```
 
-## General MBO Workflow
+## General MBO workflow
 
-The following steps are needed to start the optimization:
-
-1. Define the **objective function** and its parameters using the package `smoof`.
-2. Generate an **initial design** (optional).
-3. Define a `mlr` learner for the **surrogate model** (optional).
+1. Define **objective function** and its parameters using the package `smoof`.
+2. Generate **initial design** (optional).
+3. Define mlr` learner for **surrogate model** (optional).
 4. Set up a **MBO control** object.
-5. Finally start the optimization with `mbo()`.
+5. Start the optimization with `mbo()`.
 
-For a simple example we minimize a cosine mixture function with an initial design of 5 points and 10 sequential MBO iterations.
-Thus, the optimizer gets in total 15 evaluations of the objective function to find the optimum.
+As a simple example we minimize a cosine-like function with an initial design of 5 points and 10 sequential MBO iterations.
+Thus, the optimizer is allowed 15 evaluations of the objective function in total to approximate the optimum.
 
 
 ### Objective Function
 
-Instead of writing the objective function by hand, we use the [*smoof*](https://cran.r-project.org/package=smoof) package which offers many single objective functions frequently used for benchmarking of optimizers.
-[smoof](https://cran.r-project.org/package=smoof) is a dependency and gets automatically attached with `mlrMBO`.
+Instead of manually defining the objective, we use the [*smoof*](https://cran.r-project.org/package=smoof) package which offers many toy and benchmark functions for optimization.
 
-_Note:_ You are not limited to these test functions but can define arbitrary objective functions with *smoof*.
-Check `?smoof::makeSingleObjectiveFunction` for an example.
 
 ```{r cosine_fun}
 obj.fun = makeCosineMixtureFunction(1)
@@ -75,9 +68,27 @@ print(obj.fun)
 ggplot2::autoplot(obj.fun)
 ```
 
+You are not limited to these test functions but can define arbitrary objective functions with *smoof*.
+
+```{r smoof_custom_objective}
+makeSingleObjectiveFunction(
+  name = "my_sphere",
+  fn = function(x) {
+    sum(x*x) + 7
+  },
+  par.set = makeParamSet(
+    makeNumericVectorParam("x", len = 2L, lower = -5, upper = 5)
+  ),
+  minimize = TRUE
+)
+```
+
+Check `?smoof::makeSingleObjectiveFunction` for further details.
+
+
 ### Initial Design
 
-Before the MBO algorithm can starts it needs a set of already evaluated points - the *inital design*.
+Before MBO can really start, it needs a set of already evaluated points - the *inital design*, as we have to initially learn our first machine learning regression model to propose new points for evaluation.
 If no design is given (i.e. `design = NULL`), `mbo()` will use a *Maximin Latin Hypercube* `lhs::maximinLHS()` design with `n = 4 * getNumberOfParameters(obj.fun)` points.
 If the design does not include function outcomes `mbo()` will evaluate the design first before starting with the MBO algorithm.
 In this example we generate our own design.
@@ -108,8 +119,11 @@ _Note:_ If no surrogate learner is defined, `mbo()` automatically uses Kriging f
 
 ### MBOControl
 
-The `MBOControl` object contains all further settings for `mbo()`.
-It is created with `makeMBOControl()`. For further customization there are the following functions:
+The `MBOControl` object allows customization of the optimization run and algorithmic behavior of MBO.
+It is created with `makeMBOControl()`, and can be modified with further setter-functions.
+
+
+For further customization there are the following functions:
 
 * `setMBOControlTermination()`: It is obligatory to define a termination criterion like the number of MBO iterations.
 * `setMBOControlInfill()`: It is recommended to set the infill criterion. For learners that support `predict.type = "se"` the Confidence Bound `"cb"` and the Expected Improvement `"ei"` are a good choice.
@@ -124,17 +138,19 @@ control = setMBOControlInfill(control, crit = makeMBOInfillCritEI())
 ```
 
 ### Start the optimization
-Finally, we start the optimization process and print the result object, which gives us the best found solution and the reached objective value.
 
-```{r cosine_run}
+Finally, we start the optimization process and print the result object.
+It contains the best best found solution and its corresponding objective value.
+
+```{r cosine_run, results='hold'}
 run = mbo(obj.fun, design = des, learner = surr.km, control = control, show.info = TRUE)
 print(run)
 ```
 
 ## Visualization
 
-To get better insight into the MBO process, we can start the previous optimization with the function `exampleRun()` instead of `mbo()`.
-This specialized function augments the results of `mbo()` with additional information for plotting.
+For more insights into the MBO process, we can also start the previous optimization with the function `exampleRun()` instead of `mbo()`.
+This augments the results of `mbo()` with additional information for plotting.
 Here, we plot the optimization state at iterations 1, 2, and 10.
 
 ```{r cosine_examplerun, results="hide"}

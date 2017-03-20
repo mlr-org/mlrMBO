@@ -8,7 +8,6 @@
 \alias{getMBOInfillCritId}
 \alias{hasRequiresInfillCritStandardError}
 \alias{getMBOInfillCritComponents}
-\alias{getMBOInfillCritDirection}
 \title{Get properties of MBO infill criterion.}
 \usage{
 getMBOInfillCritParams(x)
@@ -22,8 +21,6 @@ getMBOInfillCritId(x)
 hasRequiresInfillCritStandardError(x)
 
 getMBOInfillCritComponents(x)
-
-getMBOInfillCritDirection(x)
 }
 \arguments{
 \item{x}{[\code{\link{MBOInfillCrit}}]\cr

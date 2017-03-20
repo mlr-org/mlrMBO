@@ -7,20 +7,47 @@
 
 Model-based optimization with [mlr](https://github.com/mlr-org/mlr/).
 
+* [Documentation](https://mlr-org.github.io/mlrMBO/)
+* [Issues, Requests and Bug Tracker](https://github.com/mlr-org/mlrMBO/issues)
+
 # Installation
 
-`mlrMBO` currently needs the development versions of the packages [mlr](https://github.com/mlr-org/mlr/) and [ParamHelpers](https://github.com/berndbischl/ParamHelpers).
-To install `mlrMBO` with all dependencies, run the following lines:
-
 ```r
-devtools::install_github("berndbischl/ParamHelpers")
-devtools::install_github("mlr-org/mlr")
-devtools::install_github("mlr-org/mlrMBO")
+install.packages("mlr-org/mlrMBO")
 ```
 
+# Introduction
 
-# Resources
+![MBO demo](https://raw.githubusercontent.com/mlr-org/mlrMBO/master/docs/articles/helpers/animation_files/figure-html/animation-.gif)
 
-* [Documentation](https://mlr-org.github.io/mlrMBO/)
-* Developers mailing list at [google groups](https://groups.google.com/forum/?hl=de#!forum/mlrmbo-devel).
-  The github-service-hook will also send commit messages to this list.
+`mlrMBO` is a highly configurable R toolbox for model-based / Bayesian optimization of black-box functions.
+
+Features:
+
+* EGO-type algorithms (Kriging with expected improvement) on purely numerical search spaces, see [Jones et al. (1998)](http://link.springer.com/article/10.1023/A:1008306431147)
+* Mixed search spaces with numerical, integer, categorical and subordinate parameters
+* Arbitrary parameter transformation allowing to optimize on, e.g., logscale
+* Optimization of noisy objective functions
+* Multi-Criteria optimization with approximated Pareto fronts
+* Parallelization through multi-point batch proposals
+* Parallelization on many parallel back-ends and clusters through [batchtools](https://github.com/mllg/batchtools) and [parallelMap](https://github.com/berndbischl/parallelMap)
+
+For the *surrogate*, `mlrMBO` allows any regression learner from [`mlr`](https://github.com/mlr-org/mlr), including:
+* Kriging aka. Gaussian processes (i.e. `DiceKriging`)
+* random Forests (i.e. `randomForest`)
+* and many more...
+
+Various *infill criteria* (aka. _acquisition functions_) are available:
+* Expected improvement (EI)
+* Upper/Lower confidence bound (LCB, aka. statistical lower or upper bound)
+* Augmented expected improvement (AEI)
+* Expected quantile improvement (EQI)
+* API for custom infill criteria
+
+Objective functions are created with package [smoof](https://github.com/jakobbossek/smoof), which also offers many test functions for example runs or benchmarks.
+
+Parameter spaces and initial designs are created with package [ParamHelpers](https://github.com/berndbischl/ParamHelpers).
+
+
+
+

@@ -7,7 +7,7 @@ renderExampleRunPlot.MBOExampleRun = function(object, iter, densregion = TRUE,
   requirePackages("ggplot2")
 
   iters.max = object$control$iters
-  assertIntegerish(iter, lower = 0L, upper = iters.max, len = 1L, any.missing = FALSE)
+  iter = asInt(iter, lower = 1L, upper = iters.max)
   assertFlag(densregion)
   assertNumber(se.factor, lower = 0)
   assertNumber(point.size, lower = 1)

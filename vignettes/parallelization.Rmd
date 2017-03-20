@@ -15,22 +15,26 @@ vignette: >
 ```{r setup, include = FALSE, cache = FALSE}
 library(mlrMBO)
 set.seed(1)
-knitr::opts_chunk$set(cache = TRUE, collapse = FALSE, results = 'hold')
+knitr::opts_chunk$set(cache = TRUE, collapse = FALSE)
 knitr::knit_hooks$set(document = function(x){
   gsub("```\n*```r*\n*", "", x)
 })
+
+# cheat and secretly don't do parallelization for windows compatibility.
+library(parallelMap)
+parallelStartMulticore = parallelStop = function(...) invisible()
 ```
 
 ## Purpose
 
-This vignette will give you a short introduction how **mlrMBO** can be configured to make use of multicore or other parallel infrastructures by evaluating multiple points (each on one CPU) per MBO iteration, to improve the speed of the model-based optimization.
+This Vignette will give you a short introduction how **mlrMBO** can be configured to make use of multicore or other parallel infrastructures by evaluating multiple points (each on one CPU) per MBO iteration, to improve the speed of the model-based optimization.
 
 ## Prerequisites
 
 The parallelization of multiple evaluations of the target function is realized internally with the R package `parallelMap`. 
-This package offers simple parallelization with various different backends. 
-For details on the usage see the [parallelMap github page](https://github.com/berndbischl/parallelMap#readme), which offers a nice tutorial and describes all possible backends thorougly.
-In this example we use a *multicore* backend, which is also the most common use-case.
+This package offers simple parallelization with various different back-ends. 
+For details on the usage see the [parallelMap github page](https://github.com/berndbischl/parallelMap#readme), which offers a nice tutorial and describes all possible back-ends thoroughly.
+In this example we use a *multicore* back-end, which is also the most common use-case.
 Note, that the multicore parallelization does _not_ work on windows machines.
 
 ## Parallelization through multi point proposals
@@ -45,14 +49,14 @@ obj.fun = makeBraninFunction()
 autoplot(obj.fun, render.levels = TRUE, show.optimum = TRUE)
 ```
 
-In our example we will have *two CPUs* that we want to utelize for the evaluation of the black-box function.
+In our example we will have *two CPUs* that we want to utilize for the evaluation of the black-box function.
 
 ```{r control}
 library(mlrMBO)
 ctrl = makeMBOControl(propose.points = 2)
 ```
 
-There are multiple methods available to propse multiple points.
+There are multiple methods available to propose multiple points.
 Each has it's advantages and disadvantages.
 The choice is mostly bound to your choice of the infill criterion, so we will decide for that first.
 As we have a real valued parameter space of our objective function, the **expected improvement** is usually the best choice
@@ -66,7 +70,7 @@ ctrl = setMBOControlInfill(ctrl, crit = crit.ei)
 The available methods to propose multiple points are as follows:
 * `cl`: Proposes points by the constant liar strategy. 
 The constant liar is usually a good choice for the **augmented expected - ** and the **expected improvement**.
-The first point is optained by the ordinary infill optimization, like it is used to propose one point.
+The first point is obtained by the ordinary infill optimization, like it is used to propose one point.
 To obtain the 2nd point we assume that the evaluation at the first point is finished.
 As we don't really have an outcome yet, we set the outcome to a lie.
 Usually the minimum of all observed outcomes is chosen as the lie.
@@ -90,7 +94,7 @@ So we have to define:
 ctrl = setMBOControlMultiPoint(ctrl, method = "cl", cl.lie = min)
 ```
 
-For parallelization the termination criterion offers two usefull options.
+For parallelization the termination criterion offers two useful options.
 We can limit the number of total evaluations of the objective function as well as we can limit the number of MBO iterations. 
 Assuming our initial design is of size 8 and we allow 6 iterations we will get 20 evaluations of the objective function as we decided to have two evaluations per iteration by setting `propose.points = 2`.
 so for our example the following two settings will lead to the same result:
@@ -115,7 +119,7 @@ res = mbo(obj.fun, control = ctrl, show.info = FALSE)
 parallelStop()
 ```
 
-As you can see from the console output of `parallelMap` the intial design will also be evaluated in parallel.
+As you can see from the console output of `parallelMap` the initial design will also be evaluated in parallel.
 
 In the end a small plot that uses the `opt.path` which is stored in the result of the MBO Optimization process to visualize which points were proposed in which iteration.
 The zeros are the points from the initial design, 1 for the first iteration and so on.
@@ -126,8 +130,8 @@ autoplot(obj.fun, render.levels = TRUE, show.optimum = TRUE) + geom_text(data = 
 ### Confidence Bound
 
 If we decided to use the **confidence bound** as an infill criterion, because e.g. the parameter space contains discrete values and we decided for the random forest as an infill criterion, then we suggest to use the **random lambda** method to generate multiple proposals per iteration.
-Note that this time we rely on MBO to autmaically use the random forest for the surrogate as the objective function contains the discrete variable `x1`.
-Also we now specify the number of initial desing points manually according to the number of levels of the discrete variable.
+Note that this time we rely on MBO to automatically use the random forest for the surrogate as the objective function contains the discrete variable `x1`.
+Also we now specify the number of initial design points manually according to the number of levels of the discrete variable.
 
 ```{r obj.fun.dis}
 obj.fun = makeSwiler2014Function()
@@ -147,13 +151,13 @@ autoplot(obj.fun, render.levels = TRUE) + geom_text(data = as.data.frame(res$opt
 
 ## Parallelization of the objective function
 
-In some cases it is acutally possible to parallize the objective function.
+In some cases it is actually possible to parallelize the objective function.
 This can also be done with the help of `parallelMap`.
 
 ### Custom objective function
 
-One simple case to make use of parallelization is when we have a noisy function and we just evaluate it repeatadly to reduce the noisyness.
-The following example illustrates that, but also can be usefull to show you how to parallize your objective in a more sophisticated way.
+One simple case to make use of parallelization is when we have a noisy function and we just evaluate it repeatedly to reduce the noisiness.
+The following example illustrates that, but also can be useful to show you how to parallelize your objective in a more sophisticated way.
 
 Let's start with the normal approach:
 
@@ -204,10 +208,10 @@ library(mlr)
 ctrl = makeMBOControl(final.method = "best.predicted")
 ctrl = setMBOControlTermination(ctrl, iters = 5L)
 ctrl = setMBOControlInfill(ctrl, crit = crit.aei)
-parallelStartMulticore(cpus = 4L, show.info = TRUE, level = "custom.objective")
+parallelStartMulticore(cpus = 2L, show.info = TRUE, level = "custom.objective")
 res.parallel = mbo(obj.fun.parallel, control = ctrl, show.info = FALSE)
 parallelStop()
 res.parallel
 ```
-As you can see in the output of `parallelMap` we now parallize the level `custom.objective` and not as previously `mlrMBO.feval`.
-If you forget to register your own level `parallelMap` will parellelize the first call of `parallelMap` and that would be the call we do internally to evaluate the proposed points.
+As you can see in the output of `parallelMap` we now parallelize the level `custom.objective` and not as previously `mlrMBO.feval`.
+If you forget to register your own level `parallelMap` will parallelize the first call of `parallelMap` and that would be the call we do internally to evaluate the proposed points.

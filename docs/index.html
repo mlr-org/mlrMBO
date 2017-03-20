@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>A Toolbox for Model-Based Optimization of Expensive Black-Box Functions • mlrMBO</title>
-<!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 <!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="jquery.sticky-kit.min.js"></script><script src="pkgdown.js"></script><!-- mathjax --><script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
@@ -29,13 +29,38 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="articles/mlrMBO.html">Quickstart</a>
+  <a href="articles/mlrMBO.html">
+    <span class="fa fa-bolt"></span>
+     
+    Quickstart
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-file-text-o"></span>
+     
+    Topics
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="articles/mixed_space_optimization.html">Mixed Space Optimization</a>
+    </li>
+    <li>
+      <a href="articles/parallelization.html">Parallelization</a>
+    </li>
+    <li>
+      <a href="articles/noisy_optimization.html">Noisy Optimization</a>
+    </li>
+  </ul>
 </li>
 <li>
-  <a href="articles/index.html">Articles</a>
-</li>
-<li>
-  <a href="reference/index.html">Reference</a>
+  <a href="reference/index.html">
+    <span class="fa fa-book"></span>
+     
+    Reference
+  </a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
@@ -62,22 +87,49 @@
 <a href="#mlrmbo" class="anchor"> </a>mlrMBO</h1></div>
 
 <p>Model-based optimization with <a href="https://github.com/mlr-org/mlr/">mlr</a>.</p>
+<ul>
+<li><a href="https://mlr-org.github.io/mlrMBO/">Documentation</a></li>
+<li><a href="https://github.com/mlr-org/mlrMBO/issues">Issues, Requests and Bug Tracker</a></li>
+</ul>
 </div>
 <div id="installation" class="section level1">
 <h1 class="hasAnchor">
 <a href="#installation" class="anchor"> </a>Installation</h1>
-<p><code>mlrMBO</code> currently needs the development versions of the packages <a href="https://github.com/mlr-org/mlr/">mlr</a> and <a href="https://github.com/berndbischl/ParamHelpers">ParamHelpers</a>. To install <code>mlrMBO</code> with all dependencies, run the following lines:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools::<span class="kw">install_github</span>(<span class="st">"berndbischl/ParamHelpers"</span>)
-devtools::<span class="kw">install_github</span>(<span class="st">"mlr-org/mlr"</span>)
-devtools::<span class="kw">install_github</span>(<span class="st">"mlr-org/mlrMBO"</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">"mlr-org/mlrMBO"</span>)</code></pre></div>
 </div>
-<div id="resources" class="section level1">
+<div id="introduction" class="section level1">
 <h1 class="hasAnchor">
-<a href="#resources" class="anchor"> </a>Resources</h1>
+<a href="#introduction" class="anchor"> </a>Introduction</h1>
+<p><img src="https://raw.githubusercontent.com/mlr-org/mlrMBO/master/docs/articles/helpers/animation_files/figure-html/animation-.gif" alt="MBO demo"></p>
+<p><code>mlrMBO</code> is a highly configurable R toolbox for model-based / Bayesian optimization of black-box functions.</p>
+<p>Features:</p>
 <ul>
-<li><a href="https://mlr-org.github.io/mlrMBO/">Documentation</a></li>
-<li>Developers mailing list at <a href="https://groups.google.com/forum/?hl=de#!forum/mlrmbo-devel">google groups</a>. The github-service-hook will also send commit messages to this list.</li>
+<li>EGO-type algorithms (Kriging with expected improvement) on purely numerical search spaces, see <a href="http://link.springer.com/article/10.1023/A:1008306431147">Jones et al. (1998)</a>
+</li>
+<li>Mixed search spaces with numerical, integer, categorical and subordinate parameters</li>
+<li>Arbitrary parameter transformation allowing to optimize on, e.g., logscale</li>
+<li>Optimization of noisy objective functions</li>
+<li>Multi-Criteria optimization with approximated Pareto fronts</li>
+<li>Parallelization through multi-point batch proposals</li>
+<li>Parallelization on many parallel back-ends and clusters through <a href="https://github.com/mllg/batchtools">batchtools</a> and <a href="https://github.com/berndbischl/parallelMap">parallelMap</a>
+</li>
 </ul>
+<p>For the <em>surrogate</em>, <code>mlrMBO</code> allows any regression learner from <a href="https://github.com/mlr-org/mlr"><code>mlr</code></a>, including:</p>
+<ul>
+<li>Kriging aka. Gaussian processes (i.e. <code>DiceKriging</code>)</li>
+<li>random Forests (i.e. <code>randomForest</code>)</li>
+<li>and many more…</li>
+</ul>
+<p>Various <em>infill criteria</em> (aka. <em>acquisition functions</em>) are available:</p>
+<ul>
+<li>Expected improvement (EI)</li>
+<li>Upper/Lower confidence bound (LCB, aka. statistical lower or upper bound)</li>
+<li>Augmented expected improvement (AEI)</li>
+<li>Expected quantile improvement (EQI)</li>
+<li>API for custom infill criteria</li>
+</ul>
+<p>Objective functions are created with package <a href="https://github.com/jakobbossek/smoof">smoof</a>, which also offers many test functions for example runs or benchmarks.</p>
+<p>Parameter spaces and initial designs are created with package <a href="https://github.com/berndbischl/ParamHelpers">ParamHelpers</a>.</p>
 </div>
 
   </div>
@@ -85,6 +137,8 @@ devtools::<span class="kw">install_github</span>(<span class="st">"mlr-org/mlrMB
   <div class="col-md-3" id="sidebar">
     <h2>Links</h2>
 <ul class="list-unstyled">
+<li>Download from CRAN at <br><a href="https://cran.r-project.org/package=mlrMBO">https://​cran.r-project.org/​package=mlrMBO</a>
+</li>
 <li>Browse source code at <br><a href="https://github.com/mlr-org/mlrMBO">https://​github.com/​mlr-org/​mlrMBO</a>
 </li>
 <li>Report a bug at <br><a href="https://github.com/mlr-org/mlrMBO/issues">https://​github.com/​mlr-org/​mlrMBO/​issues</a>
@@ -94,9 +148,9 @@ devtools::<span class="kw">install_github</span>(<span class="st">"mlr-org/mlrMB
 <p><a href="https://opensource.org/licenses/BSD-2-Clause">BSD_2_clause</a> + file <a href="LICENSE">LICENSE</a></p>
 <h2>Developers</h2>
 <ul class="list-unstyled">
-<li>Bernd Bischl <br><small class="roles"> Author, maintainer </small> </li>
+<li>Bernd Bischl <br><small class="roles"> Author </small> </li>
 <li>Jakob Bossek <br><small class="roles"> Author </small> </li>
-<li>Jakob Richter <br><small class="roles"> Author </small> </li>
+<li>Jakob Richter <br><small class="roles"> Author, maintainer </small> </li>
 <li>Daniel Horn <br><small class="roles"> Author </small> </li>
 <li>Michel Lang <br><small class="roles"> Author </small> </li>
 <li>Janek Thomas <br><small class="roles"> Author </small> </li>

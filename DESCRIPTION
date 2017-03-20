@@ -7,15 +7,15 @@ Description: Flexible and comprehensive R toolbox for model-based optimization
     of regression learners to model the performance of the target algorithm with
     respect to the parameter settings. It provides many different infill criteria
     to guide the search process. Additional features include multipoint batch
-    proposal, parallel exectution as well as visualization and sophisticated
+    proposal, parallel execution as well as visualization and sophisticated
     logging mechanisms, which is especially useful for teaching and understanding
     of algorithm behavior. 'mlrMBO' is implemented in a modular fashion, such that
     single components can be easily replaced or adapted by the user for specific use
     cases.
 Authors@R: c(
-    person("Bernd", "Bischl", email = "bernd_bischl@gmx.net", role = c("aut", "cre")),
+    person("Bernd", "Bischl", email = "bernd_bischl@gmx.net", role = c("aut")),
     person("Jakob", "Bossek", email = "jakob.bossek@tu-dortmund.de", role = "aut"),
-    person("Jakob", "Richter", email = "code@jakob-r.de", role = "aut"),
+    person("Jakob", "Richter", email = "code@jakob-r.de", role = c("aut", "cre")),
     person("Daniel", "Horn", email = "daniel.horn@tu-dortmund.de", role = "aut"),
     person("Michel", "Lang", email = "michellang@gmail.com", role = "aut"),
     person("Janek", "Thomas", email = "janek.thomas@stat.uni-muenchen.de", role = "aut"))
@@ -24,15 +24,15 @@ URL: https://github.com/mlr-org/mlrMBO
 BugReports: https://github.com/mlr-org/mlrMBO/issues
 Depends:
     mlr (>= 2.10),
-    ParamHelpers (>= 1.8),
-    smoof (>= 1.3)
+    ParamHelpers (>= 1.10),
+    smoof (>= 1.4)
 Imports:
     backports,
     BBmisc (>= 1.11),
-    checkmate (>= 1.8.1),
+    checkmate (>= 1.8.2),
     data.table,
     lhs,
-    parallelMap (>= 1.1)
+    parallelMap (>= 1.3)
 Suggests:
     akima,
     cmaesr (>= 1.0.3),
@@ -57,7 +57,8 @@ Suggests:
     eaf,
     covr
 LazyData: yes
+Encoding: UTF-8
 ByteCompile: yes
-Version: 1.0.0
+Version: 1.1.0
 RoxygenNote: 6.0.1
 VignetteBuilder: knitr

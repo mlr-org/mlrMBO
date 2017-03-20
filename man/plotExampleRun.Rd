@@ -4,7 +4,7 @@
 \alias{plotExampleRun}
 \title{Renders plots for exampleRun objects and displays them.}
 \usage{
-plotExampleRun(object, iters, pause = TRUE, densregion = TRUE,
+plotExampleRun(object, iters, pause = interactive(), densregion = TRUE,
   se.factor = 1, single.prop.point.plots = FALSE, xlim = NULL,
   ylim = NULL, point.size = 3, line.size = 1, trafo = NULL,
   colors = c("red", "blue", "green"), gg.objects = list(), ...)
@@ -20,7 +20,7 @@ Default is all iterations.}
 
 \item{pause}{[\code{logical(1)}]\cr
 Should the process be paused after each iteration?
-Default is \code{TRUE}.}
+Default is \code{interactive()}.}
 
 \item{densregion}{[\code{logical(1)}]\cr
 Should the background be shaded? Default is \code{TRUE}.
