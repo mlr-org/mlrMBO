@@ -11,11 +11,11 @@ navbar:
     icon: fa-file-text-o
     menu:
       - text: Mixed Space Optimization
-        href: articles/mixed_space_optimization.html
+        href: articles/supplementary/mixed_space_optimization.html
       - text: Parallelization
-        href: articles/parallelization.html
+        href: articles/supplementary/parallelization.html
       - text: Noisy Optimization
-        href: articles/noisy_optimization.html
+        href: articles/supplementary/noisy_optimization.html
       - text: Infill Criteria
         href: articles/infill_criteria
   - text: Reference
@@ -36,7 +36,7 @@ reference:
       - mboFinalize
       - mbo_parallel
       - mlrMBO_examples
-      
+
   - title: "Infill Criteria"
     desc: "Infill Criteria and Functions to generate and interact with Infill Criteria."
     contents:

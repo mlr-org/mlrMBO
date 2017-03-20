@@ -6,6 +6,8 @@ output:
     toc_float:
       collapsed: true
       smooth_scroll: false
+    dev: png
+    fig_retina: null
 vignette: >
   %\VignetteIndexEntry{Parallelization}
   %\VignetteEngine{knitr::rmarkdown}
@@ -15,7 +17,7 @@ vignette: >
 ```{r setup, include = FALSE, cache = FALSE}
 library(mlrMBO)
 set.seed(1)
-knitr::opts_chunk$set(cache = TRUE, collapse = FALSE)
+knitr::opts_chunk$set(cache = TRUE, collapse = FALSE, dev = "png")
 knitr::knit_hooks$set(document = function(x){
   gsub("```\n*```r*\n*", "", x)
 })
@@ -31,8 +33,8 @@ This Vignette will give you a short introduction how **mlrMBO** can be configure
 
 ## Prerequisites
 
-The parallelization of multiple evaluations of the target function is realized internally with the R package `parallelMap`. 
-This package offers simple parallelization with various different back-ends. 
+The parallelization of multiple evaluations of the target function is realized internally with the R package `parallelMap`.
+This package offers simple parallelization with various different back-ends.
 For details on the usage see the [parallelMap github page](https://github.com/berndbischl/parallelMap#readme), which offers a nice tutorial and describes all possible back-ends thoroughly.
 In this example we use a *multicore* back-end, which is also the most common use-case.
 Note, that the multicore parallelization does _not_ work on windows machines.
@@ -68,19 +70,19 @@ ctrl = setMBOControlInfill(ctrl, crit = crit.ei)
 ### Multi point proposal methods
 
 The available methods to propose multiple points are as follows:
-* `cl`: Proposes points by the constant liar strategy. 
+* `cl`: Proposes points by the constant liar strategy.
 The constant liar is usually a good choice for the **augmented expected - ** and the **expected improvement**.
 The first point is obtained by the ordinary infill optimization, like it is used to propose one point.
 To obtain the 2nd point we assume that the evaluation at the first point is finished.
 As we don't really have an outcome yet, we set the outcome to a lie.
 Usually the minimum of all observed outcomes is chosen as the lie.
-This *lie* is used to update the model in order to propose subsequent point. 
+This *lie* is used to update the model in order to propose subsequent point.
 The procedure is repeated until `propose.points` proposals are generated.
 * `cb`: As learnt from Vignette for *Mixed Space Optimization* we prefer the **lower/upper confidence bound** (CB) when we use a *random forest* as a regression method for the surrogate.
-For the *CB* the parameter $\lambda$ is not fixed. 
+For the *CB* the parameter $\lambda$ is not fixed.
 This characteristic can be used to obtain multiple proposals by optimizing the *CB* for different lambda values, which are drawn from an exp(1)-distribution.
 Each lambda value leads to a slightly different infill criteria function with different optima resulting in different proposals.
-* `multicrit`: Use a evolutionary multicriteria optimization. 
+* `multicrit`: Use a evolutionary multicriteria optimization.
 This is a (mu+1) type evolutionary algorithm and runs for `multicrit.maxit` generations.
 The population size is set to `propose.points`.
 For a detailed description of the algorithm check the paper [MOI-MBO: Multiobjective Infill for Parallel Model-Based Optimization](http://link.springer.com/chapter/10.1007/978-3-319-09584-4_17).
@@ -95,7 +97,7 @@ ctrl = setMBOControlMultiPoint(ctrl, method = "cl", cl.lie = min)
 ```
 
 For parallelization the termination criterion offers two useful options.
-We can limit the number of total evaluations of the objective function as well as we can limit the number of MBO iterations. 
+We can limit the number of total evaluations of the objective function as well as we can limit the number of MBO iterations.
 Assuming our initial design is of size 8 and we allow 6 iterations we will get 20 evaluations of the objective function as we decided to have two evaluations per iteration by setting `propose.points = 2`.
 so for our example the following two settings will lead to the same result:
 
@@ -189,9 +191,9 @@ obj.fun.parallel = makeSingleObjectiveFunction(
     rep.x = replicate(4, x, simplify = FALSE)
     res = parallelMap(fn, rep.x, simplify = TRUE, level = "custom.objective")
     mean(res)
-  }, 
-  noisy = TRUE, 
-  par.set = makeNumericParamSet(id = "x", len = 2, lower = -5, upper = 5), 
+  },
+  noisy = TRUE,
+  par.set = makeNumericParamSet(id = "x", len = 2, lower = -5, upper = 5),
   vectorized = FALSE,
   has.simple.signature = TRUE
 )

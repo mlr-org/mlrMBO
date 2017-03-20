@@ -8,8 +8,8 @@
 <title>Mixed Space Optimization • mlrMBO</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
-<!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script><script src="../pkgdown.js"></script><!-- mathjax --><script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
+<!-- pkgdown --><link href="../../pkgdown.css" rel="stylesheet">
+<script src="../../jquery.sticky-kit.min.js"></script><script src="../../pkgdown.js"></script><!-- mathjax --><script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
@@ -24,12 +24,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">mlrMBO</a>
+      <a class="navbar-brand" href="../../index.html">mlrMBO</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../articles/mlrMBO.html">
+  <a href="../../articles/mlrMBO.html">
     <span class="fa fa-bolt"></span>
      
     Quickstart
@@ -45,18 +45,18 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/mixed_space_optimization.html">Mixed Space Optimization</a>
+      <a href="../../articles/supplementary/mixed_space_optimization.html">Mixed Space Optimization</a>
     </li>
     <li>
-      <a href="../articles/parallelization.html">Parallelization</a>
+      <a href="../../articles/supplementary/parallelization.html">Parallelization</a>
     </li>
     <li>
-      <a href="../articles/noisy_optimization.html">Noisy Optimization</a>
+      <a href="../../articles/supplementary/noisy_optimization.html">Noisy Optimization</a>
     </li>
   </ul>
 </li>
 <li>
-  <a href="../reference/index.html">
+  <a href="../../reference/index.html">
     <span class="fa fa-book"></span>
      
     Reference
@@ -124,7 +124,7 @@ objfun2 =<span class="st"> </span><span class="kw">makeSingleObjectiveFunction</
 
 <span class="co"># visualize the function</span>
 <span class="kw">autoplot</span>(objfun2)</code></pre></div>
-<p><img src="mixed_space_optimization_files/figure-html/objective_function-1.png" width="672"></p>
+<p><img src="mixed_space_optimization_files/figure-html/objective_function-1.svg" width="672"></p>
 </div>
 <div id="sorrogate-learner" class="section level3">
 <h3 class="hasAnchor">
@@ -135,11 +135,11 @@ objfun2 =<span class="st"> </span><span class="kw">makeSingleObjectiveFunction</
 <div id="infill-criterion" class="section level3">
 <h3 class="hasAnchor">
 <html><body><a href="#infill-criterion" class="anchor"> </a></body></html>Infill Criterion</h3>
-<p>Although technically possible the <em>Expected Imrovement</em> that we used for the numerical parameter space and the <em>Kriging</em> surrogate, the <em>Confidence Bound</em> (<code><a href="../reference/infillcrits.html">makeMBOInfillCritCB()</a></code>) or also called statistical upper/lower bound is recommended for <em>Random Forest</em> regression. The reason is, that the <em>Expected Improvement</em> is founded on the Gaussian posterior distribution given by the Kriging estimator, which is not given by the Random Forest regression. For <em>minimization</em> the <em>lower</em> Confidence Bound is given by <span class="math inline">\(UCB(x) = \hat{\mu}(x) - \lambda \cdot \hat{s}(x)\)</span>. We set <span class="math inline">\(\lambda = 5\)</span>. For the infill criteria optimization we set <code>opt.focussearch.points = 500</code>, to increase the speed of the tutorial.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">control2 =<span class="st"> </span><span class="kw"><a href="../reference/makeMBOControl.html">makeMBOControl</a></span>()
-control2 =<span class="st"> </span><span class="kw"><a href="../reference/setMBOControlInfill.html">setMBOControlInfill</a></span>(
+<p>Although technically possible the <em>Expected Imrovement</em> that we used for the numerical parameter space and the <em>Kriging</em> surrogate, the <em>Confidence Bound</em> (<code><a href="../../reference/infillcrits.html">makeMBOInfillCritCB()</a></code>) or also called statistical upper/lower bound is recommended for <em>Random Forest</em> regression. The reason is, that the <em>Expected Improvement</em> is founded on the Gaussian posterior distribution given by the Kriging estimator, which is not given by the Random Forest regression. For <em>minimization</em> the <em>lower</em> Confidence Bound is given by <span class="math inline">\(UCB(x) = \hat{\mu}(x) - \lambda \cdot \hat{s}(x)\)</span>. We set <span class="math inline">\(\lambda = 5\)</span>. For the infill criteria optimization we set <code>opt.focussearch.points = 500</code>, to increase the speed of the tutorial.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">control2 =<span class="st"> </span><span class="kw"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span>()
+control2 =<span class="st"> </span><span class="kw"><a href="../../reference/setMBOControlInfill.html">setMBOControlInfill</a></span>(
   <span class="dt">control =</span> control2,
-  <span class="dt">crit =</span> <span class="kw"><a href="../reference/infillcrits.html">makeMBOInfillCritCB</a></span>(<span class="dt">cb.lambda =</span> <span class="dv">5</span>),
+  <span class="dt">crit =</span> <span class="kw"><a href="../../reference/infillcrits.html">makeMBOInfillCritCB</a></span>(<span class="dt">cb.lambda =</span> <span class="dv">5</span>),
   <span class="dt">opt.focussearch.points =</span> <span class="dv">500</span>
 )</code></pre></div>
 </div>
@@ -147,7 +147,7 @@ control2 =<span class="st"> </span><span class="kw"><a href="../reference/setMBO
 <h3 class="hasAnchor">
 <html><body><a href="#termination" class="anchor"> </a></body></html>Termination</h3>
 <p>We want to stop after 10 MBO iterations, meaning 10 function evaluations in this example (not including the initial design):</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">control2 =<span class="st"> </span><span class="kw"><a href="../reference/setMBOControlTermination.html">setMBOControlTermination</a></span>(
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">control2 =<span class="st"> </span><span class="kw"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span>(
   <span class="dt">control =</span> control2,
   <span class="dt">iters =</span> <span class="dv">10</span>
 )</code></pre></div>
@@ -162,10 +162,10 @@ control2 =<span class="st"> </span><span class="kw"><a href="../reference/setMBO
 <div id="optimization" class="section level3">
 <h3 class="hasAnchor">
 <html><body><a href="#optimization" class="anchor"> </a></body></html>Optimization</h3>
-<p>Finally, we start the optimization with <code><a href="../reference/mbo.html">mbo()</a></code> with suppressed learner output from <em>mlr</em> and we print the result object to obtain the input that lead to the best objective:</p>
+<p>Finally, we start the optimization with <code><a href="../../reference/mbo.html">mbo()</a></code> with suppressed learner output from <em>mlr</em> and we print the result object to obtain the input that lead to the best objective:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Surpresses output of learners</span>
 mlr::<span class="kw">configureMlr</span>(<span class="dt">show.info =</span> <span class="ot">FALSE</span>, <span class="dt">show.learner.output =</span> <span class="ot">FALSE</span>, <span class="dt">on.learner.warning =</span> <span class="st">"quiet"</span>)
-run2 =<span class="st"> </span><span class="kw"><a href="../reference/mbo.html">mbo</a></span>(objfun2, <span class="dt">design =</span> design2, <span class="dt">learner =</span> surr.rf, <span class="dt">control =</span> control2, <span class="dt">show.info =</span> <span class="ot">TRUE</span>)
+run2 =<span class="st"> </span><span class="kw"><a href="../../reference/mbo.html">mbo</a></span>(objfun2, <span class="dt">design =</span> design2, <span class="dt">learner =</span> surr.rf, <span class="dt">control =</span> control2, <span class="dt">show.info =</span> <span class="ot">TRUE</span>)
 ## Computing y column(s) for design. Not provided.
 ## [mbo] 0: j=4.12; method=b : y = -0.558 : 0.0 secs : initdesign
 ## [mbo] 0: j=0.033; method=a : y = 0.033 : 0.0 secs : initdesign
@@ -201,11 +201,12 @@ run2$x
 <h2 class="hasAnchor">
 <html><body><a href="#visualization" class="anchor"> </a></body></html>Visualization</h2>
 <p>Visualization is only possible for 2-dimensional objective functions, of which one is the categorical dimension. Exactly like in our exemplary function.</p>
-<p>Again, to obtain all the data that is necessary to generate the plot we have to call the optimization through <code><a href="../reference/exampleRun.html">exampleRun()</a></code>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ex.run2 =<span class="st"> </span><span class="kw"><a href="../reference/exampleRun.html">exampleRun</a></span>(objfun2, <span class="dt">design =</span> design2, <span class="dt">learner =</span> surr.rf, <span class="dt">control =</span> control2, <span class="dt">show.info =</span> <span class="ot">FALSE</span>)</code></pre></div>
+<p>Again, to obtain all the data that is necessary to generate the plot we have to call the optimization through <code><a href="../../reference/exampleRun.html">exampleRun()</a></code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ex.run2 =<span class="st"> </span><span class="kw"><a href="../../reference/exampleRun.html">exampleRun</a></span>(objfun2, <span class="dt">design =</span> design2, <span class="dt">learner =</span> surr.rf, <span class="dt">control =</span> control2, <span class="dt">show.info =</span> <span class="ot">FALSE</span>)</code></pre></div>
 <p>And let’s visualize the results:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/plotExampleRun.html">plotExampleRun</a></span>(ex.run2, <span class="dt">iters =</span> <span class="kw">c</span>(1L, 2L, 10L), <span class="dt">pause =</span> <span class="ot">FALSE</span>)</code></pre></div>
-<p><img src="mixed_space_optimization_files/figure-html/plot_example_run_2d-1.png" width="672"><img src="mixed_space_optimization_files/figure-html/plot_example_run_2d-2.png" width="672"><img src="mixed_space_optimization_files/figure-html/plot_example_run_2d-3.png" width="672"></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../../reference/plotExampleRun.html">plotExampleRun</a></span>(ex.run2, <span class="dt">iters =</span> <span class="kw">c</span>(1L, 2L, 10L), <span class="dt">pause =</span> <span class="ot">FALSE</span>)
+## Loading required package: gridExtra</code></pre></div>
+<p><img src="mixed_space_optimization_files/figure-html/plot_example_run_2d-1.svg" width="672"><img src="mixed_space_optimization_files/figure-html/plot_example_run_2d-2.svg" width="672"><img src="mixed_space_optimization_files/figure-html/plot_example_run_2d-3.svg" width="672"></p>
 </div>
 <div id="improved-example-for-dependent-parameters" class="section level2">
 <h2 class="hasAnchor">
@@ -234,11 +235,11 @@ run2$x
 <p>You can do it manually like this:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lrn =<span class="st"> </span><span class="kw">makeLearner</span>(<span class="st">"regr.randomForest"</span>, <span class="dt">predict.type =</span> <span class="st">"se"</span>, <span class="dt">ntree =</span> <span class="dv">200</span>)
 lrn =<span class="st"> </span><span class="kw">makeImputeWrapper</span>(lrn, <span class="dt">classes =</span> <span class="kw">list</span>(<span class="dt">numeric =</span> <span class="kw">imputeMax</span>(<span class="dv">2</span>), <span class="dt">factor =</span> <span class="kw">imputeConstant</span>(<span class="st">"__miss__"</span>)))</code></pre></div>
-<p>Or you call <code>makeMBOLearner</code> which is exactly what happens when no learner is supplied to <code><a href="../reference/mbo.html">mbo()</a></code> with the advantage that now you can change the parameters manually before calling <code><a href="../reference/mbo.html">mbo()</a></code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lrn =<span class="st"> </span><span class="kw"><a href="../reference/makeMBOLearner.html">makeMBOLearner</a></span>(<span class="dt">control =</span> control2, <span class="dt">fun =</span> objfun3, <span class="dt">ntree =</span> <span class="dv">200</span>)</code></pre></div>
+<p>Or you call <code>makeMBOLearner</code> which is exactly what happens when no learner is supplied to <code><a href="../../reference/mbo.html">mbo()</a></code> with the advantage that now you can change the parameters manually before calling <code><a href="../../reference/mbo.html">mbo()</a></code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lrn =<span class="st"> </span><span class="kw"><a href="../../reference/makeMBOLearner.html">makeMBOLearner</a></span>(<span class="dt">control =</span> control2, <span class="dt">fun =</span> objfun3, <span class="dt">ntree =</span> <span class="dv">200</span>)</code></pre></div>
 <p>And now let’s directly run the optimization without further changing the control object from above.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">design3 =<span class="st"> </span><span class="kw">generateDesign</span>(<span class="dt">n =</span> <span class="dv">8</span>, <span class="dt">par.set =</span> <span class="kw">getParamSet</span>(objfun3))
-run3 =<span class="st"> </span><span class="kw"><a href="../reference/mbo.html">mbo</a></span>(objfun3, <span class="dt">learner =</span> lrn, <span class="dt">design =</span> design3, <span class="dt">control =</span> control2, <span class="dt">show.info =</span> <span class="ot">FALSE</span>)
+run3 =<span class="st"> </span><span class="kw"><a href="../../reference/mbo.html">mbo</a></span>(objfun3, <span class="dt">learner =</span> lrn, <span class="dt">design =</span> design3, <span class="dt">control =</span> control2, <span class="dt">show.info =</span> <span class="ot">FALSE</span>)
 run3$x
 ## $method
 ## [1] "b"
