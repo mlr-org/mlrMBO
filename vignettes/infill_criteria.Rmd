@@ -6,6 +6,7 @@ output:
     toc_float:
       collapsed: true
       smooth_scroll: false
+    dev: svg
 vignette: >
   %\VignetteIndexEntry{Infill criteria}
   %\VignetteEngine{knitr::rmarkdown}
@@ -13,9 +14,12 @@ vignette: >
 ---
 
 ```{r setup, include=FALSE}
-set.seed(1)
-knitr::opts_chunk$set(echo = TRUE)
 library(mlrMBO)
+set.seed(1)
+knitr::opts_chunk$set(cache = TRUE, collapse = FALSE, dev = "svg")
+knitr::knit_hooks$set(document = function(x){
+  gsub("```\n*```r*\n*", "", x)
+})
 ```
 
 ## Purpose
