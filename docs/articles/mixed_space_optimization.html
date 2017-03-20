@@ -124,7 +124,7 @@ objfun2 =<span class="st"> </span><span class="kw">makeSingleObjectiveFunction</
 
 <span class="co"># visualize the function</span>
 <span class="kw">autoplot</span>(objfun2)</code></pre></div>
-<p><img src="mixed_space_optimization_files/figure-html/objective_function-1.png" width="672"></p>
+<p><img src="mixed_space_optimization_files/figure-html/objective_function-1.svg" width="672"></p>
 </div>
 <div id="sorrogate-learner" class="section level3">
 <h3 class="hasAnchor">
@@ -205,7 +205,7 @@ run2$x
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ex.run2 =<span class="st"> </span><span class="kw"><a href="../reference/exampleRun.html">exampleRun</a></span>(objfun2, <span class="dt">design =</span> design2, <span class="dt">learner =</span> surr.rf, <span class="dt">control =</span> control2, <span class="dt">show.info =</span> <span class="ot">FALSE</span>)</code></pre></div>
 <p>And let’s visualize the results:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/plotExampleRun.html">plotExampleRun</a></span>(ex.run2, <span class="dt">iters =</span> <span class="kw">c</span>(1L, 2L, 10L), <span class="dt">pause =</span> <span class="ot">FALSE</span>)</code></pre></div>
-<p><img src="mixed_space_optimization_files/figure-html/plot_example_run_2d-1.png" width="672"><img src="mixed_space_optimization_files/figure-html/plot_example_run_2d-2.png" width="672"><img src="mixed_space_optimization_files/figure-html/plot_example_run_2d-3.png" width="672"></p>
+<p><img src="mixed_space_optimization_files/figure-html/plot_example_run_2d-1.svg" width="672"><img src="mixed_space_optimization_files/figure-html/plot_example_run_2d-2.svg" width="672"><img src="mixed_space_optimization_files/figure-html/plot_example_run_2d-3.svg" width="672"></p>
 </div>
 <div id="improved-example-for-dependent-parameters" class="section level2">
 <h2 class="hasAnchor">

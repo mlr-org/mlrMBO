@@ -109,7 +109,7 @@ obj.fun =<span class="st"> </span><span class="kw">makeBraninFunction</span>()
 <span class="co"># visualize the function</span>
 <span class="kw">autoplot</span>(obj.fun, <span class="dt">render.levels =</span> <span class="ot">TRUE</span>, <span class="dt">show.optimum =</span> <span class="ot">TRUE</span>)
 ## Warning: Ignoring unknown aesthetics: fill</code></pre></div>
-<p><img src="parallelization_files/figure-html/objective_function-1.png" width="672"></p>
+<p><img src="parallelization_files/figure-html/objective_function-1.svg" width="672"></p>
 <p>In our example we will have <em>two CPUs</em> that we want to utilize for the evaluation of the black-box function.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(mlrMBO)
 ctrl =<span class="st"> </span><span class="kw"><a href="../reference/makeMBOControl.html">makeMBOControl</a></span>(<span class="dt">propose.points =</span> <span class="dv">2</span>)</code></pre></div>
@@ -141,7 +141,7 @@ res =<span class="st"> </span><span class="kw"><a href="../reference/mbo.html">m
 <p>In the end a small plot that uses the <code>opt.path</code> which is stored in the result of the MBO Optimization process to visualize which points were proposed in which iteration. The zeros are the points from the initial design, 1 for the first iteration and so on.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">autoplot</span>(obj.fun, <span class="dt">render.levels =</span> <span class="ot">TRUE</span>, <span class="dt">show.optimum =</span> <span class="ot">TRUE</span>) +<span class="st"> </span><span class="kw">geom_text</span>(<span class="dt">data =</span> <span class="kw">as.data.frame</span>(res$opt.path), <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">label =</span> dob), <span class="dt">color =</span> <span class="st">"white"</span>)
 ## Warning: Ignoring unknown aesthetics: fill</code></pre></div>
-<p><img src="parallelization_files/figure-html/cl_res-1.png" width="672"></p>
+<p><img src="parallelization_files/figure-html/cl_res-1.svg" width="672"></p>
 </div>
 <div id="confidence-bound" class="section level3">
 <h3 class="hasAnchor">
@@ -150,7 +150,7 @@ res =<span class="st"> </span><span class="kw"><a href="../reference/mbo.html">m
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">obj.fun =<span class="st"> </span><span class="kw">makeSwiler2014Function</span>()
 <span class="kw">autoplot</span>(obj.fun, <span class="dt">render.levels =</span> <span class="ot">TRUE</span>)
 ## Warning: Ignoring unknown aesthetics: fill</code></pre></div>
-<p><img src="parallelization_files/figure-html/obj.fun.dis-1.png" width="672"></p>
+<p><img src="parallelization_files/figure-html/obj.fun.dis-1.svg" width="672"></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ctrl =<span class="st"> </span><span class="kw"><a href="../reference/makeMBOControl.html">makeMBOControl</a></span>(<span class="dt">propose.points =</span> <span class="dv">2</span>)
 ctrl =<span class="st"> </span><span class="kw"><a href="../reference/setMBOControlInfill.html">setMBOControlInfill</a></span>(ctrl, <span class="dt">crit =</span> crit.cb)
 ctrl =<span class="st"> </span><span class="kw"><a href="../reference/setMBOControlMultiPoint.html">setMBOControlMultiPoint</a></span>(ctrl, <span class="dt">method =</span> <span class="st">"cb"</span>)
@@ -162,7 +162,7 @@ res =<span class="st"> </span><span class="kw"><a href="../reference/mbo.html">m
 <span class="kw">parallelStop</span>()
 <span class="kw">autoplot</span>(obj.fun, <span class="dt">render.levels =</span> <span class="ot">TRUE</span>) +<span class="st"> </span><span class="kw">geom_text</span>(<span class="dt">data =</span> <span class="kw">as.data.frame</span>(res$opt.path), <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">label =</span> dob), <span class="dt">color =</span> <span class="st">"white"</span>)
 ## Warning: Ignoring unknown aesthetics: fill</code></pre></div>
-<p><img src="parallelization_files/figure-html/obj.fun.dis-2.png" width="672"></p>
+<p><img src="parallelization_files/figure-html/obj.fun.dis-2.svg" width="672"></p>
 </div>
 </div>
 <div id="parallelization-of-the-objective-function" class="section level2">
@@ -192,7 +192,7 @@ general.scale =<span class="st"> </span><span class="kw">scale_fill_gradientn</s
 ## Warning: Ignoring unknown aesthetics: fill
 ## Scale for 'fill' is already present. Adding another scale for 'fill',
 ## which will replace the existing scale.</code></pre></div>
-<p><img src="parallelization_files/figure-html/custom_noisy_obj-1.png" width="672"></p>
+<p><img src="parallelization_files/figure-html/custom_noisy_obj-1.svg" width="672"></p>
 <p>Now let’s create an objective function that uses parallelization internally by using the function <code>parallelMap()</code> of the equally named package.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">parallelRegisterLevels</span>(<span class="dt">levels =</span> <span class="st">"objective"</span>)
 obj.fun.parallel =<span class="st"> </span><span class="kw">makeSingleObjectiveFunction</span>(
@@ -201,9 +201,9 @@ obj.fun.parallel =<span class="st"> </span><span class="kw">makeSingleObjectiveF
     rep.x =<span class="st"> </span><span class="kw">replicate</span>(<span class="dv">4</span>, x, <span class="dt">simplify =</span> <span class="ot">FALSE</span>)
     res =<span class="st"> </span><span class="kw">parallelMap</span>(fn, rep.x, <span class="dt">simplify =</span> <span class="ot">TRUE</span>, <span class="dt">level =</span> <span class="st">"custom.objective"</span>)
     <span class="kw">mean</span>(res)
-  }, 
-  <span class="dt">noisy =</span> <span class="ot">TRUE</span>, 
-  <span class="dt">par.set =</span> <span class="kw">makeNumericParamSet</span>(<span class="dt">id =</span> <span class="st">"x"</span>, <span class="dt">len =</span> <span class="dv">2</span>, <span class="dt">lower =</span> -<span class="dv">5</span>, <span class="dt">upper =</span> <span class="dv">5</span>), 
+  },
+  <span class="dt">noisy =</span> <span class="ot">TRUE</span>,
+  <span class="dt">par.set =</span> <span class="kw">makeNumericParamSet</span>(<span class="dt">id =</span> <span class="st">"x"</span>, <span class="dt">len =</span> <span class="dv">2</span>, <span class="dt">lower =</span> -<span class="dv">5</span>, <span class="dt">upper =</span> <span class="dv">5</span>),
   <span class="dt">vectorized =</span> <span class="ot">FALSE</span>,
   <span class="dt">has.simple.signature =</span> <span class="ot">TRUE</span>
 )
@@ -211,7 +211,7 @@ obj.fun.parallel =<span class="st"> </span><span class="kw">makeSingleObjectiveF
 ## Warning: Ignoring unknown aesthetics: fill
 ## Scale for 'fill' is already present. Adding another scale for 'fill',
 ## which will replace the existing scale.</code></pre></div>
-<p><img src="parallelization_files/figure-html/custom_noisy_parallel-1.png" width="672"></p>
+<p><img src="parallelization_files/figure-html/custom_noisy_parallel-1.svg" width="672"></p>
 <p>As we can easily see the replicated and averaged evaluation of the target function apparently smoothed the output. This will improve optimization directly. However the objective function is still noisy and we have to adapt the settings a little. Details are given in the Vignette about noisy optimization.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(mlr)
 ctrl =<span class="st"> </span><span class="kw"><a href="../reference/makeMBOControl.html">makeMBOControl</a></span>(<span class="dt">final.method =</span> <span class="st">"best.predicted"</span>)
