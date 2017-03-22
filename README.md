@@ -12,17 +12,19 @@ Model-based optimization with [mlr](https://github.com/mlr-org/mlr/).
 
 # Installation
 
-Most recent development version:
+We reccomend to install the official release version:
+
+```r
+install.packages("mlrMBO")
+```
+
+For experimental use you can install the latest development version:
 
 ```r
 devtools::install_github("mlr-org/mlrMBO")
 ```
 
-Official release version:
 
-```r
-install.packages("mlrMBO")
-```
 
 # Introduction
 
