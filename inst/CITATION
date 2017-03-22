@@ -1,6 +1,5 @@
-
 bibentry(
-  bibtype = "Article",
+  bibtype = "Manual",
   key = "mlrMBO",
   title = "{{{mlrMBO}}: {{A Modular Framework}} for {{Model}}-{{Based Optimization}} of {{Expensive Black}}-{{Box Functions}}}",
   author = c(
