@@ -10,7 +10,7 @@ bibentry(
     person("Daniel", "Horn"),
     person("Janek", "Thomas"),
     person("Michel", "Lang")
-  )
+  ),
   year = "2017",
   url = "http://arxiv.org/abs/1703.03373"
 )
