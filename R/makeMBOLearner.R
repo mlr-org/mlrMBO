@@ -53,25 +53,27 @@
 #' @template arg_control
 #' @param fun [\code{smoof_function}] \cr
 #'   The same objective function which is also passed to \code{\link{mbo}}.
+#' @param config [\code{named list}] \cr
+#'   Named list of config option to overwrite global settings set via \code{\link[mlr]{configureMlr}} for this specific learner.
 #' @param ... [any]\cr
 #'   Further parameters passed to the constructed learner.
 #'   Will overwrite mlrMBO's defaults.
 #' @return [\code{Learner}]
 #' @aliases mbo_default_learner
 #' @export
-makeMBOLearner = function(control, fun, ...) {
+makeMBOLearner = function(control, fun, config = list(), ...) {
   assertClass(control, "MBOControl")
   assertClass(fun, "smoof_function")
 
   ps = getParamSet(fun)
   if (isSimpleNumeric(ps)) {
-    lrn = makeLearner("regr.km", covtype = "matern3_2", optim.method = "gen")
+    lrn = makeLearner("regr.km", covtype = "matern3_2", optim.method = "gen", config = config)
     if (!isNoisy(fun))
       lrn = setHyperPars(lrn, nugget.stability = 10^-8)
     else
       lrn = setHyperPars(lrn, nugget.estim = TRUE, jitter = TRUE)
   } else {
-    lrn = makeLearner("regr.randomForest", se.method = "jackknife", keep.inbag = TRUE)
+    lrn = makeLearner("regr.randomForest", se.method = "jackknife", keep.inbag = TRUE, config = config)
     if (hasRequires(ps))
       lrn = makeImputeWrapper(lrn, classes = list(numeric = imputeMax(2), factor = imputeConstant("__miss__")))
   }

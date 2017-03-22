@@ -5,7 +5,8 @@
 \title{Perform an MBO run on a multi-objective test function and and visualize what happens.}
 \usage{
 exampleRunMultiObj(fun, design = NULL, learner, control,
-  points.per.dim = 50, show.info = NULL, nsga2.args = list(), ...)
+  points.per.dim = 50, show.info = getOption("mlrMBO.show.info", TRUE),
+  nsga2.args = list(), ...)
 }
 \arguments{
 \item{fun}{[\code{smoof_function}]\cr

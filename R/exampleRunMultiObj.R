@@ -25,7 +25,7 @@
 #' @return [\code{MBOExampleRunMultiObj}]
 #' @export
 exampleRunMultiObj= function(fun, design = NULL, learner, control, points.per.dim = 50,
-  show.info = NULL, nsga2.args = list(), ...) {
+  show.info = getOption("mlrMBO.show.info", TRUE), nsga2.args = list(), ...) {
 
   assertClass(fun, "smoof_multi_objective_function")
   par.set = getParamSet(fun)
@@ -34,16 +34,12 @@ exampleRunMultiObj= function(fun, design = NULL, learner, control, points.per.di
   if (is.null(design))
     design = generateDesign(4 * n.params, par.set)
 
-  learner = checkLearner(learner, par.set, control, fun)
+  learner = checkLearner(learner, par.set, control, fun, show.info)
   assertClass(control, "MBOControl")
   minimize = shouldBeMinimized(fun)
   control$noisy = isNoisy(fun)
   control$minimize = minimize
   ref.point = smoof::getRefPoint(fun)
-
-  if (is.null(show.info)) {
-    show.info = getOption("mlrMBO.show.info", TRUE)
-  }
   assertLogical(show.info, len = 1L, any.missing = FALSE)
   ny = getNumberOfObjectives(fun)
 
