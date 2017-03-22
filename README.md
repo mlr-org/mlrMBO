@@ -13,7 +13,7 @@ Model-based optimization with [mlr](https://github.com/mlr-org/mlr/).
 # Installation
 
 ```r
-install.packages("mlr-org/mlrMBO")
+install.packages("mlrMBO")
 ```
 
 # Introduction
