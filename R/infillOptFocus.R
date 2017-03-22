@@ -55,9 +55,7 @@ infillOptFocus = function(infill.crit, models, control, par.set, opt.path, desig
              # randomly drop a level, which is not val
              if (length(par$values) > 1L) {
                val.names = names(par$values)
-               # remove current val from delete options, should work also for NA
-               val.names = setdiff(val.names, val)
-               to.del = sample(seq_along(val.names), 1)
+               to.del = sample(which(val.names != val), 1L)
                par$values = par$values[-to.del]
              }
            }
