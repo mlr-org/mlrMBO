@@ -5,7 +5,7 @@
 \alias{mbo_default_learner}
 \title{Generate default learner.}
 \usage{
-makeMBOLearner(control, fun, ...)
+makeMBOLearner(control, fun, config = list(), ...)
 }
 \arguments{
 \item{control}{[\code{\link{MBOControl}}]\cr
@@ -13,6 +13,9 @@ Control object for mbo.}
 
 \item{fun}{[\code{smoof_function}] \cr
 The same objective function which is also passed to \code{\link{mbo}}.}
+
+\item{config}{[\code{named list}] \cr
+Named list of config option to overwrite global settings set via \code{\link[mlr]{configureMlr}} for this specific learner.}
 
 \item{...}{[any]\cr
 Further parameters passed to the constructed learner.

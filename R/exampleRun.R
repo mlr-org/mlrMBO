@@ -31,7 +31,7 @@
 #' @return [\code{MBOExampleRun}]
 #' @export
 exampleRun = function(fun, design = NULL, learner = NULL, control,
-  points.per.dim = 50, noisy.evals = 10, show.info = NULL) {
+  points.per.dim = 50, noisy.evals = 10, show.info = getOption("mlrMBO.show.info", TRUE)) {
 
   assertClass(fun, "smoof_single_objective_function")
   par.set = getParamSet(fun)
@@ -45,9 +45,7 @@ exampleRun = function(fun, design = NULL, learner = NULL, control,
   points.per.dim = asCount(points.per.dim, positive = TRUE)
   noisy.evals = asCount(noisy.evals, positive = TRUE)
   fun.mean = smoof::getMeanFunction(fun)
-  if (is.null(show.info))
-    show.info = getOption("mlrMBO.show.info", TRUE)
-  assertLogical(show.info, len = 1L, any.missing = FALSE)
+  assertFlag(show.info)
 
   if (smoof::hasGlobalOptimum(fun))
     global.opt = smoof::getGlobalOptimum(fun)$value

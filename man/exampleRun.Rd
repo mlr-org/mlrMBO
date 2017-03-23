@@ -5,7 +5,8 @@
 \title{Perform an mbo run on a test function and and visualize what happens.}
 \usage{
 exampleRun(fun, design = NULL, learner = NULL, control,
-  points.per.dim = 50, noisy.evals = 10, show.info = NULL)
+  points.per.dim = 50, noisy.evals = 10,
+  show.info = getOption("mlrMBO.show.info", TRUE))
 }
 \arguments{
 \item{fun}{[\code{smoof_function}]\cr

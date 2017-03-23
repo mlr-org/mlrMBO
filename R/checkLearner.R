@@ -1,7 +1,7 @@
 # check and create default learner
 checkLearner = function(learner, par.set, control, fun) {
   if (missing(learner) || is.null(learner)) {
-    learner = makeMBOLearner(control, fun)
+    learner = makeMBOLearner(control, fun, config = list(show.learner.output = FALSE))
   } else {
     assertClass(learner, "Learner")
   }

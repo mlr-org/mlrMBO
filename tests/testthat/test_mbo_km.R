@@ -37,12 +37,14 @@ test_that("mbo works with km", {
   expect_list(or$x)
   expect_set_equal(names(or$x), names(par.set$pars))
 
-  learner = setPredictType(learner, "se")
+  # we use kriging by makeMBOLearner
   ctrl = makeMBOControl()
   ctrl = setMBOControlTermination(ctrl, iters = 5L)
   ctrl = setMBOControlInfill(ctrl, crit = crit.ei,
     opt.focussearch.points = 100L)
-  or = mbo(f, des, learner, ctrl)
+  # expect no output at all for show.info = FALSE
+  library(rgenoud)
+  expect_silent({or = mbo(f, des, control = ctrl, show.info = FALSE)})
   expect_number(or$y)
   expect_equal(getOptPathLength(or$opt.path), 15)
   df = as.data.frame(or$opt.path)
