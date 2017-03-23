@@ -159,7 +159,7 @@ We simply handle those with an imputation method, added to the random forest:
 Ding et al. (2010).</p>
     
 
-    <pre><span class='fu'>makeMBOLearner</span>(<span class='no'>control</span>, <span class='no'>fun</span>, <span class='no'>...</span>)</pre>
+    <pre><span class='fu'>makeMBOLearner</span>(<span class='no'>control</span>, <span class='no'>fun</span>, <span class='kw'>config</span> <span class='kw'>=</span> <span class='fu'>list</span>(), <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
@@ -169,6 +169,9 @@ Control object for mbo.</dd>
       <dt>fun</dt>
       <dd>[<code>smoof_function</code>] 
 The same objective function which is also passed to <code><a href='mbo.html'>mbo</a></code>.</dd>
+      <dt>config</dt>
+      <dd>[<code>named list</code>] 
+Named list of config option to overwrite global settings set via <code><a href='http://www.rdocumentation.org/packages/mlr/topics/configureMlr'>configureMlr</a></code> for this specific learner.</dd>
       <dt>...</dt>
       <dd>[any]
 Further parameters passed to the constructed learner.

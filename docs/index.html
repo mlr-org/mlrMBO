@@ -95,7 +95,10 @@
 <div id="installation" class="section level1">
 <h1 class="hasAnchor">
 <a href="#installation" class="anchor"> </a>Installation</h1>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">"mlr-org/mlrMBO"</span>)</code></pre></div>
+<p>We reccomend to install the official release version:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">"mlrMBO"</span>)</code></pre></div>
+<p>For experimental use you can install the latest development version:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools::<span class="kw">install_github</span>(<span class="st">"mlr-org/mlrMBO"</span>)</code></pre></div>
 </div>
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
@@ -130,6 +133,31 @@
 </ul>
 <p>Objective functions are created with package <a href="https://github.com/jakobbossek/smoof">smoof</a>, which also offers many test functions for example runs or benchmarks.</p>
 <p>Parameter spaces and initial designs are created with package <a href="https://github.com/berndbischl/ParamHelpers">ParamHelpers</a>.</p>
+</div>
+<div id="mlrmbo---how-to-cite-and-citing-publications" class="section level1">
+<h1 class="hasAnchor">
+<a href="#mlrmbo---how-to-cite-and-citing-publications" class="anchor"> </a>mlrMBO - How to Cite and Citing Publications</h1>
+<p>Please cite our <a href="https://arxiv.org/abs/1703.03373">arxiv paper</a> (Preprint). You can get citation info via <code>citation("mlrMBO")</code> or copy the following BibTex entry:</p>
+<div class="sourceCode"><pre class="sourceCode bibtex"><code class="sourceCode bibtex"><span class="kw">@article</span>{<span class="ot">mlrMBO</span>,
+  <span class="dt">title</span> = {{{mlrMBO}}: {{A Modular Framework}} for {{Model}}-{{Based Optimization}} of {{Expensive Black}}-{{Box Functions}}},
+  <span class="dt">url</span> = {http://arxiv.org/abs/1703.03373},
+  <span class="dt">shorttitle</span> = {{{mlrMBO}}},
+  <span class="dt">archivePrefix</span> = {arXiv},
+  <span class="dt">eprinttype</span> = {arxiv},
+  <span class="dt">eprint</span> = {1703.03373},
+  <span class="dt">primaryClass</span> = {stat},
+  <span class="dt">author</span> = {Bischl, Bernd and Richter, Jakob and Bossek, Jakob and Horn, Daniel and Thomas, Janek and Lang, Michel},
+  <span class="dt">date</span> = {2017-03-09},
+}</code></pre></div>
+<p>Some parts of the package were created as part of other publications. If you use these parts, please cite the relevant work appropriately:</p>
+<ul>
+<li>Multi-point proposals, including the new multi-objective infill criteria: <a href="https://dx.doi.org/10.1007/978-3-319-09584-4_17">MOI-MBO: Multiobjective Infill for Parallel Model-Based Optimization</a>
+</li>
+<li>Multi-objective optimization: <a href="https://dx.doi.org/10.1007/978-3-319-15934-8_5">Model-Based Multi-objective Optimization: Taxonomy, Multi-Point Proposal, Toolbox and Benchmark</a>
+</li>
+<li>Multi-objective optimization with categorical variables using the random forest as a surrogate: <a href="https://dx.doi.org/10.1109/SSCI.2016.7850221">Multi-objective parameter configuration of machine learning algorithms using model-based optimization</a>
+</li>
+</ul>
 </div>
 
   </div>
