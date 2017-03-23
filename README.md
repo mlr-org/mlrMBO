@@ -22,6 +22,7 @@ For experimental use you can install the latest development version:
 
 ```r
 devtools::install_github("mlr-org/mlrMBO")
+
 ```
 
 
