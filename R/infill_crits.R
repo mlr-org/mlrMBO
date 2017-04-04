@@ -112,10 +112,8 @@ makeMBOInfillCritCB = function(cb.lambda = NULL) {
   makeMBOInfillCrit(
     fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
       model = models[[1L]]
-      stopifnot(!is.null(model))
       maximize.mult = if (control$minimize) 1 else -1
       p = predict(model, newdata = points)$data
-      assertDataFrame(p, min.cols = 1)
       #FIXME: removed cb.inflate.se for now (see issue #309)
       # if (cb.inflate.se) {
       #   r.response = diff(range(p$response))
@@ -134,7 +132,6 @@ makeMBOInfillCritCB = function(cb.lambda = NULL) {
         res = setAttribute(res, "crit.components",
           data.frame(se = p$se, mean = p$response, lambda = cb.lambda))
       }
-      assertDataFrame(p, min.cols = 1)
       return(res)
     },
     name = "Confidence bound",
