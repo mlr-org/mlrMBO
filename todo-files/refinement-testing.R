@@ -44,5 +44,6 @@ if (FALSE) {
   args = list(Species = factor("setosa"))
   target = "Petal.Length"
   ARGS = NULL
-  crossval(lrn, task)
+  m = train(lrn, task)
+  p = predict(m, task = task)
 }
