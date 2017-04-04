@@ -35,6 +35,6 @@ test_that("basic refinement works with rf and km", {
   expect_true(or$y < 2)
 
   op = as.data.frame(or$opt.path)
-  expect_true(op[11:15, "prop.type"] == "infill_cb_refined_infill_ei")
+  expect_true(all(op[11:15, "prop.type"] == "infill_cb_refined_infill_ei"))
   expect_subset(c("se", "mean", "lambda"), colnames(op))
 })
