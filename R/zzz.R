@@ -8,6 +8,7 @@
 #' @import smoof
 #' @import stats
 #' @import utils
+#' @import data.table
 #' @importFrom lhs randomLHS
 #' @useDynLib mlrMBO c_sms_indicator c_eps_indicator
 NULL

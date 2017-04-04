@@ -17,7 +17,11 @@ proposePoints.OptState = function(opt.state) {
 
   if (control$n.objectives == 1L) {
     if (is.null(control$multipoint.method)) {
-      res = proposePointsByInfillOptimization(opt.state)
+      if (is.null(control$refinement)) {
+        res = proposePointsByInfillOptimization(opt.state)
+      } else {
+        res = proposePointsWithRefinement(opt.state)
+      }
     } else {
       res = switch(control$multipoint.method,
         "cb" = proposePointsParallelCB(opt.state),

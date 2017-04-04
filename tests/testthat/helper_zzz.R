@@ -8,5 +8,5 @@ if (!is.na(Sys.getenv("NOT_CRAN", unset = NA))) {
   catf("Run test with seed: %i", seed.val)
 }
 
-configureMlr(show.learner.output = FALSE)
+configureMlr(show.learner.output = TRUE)
 options(mlrMBO.show.info = FALSE, mlrMBO.debug.mode = TRUE)
