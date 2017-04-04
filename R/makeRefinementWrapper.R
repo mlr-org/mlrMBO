@@ -10,28 +10,43 @@
 #   A mlr learner.
 # @param factor.values [\code{named list}]\cr
 #   Named list of factor values to match rows of the data.
-# @export
+#   Only rows that match will be taken for training, the others will be discarded-
 makeRefinementWrapper = function(learner, factor.values = list()) {
   learner = checkLearner(learner)
   assertList(factor.values, names = "unique")
 
   trainfun = function(data, target, args) {
     data = as.data.table(data)
-    args = as.data.table(args)
     keep = setdiff(names(data), names(args))
     data = data[args, keep, on = names(args), nomatch = 0L, with = FALSE]
     list(data = setDF(data), control = list())
   }
 
-  predictfun = function(data, target, args, control) {
-    # TODO: additional check that args match with trainfun
-    # -> make sure we are not predicting on different factor levels
-    as.data.table(data)[, !names(args), with = FALSE]
-  }
+  # predictfun = function(data, target, args, control) {
+  #   data = as.data.table(data)
+  #   if (nrow(data[!args, , on = names(args)]) > 0) {
+  #     stopf("RefinementWrapper: Predicting on unseen Factors!")
+  #   }
+  #   data[, !names(args), with = FALSE]
+  # }
+  id = stri_paste(learner$id, "refinement", sep = ".")
+  x = makeBaseWrapper(id, type = learner$type, next.learner = learner, learner.subclass = "RefinementWrapper", model.subclass = "RefinementModel")
+  x$train = trainfun
+  return(x)
+}
 
-  lrn = makePreprocWrapper(learner, trainfun, predictfun, par.vals = factor.values)
-  lrn$id = stringi::stri_replace(lrn$id, replacement = ".refined", regex = "[.]preproc$")
-  addClasses(lrn, "RefinementWrapper")
+#' @export
+trainLearner.RefinementWrapper = function(.learner, .task, .subset, ...) {
+  trainLearner.PreprocWrapper(.learner, .task, .subset, ...)
+}
+
+#' @export
+predictLearner.PreprocWrapper = function(.learner, .model, .newdata, ...) {
+  .newdata = .learner$predict(.newdata, .model$task.desc$target,
+                              .learner$par.vals, .model$learner.model$control)
+  if (!is.data.frame(.newdata))
+    stop("Preprocessing must result in a data.frame!")
+  NextMethod(.newdata = .newdata)
 }
 
 #' @export
