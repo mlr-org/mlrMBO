@@ -56,12 +56,15 @@ proposePointsWithRefinement = function(opt.state) {
   setOptStateTasks(refinement.state, refinement.tasks)
 
   # propose with refinement
-  new.res = proposePoints.OptState(refinement.state)
-
-  # patch old object with
-  res$prop.points = insert(res$prop.points, new.res$prop.points)
-  res$propose.time = res$propose.time + new.res$propose.time
-  res$prop.type = paste0(res$prop.type, "/", new.res$prop.type)
+  tryCatch({
+    new.res = proposePoints.OptState(refinement.state)
+    # patch old object with
+    res$prop.points = insert(res$prop.points, new.res$prop.points)
+    res$propose.time = res$propose.time + new.res$propose.time
+    res$prop.type = paste0(res$prop.type, "/", new.res$prop.type)
+  }, error = function(e) {
+    print("Refinement could not be applied, fallback to initial proposed point")
+  })
 
   res
 }
