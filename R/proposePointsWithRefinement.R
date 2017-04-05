@@ -10,6 +10,22 @@ proposePointsWithRefinement = function(opt.state) {
   learner = getOptProblemLearner(opt.problem)
   par.set = getOptProblemParSet(opt.problem)
 
+  #subset everything yo the numeric space
+  reduced.par.set = filterParamsNumeric(par.set)
+
+  # generate subset design
+  factor.values = as.list(res$prop.points[1L, ])
+  factor.values = factor.values[!vlapply(factor.values, is.numeric)]
+
+  tasks = getOptStateTasks(opt.state)
+  data = as.data.table(getTaskData(tasks))
+  keep = setdiff(names(data), names(factor.values))
+  reduced.design = data[factor.values, keep, on = names(factor.values), nomatch = 0L, with = FALSE]
+
+  # change parset of smoof function
+  reduced.function = fun
+  attr(fun, "") = reduced.par.set
+
   # this is usually set in mbo/mboTemplate
   # TODO: the structure here is not good.
   refinement.control = control$refinement$control
@@ -18,10 +34,9 @@ proposePointsWithRefinement = function(opt.state) {
 
   # construct the refinement learner
   refinement.learner = control$refinement$learner
-  refinement.learner = checkLearner(refinement.learner, par.set, refinement.control, fun) # TODO: checkLearner should not set stuff
-  factor.values = as.list(res$prop.points[1L, ])
-  factor.values = factor.values[!vlapply(factor.values, is.numeric)]
-  refinement.learner = makeRefinementWrapper(refinement.learner, factor.values = factor.values)
+  refinement.learner = checkLearner(refinement.learner, reduced.par.set, refinement.control, fun) # TODO: checkLearner should not set stuff
+
+  # refinement.learner = makeRefinementWrapper(refinement.learner, factor.values = factor.values)
 
   # this is usually called in mbo/mboTemplate
   refinement.control = checkStuff(fun, par.set, design, refinement.learner, refinement.control) # TODO: checkStuff should not set stuff
@@ -32,6 +47,7 @@ proposePointsWithRefinement = function(opt.state) {
   refinement.state$opt.problem = list2env(as.list(opt.state$opt.problem))
   refinement.state$opt.problem$learner = refinement.learner
   refinement.state$opt.problem$control = refinement.control
+  refinement.state$opt.problem$design = reduced.design
   refinement.state$refinement = NULL # avoid recursion
   refinement.state$models = NULL # disable caching
 
