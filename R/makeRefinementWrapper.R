@@ -40,33 +40,3 @@ makeRefinementWrapper = function(learner, factor.values = list()) {
 getLearnerProperties.RefinementWrapper = function(learner) {
   union(getLearnerProperties(learner$next.learner), "factors")
 }
-
-
-#' @export
-predictLearner.RefinementWrapper = function(.learner, .model, .newdata, ...) {
-  data = .newdata
-  args = .learner$par.vals
-  #dots = list(...)
-  #args2 = dots[setdiff(names(dots), names(.learner$par.vals))]
-  #LEARNER <<- .learner
-  #MODEL <<- .model
-  # We assumes that value is always one element
-  # Find all rows that match the key value pairs supplied by args
-  # FIXME: as.character is really ugly here to handle factors with different level sets
-  matches = Map(function(key, value) {as.character(data[[key]]) == as.character(value)}, key = names(args), value = args)
-  good.idx = unlist(do.call(Map, c(f = any, matches)))
-  res = matrix(nrow = nrow(data), ncol = 2)
-  stopifnot(!is.null(.model$learner.model))
-  model = getLearnerModel(.model, more.unwrap = FALSE)
-  prediction = predict(model, newdata = data[good.idx, ], ...)
-  res[good.idx, ] = as.matrix(prediction$data)
-  #FIXME: Only works for minimization but that shoud be okay because internally we always mimimize, right?
-  res[!good.idx, 1] = max(res[good.idx, 1]) * 10
-  res[!good.idx, 2] = 0
-  return(res)
-}
-
-#' @export
-getLearnerProperties.RefinementWrapper = function(learner) {
-  union(getLearnerProperties(learner$next.learner), "factors")
-}

@@ -4,7 +4,6 @@ proposePointsWithRefinement = function(opt.state) {
 
   # get various objects from the opt state
   control = getOptStateOptProblem(opt.state)$control
-  fun = getOptProblemFun(opt.state)
   opt.problem = getOptStateOptProblem(opt.state)
   fun = getOptProblemFun(opt.problem)
   design = getOptProblemDesign(opt.problem)
@@ -40,9 +39,9 @@ proposePointsWithRefinement = function(opt.state) {
   new.res = proposePoints.OptState(refinement.state)
 
   # patch old object with
-  res$prop.points = new.res$prop.points
+  res$prop.points = insert(res$prop.points, new.res$prop.points)
   res$propose.time = res$propose.time + new.res$propose.time
-  res$prop.type = paste0(res$prop.type, "_refined_", new.res$prop.type)
+  res$prop.type = paste0(res$prop.type, "/", new.res$prop.type)
 
   res
 }
