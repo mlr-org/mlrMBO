@@ -27,6 +27,9 @@ proposePointsWithRefinement = function(opt.state) {
   reduced.design = as.data.frame(reduced.design[, not.na, with = FALSE])
   refinement.tasks = list(mlr:::changeData(tasks, reduced.design))
 
+  for(p in seq_along(reduced.par.set$pars))
+    reduced.par.set$pars[[p]]$requires = NULL
+
   # change parset of smoof function
   reduced.function = fun
   attr(reduced.function, "par.set") = reduced.par.set
