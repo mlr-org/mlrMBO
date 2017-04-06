@@ -62,18 +62,26 @@ proposePointsWithRefinement = function(opt.state) {
   refinement.state$models = NULL # disable caching
   setOptStateTasks(refinement.state, refinement.tasks)
 
-
   # propose with refinement
-  tryCatch({
-    new.res = proposePoints.OptState(refinement.state)
-    # patch old object with
+  new.res = tryCatch({
+    proposePoints.OptState(refinement.state)
+  }, error = function(e) {
+    print("Refinement could not be applied, fallback to initial proposed point")
+    print(e)
+    return(e)
+  })
+  if (is.error(new.res)) {
+    res$crit.components = cbind(res$crit.components, addRefinementNames(getMBOInfillCritDummyComponents(refinement.control$infill.crit)))
+  } else {
+    # patch old object with new proposals
     res$prop.points = insert(res$prop.points, new.res$prop.points)
     res$propose.time = res$propose.time + new.res$propose.time
     res$prop.type = paste0(res$prop.type, "/", new.res$prop.type)
-  }, error = function(e) {
-    print(e)
-    print("Refinement could not be applied, fallback to initial proposed point")
-  })
-
+    res$crit.components = cbind(res$crit.components, addRefinementNames(new.res$crit.components))
+  }
   res
+}
+
+addRefinementNames = function(x) {
+  setNames(x, paste0("refinement_", names(x)))
 }

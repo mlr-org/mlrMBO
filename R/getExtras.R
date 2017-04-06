@@ -24,15 +24,19 @@ getExtras = function(n, prop, train.time, control) {
     k = ifelse(control$n.objectives > 1L && control$multiobj.method == "mspot", control$n.objectives + 1, 1L)
     # pregenerate a dummmy "prop" data structure
     prop = list(crit.vals = matrix(NA_real_, nrow = n, ncol = k), propose.time = NA_real_, errors.model = NA_character_, prop.type = rep("initdesign", n))
-    # a) no infill crit components for MCO 
+    # a) no infill crit components for MCO
     # b) infill crit is ignored for multipoint moimbo, in which case we don't use any components
-    if (control$n.objectives == 1L && !is.null(getMBOInfillCritComponents(infill.crit)) && 
+    if (control$n.objectives == 1L && !is.null(getMBOInfillCritComponents(infill.crit)) &&
         (is.null(control$multipoint.method) || control$multipoint.method != "moimbo")) {
       prop$crit.components = getMBOInfillCritDummyComponents(infill.crit)
     }
     # if (control$multifid) {
     #   prop$crit.components = cbind.data.frame(prop$crit.components, getMBOInfillCritDummyComponents((makeMBOInfillCritMultiFid()))
     # }
+    if (!is.null(control$refinement)) {
+      refinement.components = getMBOInfillCritDummyComponents(control$refinement$control$infill.crit)
+      prop$crit.components = cbind(prop$crit.components, addRefinementNames(refinement.components))
+    }
   }
   exs = vector("list", n)
   errs = prop$errors.model
