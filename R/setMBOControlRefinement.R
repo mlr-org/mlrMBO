@@ -1,3 +1,8 @@
+#' @title Sets Refinement Control
+#' @description Put another control object into the mbo control object to control the refinement.
+#' @template arg_control
+#' @param refinement.control [\code{MBOControl}]
+#' @param refinement.learner [\code{\link[mlr]{Learner}}]
 #' @export
 setMBOControlRefinement = function(control, refinement.control, refinement.learner) {
   assertClass(control, "MBOControl")
