@@ -21,7 +21,11 @@ proposePointsWithRefinement = function(opt.state) {
   data = as.data.table(getTaskData(tasks))
   keep = setdiff(names(data), names(factor.values))
   reduced.design = data[factor.values, keep, on = names(factor.values), nomatch = 0L, with = FALSE]
-  refinement.tasks = list(mlr:::changeData(tasks, as.data.frame(reduced.design)))
+  all.na = vlapply(reduced.design, function(x) all(is.na(x)))
+  not.na = names(all.na[!all.na])
+  reduced.par.set = filterParams(reduced.par.set, ids = not.na[not.na != getTaskTargetNames(tasks)])
+  reduced.design = as.data.frame(reduced.design[, not.na, with = FALSE])
+  refinement.tasks = list(mlr:::changeData(tasks, reduced.design))
 
   # change parset of smoof function
   reduced.function = fun
@@ -55,6 +59,7 @@ proposePointsWithRefinement = function(opt.state) {
   refinement.state$models = NULL # disable caching
   setOptStateTasks(refinement.state, refinement.tasks)
 
+
   # propose with refinement
   tryCatch({
     new.res = proposePoints.OptState(refinement.state)
@@ -63,6 +68,7 @@ proposePointsWithRefinement = function(opt.state) {
     res$propose.time = res$propose.time + new.res$propose.time
     res$prop.type = paste0(res$prop.type, "/", new.res$prop.type)
   }, error = function(e) {
+    print(e)
     print("Refinement could not be applied, fallback to initial proposed point")
   })
 
