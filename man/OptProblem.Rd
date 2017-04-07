@@ -7,4 +7,3 @@
 The OptProblem contains all the constants values wich define a OptProblem within our MBO Steps.
 It is an enviroment and is always pointed at by the OptState.
 }
-

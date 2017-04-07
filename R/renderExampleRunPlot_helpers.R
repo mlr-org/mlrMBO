@@ -30,7 +30,7 @@ buildTrafoList = function(n.params, input.trafo) {
   } else {
     # otherwise check if all elements are of an appropriate type
     lapply(input.trafo, function(t)
-      if(!is.null(t)) assertClass(t, "MBOTrafoFunction")
+      if (!is.null(t)) assertClass(t, "MBOTrafoFunction")
     )
     trafo = trafo.defaults
     trafo[names(input.trafo)] = input.trafo
@@ -71,7 +71,7 @@ getPlotData = function(data, idx, idx.nsga2.paretofront, name) {
 # get Dataset for fill background with infill.crit
 # Note: models is a single model for parego and mspot, for dib a list of models
 getInfillCritGrid = function(crit.name, points.per.dim, models, control, par.set, opt.path, iter) {
-  critfun = getInfillCritFunction(crit.name)
+  critfun = control$infill.crit$fun
   xgrid = generateGridDesign(par.set = par.set, resolution = points.per.dim)
   opt.direction = if (crit.name %in% c("ei")) -1 else 1
   if (inherits(models, "FailureModel"))
@@ -84,19 +84,19 @@ getInfillCritGrid = function(crit.name, points.per.dim, models, control, par.set
 
 # create basic plot for X or Y space
 createBasicSpacePlot = function(pl, points, iter, object, name, alpha, space, colors) {
-  pl = pl +  geom_point(data = points[points$type == "front", ],
-    aes_string(x = name[1L], y = name[2L], colour = "type", shape = "type"), size = 2, alpha = alpha)
-  pl = pl + geom_point(data = points[points$type != "front", ],
-    aes_string(x = name[1L], y = name[2L], colour = "type", shape = "type"), size = 4)
-  pl = pl + scale_colour_manual(values = c("black", colors))
-  pl = pl + scale_shape_manual(values = c(16, 16, 17, 15))
+  pl = pl +  ggplot2::geom_point(data = points[points$type == "front", ],
+    ggplot2::aes_string(x = name[1L], y = name[2L], colour = "type", shape = "type"), size = 2, alpha = alpha)
+  pl = pl + ggplot2::geom_point(data = points[points$type != "front", ],
+    ggplot2::aes_string(x = name[1L], y = name[2L], colour = "type", shape = "type"), size = 4)
+  pl = pl + ggplot2::scale_colour_manual(values = c("black", colors))
+  pl = pl + ggplot2::scale_shape_manual(values = c(16, 16, 17, 15))
 
   # add appr. of non dominated model points
-  grid = if(space == "x") object$mbo.pred.grid.x else object$mbo.pred.grid.mean[[iter]]
+  grid = if (space == "x") object$mbo.pred.grid.x else object$mbo.pred.grid.mean[[iter]]
   pl = addApproxMBO(pl, grid, name, object$mbo.pred.grid.mean[[iter]]$.is.dom, "brown", "solid")
 
   # add appr. of cb of non dominated model points
-  grid = if(space == "x") object$mbo.pred.grid.x else object$mbo.pred.grid.cb[[iter]]
+  grid = if (space == "x") object$mbo.pred.grid.x else object$mbo.pred.grid.cb[[iter]]
   pl = addApproxMBO(pl, grid, name, object$mbo.pred.grid.cb[[iter]]$.is.dom, "brown", "dotted")
   return(pl)
 }
@@ -107,7 +107,7 @@ addApproxMBO = function(pl, points, col.names, isdom, colour, lty) {
   if (!is.null(points)) {
     points = setColNames(points[!isdom, 1:2, drop = FALSE], col.names)
     points = sortByCol(points, col.names)
-    pl = pl + geom_line(aes_string(x = col.names[1L], y = col.names[2L]),
+    pl = pl + ggplot2::geom_line(ggplot2::aes_string(x = col.names[1L], y = col.names[2L]),
       points, colour = colour, linetype = lty, alpha = 0.8)
   }
   return(pl)
@@ -116,8 +116,8 @@ addApproxMBO = function(pl, points, col.names, isdom, colour, lty) {
 
 fillBackgroundWithInfillCrit = function(pl, data, x.name, crit.name) {
   brewer.palette = colorRampPalette(RColorBrewer::brewer.pal(11, "Spectral"), interpolate = "spline")
-  pl = pl + geom_tile(data = data, aes_string(x = x.name[1L], y = x.name[2L], fill = crit.name))
-  pl = pl + scale_fill_gradientn(colours = brewer.palette(200))
+  pl = pl + ggplot2::geom_tile(data = data, ggplot2::aes_string(x = x.name[1L], y = x.name[2L], fill = crit.name))
+  pl = pl + ggplot2::scale_fill_gradientn(colours = brewer.palette(200))
   return(pl)
 }
 
@@ -130,7 +130,7 @@ addParegoWeightLines = function(pl, data.y, idx, opt.path, proposed.counter, rho
   slope  = weights[2L] * (y2range[2L] - y2range[1L]) /
     (weights[1L] * (y1range[2L] - y1range[1L]))
   intercept = y2range[1L] - y1range[1L] * slope
-  pl = pl + geom_abline(intercept = intercept, slope = slope)
+  pl = pl + ggplot2::geom_abline(intercept = intercept, slope = slope)
 
   # now add visualization for rho
   #   FIXME: Rethink this!
@@ -157,7 +157,7 @@ addParegoWeightLines = function(pl, data.y, idx, opt.path, proposed.counter, rho
   #     y1 = m.seq,
   #     y2 = f(m.seq, weights, rho, const)
   #   )
-  #   pl + geom_line(data = gg.line, aes(x = y1, y = y2), col = "blue", shape = 1)
+  #   pl + ggplot2::geom_line(data = gg.line, aes(x = y1, y = y2), col = "blue", shape = 1)
   pl
 }
 

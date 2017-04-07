@@ -26,7 +26,7 @@ test_that("mboContinue", {
   ctrl = makeMBOControl(save.on.disk.at = 0:4,
     save.file.path = save.file)
   ctrl = setMBOControlTermination(ctrl, iters = 3L)
-  ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10L)
+  ctrl = setMBOControlInfill(ctrl, crit = crit.mr, opt.focussearch.points = 10L)
   expect_error({or = mbo(f, des, learner = learner, control = ctrl)}, "foo")
   for (i in 1:20) {
     try({or = mboContinue(save.file)}, silent = TRUE)
@@ -56,8 +56,8 @@ test_that("mboContinue", {
   ctrl = makeMBOControl(save.on.disk.at = 0:8,
     save.file.path = save.file, n.objectives = 2L)
   ctrl = setMBOControlTermination(ctrl, iters = 7L)
-  ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100)
-  ctrl = setMBOControlMultiCrit(ctrl, method = "parego", parego.s = 100)
+  ctrl = setMBOControlInfill(ctrl, crit = crit.mr, opt.focussearch.points = 100)
+  ctrl = setMBOControlMultiObj(ctrl, method = "parego", parego.s = 100)
   or = NULL
   try({or = mbo(f, des, learner = learner, control = ctrl)}, silent = TRUE)
   for (i in 1:10) {
@@ -82,7 +82,7 @@ test_that("mboContinue works when at end", {
   ctrl = makeMBOControl(save.on.disk.at = 0:2,
     save.file.path = save.file)
   ctrl = setMBOControlTermination(ctrl, iters = 1L)
-  ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10L)
+  ctrl = setMBOControlInfill(ctrl, crit = crit.mr, opt.focussearch.points = 10L)
   or = mbo(f, des, learner = learner, control = ctrl)
   expect_equal(getOptPathLength(or$opt.path), 11L)
   expect_warning({or = mboContinue(save.file)}, "No need to continue")

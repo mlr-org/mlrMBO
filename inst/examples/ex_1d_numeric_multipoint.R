@@ -1,11 +1,13 @@
-##### optimizing a simple sin(x) with multipoint proposal #####
-
+#####################################################
+###
+### optimizing a simple sin(x) with multipoint proposal
+###
+#####################################################
+\dontrun{
 library(mlrMBO)
 library(ggplot2)
-library(smoof)
 set.seed(1)
 configureMlr(show.learner.output = FALSE)
-pause = interactive()
 
 obj.fun = makeSingleObjectiveFunction(
   name = "Sine",
@@ -16,7 +18,7 @@ obj.fun = makeSingleObjectiveFunction(
 
 ctrl = makeMBOControl(propose.points = 2L)
 ctrl = setMBOControlTermination(ctrl, iters = 10L)
-
+ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCritMeanResponse())
 ctrl = setMBOControlMultiPoint(
 	ctrl,
   method = "moimbo",
@@ -25,7 +27,7 @@ ctrl = setMBOControlMultiPoint(
   moimbo.maxit = 200L
 )
 
-lrn = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
+lrn = makeMBOLearner(ctrl, obj.fun)
 
 design = generateDesign(4L, getParamSet(obj.fun), fun = lhs::maximinLHS)
 
@@ -34,4 +36,5 @@ run = exampleRun(obj.fun, design = design, learner = lrn,
 
 print(run)
 
-plotExampleRun(run, pause = pause, densregion = TRUE, gg.objects = list(theme_bw()))
+plotExampleRun(run, densregion = TRUE, gg.objects = list(theme_bw()))
+}

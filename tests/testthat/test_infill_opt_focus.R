@@ -15,13 +15,12 @@ test_that("simple random search, no dependencies, no focusing", {
     has.simple.signature = FALSE
   )
 
-  learner = makeLearner("regr.randomForest")
   des = generateTestDesign(20L, getParamSet(obj.fun))
   ctrl = makeMBOControl()
   ctrl = setMBOControlTermination(ctrl, iters = 2L)
   ctrl = setMBOControlInfill(ctrl, opt = "focussearch",
     opt.restarts = 1L, opt.focussearch.maxit = 1L, opt.focussearch.points = 30L)
-  or = mbo(obj.fun, des, learner = learner, control = ctrl)
+  or = mbo(obj.fun, des, control = ctrl)
   expect_number(or$y)
 })
 
@@ -40,7 +39,7 @@ test_that("dependent params, but no focusing", {
     has.simple.signature = FALSE
   )
 
-  learner = makeLearner("regr.randomForest")
+  learner = makeLearner("regr.randomForest", predict.type = "se", se.method = "sd")
   learner = makeImputeWrapper(learner, classes = list(numeric = imputeMedian(), factor = imputeMode()))
   des = generateTestDesign(20L, getParamSet(obj.fun))
   ctrl = makeMBOControl()
@@ -58,12 +57,12 @@ test_that("complex param space, dependencies, focusing, restarts", {
     fn = function(x) {
       x = removeMissingValues(x)
       tmp1 = (sqrt(x$real1)) + x$int1^2 - mean(x$realVec) + sum(x$intVec)
-      if(x$real2 < 0) tmp2 = ifelse(x$disc1 == 'foo', -5, 5)
-      if(x$real2 > 0) tmp2 = 5 + x$real3
-      if(x$real2 == 0) tmp2 = 0
-      if(x$disc2 == 'a') tmp3 = log(x$realA) + x$intA^4 + ifelse(x$discA == 'm', 5, 0)
-      if(x$disc2 == 'b') tmp3 = exp(x$realB) + ifelse(x$discB == 'R', sin(x$realBR), sin(x$realBNR))
-      if(x$disc2 == "c") tmp3 = 500
+      if (x$real2 < 0) tmp2 = ifelse(x$disc1 == 'foo', -5, 5)
+      if (x$real2 > 0) tmp2 = 5 + x$real3
+      if (x$real2 == 0) tmp2 = 0
+      if (x$disc2 == 'a') tmp3 = log(x$realA) + x$intA^4 + ifelse(x$discA == 'm', 5, 0)
+      if (x$disc2 == 'b') tmp3 = exp(x$realB) + ifelse(x$discB == 'R', sin(x$realBR), sin(x$realBNR))
+      if (x$disc2 == "c") tmp3 = 500
       tmp1 + tmp2 + tmp3
     },
     par.set = makeParamSet(
@@ -91,9 +90,9 @@ test_that("complex param space, dependencies, focusing, restarts", {
   des = generateDesign(20L, getParamSet(obj.fun))
   ctrl = makeMBOControl()
   ctrl = setMBOControlTermination(ctrl, iters = 2L)
-  ctrl = setMBOControlInfill(ctrl, crit = "ei", opt = "focussearch",
+  ctrl = setMBOControlInfill(ctrl, crit = crit.ei, opt = "focussearch",
     opt.restarts = 2L, opt.focussearch.maxit = 2L, opt.focussearch.points = 100L)
-  learner = makeLearner("regr.randomForest", predict.type = "se")
+  learner = makeLearner("regr.randomForest", predict.type = "se", se.method = "sd")
   learner = makeImputeWrapper(learner, classes = list(numeric = imputeMedian(), factor = imputeMode()))
 
   or = mbo(obj.fun, des, learner = learner, control = ctrl)

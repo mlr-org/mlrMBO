@@ -10,20 +10,19 @@ test_that("init design", {
     )
   )
 
-  learner = makeLearner("regr.km", nugget.estim = TRUE)
   ctrl = makeMBOControl()
   ctrl = setMBOControlTermination(ctrl, iters = 1L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10L)
 
   des = generateTestDesign(10L, par.set = getParamSet(obj.fun))
 
-  or = mbo(obj.fun, des, learner, ctrl)
+  or = mbo(obj.fun, des, control = ctrl)
   expect_equal(getOptPathLength(or$opt.path), 11L)
   expect_number(or$y)
 
   # with precomputed y
   des$y = apply(des, 1L, obj.fun)
-  or = mbo(obj.fun, des, learner, ctrl)
+  or = mbo(obj.fun, des, control =  ctrl)
   expect_equal(getOptPathLength(or$opt.path), 11L)
   expect_number(or$y)
 
@@ -36,9 +35,9 @@ test_that("init design", {
   )
 
   des = generateTestDesign(10, getParamSet(obj.fun), trafo = TRUE)
-  expect_error(mbo(obj.fun, des, learner, ctrl))
+  expect_error(mbo(obj.fun, des, control = ctrl))
 
   # wrong col names in inir design
   des = data.frame(x1 = c(-0.49, 0.24, -1.47), z = c(-0.70, 1.29, 0.73))
-  expect_error(mbo(obj.fun, des, learner, ctrl))
+  expect_error(mbo(obj.fun, des, control = ctrl))
 })

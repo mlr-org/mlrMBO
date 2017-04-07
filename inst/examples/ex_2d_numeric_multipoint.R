@@ -1,15 +1,18 @@
-##### optimizing branin in 2D with multipoint proposal #####
-
+#####################################################
+###
+### optimizing branin in 2D with multipoint proposal #####
+###
+#####################################################
+\dontrun{
 library(mlrMBO)
 library(ggplot2)
-library(smoof)
-set.seed(2) # FIXME: does not work for seed == 1
+set.seed(2)
 configureMlr(show.learner.output = FALSE)
-pause = interactive()
 
 obj.fun = makeBraninFunction()
 
 ctrl = makeMBOControl(propose.points = 5L)
+ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCritMeanResponse())
 ctrl = setMBOControlTermination(ctrl, iters = 10L)
 ctrl = setMBOControlMultiPoint(ctrl,
   method = "moimbo",
@@ -18,8 +21,7 @@ ctrl = setMBOControlMultiPoint(ctrl,
   moimbo.maxit = 200L
 )
 
-lrn = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2")
-
+lrn = makeLearner("regr.km", predict.type = "se")
 design = generateDesign(10L, getParamSet(obj.fun), fun = lhs::maximinLHS)
 
 run = exampleRun(obj.fun, design = design, learner = lrn, control = ctrl,
@@ -27,4 +29,5 @@ run = exampleRun(obj.fun, design = design, learner = lrn, control = ctrl,
 
 print(run)
 
-plotExampleRun(run, pause = pause, gg.objects = list(theme_bw()))
+plotExampleRun(run, gg.objects = list(theme_bw()))
+}

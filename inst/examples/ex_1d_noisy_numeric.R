@@ -1,11 +1,13 @@
-##### optimizing a simple noisy sin(x) with mbo / EI
-
+#####################################################
+###
+### optimizing a simple noisy sin(x) with mbo / EI
+###
+#####################################################
+\dontrun{
 library(mlrMBO)
 library(ggplot2)
-library(smoof)
 set.seed(1)
 configureMlr(show.learner.output = FALSE)
-pause = interactive()
 
 # function with noise
 obj.fun = makeSingleObjectiveFunction(
@@ -24,11 +26,10 @@ ctrl = makeMBOControl(
 )
 ctrl = setMBOControlTermination(ctrl, iters = 5L)
 
+ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCritEI(),
+ opt = "focussearch", opt.focussearch.points = 500L)
 
-lrn = makeLearner("regr.km", predict.type = "se", nugget.estim = TRUE)
-
-ctrl = setMBOControlInfill(ctrl, crit = "ei", opt = "focussearch",
-  opt.focussearch.points = 500L)
+lrn = makeMBOLearner(ctrl, obj.fun)
 
 design = generateDesign(6L, getParamSet(obj.fun), fun = lhs::maximinLHS)
 
@@ -38,4 +39,5 @@ run = exampleRun(obj.fun, design = design, learner = lrn,
 
 print(run)
 
-plotExampleRun(run, pause = pause, densregion = TRUE, gg.objects = list(theme_bw()))
+plotExampleRun(run, densregion = TRUE, gg.objects = list(theme_bw()))
+}

@@ -3,7 +3,7 @@
 \name{renderExampleRunPlot}
 \alias{renderExampleRunPlot}
 \title{Renders plots for exampleRun objects, either in 1D or 2D, or
-exampleRunMultiCrit objects.}
+exampleRunMultiObj objects.}
 \usage{
 renderExampleRunPlot(object, iter, densregion = TRUE, se.factor = 1,
   single.prop.point.plots = FALSE, xlim = NULL, ylim = NULL,
@@ -12,7 +12,7 @@ renderExampleRunPlot(object, iter, densregion = TRUE, se.factor = 1,
 }
 \arguments{
 \item{object}{[\code{function}]\cr
-\code{MBOExampleRun} or \code{MBOExampleRunMulticrit} object.}
+\code{MBOExampleRun} or \code{MBOExampleRunMultiObj} object.}
 
 \item{iter}{[\code{integer}]\cr
 Selected iteration of \code{object} to render plots for.}
@@ -28,7 +28,7 @@ is plotted above and below.
 Default is 1.}
 
 \item{single.prop.point.plots}{[\code{logical(1)}]\cr
-Parameter for Multicrit Multipoint proposal: Should every proposed point
+Parameter for MOI-MBO Multipoint proposal: Should every proposed point
 be displayed in a single plot - or one plot per Iteration? Default is FALSE
 indicating single plots per proposed points.}
 
@@ -86,4 +86,3 @@ the model and the (infill) points. The lower plot shows the infill criterion.
 - For bi-criteria target functions the upper plot shows the target space and the lower
   plot displays the x-space.
 }
-

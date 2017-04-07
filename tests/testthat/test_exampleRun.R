@@ -3,14 +3,13 @@ context("exampleRun")
 test_that("renderExampleRunPlot produces list of ggplot2 objects", {
   n.iters = 1L
 
-  doRun = function(obj.fn, predict.type, crit, learner = "regr.km") {
-    if (!is.null(learner))
-      learner = makeLearner(learner, predict.type = predict.type)
+  doRun = function(obj.fn, predict.type, crit) {
     control = makeMBOControl()
     control = setMBOControlTermination(control, iters = n.iters)
-    control = setMBOControlInfill(control, crit = crit, opt = "focussearch", opt.focussearch.points = 10)
+    control = setMBOControlInfill(control, crit = crit, opt = "focussearch",
+      opt.focussearch.points = 10)
 
-    run = exampleRun(obj.fn, learner = learner, control = control)
+    run = exampleRun(obj.fn, control = control)
     return(renderExampleRunPlot(run, iter = 1L))
   }
 
@@ -35,15 +34,15 @@ test_that("renderExampleRunPlot produces list of ggplot2 objects", {
   }
 
   # without se
-  plot.list = doRun(obj.fn, "response", "mean")
+  plot.list = doRun(obj.fn, "response", crit.mr)
   checkPlotList(plot.list)
 
   # with se
-  plot.list = doRun(obj.fn, "se", "ei")
+  plot.list = doRun(obj.fn, "se", crit.ei)
   checkPlotList(plot.list)
 
   #default learner
-  plot.list = doRun(obj.fn, "response", "ei", learner = NULL)
+  plot.list = doRun(obj.fn, "response", crit.ei)
   checkPlotList(plot.list)
 
   ### 2d MIXED
@@ -65,7 +64,7 @@ test_that("renderExampleRunPlot produces list of ggplot2 objects", {
     has.simple.signature = FALSE
   )
 
-  plot.list = doRun(obj.fn, "se", "ei", "regr.randomForest")
+  plot.list = doRun(obj.fn, "se", crit.ei)
   checkPlotList(plot.list)
 
   ### 2D NUMERIC (MULTIPOINT)
@@ -80,14 +79,14 @@ test_that("renderExampleRunPlot produces list of ggplot2 objects", {
 
   ctrl = makeMBOControl(propose.points = 3)
   ctrl = setMBOControlTermination(ctrl, iters = n.iters)
+  ctrl = setMBOControlInfill(ctrl, crit = crit.mr)
   ctrl = setMBOControlMultiPoint(ctrl,
     method = "moimbo",
     moimbo.objective = "ei.dist",
     moimbo.dist = "nearest.neighbor",
     moimbo.maxit = 200L
   )
-
-  run = exampleRun(obj.fun, learner = default.kriging, control = ctrl, points.per.dim = 50L)
+  run = exampleRun(obj.fun, control = ctrl, points.per.dim = 50L)
 
   plot.list = renderExampleRunPlot(run, iter = 1L)
   checkPlotList(plot.list)

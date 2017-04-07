@@ -51,7 +51,7 @@ makeMBOTerminationMaxExecBudget = function(time.budget) {
   force(time.budget)
   function(opt.state) {
     opt.path = getOptStateOptPath(opt.state)
-    time.used = sum(getOptPathExecTimes(opt.path))
+    time.used = sum(getOptPathExecTimes(opt.path), na.rm = TRUE)
 
     term = (time.used > time.budget)
     message = if (!term) NA_character_ else sprintf("Execution time budged %f reached.", time.budget)
@@ -87,7 +87,7 @@ makeMBOTerminationTargetFunValue = function(target.fun.value) {
 # @param max.evals [integer(1)]
 #   Maximal number of function evaluations.
 makeMBOTerminationMaxEvals = function(max.evals) {
-  assertInt(max.evals, na.ok = FALSE, lower = 1L)
+  max.evals = asInt(max.evals, na.ok = FALSE, lower = 1L)
   force(max.evals)
   function(opt.state) {
     opt.path = getOptStateOptPath(opt.state)

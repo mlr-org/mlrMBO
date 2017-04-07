@@ -1,4 +1,4 @@
-# Generates single objective task.
+# Generates single-objective task.
 #
 # - only uses x and y columns of optpath
 # - converts data types for regr model

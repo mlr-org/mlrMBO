@@ -1,10 +1,10 @@
-context("mbo")
+context("mbo rf")
 
 test_that("mbo works with rf", {
   learner = makeLearner("regr.randomForest")
   ctrl = makeMBOControl(store.model.at = c(1,5))
   ctrl = setMBOControlTermination(ctrl, iters = 5L)
-  ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100L)
+  ctrl = setMBOControlInfill(ctrl, crit = crit.mr, opt.focussearch.points = 100L)
   or = mbo(testf.fsphere.2d, testd.fsphere.2d, learner, ctrl, show.info = TRUE)
   expect_number(or$y)
   expect_equal(or$y, testf.fsphere.2d(or$x))
@@ -17,7 +17,7 @@ test_that("mbo works with rf", {
   # check errors
   ctrl = makeMBOControl()
   ctrl = setMBOControlTermination(ctrl, iters = 5L)
-  ctrl = setMBOControlInfill(ctrl, crit = "ei", opt.focussearch.points = 100L)
+  ctrl = setMBOControlInfill(ctrl, crit = crit.ei, opt.focussearch.points = 100L)
   expect_error(mbo(testf.fsphere.2d, testd.fsphere.2d, learner, ctrl), "must be set to 'se'")
   ctrl = makeMBOControl()
   ctrl = setMBOControlTermination(ctrl, iters = 5L)
@@ -31,7 +31,7 @@ test_that("mbo works with rf", {
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100L)
   learner = makeLearner("classif.randomForest")
   expect_error(mbo(testf.fsphere.2d, testd.fsphere.2d, learner, ctrl), "mbo requires regression learner")
-  learner = makeLearner("regr.randomForest")
+  learner = makeLearner("regr.randomForest", predict.type = "se", se.method = "sd")
   # check trafo
   par.set = makeParamSet(
     makeNumericParam("x1", lower = -10, upper = 10, trafo = function(x) abs(x))
@@ -68,7 +68,6 @@ test_that("mbo works with rf", {
 
   des = generateTestDesign(10, par.set = par.set)
   des$y = vnapply(seq_row(des), function(i) f(as.list(des[i,])))
-  learner = makeLearner("regr.randomForest")
   ctrl = makeMBOControl()
   ctrl = setMBOControlTermination(ctrl, iters = 5L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100)
@@ -110,7 +109,6 @@ test_that("mbo works with rf", {
     par.set = par.set
   )
 
-  learner = makeLearner("regr.randomForest")
   des = generateTestDesign(10L, getParamSet(f))
   ctrl = makeMBOControl()
   ctrl = setMBOControlTermination(ctrl, iters = 3L)
@@ -139,7 +137,6 @@ test_that("mbo works with rf", {
     par.set = par.set
   )
 
-  learner = makeLearner("regr.randomForest")
   des = generateTestDesign(10L, getParamSet(f))
   ctrl = makeMBOControl()
   ctrl = setMBOControlTermination(ctrl, iters = 5L)
@@ -159,7 +156,7 @@ test_that("mbo works with rf", {
   )
 
   des = generateTestDesign(10L, getParamSet(f))
-  ctrl = makeMBOControl(trafo.y.fun = trafoLog(handle.violations = "error"))
+  ctrl = makeMBOControl(trafo.y.fun = trafoSqrt(handle.violations = "error"))
   ctrl = setMBOControlTermination(ctrl, iters = 2L)
   ctrl = setMBOControlInfill(ctrl, filter.proposed.points = TRUE)
   expect_error(mbo(f, control = ctrl, more.args = list(shift = -1)), "Negative function values occurred during transformation.")
@@ -185,7 +182,7 @@ test_that("mbo works with rf", {
 #   learner = makeBaggingWrapper(makeLearner("regr.gbm"), bag.iters = 10)
 #   learner = setPredictType(learner, "se")
 #   ctrl = makeMBOControl(init.design.points = 50, iters = 10)
-#   ctrl = setMBOControlInfill(ctrl, crit = "ei", opt = "focussearch",
+#   ctrl = setMBOControlInfill(ctrl, crit = crit.ei, opt = "focussearch",
 #     opt.restarts = 3, opt.focussearch.maxit = 3, opt.focussearch.points = 5000)
 #   or = mbo(f, ps, learner = learner, control = ctrl, show.info = TRUE)
 #   expect_true(!is.na(or$y))

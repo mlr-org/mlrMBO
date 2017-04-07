@@ -16,7 +16,7 @@
 #'   the condition is checked after each iteration.
 #'   The default \code{NULL} means: There is no execution time budget.
 #' @param target.fun.value [\code{numeric(1)}] | NULL]\cr
-#'   Termination criterion for single crit optimization: Stop if a function evaluation
+#'   Termination criterion for single-objective optimization: Stop if a function evaluation
 #'   is better than this given target.value.
 #'   The default \code{NULL} means: The function value won't be taken into account for termination.
 #' @param max.evals [\code{integer(1) | NULL}]\cr
@@ -32,6 +32,8 @@
 #'     \item{message [\code{character(1)}]}{Termination message. At the moment we just allow \code{term.custom}.}
 #'   }
 #' @return [\code{\link{MBOControl}}].
+#' @family MBOControl
+#' @export
 #' @examples
 #' fn = smoof::makeSphereFunction(1L)
 #' ctrl = makeMBOControl()
@@ -52,8 +54,7 @@
 #' # assign custom termination condition
 #' ctrl = setMBOControlTermination(ctrl, more.termination.conds = list(yTargetValueTerminator(0.05)))
 #' res = mbo(fn, control = ctrl)
-#' @family MBOControl
-#' @export
+#' print(res)
 setMBOControlTermination = function(control,
   iters = NULL, time.budget = NULL, exec.time.budget = NULL, target.fun.value = NULL, max.evals = NULL, more.termination.conds = list()) {
 
@@ -84,7 +85,7 @@ setMBOControlTermination = function(control,
 
   if (!is.null(target.fun.value)) {
     if (control$n.objectives > 1L)
-      stop("Specifying target.fun.value is only useful in single crit optimization.")
+      stop("Specifying target.fun.value is only useful in single-objective optimization.")
     stop.conds = c(stop.conds, makeMBOTerminationTargetFunValue(target.fun.value))
   }
 

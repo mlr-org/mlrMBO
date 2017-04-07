@@ -1,12 +1,14 @@
-##### optimizing 1D fun with 3 categorical level and
-##### noisy outout with random forest
-
+#####################################################
+###
+### optimizing 1D fun with 3 categorical level and
+### noisy outout with random forest
+###
+#####################################################
+\dontrun{
 library(mlrMBO)
 library(ggplot2)
-library(smoof)
 set.seed(1)
 configureMlr(show.learner.output = FALSE)
-pause = interactive()
 
 obj.fun = makeSingleObjectiveFunction(
   name = "Mixed decision space function",
@@ -31,15 +33,16 @@ ctrl = makeMBOControl()
 ctrl = setMBOControlTermination(ctrl, iters = 10L)
 
 # we can basically do an exhaustive search in 3 values
-ctrl = setMBOControlInfill(ctrl, crit = "ei",
+ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCritEI(),
   opt.restarts = 1L, opt.focussearch.points = 3L, opt.focussearch.maxit = 1L)
 
 design = generateDesign(20L, getParamSet(obj.fun), fun = lhs::maximinLHS)
 
-lrn = makeLearner("regr.randomForest", predict.type = "se")
+lrn = makeMBOLearner(ctrl, obj.fun)
 
 run = exampleRun(obj.fun, design = design, learner = lrn, control = ctrl,
 	points.per.dim = 50L, show.info = TRUE)
 
 print(run)
-plotExampleRun(run, pause = pause, densregion = TRUE, gg.objects = list(theme_bw()))
+plotExampleRun(run, densregion = TRUE, gg.objects = list(theme_bw()))
+}

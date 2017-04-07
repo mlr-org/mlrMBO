@@ -8,8 +8,8 @@ showInfo = function(show.info, ...) {
 # load required extra packages
 loadPackages = function(control) {
   if (control$infill.opt == "cmaes")
-    requirePackages("cmaes", why = "proposePoints")
-  if (control$n.objectives == 1L && control$propose.points > 1L && control$multipoint.method == "multicrit")
+    requirePackages("cmaesr", why = "proposePoints")
+  if (control$n.objectives == 1L && control$propose.points > 1L && control$multipoint.method == "moimbo")
     requirePackages("emoa", why = "proposePoints")
 }
 
@@ -40,4 +40,18 @@ measureTime = function(expr, ee = parent.frame()) {
   before = proc.time()[3L]
   force(expr)
   as.numeric(proc.time()[3L] - before)
+}
+
+# checks if a parameter or par.set is only numeric and has no dependencies/requires
+# FIXME: remove as soon as this is in ParamHelper
+isSimpleNumeric = function(par) {
+  isNumeric(par, include.int = TRUE) && !hasRequires(par)
+}
+
+getHyperParsString2 = function(learner, show.missing.values = TRUE) {
+  hps = getHyperPars(learner)
+  ns = names(hps)
+  pars = getParamSet(learner)$pars[ns]
+  s = mapply(paramValueToString, pars, hps, MoreArgs = list(show.missing.values = show.missing.values))
+  paste(ns, s, sep = "=", collapse = ",")
 }

@@ -22,62 +22,45 @@
 
 #FIXME we need other optimizers for mixed, depenent param spaces. dont forget refactorNAS then
 
-# cmaes with simple random restarts.
 # the first start is always at the best point of the current opt.path.
 # works only for numerics and integers, latter are simply rounded.
 infillOptCMAES = function(infill.crit, models, control, par.set, opt.path, design, iter, ...) {
-  # extract lower and upper bound for params
-  low = getLower(par.set)
-  upp = getUpper(par.set)
-
   rep.pids = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
-  #eval all points of 1 generation at once
-  cmaes.control = control$cmaes.control
-  cmaes.control$vectorized = TRUE
-  f = function(x) {
-    newdata = as.data.frame(t(x))
-    colnames(newdata) = rep.pids
-    infill.crit(newdata, models, control, par.set, design, iter, ...)
+  cmaes.control = control$infill.opt.cmaes.control
+
+  fn = smoof::makeSingleObjectiveFunction(
+    fn = function(x) {
+      newdata = as.data.frame(t(x))
+      colnames(newdata) = rep.pids
+      infill.crit(newdata, models, control, par.set, design, iter, ...)
+    },
+    par.set = par.set,
+    vectorized = TRUE
+  )
+
+  if (!("stop.ons" %in% names(names(cmaes.control)))) {
+    cmaes.control = BBmisc::insert(cmaes.control, list(stop.ons = c(
+      cmaesr::getDefaultStoppingConditions()
+    )))
   }
 
-  results = vector("list", control$infill.opt.restarts)
-  # restart optimizer, first start point is currently best
-  for (i in seq_len(control$infill.opt.restarts)) {
-    if (i == 1) {
-      start = getOptPathEl(opt.path, getOptPathBestIndex(opt.path))$x
-      cmaes.control = insert(list(diag.value = TRUE), control$infill.opt.cmaes.control)
-    } else {
-      start = sampleValue(par.set)
-    }
-    start = unlist(start)
-    results[[i]] = cmaes::cma_es(par = start, fn = f, lower = low, upper = upp, control = cmaes.control)
-  }
-  # check if the model just gives constant values
-  constant.model = (length(unique(as.vector(results[[i]]$diagnostic$value))) == 1)
-  ys = extractSubList(results, "value")
-  ys = ys[!is.infinite(ys)]
-  res = NULL
+  # set number of restarts
+  cmaes.control = BBmisc::insert(cmaes.control, list(max.restarts = control$infill.opt.restarts))
+
+  # select first start point as currently best
+  start.point = unlist(getOptPathEl(opt.path, getOptPathBestIndex(opt.path))$x)
+  result = cmaesr::cmaes(fn, start.point = start.point, monitor = NULL, control = cmaes.control)
+
   # all CMA-ES runs failed. Therefore we sample a random point and warn
-  if (length(ys) == 0) {
+  res = NULL
+  if (is.infinite(result$best.fitness)) {
+    warningf("Infill optimizer CMA-ES crashed. Random point generated instead.")
     res = t(sampleValue(par.set))
-    warningf("Infill optimizer CMA-ES crashed %i times. Random point generated instead.", control$infill.opt.restart)
+    constant.model = TRUE
   } else {
-    j = which(rank(ys, ties.method = "random") == 1L)
-    res = t(results[[j]]$par)
+    res = t(result$best.param)
+    constant.model = FALSE
   }
   res = setColNames(as.data.frame(res), rep.pids)
   setAttribute(res, "constant.model", constant.model)
 }
-
-# FIXME: allow DiceOptim optimizer later...
-# infillOptEI = function(infill.crit, model, control, par.set, opt.path, ...) {
-#   # extract lower and upper bound for params
-#   low = getLower(par.set)
-#   upp = getUpper(par.set)
-#
-#   i = getOptPathBestIndex(opt.path, ties = "random")
-#   start = unlist(getOptPathEl(opt.path, i)$x)
-#   capture.output(design <- max_EI(model$learner.model,
-#     lower = low, upper = upp, parinit = start)$par)
-#   as.data.frame(design)
-# }

@@ -6,7 +6,7 @@ test_that("mbo works with km", {
   learner = makeLearner("regr.km", nugget.estim = TRUE)
   ctrl = makeMBOControl()
   ctrl = setMBOControlTermination(ctrl, iters = 5L)
-  ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100L)
+  ctrl = setMBOControlInfill(ctrl, crit = crit.mr, opt.focussearch.points = 100L)
   expect_output(print(ctrl), "Objectives")
   or = mbo(testf.fsphere.2d, des, learner = learner, control = ctrl)
   expect_number(or$y)
@@ -37,11 +37,14 @@ test_that("mbo works with km", {
   expect_list(or$x)
   expect_set_equal(names(or$x), names(par.set$pars))
 
-  learner = setPredictType(learner, "se")
+  # we use kriging by makeMBOLearner
   ctrl = makeMBOControl()
   ctrl = setMBOControlTermination(ctrl, iters = 5L)
-  ctrl = setMBOControlInfill(ctrl, crit = "ei", opt.focussearch.points = 100L)
-  or = mbo(f, des, learner, ctrl)
+  ctrl = setMBOControlInfill(ctrl, crit = crit.ei,
+    opt.focussearch.points = 100L)
+  # expect no output at all for show.info = FALSE
+  library(rgenoud)
+  expect_silent({or = mbo(f, des, control = ctrl, show.info = FALSE)})
   expect_number(or$y)
   expect_equal(getOptPathLength(or$opt.path), 15)
   df = as.data.frame(or$opt.path)
@@ -62,7 +65,7 @@ test_that("mbo works with impute and failure model", {
   learner = makeLearner("regr.km", config = list(on.learner.error = "quiet"))
   ctrl = makeMBOControl()
   ctrl = setMBOControlTermination(ctrl, iters = 2L)
-  ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10L)
+  ctrl = setMBOControlInfill(ctrl, crit = crit.mr, opt.focussearch.points = 10L)
   or = mbo(testf.fsphere.2d, des, learner = learner, control = ctrl)
   expect_equal(getOptPathLength(or$opt.path), 14)
   op = as.data.frame(or$opt.path)

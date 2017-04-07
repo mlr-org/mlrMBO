@@ -2,55 +2,30 @@
 #'
 #' @description
 #' Please note that internally all infill criteria are minimized. So for some of them,
-#' we internally compute their negated version, eg., for EI or also for CB when the objective is to
+#' we internally compute their negated version, e.g., for EI or also for CB when the objective is to
 #' be maximized. In the latter case mlrMBO actually computes the negative upper confidence bound and
 #' minimizes that.
 #'
 #' @template arg_control
-#' @param crit [\code{character(1)}]\cr
-#'   How should infill points be rated. Possible parameter values are:
-#'   \dQuote{mean}: Mean response.
-#'   \dQuote{ei}: Expected improvement.
-#'   \dQuote{aei}: Augmented expected improvement.
-#'   \dQuote{eqi}: Expected quantile improvement.
-#'   \dQuote{cb}: Confidence bound.
-#'   Alternatively, you may pass a function name as string.
+#' @param crit [\code{\link{MBOInfillCrit}}]\cr
+#'   How should infill points be rated. See \code{\link{infillcrits}} for an overview
+#'   of available infill criteria or implement a custom one via \code{\link{makeMBOInfillCrit}}.#
+#'   Default is \dQuote{(lower) confidence bound} (see \code{\link{makeMBOInfillCritCB}}).
 #' @param interleave.random.points [\code{integer(1)}]\cr
 #'   Add \code{interleave.random.points} uniformly sampled points additionally to the
 #'   regular proposed points in each step.
 #'   If \code{crit="random"} this value will be neglected.
 #'   Default is 0.
-#' @param crit.eqi.beta [\code{numeric(1)}]\cr
-#'   Beta parameter for expected quantile improvement criterion.
-#'   Only used if \code{crit == "eqi"}, ignored otherwise.
-#'   Default is 0.75.
-#' @param crit.cb.lambda [\code{numeric(1)}]\cr
-#'   Lambda parameter for confidence bound infill criterion.
-#'   Only used if \code{crit == "cb"}, ignored otherwise.
-#'   Default is 1.
-# FIXME: does this only make sense for multicrit? or single crit too?
-#' @param crit.cb.pi [\code{numeric(1)}]\cr
-#'   Probability-of-improvement value to determine the lambda parameter for cb infill criterion.
-#'   It is an alternative to set the trade-off between \dQuote{mean} and \dQuote{se}.
-#'   Only used if \code{crit == "cb"}, ignored otherwise.
-#'   If specified, \code{crit.cb.lambda == NULL} must hold.
-#'   Default is \code{NULL}.
-#' @param crit.cb.inflate.se [\code{logical(1)}]\cr
-#'   Try to inflate or deflate the estimated standard error to get to the same scale as the mean?
-#'   Calculates the range of the mean and standard error and multiplies the standard error
-#'   with the quotient of theses ranges.
-#'   Default is \code{FALSE}.
-#' @param crit.aei.use.nugget [\code{logical(1)}]\cr
-#'   Only used if \code{crit == "aei"}. Should the nugget effect be used for the
-#'   pure variance estimation? Default is \code{FALSE}.
 #' @param filter.proposed.points [\code{logical(1)}]\cr
 #'   Design points located too close to each other can lead to
 #'   numerical problems when using e.g. kriging as a surrogate model.
+#'   This may solve the 'leading minor of order ...' error during model fit.
 #'   This parameter activates or deactivates a heuristic to handle this issue.
 #'   If \code{TRUE}, proposed points whose distance to design points or other current
 #'   candidate points is smaller than \code{filter.proposed.points.tol}, are replaced by random points.
 #'   If enabled, the column entry for \code{prop.type} is set to \dQuote{random_filter} in the resulting \code{opt.path},
 #'   so you can see whether such a replacement happened.
+#'   This does only work for numeric parameter sets without any discrete parameters.
 #'   Default is \code{FALSE}.
 #' @param filter.proposed.points.tol [\code{numeric(1)}]\cr
 #'   Tolerance value filtering of proposed points. We currently use a maximum metric
@@ -60,7 +35,8 @@
 #'   How should SINGLE points be proposed by using the surrogate model. Possible values are:
 #'   \dQuote{focussearch}: In several iteration steps the parameter space is
 #'   focused on an especial promising region according to infill criterion.
-#'   \dQuote{cmaes}: Use CMAES to optimize infill criterion. If all CMAES runs fail, a random point is generated
+#'   \dQuote{cmaes}: Use CMA-ES (function \code{\link[cmaesr]{cmaes}} from package \pkg{cmaesr}
+#'   to optimize infill criterion. If all CMA-ES runs fail, a random point is generated
 #'   instead and a warning informs about it.
 #'   \dQuote{ea}: Use an (mu+1) EA to optimize infill criterion.
 #'   \dQuote{nsga2}: NSGA2 for multi obj. optimizationen. Needed for mspot.
@@ -69,9 +45,11 @@
 #' @param opt.restarts [\code{integer(1)}]\cr
 #'   Number of independent restarts for optimizer of infill criterion.
 #'   If \code{opt == "cmaes"} the first start point for the optimizer is always the
-#'   currently best point in the design of already visited points.
-#'   Subsequent restarts are started at random points.
-#'   Default is 1.
+#'   currently best point in the design of already visited points. Subsequent starting
+#'   points are chosen according to the CMA-ES restart strategy introduced by Auger
+#'   and Hansen. For details see the corresponding paper in the references and the help
+#'   page of the underlying optimizer \code{\link[cmaesr]{cmaes}}.
+#'   Default is 3.
 #' @param opt.focussearch.maxit [\code{integer(1)}]\cr
 #'   For \code{opt = "focussearch"}:
 #'   Number of iteration to shrink local focus.
@@ -79,11 +57,11 @@
 #' @param opt.focussearch.points [\code{integer(1)}]\cr
 #'   For \code{opt = "focussearch"}:
 #'   Number of points in each iteration of the focus search optimizer.
-#'   Default is 10000.
+#'   Default is 1000.
 #' @param opt.cmaes.control [\code{list}]\cr
 #'   For \code{opt = "cmaes"}:
 #'   Control argument for cmaes optimizer.
-#'   Default is empty list.
+#'   For the default see the help page of the underlying optimizer \code{\link[cmaesr]{cmaes}}.
 #' @param opt.ea.maxit [\code{integer(1)}]\cr
 #'   For \code{opt = "ea"}:
 #'   Number of iterations / generations of EA.
@@ -113,24 +91,24 @@
 #'   Number of children generated in each generation.
 #'   Default is 1.
 #' @param opt.nsga2.popsize [\code{numeric{1}}]\cr
-#'   For \code{opt.multicrit.method = "nsga2"}.
+#'   For \code{opt.multiobj.method = "nsga2"}.
 #'   Population size of nsga2.
 #'   Default is 100.
 #' @param opt.nsga2.generations [\code{numeric{1}}]\cr
-#'   For \code{opt.multicrit.method = "nsga2"}.
+#'   For \code{opt.multiobj.method = "nsga2"}.
 #'   Number of populations for of nsga2.
 #'   Default is 50.
 #' @param opt.nsga2.cprob [\code{numeric{1}}]\cr
-#'   For \code{opt.multicrit.method = "nsga2"}.
+#'   For \code{opt.multiobj.method = "nsga2"}.
 #'   nsga2 param. Default is 0.7.
 #' @param opt.nsga2.cdist [\code{numeric{1}}]\cr
-#'   For \code{opt.multicrit.method = "nsga2"}.
+#'   For \code{opt.multiobj.method = "nsga2"}.
 #'   nsga2 param. Default is 5.
 #' @param opt.nsga2.mprob [\code{numeric{1}}]\cr
-#'   For \code{opt.multicrit.method = "nsga2"}.
+#'   For \code{opt.multiobj.method = "nsga2"}.
 #'   nsga2 param. Default is 0.2.
 #' @param opt.nsga2.mdist [\code{numeric{1}}]\cr
-#'   For \code{opt.multicrit.method = "nsga2"}.
+#'   For \code{opt.multiobj.method = "nsga2"}.
 #'   nsga2 param. Default is 10.
 #' @return [\code{\link{MBOControl}}].
 #' @family MBOControl
@@ -138,11 +116,6 @@
 setMBOControlInfill = function(control,
   crit = NULL,
   interleave.random.points = 0L,
-  crit.eqi.beta = 0.75,
-  crit.cb.lambda = 1,
-  crit.cb.pi = NULL,
-  crit.cb.inflate.se = NULL,
-  crit.aei.use.nugget = NULL,
   filter.proposed.points = NULL,
   filter.proposed.points.tol = NULL,
   opt = "focussearch", opt.restarts = NULL,
@@ -152,40 +125,18 @@ setMBOControlInfill = function(control,
   opt.ea.sbx.eta = NULL, opt.ea.sbx.p = NULL,
   opt.ea.pm.eta = NULL, opt.ea.pm.p = NULL,
   opt.ea.lambda = NULL,
-  #opt.multicrit.randomsearch.points = 50000L,
+  #opt.multiobj.randomsearch.points = 50000L,
   opt.nsga2.popsize = NULL, opt.nsga2.generations = NULL,
   opt.nsga2.cprob = NULL, opt.nsga2.cdist = NULL,
   opt.nsga2.mprob = NULL, opt.nsga2.mdist = NULL) {
 
   assertClass(control, "MBOControl")
 
-  control$infill.crit = coalesce(crit, control$infill.crit, "mean")
-  assertChoice(control$infill.crit, choices = getSupportedInfillCritFunctions())
+  control$infill.crit = coalesce(crit, control$infill.crit, makeMBOInfillCritCB())
+  assertClass(control$infill.crit, "MBOInfillCrit")
 
   assertCount(interleave.random.points)
   control$interleave.random.points = interleave.random.points
-
-  control$infill.crit.eqi.beta = coalesce(crit.eqi.beta, control$infill.crit.eqi.beta, 0.75)
-  assertNumber(control$infill.crit.eqi.beta, na.ok = FALSE, lower = 0.5, upper = 1)
-
-  # lambda value for cb - either given, or set via given pi, the other one must be NULL!
-  if (!is.null(crit.cb.lambda) && !is.null(crit.cb.pi))
-    stop("Please specify either 'crit.cb.lambda' or 'crit.cb.pi' for the cb crit, not both!")
-  if (is.null(crit.cb.pi))
-    assertNumeric(crit.cb.lambda, len = 1L, any.missing = FALSE, lower = 0)
-  if (is.null(crit.cb.lambda)) {
-    assertNumeric(crit.cb.pi, len = 1L, any.missing = FALSE, lower = 0, upper = 1)
-    # This is the formula from TW diss for setting lambda.
-    # Note, that alpha = -lambda, so we need the negative values
-    crit.cb.lambda = -qnorm(0.5 * crit.cb.pi^(1 / control$n.objectives))
-  }
-  control$infill.crit.cb.lambda = coalesce(crit.cb.lambda, control$infill.crit.cb.lambda, 1)
-
-  control$infill.crit.cb.inflate.se = coalesce(crit.cb.inflate.se, control$infill.crit.cb.inflate.se, FALSE)
-  assertFlag(control$infill.crit.cb.inflate.se)
-
-  control$infill.crit.aei.use.nugget = coalesce(crit.aei.use.nugget, control$infill.crit.aei.use.nugget, FALSE)
-  assertFlag(control$infill.crit.aei.use.nugget)
 
   control$filter.proposed.points = coalesce(filter.proposed.points, control$filter.proposed.points, FALSE)
   assertFlag(control$filter.proposed.points)
@@ -204,7 +155,7 @@ setMBOControlInfill = function(control,
   control$infill.opt.focussearch.maxit = asCount(control$infill.opt.focussearch.maxit)
   assertCount(control$infill.opt.focussearch.maxit, na.ok = FALSE, positive = TRUE)
 
-  control$infill.opt.focussearch.points = coalesce(opt.focussearch.points, control$infill.opt.focussearch.points, 10000L)
+  control$infill.opt.focussearch.points = coalesce(opt.focussearch.points, control$infill.opt.focussearch.points, 1000L)
 
   control$infill.opt.focussearch.points = asCount(control$infill.opt.focussearch.points)
   assertCount(control$infill.opt.focussearch.points, na.ok = FALSE, positive = TRUE)
@@ -237,9 +188,9 @@ setMBOControlInfill = function(control,
   assertCount(control$infill.opt.ea.lambda, na.ok = FALSE)
 
   # FIXME: Don't use for now
-  #control$infill.opt.multicrit.randomsearch.points = coalesce(opt.multicrit.randomsearch.points, control$infill.opt.multicrit.randomsearch.points)
-  #control$infill.opt.multicrit.randomsearch.points = asCount(control$infill.opt.multicrit.randomsearch.points)
-  #assertCount(control$infill.opt.multicrit.randomsearch.points, na.ok = FALSE, positive = TRUE)
+  #control$infill.opt.multiobj.randomsearch.points = coalesce(opt.multiobj.randomsearch.points, control$infill.opt.multiobj.randomsearch.points)
+  #control$infill.opt.multiobj.randomsearch.points = asCount(control$infill.opt.multiobj.randomsearch.points)
+  #assertCount(control$infill.opt.multiobj.randomsearch.points, na.ok = FALSE, positive = TRUE)
 
   control$infill.opt.nsga2.popsize = coalesce(opt.nsga2.popsize, control$infill.opt.nsga2.popsize, 100L)
   control$infill.opt.nsga2.popsize = asCount(control$infill.opt.nsga2.popsize)

@@ -12,6 +12,8 @@ renderExampleRunPlot1d = function(x, iter,
   point.size, line.size,
   trafo = NULL,
   colors = c("red", "blue", "green"), ...)  {
+  requirePackages("ggplot2")
+
   # extract relevant data from MBOExampleRun
   par.set = x$par.set
   names.x = x$names.x
@@ -27,23 +29,19 @@ renderExampleRunPlot1d = function(x, iter,
   se = (x$learner$predict.type == "se")
 
   propose.points = control$propose.points
-  name.crit = control$infill.crit
-  if(control$multifid) {
-    name.crit = "mfEI"
-    critfun = infillCritMultiFid.external
-  } else {
-    critfun = getInfillCritFunction(name.crit)
-  }
+  infill.crit.id = getMBOInfillCritId(control$infill.crit)
+  # if (control$multifid) {
+  #   infill.crit.id = "mfEI"
+  #   critfun = infillCritMultiFid.external
+  # } else {
+    critfun = control$infill.crit$fun
+  #}
 
   # we need to maximize expected improvement
-  if (name.crit %in% c("ei")) {
-    opt.direction = -1
-  } else {
-    opt.direction = 1
-  }
+  opt.direction = getMBOInfillCritMultiplier(control$infill.crit)
 
   # if no iterations provided take the total number of iterations in optimization process
-  assertInteger(iter, lower = 0, upper = length(models), len = 1L, any.missing = FALSE)
+  iter = asInt(iter, lower = 0, upper = length(models))
 
   if (!is.na(x$global.opt)) {
     global.opt = x$global.opt
@@ -58,11 +56,11 @@ renderExampleRunPlot1d = function(x, iter,
   # helper function for building up data frame of different points
   # i.e., initial design points, infilled points, proposed points for ggplot
   getType = function(x, iter) {
-    if(x == 0)
+    if (x == 0)
       return("init")
-    else if(x > 0 && x < iter)
+    else if (x > 0 && x < iter)
       return("seq")
-    else if(x == iter)
+    else if (x == iter)
       return("prop")
     else
       return ("future")
@@ -79,6 +77,10 @@ renderExampleRunPlot1d = function(x, iter,
 
   plots = list()
 
+  infill.mean = makeMBOInfillCritMeanResponse()$fun
+  infill.ei = makeMBOInfillCritEI()$fun
+  infill.se = makeMBOInfillCritStandardError()$fun
+
   model = models[[iter]]
   type = vcapply(getOptPathDOB(opt.path), getType, iter = iter)
   idx.past = type %in% c("init", "seq")
@@ -86,25 +88,25 @@ renderExampleRunPlot1d = function(x, iter,
 
   # compute model prediction for current iter
   if (!inherits(model, "FailureModel")) {
-    evals$yhat = ifelse(control$minimize, 1, -1) * infillCritMeanResponse(evals.x, list(model), control)
+    evals$yhat = ifelse(control$minimize, 1, -1) * infill.mean(evals.x, list(model), control)
 
     #FIXME: We might want to replace the following by a helper function so that we can reuse it in buildPointsData()
     if (propose.points == 1L) {
-      evals[[name.crit]] = opt.direction *
+      evals[[infill.crit.id]] = opt.direction *
         critfun(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past,, drop = FALSE])
     } else {
       objective = control$multipoint.moimbo.objective
       if (objective == "mean.dist") {
-        evals[[name.crit]] = opt.direction * infillCritMeanResponse(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past,, drop = FALSE])
+        evals[[infill.crit.id]] = opt.direction * infill.mean(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past,, drop = FALSE])
       } else if (objective == "ei.dist") {
-        evals[[name.crit]] = opt.direction * infillCritEI(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past,, drop = FALSE])
+        evals[[infill.crit.id]] = opt.direction * infill.ei(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past,, drop = FALSE])
       } else if (objective %in% c("mean.se", "mean.se.dist")) {
-        evals[[name.crit]] = opt.direction * infillCritMeanResponse(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past,, drop = FALSE])
+        evals[[infill.crit.id]] = opt.direction * infill.mean(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past,, drop = FALSE])
       }
     }
     # prepare drawing of standard error (confidence interval)
     if (se) {
-      evals$se = -infillCritStandardError(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past,, drop = FALSE])
+      evals$se = -infill.se(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past,, drop = FALSE])
     }
   }
 
@@ -127,7 +129,7 @@ renderExampleRunPlot1d = function(x, iter,
       ylab = paste0(name.y, " (", attr(trafo$y, "name"), "-transformed)")
     }
     #determine in wich pane (facet_grid) the points belong to
-    pane.names = c(ylab, name.crit)
+    pane.names = c(ylab, infill.crit.id)
     gg.fun$pane = factor(pane.names[ifelse(gg.fun$variable %in% c(name.y, "yhat"), 1, 2)], levels = pane.names)
 
 
@@ -145,30 +147,30 @@ renderExampleRunPlot1d = function(x, iter,
     }
 
     # finally build the ggplot object(s)
-    g = ggplot(data = gg.fun)
-    next.aes = aes_string(x = names.x, y = "value", color = "as.factor(.multifid.lvl)", group = "paste(variable,.multifid.lvl)", linetype = "variable")
+    g = ggplot2::ggplot(data = gg.fun)
+    next.aes = ggplot2::aes_string(x = names.x, y = "value", color = "as.factor(.multifid.lvl)", group = "paste(variable,.multifid.lvl)", linetype = "variable")
     if (!control$multifid) {
       next.aes = dropNamed(next.aes, c("group","colour"))
     }
-    g = g + geom_line(next.aes, size = line.size)
-    g = g + facet_grid(pane~., scales = "free")
-    if (se & densregion) {
+    g = g + ggplot2::geom_line(next.aes, size = line.size)
+    g = g + ggplot2::facet_grid(pane~., scales = "free")
+    if (se && densregion) {
       #FIXME: We might lose transformation information here tr()
-      next.aes = aes_string(x = names.x, ymin = "value-se", ymax = "value+se", group = ".multifid.lvl")
+      next.aes = ggplot2::aes_string(x = names.x, ymin = "value-se", ymax = "value+se", group = ".multifid.lvl")
       if (!control$multifid) {
         next.aes = dropNamed(next.aes, "group")
       }
-      g = g + geom_ribbon(data = gg.fun[gg.fun$variable == "yhat", ], next.aes, alpha = 0.2)
+      g = g + ggplot2::geom_ribbon(data = gg.fun[gg.fun$variable == "yhat", ], next.aes, alpha = 0.2)
     }
-    g = g + geom_point(data = gg.points, aes_string(x = names.x, y = name.y, colour = "type", shape = "type"), size = point.size)
+    g = g + ggplot2::geom_point(data = gg.points, ggplot2::aes_string(x = names.x, y = name.y, colour = "type", shape = "type"), size = point.size)
     if (control$multifid) {
       mf.colors = tail(RColorBrewer::brewer.pal(n = length(control$multifid.lvls)+1, name = "PuBu"), -1)
       names(mf.colors) = levels(gg.fun$.multifid.lvl)
     } else {
       mf.colors = NULL
     }
-    g = g + scale_colour_manual(values = c(mf.colors, colors), name = "type")
-    g = g + scale_linetype(name = "type")
+    g = g + ggplot2::scale_colour_manual(values = c(mf.colors, colors), name = "type")
+    g = g + ggplot2::scale_linetype(name = "type")
 
     if (noisy) {
       if (!anyMissing(x$y.true)) {
@@ -182,10 +184,10 @@ renderExampleRunPlot1d = function(x, iter,
       gap = calculateGap(convertOptPathToDf(opt.path, control)[idx.pastpresent,, drop = FALSE], global.opt, control)
     }
 
-    g = g + ggtitle(sprintf("Iter = %i, Gap = %.4e", iter, gap))
-    g = g + ylab(NULL)
-    g = g + theme(
-      plot.title = element_text(size = 11, face = "bold")
+    g = g + ggplot2::ggtitle(sprintf("Iter = %i, Gap = %.4e", iter, gap))
+    g = g + ggplot2::ylab(NULL)
+    g = g + ggplot2::theme(
+      plot.title = ggplot2::element_text(size = 11, face = "bold")
     )
 
     plots = list(
@@ -199,30 +201,30 @@ renderExampleRunPlot1d = function(x, iter,
 
     gg.points = buildPointsData(opt.path, iter)
 
-    if (se & densregion) {
-      gg.points$se = -infillCritStandardError(gg.points[, names.x, drop = FALSE],
+    if (se && densregion) {
+      gg.points$se = -infill.se(gg.points[, names.x, drop = FALSE],
         models, control, par.set, opt.path[idx.past, , drop = FALSE])
       gg.points$se.min = gg.points[[name.y]] - se.factor * gg.points$se
       gg.points$se.max = gg.points[[name.y]] + se.factor * gg.points$se
     }
 
-    pl.fun = ggplot(data = gg.points, aes_string(x = names.x, y = name.y, colour = "type", shape = "type"))
-    pl.fun = pl.fun + geom_point(size = point.size)
-    if (se & densregion) {
-      pl.fun = pl.fun + geom_errorbar(aes_string(ymin = "se.min", ymax = "se.max"), width = .1, alpha = .5)
+    pl.fun = ggplot2::ggplot(data = gg.points, ggplot2::aes_string(x = names.x, y = name.y, colour = "type", shape = "type"))
+    pl.fun = pl.fun + ggplot2::geom_point(size = point.size)
+    if (se && densregion) {
+      pl.fun = pl.fun + ggplot2::geom_errorbar(ggplot2::aes_string(ymin = "se.min", ymax = "se.max"), width = .1, alpha = .5)
     }
 
-    pl.fun = pl.fun + xlab(names.x)
-    pl.fun = pl.fun + scale_colour_discrete(name = "type")
-    pl.fun = pl.fun + ggtitle(
+    pl.fun = pl.fun + ggplot2::xlab(names.x)
+    pl.fun = pl.fun + ggplot2::scale_colour_discrete(name = "type")
+    pl.fun = pl.fun + ggplot2::ggtitle(
       sprintf("Iter = %i, Gap = %.4e", iter,
       calculateGap(convertOptPathToDf(opt.path, control)[idx.pastpresent,, drop = FALSE], global.opt, control))
     )
 
-    pl.fun = pl.fun + theme(
+    pl.fun = pl.fun + ggplot2::theme(
       legend.position = "top",
       legend.box = "horizontal",
-      plot.title = element_text(size = 11, face = "bold")
+      plot.title = ggplot2::element_text(size = 11, face = "bold")
     )
 
     plots = list(

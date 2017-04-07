@@ -11,47 +11,36 @@
 #   errors.models [character] : model errors, resulting in randomly proposed points.
 #                               length is one string PER PROPOSED POINT, not per element of <models>
 #                               NA if the model was Ok, or the (first) error message if some model crashed
-proposePoints.OptState = function(opt.state){
-
+proposePoints.OptState = function(opt.state) {
   opt.problem = getOptStateOptProblem(opt.state)
   control = getOptProblemControl(opt.problem)
 
-  m = control$n.objectives
-  res = NULL
-  if (m == 1L) {
-    if (control$multifid) {
-      res = proposePointsMultiFid(opt.state)
-    } else if (is.null(control$multipoint.method)) {
+  if (control$n.objectives == 1L) {
+    if (is.null(control$multipoint.method)) {
       res = proposePointsByInfillOptimization(opt.state)
     } else {
-      if (control$multipoint.method == "cb")
-        res = proposePointsParallelCB(opt.state)
-      else if (control$multipoint.method == "cl")
-        res = proposePointsConstantLiar(opt.state)
-      else if (control$multipoint.method == "moimbo") {
-        res = proposePointsMOIMBO(opt.state)
-      }
+      res = switch(control$multipoint.method,
+        "cb" = proposePointsParallelCB(opt.state),
+        "cl" = proposePointsConstantLiar(opt.state),
+        "moimbo" = proposePointsMOIMBO(opt.state)
+      )
     }
   } else {
-    if (control$multicrit.method == "parego") {
-      res = proposePointsParEGO(opt.state)
-    } else if (control$multicrit.method == "mspot") {
-      res = proposePointsMSPOT(opt.state)
-    } else if (control$multicrit.method == "dib") {
-      res = proposePointsDIB(opt.state)
-    }
+    res = switch(control$multiobj.method,
+      "parego" = proposePointsParEGO(opt.state),
+      "mspot"  = proposePointsMSPOT(opt.state),
+      "dib"    = proposePointsDIB(opt.state)
+    )
   }
 
-  if (control$interleave.random.points > 0L) {
-    add = proposePointsRandom(opt.state)
-    res = joinProposedPoints(list(res, add))
-  }
+  if (control$interleave.random.points > 0L)
+    res = joinProposedPoints(list(res, proposePointsRandom(opt.state)))
 
   if (!is.matrix(res$crit.vals))
     res$crit.vals = matrix(res$crit.vals, ncol = 1L)
 
-  if (control$filter.proposed.points) {
+  if (control$filter.proposed.points)
     res = filterProposedPoints(res, opt.state)
-  }
+
   res
 }

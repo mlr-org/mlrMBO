@@ -1,0 +1,42 @@
+# Model Based Optimization
+
+The generic sequential model-based optimization (SMBO) procedure starts with an *initial design* of evaluation points.
+
+Subsequently, the following steps are performed iteratively until a *termination criterion* is met:
+
+1. Fit a regression model to the design, based on the information gained from evaluating
+the black-box function at the points in the design
+2. A new point is proposed by the surrogate model and the *infill criterion*.
+3. Evaluate the black-box function at this point and add it to the design.
+
+## Types of MBO supported in **mlrMBO**
+
+In addition to SMBO **mlrMBO** also supports *mulit-critera optimization* and *parallel optimization*.
+
+## Surrogate Model
+
+The attribute `learner` of the `mbo()` function allows us to choose an appropriate surrogate model for the parameter optimization.
+Different learners can easily be created using the `makeLearner` function from the **mlr** package.
+A list of implemented learners can be seen using the `listlearners()` function or on the [mlr wiki](http://mlr-org.github.io/mlr-tutorial/release/html/integrated_learners/).
+
+The choice of the surrogate model depends on the parameter set of the objective function.
+While kriging models (gaussian processes) are advisable if all parameters are numeric, they cannot be used if the objective function contains categorical parameters. 
+If at least one parameter is categorical, random forest models might be a good choice as surrogate models. 
+The default kriging model is from the **DiceKriging** package and uses the `matern5_2`covariance kernel.
+
+## Infill Criterion
+
+One of the most important questions is to define how the next design points in the sequential loop are chosen. 
+With `setMBOControlInfill` a `MBOControl` object can be extended with infill criteria and infill optimizer options.
+
+### Argument _crit_
+
+5 different possibilities can be set via the `crit` argument in `setMBOControlInfill`:
+
+* `mean`: mean response of the surrogate model
+* `ei`: expected improvement of the surrogate model
+* `aei`: augmented expected improvement, which is especially useful for noisy functions
+* `eqi`: expected quantile improvement
+* `cb`: confidence bound, which is the additive combination of mean response and mean standard error estimation of the surrogate model (response - lambda * standard.error)
+
+The parameters of the different criteria are set via further arguments (e.g. `crit.cb.lambds` for the lambda parameter if `crit = cb`) 

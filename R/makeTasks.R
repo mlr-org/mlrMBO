@@ -7,10 +7,10 @@ makeTasks = function(opt.state) {
   if (control$n.objectives == 1L) {
     tasks = list(makeTaskSingleObj(opt.path, control))
   } else {
-    if (control$multicrit.method == "parego")
+    if (control$multiobj.method == "parego")
       tasks = makeTasksParEGO(opt.path, control, all.possible.weights = getOptProblemAllPossibleWeights(opt.problem))
     else
-      tasks = makeTasksMultiCrit(opt.path, control)
+      tasks = makeTasksMultiObj(opt.path, control)
   }
   return(tasks)
 }

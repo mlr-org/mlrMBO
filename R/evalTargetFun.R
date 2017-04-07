@@ -4,7 +4,7 @@
 # @param xs: list of list of points to evaluate
 # @param extras: list of extra stuff from getExtras, list of list of entries. same length as xs.
 # @return [\code{numeric} | \code{matrix}] Numeric vector of y-vals or matrix
-#   (for multi-criteria problems).
+#   (for multi-objective problems).
 #
 # Does this:
 # 1) trafo X points

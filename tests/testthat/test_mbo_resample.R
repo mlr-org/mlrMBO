@@ -1,7 +1,7 @@
 context("mbo resample")
 
 test_that("mbo works with resampling", {
-  learner = makeLearner("regr.randomForest")
+  learner = makeLearner("regr.randomForest", predict.type = "se", se.method = "sd")
   ctrl = makeMBOControl(resample.at = c(1, 3))
   ctrl = setMBOControlTermination(ctrl, iters = 5L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10L)

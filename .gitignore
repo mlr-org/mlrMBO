@@ -10,3 +10,9 @@ src/*.so
 plots
 tests/testthat/Rplots.pdf
 *.sublime-*
+vignettes/*_cache/
+vignettes/*_files/
+vignettes/*.html
+vignettes/*.R
+docs/articles/*_cache/
+.Rproj.user

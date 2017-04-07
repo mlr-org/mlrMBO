@@ -20,7 +20,7 @@ checkFailedModels = function(models, par.set, npoints, control) {
     prop.points = generateDesign(npoints, par.set, randomLHS)
     prop$prop.points = convertDataFrameCols(prop.points, ints.as.num = TRUE, logicals.as.factor = TRUE)
     # mspot is the special kid, that needs multiple crit vals
-    if (control$n.objectives > 1L && control$multicrit.method == "mspot")
+    if (control$n.objectives > 1L && control$multiobj.method == "mspot")
       prop$crit.vals = matrix(rep(NA_real_), nrow = npoints, ncol = control$n.objectives + 1)
     else
       prop$crit.vals = matrix(rep(NA_real_, npoints), ncol = 1L)
@@ -32,17 +32,20 @@ checkFailedModels = function(models, par.set, npoints, control) {
 
 
 # create control objects with random lamda values for parallel cb multi-point
-createRandomCBControls = function(control, crit, user.lambda = FALSE) {
-  lambdas = rexp(control$propose.points)
-  controls = lapply(lambdas, function(lambda) {
+# @arg crit: MBOInfillCrit
+# @arg crit.pars: list of length propose.points.
+#   Each list item contains a list with the arguments the infill crit should be initialized
+createSinglePointControls = function(control, crit, crit.pars = NULL) {
+  if (is.null(crit.pars)) {
+    crit.pars = replicate(control$propose.points, list())
+  }
+  assertList(crit.pars, len = control$propose.points)
+  lapply(crit.pars, function(crit.par) {
     ctrl = control;
-    ctrl$propose.points = 1L;
-    ctrl$infill.crit = crit
-    if (!user.lambda)
-      ctrl$infill.crit.cb.lambda = lambda
+    ctrl$propose.points = 1L
+    ctrl$infill.crit = do.call(crit, crit.par)
     return(ctrl)
   })
-  list(lambdas = lambdas, controls = controls)
 }
 
 # perform a deep copy of an opt.path object

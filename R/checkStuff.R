@@ -23,15 +23,15 @@ checkStuff = function(fun, par.set, design, learner, control) {
       getNumberOfObjectives(fun), control$n.objectives)
   }
 
-  # at the moment we do not support noisy multicriteria optimization
+  # at the moment we do not support noisy multi-objective optimization
   if (getNumberOfObjectives(fun) > 1L && isNoisy(fun)) {
     stopf("Optimization of noisy multi-objective functions not supported in the moment.")
   }
 
-  # final.method and final.evals have no effect on multicriteria optimization
+  # final.method and final.evals have no effect on multi-objective optimization
   if (getNumberOfObjectives(fun) > 1L &&
       (control$final.method != "best.true.y" || control$final.evals > 0L)) {
-    stop("Setting of final.method and final.evals for multicriteria optimization not supported at the moment.")
+    stop("Setting of final.method and final.evals for multi-objective optimization not supported at the moment.")
   }
 
   # general parameter and learner checks
@@ -51,15 +51,17 @@ checkStuff = function(fun, par.set, design, learner, control) {
     stopf("The 'par.set' has dependent parameters, which will lead to missing values in X-space during modeling, but learner '%s' does not support handling of missing values (property 'missing')!", learner$id)
 
   # general infill stuff (relavant for single objective and parEGO)
-  if (control$infill.crit %in% c("se", "ei", "aei", "cb", "dib") && learner$predict.type != "se") {
+  infill.crit = control$infill.crit
+  infill.crit.id = getMBOInfillCritId(infill.crit)
+  if (hasRequiresInfillCritStandardError(infill.crit) && learner$predict.type != "se") {
     stopf("For infill criterion '%s' predict.type of learner %s must be set to 'se'!%s",
-      control$infill.crit, learner$id,
+      infill.crit.id, learner$id,
       ifelse(hasLearnerProperties(learner, "se"), "",
         "\nBut this learner does not seem to support prediction of standard errors! You could use the mlr wrapper makeBaggingWrapper to bootstrap the standard error estimator."))
   }
 
   # If nugget estimation should be used, make sure learner is a km model with activated nugget estim
-  if (control$infill.crit.aei.use.nugget) {
+  if (infill.crit.id == "aei" && getMBOInfillCritParam(infill.crit, "aei.use.nugget")) {
     if (learner$short.name != "km" || !isTRUE(getHyperPars(learner)$nugget.estim)) {
       stop("You have to turn on nugget estimation in your Kriging Model, if you want to use nugget estimation in the aei!")
     }
@@ -90,7 +92,7 @@ checkStuff = function(fun, par.set, design, learner, control) {
   control$store.model.at = coalesce(control$store.model.at, control$iters + 1)
   control$resample.at = coalesce(control$resample.at, integer(0))
 
-  #  single objective
+  #  single-objective
   if (control$n.objectives == 1L) {
     if (control$propose.points == 1L) { # single point
     } else {                            # multi point
@@ -105,24 +107,24 @@ checkStuff = function(fun, par.set, design, learner, control) {
           ifelse(hasLearnerProperties(learner, "se"), "",
             "\nBut this learner does not support prediction of standard errors!"))
       }
-      if (control$multipoint.method == "cl" && control$infill.crit != "ei")
-        stopf("Multipoint proposal using constant liar needs the infill criterion 'ei' (expected improvement), but you used '%s'!", control$infill.crit)
-      if (control$multipoint.method == "cb" && control$infill.crit != "cb")
-        stopf("Multipoint proposal using parallel cb needs the infill criterion 'cb' (confidence bound), but you used '%s'!", control$infill.crit)
+      if (control$multipoint.method == "cl" && infill.crit.id != "ei")
+        stopf("Multipoint proposal using constant liar needs the infill criterion 'ei' (expected improvement), but you used '%s'!", infill.crit.id)
+      if (control$multipoint.method == "cb" && infill.crit.id != "cb")
+        stopf("Multipoint proposal using parallel cb needs the infill criterion 'cb' (confidence bound), but you used '%s'!", infill.crit.id)
     }
   }
 
-  # multicrit stuff
+  # multi-objective stuff
   if (control$n.objectives > 1L) {
-    if (control$multicrit.method == "dib") {
-      if (control$infill.crit != "dib")
+    if (control$multiobj.method == "dib") {
+      if (infill.crit.id != "dib")
         stopf("For multicrit 'dib' infil.crit must be set to 'dib'!")
     } else {
-      if (control$infill.crit == "dib")
+      if (infill.crit.id == "dib")
         stopf("For infill.crit 'dib', multicrit method 'dib' is needed!")
     }
-    if (control$multicrit.method == "mspot" && control$infill.opt != "nsga2")
-      stopf("For multicrit 'mspot' infil.opt must be set to 'nsga2'!")
+    if (control$multiobj.method == "mspot" && control$infill.opt != "nsga2")
+      stopf("For multi-objective 'mspot' infil.opt must be set to 'nsga2'!")
   }
 
   # multifidelity stuff

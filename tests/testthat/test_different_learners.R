@@ -32,7 +32,9 @@ test_that("mbo works with different learners", {
       if (bagging)
         lrn = makeBaggingWrapper(lrn, bw.iters = 5L)
       lrn = setPredictType(lrn, "se")
-      ctrl$infill.crit = "ei"
+    }
+    else {
+      ctrl$infill.crit = crit.mr
     }
     des = generateTestDesign(10L, getParamSet(fun))
     mbo(fun, des, learner = lrn, control = ctrl)
@@ -73,6 +75,6 @@ test_that("mbo works with different learners", {
   testit(f1, "regr.nnet", FALSE)
   testit(f2, "regr.nnet", TRUE)
   testit(f2, "regr.nnet", FALSE)
-  testit(f2, makeMboLearner(ctrl, f1), TRUE, FALSE)
-  testit(f2, makeMboLearner(ctrl, f2), TRUE, FALSE)
+  testit(f2, makeMBOLearner(ctrl, f1), TRUE, FALSE)
+  testit(f2, makeMBOLearner(ctrl, f2), TRUE, FALSE)
 })

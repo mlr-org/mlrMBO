@@ -31,7 +31,7 @@
 #' @return [\code{MBOExampleRun}]
 #' @export
 exampleRun = function(fun, design = NULL, learner = NULL, control,
-  points.per.dim = 50, noisy.evals = 10, show.info = NULL) {
+  points.per.dim = 50, noisy.evals = 10, show.info = getOption("mlrMBO.show.info", TRUE)) {
 
   assertClass(fun, "smoof_single_objective_function")
   par.set = getParamSet(fun)
@@ -45,9 +45,7 @@ exampleRun = function(fun, design = NULL, learner = NULL, control,
   points.per.dim = asCount(points.per.dim, positive = TRUE)
   noisy.evals = asCount(noisy.evals, positive = TRUE)
   fun.mean = smoof::getMeanFunction(fun)
-  if (is.null(show.info))
-    show.info = getOption("mlrMBO.show.info", TRUE)
-  assertLogical(show.info, len = 1L, any.missing = FALSE)
+  assertFlag(show.info)
 
   if (smoof::hasGlobalOptimum(fun))
     global.opt = smoof::getGlobalOptimum(fun)$value
@@ -55,7 +53,7 @@ exampleRun = function(fun, design = NULL, learner = NULL, control,
     global.opt = NA_real_
 
   if (control$n.objectives != 1L)
-    stopf("exampleRun can only be applied for single objective functions, but you have %i objectives! Use 'exampleRunMultiCrit'!",
+    stopf("exampleRun can only be applied for single-objective functions, but you have %i objectives! Use 'exampleRunMultiObj'!",
       control$n.objectives)
   if (n.params >= 3L)
     stopf("exampleRun can only be applied for functions with at most 2 dimensions, but you have %iD", n.params)
@@ -66,8 +64,8 @@ exampleRun = function(fun, design = NULL, learner = NULL, control,
 
   if (show.info) {
     messagef("Evaluating true objective function at %s points.",
-      if(!noisy) {
-        if(n.params == 1) {
+      if (!noisy) {
+        if (n.params == 1) {
           sprintf("%i", points.per.dim)
         } else {
           sprintf("%i x %i", points.per.dim, points.per.dim)
@@ -93,7 +91,7 @@ exampleRun = function(fun, design = NULL, learner = NULL, control,
     messagef("Performing MBO on function.")
     if (is.null(design))
       messagef("Initial design: %i. Sequential iterations: %i.", control$init.design.points, control$iters)
-    messagef("Learner: %s. Settings:\n%s", learner$id, mlr:::getHyperParsString(learner, show.missing.values = FALSE))
+    messagef("Learner: %s. Settings:\n%s", learner$id, getHyperParsString2(learner, show.missing.values = FALSE))
   }
 
   # run optimizer now
@@ -125,7 +123,7 @@ exampleRun = function(fun, design = NULL, learner = NULL, control,
     global.opt = global.opt,
     global.opt.estim = global.opt.estim,
     learner = learner,
-    control = control,
+    control = res$control,
     mbo.res = res
   )
 }
@@ -142,7 +140,7 @@ print.MBOExampleRun = function(x, ...) {
   catf("True points per dim.        : %s", collapse(x$points.per.dim))
   print(x$control)
   catf("Learner                     : %s", x$learner$id)
-  catf("Learner settings:\n%s", mlr:::getHyperParsString(x$learner, show.missing.values = FALSE))
+  catf("Learner settings:\n%s", getHyperParsString2(x$learner, show.missing.values = FALSE))
   mr = x$mbo.res
   op = mr$opt.path
   catf("Recommended parameters:")

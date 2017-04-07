@@ -1,0 +1,76 @@
+# Introduction 
+
+For multi-objective (multi-criteria) optimization , one need to understand the concept of Pareto front. For two candidate points, if point A could win point B by one criteria without deteriorating another, we say A weakly dominate B, which could define a partial order across all the feasible points. With this partial order, one could define an equivalent class and the best equivalent class we call it Pareto Front.
+
+There are several state of art algorithms to approximate the Pareto Front and mlrMBO has most of them. The following example shows how to use mlrMBO to solve a benchmark multi-criteria optimization problem, ie. the ZDT1 function. 
+
+
+# A working example 
+
+First we load necessary packages
+
+```{r}
+# load mlrMBO package containing the code for multi-criteria optimization
+suppressMessages(library(mlrMBO, quietly = TRUE, warn.conflicts = FALSE))
+# load package "mco" which contains our zdt1 example function, a multi-objective function 
+suppressMessages(library(mco,quietly = TRUE, warn.conflicts = FALSE))
+```
+
+In this simple example, we use the zdt1 function and to simplify, we use only two dimensional. We also get the parameter set to be optimized. 
+
+```{r}
+#################################################################################
+# define the multi-objective function to be optimized and get the parameter set 
+obj = makeZDT1Function(2L) # obj will be a S3 class that inherits from "function" and "smoof_function", the type of obj itself will be "smoof_multi_objective_function" "smoof_function" 
+par.set = getParamSet(obj)
+
+# have a look the lower and upper bound for the parameter to be tuned
+par.set$pars$x$lower 
+par.set$pars$x$upper
+
+```
+
+Like other model based optimization problem, one need to define an initial design grid that is distributed in the parameter space. Since we are going to use Kriging model(Gaussian Process) for MBMO(Model Based Multi Objective), a natural choice would be the Latin Hyper hypercube sampling.  
+
+```{r}
+#################################################################################
+# generate initial design points on the grid
+init.points.num = 5 * sum(ParamHelpers::getParamLengths(getParamSet(obj))) # 5 times the total dimension 
+design1 = generateDesign(n = init.points.num, par.set = getParamSet(obj), fun=maximinLHS, fun.args = list(k=2))
+```
+
+The next step is the most critical step, which is different from other Model Based Optimization technique. As other MBO methods, we have to first define a surrogate model, which we use Kriging Model ("regr.km") here. Then we define the control object, which could be parallelized. Here we parallely propose 4L points each time.
+```{r}
+##################################################################################
+# define a regression surrogate, here we select kriging model
+learner = makeLearner("regr.km", predict.type = "se", config = list(show.learner.output = FALSE), control = list(trace = FALSE))
+#
+ctrl = suppressMessages(makeMBOControl( n.objectives = 2L, propose.points = 4L))# set up multipoint batch proposal = 4point bachtes
+ctrl = setMBOControlTermination(ctrl, iters = 3L) # recommend much more iterations, but for display we only set 3 here.
+# set infill criteria, use dib-eps = eps-EGO and set up infill optimizer, dib=direct indicated based 
+ctrl = setMBOControlInfill(ctrl, crit = "dib", opt.focussearch.points = 1000L, opt.focussearch.maxit = 3L, opt.restarts = 3L)
+ctrl = setMBOControlMultiCrit(ctrl, method = "dib", dib.indicator = "eps")
+```
+
+
+
+
+After defining all necessary objects. We could run the optimizer and collect results.
+```{r}
+##################################################################################
+# run optimizer and collect results
+res = mbo(obj, design =design1, learner = learner, control = ctrl, show.info = FALSE)
+```
+
+
+Then we could have a look at  the results.
+```{r}
+# print all the names for the res object
+print(names(res))
+# print out the pareto front 
+print(res$pareto.front) 
+# print all evals along the optimization path
+print(as.data.frame(res$opt.path))
+```
+
+

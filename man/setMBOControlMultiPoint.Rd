@@ -21,10 +21,11 @@ Possible values are:
 exp(1)-distribution, so do not define \code{infill.opt.cb.lambda}.
 The optimizer for each proposal is configured in the same way as for the single point case,
 i. e., by specifying \code{infill.opt} and related stuff.
-\dQuote{moimbo}: Proposes points by multiobjective infill criteria via evolutionary multicriteria optimization.
+\dQuote{moimbo}: Proposes points by multi-objective infill criteria via evolutionary multi-objective optimization.
 The EA is a (mu+1) type of algorithm and runs for \code{moimbo.maxit} generations.
 The population size is set to \code{propose.points}.
 The selection criterion is \code{moimbo.selection}.
+If this method is selected the infill criterion in \code{setMBOInfillCrit} is ignored.
 \dQuote{cl}: Proposes points by constant liar strategy.
 Only meaningfull if \code{infill.crit == "cb"}
 In the first step the kriging model is fitted based on the real data and the best point is calculated
@@ -38,18 +39,18 @@ Default is \code{cb}.}
 Function used by constant liar method for lying. Default is \code{min}.}
 
 \item{moimbo.objective}{[\code{character(1)}]\cr
-Objectives which are optimized in multicrit approach.
+Objectives which are optimized in multi-objective approach.
 Possible values are: \dQuote{mean.dist}, \dQuote{ei.dist}, \dQuote{mean.se}, \dQuote{mean.se.dist}.
 Default is \dQuote{ei.dist}.}
 
 \item{moimbo.dist}{[\code{character(1)}]\cr
-Distance function used in multicrit EA.
+Distance function used in multi-objective EA.
 Possible values are: \dQuote{nearest.neigbor}, \dQuote{nearest.better}.
 Default is \dQuote{nearest.better}.}
 
 \item{moimbo.selection}{[\code{character(1)}]\cr
 Method used for selecting 1 element for removal from the population
-in each iteration of the multicriteria EA.
+in each iteration of the multi-objective EA.
 Possible values are:
 \dQuote{hypervolume}: Non-dominated sorting + hypervolume contribution.
 \dQuote{crowdingdist}: Non-dominated sorting + crowding distance based ranking.
@@ -58,7 +59,7 @@ Possible values are:
 Default is \code{hypervolume}.}
 
 \item{moimbo.maxit}{[\code{character(1)}]\cr
-Number of generations for multicriteria EA.
+Number of generations for multi-objective EA.
 Default is 100.}
 
 \item{moimbo.sbx.eta}{[\code{numeric(1)}]\cr
@@ -86,8 +87,6 @@ Extends an MBO control object with options for multipoint proposal.
 \seealso{
 Other MBOControl: \code{\link{makeMBOControl}},
   \code{\link{setMBOControlInfill}},
-  \code{\link{setMBOControlMultiCrit}},
-  \code{\link{setMBOControlMultiFid}},
+  \code{\link{setMBOControlMultiObj}},
   \code{\link{setMBOControlTermination}}
 }
-

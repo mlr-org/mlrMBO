@@ -26,7 +26,7 @@ test_that("impute y", {
     par.set = par.set
   )
 
-  learner = makeLearner("regr.randomForest")
+  learner = makeLearner("regr.randomForest", predict.type = "se", se.method = "sd")
 
   n.focus.points = 100L
   des1 = generateTestDesign(10L, getParamSet(f1))
@@ -46,7 +46,7 @@ test_that("impute y", {
   # Check for correct error messages
   na.inds = which(getOptPathY(res$opt.path) == 0)
   for (ind in 1:getOptPathLength(res$opt.path)) {
-    if(ind %in% na.inds)
+    if (ind %in% na.inds)
       expect_string(getOptPathErrorMessages(res$opt.path)[ind], fixed = "mlrMBO:")
     else
       expect_equal(NA_character_, getOptPathErrorMessages(res$opt.path)[ind])
@@ -65,7 +65,7 @@ test_that("impute y", {
   # Check for correct error messages
   na.inds = which(getOptPathY(res$opt.path) == 0)
   for (ind in 1:getOptPathLength(res$opt.path)) {
-    if(ind %in% na.inds)
+    if (ind %in% na.inds)
       expect_string(getOptPathErrorMessages(res$opt.path)[ind], fixed = "foo")
     else
       expect_equal(NA_character_, getOptPathErrorMessages(res$opt.path)[ind])
@@ -90,8 +90,8 @@ test_that("impute y parego", {
   ctrl = makeMBOControl(n.objectives = 2L,
     impute.y.fun = function(x, y, opt.path) c(100, 100))
   ctrl = setMBOControlTermination(ctrl, iters = 5L)
-  ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 10)
-  ctrl = setMBOControlMultiCrit(ctrl, method = "parego", parego.s = 100)
+  ctrl = setMBOControlInfill(ctrl, crit = crit.mr, opt.focussearch.points = 10)
+  ctrl = setMBOControlMultiObj(ctrl, method = "parego", parego.s = 100)
   or = mbo(f1, des1, learner = learner, control = ctrl)
   op = as.data.frame(or$opt.path)
   expect_data_frame(op, nrow = 10 + 5)

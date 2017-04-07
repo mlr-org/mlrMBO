@@ -19,15 +19,15 @@ proposePointsByInfillOptimization = function(opt.state, par.set = NULL, control 
   control = coalesce(control, getOptProblemControl(opt.problem))
   opt.path = coalesce(opt.path, getOptStateOptPath(opt.state))
   iter = getOptStateLoop(opt.state)
-  infill.crit.name = control$infill.crit
+  infill.crit.id = getMBOInfillCritId(control$infill.crit)
 
   #FIXME: maybe better do this in setMBOControlMultifid?
   if (control$multifid) {
-    infill.crit.name = "multifid"
+    infill.crit.id = "multifid"
   }
 
   n = control$propose.points
-  prop.type = rep(paste0("infill_", infill.crit.name), n)
+  prop.type = rep(paste0("infill_", infill.crit.id), n)
 
   # ensure we have a list
   ch = checkFailedModels(models, par.set, n, control = control)
@@ -37,15 +37,25 @@ proposePointsByInfillOptimization = function(opt.state, par.set = NULL, control 
   }
 
   design = convertOptPathToDf(opt.path, control)
-  infill.crit.fun = getInfillCritFunction(infill.crit.name)
+  infill.crit.fun = control$infill.crit$fun
   infill.opt.fun = getInfillOptFunction(control$infill.opt)
   # store time to propose single point
   secs = measureTime({
-    prop.points = infill.opt.fun(infill.crit.fun, models = models, control = control, par.set = par.set, opt.path = opt.path, design = design, iter = iter, ...)
+    prop.points = infill.opt.fun(infill.crit.fun, models = models,
+      control = control, par.set = par.set, opt.path = opt.path,
+      design = design, iter = iter, ...)
   })
-  prop.points.converted = convertDataFrameCols(prop.points, ints.as.num = TRUE, logicals.as.factor = TRUE)
-  crit.vals = infill.crit.fun(prop.points.converted, models, control, par.set, design, iter, attributes = TRUE, ...)
+  prop.points.converted = convertDataFrameCols(prop.points, ints.as.num = TRUE,
+    logicals.as.factor = TRUE)
+  crit.vals = infill.crit.fun(prop.points.converted, models, control, par.set,
+    design, iter, attributes = TRUE, ...)
   crit.components = attr(crit.vals, "crit.components")
   crit.vals = matrix(crit.vals, ncol = 1L)
-  return(list(prop.points = prop.points, propose.time = secs, prop.type = prop.type, crit.vals = crit.vals, crit.components = crit.components, errors.model = NA_character_))
+  return(list(
+    prop.points = prop.points,
+    propose.time = secs,
+    prop.type = prop.type,
+    crit.vals = crit.vals,
+    crit.components = crit.components,
+    errors.model = NA_character_))
 }
