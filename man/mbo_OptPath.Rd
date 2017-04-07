@@ -21,6 +21,7 @@ The extras are:
   }
 }
 \item{parego.weight}{Weight vector sampled for multipoint ParEGO}
+\item{constant.model}{If CMAES or Focussearch is used to optimize the infill crit, they can automatically determine if the model is constant in this iteration.}
 \item{...}{Depending on the chosen infill criterion there will be additional columns, e.g. \code{se} and \code{mean} for the Expected Improvement)}
 }
 

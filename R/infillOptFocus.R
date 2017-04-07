@@ -8,6 +8,7 @@
 # See infillOptCMAES.R for interface explanation.
 infillOptFocus = function(infill.crit, models, control, par.set, opt.path, design, iter, ...) {
   global.y = Inf
+  constant.model = FALSE
 
   # restart the whole crap some times
   for (restart.iter in seq_len(control$infill.opt.restarts)) {
@@ -26,10 +27,14 @@ infillOptFocus = function(infill.crit, models, control, par.set, opt.path, desig
 
 
       # get current best value
-      local.index = getMinIndex(y, ties.method = "random")
+      local.index = getMinIndex(y, ties.method = "random", na.rm = TRUE)
       local.y = y[local.index]
       local.x.df = newdesign[local.index, , drop = FALSE]
       local.x.list = dfRowToList(recodeTypes(local.x.df, ps.local), ps.local, 1)
+
+      # check if the model just gives constant values
+      if (local.iter == 1 && length(unique(y)) == 1) 
+        constant.model = TRUE
 
       # if we found a new best value, store it
       if (local.y < global.y) {
@@ -64,7 +69,7 @@ infillOptFocus = function(infill.crit, models, control, par.set, opt.path, desig
       })
     }
   }
-  recodeTypes(global.x.df, par.set)
+  setAttribute(recodeTypes(global.x.df, par.set), "constant.model", constant.model)
 }
 
 # as we operate on other types for the learner (ints are nums, logs are factors),

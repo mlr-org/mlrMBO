@@ -70,6 +70,8 @@ getExtras = function(n, prop, train.time, control) {
       w = setNames(as.list(weight.mat[i, ]), paste0("parego.weight.", seq_col(weight.mat)))
       ex = c(ex, w)
     }
+    ex$constant.model = isTRUE(attr(prop$prop.points, "constant.model"))
+    # if we use asyn MBO store node information and evaluation starte
     ex$train.time = if (i == 1) train.time else NA_real_
     ex$prop.type = prop$prop.type[i]
     ex$propose.time = NA_real_
