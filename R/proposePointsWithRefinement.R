@@ -72,6 +72,8 @@ proposePointsWithRefinement = function(opt.state) {
   })
   if (is.error(new.res)) {
     res$crit.components = cbind(res$crit.components, addRefinementNames(getMBOInfillCritDummyComponents(refinement.control$infill.crit)))
+  } else if (control$refinement$fallback && isTRUE(attr(new.res$prop.points, "constant.model"))) {
+    res = setAttribute(res$prop.points, "constant.model") = TRUE
   } else {
     # patch old object with new proposals
     res$prop.points = insert(res$prop.points, new.res$prop.points)
