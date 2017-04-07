@@ -77,7 +77,7 @@ test_that("mbo recognizes constant model prediction", {
   des = testd.fsphere.2d
   des$y = mean(apply(des, 1, testf.fsphere.2d))
   # make sure model does not break, and we get a failure model
-  learner = makeLearner("regr.km")
+  learner = makeLearner("regr.km", predict.type = "se")
   ctrl = makeMBOControl()
   ctrl = setMBOControlTermination(ctrl, iters = 4L)
   ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100L)
