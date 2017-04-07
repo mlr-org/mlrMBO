@@ -3,12 +3,15 @@
 #' @template arg_control
 #' @param refinement.control [\code{MBOControl}]
 #' @param refinement.learner [\code{\link[mlr]{Learner}}]
+#' @param fallback [\code{logical(1)}]\cr
+#'   In case the refinement.learner (i.e. Kriging) was not able to fit a good regression, should we fall back to the proposal of the original learner and infill.crit? Default is \code{FALSE}.
 #' @export
-setMBOControlRefinement = function(control, refinement.control, refinement.learner) {
+setMBOControlRefinement = function(control, refinement.control, refinement.learner, fallback = FALSE) {
   assertClass(control, "MBOControl")
   assertClass(refinement.control, "MBOControl")
   assertClass(refinement.learner, "Learner")
+  assertFlag(fallback)
 
-  control$refinement = list(control = refinement.control, learner = refinement.learner)
+  control$refinement = list(control = refinement.control, learner = refinement.learner, fallback = fallback)
   return(control)
 }
