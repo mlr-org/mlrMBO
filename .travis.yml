@@ -11,6 +11,7 @@ r_github_packages:
   - berndbischl/parallelMap
   - jakobbossek/smoof
   - mlr-org/mlr
+  - jimhester/covr
 
 env:
   global:
