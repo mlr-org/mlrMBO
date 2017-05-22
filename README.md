@@ -30,7 +30,7 @@ devtools::install_github("mlr-org/mlrMBO")
 
 # Introduction
 
-![MBO demo](https://raw.githubusercontent.com/mlr-org/mlrMBO/master/docs/articles/helpers/animation_files/figure-html/animation-.gif)
+![MBO demo](docs/articles/helpers/animation_files/figure-html/animation-.gif?raw=true)
 
 `mlrMBO` is a highly configurable R toolbox for model-based / Bayesian optimization of black-box functions.
 
