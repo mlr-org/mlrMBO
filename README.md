@@ -4,6 +4,7 @@
 [![Build Status](https://travis-ci.org/mlr-org/mlrMBO.png?branch=master)](https://travis-ci.org/mlr-org/mlrMBO)
 [![Build status](https://ci.appveyor.com/api/projects/status/gvr607kqcl78qjq9/branch/master?svg=true)](https://ci.appveyor.com/project/jakob-r/mlrmbo/branch/master)
 [![Coverage Status](https://img.shields.io/codecov/c/github/mlr-org/mlrMBO/master.svg)](https://codecov.io/github/mlr-org/mlrMBO?branch=master)
+![Monthly RStudio CRAN Downloads](https://cranlogs.r-pkg.org/badges/mlrMBO)
 
 Model-based optimization with [mlr](https://github.com/mlr-org/mlr/).
 
