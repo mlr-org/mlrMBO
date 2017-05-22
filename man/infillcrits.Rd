@@ -9,6 +9,7 @@
 \alias{makeMBOInfillCritAEI}
 \alias{makeMBOInfillCritEQI}
 \alias{makeMBOInfillCritDIB}
+\alias{makeMBOInfillCritAdaCB}
 \title{Infill criteria.}
 \usage{
 makeMBOInfillCritMeanResponse()
@@ -24,6 +25,8 @@ makeMBOInfillCritAEI(aei.use.nugget = FALSE, se.threshold = 1e-06)
 makeMBOInfillCritEQI(eqi.beta = 0.75, se.threshold = 1e-06)
 
 makeMBOInfillCritDIB(cb.lambda = 1, sms.eps = NULL)
+
+makeMBOInfillCritAdaCB(cb.lambda.start = NULL, cb.lambda.end = NULL)
 }
 \arguments{
 \item{se.threshold}{[\code{numeric(1)}]\cr

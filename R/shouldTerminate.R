@@ -6,7 +6,7 @@ shouldTerminate.OptState = function(opt.state) {
   control = getOptProblemControl(opt.problem)
   stop.conds = control$stop.conds
 
-  for (stop.cond in stop.conds) {
+  for (stop.cond in rev(stop.conds)) {
     stop.obj = stop.cond(opt.state)
     if (stop.obj$term) {
       # if user-defined termination condition is active, set the code by hand
@@ -18,5 +18,5 @@ shouldTerminate.OptState = function(opt.state) {
   }
 
   # "fallback"
-  return(list(term = FALSE, message = NA_character_, code = NA_character_))
+  return(list(term = FALSE, message = NA_character_, code = NA_character_, progress = stop.obj$progress))
 }

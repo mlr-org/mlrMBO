@@ -47,7 +47,7 @@ NULL
 #' @rdname infillcrits
 makeMBOInfillCritMeanResponse = function() {
   makeMBOInfillCrit(
-    fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
+    fun = function(points, models, control, par.set, design, iter, progress, attributes = FALSE) {
       ifelse(control$minimize, 1, -1) * predict(models[[1L]], newdata = points)$data$response
     },
     name = "Mean response",
@@ -60,7 +60,7 @@ makeMBOInfillCritMeanResponse = function() {
 #' @rdname infillcrits
 makeMBOInfillCritStandardError = function() {
   makeMBOInfillCrit(
-    fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
+    fun = function(points, models, control, par.set, design, iter, progress, attributes = FALSE) {
        -predict(models[[1L]], newdata = points)$data$se
     },
     name = "Standard error",
@@ -76,7 +76,7 @@ makeMBOInfillCritEI = function(se.threshold = 1e-6) {
   assertNumber(se.threshold, lower = 1e-20)
   force(se.threshold)
   makeMBOInfillCrit(
-    fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
+    fun = function(points, models, control, par.set, design, iter, progress, attributes = FALSE) {
       model = models[[1L]]
       maximize.mult = ifelse(control$minimize, 1, -1)
       y = maximize.mult * design[, control$y.name]
@@ -110,7 +110,7 @@ makeMBOInfillCritCB = function(cb.lambda = NULL) {
   assertNumber(cb.lambda, lower = 0, null.ok = TRUE)
   force(cb.lambda)
   makeMBOInfillCrit(
-    fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
+    fun = function(points, models, control, par.set, design, iter, progress, attributes = FALSE) {
       model = models[[1L]]
       maximize.mult = ifelse(control$minimize, 1, -1)
       p = predict(model, newdata = points)$data
@@ -152,7 +152,7 @@ makeMBOInfillCritAEI = function(aei.use.nugget = FALSE, se.threshold = 1e-6) {
   force(se.threshold)
 
   makeMBOInfillCrit(
-    fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
+    fun = function(points, models, control, par.set, design, iter, progress, attributes = FALSE) {
       model = models[[1L]]
       maximize.mult = ifelse(control$minimize, 1, -1)
       p = predict(model, newdata = points)$data
@@ -198,7 +198,7 @@ makeMBOInfillCritEQI = function(eqi.beta = 0.75, se.threshold = 1e-6) {
   force(se.threshold)
 
   makeMBOInfillCrit(
-    fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
+    fun = function(points, models, control, par.set, design, iter, progress, attributes = FALSE) {
       model = models[[1L]]
       maximize.mult = ifelse(control$minimize, 1, -1)
       # compute q.min
@@ -251,7 +251,7 @@ makeMBOInfillCritDIB = function(cb.lambda = 1, sms.eps = NULL) {
   if (!is.null(sms.eps))
     assertNumber(sms.eps, lower = 0, finite = TRUE)
   makeMBOInfillCrit(
-    fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
+    fun = function(points, models, control, par.set, design, iter, progress, attributes = FALSE) {
       # get ys and cb-value-matrix for new points, minimize version
       maximize.mult = ifelse(control$minimize, 1, -1)
       ys = as.matrix(design[, control$y.name]) %*% diag(maximize.mult)
@@ -289,6 +289,35 @@ makeMBOInfillCritDIB = function(cb.lambda = 1, sms.eps = NULL) {
     id = "dib",
     params = list(cb.lambda = cb.lambda, sms.eps = sms.eps),
     opt.direction = "maximize",
+    requires.se = TRUE
+  )
+}
+
+#' @export
+#' @rdname infillcrits
+makeMBOInfillCritAdaCB = function(cb.lambda.start = NULL, cb.lambda.end = NULL) {
+  assertNumber(cb.lambda.start, lower = 0, null.ok = TRUE)
+  assertNumber(cb.lambda.end, lower = 0, null.ok = TRUE)
+  force(cb.lambda.start)
+  force(cb.lambda.end)
+  makeMBOInfillCrit(
+    fun = function(points, models, control, par.set, design, iter, progress, attributes = FALSE) {
+      model = models[[1L]]
+      maximize.mult = ifelse(control$minimize, 1, -1)
+      p = predict(model, newdata = points)$data
+      xx <<- list(progress, cb.lambda.start, cb.lambda.end)
+      cb.lambda = (1-progress) * cb.lambda.start + progress * cb.lambda.end
+      res = maximize.mult * p$response - cb.lambda * p$se
+      if (attributes) {
+        res = setAttribute(res, "crit.components", data.frame(se = p$se, mean = p$response, lambda = cb.lambda))
+      }
+      return(res)
+    },
+    name = "Adaptive Confidence bound",
+    id = "adacb",
+    components = c("se", "mean", "lambda"),
+    params = list(cb.lambda.start = cb.lambda.start, cb.lambda.end = cb.lambda.end),
+    opt.direction = "objective",
     requires.se = TRUE
   )
 }

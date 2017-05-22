@@ -31,6 +31,9 @@
 #'     termination condition is met.}
 #'     \item{message [\code{character(1)}]}{Termination message. At the moment we just allow \code{term.custom}.}
 #'   }
+#' @param use.for.adaptive.infill [\character(1)|NULL]\cr
+#'   Which termination criterion should determine the progress that is used for adaptive infill criteria like [\code(\link{makeMBOInfillCritAdaCB})].
+#'   The default is \code{NULL} which means, that the first supplied argument is taken, following the order of the function signature.
 #' @return [\code{\link{MBOControl}}].
 #' @family MBOControl
 #' @export
@@ -56,9 +59,10 @@
 #' res = mbo(fn, control = ctrl)
 #' print(res)
 setMBOControlTermination = function(control,
-  iters = NULL, time.budget = NULL, exec.time.budget = NULL, target.fun.value = NULL, max.evals = NULL, more.termination.conds = list()) {
+  iters = NULL, time.budget = NULL, exec.time.budget = NULL, target.fun.value = NULL, max.evals = NULL, more.termination.conds = list(), use.for.adaptive.infill = NULL) {
 
   assertList(more.termination.conds)
+  assertCharacter(use.for.adaptive.infill, null.ok = TRUE)
 
   stop.conds = more.termination.conds
 
@@ -79,20 +83,25 @@ setMBOControlTermination = function(control,
     stop.conds = c(stop.conds, makeMBOTerminationMaxExecBudget(exec.time.budget))
   }
 
-  if (!is.null(max.evals)) {
-    stop.conds = c(stop.conds, makeMBOTerminationMaxEvals(max.evals))
-  }
-
   if (!is.null(target.fun.value)) {
     if (control$n.objectives > 1L)
       stop("Specifying target.fun.value is only useful in single-objective optimization.")
     stop.conds = c(stop.conds, makeMBOTerminationTargetFunValue(target.fun.value))
   }
 
+  if (!is.null(max.evals)) {
+    stop.conds = c(stop.conds, makeMBOTerminationMaxEvals(max.evals))
+  }
+
+
   # sanity check termination conditions
   lapply(stop.conds, function(stop.on) {
     assertFunction(stop.on, args = "opt.state")
   })
+
+  if (!is.null(use.for.adaptive.infill)) {
+    stop.conds = c(stop.conds[use.for.adaptive.infill], dropNamed(stop.conds, use.for.adaptive.infill))
+  }
 
   control$stop.conds = stop.conds
 
