@@ -4,7 +4,7 @@
 [![Build Status](https://travis-ci.org/mlr-org/mlrMBO.png?branch=master)](https://travis-ci.org/mlr-org/mlrMBO)
 [![Build status](https://ci.appveyor.com/api/projects/status/gvr607kqcl78qjq9/branch/master?svg=true)](https://ci.appveyor.com/project/jakob-r/mlrmbo/branch/master)
 [![Coverage Status](https://img.shields.io/codecov/c/github/mlr-org/mlrMBO/master.svg)](https://codecov.io/github/mlr-org/mlrMBO?branch=master)
-![Monthly RStudio CRAN Downloads](https://cranlogs.r-pkg.org/badges/mlrMBO)
+[![Monthly RStudio CRAN Downloads](https://cranlogs.r-pkg.org/badges/mlrMBO)](https://CRAN.R-project.org/package=mlrMBO)
 
 Model-based optimization with [mlr](https://github.com/mlr-org/mlr/).
 
@@ -30,7 +30,7 @@ devtools::install_github("mlr-org/mlrMBO")
 
 # Introduction
 
-![MBO demo](https://github.com/mlr-org/mlrMBO/blob/master/docs/articles/helpers/animation_files/figure-html/animation-.gif?raw=true)
+![MBO demo](https://github.com/mlr-org/mlrMBO/blob/master/docs/articles/helpers/animation-.gif?raw=true)
 
 `mlrMBO` is a highly configurable R toolbox for model-based / Bayesian optimization of black-box functions.
 

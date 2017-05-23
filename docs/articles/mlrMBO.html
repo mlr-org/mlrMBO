@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>mlrMBO: A brief introduction • mlrMBO</title>
-<!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 <!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script><script src="../pkgdown.js"></script><!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
@@ -228,27 +228,27 @@ control =<span class="st"> </span><span class="kw"><a href="../reference/setMBOC
 ## Optimization path
 ## 5 + 10 entries in total, displaying last 10 (or less):
 ##                x           y dob eol error.message exec.time            ei
-## 6   0.1424200502  0.08209419   1  NA          &lt;NA&gt;     0.000 -3.210524e-02
-## 7  -0.0587906203 -0.05684837   2  NA          &lt;NA&gt;     0.000 -2.895198e-02
-## 8  -0.0078713135 -0.09917464   3  NA          &lt;NA&gt;     0.001 -4.123167e-03
-## 9   0.0009136003 -0.09998887   4  NA          &lt;NA&gt;     0.000 -1.465564e-03
-## 10 -0.0023368623 -0.09992718   5  NA          &lt;NA&gt;     0.000 -1.602634e-04
-## 11  0.0042282952 -0.09976164   6  NA          &lt;NA&gt;     0.000 -7.825227e-05
-## 12 -0.0004786400 -0.09999694   7  NA          &lt;NA&gt;     0.000 -3.685421e-05
-## 13 -0.5011804833  0.25303607   8  NA          &lt;NA&gt;     0.000 -1.283909e-05
-## 14  0.0327825630 -0.08595717   9  NA          &lt;NA&gt;     0.000 -1.574032e-05
-## 15  0.0001293507 -0.09999978  10  NA          &lt;NA&gt;     0.000 -1.035293e-05
+## 6   0.1424200502  0.08209419   1  NA          &lt;NA&gt;         0 -3.210524e-02
+## 7  -0.0587906203 -0.05684837   2  NA          &lt;NA&gt;         0 -2.895198e-02
+## 8  -0.0078713135 -0.09917464   3  NA          &lt;NA&gt;         0 -4.123167e-03
+## 9   0.0009136003 -0.09998887   4  NA          &lt;NA&gt;         0 -1.465564e-03
+## 10 -0.0023368623 -0.09992718   5  NA          &lt;NA&gt;         0 -1.602634e-04
+## 11  0.0042282952 -0.09976164   6  NA          &lt;NA&gt;         0 -7.825227e-05
+## 12 -0.0004786400 -0.09999694   7  NA          &lt;NA&gt;         0 -3.685421e-05
+## 13 -0.5011804833  0.25303607   8  NA          &lt;NA&gt;         0 -1.283909e-05
+## 14  0.0327825630 -0.08595717   9  NA          &lt;NA&gt;         0 -1.574032e-05
+## 15  0.0001293507 -0.09999978  10  NA          &lt;NA&gt;         0 -1.035293e-05
 ##    error.model train.time prop.type propose.time           se        mean
-## 6         &lt;NA&gt;      0.178 infill_ei        0.130 6.915038e-02 -0.10692782
-## 7         &lt;NA&gt;      0.311 infill_ei        0.046 7.139280e-02 -0.09925429
-## 8         &lt;NA&gt;      0.015 infill_ei        0.051 1.174245e-02 -0.09714923
-## 9         &lt;NA&gt;      0.015 infill_ei        0.051 1.928035e-03 -0.10030872
-## 10        &lt;NA&gt;      0.017 infill_ei        0.061 4.537499e-04 -0.09994572
-## 11        &lt;NA&gt;      0.031 infill_ei        0.048 4.007375e-04 -0.09978520
-## 12        &lt;NA&gt;      0.016 infill_ei        0.054 8.330914e-05 -0.09999587
-## 13        &lt;NA&gt;      0.017 infill_ei        0.156 1.710874e-01  0.48800629
-## 14        &lt;NA&gt;      0.017 infill_ei        0.053 6.460668e-03 -0.08425606
-## 15        &lt;NA&gt;      0.018 infill_ei        0.068 2.210341e-05 -0.09999986</code></pre></div>
+## 6         &lt;NA&gt;      0.172 infill_ei        0.126 6.915038e-02 -0.10692782
+## 7         &lt;NA&gt;      0.300 infill_ei        0.043 7.139280e-02 -0.09925429
+## 8         &lt;NA&gt;      0.015 infill_ei        0.043 1.174245e-02 -0.09714923
+## 9         &lt;NA&gt;      0.017 infill_ei        0.044 1.928035e-03 -0.10030872
+## 10        &lt;NA&gt;      0.016 infill_ei        0.062 4.537499e-04 -0.09994572
+## 11        &lt;NA&gt;      0.026 infill_ei        0.047 4.007375e-04 -0.09978520
+## 12        &lt;NA&gt;      0.015 infill_ei        0.049 8.330914e-05 -0.09999587
+## 13        &lt;NA&gt;      0.016 infill_ei        0.154 1.710874e-01  0.48800629
+## 14        &lt;NA&gt;      0.015 infill_ei        0.048 6.460668e-03 -0.08425606
+## 15        &lt;NA&gt;      0.017 infill_ei        0.047 2.210341e-05 -0.09999986</code></pre></div>
 </div>
 </div>
 <div id="visualization" class="section level2">
