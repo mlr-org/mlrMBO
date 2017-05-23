@@ -72,25 +72,25 @@ setMBOControlTermination = function(control,
   }
 
   if (!is.null(iters)) {
-    stop.conds = c(stop.conds, makeMBOTerminationMaxIter(iters))
+    stop.conds = c(stop.conds, iters = makeMBOTerminationMaxIter(iters))
   }
 
   if (!is.null(time.budget)) {
-    stop.conds = c(stop.conds, makeMBOTerminationMaxBudget(time.budget))
+    stop.conds = c(stop.conds, time.budget = makeMBOTerminationMaxBudget(time.budget))
   }
 
   if (!is.null(exec.time.budget)) {
-    stop.conds = c(stop.conds, makeMBOTerminationMaxExecBudget(exec.time.budget))
+    stop.conds = c(stop.conds, exec.time.budget = makeMBOTerminationMaxExecBudget(exec.time.budget))
   }
 
   if (!is.null(target.fun.value)) {
     if (control$n.objectives > 1L)
       stop("Specifying target.fun.value is only useful in single-objective optimization.")
-    stop.conds = c(stop.conds, makeMBOTerminationTargetFunValue(target.fun.value))
+    stop.conds = c(stop.conds, target.fun.value = makeMBOTerminationTargetFunValue(target.fun.value))
   }
 
   if (!is.null(max.evals)) {
-    stop.conds = c(stop.conds, makeMBOTerminationMaxEvals(max.evals))
+    stop.conds = c(stop.conds, max.evals = makeMBOTerminationMaxEvals(max.evals))
   }
 
 
@@ -100,6 +100,7 @@ setMBOControlTermination = function(control,
   })
 
   if (!is.null(use.for.adaptive.infill)) {
+    assertChoice(use.for.adaptive.infill, names(stop.conds))
     stop.conds = c(stop.conds[use.for.adaptive.infill], dropNamed(stop.conds, use.for.adaptive.infill))
   }
 

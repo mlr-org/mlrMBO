@@ -50,6 +50,17 @@ Default is 0.75.}
 \item{sms.eps}{[\code{numeric(1)} | \code{NULL}]\cr
 Epsilon for epsilon-dominance for \code{dib.indicator = "sms"}.
 Default is \code{NULL}, in this case it is adaptively set.}
+
+\item{cb.lambda.start}{[\code{numeric(1)} | \code{NULL}]\cr
+The value of \code{cb.lambda} at the beginning of the optimization.
+The \code{makeMBOInfillCritAdaCB} crit takes the progress of the optimization determined by the termination criterion to linearly move from \code{cb.lambda.start} to \code{cb.lambda.end}.
+The initial desgin does not account for the progress of the optimization.
+Eexcept for \code{makeMBOTerminationMaxExecBudget}) if you dont pass a precalculated initial design.}
+
+\item{cb.lambda.end}{[\code{numeric(1)} | \code{NULL}]\cr}
+
+\item{cb.lambda.start}{[\code{numeric(1)} | \code{NULL}]\cr
+The value of \code{cb.lambda} at the end of the optimization.}
 }
 \description{
 \pkg{mlrMBO} contains most of the most popular infill criteria, e.g., expected

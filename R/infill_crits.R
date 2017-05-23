@@ -24,6 +24,14 @@
 #   Calculates the range of the mean and standard error and multiplies the standard error
 #   with the quotient of theses ranges.
 #   Default is \code{FALSE}.
+#' @param cb.lambda.start [\code{numeric(1)} | \code{NULL}]\cr
+#'  The value of \code{cb.lambda} at the beginning of the optimization.
+#'  The \code{makeMBOInfillCritAdaCB} crit takes the progress of the optimization determined by the termination criterion to linearly move from \code{cb.lambda.start} to \code{cb.lambda.end}.
+#'  The initial desgin does not account for the progress of the optimization.
+#'  Eexcept for \code{makeMBOTerminationMaxExecBudget}) if you dont pass a precalculated initial design.
+#' @param cb.lambda.start [\code{numeric(1)} | \code{NULL}]\cr
+#'  The value of \code{cb.lambda} at the end of the optimization.
+#' @param cb.lambda.end [\code{numeric(1)} | \code{NULL}]\cr
 #' @param aei.use.nugget [\code{logical(1)}]\cr
 #'   Should the nugget effect be used for the pure variance estimation for augmented
 #'   expected improvement?

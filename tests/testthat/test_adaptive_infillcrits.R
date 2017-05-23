@@ -2,11 +2,11 @@ context("adaptive infill crits")
 
 test_that("adaptive infill crits", {
   terminations = list(
-    list(iters = 5L),
-    list(time.budget = 2L),
+    list(iters = 3L),
+    list(time.budget = 1L),
     list(exec.time.budget = 0.003, iters = 50, use.for.adaptive.infill = "exec.time.budget"),
-    list(target.fun.value = 0.005, iters = 50, use.for.adaptive.infill = "target.fun.value"),
-    list(max.evals = 15L)
+    list(target.fun.value = 0.05, iters = 50, use.for.adaptive.infill = "target.fun.value"),
+    list(max.evals = 13L)
   )
   des = testd.fsphere.2d
   ctrl = makeMBOControl()

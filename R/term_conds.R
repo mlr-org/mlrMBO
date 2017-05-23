@@ -51,11 +51,12 @@ makeMBOTerminationMaxExecBudget = function(time.budget) {
   force(time.budget)
   function(opt.state) {
     opt.path = getOptStateOptPath(opt.state)
-    time.used = sum(getOptPathExecTimes(opt.path), na.rm = TRUE)
-
+    exec.times = getOptPathExecTimes(opt.path)
+    time.used = sum(exec.times, na.rm = TRUE)
+    time.used.optimization = sum(exec.times[getOptPathDOB(opt.path)!=0], na.rm = TRUE)
     term = (time.used > time.budget)
     message = if (!term) NA_character_ else sprintf("Execution time budged %f reached.", time.budget)
-    return(list(term = term, message = message, code = "term.exectime", progress = time.used / time.budget))
+    return(list(term = term, message = message, code = "term.exectime", progress = time.used.optimization / time.budget))
   }
 }
 
@@ -93,8 +94,9 @@ makeMBOTerminationMaxEvals = function(max.evals) {
   function(opt.state) {
     opt.path = getOptStateOptPath(opt.state)
     evals = getOptPathLength(opt.path)
+    init.evals = sum(getOptPathDOB(opt.path)==0)
     term = (evals >= max.evals)
     message = if (!term) NA_character_ else sprintf("Maximal number of function evaluations %i reached.", max.evals)
-    return(list(term = term, message = message, code = "term.feval", progress = evals / max.evals))
+    return(list(term = term, message = message, code = "term.feval", progress = (evals-init.evals) / (max.evals-init.evals)))
   }
 }
