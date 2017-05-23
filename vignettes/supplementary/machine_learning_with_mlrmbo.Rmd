@@ -32,7 +32,7 @@ Next, we configure `mlr` to suppress the learner output to improve output readab
 Additionally, we define a global variable giving the number of tuning iterations.
 Note that this number is set (very) low to reduce runtime.
 
-```{r}
+```{r setup}
 library(mlrMBO)
 library(mlr)
 
@@ -47,7 +47,7 @@ As an example, we tune the `cost` and the `gamma` parameter of a rbf-SVM on the 
 First, we define the parameter set.
 Note that the transformations added in the `trafo` argument mean, that we tune the parameters on a logarithmic scale.
 
-```{r}
+```{r paramset}
 par.set = makeParamSet(
   makeNumericParam("cost", -15, 15, trafo = function(x) 2^x),
   makeNumericParam("gamma", -15, 15, trafo = function(x) 2^x)
@@ -63,7 +63,7 @@ For classification the `mmce`(Mean misclassification rate) is the default.
 Like [in this example](mixed_space_optimization.html "Mixed Space Optimization"), we set `minimize = TRUE` and `has.simple.signature = FALSE`.
 Note that the `iris.task` is provided automatically when loading `mlr`.
 
-```{r}
+```{r objective_function}
 svm = makeSingleObjectiveFunction(name = "svm.tuning",
   fn = function(x) {
     lrn = makeLearner("classif.svm", par.vals = x)
@@ -97,7 +97,7 @@ Instead of defining an objective function where the learner's performance is eva
 We just create a `TuneControl` object, passing the `MBOControl` object to it.
 Then we call [`tuneParams`](/mlr-tutorial/devel/html/tune/index.html) to tune the hyperparameters.
 
-```{r}
+```{r mlr_tuning}
 ctrl = makeMBOControl()
 ctrl = setMBOControlTermination(ctrl, iters = iters)
 tune.ctrl = makeTuneControlMBO(mbo.control = ctrl)
@@ -119,7 +119,7 @@ To demonstrate this, we tune the `cost` and the `kernel` parameter of a SVM.
 When `kernel` takes the `radial` value, `gamma` needs to be specified.
 For a `polynomial` kernel, the `degree` needs to be specified.
 
-```{r}
+```{r hierarchical_paramset}
 par.set = makeParamSet(
   makeDiscreteParam("kernel", values = c("radial", "polynomial", "linear")),
   makeNumericParam("cost", -15, 15, trafo = function(x) 2^x),
@@ -130,7 +130,7 @@ par.set = makeParamSet(
 
 Now we can just repeat the setup from the previous example and tune the hyperparameters.
 
-```{r}
+```{r hierarchical_tuning}
 ctrl = makeMBOControl()
 ctrl = setMBOControlTermination(ctrl, iters = iters)
 tune.ctrl = makeTuneControlMBO(mbo.control = ctrl)
@@ -146,7 +146,7 @@ Please refer to the [parallelization section](parallelization.html) for details 
 In each iteration, we propose as many points as CPUs used for parallelization.
 As infill criterion we use Expected Improvement.
 
-```{r}
+```{r parallel_tuning}
 library(parallelMap)
 ncpus = 2L
 
@@ -170,7 +170,7 @@ The example pipeline is:
 
 First, we define the parameter space:
 
-```{r}
+```{r pipeline_tuning_parset}
 par.set = makeParamSet(
   makeDiscreteParam("fw.method", values = c("anova.test", "variance")),
   makeNumericParam("fw.perc", lower = 0.1, upper = 1),
@@ -190,11 +190,11 @@ Next, we create the control objects and a suitable learner, combining `makeFilte
 (Please refer to the [advanced tuning chapter of the mlr tutorial](/mlr-tutorial/devel/html/advanced_tune/index.html#tuning-across-whole-model-spaces-with-modelmultiplexer) for details.)
 Afterwards, we can run `tuneParams()` and check the results.
 
-```{r}
+```{r pipeline_tuning}
 ctrl = makeMBOControl()
 ctrl = setMBOControlTermination(ctrl, iters = iters)
 lrn = makeFilterWrapper(makeModelMultiplexer(list("classif.svm", "classif.naiveBayes")))
-tune.ctrl = makeTuneControlMBO(mbo.control = ctrl, iters = iters)
+tune.ctrl = makeTuneControlMBO(mbo.control = ctrl)
 
 res = tuneParams(lrn, iris.task, cv3, par.set = par.set, control = tune.ctrl, show.info = FALSE)
 print(res)
