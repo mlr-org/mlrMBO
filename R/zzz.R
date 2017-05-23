@@ -1,4 +1,3 @@
-#' @import backports
 #' @import BBmisc
 #' @import checkmate
 #' @import grDevices
@@ -13,6 +12,7 @@
 NULL
 
 .onLoad = function(libname, pkgname) { # nocov start
+  backports::import(pkgname)
   parallelRegisterLevels(package = "mlrMBO", levels = c("propose.points", "feval"))
 } # nocov end
 
