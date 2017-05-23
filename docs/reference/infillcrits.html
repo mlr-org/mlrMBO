@@ -11,8 +11,8 @@
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
@@ -25,12 +25,14 @@
 <script src="../pkgdown.js"></script>
 
 <!-- mathjax -->
-<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+<script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
+
+
   </head>
 
   <body>
@@ -73,6 +75,9 @@
     <li>
       <a href="../articles/supplementary/noisy_optimization.html">Noisy Optimization</a>
     </li>
+    <li>
+      <a href="../articles/supplementary/machine_learning_with_mlrmbo.html">Machine learning with mlrMBO</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -108,10 +113,10 @@
     
     <p><span class="pkg">mlrMBO</span> contains most of the most popular infill criteria, e.g., expected
 improvement, (lower) confidence bound etc. Moreover, custom infill criteria
-may be generated with the <code><a href='makeMBOInfillCrit.html'>makeMBOInfillCrit</a></code> function.</p>
+may be generated with the <code><a href='MBOInfillCrit.html'>makeMBOInfillCrit</a></code> function.</p>
     
 
-    <pre><span class='fu'>makeMBOInfillCritMeanResponse</span>()
+    <pre class="usage"><span class='fu'>makeMBOInfillCritMeanResponse</span>()
 
 <span class='fu'>makeMBOInfillCritStandardError</span>()
 
@@ -126,30 +131,41 @@ may be generated with the <code><a href='makeMBOInfillCrit.html'>makeMBOInfillCr
 <span class='fu'>makeMBOInfillCritDIB</span>(<span class='kw'>cb.lambda</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>sms.eps</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
-    <dl class="dl-horizontal">
-      <dt>se.threshold</dt>
-      <dd>[<code>numeric(1)</code>]
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>se.threshold</th>
+      <td><p>[<code>numeric(1)</code>]
 In order to avoid numerical problems the standard error estimation is assumed to
 be exactly zero, if it is below <code>se.threshold</code>.
-Default is 1e-6.</dd>
-      <dt>cb.lambda</dt>
-      <dd>[<code>numeric(1)</code> | <code>NULL</code>]
+Default is 1e-6.</p></td>
+    </tr>
+    <tr>
+      <th>cb.lambda</th>
+      <td><p>[<code>numeric(1)</code> | <code>NULL</code>]
 Lambda parameter for confidence bound infill criterion.
-Default is <code>NULL</code>, which means 1 in case of a fully numeric parameter set and 2 otherwise.</dd>
-      <dt>aei.use.nugget</dt>
-      <dd>[<code>logical(1)</code>]
+Default is <code>NULL</code>, which means 1 in case of a fully numeric parameter set and 2 otherwise.</p></td>
+    </tr>
+    <tr>
+      <th>aei.use.nugget</th>
+      <td><p>[<code>logical(1)</code>]
 Should the nugget effect be used for the pure variance estimation for augmented
 expected improvement?
-Default is <code>FALSE</code>.</dd>
-      <dt>eqi.beta</dt>
-      <dd>[<code>numeric(1)</code>]
+Default is <code>FALSE</code>.</p></td>
+    </tr>
+    <tr>
+      <th>eqi.beta</th>
+      <td><p>[<code>numeric(1)</code>]
 Beta parameter for expected quantile improvement criterion.
-Default is 0.75.</dd>
-      <dt>sms.eps</dt>
-      <dd>[<code>numeric(1)</code> | <code>NULL</code>]
-Epsilon for epsilon-dominance for <code>dib.indicator = &quot;sms&quot;</code>.
-Default is <code>NULL</code>, in this case it is adaptively set.</dd>
-    </dl>
+Default is 0.75.</p></td>
+    </tr>
+    <tr>
+      <th>sms.eps</th>
+      <td><p>[<code>numeric(1)</code> | <code>NULL</code>]
+Epsilon for epsilon-dominance for <code>dib.indicator = "sms"</code>.
+Default is <code>NULL</code>, in this case it is adaptively set.</p></td>
+    </tr>
+    </table>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
@@ -160,7 +176,7 @@ of improvement value and \(n\) is the number of objectives of the considered pro
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <p><code><a href='makeMBOInfillCrit.html'>makeMBOInfillCrit</a></code></p>
+    <p><code><a href='MBOInfillCrit.html'>makeMBOInfillCrit</a></code></p>
     
 
   </div>
