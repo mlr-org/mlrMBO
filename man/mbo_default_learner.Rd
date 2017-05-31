@@ -13,4 +13,3 @@ If the objective is deterministic, we set \code{nugget = 10^-4} for numerical st
 If a least one parameter is discrete, we use mlr learner \dQuote{regr.randomForest}, a random
 regression forest from package randomForest. The default se estimator of the forest in mlr is used.
 }
-

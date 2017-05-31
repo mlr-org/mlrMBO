@@ -33,4 +33,3 @@ Pretty directly calls \code{\link[eaf]{eafplot}}.
 We changed the defaults of \code{\link[eaf]{eafplot}} in the following way:
   The axis are labeled by \code{y.names}. But this can again be overwritten by the user.
 }
-

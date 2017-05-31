@@ -12,4 +12,3 @@ getSupportedInfillCritFunctions()
 \description{
 None.
 }
-

@@ -26,4 +26,3 @@ This wrapper will make sure that the learner sees numerical values as independen
 \seealso{
 Other wrapper: \code{\link{makeAsynWrapper}}
 }
-

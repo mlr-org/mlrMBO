@@ -40,4 +40,3 @@ Further arguments passed to fitness function.}
 \description{
 Returns the design with the evaluated function values
 }
-

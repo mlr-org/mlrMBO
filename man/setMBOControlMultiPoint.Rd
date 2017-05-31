@@ -112,4 +112,3 @@ Other MBOControl: \code{\link{makeMBOControl}},
   \code{\link{setMBOControlMultiFid}},
   \code{\link{setMBOControlTermination}}
 }
-

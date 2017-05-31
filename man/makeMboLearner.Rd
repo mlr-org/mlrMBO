@@ -32,4 +32,3 @@ For mixed parameter spaces the function returns a random forest regression learn
 The method to estimate the variance is the standard deviation of the bagged predictions.
 You can override this setting in \code{...}.
 }
-
