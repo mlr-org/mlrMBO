@@ -41,6 +41,9 @@ checkStuff = function(fun, par.set, design, learner, control) {
   if (!hasFiniteBoxConstraints(par.set))
     stop("mbo requires finite box constraints!")
 
+  if (hasOtherCostraints(fun))
+    stop("mbo can handle box-constraints only!")
+
   if (hasDiscrete(par.set) && !hasLearnerProperties(learner, "factors"))
     stop("Provided learner does not support factor parameters.")
 
