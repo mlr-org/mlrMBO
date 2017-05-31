@@ -62,6 +62,12 @@ checkStuff = function(fun, par.set, design, learner, control) {
       ifelse(hasLearnerProperties(learner, "se"), "",
         "\nBut this learner does not seem to support prediction of standard errors! You could use the mlr wrapper makeBaggingWrapper to bootstrap the standard error estimator."))
   }
+  
+  # set default lambda parameter for cb infill crit
+  if (infill.crit.id == "cb" && is.null(control$infill.crit$params$cb.lambda)) {
+    lambda = ifelse(isNumeric(par.set, include.int = TRUE), 1, 2)
+    control$infill.crit = makeMBOInfillCriterionCB(cb.lambda = lambda)
+  }
 
   # If nugget estimation should be used, make sure learner is a km model with activated nugget estim
   if (infill.crit.id == "aei" && getMBOInfillCritParam(infill.crit, "aei.use.nugget")) {
@@ -78,7 +84,7 @@ checkStuff = function(fun, par.set, design, learner, control) {
     control$infill.opt.ea.mu = coalesce(control$infill.opt.ea.mu, getNumberOfParameters(fun) * 10L)
     assertNumber(control$infill.opt.ea.mu, na.ok = FALSE, lower = 0)
   }
-
+  
   if (is.null(control$target.fun.value)) {
     # If we minimize, target is -Inf, for maximize it is Inf
     control$target.fun.value = if (control$minimize[1L]) -Inf else Inf
