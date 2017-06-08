@@ -4,11 +4,11 @@
 \alias{mboContinue}
 \title{Continues an mbo run from a save-file.}
 \usage{
-mboContinue(file)
+mboContinue(opt.state)
 }
 \arguments{
-\item{file}{[\code{character(1)}]\cr
-File path of saved MBO state.
+\item{opt.state}{[\code{OptState} | \code{character(1)}]\cr
+Either the \code{save.state} slot of an \code{MBOResult} object, or a file path of a saved MBO state.
 See \code{save.on.disk.at} argument of \code{\link{MBOControl}} object.}
 }
 \value{
