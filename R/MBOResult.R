@@ -49,7 +49,7 @@ makeMBOResult.OptState = function(opt.state) {
       resample.results = getOptResultResampleResults(opt.result),
       final.state = getOptStateState(opt.state),
       models = getOptResultStoredModels(opt.result),
-      save.state = opt.state,
+      final.opt.state = opt.state,
       control = control
     )
   } else {
@@ -60,7 +60,7 @@ makeMBOResult.OptState = function(opt.state) {
       opt.path = getOptStateOptPath(opt.state),
       final.state = getOptStateState(opt.state),
       models = getOptResultStoredModels(opt.result),
-      save.state = opt.state,
+      final.opt.state = opt.state,
       control = control
     )
   }
