@@ -36,10 +36,12 @@ test_that("termination criteria works", {
   expect_lt(or$y, target.fun.value)
 
   # maximal number of target function evaluations
+  f.wrapped = addCountingWrapper(f)
   ctrl = makeMBOControl()
   ctrl = setMBOControlTermination(ctrl, max.evals = max.evals)
-  or = mbo(f, design = design, learner = learner, control = ctrl)
+  or = mbo(f.wrapped, design = design, learner = learner, control = ctrl)
 
   expect_equal(or$final.state, "term.feval")
   expect_equal(getOptPathLength(or$opt.path), max.evals)
+  expect_equal(getOptPathLength(or$opt.path), getNumberOfEvaluations(f.wrapped))
 })
