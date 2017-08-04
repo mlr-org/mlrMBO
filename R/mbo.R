@@ -65,8 +65,8 @@ mbo = function(fun, design = NULL, learner = NULL, control,
     design = generateDesign(n.params * 4L, par.set, fun = lhs::maximinLHS)
   else
     assertDataFrame(design, min.rows = 1L, min.cols = 1L)
-  learner = checkLearner(learner, par.set, control, fun)
-  control = checkStuff(fun, par.set, design, learner, control)
+  learner = checkLearner(learner, control, fun)
+  control = checkStuff(fun, design, learner, control)
   control$infill.crit = initCrit(control$infill.crit, fun, design, learner, control)
 
   loadPackages(control)
