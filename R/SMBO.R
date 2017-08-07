@@ -12,17 +12,21 @@
 #'
 #' @return [\code{\link{OptState}}]
 #' @export
-initSMBO = function(par.set, design, learner = NULL, control, minimize = TRUE, noisy = FALSE, show.info = getOption("mlrMBO.show.info", TRUE)) {
+initSMBO = function(par.set, design, learner = NULL, control, minimize = rep(TRUE, control$n.objectives), noisy = FALSE, show.info = getOption("mlrMBO.show.info", TRUE)) {
 
   assertClass(par.set, "ParamSet")
   assertDataFrame(design)
-  assertSetEqual(names(design), c(getParamIds(par.set, repeated = TRUE, with.nr = TRUE) ,control$y.name))
+  assertSetEqual(names(design), c(getParamIds(par.set, repeated = TRUE, with.nr = TRUE), control$y.name))
   assertFlag(noisy)
-  assertFlag(minimize)
+  assertLogical(minimize, any.missing = FALSE)
 
   control$minimize = minimize
   control$noisy = noisy
-  dummy.fun = makeSingleObjectiveFunction(name = "dummy", fn = function(...) return(NA), par.set = par.set, minimize = control$minimize, noisy = control$noisy)
+  if (control$n.objectives == 1) {
+    dummy.fun = makeSingleObjectiveFunction(name = "dummy", fn = function(...) return(NA), par.set = par.set, minimize = control$minimize, noisy = control$noisy)
+  } else {
+    dummy.fun = makeMultiObjectiveFunction(name = "dummy", fn = function(...) NA, par.set = par.set, n.objectives = control$n.objectives, minimize = control$minimize, noisy = control$noisy)
+  }
 
   # assertions are done here:
   opt.problem = initOptProblem(fun = dummy.fun, design = design, learner = learner, control = control, show.info = show.info, more.args = list())
@@ -47,8 +51,9 @@ initSMBO = function(par.set, design, learner = NULL, control, minimize = TRUE, n
 #' @export
 updateSMBO = function(opt.state, x, y) {
   opt.problem = getOptStateOptProblem(opt.state)
+  opt.path = getOptStateOptPath(opt.state)
   control = getOptProblemControl(opt.problem)
-  infill.values = control$infill.crit$fun(points = x, models = getOptStateModels(opt.state)[[1]], control = control, attributes = TRUE)
+  infill.values = control$infill.crit$fun(points = x, models = getOptStateModels(opt.state)[[1]], control = control, design = convertOptPathToDf(opt.path, control), attributes = TRUE, iter = getOptStateLoop(opt.state))
 
   prop = list(
     prop.points = x,
@@ -62,7 +67,7 @@ updateSMBO = function(opt.state, x, y) {
   xs = dfRowsToList(prop$prop.points, getOptProblemParSet(getOptStateOptProblem(opt.state)))
 
   for (i in seq_along(xs)) {
-    addOptPathEl(op = getOptStateOptPath(opt.state), x = xs[[i]], y = y, extra = extras[[i]])
+    addOptPathEl(op = opt.path, x = xs[[i]], y = y, extra = extras[[i]])
   }
   finalizeMboLoop(opt.state)
   invisible(opt.state)

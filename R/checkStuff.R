@@ -82,7 +82,7 @@ checkStuff = function(fun, design, learner, control) {
 
   if (is.null(control$target.fun.value)) {
     # If we minimize, target is -Inf, for maximize it is Inf
-    control$target.fun.value = if (shouldBeMinimized(fun)) -Inf else Inf
+    control$target.fun.value = ifelse(shouldBeMinimized(fun), -Inf, Inf)
   } else {
     assertNumber(control$target.fun.value, na.ok = FALSE)
   }
