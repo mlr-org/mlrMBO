@@ -56,7 +56,7 @@ mbo = function(fun, design = NULL, learner = NULL, control,
   show.info = getOption("mlrMBO.show.info", TRUE), more.args = list()) {
 
   # assertions are done here:
-  opt.problem = initOptProblem(fun = fun, design = design, learner = learner, control = control, show.info = show.info)
+  opt.problem = initOptProblem(fun = fun, design = design, learner = learner, control = control, show.info = show.info, more.args = more.args)
 
   # we call the magic mboTemplate where everything happens
   final.opt.state = mboTemplate(opt.problem)
