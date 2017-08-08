@@ -21,5 +21,5 @@ Outcome of the optimization.}
 [\code{\link{OptState}}]
 }
 \description{
-After a function evaluation you want to update the \code{\link{OptStatermake}} to get new proposals.
+After a function evaluation you want to update the \code{\link{OptState}} to get new proposals.
 }
