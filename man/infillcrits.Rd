@@ -57,9 +57,7 @@ The \code{makeMBOInfillCritAdaCB} crit takes the progress of the optimization de
 The initial desgin does not account for the progress of the optimization.
 Eexcept for \code{makeMBOTerminationMaxExecBudget}) if you dont pass a precalculated initial design.}
 
-\item{cb.lambda.end}{[\code{numeric(1)} | \code{NULL}]\cr}
-
-\item{cb.lambda.start}{[\code{numeric(1)} | \code{NULL}]\cr
+\item{cb.lambda.end}{[\code{numeric(1)} | \code{NULL}]\cr
 The value of \code{cb.lambda} at the end of the optimization.}
 }
 \description{

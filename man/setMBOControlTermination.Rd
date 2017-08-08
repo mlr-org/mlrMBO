@@ -45,8 +45,8 @@ return a list with the following elements:
   \item{message [\code{character(1)}]}{Termination message. At the moment we just allow \code{term.custom}.}
 }}
 
-\item{use.for.adaptive.infill}{[\character(1)|NULL]\cr
-Which termination criterion should determine the progress that is used for adaptive infill criteria like [\code(\link{makeMBOInfillCritAdaCB})].
+\item{use.for.adaptive.infill}{[\code{character(1)}|NULL]\cr
+Which termination criterion should determine the progress that is used for adaptive infill criteria like [\code{\link{makeMBOInfillCritAdaCB}}].
 The default is \code{NULL} which means, that the first supplied argument is taken, following the order of the function signature.}
 }
 \value{

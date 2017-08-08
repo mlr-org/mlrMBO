@@ -31,8 +31,8 @@
 #'     termination condition is met.}
 #'     \item{message [\code{character(1)}]}{Termination message. At the moment we just allow \code{term.custom}.}
 #'   }
-#' @param use.for.adaptive.infill [\character(1)|NULL]\cr
-#'   Which termination criterion should determine the progress that is used for adaptive infill criteria like [\code(\link{makeMBOInfillCritAdaCB})].
+#' @param use.for.adaptive.infill [\code{character(1)}|NULL]\cr
+#'   Which termination criterion should determine the progress that is used for adaptive infill criteria like [\code{\link{makeMBOInfillCritAdaCB}}].
 #'   The default is \code{NULL} which means, that the first supplied argument is taken, following the order of the function signature.
 #' @return [\code{\link{MBOControl}}].
 #' @family MBOControl

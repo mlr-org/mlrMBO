@@ -29,9 +29,8 @@
 #'  The \code{makeMBOInfillCritAdaCB} crit takes the progress of the optimization determined by the termination criterion to linearly move from \code{cb.lambda.start} to \code{cb.lambda.end}.
 #'  The initial desgin does not account for the progress of the optimization.
 #'  Eexcept for \code{makeMBOTerminationMaxExecBudget}) if you dont pass a precalculated initial design.
-#' @param cb.lambda.start [\code{numeric(1)} | \code{NULL}]\cr
-#'  The value of \code{cb.lambda} at the end of the optimization.
 #' @param cb.lambda.end [\code{numeric(1)} | \code{NULL}]\cr
+#'  The value of \code{cb.lambda} at the end of the optimization.
 #' @param aei.use.nugget [\code{logical(1)}]\cr
 #'   Should the nugget effect be used for the pure variance estimation for augmented
 #'   expected improvement?
@@ -313,7 +312,6 @@ makeMBOInfillCritAdaCB = function(cb.lambda.start = NULL, cb.lambda.end = NULL) 
       model = models[[1L]]
       maximize.mult = ifelse(control$minimize, 1, -1)
       p = predict(model, newdata = points)$data
-      xx <<- list(progress, cb.lambda.start, cb.lambda.end)
       cb.lambda = (1-progress) * cb.lambda.start + progress * cb.lambda.end
       res = maximize.mult * p$response - cb.lambda * p$se
       if (attributes) {
