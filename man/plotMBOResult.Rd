@@ -27,7 +27,7 @@ Default is \code{interactive()}.}
 function in package \code{ParamHelpers}.}
 }
 \description{
-Plots any MBO result objects. Plots for X-Space, Y-Space and any coloumn in
+Plots any MBO result objects. Plots for X-Space, Y-Space and any column in
 the optimization path are available. This function uses
 \code{\link[ParamHelpers]{plotOptPath}} from package \code{ParamHelpers}.
 }

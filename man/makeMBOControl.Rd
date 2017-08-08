@@ -55,7 +55,7 @@ Default is \code{NULL} which means to stop if the objective function did not pro
 result.}
 
 \item{trafo.y.fun}{[\code{MBOTrafoFunction}]\cr
-Sometimes it is favourable to transform the target function values before modelling. Provide a
+Sometimes it is favorable to transform the target function values before modeling. Provide a
 MBO transformation function to do so.}
 
 \item{suppress.eval.errors}{[\code{logical(1)}]\cr

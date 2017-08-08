@@ -39,7 +39,7 @@
 #'   to optimize infill criterion. If all CMA-ES runs fail, a random point is generated
 #'   instead and a warning informs about it.
 #'   \dQuote{ea}: Use an (mu+1) EA to optimize infill criterion.
-#'   \dQuote{nsga2}: NSGA2 for multi obj. optimizationen. Needed for mspot.
+#'   \dQuote{nsga2}: NSGA2 for multi obj. optimizations. Needed for mspot.
 #'   Default is \dQuote{focussearch}.
 #'   Alternatively, you may pass a function name as string.
 #' @param opt.restarts [\code{integer(1)}]\cr
