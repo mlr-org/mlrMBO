@@ -9,7 +9,7 @@
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 <!-- pkgdown --><link href="../../pkgdown.css" rel="stylesheet">
-<script src="../../jquery.sticky-kit.min.js"></script><script src="../../pkgdown.js"></script><!-- mathjax --><script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
+<script src="../../jquery.sticky-kit.min.js"></script><script src="../../pkgdown.js"></script><!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
@@ -53,6 +53,9 @@
     <li>
       <a href="../../articles/supplementary/noisy_optimization.html">Noisy Optimization</a>
     </li>
+    <li>
+      <a href="../../articles/supplementary/machine_learning_with_mlrmbo.html">Machine learning with mlrMBO</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -91,24 +94,23 @@
 <div class="contents">
 <div id="purpose" class="section level2">
 <h2 class="hasAnchor">
-<html><body><a href="#purpose" class="anchor"> </a></body></html>Purpose</h2>
+<a href="#purpose" class="anchor"></a>Purpose</h2>
 <p>This Vignette will give you a short introduction how <strong>mlrMBO</strong> can be configured to make use of multicore or other parallel infrastructures by evaluating multiple points (each on one CPU) per MBO iteration, to improve the speed of the model-based optimization.</p>
 </div>
 <div id="prerequisites" class="section level2">
 <h2 class="hasAnchor">
-<html><body><a href="#prerequisites" class="anchor"> </a></body></html>Prerequisites</h2>
+<a href="#prerequisites" class="anchor"></a>Prerequisites</h2>
 <p>The parallelization of multiple evaluations of the target function is realized internally with the R package <code>parallelMap</code>. This package offers simple parallelization with various different back-ends. For details on the usage see the <a href="https://github.com/berndbischl/parallelMap#readme">parallelMap github page</a>, which offers a nice tutorial and describes all possible back-ends thoroughly. In this example we use a <em>multicore</em> back-end, which is also the most common use-case. Note, that the multicore parallelization does <em>not</em> work on windows machines.</p>
 </div>
 <div id="parallelization-through-multi-point-proposals" class="section level2">
 <h2 class="hasAnchor">
-<html><body><a href="#parallelization-through-multi-point-proposals" class="anchor"> </a></body></html>Parallelization through multi point proposals</h2>
+<a href="#parallelization-through-multi-point-proposals" class="anchor"></a>Parallelization through multi point proposals</h2>
 <p>Like always let’s start with the function we want to optimize:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(mlrMBO)
 <span class="kw">library</span>(ggplot2)
 obj.fun =<span class="st"> </span><span class="kw">makeBraninFunction</span>()
 <span class="co"># visualize the function</span>
-<span class="kw">autoplot</span>(obj.fun, <span class="dt">render.levels =</span> <span class="ot">TRUE</span>, <span class="dt">show.optimum =</span> <span class="ot">TRUE</span>)
-## Warning: Ignoring unknown aesthetics: fill</code></pre></div>
+<span class="kw">autoplot</span>(obj.fun, <span class="dt">render.levels =</span> <span class="ot">TRUE</span>, <span class="dt">show.optimum =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <p><img src="parallelization_files/figure-html/objective_function-1.png" width="672"></p>
 <p>In our example we will have <em>two CPUs</em> that we want to utilize for the evaluation of the black-box function.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(mlrMBO)
@@ -117,12 +119,12 @@ ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/makeMBO
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/setMBOControlInfill.html">setMBOControlInfill</a></span>(ctrl, <span class="dt">crit =</span> crit.ei)</code></pre></div>
 <div id="multi-point-proposal-methods" class="section level3">
 <h3 class="hasAnchor">
-<html><body><a href="#multi-point-proposal-methods" class="anchor"> </a></body></html>Multi point proposal methods</h3>
+<a href="#multi-point-proposal-methods" class="anchor"></a>Multi point proposal methods</h3>
 <p>The available methods to propose multiple points are as follows: * <code>cl</code>: Proposes points by the constant liar strategy. The constant liar is usually a good choice for the <strong>augmented expected - </strong> and the <strong>expected improvement</strong>. The first point is obtained by the ordinary infill optimization, like it is used to propose one point. To obtain the 2nd point we assume that the evaluation at the first point is finished. As we don’t really have an outcome yet, we set the outcome to a lie. Usually the minimum of all observed outcomes is chosen as the lie. This <em>lie</em> is used to update the model in order to propose subsequent point. The procedure is repeated until <code>propose.points</code> proposals are generated. * <code>cb</code>: As learnt from Vignette for <em>Mixed Space Optimization</em> we prefer the <strong>lower/upper confidence bound</strong> (CB) when we use a <em>random forest</em> as a regression method for the surrogate. For the <em>CB</em> the parameter <span class="math inline">\(\lambda\)</span> is not fixed. This characteristic can be used to obtain multiple proposals by optimizing the <em>CB</em> for different lambda values, which are drawn from an exp(1)-distribution. Each lambda value leads to a slightly different infill criteria function with different optima resulting in different proposals. * <code>multicrit</code>: Use a evolutionary multicriteria optimization. This is a (mu+1) type evolutionary algorithm and runs for <code>multicrit.maxit</code> generations. The population size is set to <code>propose.points</code>. For a detailed description of the algorithm check the paper <a href="http://link.springer.com/chapter/10.1007/978-3-319-09584-4_17">MOI-MBO: Multiobjective Infill for Parallel Model-Based Optimization</a>.</p>
 </div>
 <div id="constant-liar" class="section level3">
 <h3 class="hasAnchor">
-<html><body><a href="#constant-liar" class="anchor"> </a></body></html>Constant Liar</h3>
+<a href="#constant-liar" class="anchor"></a>Constant Liar</h3>
 <p>After having said that, and as we already decided for the <strong>expected improvement</strong> because we want to use Kriging for the surrogate as we have a purely numeric parameter space we decide for the <strong>constant liar</strong> as a multi point proposal method. So we have to define:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/setMBOControlMultiPoint.html">setMBOControlMultiPoint</a></span>(ctrl, <span class="dt">method =</span> <span class="st">"cl"</span>, <span class="dt">cl.lie =</span> min)</code></pre></div>
 <p>For parallelization the termination criterion offers two useful options. We can limit the number of total evaluations of the objective function as well as we can limit the number of MBO iterations. Assuming our initial design is of size 8 and we allow 6 iterations we will get 20 evaluations of the objective function as we decided to have two evaluations per iteration by setting <code>propose.points = 2</code>. so for our example the following two settings will lead to the same result:</p>
@@ -136,20 +138,26 @@ ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/setMBOC
 <span class="kw">library</span>(parallelMap)
 <span class="kw">parallelStartMulticore</span>(<span class="dt">cpus =</span> <span class="dv">2</span>, <span class="dt">show.info =</span> <span class="ot">TRUE</span>)
 res =<span class="st"> </span><span class="kw"><a href="../../reference/mbo.html">mbo</a></span>(obj.fun, <span class="dt">control =</span> ctrl, <span class="dt">show.info =</span> <span class="ot">FALSE</span>)
+## Loading required package: rgenoud
+## ##  rgenoud (Version 5.7-12.4, Build Date: 2015-07-19)
+## ##  See http://sekhon.berkeley.edu/rgenoud for additional documentation.
+## ##  Please cite software as:
+## ##   Walter Mebane, Jr. and Jasjeet S. Sekhon. 2011.
+## ##   ``Genetic Optimization Using Derivatives: The rgenoud package for R.''
+## ##   Journal of Statistical Software, 42(11): 1-26. 
+## ##
 <span class="kw">parallelStop</span>()</code></pre></div>
 <p>As you can see from the console output of <code>parallelMap</code> the initial design will also be evaluated in parallel.</p>
 <p>In the end a small plot that uses the <code>opt.path</code> which is stored in the result of the MBO Optimization process to visualize which points were proposed in which iteration. The zeros are the points from the initial design, 1 for the first iteration and so on.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">autoplot</span>(obj.fun, <span class="dt">render.levels =</span> <span class="ot">TRUE</span>, <span class="dt">show.optimum =</span> <span class="ot">TRUE</span>) +<span class="st"> </span><span class="kw">geom_text</span>(<span class="dt">data =</span> <span class="kw">as.data.frame</span>(res$opt.path), <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">label =</span> dob), <span class="dt">color =</span> <span class="st">"white"</span>)
-## Warning: Ignoring unknown aesthetics: fill</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">autoplot</span>(obj.fun, <span class="dt">render.levels =</span> <span class="ot">TRUE</span>, <span class="dt">show.optimum =</span> <span class="ot">TRUE</span>) +<span class="st"> </span><span class="kw">geom_text</span>(<span class="dt">data =</span> <span class="kw">as.data.frame</span>(res$opt.path), <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">label =</span> dob), <span class="dt">color =</span> <span class="st">"white"</span>)</code></pre></div>
 <p><img src="parallelization_files/figure-html/cl_res-1.png" width="672"></p>
 </div>
 <div id="confidence-bound" class="section level3">
 <h3 class="hasAnchor">
-<html><body><a href="#confidence-bound" class="anchor"> </a></body></html>Confidence Bound</h3>
+<a href="#confidence-bound" class="anchor"></a>Confidence Bound</h3>
 <p>If we decided to use the <strong>confidence bound</strong> as an infill criterion, because e.g. the parameter space contains discrete values and we decided for the random forest as an infill criterion, then we suggest to use the <strong>random lambda</strong> method to generate multiple proposals per iteration. Note that this time we rely on MBO to automatically use the random forest for the surrogate as the objective function contains the discrete variable <code>x1</code>. Also we now specify the number of initial design points manually according to the number of levels of the discrete variable.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">obj.fun =<span class="st"> </span><span class="kw">makeSwiler2014Function</span>()
-<span class="kw">autoplot</span>(obj.fun, <span class="dt">render.levels =</span> <span class="ot">TRUE</span>)
-## Warning: Ignoring unknown aesthetics: fill</code></pre></div>
+<span class="kw">autoplot</span>(obj.fun, <span class="dt">render.levels =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <p><img src="parallelization_files/figure-html/obj.fun.dis-1.png" width="672"></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span>(<span class="dt">propose.points =</span> <span class="dv">2</span>)
 ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/setMBOControlInfill.html">setMBOControlInfill</a></span>(ctrl, <span class="dt">crit =</span> crit.cb)
@@ -160,18 +168,17 @@ design =<span class="st"> </span><span class="kw">generateDesign</span>(<span cl
 <span class="kw">parallelStartMulticore</span>(<span class="dt">cpus =</span> <span class="dv">2</span>, <span class="dt">show.info =</span> <span class="ot">FALSE</span>)
 res =<span class="st"> </span><span class="kw"><a href="../../reference/mbo.html">mbo</a></span>(obj.fun, <span class="dt">control =</span> ctrl, <span class="dt">design =</span> design, <span class="dt">show.info =</span> <span class="ot">FALSE</span>)
 <span class="kw">parallelStop</span>()
-<span class="kw">autoplot</span>(obj.fun, <span class="dt">render.levels =</span> <span class="ot">TRUE</span>) +<span class="st"> </span><span class="kw">geom_text</span>(<span class="dt">data =</span> <span class="kw">as.data.frame</span>(res$opt.path), <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">label =</span> dob), <span class="dt">color =</span> <span class="st">"white"</span>)
-## Warning: Ignoring unknown aesthetics: fill</code></pre></div>
+<span class="kw">autoplot</span>(obj.fun, <span class="dt">render.levels =</span> <span class="ot">TRUE</span>) +<span class="st"> </span><span class="kw">geom_text</span>(<span class="dt">data =</span> <span class="kw">as.data.frame</span>(res$opt.path), <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">label =</span> dob), <span class="dt">color =</span> <span class="st">"white"</span>)</code></pre></div>
 <p><img src="parallelization_files/figure-html/obj.fun.dis-2.png" width="672"></p>
 </div>
 </div>
 <div id="parallelization-of-the-objective-function" class="section level2">
 <h2 class="hasAnchor">
-<html><body><a href="#parallelization-of-the-objective-function" class="anchor"> </a></body></html>Parallelization of the objective function</h2>
+<a href="#parallelization-of-the-objective-function" class="anchor"></a>Parallelization of the objective function</h2>
 <p>In some cases it is actually possible to parallelize the objective function. This can also be done with the help of <code>parallelMap</code>.</p>
 <div id="custom-objective-function" class="section level3">
 <h3 class="hasAnchor">
-<html><body><a href="#custom-objective-function" class="anchor"> </a></body></html>Custom objective function</h3>
+<a href="#custom-objective-function" class="anchor"></a>Custom objective function</h3>
 <p>One simple case to make use of parallelization is when we have a noisy function and we just evaluate it repeatedly to reduce the noisiness. The following example illustrates that, but also can be useful to show you how to parallelize your objective in a more sophisticated way.</p>
 <p>Let’s start with the normal approach:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># noisy objective function</span>
@@ -189,7 +196,6 @@ general.scale =<span class="st"> </span><span class="kw">scale_fill_gradientn</s
 
 <span class="co"># noisy output</span>
 <span class="kw">autoplot</span>(obj.fun.single, <span class="dt">render.levels =</span> <span class="ot">TRUE</span>) +<span class="st"> </span>general.scale
-## Warning: Ignoring unknown aesthetics: fill
 ## Scale for 'fill' is already present. Adding another scale for 'fill',
 ## which will replace the existing scale.</code></pre></div>
 <p><img src="parallelization_files/figure-html/custom_noisy_obj-1.png" width="672"></p>
@@ -208,7 +214,6 @@ obj.fun.parallel =<span class="st"> </span><span class="kw">makeSingleObjectiveF
   <span class="dt">has.simple.signature =</span> <span class="ot">TRUE</span>
 )
 <span class="kw">autoplot</span>(obj.fun.parallel, <span class="dt">render.levels =</span> <span class="ot">TRUE</span>) +<span class="st"> </span>general.scale
-## Warning: Ignoring unknown aesthetics: fill
 ## Scale for 'fill' is already present. Adding another scale for 'fill',
 ## which will replace the existing scale.</code></pre></div>
 <p><img src="parallelization_files/figure-html/custom_noisy_parallel-1.png" width="672"></p>

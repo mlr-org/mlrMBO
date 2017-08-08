@@ -34,10 +34,9 @@ renderExampleRunPlot2d = function(x, iter,
   critfun = control$infill.crit$fun
   se = (x$learner$predict.type == "se")
 
-  opt.direction = 1
-  if (infill.crit.id %in% c("ei")) {
-    opt.direction = -1
-  }
+  # we need to maximize expected improvement
+  opt.direction = getMBOInfillCritMultiplier(control$infill.crit)
+
   opt.path = as.data.frame(mbo.res$opt.path)
 
   idx.init = which(opt.path$dob == 0)

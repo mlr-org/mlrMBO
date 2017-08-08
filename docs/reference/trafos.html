@@ -25,12 +25,14 @@
 <script src="../pkgdown.js"></script>
 
 <!-- mathjax -->
-<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+<script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
+
+
   </head>
 
   <body>
@@ -73,6 +75,9 @@
     <li>
       <a href="../articles/supplementary/noisy_optimization.html">Noisy Optimization</a>
     </li>
+    <li>
+      <a href="../articles/supplementary/machine_learning_with_mlrmbo.html">Machine learning with mlrMBO</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -106,35 +111,36 @@
     </div>
 
     
-    <p><ul>
-<li><b>logTrafo</b> Natural logarithm.
-  </li>
-<li><b>sqrtTrafo</b> Square root.
-</li>
-</ul></p>
-
-    <p>If negative values occur and the trafo function can handle only positive values,
+    <ul>
+<li><p><b>logTrafo</b> Natural logarithm.</p></li>
+<li><p><b>sqrtTrafo</b> Square root.</p></li>
+</ul><p>If negative values occur and the trafo function can handle only positive values,
 a shift of the form x - min(x) + 1 is performed prior to the transformation if the
 argument <code>handle.violations</code> is set to &#8220;warn&#8221; which is the default
 value.</p>
     
 
-    <pre><span class='fu'>trafoLog</span>(<span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>handle.violations</span> <span class='kw'>=</span> <span class='st'>"warn"</span>)
+    <pre class="usage"><span class='fu'>trafoLog</span>(<span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>handle.violations</span> <span class='kw'>=</span> <span class='st'>"warn"</span>)
 
 <span class='fu'>trafoSqrt</span>(<span class='kw'>handle.violations</span> <span class='kw'>=</span> <span class='st'>"warn"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
-    <dl class="dl-horizontal">
-      <dt>base</dt>
-      <dd>[<code>numeric(1)</code>]
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>base</th>
+      <td><p>[<code>numeric(1)</code>]
 The base with respect to which logarithms are computed.
-Default is <code>10</code>.</dd>
-      <dt>handle.violations</dt>
-      <dd>[<code>character(1)</code>]
+Default is <code>10</code>.</p></td>
+    </tr>
+    <tr>
+      <th>handle.violations</th>
+      <td><p>[<code>character(1)</code>]
 What should be done, if negative values occur? Setting this option to
 &#8220;warn&#8221;, which is the default, shifts the function. &#8220;error&#8221;
-stops the process immediately.</dd>
-    </dl>
+stops the process immediately.</p></td>
+    </tr>
+    </table>
     
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 

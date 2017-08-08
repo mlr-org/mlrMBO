@@ -25,12 +25,14 @@
 <script src="../pkgdown.js"></script>
 
 <!-- mathjax -->
-<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+<script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
+
+
   </head>
 
   <body>
@@ -73,6 +75,9 @@
     <li>
       <a href="../articles/supplementary/noisy_optimization.html">Noisy Optimization</a>
     </li>
+    <li>
+      <a href="../articles/supplementary/machine_learning_with_mlrmbo.html">Machine learning with mlrMBO</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -106,37 +111,28 @@
     </div>
 
     
-    <p><ul>
-<li>x [<code>list</code>]Named list of proposed optimal parameters.
-  </li>
-<li>y [<code>numeric(1)</code>]Value of objective function at <code>x</code>,
+    <ul>
+<li><p>x [<code>list</code>]Named list of proposed optimal parameters.</p></li>
+<li><p>y [<code>numeric(1)</code>]Value of objective function at <code>x</code>,
     either from evals during optimization or from requested final evaluations,
-    if those were greater than 0.
-    </li>
-<li>best.ind [<code>numeric(1)</code>]Index of <code>x</code> in the opt.path.
-  </li>
-<li>opt.path [<code><a href='http://www.rdocumentation.org/packages/ParamHelpers/topics/OptPath'>OptPath</a></code>]Optimization path.
+    if those were greater than 0.</p></li>
+<li><p>best.ind [<code>numeric(1)</code>]Index of <code>x</code> in the opt.path.</p></li>
+<li><p>opt.path [<code><a href='http://www.rdocumentation.org/packages/ParamHelpers/topics/OptPath'>OptPath</a></code>]Optimization path.
     Includes all evaluated points and additional information as documented in <a href='mbo_OptPath.html'>mbo_OptPath</a>.
-    You can convert it via <code>as.data.frame</code>.
-  </li>
-<li>resample.results [List of <code><a href='http://www.rdocumentation.org/packages/mlr/topics/ResampleResult'>ResampleResult</a></code>]List of the desired <code>resample.results</code> if <code>resample.at</code> is set in <code>makeMBOControl</code>.
-  </li>
-<li>final.state [<code>character</code>] The final termination state. Gives information why the optimization ended. Possible values are
+    You can convert it via <code>as.data.frame</code>.</p></li>
+<li><p>resample.results [List of <code><a href='http://www.rdocumentation.org/packages/mlr/topics/ResampleResult'>ResampleResult</a></code>]List of the desired <code>resample.results</code> if <code>resample.at</code> is set in <code>makeMBOControl</code>.</p></li>
+<li><p>final.state [<code>character</code>] The final termination state. Gives information why the optimization ended. Possible values are
      <dl class='dl-horizontal'>
-       <dt>term.iter</dt><dd>Maximal number of iterations reached.</dd>
-       <dt>term.time</dt><dd>Maximal running time exceeded.</dd>
-       <dt>term.exectime</dt><dd>Maximal execution time of function evaluations reached.</dd>
-       <dt>term.yval</dt><dd>Target function value reached.</dd>
-       <dt>term.fevals</dt><dd>maximal number of function evaluations reached.</dd>
-       <dt>term.custom</dt><dd>Terminated due to custom, user-defined termination condition.</dd>
-    </dl></p>
-
-    <p></li>
-<li>models [List of <code><a href='http://www.rdocumentation.org/packages/mlr/topics/makeWrappedModel'>WrappedModel</a></code>]List of saved regression models if <code>store.model.at</code> is set in <code>makeMBOControl</code>. The default is that it contains the model generated after the last iteration.
-  </li>
-<li>control [<code>MBOControl</code>] Control object used in optimization
-</li>
-</ul></p>
+       <dt>term.iter</dt><dd><p>Maximal number of iterations reached.</p></dd>
+       <dt>term.time</dt><dd><p>Maximal running time exceeded.</p></dd>
+       <dt>term.exectime</dt><dd><p>Maximal execution time of function evaluations reached.</p></dd>
+       <dt>term.yval</dt><dd><p>Target function value reached.</p></dd>
+       <dt>term.fevals</dt><dd><p>maximal number of function evaluations reached.</p></dd>
+       <dt>term.custom</dt><dd><p>Terminated due to custom, user-defined termination condition.</p></dd>
+    </dl></p></li>
+<li><p>models [List of <code><a href='http://www.rdocumentation.org/packages/mlr/topics/makeWrappedModel'>WrappedModel</a></code>]List of saved regression models if <code>store.model.at</code> is set in <code>makeMBOControl</code>. The default is that it contains the model generated after the last iteration.</p></li>
+<li><p>control [<code>MBOControl</code>] Control object used in optimization</p></li>
+</ul>
     
 
         

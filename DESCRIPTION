@@ -27,7 +27,7 @@ Depends:
     ParamHelpers (>= 1.10),
     smoof (>= 1.4)
 Imports:
-    backports,
+    backports (>= 1.1.0),
     BBmisc (>= 1.11),
     checkmate (>= 1.8.2),
     data.table,

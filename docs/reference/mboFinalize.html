@@ -25,12 +25,14 @@
 <script src="../pkgdown.js"></script>
 
 <!-- mathjax -->
-<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+<script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
+
+
   </head>
 
   <body>
@@ -73,6 +75,9 @@
     <li>
       <a href="../articles/supplementary/noisy_optimization.html">Noisy Optimization</a>
     </li>
+    <li>
+      <a href="../articles/supplementary/machine_learning_with_mlrmbo.html">Machine learning with mlrMBO</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -106,18 +111,21 @@
     </div>
 
     
-    <p>Useful if your optimization didn&#39;t terminate but you want a results nonetheless.</p>
+    <p>Useful if your optimization didn't terminate but you want a results nonetheless.</p>
     
 
-    <pre><span class='fu'>mboFinalize</span>(<span class='no'>file</span>)</pre>
+    <pre class="usage"><span class='fu'>mboFinalize</span>(<span class='no'>file</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
-    <dl class="dl-horizontal">
-      <dt>file</dt>
-      <dd>[<code>character(1)</code>]
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>file</th>
+      <td><p>[<code>character(1)</code>]
 File path of saved MBO state.
-See <code>save.on.disk.at</code> argument of <code><a href='makeMBOControl.html'>MBOControl</a></code> object.</dd>
-    </dl>
+See <code>save.on.disk.at</code> argument of <code><a href='makeMBOControl.html'>MBOControl</a></code> object.</p></td>
+    </tr>
+    </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
