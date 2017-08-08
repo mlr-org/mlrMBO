@@ -1,5 +1,5 @@
 #' @title Initialize a manual sequential MBO run.
-#' @description When you want to run a human-in-the-middle MBO run you need to initialize it first.
+#' @description When you want to run a human-in-the-loop MBO run you need to initialize it first.
 #'
 #' @inheritParams mbo
 #' @template arg_parset
@@ -67,7 +67,7 @@ updateSMBO = function(opt.state, x, y) {
   xs = dfRowsToList(prop$prop.points, getOptProblemParSet(getOptStateOptProblem(opt.state)))
 
   for (i in seq_along(xs)) {
-    addOptPathEl(op = opt.path, x = xs[[i]], y = y, extra = extras[[i]])
+    addOptPathEl(op = opt.path, x = xs[[i]], y = y[i], extra = extras[[i]])
   }
   finalizeMboLoop(opt.state)
   invisible(opt.state)

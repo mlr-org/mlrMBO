@@ -43,5 +43,5 @@ Default is \code{TRUE}.}
 [\code{\link{OptState}}]
 }
 \description{
-When you want to run a human-in-the-middle MBO run you need to initialize it first.
+When you want to run a human-in-the-loop MBO run you need to initialize it first.
 }

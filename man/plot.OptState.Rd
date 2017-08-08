@@ -4,11 +4,14 @@
 \alias{plot.OptState}
 \title{Generate ggplot2 Object}
 \usage{
-\method{plot}{OptState}(x, ...)
+\method{plot}{OptState}(x, scale.panels = FALSE, ...)
 }
 \arguments{
-\item{x}{[\code{OptState}]
+\item{x}{[\code{OptState}]\cr
 The OptState.}
+
+\item{scale.panels}{[\code{logical(1)}]\cr
+If \code{TRUE} the values in each panel will be scaled to [0,1].}
 
 \item{...}{[any] \cr
 Not used.}

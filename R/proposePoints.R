@@ -1,3 +1,8 @@
+#' @title Propose candidates for the objective function
+#' @description Propose points for the objective function that should be evaluated according to the infill criterion and the recent evaluations.
+#'
+#' @param opt.state [\code{\link{OptState}}]
+#' @export
 # Propose infill points - simple dispatcher to real methods
 #
 # input:
