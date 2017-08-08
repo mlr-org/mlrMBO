@@ -40,7 +40,7 @@ Hence, mbo allows imputation of bad values via the control option \code{impute.y
 
 
 \strong{Mechanism II - The mlr's on.learner.error}
-This procdues a FailureModel for the surrogate, if it crashed (issue 6). A random point (or multiple ones)
+This produces a FailureModel for the surrogate, if it crashed (issue 6). A random point (or multiple ones)
 are proposed now for the current iteration. And we pray that we can fit the model again in the
 next iteration.
 \strong{Logging:} The entry \dQuote{model.error} is set in the opt.path.
@@ -48,7 +48,7 @@ next iteration.
 
 \strong{Mechanism III - Filtering of proposed point which are too close}
 
-Issue 6 is solved by filtering points that are to close to other porposed points or points already
+Issue 6 is solved by filtering points that are to close to other proposed points or points already
 proposed in preceding iterations. Filtering in this context means replacing the proposed points by
 a randomly generated new point. The heuristics mechanism is (de)activated via the logical
 \code{filter.proposed.points.tol} parameter of the \code{\link{setMBOControlInfill}} function, which defaults to
