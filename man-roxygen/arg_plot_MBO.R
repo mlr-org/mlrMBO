@@ -1,14 +1,14 @@
 #' @param crit.plot [\code{logical(1)}]\cr
 #'   Should the infill criterion versus the iteration be plotted? For multi objective
-#'   and method = MSPOT multiple infill criterion values per iterion do exist,
+#'   and method = MSPOT multiple infill criterion values per iteration do exist,
 #'   so a multi-dimensional plot is used. Default is TRUE
 #' @param hv.plot [\code{logical(1)}]\cr
 #'   Should the hypervolume development be plotted? Default is FALSE for single
-#'   objective und TRUE for multi objective.
+#'   objective and TRUE for multi objective.
 #' @param extra.measures [\code{character}]\cr
 #'   Additional measures to be plotted versus the iteration. Must be the name
-#'   of a coloumn available in the optimization path. Notice that at most 4 plost
-#'   can be renderd at the same time. Since X and Y Space plots will allways be
+#'   of a column available in the optimization path. Notice that at most 4 plots
+#'   can be rendered at the same time. Since X and Y Space plots will always be
 #'   rendered, at most 2 addition plots are possible. You must deactivate crit.plot
 #'   or hv.plot, if you want to add additional plots via extra.measure.
 #'  @param ref.point [\code{numeric}]\cr

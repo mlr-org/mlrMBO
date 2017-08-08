@@ -180,7 +180,7 @@ makeMBOInfillCritAEI = function(aei.use.nugget = FALSE, se.threshold = 1e-6) {
       }
       return(res)
     },
-    name = "Augmeted expected improvement",
+    name = "Augmented expected improvement",
     id = "aei",
     components = c("se", "mean", "tau"),
     params = list(aei.use.nugget = aei.use.nugget),
