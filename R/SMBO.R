@@ -37,7 +37,7 @@ initSMBO = function(par.set, design, learner = NULL, control, minimize = rep(TRU
 }
 
 #' @title Updates SMBO with the new observations
-#' @description After a function evaluation you want to update the \code{\link{OptStatermake}} to get new proposals.
+#' @description After a function evaluation you want to update the \code{\link{OptState}} to get new proposals.
 #'
 #' @param opt.state [\code{\link{OptState}}]
 #'   The optimization state.
