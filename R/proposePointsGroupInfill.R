@@ -8,7 +8,7 @@ proposePointsGroupInfill = function(opt.state) {
   xs = split(xs, rep(seq_len(n), each = m))
   group.infill.crit = simpleGroupInfillCrit
   st = system.time({
-    infill.results = parallelMap(group.infill.crit, points = xs, level = "mlrMBO.propose.points", more.args = list(opt.state = opt.state))  
+    infill.results = parallelMap(group.infill.crit, points = xs, level = "mlrMBO.propose.points", more.args = list(opt.state = opt.state))
   })
   infill.crits = extractSubList(infill.results, "infill.crit", simplify = TRUE)
   best.index = which.min(infill.crits)
@@ -44,3 +44,33 @@ simpleGroupInfillCrit = function(points, opt.state, ...) {
   )
 
 }
+
+# proposePointsQuadraticKnapsack = function(opt.state) {
+#   opt.problem = getOptStateOptProblem(opt.state)
+#   control = getOptProblemControl(opt.problem)
+#   infill.crit.fun = getInfillCritFunction(control$infill.crit)
+#   models = getOptStateModels(opt.state)$models
+#   models = if (inherits(models, "WrappedModel")) list(models) else models
+#   par.set = getOptProblemParSet(opt.problem)
+#   design = convertOptPathToDf(opt.path, control)
+#   iter = iter = getOptStateLoop(opt.state)
+
+#   m = control$propose.points
+#   n = control$multipoint.groupinfill.sample.n
+
+#   xs = generateRandomDesign(par.set = getOptProblemParSet(opt.problem), n)
+
+#   profits = infill.crit.fun(xs, models, control, par.set, design, iter, attributes = TRUE, ...)
+
+#   distances = as.matrix(cluster::daisy(xs, metric = "gower"))
+
+#   cancelation = outer(profits, profits, FUN = function(X,Y) X + Y) * exp(-distances)
+
+#   callQKFunction(profits, cancelation, TIME???)
+#   # get in return
+#   # list with jobs for each CPU
+#   # order in how they should be executed
+#   # cpu1 = c(590, 4, 99, 188)
+#   # cpu2 = c(110, 1, 160, 55)
+#   # ...
+# }
