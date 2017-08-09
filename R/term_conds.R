@@ -57,7 +57,7 @@ makeMBOTerminationMaxExecBudget = function(time.budget) {
     time.used.init = sum(exec.times[getOptPathDOB(opt.path)==0], na.rm = TRUE)
     term = (time.used > time.budget)
     message = if (!term) NA_character_ else sprintf("Execution time budged %f reached.", time.budget)
-    return(list(term = term, message = message, code = "term.exectime", progress = max(time.used.optimization / (time.used - time.used.init), 0, na.rm = TRUE)))
+    return(list(term = term, message = message, code = "term.exectime", progress = max(time.used.optimization / (time.budget - time.used.init), 0, na.rm = TRUE)))
   }
 }
 
