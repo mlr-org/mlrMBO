@@ -309,6 +309,7 @@ makeMBOInfillCritAdaCB = function(cb.lambda.start = NULL, cb.lambda.end = NULL) 
   force(cb.lambda.end)
   makeMBOInfillCrit(
     fun = function(points, models, control, par.set, design, iter, progress, attributes = FALSE) {
+      assertNumber(progress)
       model = models[[1L]]
       maximize.mult = ifelse(control$minimize, 1, -1)
       p = predict(model, newdata = points)$data

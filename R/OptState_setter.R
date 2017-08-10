@@ -60,7 +60,7 @@ setOptStateState = function(opt.state, state) {
 }
 
 setOptStateProgress = function(opt.state, progress) {
-  assertNumber(progress)
+  assertNumber(progress, null.ok = TRUE)
   opt.state$progress = progress
   invisible()
 }
