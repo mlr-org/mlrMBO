@@ -7,10 +7,6 @@ r:
   - devel
 
 r_github_packages:
-  - berndbischl/BBmisc
-  - berndbischl/parallelMap
-  - jakobbossek/smoof
-  - mlr-org/mlr
   - jimhester/covr
 
 env:
