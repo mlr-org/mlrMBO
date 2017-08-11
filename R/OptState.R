@@ -129,8 +129,3 @@ print.OptState = function(x, ...) {
   catf("")
   print(getOptStateOptPath(x))
 }
-
-plot.OptState = function(x, ...) {
-
-
-}
