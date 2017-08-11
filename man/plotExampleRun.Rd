@@ -49,7 +49,7 @@ and \code{yhat(x) +- se.factor2 * se(x)} both in the plot. Note that this heuris
 change the \code{ylim} setting between plot iterations.}
 
 \item{point.size}{[\code{numeric(1)}]\cr
-Point size for ploted points. Default ist 3.}
+Point size for plotted points. Default is 3.}
 
 \item{line.size}{[\code{numeric(1)}]\cr
 Line width of the graphs of plotted functions.}
@@ -66,8 +66,8 @@ If a single function is provided, this function is used for all plots.}
 
 \item{colors}{[\code{character(3)}]
 Specify colors for point in the plots. Must be a vector of length 3,
-each element a color for the type design, prop and seq respectivly.
-Default is red for the initial design, blue for allready proposed points
+each element a color for the type design, prop and seq respectively.
+Default is red for the initial design, blue for already proposed points
 and green for the actual iteration.}
 
 \item{gg.objects}{[\code{list)}]
