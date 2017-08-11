@@ -10,7 +10,7 @@ shouldTerminate.OptState = function(opt.state) {
   for (i in seq_along(stop.conds)) {
     stop.cond = stop.conds[[i]]
     stop.obj = stop.cond(opt.state)
-    if (names(stop.conds)[i] == control$use.for.adaptive.infill) {
+    if (isTRUE(names(stop.conds)[i] == control$use.for.adaptive.infill)) {
       progress = stop.obj$progress
     }
     if (stop.obj$term) {
