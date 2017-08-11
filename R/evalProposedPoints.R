@@ -9,13 +9,16 @@
 # gets the getExtras, converts point data.frame to a list, repairs points out-of-bounds
 # then call evalTargetFun
 
-evalProposedPoints.OptState = function(opt.state, prop) {
+evalProposedPoints.OptState = function(opt.state, prop, train.time = NULL) {
+  if (is.null(train.time)) {
+    train.time = getOptStateModels(opt.state)$train.time
+  }
   opt.problem = getOptStateOptProblem(opt.state)
   par.set = getOptProblemParSet(opt.problem)
   extras = getExtras(
     n = nrow(prop$prop.points),
     prop = prop,
-    train.time = getOptStateModels(opt.state)$train.time,
+    train.time = train.time,
     control = getOptProblemControl(opt.problem)
   )
   xs = dfRowsToList(prop$prop.points, par.set)

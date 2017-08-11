@@ -35,14 +35,17 @@ makeMBOResult.OptState = function(opt.state) {
   final.points = getOptStateFinalPoints(opt.state)
   opt.result = getOptStateOptResult(opt.state)
 
-  if (length(final.points$x)) {
+  #FIXME: There has to be a better way to notice if it's multiobjective
+  #also it's possible that with getOptStateFinalPoints(... unify = TRUE) we get final.points$x. But I don't know where we do that.
+  x.df = dropNamed(final.points$x, ".multifid.lvl")
+  if (!is.null(x.df) && nrow(x.df) == 1) {
     if (getOptProblemControl(opt.problem)$final.evals > 0) {
-      ys = evalFinalPoint(opt.state, final.points)
+      ys = evalFinalPoint(opt.state, x.df)
       final.points$y = mean(ys)
     }
     makeS3Obj(
       c("MBOSingleObjResult", "MBOResult"),
-      x = dropNamed(final.points$x, ".multifid.lvl"),
+      x = dfRowToList(x.df, par.set = getOptProblemParSet(opt.problem), i = 1),
       y = final.points$y, # strip name
       best.ind = final.points$best.ind,
       opt.path = getOptStateOptPath(opt.state),

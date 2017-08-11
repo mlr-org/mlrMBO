@@ -89,10 +89,9 @@ getOptStateFinalPoints = function(opt.state, unify = FALSE) {
 
   if (control$n.objectives == 1L) {
     final.index = chooseFinalPoint(opt.state)
-    best = getOptPathEl(opt.path, final.index)
     list(
-      x = best$x,
-      y = as.numeric(best$y),
+      x = getOptPathX(opt.path)[final.index, , drop = FALSE],
+      y = getOptPathY(opt.path)[final.index],
       best.ind = final.index
     )
   } else {
