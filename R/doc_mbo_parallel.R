@@ -1,7 +1,7 @@
 #' @title Parallelization in mlrMBO
 #'
 #' @description
-#' In mlrMBO you can parallize the tuning on two different levels to speed up computation:
+#' In mlrMBO you can parallelize the tuning on two different levels to speed up computation:
 #' \itemize{
 #'   \item{\code{mlrMBO.feval}}{Multiple evaluations of the target function.}
 #'   \item{\code{mlrMBO.propose.points}}{Optimization of the infill criteria if multiple are used (e.g. ParEGO and ParallelLCB)}

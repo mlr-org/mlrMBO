@@ -5,7 +5,10 @@ if (!is.na(Sys.getenv("NOT_CRAN", unset = NA))) {
 } else {
   seed.val = sample(1:10, size = 1)
   set.seed(seed.val)
-  catf("Run test with seed: %i", seed.val)
+  # Only on Travis logs we want to see the used seed
+  if (identical(Sys.getenv("TRAVIS"), "true")) {
+    catf("Run test with seed: %i", seed.val)
+  }
 }
 
 configureMlr(show.learner.output = FALSE)

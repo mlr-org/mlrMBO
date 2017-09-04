@@ -18,7 +18,7 @@ Control object for mbo.}
 Which multi-objective method should be used?
 \dQuote{parego}: The ParEGO algorithm.
 \dQuote{dib}: Direct indicator-based method. Subsumes SMS-EGO and epsilon-EGO.
-\dQuote{mspot}: Directly optimizes multcrit problem where we substitute the true
+\dQuote{mspot}: Directly optimizes multicrit problem where we substitute the true
 objectives with model-based infill crits via an EMOA.
 All methods can also propose multiple points in parallel.
 Default is \dQuote{dib}.}
@@ -51,8 +51,8 @@ suggested in parego paper.}
 
 \item{parego.use.margin.points}{[\code{logical}]\cr
 For each target function: Should the weight vector (0, ..., 0, 1, 0, ..., 0),
-i.e. the weight vector with only 0 and a single 1 at the i.th position for
-the i.th target function, be drawn with probability 1? Number of TRUE entries
+i.e. the weight vector with only 0 and a single 1 at the i-th position for
+the i-th target function, be drawn with probability 1? Number of TRUE entries
 must be less or equal to \code{propose.points}
 Default is not to do this.}
 
@@ -72,7 +72,7 @@ Default is \dQuote{sms}.}
 \item{mspot.select.crit}{[\code{\link{MBOInfillCrit}}]\cr
 Which infill.crit to use in the candidate selection. After the NSGA2
 proposed a set of candidates, \dQuote{propose.points} are selected via
-the hypervoume contribution of this infill.crit.
+the hypervolume contribution of this infill.crit.
 Possible values are \dQuote{crit.mr} and \dQuote{crit.cb} (or any other InfillCrit generated with \code{\link{makeMBOInfillCritCB}}), default is \dQuote{crit.mr}.}
 }
 \value{
@@ -113,7 +113,7 @@ doi:10.1007/978-3-642-37140-0 56}
 Jeong, S.; Obayashi, S.: Efficient global optimization (EGO) for Multi-Objective Problem and Data Mining.
 In: Proc. IEEE Congress on
 Evolutionary Computation (CEC 2005), Edinburgh, UK, Corne, D.;
-et al. (eds.), IEEE, 2005, ISBN 0-7803-9363-5, pp. 2138-2145
+et.al. (eds.), IEEE, 2005, ISBN 0-7803-9363-5, pp. 2138-2145
 }
 \seealso{
 Other MBOControl: \code{\link{makeMBOControl}},
