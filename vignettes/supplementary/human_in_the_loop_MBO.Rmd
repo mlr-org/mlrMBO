@@ -120,6 +120,21 @@ res$x
 res$y
 ```
 
+### Semi Automatic MBO
+
+You can combine the human-in-the-loop MBO with a simple loop to let MBO run for a while and just interfere once in a while.
+
+```{r}
+f = function(q, v) 1 + sin(q*5) + 0.1 * (q^2 + v^2)
+for (i in 1:10) {
+  prop = proposePoints(opt.state)
+  x = dfRowsToList(df = prop$prop.points, par.set = ps)
+  y = do.call(f, x[[1]])
+  updateSMBO(opt.state, x = prop$prop.points, y = y)
+}
+proposePoints(opt.state)
+```
+
 ## Continue a normal MBO Run
 
 You can also continue a normal call of `mbo()` using this manual interface:
@@ -150,6 +165,6 @@ opt.state = initSMBO(par.set = ps, design = des, control = ctrl, minimize = TRUE
 It's also okay to just evaluate a subset of these points.
 
 ```{r update multipoint}
-updateSMBO(opt.state, x = prop$prop.points[1:2,], y = c(2.28, 1.67))
+updateSMBO(opt.state, x = prop$prop.points[1:2,], y = list(2.28, 1.67))
 # ...
 ```

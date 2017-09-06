@@ -23,9 +23,9 @@ initSMBO = function(par.set, design, learner = NULL, control, minimize = rep(TRU
   control$minimize = minimize
   control$noisy = noisy
   if (control$n.objectives == 1) {
-    dummy.fun = makeSingleObjectiveFunction(name = "dummy", fn = function(...) return(NA), par.set = par.set, minimize = control$minimize, noisy = control$noisy)
+    dummy.fun = makeSingleObjectiveFunction(name = "human in the loop", fn = function(...) return(NA), par.set = par.set, minimize = control$minimize, noisy = control$noisy)
   } else {
-    dummy.fun = makeMultiObjectiveFunction(name = "dummy", fn = function(...) NA, par.set = par.set, n.objectives = control$n.objectives, minimize = control$minimize, noisy = control$noisy)
+    dummy.fun = makeMultiObjectiveFunction(name = "human in the loop", fn = function(...) NA, par.set = par.set, n.objectives = control$n.objectives, minimize = control$minimize, noisy = control$noisy)
   }
 
   # assertions are done here:
@@ -58,6 +58,9 @@ updateSMBO = function(opt.state, x, y) {
 
 
   assertDataFrame(x)
+  if (nrow(x) > 1 && !is.list(y)) {
+    stopf("For a multipoint update y has to be a list.")
+  }
   if (!is.list(y)) {
     y = list(y)
   }
