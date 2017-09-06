@@ -24,13 +24,17 @@ makeProposal = function(control, prop.points, propose.time = NULL, prop.type, cr
 
   if (is.null(crit.vals)) {
     if (control$n.objectives > 1L && control$multiobj.method == "mspot")
-      crit.vals = matrix(rep(NA_real_), nrow = n.points, ncol = control$n.objectives + 1)
+      # mspot is the special kid, that needs multiple crit vals
+      ncol = control$n.objectives + 1
     else
-      crit.vals = matrix(rep(NA_real_, n.points), ncol = 1L)
+      ncol = 1
+    crit.vals = matrix(NA_real_, nrow = n.points, ncol = ncol)
   }
 
   if (is.null(crit.components) && !is.null(control$infill.crit$components)) {
     crit.components = getMBOInfillCritDummyComponents(control$infill.crit)
+    # crit.components is a data.frame with one row
+    # we need the dummy values for all n.points
     crit.components[seq_len(n.points), ] = crit.components[1, ]
   }
 
