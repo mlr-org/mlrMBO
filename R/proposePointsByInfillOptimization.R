@@ -31,10 +31,7 @@ proposePointsByInfillOptimization = function(opt.state, par.set = NULL, control 
 
   # ensure we have a list
   ch = checkFailedModels(models, par.set, n, control = control)
-  if (!ch$ok) {
-    ch$prop$prop.type = prop.type
-    return(ch$prop)
-  }
+  if (!ch$ok) return(ch$prop)
 
   design = convertOptPathToDf(opt.path, control)
   infill.crit.fun = control$infill.crit$fun
@@ -51,11 +48,13 @@ proposePointsByInfillOptimization = function(opt.state, par.set = NULL, control 
     design, iter, attributes = TRUE, ...)
   crit.components = attr(crit.vals, "crit.components")
   crit.vals = matrix(crit.vals, ncol = 1L)
-  return(list(
+
+  makeProposal(
+    control = control,
     prop.points = prop.points,
     propose.time = secs,
     prop.type = prop.type,
     crit.vals = crit.vals,
-    crit.components = crit.components,
-    errors.model = NA_character_))
+    crit.components = crit.components
+  )
 }
