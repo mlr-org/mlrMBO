@@ -16,6 +16,8 @@ navbar:
         href: articles/supplementary/parallelization.html
       - text: Noisy Optimization
         href: articles/supplementary/noisy_optimization.html
+      - text: Infill Criteria
+        href: articles/supplementary/infill_criteria.html
       - text: Machine learning with mlrMBO
         href: articles/supplementary/machine_learning_with_mlrmbo.html
   - text: Reference
@@ -73,4 +75,3 @@ reference:
       - OptState
       - print.MBOControl
       - trafos
-

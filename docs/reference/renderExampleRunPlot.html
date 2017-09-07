@@ -24,7 +24,8 @@ exampleRunMultiObj objects. — renderExampleRunPlot • mlrMBO</title>
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-
+  
+  
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -75,6 +76,9 @@ exampleRunMultiObj objects. — renderExampleRunPlot • mlrMBO</title>
     </li>
     <li>
       <a href="../articles/supplementary/noisy_optimization.html">Noisy Optimization</a>
+    </li>
+    <li>
+      <a href="../articles/supplementary/infill_criteria.html">Infill Criteria</a>
     </li>
     <li>
       <a href="../articles/supplementary/machine_learning_with_mlrmbo.html">Machine learning with mlrMBO</a>
@@ -184,7 +188,7 @@ change the <code>ylim</code> setting between plot iterations.</p></td>
     <tr>
       <th>point.size</th>
       <td><p>[<code>numeric(1)</code>]
-Point size for ploted points. Default ist 3.</p></td>
+Point size for plotted points. Default is 3.</p></td>
     </tr>
     <tr>
       <th>line.size</th>
@@ -207,8 +211,8 @@ If a single function is provided, this function is used for all plots.</p></td>
       <th>colors</th>
       <td><p>[<code>character(3)</code>]
 Specify colors for point in the plots. Must be a vector of length 3,
-each element a color for the type design, prop and seq respectivly.
-Default is red for the initial design, blue for allready proposed points
+each element a color for the type design, prop and seq respectively.
+Default is red for the initial design, blue for already proposed points
 and green for the actual iteration.</p></td>
     </tr>
     <tr>
@@ -220,7 +224,7 @@ Currently not used.</p></td>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>[<code>list</code>]. List containing seperate ggplot object. The number of plots depends on
+    <p>[<code>list</code>]. List containing separate ggplot object. The number of plots depends on
   the type of MBO problem. See the description for details.</p>
     
 
