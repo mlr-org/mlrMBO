@@ -1,18 +1,18 @@
 #' @title OptState object.
 #' @description
 #' The OptState is the central component of the mbo iterations.
-#' This enviroment contains every necessary information needed during optimization in MBO.
+#' This environment contains every necessary information needed during optimization in MBO.
 #' It also links to the \code{\link{OptProblem}} and to the \code{\link{OptResult}}.
 #' @name OptState
 #' @rdname OptState
 NULL
 
 # @param loop \code{integer()} \cr
-#   Tells us in what loop we are at the moment. 0 means we are in the inital phase.
+#   Tells us in what loop we are at the moment. 0 means we are in the initial phase.
 #   The loop i should change to i+1 as soon as the i-th point is evaluated
 # @param tasks \code{list()} \cr
-#   List of \code{RegrTask} which together formulate data neccessary for the surrogate.
-#   Caching is done to not neccessarly regenerate tasks if the \code{loop} has not changed yes
+#   List of \code{RegrTask} which together formulate data necessary for the surrogate.
+#   Caching is done to not necessarily regenerate tasks if the \code{loop} has not changed yes
 #  @param models \code{list()} \cr
 #    List of \code{WrappedModel} which are trained on the \code{tasks} and formulate the surrogate.
 #    Caching is done as above.
@@ -22,7 +22,7 @@ NULL
 #    Pointer to the OptResult Object.
 #  @param state \code{character(1)} \cr
 #    Tells us in what state we are in text. So far we know:
-#    init - right after iniitilization of mbo
+#    init - right after initialization of mbo
 #    iter - within an iteration
 #    term.iter - maximal number of iterations reached
 #    term.time - maximal running time exceeded
@@ -31,13 +31,13 @@ NULL
 #    term.fevals - maximal number of function evaluations reached
 #    term.custom - terminated due to custom termination condition
 #  @param opt.path \code{OptPath} \cr
-#    Here we keep the opt.path. It delivers the data for the tasks and other usefull information.
+#    Here we keep the opt.path. It delivers the data for the tasks and other useful information.
 #  @param time.last.saved \code{POSIXct} \cr
 #    The \code{Sys.time()} when the last save on disk was done.
 #  @param loop.starttime \code{POSIXct} \cr
 #    The \code{Sys.time()} when the mbo iteration was started.
 #  @param time.used \code{integer(1)} \cr
-#    The time in seconds we are alrady used for optimization since the verry start.
+#    The time in seconds we are already used for optimization since the very start.
 #    This counts all iterations together and is necessary for continuation with a given time budget.
 
 # IMPORTANT NOTE:

@@ -7,7 +7,7 @@
 \itemize{
   \item{pareto.front [\code{matrix}]}{Pareto front of all evaluated points.}
   \item{pareto.set [\code{list} of \code{list}s]}{Pareto set of all evaluated points.}
-  \item{pareto.inds [\code{numeric}]}{Indizes of the Pareto-optimal points in the opt.path}
+  \item{pareto.inds [\code{numeric}]}{Indices of the Pareto-optimal points in the opt.path}
   \item{opt.path [\code{\link[ParamHelpers]{OptPath}}]}{Optimization path.
     Includes all evaluated points and additional information as documented in \link{mbo_OptPath}.
     You can convert it via \code{as.data.frame}.}

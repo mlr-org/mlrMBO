@@ -66,7 +66,7 @@ We simply handle those with an imputation method, added to the random forest:
   special class label \code{"__miss__"}}
 }
 Both of these techniques make sense for tree-based methods and are usually hard to beat, see
-Ding et al. (2010).
+Ding et.al. (2010).
 }
 \references{
 Ding, Yufeng, and Jeffrey S. Simonoff. An investigation of missing data methods for
