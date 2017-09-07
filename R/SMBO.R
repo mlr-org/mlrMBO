@@ -70,13 +70,12 @@ updateSMBO = function(opt.state, x, y) {
 
   infill.values = control$infill.crit$fun(points = x, models = getOptStateModels(opt.state)[[1]], control = control, design = convertOptPathToDf(opt.path, control), attributes = TRUE, iter = getOptStateLoop(opt.state))
 
-  prop = list(
+  prop = makeProposal(
+    control = control,
     prop.points = x,
-    crit.components = attr(infill.values, "crit.components"),
-    propose.time = NA_real_,
     prop.type = "manual",
     crit.vals = matrix(infill.values, ncol = 1L),
-    errors.model = NA_character_)
+    crit.components = attr(infill.values, "crit.components"))
 
   extras = getExtras(n = nrow(prop$prop.points), prop = prop, train.time = 0, control = control)
   xs = dfRowsToList(prop$prop.points, getOptProblemParSet(getOptStateOptProblem(opt.state)))
