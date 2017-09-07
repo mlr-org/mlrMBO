@@ -16,7 +16,7 @@
 #'   The selection criterion is \code{moimbo.selection}.
 #'   If this method is selected the infill criterion in \code{setMBOInfillCrit} is ignored.
 #'   \dQuote{cl}: Proposes points by constant liar strategy.
-#'   Only meaningfull if \code{infill.crit == "cb"}
+#'   Only meaningful if \code{infill.crit == "cb"}
 #'   In the first step the kriging model is fitted based on the real data and the best point is calculated
 #'   according to the regular EI-criterion.
 #'   Then, the function value of the best point is simply guessed by the worst seen function evaluation.
@@ -31,9 +31,9 @@
 #'   Default is \dQuote{ei.dist}.
 #' @param moimbo.dist [\code{character(1)}]\cr
 #'   Distance function used in multi-objective EA.
-#'   Possible values are: \dQuote{nearest.neigbor}, \dQuote{nearest.better}.
+#'   Possible values are: \dQuote{nearest.neighbor}, \dQuote{nearest.better}.
 #'   Default is \dQuote{nearest.better}.
-#FIXME: a link to the definition of nearest.better and nearest.neigbor?
+#FIXME: a link to the definition of nearest.better and nearest.neighbor?
 #' @param moimbo.selection [\code{character(1)}]\cr
 #'   Method used for selecting 1 element for removal from the population
 #'   in each iteration of the multi-objective EA.

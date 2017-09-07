@@ -25,9 +25,9 @@ BugReports: https://github.com/mlr-org/mlrMBO/issues
 Depends:
     mlr (>= 2.10),
     ParamHelpers (>= 1.10),
-    smoof (>= 1.4)
+    smoof (>= 1.5.1)
 Imports:
-    backports,
+    backports (>= 1.1.0),
     BBmisc (>= 1.11),
     checkmate (>= 1.8.2),
     data.table,
@@ -59,6 +59,6 @@ Suggests:
 LazyData: yes
 Encoding: UTF-8
 ByteCompile: yes
-Version: 1.1.0
+Version: 1.1.1
 RoxygenNote: 6.0.1
 VignetteBuilder: knitr

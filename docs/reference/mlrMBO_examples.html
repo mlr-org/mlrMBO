@@ -25,12 +25,14 @@
 <script src="../pkgdown.js"></script>
 
 <!-- mathjax -->
-<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+<script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
+
+
   </head>
 
   <body>
@@ -72,6 +74,9 @@
     </li>
     <li>
       <a href="../articles/supplementary/noisy_optimization.html">Noisy Optimization</a>
+    </li>
+    <li>
+      <a href="../articles/supplementary/machine_learning_with_mlrmbo.html">Machine learning with mlrMBO</a>
     </li>
   </ul>
 </li>
@@ -117,322 +122,322 @@
 <span class='co'>### optimizing a simple sin(x) with mbo / EI</span>
 <span class='co'>###</span>
 <span class='co'>#####################################################</span>
-<span class='co'>## Not run: ------------------------------------</span>
-<span class='co'># library(ggplot2)</span>
-<span class='co'># library(mlrMBO)</span>
-<span class='co'># configureMlr(show.learner.output = FALSE)</span>
-<span class='co'># set.seed(1)</span>
-<span class='co'># </span>
-<span class='co'># obj.fun = makeSingleObjectiveFunction(</span>
-<span class='co'>#   name = "Sine",</span>
-<span class='co'>#   fn = function(x) sin(x),</span>
-<span class='co'>#   par.set = makeNumericParamSet(lower = 3, upper = 13, len = 1),</span>
-<span class='co'>#   global.opt.value = -1</span>
-<span class='co'># )</span>
-<span class='co'># </span>
-<span class='co'># ctrl = makeMBOControl(propose.points = 1)</span>
-<span class='co'># ctrl = setMBOControlTermination(ctrl, iters = 10L)</span>
-<span class='co'># ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCritEI(), </span>
-<span class='co'>#   opt = "focussearch", opt.focussearch.points = 500L)</span>
-<span class='co'># </span>
-<span class='co'># lrn = makeMBOLearner(ctrl, obj.fun)</span>
-<span class='co'># </span>
-<span class='co'># design = generateDesign(6L, getParamSet(obj.fun), fun = lhs::maximinLHS)</span>
-<span class='co'># </span>
-<span class='co'># run = exampleRun(obj.fun, design = design, learner = lrn,</span>
-<span class='co'>#   control = ctrl, points.per.dim = 100, show.info = TRUE)</span>
-<span class='co'># </span>
-<span class='co'># plotExampleRun(run, densregion = TRUE, gg.objects = list(theme_bw()))</span>
-<span class='co'>## ---------------------------------------------</span>
+<span class='fu'>not_run</span>({
+  <span class='fu'>library</span>(<span class='no'>ggplot2</span>)
+  <span class='fu'>library</span>(<span class='no'>mlrMBO</span>)
+  <span class='fu'>configureMlr</span>(<span class='kw'>show.learner.output</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+  <span class='fu'>set.seed</span>(<span class='fl'>1</span>)
+
+  <span class='no'>obj.fun</span> <span class='kw'>=</span> <span class='fu'>makeSingleObjectiveFunction</span>(
+    <span class='kw'>name</span> <span class='kw'>=</span> <span class='st'>"Sine"</span>,
+    <span class='kw'>fn</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>x</span>) <span class='fu'>sin</span>(<span class='no'>x</span>),
+    <span class='kw'>par.set</span> <span class='kw'>=</span> <span class='fu'>makeNumericParamSet</span>(<span class='kw'>lower</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='kw'>upper</span> <span class='kw'>=</span> <span class='fl'>13</span>, <span class='kw'>len</span> <span class='kw'>=</span> <span class='fl'>1</span>),
+    <span class='kw'>global.opt.value</span> <span class='kw'>=</span> -<span class='fl'>1</span>
+  )
+
+  <span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='makeMBOControl.html'>makeMBOControl</a></span>(<span class='kw'>propose.points</span> <span class='kw'>=</span> <span class='fl'>1</span>)
+  <span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='setMBOControlTermination.html'>setMBOControlTermination</a></span>(<span class='no'>ctrl</span>, <span class='kw'>iters</span> <span class='kw'>=</span> <span class='fl'>10L</span>)
+  <span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='setMBOControlInfill.html'>setMBOControlInfill</a></span>(<span class='no'>ctrl</span>, <span class='kw'>crit</span> <span class='kw'>=</span> <span class='fu'><a href='infillcrits.html'>makeMBOInfillCritEI</a></span>(),
+    <span class='kw'>opt</span> <span class='kw'>=</span> <span class='st'>"focussearch"</span>, <span class='kw'>opt.focussearch.points</span> <span class='kw'>=</span> <span class='fl'>500L</span>)
+
+  <span class='no'>lrn</span> <span class='kw'>=</span> <span class='fu'><a href='makeMBOLearner.html'>makeMBOLearner</a></span>(<span class='no'>ctrl</span>, <span class='no'>obj.fun</span>)
+
+  <span class='no'>design</span> <span class='kw'>=</span> <span class='fu'>generateDesign</span>(<span class='fl'>6L</span>, <span class='fu'>getParamSet</span>(<span class='no'>obj.fun</span>), <span class='kw'>fun</span> <span class='kw'>=</span> <span class='kw'>lhs</span><span class='kw'>::</span><span class='no'>maximinLHS</span>)
+
+  <span class='no'>run</span> <span class='kw'>=</span> <span class='fu'><a href='exampleRun.html'>exampleRun</a></span>(<span class='no'>obj.fun</span>, <span class='kw'>design</span> <span class='kw'>=</span> <span class='no'>design</span>, <span class='kw'>learner</span> <span class='kw'>=</span> <span class='no'>lrn</span>,
+    <span class='kw'>control</span> <span class='kw'>=</span> <span class='no'>ctrl</span>, <span class='kw'>points.per.dim</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>show.info</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+
+  <span class='fu'><a href='plotExampleRun.html'>plotExampleRun</a></span>(<span class='no'>run</span>, <span class='kw'>densregion</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>gg.objects</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='fu'>theme_bw</span>()))
+})
 <span class='co'>#####################################################</span>
 <span class='co'>###</span>
 <span class='co'>### optimizing branin in 2D with mbo / EI #####</span>
 <span class='co'>###</span>
 <span class='co'>#####################################################</span>
-<span class='co'>## Not run: ------------------------------------</span>
-<span class='co'># library(mlrMBO)</span>
-<span class='co'># library(ggplot2)</span>
-<span class='co'># set.seed(1)</span>
-<span class='co'># configureMlr(show.learner.output = FALSE)</span>
-<span class='co'># </span>
-<span class='co'># obj.fun = makeBraninFunction()</span>
-<span class='co'># </span>
-<span class='co'># ctrl = makeMBOControl(propose.points = 1L)</span>
-<span class='co'># ctrl = setMBOControlTermination(ctrl, iters = 10L)</span>
-<span class='co'># ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCritEI(), </span>
-<span class='co'>#   opt = "focussearch", opt.focussearch.points = 2000L)</span>
-<span class='co'># </span>
-<span class='co'># lrn = makeMBOLearner(ctrl, obj.fun)</span>
-<span class='co'># design = generateDesign(10L, getParamSet(obj.fun), fun = lhs::maximinLHS)</span>
-<span class='co'># </span>
-<span class='co'># run = exampleRun(obj.fun, design = design, learner = lrn, control = ctrl,</span>
-<span class='co'># 	points.per.dim = 50L, show.info = TRUE)</span>
-<span class='co'># </span>
-<span class='co'># print(run)</span>
-<span class='co'># </span>
-<span class='co'># plotExampleRun(run, gg.objects = list(theme_bw()))</span>
-<span class='co'>## ---------------------------------------------</span>
+<span class='fu'>not_run</span>({
+  <span class='fu'>library</span>(<span class='no'>mlrMBO</span>)
+  <span class='fu'>library</span>(<span class='no'>ggplot2</span>)
+  <span class='fu'>set.seed</span>(<span class='fl'>1</span>)
+  <span class='fu'>configureMlr</span>(<span class='kw'>show.learner.output</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+
+  <span class='no'>obj.fun</span> <span class='kw'>=</span> <span class='fu'>makeBraninFunction</span>()
+
+  <span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='makeMBOControl.html'>makeMBOControl</a></span>(<span class='kw'>propose.points</span> <span class='kw'>=</span> <span class='fl'>1L</span>)
+  <span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='setMBOControlTermination.html'>setMBOControlTermination</a></span>(<span class='no'>ctrl</span>, <span class='kw'>iters</span> <span class='kw'>=</span> <span class='fl'>10L</span>)
+  <span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='setMBOControlInfill.html'>setMBOControlInfill</a></span>(<span class='no'>ctrl</span>, <span class='kw'>crit</span> <span class='kw'>=</span> <span class='fu'><a href='infillcrits.html'>makeMBOInfillCritEI</a></span>(),
+    <span class='kw'>opt</span> <span class='kw'>=</span> <span class='st'>"focussearch"</span>, <span class='kw'>opt.focussearch.points</span> <span class='kw'>=</span> <span class='fl'>2000L</span>)
+
+  <span class='no'>lrn</span> <span class='kw'>=</span> <span class='fu'><a href='makeMBOLearner.html'>makeMBOLearner</a></span>(<span class='no'>ctrl</span>, <span class='no'>obj.fun</span>)
+  <span class='no'>design</span> <span class='kw'>=</span> <span class='fu'>generateDesign</span>(<span class='fl'>10L</span>, <span class='fu'>getParamSet</span>(<span class='no'>obj.fun</span>), <span class='kw'>fun</span> <span class='kw'>=</span> <span class='kw'>lhs</span><span class='kw'>::</span><span class='no'>maximinLHS</span>)
+
+  <span class='no'>run</span> <span class='kw'>=</span> <span class='fu'><a href='exampleRun.html'>exampleRun</a></span>(<span class='no'>obj.fun</span>, <span class='kw'>design</span> <span class='kw'>=</span> <span class='no'>design</span>, <span class='kw'>learner</span> <span class='kw'>=</span> <span class='no'>lrn</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='no'>ctrl</span>,
+        <span class='kw'>points.per.dim</span> <span class='kw'>=</span> <span class='fl'>50L</span>, <span class='kw'>show.info</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+
+  <span class='fu'>print</span>(<span class='no'>run</span>)
+
+  <span class='fu'><a href='plotExampleRun.html'>plotExampleRun</a></span>(<span class='no'>run</span>, <span class='kw'>gg.objects</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='fu'>theme_bw</span>()))
+})
 <span class='co'>#####################################################</span>
 <span class='co'>###</span>
 <span class='co'>### optimizing a simple sin(x) with multipoint proposal</span>
 <span class='co'>###</span>
 <span class='co'>#####################################################</span>
-<span class='co'>## Not run: ------------------------------------</span>
-<span class='co'># library(mlrMBO)</span>
-<span class='co'># library(ggplot2)</span>
-<span class='co'># set.seed(1)</span>
-<span class='co'># configureMlr(show.learner.output = FALSE)</span>
-<span class='co'># </span>
-<span class='co'># obj.fun = makeSingleObjectiveFunction(</span>
-<span class='co'>#   name = "Sine",</span>
-<span class='co'>#   fn = function(x) sin(x),</span>
-<span class='co'>#   par.set = makeNumericParamSet(lower = 3, upper = 13, len = 1L),</span>
-<span class='co'>#   global.opt.value = -1</span>
-<span class='co'># )</span>
-<span class='co'># </span>
-<span class='co'># ctrl = makeMBOControl(propose.points = 2L)</span>
-<span class='co'># ctrl = setMBOControlTermination(ctrl, iters = 10L)</span>
-<span class='co'># ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCritMeanResponse())</span>
-<span class='co'># ctrl = setMBOControlMultiPoint(</span>
-<span class='co'># 	ctrl,</span>
-<span class='co'>#   method = "moimbo",</span>
-<span class='co'>#   moimbo.objective = "ei.dist",</span>
-<span class='co'>#   moimbo.dist = "nearest.neighbor",</span>
-<span class='co'>#   moimbo.maxit = 200L</span>
-<span class='co'># )</span>
-<span class='co'># </span>
-<span class='co'># lrn = makeMBOLearner(ctrl, obj.fun)</span>
-<span class='co'># </span>
-<span class='co'># design = generateDesign(4L, getParamSet(obj.fun), fun = lhs::maximinLHS)</span>
-<span class='co'># </span>
-<span class='co'># run = exampleRun(obj.fun, design = design, learner = lrn,</span>
-<span class='co'>#   control = ctrl, points.per.dim = 100, show.info = TRUE)</span>
-<span class='co'># </span>
-<span class='co'># print(run)</span>
-<span class='co'># </span>
-<span class='co'># plotExampleRun(run, densregion = TRUE, gg.objects = list(theme_bw()))</span>
-<span class='co'>## ---------------------------------------------</span>
+<span class='fu'>not_run</span>({
+  <span class='fu'>library</span>(<span class='no'>mlrMBO</span>)
+  <span class='fu'>library</span>(<span class='no'>ggplot2</span>)
+  <span class='fu'>set.seed</span>(<span class='fl'>1</span>)
+  <span class='fu'>configureMlr</span>(<span class='kw'>show.learner.output</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+
+  <span class='no'>obj.fun</span> <span class='kw'>=</span> <span class='fu'>makeSingleObjectiveFunction</span>(
+    <span class='kw'>name</span> <span class='kw'>=</span> <span class='st'>"Sine"</span>,
+    <span class='kw'>fn</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>x</span>) <span class='fu'>sin</span>(<span class='no'>x</span>),
+    <span class='kw'>par.set</span> <span class='kw'>=</span> <span class='fu'>makeNumericParamSet</span>(<span class='kw'>lower</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='kw'>upper</span> <span class='kw'>=</span> <span class='fl'>13</span>, <span class='kw'>len</span> <span class='kw'>=</span> <span class='fl'>1L</span>),
+    <span class='kw'>global.opt.value</span> <span class='kw'>=</span> -<span class='fl'>1</span>
+  )
+
+  <span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='makeMBOControl.html'>makeMBOControl</a></span>(<span class='kw'>propose.points</span> <span class='kw'>=</span> <span class='fl'>2L</span>)
+  <span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='setMBOControlTermination.html'>setMBOControlTermination</a></span>(<span class='no'>ctrl</span>, <span class='kw'>iters</span> <span class='kw'>=</span> <span class='fl'>10L</span>)
+  <span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='setMBOControlInfill.html'>setMBOControlInfill</a></span>(<span class='no'>ctrl</span>, <span class='kw'>crit</span> <span class='kw'>=</span> <span class='fu'><a href='infillcrits.html'>makeMBOInfillCritMeanResponse</a></span>())
+  <span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='setMBOControlMultiPoint.html'>setMBOControlMultiPoint</a></span>(
+        <span class='no'>ctrl</span>,
+    <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"moimbo"</span>,
+    <span class='kw'>moimbo.objective</span> <span class='kw'>=</span> <span class='st'>"ei.dist"</span>,
+    <span class='kw'>moimbo.dist</span> <span class='kw'>=</span> <span class='st'>"nearest.neighbor"</span>,
+    <span class='kw'>moimbo.maxit</span> <span class='kw'>=</span> <span class='fl'>200L</span>
+  )
+
+  <span class='no'>lrn</span> <span class='kw'>=</span> <span class='fu'><a href='makeMBOLearner.html'>makeMBOLearner</a></span>(<span class='no'>ctrl</span>, <span class='no'>obj.fun</span>)
+
+  <span class='no'>design</span> <span class='kw'>=</span> <span class='fu'>generateDesign</span>(<span class='fl'>4L</span>, <span class='fu'>getParamSet</span>(<span class='no'>obj.fun</span>), <span class='kw'>fun</span> <span class='kw'>=</span> <span class='kw'>lhs</span><span class='kw'>::</span><span class='no'>maximinLHS</span>)
+
+  <span class='no'>run</span> <span class='kw'>=</span> <span class='fu'><a href='exampleRun.html'>exampleRun</a></span>(<span class='no'>obj.fun</span>, <span class='kw'>design</span> <span class='kw'>=</span> <span class='no'>design</span>, <span class='kw'>learner</span> <span class='kw'>=</span> <span class='no'>lrn</span>,
+    <span class='kw'>control</span> <span class='kw'>=</span> <span class='no'>ctrl</span>, <span class='kw'>points.per.dim</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>show.info</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+
+  <span class='fu'>print</span>(<span class='no'>run</span>)
+
+  <span class='fu'><a href='plotExampleRun.html'>plotExampleRun</a></span>(<span class='no'>run</span>, <span class='kw'>densregion</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>gg.objects</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='fu'>theme_bw</span>()))
+})
 <span class='co'>#####################################################</span>
 <span class='co'>###</span>
 <span class='co'>### optimizing branin in 2D with multipoint proposal #####</span>
 <span class='co'>###</span>
 <span class='co'>#####################################################</span>
-<span class='co'>## Not run: ------------------------------------</span>
-<span class='co'># library(mlrMBO)</span>
-<span class='co'># library(ggplot2)</span>
-<span class='co'># set.seed(2)</span>
-<span class='co'># configureMlr(show.learner.output = FALSE)</span>
-<span class='co'># </span>
-<span class='co'># obj.fun = makeBraninFunction()</span>
-<span class='co'># </span>
-<span class='co'># ctrl = makeMBOControl(propose.points = 5L)</span>
-<span class='co'># ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCritMeanResponse())</span>
-<span class='co'># ctrl = setMBOControlTermination(ctrl, iters = 10L)</span>
-<span class='co'># ctrl = setMBOControlMultiPoint(ctrl,</span>
-<span class='co'>#   method = "moimbo",</span>
-<span class='co'>#   moimbo.objective = "ei.dist",</span>
-<span class='co'>#   moimbo.dist = "nearest.neighbor",</span>
-<span class='co'>#   moimbo.maxit = 200L</span>
-<span class='co'># )</span>
-<span class='co'># </span>
-<span class='co'># lrn = makeLearner("regr.km", predict.type = "se")</span>
-<span class='co'># design = generateDesign(10L, getParamSet(obj.fun), fun = lhs::maximinLHS)</span>
-<span class='co'># </span>
-<span class='co'># run = exampleRun(obj.fun, design = design, learner = lrn, control = ctrl,</span>
-<span class='co'># 	points.per.dim = 50L, show.info = TRUE)</span>
-<span class='co'># </span>
-<span class='co'># print(run)</span>
-<span class='co'># </span>
-<span class='co'># plotExampleRun(run, gg.objects = list(theme_bw()))</span>
-<span class='co'>## ---------------------------------------------</span>
+<span class='fu'>not_run</span>({
+  <span class='fu'>library</span>(<span class='no'>mlrMBO</span>)
+  <span class='fu'>library</span>(<span class='no'>ggplot2</span>)
+  <span class='fu'>set.seed</span>(<span class='fl'>2</span>)
+  <span class='fu'>configureMlr</span>(<span class='kw'>show.learner.output</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+
+  <span class='no'>obj.fun</span> <span class='kw'>=</span> <span class='fu'>makeBraninFunction</span>()
+
+  <span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='makeMBOControl.html'>makeMBOControl</a></span>(<span class='kw'>propose.points</span> <span class='kw'>=</span> <span class='fl'>5L</span>)
+  <span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='setMBOControlInfill.html'>setMBOControlInfill</a></span>(<span class='no'>ctrl</span>, <span class='kw'>crit</span> <span class='kw'>=</span> <span class='fu'><a href='infillcrits.html'>makeMBOInfillCritMeanResponse</a></span>())
+  <span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='setMBOControlTermination.html'>setMBOControlTermination</a></span>(<span class='no'>ctrl</span>, <span class='kw'>iters</span> <span class='kw'>=</span> <span class='fl'>10L</span>)
+  <span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='setMBOControlMultiPoint.html'>setMBOControlMultiPoint</a></span>(<span class='no'>ctrl</span>,
+    <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"moimbo"</span>,
+    <span class='kw'>moimbo.objective</span> <span class='kw'>=</span> <span class='st'>"ei.dist"</span>,
+    <span class='kw'>moimbo.dist</span> <span class='kw'>=</span> <span class='st'>"nearest.neighbor"</span>,
+    <span class='kw'>moimbo.maxit</span> <span class='kw'>=</span> <span class='fl'>200L</span>
+  )
+
+  <span class='no'>lrn</span> <span class='kw'>=</span> <span class='fu'>makeLearner</span>(<span class='st'>"regr.km"</span>, <span class='kw'>predict.type</span> <span class='kw'>=</span> <span class='st'>"se"</span>)
+  <span class='no'>design</span> <span class='kw'>=</span> <span class='fu'>generateDesign</span>(<span class='fl'>10L</span>, <span class='fu'>getParamSet</span>(<span class='no'>obj.fun</span>), <span class='kw'>fun</span> <span class='kw'>=</span> <span class='kw'>lhs</span><span class='kw'>::</span><span class='no'>maximinLHS</span>)
+
+  <span class='no'>run</span> <span class='kw'>=</span> <span class='fu'><a href='exampleRun.html'>exampleRun</a></span>(<span class='no'>obj.fun</span>, <span class='kw'>design</span> <span class='kw'>=</span> <span class='no'>design</span>, <span class='kw'>learner</span> <span class='kw'>=</span> <span class='no'>lrn</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='no'>ctrl</span>,
+        <span class='kw'>points.per.dim</span> <span class='kw'>=</span> <span class='fl'>50L</span>, <span class='kw'>show.info</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+
+  <span class='fu'>print</span>(<span class='no'>run</span>)
+
+  <span class='fu'><a href='plotExampleRun.html'>plotExampleRun</a></span>(<span class='no'>run</span>, <span class='kw'>gg.objects</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='fu'>theme_bw</span>()))
+})
 <span class='co'>#####################################################</span>
 <span class='co'>###</span>
 <span class='co'>### optimizing a simple noisy sin(x) with mbo / EI</span>
 <span class='co'>###</span>
 <span class='co'>#####################################################</span>
-<span class='co'>## Not run: ------------------------------------</span>
-<span class='co'># library(mlrMBO)</span>
-<span class='co'># library(ggplot2)</span>
-<span class='co'># set.seed(1)</span>
-<span class='co'># configureMlr(show.learner.output = FALSE)</span>
-<span class='co'># </span>
-<span class='co'># # function with noise</span>
-<span class='co'># obj.fun = makeSingleObjectiveFunction(</span>
-<span class='co'>#   name = "Some noisy function",</span>
-<span class='co'>#   fn = function(x) sin(x) + rnorm(1, 0, 0.1),</span>
-<span class='co'>#   par.set = makeNumericParamSet(lower = 3, upper = 13, len = 1L),</span>
-<span class='co'>#   noisy = TRUE,</span>
-<span class='co'>#   global.opt.value = -1,</span>
-<span class='co'>#   fn.mean = function(x) sin(x)</span>
-<span class='co'># )</span>
-<span class='co'># </span>
-<span class='co'># ctrl = makeMBOControl(</span>
-<span class='co'>#   propose.points = 1L,</span>
-<span class='co'>#   final.method = "best.predicted",</span>
-<span class='co'>#   final.evals = 10L</span>
-<span class='co'># )</span>
-<span class='co'># ctrl = setMBOControlTermination(ctrl, iters = 5L)</span>
-<span class='co'># </span>
-<span class='co'># ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCritEI(),</span>
-<span class='co'>#  opt = "focussearch", opt.focussearch.points = 500L)</span>
-<span class='co'># </span>
-<span class='co'># lrn = makeMBOLearner(ctrl, obj.fun)</span>
-<span class='co'># </span>
-<span class='co'># design = generateDesign(6L, getParamSet(obj.fun), fun = lhs::maximinLHS)</span>
-<span class='co'># </span>
-<span class='co'># run = exampleRun(obj.fun, design = design, learner = lrn,</span>
-<span class='co'>#   control = ctrl, points.per.dim = 200L, noisy.evals = 50L,</span>
-<span class='co'>#   show.info = TRUE)</span>
-<span class='co'># </span>
-<span class='co'># print(run)</span>
-<span class='co'># </span>
-<span class='co'># plotExampleRun(run, densregion = TRUE, gg.objects = list(theme_bw()))</span>
-<span class='co'>## ---------------------------------------------</span>
+<span class='fu'>not_run</span>({
+  <span class='fu'>library</span>(<span class='no'>mlrMBO</span>)
+  <span class='fu'>library</span>(<span class='no'>ggplot2</span>)
+  <span class='fu'>set.seed</span>(<span class='fl'>1</span>)
+  <span class='fu'>configureMlr</span>(<span class='kw'>show.learner.output</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+
+  <span class='co'># function with noise</span>
+  <span class='no'>obj.fun</span> <span class='kw'>=</span> <span class='fu'>makeSingleObjectiveFunction</span>(
+    <span class='kw'>name</span> <span class='kw'>=</span> <span class='st'>"Some noisy function"</span>,
+    <span class='kw'>fn</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>x</span>) <span class='fu'>sin</span>(<span class='no'>x</span>) + <span class='fu'>rnorm</span>(<span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>0.1</span>),
+    <span class='kw'>par.set</span> <span class='kw'>=</span> <span class='fu'>makeNumericParamSet</span>(<span class='kw'>lower</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='kw'>upper</span> <span class='kw'>=</span> <span class='fl'>13</span>, <span class='kw'>len</span> <span class='kw'>=</span> <span class='fl'>1L</span>),
+    <span class='kw'>noisy</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+    <span class='kw'>global.opt.value</span> <span class='kw'>=</span> -<span class='fl'>1</span>,
+    <span class='kw'>fn.mean</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>x</span>) <span class='fu'>sin</span>(<span class='no'>x</span>)
+  )
+
+  <span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='makeMBOControl.html'>makeMBOControl</a></span>(
+    <span class='kw'>propose.points</span> <span class='kw'>=</span> <span class='fl'>1L</span>,
+    <span class='kw'>final.method</span> <span class='kw'>=</span> <span class='st'>"best.predicted"</span>,
+    <span class='kw'>final.evals</span> <span class='kw'>=</span> <span class='fl'>10L</span>
+  )
+  <span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='setMBOControlTermination.html'>setMBOControlTermination</a></span>(<span class='no'>ctrl</span>, <span class='kw'>iters</span> <span class='kw'>=</span> <span class='fl'>5L</span>)
+
+  <span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='setMBOControlInfill.html'>setMBOControlInfill</a></span>(<span class='no'>ctrl</span>, <span class='kw'>crit</span> <span class='kw'>=</span> <span class='fu'><a href='infillcrits.html'>makeMBOInfillCritEI</a></span>(),
+   <span class='kw'>opt</span> <span class='kw'>=</span> <span class='st'>"focussearch"</span>, <span class='kw'>opt.focussearch.points</span> <span class='kw'>=</span> <span class='fl'>500L</span>)
+
+  <span class='no'>lrn</span> <span class='kw'>=</span> <span class='fu'><a href='makeMBOLearner.html'>makeMBOLearner</a></span>(<span class='no'>ctrl</span>, <span class='no'>obj.fun</span>)
+
+  <span class='no'>design</span> <span class='kw'>=</span> <span class='fu'>generateDesign</span>(<span class='fl'>6L</span>, <span class='fu'>getParamSet</span>(<span class='no'>obj.fun</span>), <span class='kw'>fun</span> <span class='kw'>=</span> <span class='kw'>lhs</span><span class='kw'>::</span><span class='no'>maximinLHS</span>)
+
+  <span class='no'>run</span> <span class='kw'>=</span> <span class='fu'><a href='exampleRun.html'>exampleRun</a></span>(<span class='no'>obj.fun</span>, <span class='kw'>design</span> <span class='kw'>=</span> <span class='no'>design</span>, <span class='kw'>learner</span> <span class='kw'>=</span> <span class='no'>lrn</span>,
+    <span class='kw'>control</span> <span class='kw'>=</span> <span class='no'>ctrl</span>, <span class='kw'>points.per.dim</span> <span class='kw'>=</span> <span class='fl'>200L</span>, <span class='kw'>noisy.evals</span> <span class='kw'>=</span> <span class='fl'>50L</span>,
+    <span class='kw'>show.info</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+
+  <span class='fu'>print</span>(<span class='no'>run</span>)
+
+  <span class='fu'><a href='plotExampleRun.html'>plotExampleRun</a></span>(<span class='no'>run</span>, <span class='kw'>densregion</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>gg.objects</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='fu'>theme_bw</span>()))
+})
 <span class='co'>#####################################################</span>
 <span class='co'>###</span>
 <span class='co'>### optimizing 1D fun with 3 categorical level and</span>
 <span class='co'>### noisy outout with random forest</span>
 <span class='co'>###</span>
 <span class='co'>#####################################################</span>
-<span class='co'>## Not run: ------------------------------------</span>
-<span class='co'># library(mlrMBO)</span>
-<span class='co'># library(ggplot2)</span>
-<span class='co'># set.seed(1)</span>
-<span class='co'># configureMlr(show.learner.output = FALSE)</span>
-<span class='co'># </span>
-<span class='co'># obj.fun = makeSingleObjectiveFunction(</span>
-<span class='co'>#   name = "Mixed decision space function",</span>
-<span class='co'>#   fn = function(x) {</span>
-<span class='co'>#     if (x$foo == "a") {</span>
-<span class='co'>#       return(5 + x$bar^2 + rnorm(1))</span>
-<span class='co'>#     } else if (x$foo == "b") {</span>
-<span class='co'>#       return(4 + x$bar^2 + rnorm(1, sd = 0.5))</span>
-<span class='co'>#     } else {</span>
-<span class='co'>#       return(3 + x$bar^2 + rnorm(1, sd = 1))</span>
-<span class='co'>#     }</span>
-<span class='co'>#   },</span>
-<span class='co'>#   par.set = makeParamSet(</span>
-<span class='co'>#     makeDiscreteParam("foo", values = letters[1:3]),</span>
-<span class='co'>#     makeNumericParam("bar", lower = -5, upper = 5)</span>
-<span class='co'>#   ),</span>
-<span class='co'>#   has.simple.signature = FALSE, # function expects a named list of parameter values</span>
-<span class='co'>#   noisy = TRUE</span>
-<span class='co'># )</span>
-<span class='co'># </span>
-<span class='co'># ctrl = makeMBOControl()</span>
-<span class='co'># ctrl = setMBOControlTermination(ctrl, iters = 10L)</span>
-<span class='co'># </span>
-<span class='co'># # we can basically do an exhaustive search in 3 values</span>
-<span class='co'># ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCritEI(),</span>
-<span class='co'>#   opt.restarts = 1L, opt.focussearch.points = 3L, opt.focussearch.maxit = 1L)</span>
-<span class='co'># </span>
-<span class='co'># design = generateDesign(20L, getParamSet(obj.fun), fun = lhs::maximinLHS)</span>
-<span class='co'># </span>
-<span class='co'># lrn = makeMBOLearner(ctrl, obj.fun)</span>
-<span class='co'># </span>
-<span class='co'># run = exampleRun(obj.fun, design = design, learner = lrn, control = ctrl,</span>
-<span class='co'># 	points.per.dim = 50L, show.info = TRUE)</span>
-<span class='co'># </span>
-<span class='co'># print(run)</span>
-<span class='co'># plotExampleRun(run, densregion = TRUE, gg.objects = list(theme_bw()))</span>
-<span class='co'>## ---------------------------------------------</span>
+<span class='fu'>not_run</span>({
+  <span class='fu'>library</span>(<span class='no'>mlrMBO</span>)
+  <span class='fu'>library</span>(<span class='no'>ggplot2</span>)
+  <span class='fu'>set.seed</span>(<span class='fl'>1</span>)
+  <span class='fu'>configureMlr</span>(<span class='kw'>show.learner.output</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+
+  <span class='no'>obj.fun</span> <span class='kw'>=</span> <span class='fu'>makeSingleObjectiveFunction</span>(
+    <span class='kw'>name</span> <span class='kw'>=</span> <span class='st'>"Mixed decision space function"</span>,
+    <span class='kw'>fn</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>x</span>) {
+      <span class='kw'>if</span> (<span class='no'>x</span>$<span class='no'>foo</span> <span class='kw'>==</span> <span class='st'>"a"</span>) {
+        <span class='fu'>return</span>(<span class='fl'>5</span> + <span class='no'>x</span>$<span class='no'>bar</span>^<span class='fl'>2</span> + <span class='fu'>rnorm</span>(<span class='fl'>1</span>))
+      } <span class='kw'>else</span> <span class='kw'>if</span> (<span class='no'>x</span>$<span class='no'>foo</span> <span class='kw'>==</span> <span class='st'>"b"</span>) {
+        <span class='fu'>return</span>(<span class='fl'>4</span> + <span class='no'>x</span>$<span class='no'>bar</span>^<span class='fl'>2</span> + <span class='fu'>rnorm</span>(<span class='fl'>1</span>, <span class='kw'>sd</span> <span class='kw'>=</span> <span class='fl'>0.5</span>))
+      } <span class='kw'>else</span> {
+        <span class='fu'>return</span>(<span class='fl'>3</span> + <span class='no'>x</span>$<span class='no'>bar</span>^<span class='fl'>2</span> + <span class='fu'>rnorm</span>(<span class='fl'>1</span>, <span class='kw'>sd</span> <span class='kw'>=</span> <span class='fl'>1</span>))
+      }
+    },
+    <span class='kw'>par.set</span> <span class='kw'>=</span> <span class='fu'>makeParamSet</span>(
+      <span class='fu'>makeDiscreteParam</span>(<span class='st'>"foo"</span>, <span class='kw'>values</span> <span class='kw'>=</span> <span class='no'>letters</span>[<span class='fl'>1</span>:<span class='fl'>3</span>]),
+      <span class='fu'>makeNumericParam</span>(<span class='st'>"bar"</span>, <span class='kw'>lower</span> <span class='kw'>=</span> -<span class='fl'>5</span>, <span class='kw'>upper</span> <span class='kw'>=</span> <span class='fl'>5</span>)
+    ),
+    <span class='kw'>has.simple.signature</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='co'># function expects a named list of parameter values</span>
+    <span class='kw'>noisy</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
+  )
+
+  <span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='makeMBOControl.html'>makeMBOControl</a></span>()
+  <span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='setMBOControlTermination.html'>setMBOControlTermination</a></span>(<span class='no'>ctrl</span>, <span class='kw'>iters</span> <span class='kw'>=</span> <span class='fl'>10L</span>)
+
+  <span class='co'># we can basically do an exhaustive search in 3 values</span>
+  <span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='setMBOControlInfill.html'>setMBOControlInfill</a></span>(<span class='no'>ctrl</span>, <span class='kw'>crit</span> <span class='kw'>=</span> <span class='fu'><a href='infillcrits.html'>makeMBOInfillCritEI</a></span>(),
+    <span class='kw'>opt.restarts</span> <span class='kw'>=</span> <span class='fl'>1L</span>, <span class='kw'>opt.focussearch.points</span> <span class='kw'>=</span> <span class='fl'>3L</span>, <span class='kw'>opt.focussearch.maxit</span> <span class='kw'>=</span> <span class='fl'>1L</span>)
+
+  <span class='no'>design</span> <span class='kw'>=</span> <span class='fu'>generateDesign</span>(<span class='fl'>20L</span>, <span class='fu'>getParamSet</span>(<span class='no'>obj.fun</span>), <span class='kw'>fun</span> <span class='kw'>=</span> <span class='kw'>lhs</span><span class='kw'>::</span><span class='no'>maximinLHS</span>)
+
+  <span class='no'>lrn</span> <span class='kw'>=</span> <span class='fu'><a href='makeMBOLearner.html'>makeMBOLearner</a></span>(<span class='no'>ctrl</span>, <span class='no'>obj.fun</span>)
+
+  <span class='no'>run</span> <span class='kw'>=</span> <span class='fu'><a href='exampleRun.html'>exampleRun</a></span>(<span class='no'>obj.fun</span>, <span class='kw'>design</span> <span class='kw'>=</span> <span class='no'>design</span>, <span class='kw'>learner</span> <span class='kw'>=</span> <span class='no'>lrn</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='no'>ctrl</span>,
+        <span class='kw'>points.per.dim</span> <span class='kw'>=</span> <span class='fl'>50L</span>, <span class='kw'>show.info</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+
+  <span class='fu'>print</span>(<span class='no'>run</span>)
+  <span class='fu'><a href='plotExampleRun.html'>plotExampleRun</a></span>(<span class='no'>run</span>, <span class='kw'>densregion</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>gg.objects</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='fu'>theme_bw</span>()))
+})
 <span class='co'>#####################################################</span>
 <span class='co'>###</span>
 <span class='co'>### optimizing mixed space function</span>
 <span class='co'>###</span>
 <span class='co'>#####################################################</span>
-<span class='co'>## Not run: ------------------------------------</span>
-<span class='co'># library(mlrMBO)</span>
-<span class='co'># library(ggplot2)</span>
-<span class='co'># set.seed(1)</span>
-<span class='co'># configureMlr(show.learner.output = FALSE)</span>
-<span class='co'># </span>
-<span class='co'># obj.fun = makeSingleObjectiveFunction(</span>
-<span class='co'>#   name = "Mixed functions",</span>
-<span class='co'>#   fn = function(x) {</span>
-<span class='co'>#     if (x$cat == "a")</span>
-<span class='co'>#       x$num^2</span>
-<span class='co'>#     else</span>
-<span class='co'>#       x$num^2 + 3</span>
-<span class='co'>#   },</span>
-<span class='co'>#   par.set = makeParamSet(</span>
-<span class='co'>#     makeDiscreteParam("cat", values = c("a", "b")),</span>
-<span class='co'>#     makeNumericParam("num", lower = -5, upper = 5)</span>
-<span class='co'>#   ),</span>
-<span class='co'>#   has.simple.signature = FALSE,</span>
-<span class='co'>#   global.opt.value = -1</span>
-<span class='co'># )</span>
-<span class='co'># </span>
-<span class='co'># ctrl = makeMBOControl(propose.points = 1L)</span>
-<span class='co'># ctrl = setMBOControlTermination(ctrl, iters = 10L)</span>
-<span class='co'># ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCritEI(), </span>
-<span class='co'>#   opt = "focussearch", opt.focussearch.points = 500L)</span>
-<span class='co'># </span>
-<span class='co'># lrn = makeMBOLearner(ctrl, obj.fun)</span>
-<span class='co'># </span>
-<span class='co'># design = generateDesign(4L, getParamSet(obj.fun), fun = lhs::maximinLHS)</span>
-<span class='co'># </span>
-<span class='co'># run = exampleRun(obj.fun, design = design, learner = lrn,</span>
-<span class='co'>#   control = ctrl, points.per.dim = 100L, show.info = TRUE)</span>
-<span class='co'># </span>
-<span class='co'># print(run)</span>
-<span class='co'># </span>
-<span class='co'># plotExampleRun(run, densregion = TRUE, gg.objects = list(theme_bw()))</span>
-<span class='co'>## ---------------------------------------------</span>
+<span class='fu'>not_run</span>({
+  <span class='fu'>library</span>(<span class='no'>mlrMBO</span>)
+  <span class='fu'>library</span>(<span class='no'>ggplot2</span>)
+  <span class='fu'>set.seed</span>(<span class='fl'>1</span>)
+  <span class='fu'>configureMlr</span>(<span class='kw'>show.learner.output</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+
+  <span class='no'>obj.fun</span> <span class='kw'>=</span> <span class='fu'>makeSingleObjectiveFunction</span>(
+    <span class='kw'>name</span> <span class='kw'>=</span> <span class='st'>"Mixed functions"</span>,
+    <span class='kw'>fn</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>x</span>) {
+      <span class='kw'>if</span> (<span class='no'>x</span>$<span class='no'>cat</span> <span class='kw'>==</span> <span class='st'>"a"</span>)
+        <span class='no'>x</span>$<span class='no'>num</span>^<span class='fl'>2</span>
+      <span class='kw'>else</span>
+        <span class='no'>x</span>$<span class='no'>num</span>^<span class='fl'>2</span> + <span class='fl'>3</span>
+    },
+    <span class='kw'>par.set</span> <span class='kw'>=</span> <span class='fu'>makeParamSet</span>(
+      <span class='fu'>makeDiscreteParam</span>(<span class='st'>"cat"</span>, <span class='kw'>values</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"a"</span>, <span class='st'>"b"</span>)),
+      <span class='fu'>makeNumericParam</span>(<span class='st'>"num"</span>, <span class='kw'>lower</span> <span class='kw'>=</span> -<span class='fl'>5</span>, <span class='kw'>upper</span> <span class='kw'>=</span> <span class='fl'>5</span>)
+    ),
+    <span class='kw'>has.simple.signature</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+    <span class='kw'>global.opt.value</span> <span class='kw'>=</span> -<span class='fl'>1</span>
+  )
+
+  <span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='makeMBOControl.html'>makeMBOControl</a></span>(<span class='kw'>propose.points</span> <span class='kw'>=</span> <span class='fl'>1L</span>)
+  <span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='setMBOControlTermination.html'>setMBOControlTermination</a></span>(<span class='no'>ctrl</span>, <span class='kw'>iters</span> <span class='kw'>=</span> <span class='fl'>10L</span>)
+  <span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='setMBOControlInfill.html'>setMBOControlInfill</a></span>(<span class='no'>ctrl</span>, <span class='kw'>crit</span> <span class='kw'>=</span> <span class='fu'><a href='infillcrits.html'>makeMBOInfillCritEI</a></span>(),
+    <span class='kw'>opt</span> <span class='kw'>=</span> <span class='st'>"focussearch"</span>, <span class='kw'>opt.focussearch.points</span> <span class='kw'>=</span> <span class='fl'>500L</span>)
+
+  <span class='no'>lrn</span> <span class='kw'>=</span> <span class='fu'><a href='makeMBOLearner.html'>makeMBOLearner</a></span>(<span class='no'>ctrl</span>, <span class='no'>obj.fun</span>)
+
+  <span class='no'>design</span> <span class='kw'>=</span> <span class='fu'>generateDesign</span>(<span class='fl'>4L</span>, <span class='fu'>getParamSet</span>(<span class='no'>obj.fun</span>), <span class='kw'>fun</span> <span class='kw'>=</span> <span class='kw'>lhs</span><span class='kw'>::</span><span class='no'>maximinLHS</span>)
+
+  <span class='no'>run</span> <span class='kw'>=</span> <span class='fu'><a href='exampleRun.html'>exampleRun</a></span>(<span class='no'>obj.fun</span>, <span class='kw'>design</span> <span class='kw'>=</span> <span class='no'>design</span>, <span class='kw'>learner</span> <span class='kw'>=</span> <span class='no'>lrn</span>,
+    <span class='kw'>control</span> <span class='kw'>=</span> <span class='no'>ctrl</span>, <span class='kw'>points.per.dim</span> <span class='kw'>=</span> <span class='fl'>100L</span>, <span class='kw'>show.info</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+
+  <span class='fu'>print</span>(<span class='no'>run</span>)
+
+  <span class='fu'><a href='plotExampleRun.html'>plotExampleRun</a></span>(<span class='no'>run</span>, <span class='kw'>densregion</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>gg.objects</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='fu'>theme_bw</span>()))
+})
 <span class='co'>#####################################################</span>
 <span class='co'>###</span>
 <span class='co'>### optimizing multi-objective function</span>
 <span class='co'>###</span>
 <span class='co'>#####################################################</span>
-<span class='co'>## Not run: ------------------------------------</span>
-<span class='co'># library(mlrMBO)</span>
-<span class='co'># library(ggplot2)</span>
-<span class='co'># set.seed(1)</span>
-<span class='co'># configureMlr(show.learner.output = FALSE)</span>
-<span class='co'># </span>
-<span class='co'># obj.fun = makeZDT1Function(dimensions = 2L)</span>
-<span class='co'># </span>
-<span class='co'># ctrl = makeMBOControl(n.objectives = 2L, propose.points = 2L, save.on.disk.at = integer(0L))</span>
-<span class='co'># ctrl = setMBOControlTermination(ctrl, iters = 5L)</span>
-<span class='co'># ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCritDIB(),</span>
-<span class='co'>#   opt.focussearch.points = 10000L)</span>
-<span class='co'># ctrl = setMBOControlMultiObj(ctrl, parego.s = 100)</span>
-<span class='co'># learner = makeMBOLearner(ctrl, obj.fun)</span>
-<span class='co'># </span>
-<span class='co'># design = generateDesign(5L, getParamSet(obj.fun), fun = lhs::maximinLHS)</span>
-<span class='co'># </span>
-<span class='co'># run = exampleRunMultiObj(obj.fun, design = design, learner = learner, ctrl, points.per.dim = 50L,</span>
-<span class='co'>#   show.info = TRUE, nsga2.args = list())</span>
-<span class='co'># </span>
-<span class='co'># plotExampleRun(run, gg.objects = list(theme_bw()))</span>
-<span class='co'>## ---------------------------------------------</span>
+<span class='fu'>not_run</span>({
+  <span class='fu'>library</span>(<span class='no'>mlrMBO</span>)
+  <span class='fu'>library</span>(<span class='no'>ggplot2</span>)
+  <span class='fu'>set.seed</span>(<span class='fl'>1</span>)
+  <span class='fu'>configureMlr</span>(<span class='kw'>show.learner.output</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+
+  <span class='no'>obj.fun</span> <span class='kw'>=</span> <span class='fu'>makeZDT1Function</span>(<span class='kw'>dimensions</span> <span class='kw'>=</span> <span class='fl'>2L</span>)
+
+  <span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='makeMBOControl.html'>makeMBOControl</a></span>(<span class='kw'>n.objectives</span> <span class='kw'>=</span> <span class='fl'>2L</span>, <span class='kw'>propose.points</span> <span class='kw'>=</span> <span class='fl'>2L</span>, <span class='kw'>save.on.disk.at</span> <span class='kw'>=</span> <span class='fu'>integer</span>(<span class='fl'>0L</span>))
+  <span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='setMBOControlTermination.html'>setMBOControlTermination</a></span>(<span class='no'>ctrl</span>, <span class='kw'>iters</span> <span class='kw'>=</span> <span class='fl'>5L</span>)
+  <span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='setMBOControlInfill.html'>setMBOControlInfill</a></span>(<span class='no'>ctrl</span>, <span class='kw'>crit</span> <span class='kw'>=</span> <span class='fu'><a href='infillcrits.html'>makeMBOInfillCritDIB</a></span>(),
+    <span class='kw'>opt.focussearch.points</span> <span class='kw'>=</span> <span class='fl'>10000L</span>)
+  <span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='setMBOControlMultiObj.html'>setMBOControlMultiObj</a></span>(<span class='no'>ctrl</span>, <span class='kw'>parego.s</span> <span class='kw'>=</span> <span class='fl'>100</span>)
+  <span class='no'>learner</span> <span class='kw'>=</span> <span class='fu'><a href='makeMBOLearner.html'>makeMBOLearner</a></span>(<span class='no'>ctrl</span>, <span class='no'>obj.fun</span>)
+
+  <span class='no'>design</span> <span class='kw'>=</span> <span class='fu'>generateDesign</span>(<span class='fl'>5L</span>, <span class='fu'>getParamSet</span>(<span class='no'>obj.fun</span>), <span class='kw'>fun</span> <span class='kw'>=</span> <span class='kw'>lhs</span><span class='kw'>::</span><span class='no'>maximinLHS</span>)
+
+  <span class='no'>run</span> <span class='kw'>=</span> <span class='fu'><a href='exampleRunMultiObj.html'>exampleRunMultiObj</a></span>(<span class='no'>obj.fun</span>, <span class='kw'>design</span> <span class='kw'>=</span> <span class='no'>design</span>, <span class='kw'>learner</span> <span class='kw'>=</span> <span class='no'>learner</span>, <span class='no'>ctrl</span>, <span class='kw'>points.per.dim</span> <span class='kw'>=</span> <span class='fl'>50L</span>,
+    <span class='kw'>show.info</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>nsga2.args</span> <span class='kw'>=</span> <span class='fu'>list</span>())
+
+  <span class='fu'><a href='plotExampleRun.html'>plotExampleRun</a></span>(<span class='no'>run</span>, <span class='kw'>gg.objects</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='fu'>theme_bw</span>()))
+})
 <span class='co'>#####################################################</span>
 <span class='co'>###</span>
 <span class='co'>### optimizing multi objective function and plots</span>
 <span class='co'>###</span>
 <span class='co'>#####################################################</span>
-<span class='co'>## Not run: ------------------------------------</span>
-<span class='co'># library(mlrMBO)</span>
-<span class='co'># library(ggplot2)</span>
-<span class='co'># set.seed(1)</span>
-<span class='co'># configureMlr(show.learner.output = FALSE)</span>
-<span class='co'># </span>
-<span class='co'># obj.fun = makeDTLZ1Function(dimensions = 5L, n.objectives = 2L)</span>
-<span class='co'># </span>
-<span class='co'># ctrl = makeMBOControl(n.objectives = 2L,</span>
-<span class='co'>#   propose.points = 2L)</span>
-<span class='co'># ctrl = setMBOControlTermination(ctrl, iters = 10L)</span>
-<span class='co'># ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCritEI(), opt.focussearch.points = 1000L,</span>
-<span class='co'>#   opt.focussearch.maxit = 3L)</span>
-<span class='co'># ctrl = setMBOControlMultiObj(ctrl, method = "parego")</span>
-<span class='co'># lrn = makeMBOLearner(ctrl, obj.fun)</span>
-<span class='co'># </span>
-<span class='co'># design = generateDesign(8L, getParamSet(obj.fun), fun = lhs::maximinLHS)</span>
-<span class='co'># </span>
-<span class='co'># res = mbo(obj.fun, design = design, learner = lrn, control = ctrl, show.info = TRUE)</span>
-<span class='co'># </span>
-<span class='co'># plot(res)</span>
-<span class='co'>## ---------------------------------------------</span></div></pre>
+<span class='fu'>not_run</span>({
+  <span class='fu'>library</span>(<span class='no'>mlrMBO</span>)
+  <span class='fu'>library</span>(<span class='no'>ggplot2</span>)
+  <span class='fu'>set.seed</span>(<span class='fl'>1</span>)
+  <span class='fu'>configureMlr</span>(<span class='kw'>show.learner.output</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+
+  <span class='no'>obj.fun</span> <span class='kw'>=</span> <span class='fu'>makeDTLZ1Function</span>(<span class='kw'>dimensions</span> <span class='kw'>=</span> <span class='fl'>5L</span>, <span class='kw'>n.objectives</span> <span class='kw'>=</span> <span class='fl'>2L</span>)
+
+  <span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='makeMBOControl.html'>makeMBOControl</a></span>(<span class='kw'>n.objectives</span> <span class='kw'>=</span> <span class='fl'>2L</span>,
+    <span class='kw'>propose.points</span> <span class='kw'>=</span> <span class='fl'>2L</span>)
+  <span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='setMBOControlTermination.html'>setMBOControlTermination</a></span>(<span class='no'>ctrl</span>, <span class='kw'>iters</span> <span class='kw'>=</span> <span class='fl'>10L</span>)
+  <span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='setMBOControlInfill.html'>setMBOControlInfill</a></span>(<span class='no'>ctrl</span>, <span class='kw'>crit</span> <span class='kw'>=</span> <span class='fu'><a href='infillcrits.html'>makeMBOInfillCritEI</a></span>(), <span class='kw'>opt.focussearch.points</span> <span class='kw'>=</span> <span class='fl'>1000L</span>,
+    <span class='kw'>opt.focussearch.maxit</span> <span class='kw'>=</span> <span class='fl'>3L</span>)
+  <span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='setMBOControlMultiObj.html'>setMBOControlMultiObj</a></span>(<span class='no'>ctrl</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"parego"</span>)
+  <span class='no'>lrn</span> <span class='kw'>=</span> <span class='fu'><a href='makeMBOLearner.html'>makeMBOLearner</a></span>(<span class='no'>ctrl</span>, <span class='no'>obj.fun</span>)
+
+  <span class='no'>design</span> <span class='kw'>=</span> <span class='fu'>generateDesign</span>(<span class='fl'>8L</span>, <span class='fu'>getParamSet</span>(<span class='no'>obj.fun</span>), <span class='kw'>fun</span> <span class='kw'>=</span> <span class='kw'>lhs</span><span class='kw'>::</span><span class='no'>maximinLHS</span>)
+
+  <span class='no'>res</span> <span class='kw'>=</span> <span class='fu'><a href='mbo.html'>mbo</a></span>(<span class='no'>obj.fun</span>, <span class='kw'>design</span> <span class='kw'>=</span> <span class='no'>design</span>, <span class='kw'>learner</span> <span class='kw'>=</span> <span class='no'>lrn</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='no'>ctrl</span>, <span class='kw'>show.info</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+
+  <span class='fu'>plot</span>(<span class='no'>res</span>)
+})</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

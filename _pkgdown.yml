@@ -1,4 +1,4 @@
-templates:
+template:
   params:
     bootswatch: cosmo
 
@@ -18,6 +18,8 @@ navbar:
         href: articles/supplementary/noisy_optimization.html
       - text: Infill Criteria
         href: articles/supplementary/infill_criteria
+      - text: Machine learning with mlrMBO
+        href: articles/supplementary/machine_learning_with_mlrmbo.html
   - text: Reference
     icon: fa-book
     href: reference/index.html

@@ -27,5 +27,11 @@ proposePointsMSPOT = function(opt.state, ...) {
   crit.vals = cbind(crit.vals, prop.points$prop.hv.contrs)
   prop.type = rep(paste0("infill_", infill.crit.id), n)
 
-  return(list(prop.points = ppoints, propose.time = secs, crit.vals = crit.vals, prop.type = prop.type, errors.model = NA_character_))
+  makeProposal(
+    control = control,
+    prop.points = ppoints,
+    propose.time = secs,
+    crit.vals = crit.vals,
+    prop.type = prop.type
+  )
 }
