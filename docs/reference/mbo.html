@@ -23,7 +23,8 @@
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-
+  
+  
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -74,6 +75,9 @@
     </li>
     <li>
       <a href="../articles/supplementary/noisy_optimization.html">Noisy Optimization</a>
+    </li>
+    <li>
+      <a href="../articles/supplementary/infill_criteria.html">Infill Criteria</a>
     </li>
     <li>
       <a href="../articles/supplementary/machine_learning_with_mlrmbo.html">Machine learning with mlrMBO</a>
@@ -186,7 +190,7 @@ Further arguments passed to fitness function.</p></td>
 <span class='co'># use 500 points in the focussearch (should be sufficient for 2d)</span>
 <span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='setMBOControlInfill.html'>setMBOControlInfill</a></span>(<span class='no'>ctrl</span>, <span class='kw'>opt.focussearch.points</span> <span class='kw'>=</span> <span class='fl'>500</span>)
 <span class='co'># create initial design</span>
-<span class='no'>des</span> <span class='kw'>=</span> <span class='fu'>generateDesign</span>(<span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>5L</span>, <span class='fu'>getParamSet</span>(<span class='no'>obj.fun</span>), <span class='kw'>fun</span> <span class='kw'>=</span> <span class='kw'>lhs</span><span class='kw'>::</span><span class='no'>maximinLHS</span>)
+<span class='no'>des</span> <span class='kw'>=</span> <span class='fu'>generateDesign</span>(<span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>5L</span>, <span class='fu'>getParamSet</span>(<span class='no'>obj.fun</span>), <span class='kw'>fun</span> <span class='kw'>=</span> <span class='kw pkg'>lhs</span><span class='kw ns'>::</span><span class='no'><a href='http://www.rdocumentation.org/packages/lhs/topics/maximinLHS'>maximinLHS</a></span>)
 
 <span class='co'># start mbo</span>
 <span class='no'>res</span> <span class='kw'>=</span> <span class='fu'>mbo</span>(<span class='no'>obj.fun</span>, <span class='kw'>design</span> <span class='kw'>=</span> <span class='no'>des</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='no'>ctrl</span>)</div><div class='output co'>#&gt; <span class='message'>Loading required package: rgenoud</span></div><div class='output co'>#&gt; <span class='message'>##  rgenoud (Version 5.7-12.4, Build Date: 2015-07-19)</span>
@@ -203,23 +207,23 @@ Further arguments passed to fitness function.</p></td>
 #&gt; Optimization path
 #&gt; 5 + 3 entries in total, displaying last 10 (or less):
 #&gt;            x1          x2           y dob eol error.message exec.time
-#&gt; 1  0.49412784  0.27838269  0.51896329   0  NA          &lt;NA&gt;         0
-#&gt; 2  0.19221587  0.09660861  0.13340534   0  NA          &lt;NA&gt;         0
-#&gt; 3 -0.57942149 -0.38791501 -0.04252991   0  NA          &lt;NA&gt;         0
-#&gt; 4  0.87832955 -0.72457760  0.10864358   0  NA          &lt;NA&gt;         0
-#&gt; 5 -0.98750787  0.69022501  1.61188250   0  NA          &lt;NA&gt;         0
-#&gt; 6  0.99980615 -0.23732034  0.76451342   1  NA          &lt;NA&gt;         0
-#&gt; 7 -0.11653973 -0.59226928 -0.54466372   2  NA          &lt;NA&gt;         0
-#&gt; 8  0.07150345 -0.99997326 -0.83634379   3  NA          &lt;NA&gt;         0
+#&gt; 1  0.49412784  0.27838269  0.51896329   0  NA          &lt;NA&gt;     0.000
+#&gt; 2  0.19221587  0.09660861  0.13340534   0  NA          &lt;NA&gt;     0.000
+#&gt; 3 -0.57942149 -0.38791501 -0.04252991   0  NA          &lt;NA&gt;     0.000
+#&gt; 4  0.87832955 -0.72457760  0.10864358   0  NA          &lt;NA&gt;     0.000
+#&gt; 5 -0.98750787  0.69022501  1.61188250   0  NA          &lt;NA&gt;     0.000
+#&gt; 6  0.99980615 -0.23732034  0.76451342   1  NA          &lt;NA&gt;     0.000
+#&gt; 7 -0.11653973 -0.59226928 -0.54466372   2  NA          &lt;NA&gt;     0.000
+#&gt; 8  0.07150345 -0.99997326 -0.83634379   3  NA          &lt;NA&gt;     0.001
 #&gt;           cb error.model train.time  prop.type propose.time        se
 #&gt; 1         NA        &lt;NA&gt;         NA initdesign           NA        NA
 #&gt; 2         NA        &lt;NA&gt;         NA initdesign           NA        NA
 #&gt; 3         NA        &lt;NA&gt;         NA initdesign           NA        NA
 #&gt; 4         NA        &lt;NA&gt;         NA initdesign           NA        NA
 #&gt; 5         NA        &lt;NA&gt;         NA initdesign           NA        NA
-#&gt; 6 -0.4123341        &lt;NA&gt;      0.242  infill_cb        0.116 0.3238450
-#&gt; 7 -0.3683559        &lt;NA&gt;      0.706  infill_cb        0.063 0.4615345
-#&gt; 8 -1.0342509        &lt;NA&gt;      0.042  infill_cb        0.054 0.2278121
+#&gt; 6 -0.4123341        &lt;NA&gt;      0.254  infill_cb        0.122 0.3238450
+#&gt; 7 -0.3683559        &lt;NA&gt;      0.677  infill_cb        0.090 0.4615345
+#&gt; 8 -1.0342509        &lt;NA&gt;      0.036  infill_cb        0.076 0.2278121
 #&gt;          mean lambda
 #&gt; 1          NA     NA
 #&gt; 2          NA     NA
@@ -228,9 +232,9 @@ Further arguments passed to fitness function.</p></td>
 #&gt; 5          NA     NA
 #&gt; 6 -0.08848917      1
 #&gt; 7  0.09317866      1
-#&gt; 8 -0.80643879      1</div><div class='input'><span class='fu'>not_run</span>({
-  <span class='fu'>plot</span>(<span class='no'>res</span>)
-})</div></pre>
+#&gt; 8 -0.80643879      1</div><span class='co'># NOT RUN {</span>
+<span class='fu'>plot</span>(<span class='no'>res</span>)
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

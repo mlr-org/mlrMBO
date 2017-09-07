@@ -54,6 +54,9 @@
       <a href="../../articles/supplementary/noisy_optimization.html">Noisy Optimization</a>
     </li>
     <li>
+      <a href="../../articles/supplementary/infill_criteria.html">Infill Criteria</a>
+    </li>
+    <li>
       <a href="../../articles/supplementary/machine_learning_with_mlrmbo.html">Machine learning with mlrMBO</a>
     </li>
   </ul>
@@ -109,7 +112,7 @@ fun =<span class="st"> </span>function(x) {
 }
 obj.fun =<span class="st"> </span><span class="kw">makeSingleObjectiveFunction</span>(<span class="dt">name =</span> <span class="st">"noisy_parable"</span>, <span class="dt">fn =</span> fun, <span class="dt">has.simple.signature =</span> <span class="ot">TRUE</span>, <span class="dt">par.set =</span> <span class="kw">makeNumericParamSet</span>(<span class="st">"x"</span>, <span class="dv">1</span>, -<span class="dv">5</span>, <span class="dv">5</span>), <span class="dt">noisy =</span> <span class="ot">TRUE</span>)
 <span class="co"># visualize the function</span>
-<span class="kw">autoplot</span>(obj.fun, <span class="dt">length.out =</span> <span class="dv">200</span>)</code></pre></div>
+<span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/autoplot">autoplot</a></span>(obj.fun, <span class="dt">length.out =</span> <span class="dv">200</span>)</code></pre></div>
 <p><img src="noisy_optimization_files/figure-html/objective_function-1.svg" width="672"></p>
 <p>As you can see the function is more noisy for large values of <span class="math inline">\(\boldsymbol{x}\)</span> so that the true optimum at <code>x=0</code> appears to be hidden. It is important to consider the way the final solution is generated (<code>final.method</code>). By default the best observed <span class="math inline">\(y\)</span> value and its corresponding <span class="math inline">\(\boldsymbol{x}\)</span>-values are returned as the optimal solution but in the case of noisy optimization the lowest observed <span class="math inline">\(y\)</span> value can just be the result of noise. Preferably the <em>best predicted</em> value of <span class="math inline">\(y\)</span> is taken as the prediction of the surrogate reflects the mean and is less affected by the noise.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span>(<span class="dt">final.method =</span> <span class="st">"best.predicted"</span>, <span class="dt">final.evals =</span> <span class="dv">10</span>)</code></pre></div>
@@ -176,7 +179,8 @@ res$mbo.res$y
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
         <div id="tocnav">
-      <h2>Contents</h2>
+      <h2 class="hasAnchor">
+<a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
 <li><a href="#purpose">Purpose</a></li>
       <li><a href="#infill-criteria-for-noisy-optimization">Infill criteria for noisy optimization</a></li>

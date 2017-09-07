@@ -54,6 +54,9 @@
       <a href="../articles/supplementary/noisy_optimization.html">Noisy Optimization</a>
     </li>
     <li>
+      <a href="../articles/supplementary/infill_criteria.html">Infill Criteria</a>
+    </li>
+    <li>
       <a href="../articles/supplementary/machine_learning_with_mlrmbo.html">Machine learning with mlrMBO</a>
     </li>
   </ul>
@@ -142,7 +145,7 @@ obj.fun =<span class="st"> </span><span class="kw">convertToMinimization</span>(
 ## Number of parameters: 1
 ##            Type len Def  Constr Req Tunable Trafo
 ## x numericvector   1   - -1 to 1   -    TRUE     -
-## Global optimum objective value of 0.1000 at
+## Global optimum objective value of -0.1000 at
 ##   x
 ## 1 0
 ggplot2::<span class="kw">autoplot</span>(obj.fun)</code></pre></div>
@@ -168,12 +171,12 @@ ggplot2::<span class="kw">autoplot</span>(obj.fun)</code></pre></div>
 ## Number of parameters: 2
 ##            Type len Def  Constr Req Tunable Trafo
 ## x numericvector   2   - -5 to 5   -    TRUE     -</code></pre></div>
-<p>Check <code>?smoof::makeSingleObjectiveFunction</code> for further details.</p>
+<p>Check <code><a href="http://www.rdocumentation.org/packages/smoof/topics/makeSingleObjectiveFunction">?smoof::makeSingleObjectiveFunction</a></code> for further details.</p>
 </div>
 <div id="initial-design" class="section level3">
 <h3 class="hasAnchor">
 <a href="#initial-design" class="anchor"></a>Initial Design</h3>
-<p>Before MBO can really start, it needs a set of already evaluated points - the <em>inital design</em>, as we have to initially learn our first machine learning regression model to propose new points for evaluation. If no design is given (i.e. <code>design = NULL</code>), <code><a href="../reference/mbo.html">mbo()</a></code> will use a <em>Maximin Latin Hypercube</em> <code>lhs::maximinLHS()</code> design with <code>n = 4 * getNumberOfParameters(obj.fun)</code> points. If the design does not include function outcomes <code><a href="../reference/mbo.html">mbo()</a></code> will evaluate the design first before starting with the MBO algorithm. In this example we generate our own design.</p>
+<p>Before MBO can really start, it needs a set of already evaluated points - the <em>inital design</em>, as we have to initially learn our first machine learning regression model to propose new points for evaluation. If no design is given (i.e. <code>design = NULL</code>), <code><a href="../reference/mbo.html">mbo()</a></code> will use a <em>Maximin Latin Hypercube</em> <code><a href="http://www.rdocumentation.org/packages/lhs/topics/maximinLHS">lhs::maximinLHS()</a></code> design with <code>n = 4 * getNumberOfParameters(obj.fun)</code> points. If the design does not include function outcomes <code><a href="../reference/mbo.html">mbo()</a></code> will evaluate the design first before starting with the MBO algorithm. In this example we generate our own design.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">des =<span class="st"> </span><span class="kw">generateDesign</span>(<span class="dt">n =</span> <span class="dv">5</span>, <span class="dt">par.set =</span> <span class="kw">getParamSet</span>(obj.fun), <span class="dt">fun =</span> lhs::randomLHS)</code></pre></div>
 <p>We will also precalculate the results:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">des$y =<span class="st"> </span><span class="kw">apply</span>(des, <span class="dv">1</span>, obj.fun)</code></pre></div>
@@ -239,16 +242,16 @@ control =<span class="st"> </span><span class="kw"><a href="../reference/setMBOC
 ## 14  0.0327825630 -0.08595717   9  NA          &lt;NA&gt;         0 -1.574032e-05
 ## 15  0.0001293507 -0.09999978  10  NA          &lt;NA&gt;         0 -1.035293e-05
 ##    error.model train.time prop.type propose.time           se        mean
-## 6         &lt;NA&gt;      0.172 infill_ei        0.126 6.915038e-02 -0.10692782
-## 7         &lt;NA&gt;      0.300 infill_ei        0.043 7.139280e-02 -0.09925429
-## 8         &lt;NA&gt;      0.015 infill_ei        0.043 1.174245e-02 -0.09714923
-## 9         &lt;NA&gt;      0.017 infill_ei        0.044 1.928035e-03 -0.10030872
-## 10        &lt;NA&gt;      0.016 infill_ei        0.062 4.537499e-04 -0.09994572
-## 11        &lt;NA&gt;      0.026 infill_ei        0.047 4.007375e-04 -0.09978520
-## 12        &lt;NA&gt;      0.015 infill_ei        0.049 8.330914e-05 -0.09999587
-## 13        &lt;NA&gt;      0.016 infill_ei        0.154 1.710874e-01  0.48800629
-## 14        &lt;NA&gt;      0.015 infill_ei        0.048 6.460668e-03 -0.08425606
-## 15        &lt;NA&gt;      0.017 infill_ei        0.047 2.210341e-05 -0.09999986</code></pre></div>
+## 6         &lt;NA&gt;      0.195 infill_ei        0.156 6.915038e-02 -0.10692782
+## 7         &lt;NA&gt;      0.341 infill_ei        0.051 7.139280e-02 -0.09925429
+## 8         &lt;NA&gt;      0.016 infill_ei        0.049 1.174245e-02 -0.09714923
+## 9         &lt;NA&gt;      0.015 infill_ei        0.050 1.928035e-03 -0.10030872
+## 10        &lt;NA&gt;      0.017 infill_ei        0.162 4.537499e-04 -0.09994572
+## 11        &lt;NA&gt;      0.028 infill_ei        0.049 4.007375e-04 -0.09978520
+## 12        &lt;NA&gt;      0.015 infill_ei        0.047 8.330914e-05 -0.09999587
+## 13        &lt;NA&gt;      0.017 infill_ei        0.045 1.710874e-01  0.48800629
+## 14        &lt;NA&gt;      0.019 infill_ei        0.046 6.460668e-03 -0.08425606
+## 15        &lt;NA&gt;      0.018 infill_ei        0.048 2.210341e-05 -0.09999986</code></pre></div>
 </div>
 </div>
 <div id="visualization" class="section level2">
@@ -261,8 +264,8 @@ control =<span class="st"> </span><span class="kw"><a href="../reference/setMBOC
 ## Number of parameters        : 1
 ## Parameter names             : x
 ## Parameter types             : numericvector
-## Global Opt (known)          : 1.0000e-01
-## Gap for best point          : 1.9998e-01
+## Global Opt (known)          : -1.0000e-01
+## Gap for best point          : 2.1884e-05
 ## True points per dim.        : 50
 ## Objectives                    : 1
 ## Points proposed per iter      : 1
@@ -291,7 +294,8 @@ control =<span class="st"> </span><span class="kw"><a href="../reference/setMBOC
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
         <div id="tocnav">
-      <h2>Contents</h2>
+      <h2 class="hasAnchor">
+<a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
 <li><a href="#overview">Overview</a></li>
       <li>

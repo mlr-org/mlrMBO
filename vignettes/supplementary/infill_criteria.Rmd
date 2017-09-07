@@ -29,7 +29,7 @@ The infill criteria plays an important part for the optimization process in MBO 
 
 ## Infill Criteria
 
-In addition to the most often used _Expected Improvement_, there are also _Confidence Bound_, _Augmented Expected Improvement_, _Expected Quantile Improvement_, _Direct indicator-based Search, the _Mean Response_ and the use of _Standard Error_ implemented.
+In addition to the most often used _Expected Improvement_, there are also _Confidence Bound_, _Augmented Expected Improvement_, _Expected Quantile Improvement_, _Direct indicator-based Search_, the _Mean Response_ and the use of _Standard Error_ implemented.
 Most criteria take the mean and variance estimate of the surrogate model into account, so that the choice of infill criteria is connected to the choice of the surrogate regression method.
 It's also possible to generate custom infill criteria.
 In the first step we show the general setting for the infill criteria in `mlrMBO`.

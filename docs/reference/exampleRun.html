@@ -23,7 +23,8 @@
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-
+  
+  
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -76,6 +77,9 @@
       <a href="../articles/supplementary/noisy_optimization.html">Noisy Optimization</a>
     </li>
     <li>
+      <a href="../articles/supplementary/infill_criteria.html">Infill Criteria</a>
+    </li>
+    <li>
       <a href="../articles/supplementary/machine_learning_with_mlrmbo.html">Machine learning with mlrMBO</a>
     </li>
   </ul>
@@ -121,7 +125,7 @@ Rendering the plots without displaying them is possible via the function
 <p>Please note the following things:
 - The true objective function (and later everything which is predicted from our surrogate model)
   is evaluated on a regular spaced grid. These evaluations are stored in the result object.
-  You can control the resultion of this grid via <code>points.per.dim</code>.
+  You can control the resolution of this grid via <code>points.per.dim</code>.
   Parallelization of these evaluations is possible with the R package parallelMap on the level <code>mlrMBO.feval</code>.
 - In every iteration the fitted, approximating surrogate model is stored in the result object
   (via <code>store.model.at</code> in <code>control</code>) so we can later visualize it quickly.
