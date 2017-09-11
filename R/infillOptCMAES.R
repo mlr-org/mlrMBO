@@ -56,8 +56,11 @@ infillOptCMAES = function(infill.crit, models, control, par.set, opt.path, desig
   if (is.infinite(result$best.fitness)) {
     warningf("Infill optimizer CMA-ES crashed. Random point generated instead.")
     res = t(sampleValue(par.set))
+    constant.model = TRUE
   } else {
     res = t(result$best.param)
+    constant.model = FALSE
   }
-  setColNames(as.data.frame(res), rep.pids)
+  res = setColNames(as.data.frame(res), rep.pids)
+  setAttribute(res, "constant.model", constant.model)
 }

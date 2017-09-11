@@ -122,7 +122,7 @@ makeMBOControl = function(n.objectives = 1L,
   assertList(resample.measures, types = "Measure")
 
   assertString(output.num.format)
-
+ 
   control = makeS3Obj("MBOControl",
     n.objectives = n.objectives,
     propose.points = propose.points,

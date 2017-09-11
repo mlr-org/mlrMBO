@@ -81,3 +81,17 @@ test_that("mbo works with impute and failure model", {
   expect_character(as.character(op$error.model[13L]), pattern = "leading minor of order")
   expect_true(all(op$prop.type[13:14] == "random_error"))
 })
+
+test_that("mbo recognizes constant model prediction", {
+  des = testd.fsphere.2d
+  des$y = mean(apply(des, 1, testf.fsphere.2d))
+  # make sure model does not break, and we get a failure model
+  learner = makeLearner("regr.km", predict.type = "se")
+  ctrl = makeMBOControl()
+  ctrl = setMBOControlTermination(ctrl, iters = 4L)
+  ctrl = setMBOControlInfill(ctrl, opt.focussearch.points = 100L)
+  or = mbo(testf.fsphere.2d, des, learner = learner, control = ctrl)
+  expect_equal(getOptPathLength(or$opt.path), 14)
+  op = as.data.frame(or$opt.path)
+  expect_true(sum(op$constant.model)<5)
+})
