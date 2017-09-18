@@ -62,7 +62,8 @@ getOptStateTimeUsed = function(opt.state) {
   opt.state$time.used
 }
 
-getOptStateOptPath = function(opt.state) {
+getOptStateOptPath = function(opt.state, ...) {
+  #subsetOptPath(opt.path = opt.state$opt.path, opt.state = opt.state, ...)
   opt.state$opt.path
 }
 
@@ -134,7 +135,7 @@ getOptStateValidTerminationStates = function() {
   c("term.iter", "term.time", "term.exectime", "term.yval", "term.feval", "term.custom")
 }
 
-getOpstStateConceptDriftParam = function(opt.state) {
+getOptStateConceptDriftParam = function(opt.state) {
   dob = getOptStateLoop(opt.state)
   opt.problem = getOptStateOptProblem(opt.state)
   control = getOptProblemControl(opt.problem)
