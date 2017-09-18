@@ -6,20 +6,20 @@ OptPathNg = R6Class(c("OptPathNg", "OptPath"),
   public = list(
     initialize = function(par.set, y.names = "y", minimize = TRUE) {
       x.names = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
-      private$tab = data.table(
+      self$data = data.table(
         dob = integer(0L),
         eol = integer(0L),
         msg = character(0L),
         exec.time = double(0L),
         extra = list())
       Map(function(id, type) {
-        set(private$tab, j = id, value = get(type, mode = "function")())
+        set(self$data, j = id, value = get(type, mode = "function")())
         },
         id = x.names,
         type = getParamTypes(par.set, df.cols = TRUE)
       )
       for (y.name in y.names) {
-        set(private$tab, j = y.name, value = numeric(0L))
+        set(self$data, j = y.name, value = numeric(0L))
       }
       names(minimize) = y.names
       self$x.names = x.names
@@ -29,42 +29,26 @@ OptPathNg = R6Class(c("OptPathNg", "OptPath"),
     },
 
     add = function(x, y, dob = NULL, eol = NA_integer_, msg = NA_character_, exec.time = NA_real_, extra = NULL) {
-      if (private$cache.pos == length(private$cache))
-        self$flush()
-
-      cache.pos = private$cache.pos = private$cache.pos + 1L
-      private$cache[[cache.pos]] = c(x, list(y = y, dob = dob %??% (nrow(private$tab) + cache.pos),
-          eol = eol, msg = msg, exec.time = exec.time, extra = list(extra)))
-    },
-
-    flush = function() {
-      if (private$cache.pos > 0L) {
-        cached = rbindlist(head(private$cache, private$cache.pos), fill = TRUE)
-        private$tab = rbindlist(list(private$tab, cached), fill = TRUE)
-        setorderv(private$tab, "dob")
-        private$cache.pos = 0L
+      if (!is.list(y)) {
+        y = setNames(as.list(y), self$y.names)
       }
+      assert_list(x, names = "strict")
+      assert_list(y, names = "strict")
+      self$data = rbindlist(
+        list(self$data, c(list(dob = dob %??% (nrow(self$data) + 1), eol = eol, msg = msg, exec.time = exec.time, extra = list(extra)), x, y))
+        )
     },
     x.names = NULL,
     y.names = NULL,
     par.set = NULL,
-    minimize = NULL
+    minimize = NULL,
+    data = NULL
   ),
 
   active = list(
-    data = function() {
-      self$flush()
-      private$tab
-    },
     env = function() {
       self$data
     }
-  ),
-
-  private = list(
-    cache.pos = 0L,
-    cache = vector("list", 512L),
-    tab = NULL
   )
 )
 
