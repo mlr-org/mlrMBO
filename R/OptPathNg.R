@@ -71,6 +71,7 @@ makeOptPathDF = function(par.set, y.names, minimize, add.transformed.x = FALSE, 
   return(op)
 }
 
+#' @export
 addOptPathEl.OptPathNg = function(op, x, y, dob = getOptPathLength(op)+1L, eol = NA_integer_, error.message = NA_character_, exec.time = NA_real_, extra = NULL, check.feasible = FALSE) {
   if (isTRUE(check.feasible)) {
     warning("check.feasible is ignored for OptPathNg")
@@ -85,11 +86,12 @@ addOptPathEl.OptPathNg = function(op, x, y, dob = getOptPathLength(op)+1L, eol =
 }
 ## overwrite getters of ParamHelpers::
 
+#' @export
 getOptPathLength.OptPathNg = function(op) {
   nrow(op$data)
 }
 
-
+#' @export
 getOptPathExecTimes.OptPathNg = function(op, dob, eol) {
   if (!missing(dob) || !missing(eol)) {
     stop("dob and eol not supported for OptPathNg")
@@ -97,7 +99,7 @@ getOptPathExecTimes.OptPathNg = function(op, dob, eol) {
   op$data$exec.time
 }
 
-
+#' @export
 getOptPathX.OptPathNg = function(op, dob, eol) {
   if (!missing(dob) || !missing(eol)) {
     stop("dob and eol not supported for OptPathNg")
@@ -105,6 +107,7 @@ getOptPathX.OptPathNg = function(op, dob, eol) {
   op$data[,op$x.names, with = FALSE]
 }
 
+#' @export
 getOptPathY.OptPathNg = function(op, names, dob, eol, drop = TRUE) {
   if (!missing(dob) || !missing(eol)) {
     stop("dob, eol and drop not supported for OptPathNg")
@@ -118,12 +121,13 @@ getOptPathY.OptPathNg = function(op, names, dob, eol, drop = TRUE) {
   }
 }
 
+#' @export
 getOptPathDOB.OptPathNg = function(op, dob = NULL, eol = NULL) {
   dobeol.sub = getOptPathDobAndEolIndex(op, dob, eol)
   op$data$dob[dobeol.sub]
 }
 
-
+#' @export
 getOptPathErrorMessages.OptPathNg = function(op, dob, eol) {
   if (!missing(dob) || !missing(eol)) {
     stop("dob and eol not supported for OptPathNg")
@@ -131,7 +135,7 @@ getOptPathErrorMessages.OptPathNg = function(op, dob, eol) {
   op$data$msg
 }
 
-
+#' @export
 getOptPathEl.OptPathNg = function(op, index) {
   x = dfRowToList(df = getOptPathX(op), par.set = op$par.set, i = index)
   y = getOptPathY(op)
@@ -145,19 +149,24 @@ getOptPathEl.OptPathNg = function(op, index) {
 
 #not supported warnings
 
+#' @export
 getOptPathCol.OptPathNg = function(op, name, dob = op$env$dob, eol = op$env$eol) {
   stop("Not supported for OptPathNg!")
 }
 
+#' @export
 getOptPathCols.OptPathNg = function(op, names, dob = op$env$dob, eol = op$env$eol, row.names = NULL) {
   stop("Not supported for OptPathNg!")
 }
 
+#' @export
 getOptPathEOL.OptPathNg = function(op, dob = op$env$dob, eol = op$env$eol) {
   stop("Not supported for OptPathNg!")
 }
 
 # data.frame conversion
+
+#' @export
 as.data.frame.OptPathNg = function(x, row.names = NULL, optional, include.x = TRUE, include.y = TRUE, include.rest = TRUE, dob = NULL, eol = NULL, ...) {
 
   if (!missing(optional)) {
