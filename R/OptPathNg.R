@@ -211,3 +211,18 @@ getOptPathDobAndEolIndex = function(op, dob = NULL, eol = NULL) {
   }
   dob.sub & eol.sub
 }
+
+
+
+# WARNING: Obviously subsetting an OptPath can result in objects that do not resemble what we expect from an OptPath
+`[.OptPathNg` = function(x, ...) {
+  z = x$clone()
+  z$data = '['(z$data, ...)
+  z
+}
+
+`[[.OptPathNg` = function(x, ...) {
+  z = x$clone()
+  z$data = '[['(z$data, ...)
+  z
+}
