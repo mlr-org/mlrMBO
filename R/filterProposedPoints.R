@@ -28,7 +28,7 @@ filterProposedPoints = function(prop, opt.state) {
 
   # look at min distance from i-point to current set (design + accepted)
   for (i in seq_len(n)) {
-    pp = prop$prop.points[i, ]
+    pp = prop$prop.points[i, , drop = FALSE]
     min.dist = min(apply(design, 1L, calcMaxMetric, y = pp))
     # if too close, mark i-point, otherwise add it to set
     if (min.dist < control$filter.proposed.points.tol)

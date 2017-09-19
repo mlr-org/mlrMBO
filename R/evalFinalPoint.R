@@ -8,7 +8,7 @@ evalFinalPoint = function(opt.state, x.df) {
   # do some final evaluations and compute mean of target fun values
   # FIXME: Do we really want the resampling of the last point be part of the opt.path and thus be part of a new model fit if we restart the problem?
   showInfo(getOptProblemShowInfo(opt.problem), "Performing %i final evals", n)
-  x.df[seq_len(n), ] = x.df
+  x.df = x.df[rep(1, times = n), ]
   prop = makeProposal(
     control = control,
     prop.points = x.df,

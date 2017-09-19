@@ -92,7 +92,7 @@ getOptPathLength.OptPathNg = function(op) {
 
 getOptPathExecTimes.OptPathNg = function(op, dob, eol) {
   if (!missing(dob) || !missing(eol)) {
-    error("dob and eol not supported for OptPathNg")
+    stop("dob and eol not supported for OptPathNg")
   }
   op$data$exec.time
 }
@@ -100,35 +100,33 @@ getOptPathExecTimes.OptPathNg = function(op, dob, eol) {
 
 getOptPathX.OptPathNg = function(op, dob, eol) {
   if (!missing(dob) || !missing(eol)) {
-    error("dob and eol not supported for OptPathNg")
+    stop("dob and eol not supported for OptPathNg")
   }
   op$data[,op$x.names, with = FALSE]
 }
 
-getOptPathY.OptPathNg = function(op, names, dob, eol, drop) {
-  if (!missing(dob) || !missing(eol) || !missing(drop)) {
-    error("dob, eol and drop not supported for OptPathNg")
+getOptPathY.OptPathNg = function(op, names, dob, eol, drop = TRUE) {
+  if (!missing(dob) || !missing(eol)) {
+    stop("dob, eol and drop not supported for OptPathNg")
   }
   names = names %??% op$y.names
   res = op$data[, names, with = FALSE]
-  if (ncol(res) == 1) {
+  if (drop && ncol(res) == 1) {
     res[[1]]
   } else {
     as.matrix(res)
   }
 }
 
-getOptPathDob.OptPathNg = function(op, dob, eol) {
-  if (!missing(dob) || !missing(eol)) {
-    error("dob and eol not supported for OptPathNg")
-  }
-  op$data$dob
+getOptPathDOB.OptPathNg = function(op, dob = NULL, eol = NULL) {
+  dobeol.sub = getOptPathDobAndEolIndex(op, dob, eol)
+  op$data$dob[dobeol.sub]
 }
 
 
 getOptPathErrorMessages.OptPathNg = function(op, dob, eol) {
   if (!missing(dob) || !missing(eol)) {
-    error("dob and eol not supported for OptPathNg")
+    stop("dob and eol not supported for OptPathNg")
   }
   op$data$msg
 }
@@ -142,36 +140,39 @@ getOptPathEl.OptPathNg = function(op, index) {
   } else {
     y = y[index]
   }
-  res = list(x = x, y = y, dob = op$data$dob[index], eol = op$data$eol[index], error.message = op$data$msg[index], exec.time = op$data$exec.time[index], extra = op$data$extra[index])
+  res = list(x = x, y = y, dob = op$data$dob[index], eol = op$data$eol[index], error.message = op$data$msg[index], exec.time = op$data$exec.time[index], extra = op$data$extra[[index]])
 }
 
 #not supported warnings
 
 getOptPathCol.OptPathNg = function(op, name, dob = op$env$dob, eol = op$env$eol) {
-  error("Not supported for OptPathNg!")
+  stop("Not supported for OptPathNg!")
 }
 
 getOptPathCols.OptPathNg = function(op, names, dob = op$env$dob, eol = op$env$eol, row.names = NULL) {
-  error("Not supported for OptPathNg!")
+  stop("Not supported for OptPathNg!")
 }
 
 getOptPathEOL.OptPathNg = function(op, dob = op$env$dob, eol = op$env$eol) {
-  error("Not supported for OptPathNg!")
+  stop("Not supported for OptPathNg!")
 }
 
 # data.frame conversion
-as.data.frame.OptPathNg = function(x, row.names = NULL, optional, include.x = TRUE, include.y = TRUE, include.rest = TRUE, dob, eol, ...) {
+as.data.frame.OptPathNg = function(x, row.names = NULL, optional, include.x = TRUE, include.y = TRUE, include.rest = TRUE, dob = NULL, eol = NULL, ...) {
 
-  if (!missing(optional) || !missing(dob) || !missing(eol)) {
-    stop("optional, dob or eol not supported for OptPathNg")
+  if (!missing(optional)) {
+    stop("optional is not supported for OptPathNg")
   }
 
   dt = data.table::copy(x$data)
 
+  dobeol.sub = getOptPathDobAndEolIndex(x, dob, eol)
+  dt = dt[dobeol.sub, ]
+
     if (include.rest == FALSE) {
     dt[, c("dob", "eol", "msg", "exec.time", "extra"):=NULL]
   } else {
-    extra = rbindlist(dt$extra)
+    extra = rbindlist(dt$extra, fill = TRUE)
     dt[, "extra" := NULL]
     dt = cbind(dt, extra)
   }
@@ -182,6 +183,22 @@ as.data.frame.OptPathNg = function(x, row.names = NULL, optional, include.x = TR
     dt[, x$y.names := NULL]
   }
 
+
   as.data.frame(dt, ...)
 }
 
+# helpers
+getOptPathDobAndEolIndex = function(op, dob = NULL, eol = NULL) {
+  if (!is.null(dob)) {
+    dob.sub = op$data$dob %in% dob
+  } else {
+    dob.sub = rep(TRUE, times = nrow(op$data))
+  }
+
+  if (!is.null(eol)) {
+    eol.sub = op$data$eol %in% eol
+  } else {
+    eol.sub = rep(TRUE, times = nrow(op$data))
+  }
+  dob.sub & eol.sub
+}
