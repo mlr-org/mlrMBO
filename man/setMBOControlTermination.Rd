@@ -75,7 +75,6 @@ print(res)
 }
 \seealso{
 Other MBOControl: \code{\link{makeMBOControl}},
-  \code{\link{setMBOControlConceptDrift}},
   \code{\link{setMBOControlInfill}},
   \code{\link{setMBOControlMultiObj}},
   \code{\link{setMBOControlMultiPoint}}

@@ -62,7 +62,7 @@ getOptStateTimeUsed = function(opt.state) {
   opt.state$time.used
 }
 
-getOptStateOptPath = function(opt.state, ...) {
+getOptStateOptPath = function(opt.state) {
   opt.state$opt.path
 }
 

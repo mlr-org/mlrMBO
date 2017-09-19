@@ -86,7 +86,6 @@ Extends an MBO control object with options for multipoint proposal.
 }
 \seealso{
 Other MBOControl: \code{\link{makeMBOControl}},
-  \code{\link{setMBOControlConceptDrift}},
   \code{\link{setMBOControlInfill}},
   \code{\link{setMBOControlMultiObj}},
   \code{\link{setMBOControlTermination}}

@@ -108,8 +108,7 @@ Format string for the precision of the numeric output of mbo.}
 Creates a control object for MBO optimization.
 }
 \seealso{
-Other MBOControl: \code{\link{setMBOControlConceptDrift}},
-  \code{\link{setMBOControlInfill}},
+Other MBOControl: \code{\link{setMBOControlInfill}},
   \code{\link{setMBOControlMultiObj}},
   \code{\link{setMBOControlMultiPoint}},
   \code{\link{setMBOControlTermination}}
