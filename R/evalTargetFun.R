@@ -36,7 +36,6 @@ evalTargetFun.OptState = function(opt.state, xs, extras) {
   # function to measure of fun call
     wrapFun = function(x) {
       st = proc.time()
-      x = insert(x, getOptStateConceptDriftParam(opt.state))
       y = do.call(getOptProblemFun(opt.problem), insert(list(x = x), getOptProblemMoreArgs(opt.problem)))
       user.extras = list()
       # here we extract additional stuff which the user wants to log in the opt path
