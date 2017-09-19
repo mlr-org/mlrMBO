@@ -1,4 +1,4 @@
-library(mlrMBO)
+mydev()
 library(ggplot2)
 fn = makeBraninFunction()
 autoplot(fn, render.levels = TRUE)
@@ -29,13 +29,18 @@ slow.drift = function(dob) {
   -5 + 0.5 * dob
 }
 
+tail.window = function(op) {
+  op$data = tail(op$data, 10)
+  return(op)
+}
+
 ctrl = makeMBOControl()
-ctrl = setMBOControllConceptDrift(
+ctrl = setMBOControlConceptDrift(
   control = ctrl,
   drift.param = "x1",
   drift.function = slow.drift,
-  window.width = 10)
+  window.function = tail.window)
+ctrl = setMBOControlTermination(ctrl, iter = 30)
 
-ps = getParamSet(fn)
-dropNamed(ps, "x1")
+res = mbo(fun = w.fn, control = ctrl)
 
