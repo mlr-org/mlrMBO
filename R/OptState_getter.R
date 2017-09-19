@@ -40,10 +40,16 @@ getOptStateTimeModel = function(opt.state) {
   exec.times = getOptPathExecTimes(opt.path)
   if (is.null(time.model) || getTaskSize(time.model) != length(na.omit(exec.times))) {
     opt.problem = getOptStateOptProblem(opt.state)
+       ctrl = getOptProblemControl(opt.problem)
+    if (is.null(ctrl$time.learner)) {
+      time.learner = getOptProblemTimeLearner(opt.problem)
+    } else {
+      time.learner = ctrl$time.learner
+    }
     time.task = cbind(getOptPathX(opt.path), exec.time = getOptPathExecTimes(opt.path))
     time.task = time.task[!is.na(time.task$exec.time), ]
     time.task = makeRegrTask(id = "time.task", data = time.task, target = "exec.time")
-    time.model = train(learner = getOptProblemTimeLearner(opt.problem), task = time.task)
+    time.model = train(learner = time.learner, task = time.task)
     setOptStateTimeModel(opt.state, time.model)
   }
   time.model

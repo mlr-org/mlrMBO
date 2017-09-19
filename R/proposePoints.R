@@ -61,6 +61,8 @@ proposePoints.OptState = function(opt.state){
     time.prediction = predict(time.model, newdata = res$prop.points)
     res$predicted.time = getPredictionResponse(time.prediction)
     res$predicted.time.se = getPredictionSE(time.prediction)
+    if(is.null(res$predicted.time.se))
+    	res$predicted.time.se = rep(NA_real_, length(res$predicted.time))
   }
   res
 }

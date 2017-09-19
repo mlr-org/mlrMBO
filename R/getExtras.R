@@ -66,6 +66,9 @@ getExtras = function(n, prop, train.time, control) {
     predicted.time = rep(NA_real_, n)  
     predicted.time.se = rep(NA_real_, n)
   }
+  if (is.null(predicted.time.se)) {
+  	predicted.time.se = rep(NA_real_, n)
+  }  
 
   # if we only have one msg, replicate it
   if (length(errs) == 1L)

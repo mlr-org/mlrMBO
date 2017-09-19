@@ -110,6 +110,7 @@ evalScheduleKnapsack = function(wrapFun, xs, xs.trafo, xs.schedule.info = NULL, 
     xs = xs[scheduled$job]
     xs.trafo = xs.trafo[scheduled$job]
     xs.schedule.info = xs.schedule.info[scheduled$job,]
+    
     extras = extras[scheduled$job]
     
     # Fill empty Nodes with Random Jobs# Fill empty Nodes with Random Jobs
