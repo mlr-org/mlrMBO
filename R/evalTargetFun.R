@@ -58,6 +58,16 @@ evalTargetFun.OptState = function(opt.state, xs, extras) {
   res = parallelMap(wrapFun, xs.trafo, level = "mlrMBO.feval",
     impute.error = if (is.null(imputeY)) NULL else identity)
 
+  # add theoretical final point
+  if (control$n.objectives == 1L) {
+    th.final = getOptStateFinalPoints(opt.state)
+    th.final = th.final[c("x","y")]
+    names(th.final) = paste0("final.", names(th.final))
+  } else {
+    th.final = list()
+  }
+
+
   # loop evals and to some post-processing
   for (i in seq_len(nevals)) {
     r = res[[i]]; x = xs[[i]]; x.trafo = xs.trafo[[i]]; dob = dobs[i]
@@ -103,6 +113,7 @@ evalTargetFun.OptState = function(opt.state, xs, extras) {
 
     # concatenate internal and user defined extras for logging in opt.path
     extras[[i]] = insert(extras[[i]], user.extras)
+    extras[[i]] = insert(extras[[i]], th.final)
 
     # log to opt path - make sure to log the untrafo'd x-value!
     addOptPathEl(opt.path, x = x, y = y2, dob = dob,
