@@ -29,12 +29,11 @@ slow.drift = function(dob) {
   -5 + 0.5 * dob
 }
 
-tail.window = function(op) {
-  op$data = tail(op$data, 10)
-  return(op)
+tail.window = function(x) {
+  tail(x, 10)
 }
 
-ctrl = makeMBOControl()
+ctrl = makeMBOControl(final.method = "best.predicted")
 ctrl = setMBOControlConceptDrift(
   control = ctrl,
   drift.param = "x1",
@@ -43,4 +42,11 @@ ctrl = setMBOControlConceptDrift(
 ctrl = setMBOControlTermination(ctrl, iter = 30)
 
 res = mbo(fun = w.fn, control = ctrl)
+
+res$opt.path$window.function = identity
+autoplot(fn, render.levels = TRUE, show.optimum = TRUE) + geom_text(data = as.data.frame(res$opt.path), mapping = aes(label = dob), color = "white")
+op = res$opt.path
+op$data
+
+### Parameter will be also learned
 

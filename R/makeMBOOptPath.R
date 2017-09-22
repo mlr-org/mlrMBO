@@ -7,13 +7,16 @@
 makeMBOOptPath = function(opt.problem) {
   par.set = getOptProblemParSet(opt.problem)
   control = getOptProblemControl(opt.problem)
-  makeOptPathDF(
-    par.set = par.set,
-    y.names = control$y.name,
-    minimize = control$minimize,
-    add.transformed.x = FALSE,
-    include.error.message = TRUE,
-    include.exec.time = TRUE,
-    include.extra = TRUE
-  )
+  if (!is.null(control$conceptdrift.drift.param)) {
+    op = OptPathNgCd$new(
+      drift.param = control$conceptdrift.drift.param,
+      window.function = control$conceptdrift.window.function,
+      par.set = par.set,
+      y.names = control$y.name,
+      minimize = control$minimize
+    )
+  } else {
+    op = OptPathNg$new(par.set = par.set, y.names = control$y.name, minimize = control$minimize)
+  }
+  return(op)
 }

@@ -6,20 +6,20 @@ OptPathNg = R6Class(c("OptPathNg", "OptPath"),
   public = list(
     initialize = function(par.set, y.names = "y", minimize = TRUE) {
       x.names = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
-      self$data = data.table(
+      self$full.data = data.table(
         dob = integer(0L),
         eol = integer(0L),
         msg = character(0L),
         exec.time = double(0L),
         extra = list())
       Map(function(id, type) {
-        set(self$data, j = id, value = get(type, mode = "function")())
+        set(self$full.data, j = id, value = get(type, mode = "function")())
         },
         id = x.names,
         type = getParamTypes(par.set, df.cols = TRUE)
       )
       for (y.name in y.names) {
-        set(self$data, j = y.name, value = numeric(0L))
+        set(self$full.data, j = y.name, value = numeric(0L))
       }
       names(minimize) = y.names
       self$x.names = x.names
@@ -34,20 +34,23 @@ OptPathNg = R6Class(c("OptPathNg", "OptPath"),
       }
       assert_list(x, names = "strict")
       assert_list(y, names = "strict")
-      self$data = rbindlist(
-        list(self$data, c(list(dob = dob %??% (nrow(self$data) + 1), eol = eol, msg = msg, exec.time = exec.time, extra = list(extra)), x, y))
+      self$full.data = rbindlist(
+        list(self$full.data, c(list(dob = dob %??% (nrow(self$full.data) + 1), eol = eol, msg = msg, exec.time = exec.time, extra = list(extra)), x, y))
         )
     },
     x.names = NULL,
     y.names = NULL,
     par.set = NULL,
     minimize = NULL,
-    data = NULL
+    full.data = NULL
   ),
 
   active = list(
     env = function() {
       self$data
+    },
+    data = function() {
+      self$full.data
     }
   )
 )

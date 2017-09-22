@@ -63,16 +63,16 @@ getOptStateTimeUsed = function(opt.state) {
 }
 
 getOptStateOptPath = function(opt.state) {
-  opt.problem = getOptStateOptProblem(opt.state)
-  control = getOptProblemControl(opt.problem)
-  if (!is.null(control$conceptdrift.window.function)) {
-    res = control$conceptdrift.window.function(opt.state$opt.path)
-    assertClass(res, "OptPathNg")
-    #browser()
-    return(res)
-  } else {
+  #opt.problem = getOptStateOptProblem(opt.state)
+  #control = getOptProblemControl(opt.problem)
+  #if (!is.null(control$conceptdrift.window.function)) {
+  #  res = control$conceptdrift.window.function(opt.state$opt.path)
+  #  assertClass(res, "OptPathNg")
+  #  #browser()
+  #  return(res)
+  #} else {
     opt.state$opt.path
-  }
+  #}
 }
 
 getOptStateTimeLastSaved = function(opt.state) {
