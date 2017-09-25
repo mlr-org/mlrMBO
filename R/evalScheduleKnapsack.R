@@ -16,7 +16,7 @@ evalScheduleKnapsack = function(wrapFun, xs, xs.trafo, xs.schedule.info = NULL, 
     xs.schedule.info = xs.schedule.info[order.idx,, drop = FALSE]
     extras = extras[order.idx]
     #delete Rows without full scheduling information
-    del.na = complete.cases(xs.schedule.info)
+    del.na = !is.na(xs.schedule.info$times) | !is.na(xs.schedule.info$priorities)
     xs.schedule.info = xs.schedule.info[del.na,]
     xs = xs[del.na]
     xs.trafo = xs.trafo[del.na]
