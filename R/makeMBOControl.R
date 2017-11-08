@@ -123,7 +123,7 @@ makeMBOControl = function(n.objectives = 1L,
 
   assertString(output.num.format)
 
-  control = makeS3Obj("",
+  control = makeS3Obj("MBOControl",
     n.objectives = n.objectives,
     propose.points = propose.points,
     final.method = final.method,
