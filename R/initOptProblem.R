@@ -3,8 +3,11 @@ initOptProblem = function(fun, design, learner, control, show.info, more.args) {
 
   par.set = getParamSet(fun)
 
-  assertDataFrame(design)
-  assertSetEqual(names(design), c(getParamIds(par.set, repeated = TRUE, with.nr = TRUE), control$y.name))
+  assertDataFrame(design, null.ok = TRUE)
+  if (!is.null(design)) {
+    assertSubset(getParamIds(par.set, repeated = TRUE, with.nr = TRUE), names(design))  
+  }
+  
 
   learner = checkLearner(learner, control, fun)
 

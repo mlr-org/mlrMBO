@@ -15,6 +15,8 @@
 initSMBO = function(par.set, design, learner = NULL, control, minimize = rep(TRUE, control$n.objectives), noisy = FALSE, show.info = getOption("mlrMBO.show.info", TRUE)) {
 
   assertClass(par.set, "ParamSet")
+  assertDataFrame(design)
+  assertSetEqual(names(design), c(getParamIds(par.set, repeated = TRUE, with.nr = TRUE), control$y.name))
   assertFlag(noisy)
   assertLogical(minimize, any.missing = FALSE)
 

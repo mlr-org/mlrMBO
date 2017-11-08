@@ -28,8 +28,8 @@ If \code{NULL} (default), the default learner is determined as described here: \
 Control object for mbo.}
 
 \item{minimize}{[\code{logical}]\cr
-Should target functions be minimized? One value par target function.
-Default is \code{TRUE} for ever target function.}
+Should objective values of the target functions be minimized? One value par objective.
+Default is \code{TRUE} for every objective.}
 
 \item{noisy}{[\code{logical(1)}]\cr
 Is the target function noisy?
