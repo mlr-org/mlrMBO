@@ -1,15 +1,22 @@
 initOptProblem = function(fun, design, learner, control, show.info, more.args) {
   assertClass(fun, "smoof_function")
+
   par.set = getParamSet(fun)
+
+  assertDataFrame(design)
+  assertSetEqual(names(design), c(getParamIds(par.set, repeated = TRUE, with.nr = TRUE), control$y.name))
+
+  learner = checkLearner(learner, control, fun)
+
+  assertClass(control, "MBOControl")
+
   n.params = sum(getParamLengths(par.set))
   control$noisy = isNoisy(fun)
   control$minimize = shouldBeMinimized(fun)
-  assertFlag(show.info)
   if (is.null(design))
     design = generateDesign(n.params * 4L, par.set, fun = lhs::maximinLHS)
   else
     assertDataFrame(design, min.rows = 1L, min.cols = 1L)
-  learner = checkLearner(learner, control, fun)
   control = checkStuff(fun, design, learner, control)
   control$infill.crit = initCrit(control$infill.crit, fun, design, learner, control)
 
@@ -21,6 +28,6 @@ initOptProblem = function(fun, design, learner, control, show.info, more.args) {
     design = design,
     learner = learner,
     control = control,
-    show.info = show.info,
-    more.args = more.args)
+    show.info = assertFlag(show.info),
+    more.args = assertList(more.args, null.ok = TRUE))
 }
