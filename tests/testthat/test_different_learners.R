@@ -4,17 +4,8 @@ test_that("mbo works with different learners", {
 
   # Test some possible learner on a simple problem with discrete and
   # numeric parameters
-  ps1 = makeParamSet(
-    makeDiscreteParam("disc1", values = c("a", "b")),
-    makeNumericParam("num1", lower = 0, upper = 1)
-  )
-  f1 = smoof::makeSingleObjectiveFunction(
-    fn = function(x) {
-      ifelse(x$disc1 == "a", x$num1 * 2 - 1, 1 - x$num1)
-    },
-    par.set = ps1,
-    has.simple.signature = FALSE
-  )
+  ps1 = testp.mixed
+  f1 = testf.mixed
 
   ps2 = testp.fsphere.2d
   f2 = testf.fsphere.2d

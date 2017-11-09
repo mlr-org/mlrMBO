@@ -20,6 +20,8 @@ navbar:
         href: articles/supplementary/infill_criteria.html
       - text: Machine learning with mlrMBO
         href: articles/supplementary/machine_learning_with_mlrmbo.html
+      - text: Human-in-the-loop MBO
+        href: articles/supplementary/human_in_the_loop_MBO.html
   - text: Reference
     icon: fa-book
     href: reference/index.html
