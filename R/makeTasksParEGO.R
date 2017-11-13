@@ -12,10 +12,16 @@
 # @return [\code{list}] List with elements
 #   tasks: list of tasks
 #   weights: matrix of used weight vectors
-makeTasksParEGO = function(opt.path, control, all.possible.weights) {
+makeTasksParEGO = function(opt.state) {
+
+  opt.path = getOptStateOptPath(opt.state)
+  opt.problem = getOptStateOptProblem(opt.state)
+  control = getOptProblemControl(opt.problem)
+  all.possible.weights = getOptProblemAllPossibleWeights(opt.problem)
+
   n.points = control$propose.points
   # get data + normalize the targets to [0, 1] + drop them from data
-  data = convertOptPathToDf(opt.path, control)
+  data = convertOptPathToDf(opt.state)
   data = dropNamed(data, control$y.name)
   y = getOptPathY(opt.path)
   if (control$multiobj.parego.normalize == "standard") {

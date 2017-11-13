@@ -16,7 +16,7 @@
 
 #   par.set.nomf = dropParams(par.set, ".multifid.lvl")
 
-#   design = convertOptPathToDf(opt.path = opt.path, control = control)
+#   design = convertOptPathToDf(opt.path, control)
 #   lvl.sds = vnapply(seq_along(control$multifid.lvls), calcModelSD, model = model, control = control, design = design)
 #   corgrid = generateDesign(n = control$multifid.cor.grid.points, par.set = par.set.nomf)
 #   lvl.cors = vnapply(seq_along(control$multifid.lvls), calcModelCor, model = model, grid = corgrid, nlvls = length(control$multifid.lvls))

@@ -7,6 +7,8 @@ proposePointsParEGO = function(opt.state) {
   control2$n.objectives = 1L
   # scalar tasks are always constructed so they minimized
   control2$minimize = TRUE
+  control2$multiobj.use.scalarized.y = TRUE
+  
   props = list()
   props = parallelMap(proposePointsByInfillOptimization, models = models, level = "mlrMBO.propose.points",
     more.args = list(opt.state = opt.state, control = control2))
