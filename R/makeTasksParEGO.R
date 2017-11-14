@@ -33,7 +33,7 @@ generateParEgoDfData = function(opt.state, opt.path = NULL, control = NULL) {
 
   n.points = control$propose.points
   # get data + normalize the targets to [0, 1] + drop them from data
-  data = convertOptPathToDf(opt.state)
+  data = convertToDesign(opt.state)
   data = dropNamed(data, control$y.name)
   y = getOptPathY(opt.path)
   if (control$multiobj.parego.normalize == "standard") {

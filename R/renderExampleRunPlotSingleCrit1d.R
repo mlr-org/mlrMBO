@@ -69,7 +69,7 @@ renderExampleRunPlot1d = function(x, iter,
   buildPointsData = function(opt.path, iter) {
     type = vcapply(getOptPathDOB(opt.path), getType, iter = iter)
     res = cbind.data.frame(
-      convertOptPathToDf(opt.path, control),
+      convertToDesign(opt.path, control),
       type = type
     )
     res[res$type %nin% "future",]
@@ -93,20 +93,20 @@ renderExampleRunPlot1d = function(x, iter,
     #FIXME: We might want to replace the following by a helper function so that we can reuse it in buildPointsData()
     if (propose.points == 1L) {
       evals[[infill.crit.id]] = opt.direction *
-        critfun(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past,, drop = FALSE])
+        critfun(evals.x, list(model), control, par.set, convertToDesign(opt.path, control)[idx.past,, drop = FALSE])
     } else {
       objective = control$multipoint.moimbo.objective
       if (objective == "mean.dist") {
-        evals[[infill.crit.id]] = opt.direction * infill.mean(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past,, drop = FALSE])
+        evals[[infill.crit.id]] = opt.direction * infill.mean(evals.x, list(model), control, par.set, convertToDesign(opt.path, control)[idx.past,, drop = FALSE])
       } else if (objective == "ei.dist") {
-        evals[[infill.crit.id]] = opt.direction * infill.ei(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past,, drop = FALSE])
+        evals[[infill.crit.id]] = opt.direction * infill.ei(evals.x, list(model), control, par.set, convertToDesign(opt.path, control)[idx.past,, drop = FALSE])
       } else if (objective %in% c("mean.se", "mean.se.dist")) {
-        evals[[infill.crit.id]] = opt.direction * infill.mean(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past,, drop = FALSE])
+        evals[[infill.crit.id]] = opt.direction * infill.mean(evals.x, list(model), control, par.set, convertToDesign(opt.path, control)[idx.past,, drop = FALSE])
       }
     }
     # prepare drawing of standard error (confidence interval)
     if (se) {
-      evals$se = -infill.se(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past,, drop = FALSE])
+      evals$se = -infill.se(evals.x, list(model), control, par.set, convertToDesign(opt.path, control)[idx.past,, drop = FALSE])
     }
   }
 
@@ -181,7 +181,7 @@ renderExampleRunPlot1d = function(x, iter,
         gap = NA
       }
     } else {
-      gap = calculateGap(convertOptPathToDf(opt.path, control)[idx.pastpresent,, drop = FALSE], global.opt, control)
+      gap = calculateGap(convertToDesign(opt.path, control)[idx.pastpresent,, drop = FALSE], global.opt, control)
     }
 
     g = g + ggplot2::ggtitle(sprintf("Iter = %i, Gap = %.4e", iter, gap))
@@ -218,7 +218,7 @@ renderExampleRunPlot1d = function(x, iter,
     pl.fun = pl.fun + ggplot2::scale_colour_discrete(name = "type")
     pl.fun = pl.fun + ggplot2::ggtitle(
       sprintf("Iter = %i, Gap = %.4e", iter,
-      calculateGap(convertOptPathToDf(opt.path, control)[idx.pastpresent,, drop = FALSE], global.opt, control))
+      calculateGap(convertToDesign(opt.path, control)[idx.pastpresent,, drop = FALSE], global.opt, control))
     )
 
     pl.fun = pl.fun + ggplot2::theme(

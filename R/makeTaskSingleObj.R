@@ -10,7 +10,7 @@
 #   MBO control object.
 # @return [\code{\link[mlr]{SupervisedTask}}]
 makeTaskSingleObj = function(opt.path, control) {
-  data = convertOptPathToDf(opt.path, control)
+  data = convertToDesign(opt.path, control)
   data$dob = data$eol = NULL
 
   # user selected to (log)-transform the y-column

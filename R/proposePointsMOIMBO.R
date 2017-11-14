@@ -52,7 +52,7 @@ proposePointsMOIMBO = function(opt.state, ...) {
 
   n = control$propose.points
   objective = control$multipoint.moimbo.objective
-  design = convertOptPathToDf(opt.state)
+  design = convertToDesign(opt.state)
 
   ch = checkFailedModels(models, par.set, n)
   if (!ch$ok) {

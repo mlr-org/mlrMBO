@@ -26,7 +26,7 @@ plot.OptState = function(x, scale.panels = FALSE, ...) {
   par.count.numeric = sum(par.is.numeric)
   par.count.discrete = par.dim - par.count.numeric
   opt.path = getOptStateOptPath(opt.state)
-  design = convertOptPathToDf(opt.state)
+  design = convertToDesign(opt.state)
   models = getOptStateModels(opt.state)$models
   x.ids = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
   y.ids = control$y.name

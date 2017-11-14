@@ -12,7 +12,7 @@ proposePointsMSPOT = function(opt.state, ...) {
   if (!ch$ok)
     return(ch$prop)
 
-  design = convertOptPathToDf(opt.state)
+  design = convertToDesign(opt.state)
   infill.crit.id = getMBOInfillCritId(control$infill.crit)
   infill.opt.fun = getInfillOptFunction(control$infill.opt)
 

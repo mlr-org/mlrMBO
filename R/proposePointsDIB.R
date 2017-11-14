@@ -29,7 +29,7 @@ proposePointsDIB = function(opt.state) {
     dob = max(getOptPathDOB(opt.path)) + 1
     for (i in 1:control$propose.points) {
       prop = proposePointsByInfillOptimization(opt.state, control = control2, opt.path = opt.path2)
-      design = convertOptPathToDf(opt.state)
+      design = convertToDesign(opt.state)
       cb = evalCritFunForMultiObjModels(cbFun, prop$prop.points, models, control2,
         par.set, design, iter)[1L, ]
       x = dfRowToList(prop$prop.points, par.set, 1)

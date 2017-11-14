@@ -6,13 +6,13 @@
 # @param control [\code{\link{MBOControl}}]\cr
 #   MBO control object.
 # @return [\code{data.frame}]
-convertOptPathToDf = function(x, ...) {
-  UseMethod("convertOptPathToDf")
+convertToDesign = function(x, ...) {
+  UseMethod("convertToDesign")
 }
 
-convertOptPathToDf.OptState = function(opt.state, opt.path, control) {
+convertToDesign.OptState = function(opt.state, opt.path, control) {
   if (missing(opt.state) || is.null(opt.state)) {
-    df = convertOptPathToDf(opt.path, control)
+    df = convertToDesign(opt.path, control)
     return(df)
   }
   opt.path = getOptStateOptPath(opt.state)
@@ -25,12 +25,12 @@ convertOptPathToDf.OptState = function(opt.state, opt.path, control) {
     res = generateParEgoDfData(opt.state, opt.path, control)
     df = generateParEgoDf(res, lambda = res$lambdas[control$multiobj.parego.lambda.ind])
   } else {
-    df = convertOptPathToDf(opt.path, control)
+    df = convertToDesign(opt.path, control)
   }
   return(df)
 }
 
-convertOptPathToDf.OptPath = function(opt.path, control) {
+convertToDesign.OptPath = function(opt.path, control) {
   df = as.data.frame(opt.path, include.rest = FALSE)
   convertDataFrameCols(df, ints.as.num = TRUE, logicals.as.factor = TRUE)
 }
