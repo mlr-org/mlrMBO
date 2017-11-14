@@ -6,12 +6,12 @@
 # @param control [\code{\link{MBOControl}}]\cr
 #   MBO control object.
 # @return [\code{data.frame}]
-convertOptPathToDf = function(x) {
+convertOptPathToDf = function(x, ...) {
   UseMethod("convertOptPathToDf")
 }
 
 convertOptPathToDf.OptState = function(opt.state, opt.path, control) {
-  if (missing(opt.state) || is.null(opt.state) {
+  if (missing(opt.state) || is.null(opt.state)) {
     df = convertOptPathToDf(opt.path, control)
     return(df)
   }
@@ -19,14 +19,15 @@ convertOptPathToDf.OptState = function(opt.state, opt.path, control) {
   opt.problem = getOptStateOptProblem(opt.state)
   control = getOptProblemControl(opt.problem)
 
-  # FIXME Just a quick fix for Issue https://github.com/mlr-org/mlrMBO/issues/407
-  # The following was part of makeTasksParEGO.R
+  # FIXME Fix for Issue https://github.com/mlr-org/mlrMBO/issues/407
+  # Maybe there is a better way?
   if (control$multiobj.method == "parego" && isTRUE(control$multiobj.use.scalarized.y)) {
     res = generateParEgoDfData(opt.state, opt.path, control)
-    generateParEgoDf(res, lambda = control$multiobj.scale.y)
+    df = generateParEgoDf(res, lambda = res$lambdas[control$multiobj.parego.lambda.ind])
   } else {
-    convertOptPathToDf(opt.path, control)
+    df = convertOptPathToDf(opt.path, control)
   }
+  return(df)
 }
 
 convertOptPathToDf.OptPath = function(opt.path, control) {
