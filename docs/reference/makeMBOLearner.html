@@ -23,7 +23,8 @@
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-
+  
+  
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -74,6 +75,9 @@
     </li>
     <li>
       <a href="../articles/supplementary/noisy_optimization.html">Noisy Optimization</a>
+    </li>
+    <li>
+      <a href="../articles/supplementary/infill_criteria.html">Infill Criteria</a>
     </li>
     <li>
       <a href="../articles/supplementary/machine_learning_with_mlrmbo.html">Machine learning with mlrMBO</a>
@@ -146,7 +150,7 @@ We simply handle those with an imputation method, added to the random forest:</p
 <li><p>If a categorical value is inactive, i.e., missing, it will be imputed by the
   special class label <code>"__miss__"</code></p></li>
 </ul><p>Both of these techniques make sense for tree-based methods and are usually hard to beat, see
-Ding et al. (2010).</p>
+Ding et.al. (2010).</p>
     
 
     <pre class="usage"><span class='fu'>makeMBOLearner</span>(<span class='no'>control</span>, <span class='no'>fun</span>, <span class='kw'>config</span> <span class='kw'>=</span> <span class='fu'>list</span>(), <span class='no'>...</span>)</pre>

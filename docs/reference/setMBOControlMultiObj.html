@@ -23,7 +23,8 @@
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-
+  
+  
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -74,6 +75,9 @@
     </li>
     <li>
       <a href="../articles/supplementary/noisy_optimization.html">Noisy Optimization</a>
+    </li>
+    <li>
+      <a href="../articles/supplementary/infill_criteria.html">Infill Criteria</a>
     </li>
     <li>
       <a href="../articles/supplementary/machine_learning_with_mlrmbo.html">Machine learning with mlrMBO</a>
@@ -134,7 +138,7 @@ Control object for mbo.</p></td>
 Which multi-objective method should be used?
 &#8220;parego&#8221;: The ParEGO algorithm.
 &#8220;dib&#8221;: Direct indicator-based method. Subsumes SMS-EGO and epsilon-EGO.
-&#8220;mspot&#8221;: Directly optimizes multcrit problem where we substitute the true
+&#8220;mspot&#8221;: Directly optimizes multicrit problem where we substitute the true
 objectives with model-based infill crits via an EMOA.
 All methods can also propose multiple points in parallel.
 Default is &#8220;dib&#8221;.</p></td>
@@ -179,8 +183,8 @@ suggested in parego paper.</p></td>
       <th>parego.use.margin.points</th>
       <td><p>[<code>logical</code>]
 For each target function: Should the weight vector (0, ..., 0, 1, 0, ..., 0),
-i.e. the weight vector with only 0 and a single 1 at the i.th position for
-the i.th target function, be drawn with probability 1? Number of TRUE entries
+i.e. the weight vector with only 0 and a single 1 at the i-th position for
+the i-th target function, be drawn with probability 1? Number of TRUE entries
 must be less or equal to <code>propose.points</code>
 Default is not to do this.</p></td>
     </tr>
@@ -208,7 +212,7 @@ Default is &#8220;sms&#8221;.</p></td>
       <td><p>[<code><a href='MBOInfillCrit.html'>MBOInfillCrit</a></code>]
 Which infill.crit to use in the candidate selection. After the NSGA2
 proposed a set of candidates, &#8220;propose.points&#8221; are selected via
-the hypervoume contribution of this infill.crit.
+the hypervolume contribution of this infill.crit.
 Possible values are &#8220;crit.mr&#8221; and &#8220;crit.cb&#8221; (or any other InfillCrit generated with <code><a href='infillcrits.html'>makeMBOInfillCritCB</a></code>), default is &#8220;crit.mr&#8221;.</p></td>
     </tr>
     </table>
@@ -246,7 +250,7 @@ doi:10.1007/978-3-642-37140-0 56</p>
 <p>Jeong, S.; Obayashi, S.: Efficient global optimization (EGO) for Multi-Objective Problem and Data Mining.
 In: Proc. IEEE Congress on
 Evolutionary Computation (CEC 2005), Edinburgh, UK, Corne, D.;
-et al. (eds.), IEEE, 2005, ISBN 0-7803-9363-5, pp. 2138-2145</p>
+et.al. (eds.), IEEE, 2005, ISBN 0-7803-9363-5, pp. 2138-2145</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 

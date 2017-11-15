@@ -23,7 +23,8 @@
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-
+  
+  
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -76,6 +77,9 @@
       <a href="../articles/supplementary/noisy_optimization.html">Noisy Optimization</a>
     </li>
     <li>
+      <a href="../articles/supplementary/infill_criteria.html">Infill Criteria</a>
+    </li>
+    <li>
       <a href="../articles/supplementary/machine_learning_with_mlrmbo.html">Machine learning with mlrMBO</a>
     </li>
   </ul>
@@ -111,7 +115,7 @@
     </div>
 
     
-    <p>In mlrMBO you can parallize the tuning on two different levels to speed up computation:</p><ul>
+    <p>In mlrMBO you can parallelize the tuning on two different levels to speed up computation:</p><ul>
 <li><p><code>mlrMBO.feval</code>Multiple evaluations of the target function.</p></li>
 <li><p><code>mlrMBO.propose.points</code>Optimization of the infill criteria if multiple are used (e.g. ParEGO and ParallelLCB)</p></li>
 </ul><p>Internally the evaluation of the target function is realized with the R package parallelMap.

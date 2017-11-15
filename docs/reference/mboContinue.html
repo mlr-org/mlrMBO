@@ -23,7 +23,8 @@
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-
+  
+  
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -76,6 +77,9 @@
       <a href="../articles/supplementary/noisy_optimization.html">Noisy Optimization</a>
     </li>
     <li>
+      <a href="../articles/supplementary/infill_criteria.html">Infill Criteria</a>
+    </li>
+    <li>
       <a href="../articles/supplementary/machine_learning_with_mlrmbo.html">Machine learning with mlrMBO</a>
     </li>
   </ul>
@@ -115,15 +119,15 @@
 so you can continue from a save point and will not lose too much information and runtime.</p>
     
 
-    <pre class="usage"><span class='fu'>mboContinue</span>(<span class='no'>file</span>)</pre>
+    <pre class="usage"><span class='fu'>mboContinue</span>(<span class='no'>opt.state</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>file</th>
-      <td><p>[<code>character(1)</code>]
-File path of saved MBO state.
+      <th>opt.state</th>
+      <td><p>[<code>OptState</code> | <code>character(1)</code>]
+Either the <code>save.state</code> slot of an <code>MBOResult</code> object, or a file path of a saved MBO state.
 See <code>save.on.disk.at</code> argument of <code><a href='makeMBOControl.html'>MBOControl</a></code> object.</p></td>
     </tr>
     </table>

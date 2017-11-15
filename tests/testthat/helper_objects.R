@@ -33,3 +33,17 @@ testfmco2 = makeMultiObjectiveFunction(
   par.set = makeNumericParamSet(len = 2L, lower = -2, upper = 1)
 )
 testdesmco2 = generateTestDesign(10L, getParamSet(testfmco2))
+
+# mixed space test functio
+testp.mixed = makeParamSet(
+  makeDiscreteParam("disc1", values = c("a", "b")),
+  makeNumericParam("num1", lower = 0, upper = 1)
+)
+testf.mixed = makeSingleObjectiveFunction(
+  fn = function(x) {
+    ifelse(x$disc1 == "a", x$num1 * 2 - 1, 1 - x$num1)
+  },
+  par.set = testp.mixed,
+  has.simple.signature = FALSE
+)
+testd.mixed = generateTestDesign(10L, testp.mixed)
