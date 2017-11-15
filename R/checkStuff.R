@@ -138,4 +138,11 @@ checkStuff = function(fun, design, learner, control) {
   if (control$filter.proposed.points && hasDiscrete(par.set))
     stop("Filtering proposed points currently not implemented for discrete parameters!")
   return(control)
+
+  # concept drift stuff
+  if (!is.null(control$conceptdrift.drift.param)) {
+    if (is.null(attr(fun, "original.par.set"))) {
+      stop("The function has to have an attribute with the original.par.set!")
+    }
+  }
 }

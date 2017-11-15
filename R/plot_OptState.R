@@ -16,24 +16,28 @@ plot.OptState = function(x, scale.panels = FALSE, ...) {
   opt.state = x
   opt.problem = getOptStateOptProblem(opt.state)
   control = getOptProblemControl(opt.problem)
-  par.set = getOptProblemParSet(opt.problem)
-  par.dim = getParamNr(par.set, devectorize = TRUE)
+  par.set.complete = getOptProblemParSet(opt.problem, original.par.set = TRUE)
+  par.set = getOptStateParSet(opt.state)
+  par.dim = getParamNr(par.set.complete, devectorize = TRUE)
   if (par.dim > 2) {
     stop("Only plotting for 1- and 2-dimensional search spaces is possible.")
   }
-  par.types = getParamTypes(par.set, use.names = TRUE, with.nr = TRUE, df.cols = TRUE, df.discretes.as.factor = TRUE)
+  par.types = getParamTypes(par.set.complete, use.names = TRUE, with.nr = TRUE, df.cols = TRUE, df.discretes.as.factor = TRUE)
   par.is.numeric = par.types %in% c("numeric", "integer")
   par.count.numeric = sum(par.is.numeric)
   par.count.discrete = par.dim - par.count.numeric
   opt.path = getOptStateOptPath(opt.state)
+  old.window.function = opt.path$window.function
+  opt.path$window.function = identity
   design = convertOptPathToDf(opt.path, control)
+  opt.path$window.function = old.window.function
   models = getOptStateModels(opt.state)$models
-  x.ids = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
+  x.ids = getParamIds(par.set.complete, repeated = TRUE, with.nr = TRUE)
   y.ids = control$y.name
   infill = control$infill.crit
 
   # the data we need to plot
-  points = generateGridDesign(par.set, 100, trafo = TRUE)
+  points = generateGridDesign(par.set.complete, 100, trafo = TRUE)
   infill.res = infill$fun(points = points, models = models, control = control, par.set = par.set, design = design, attributes = TRUE, iter = getOptStateLoop(opt.state))
 
   crit.components = attr(infill.res, "crit.components")

@@ -60,8 +60,14 @@ getOptProblemControl = function(opt.problem) {
   opt.problem$control
 }
 
-getOptProblemParSet = function(opt.problem) {
-  getParamSet(getOptProblemFun(opt.problem))
+getOptProblemParSet = function(opt.problem, original.par.set = FALSE) {
+  if (original.par.set) {
+    par.set = attr(getOptProblemFun(opt.problem), "original.par.set")
+  }
+  if (!original.par.set || is.null(par.set)) {
+    par.set = getParamSet(getOptProblemFun(opt.problem))
+  }
+  par.set
 }
 
 getOptProblemMoreArgs = function(opt.problem) {

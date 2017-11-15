@@ -45,7 +45,7 @@ makeMBOResult.OptState = function(opt.state) {
     }
     makeS3Obj(
       c("MBOSingleObjResult", "MBOResult"),
-      x = dfRowToList(x.df, par.set = getOptProblemParSet(opt.problem), i = 1),
+      x = dfRowToList(x.df, par.set = getOptStateParSet(opt.state), i = 1),
       y = final.points$y, # strip name
       best.ind = final.points$best.ind,
       opt.path = getOptStateOptPath(opt.state),

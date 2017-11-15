@@ -14,7 +14,7 @@ evalProposedPoints.OptState = function(opt.state, prop, train.time = NULL) {
     train.time = getOptStateModels(opt.state)$train.time
   }
   opt.problem = getOptStateOptProblem(opt.state)
-  par.set = getOptProblemParSet(opt.problem)
+  par.set = getOptStateParSet(opt.state)
   extras = getExtras(
     n = nrow(prop$prop.points),
     prop = prop,

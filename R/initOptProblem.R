@@ -3,11 +3,11 @@ initOptProblem = function(fun, design, learner, control, show.info, more.args) {
 
   par.set = getParamSet(fun)
 
-  assertDataFrame(design, null.ok = TRUE)
+  assertDataFrame(design, min.rows = 1L, min.cols = 1L, null.ok = TRUE)
   if (!is.null(design)) {
-    assertSubset(getParamIds(par.set, repeated = TRUE, with.nr = TRUE), names(design))  
+    assertSubset(getParamIds(par.set, repeated = TRUE, with.nr = TRUE), names(design)) 
+    checkInitDesign(design, par.set) 
   }
-  
 
   learner = checkLearner(learner, control, fun)
 
@@ -16,10 +16,6 @@ initOptProblem = function(fun, design, learner, control, show.info, more.args) {
   n.params = sum(getParamLengths(par.set))
   control$noisy = isNoisy(fun)
   control$minimize = shouldBeMinimized(fun)
-  if (is.null(design))
-    design = generateDesign(n.params * 4L, par.set, fun = lhs::maximinLHS)
-  else
-    assertDataFrame(design, min.rows = 1L, min.cols = 1L)
   control = checkStuff(fun, design, learner, control)
   control$infill.crit = initCrit(control$infill.crit, fun, design, learner, control)
 

@@ -57,7 +57,7 @@ deepCopyOptPath = function(op) {
 }
 
 deepCopyOptPath.OptPathNg = function(op) {
-  op$clone()
+  op$clone(deep = TRUE)
 }
 
 

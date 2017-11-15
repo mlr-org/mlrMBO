@@ -18,7 +18,7 @@
 evalTargetFun.OptState = function(opt.state, xs, extras) {
 
   opt.problem = getOptStateOptProblem(opt.state)
-  par.set = getOptProblemParSet(opt.problem)
+  par.set = getOptStateParSet(opt.state)
   opt.path = getOptStateOptPath(opt.state)
   control = getOptProblemControl(opt.problem)
 
@@ -31,15 +31,17 @@ evalTargetFun.OptState = function(opt.state, xs, extras) {
   imputeY = control$impute.y.fun
 
   # trafo X points
+  fixed.x = getOptStateFixedLearnableParam(opt.state)
+  xs = lapply(xs, function(z) insert(z, fixed.x))
   xs.trafo = lapply(xs, trafoValue, par = par.set)
 
   # function to measure of fun call
     wrapFun = function(x) {
       st = proc.time()
-      drift.x = getOptStateConceptDriftParam(opt.state)
-      x = insert(x, drift.x)
+      fixed.x = getOptStateFixedParam(opt.state)
+      x = insert(x, fixed.x)  
       y = do.call(getOptProblemFun(opt.problem), insert(list(x = x), getOptProblemMoreArgs(opt.problem)))
-      user.extras = drift.x # in case no concept drift is present this will be list()
+      user.extras = fixed.x # in case no concept drift is present this will be list()
       # here we extract additional stuff which the user wants to log in the opt path
       if (hasAttributes(y, "extras")) {
         user.extras = attr(y, "extras")
@@ -57,16 +59,6 @@ evalTargetFun.OptState = function(opt.state, xs, extras) {
   # return error objects if we impute
   res = parallelMap(wrapFun, xs.trafo, level = "mlrMBO.feval",
     impute.error = if (is.null(imputeY)) NULL else identity)
-
-  # add theoretical final point
-  if (control$n.objectives == 1L) {
-    th.final = getOptStateFinalPoints(opt.state)
-    th.final = th.final[c("x","y")]
-    names(th.final) = paste0("final.", names(th.final))
-  } else {
-    th.final = list()
-  }
-
 
   # loop evals and to some post-processing
   for (i in seq_len(nevals)) {
@@ -110,6 +102,15 @@ evalTargetFun.OptState = function(opt.state, xs, extras) {
       ifelse(y.valid, "", " (imputed)"),
       prop.type
     )
+
+    # add theoretical final point
+    if (isTRUE(control$calculate.th.final.point) && getOptStateLoop(opt.state) > 0) {
+      th.final = getOptStateFinalPoints(opt.state)
+      th.final = unlist(th.final[c("x","y")])
+      names(th.final) = paste0("final.", names(th.final))
+    } else {
+      th.final = list()
+    }
 
     # concatenate internal and user defined extras for logging in opt.path
     extras[[i]] = insert(extras[[i]], user.extras)

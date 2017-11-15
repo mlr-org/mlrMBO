@@ -15,7 +15,7 @@ proposePointsByInfillOptimization = function(opt.state, par.set = NULL, control 
   opt.problem = getOptStateOptProblem(opt.state)
   if (is.null(models)) models = getOptStateModels(opt.state)$models
   models = if (inherits(models, "WrappedModel")) list(models) else models
-  par.set = coalesce(par.set, getOptProblemParSet(opt.problem))
+  par.set = coalesce(par.set, getOptStateParSet(opt.state))
   control = coalesce(control, getOptProblemControl(opt.problem))
   opt.path = coalesce(opt.path, getOptStateOptPath(opt.state))
   iter = getOptStateLoop(opt.state)

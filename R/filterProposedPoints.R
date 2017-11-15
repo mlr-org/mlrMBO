@@ -9,7 +9,7 @@ filterProposedPoints = function(prop, opt.state) {
 
   opt.problem = getOptStateOptProblem(opt.state)
   opt.path = getOptStateOptPath(opt.state)
-  par.set = getOptProblemParSet(opt.problem)
+  par.set = getOptStateParSet(opt.state)
   control = getOptProblemControl(opt.problem)
 
   # prepare stuff

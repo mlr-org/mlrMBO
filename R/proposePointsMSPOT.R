@@ -2,7 +2,7 @@ proposePointsMSPOT = function(opt.state, ...) {
 
   opt.problem = getOptStateOptProblem(opt.state)
   models = getOptStateModels(opt.state)$models
-  par.set = getOptProblemParSet(opt.problem)
+  par.set = getOptStateParSet(opt.state)
   control = getOptProblemControl(opt.problem)
   opt.path = getOptStateOptPath(opt.state)
   iter = getOptStateLoop(opt.state)

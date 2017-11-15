@@ -10,7 +10,7 @@ evalMBODesign.OptState = function(opt.state) {
   opt.problem = getOptStateOptProblem(opt.state)
   design = getOptProblemDesign(opt.problem)
   control = getOptProblemControl(opt.problem)
-  par.set = getOptProblemParSet(opt.problem)
+  par.set = getOptStateParSet(opt.state)
   pids = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
   y.name = control$y.name
 
@@ -19,6 +19,7 @@ evalMBODesign.OptState = function(opt.state) {
 
   # check that the provided design one seems ok
   # sanity check: are paramter values and colnames of design consistent?
+  browser()
   if (!setequal(setdiff(colnames(design), y.name), pids))
     stop("Column names of design 'design' must match names of parameters in 'par.set'!")
 

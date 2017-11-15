@@ -143,15 +143,45 @@ getOptStateValidTerminationStates = function() {
   c("term.iter", "term.time", "term.exectime", "term.yval", "term.feval", "term.custom")
 }
 
-getOpstStateConceptDriftParam = function(opt.state) {
+# concept drift additions #####
+
+getOptStateFixedParam = function(opt.state) {
   dob = getOptStateLoop(opt.state)
   opt.problem = getOptStateOptProblem(opt.state)
   control = getOptProblemControl(opt.problem)
-  if (!is.null(control$conceptdrift.drift.param)) {
+  if (!is.null(control$conceptdrift.drift.param) && !control$conceptdrift.learn.drift) {
     res = list(control$conceptdrift.drift.function(dob))
     res = setNames(res, control$conceptdrift.drift.param)
   } else {
     res = list()
   }
   res
+}
+
+getOptStateFixedLearnableParam = function(opt.state) {
+  dob = getOptStateLoop(opt.state)
+  opt.problem = getOptStateOptProblem(opt.state)
+  control = getOptProblemControl(opt.problem)
+  if (!is.null(control$conceptdrift.drift.param) && control$conceptdrift.learn.drift) {
+    res = list(control$conceptdrift.drift.function(dob))
+    res = setNames(res, control$conceptdrift.drift.param)
+  } else {
+    res = list()
+  }
+  res
+}
+
+getOptStateParSet = function(opt.state) {
+  opt.problem = getOptStateOptProblem(opt.state)
+  control = getOptProblemControl(opt.problem)
+  if (!is.null(control$conceptdrift.drift.param) && control$conceptdrift.learn.drift) {
+    par.set = getOptProblemParSet(opt.problem, original.par.set = TRUE)
+    fixed.x = getOptStateFixedLearnableParam(opt.state)
+    pars = par.set$pars[names(fixed.x)]
+    pars = Map(function(par, val) insert(par, list(lower = val, upper = val)), pars, fixed.x)
+    par.set$pars[names(fixed.x)] = setNames(pars, names(fixed.x))
+    par.set
+  } else {
+    getOptProblemParSet(opt.problem)
+  }
 }
