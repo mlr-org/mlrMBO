@@ -19,7 +19,6 @@ evalMBODesign.OptState = function(opt.state) {
 
   # check that the provided design one seems ok
   # sanity check: are paramter values and colnames of design consistent?
-  browser()
   if (!setequal(setdiff(colnames(design), y.name), pids))
     stop("Column names of design 'design' must match names of parameters in 'par.set'!")
 

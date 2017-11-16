@@ -7,15 +7,24 @@ initOptProblem = function(fun, design, learner, control, show.info, more.args) {
   if (!is.null(design)) {
     assertSubset(getParamIds(par.set, repeated = TRUE, with.nr = TRUE), names(design)) 
     checkInitDesign(design, par.set) 
+  } else {
+    n.params = sum(getParamLengths(par.set))
+    if (!is.null(control$conceptdrift.drift.param) && control$conceptdrift.learn.drift) {
+      fixed.x = list(control$conceptdrift.drift.function(0))
+      fixed.x = setNames(fixed.x, control$conceptdrift.drift.param)
+      par.set = attr(fun, "original.par.set")
+      par.set = fixParamSet(par.set, fixed.x)
+    }
+    design = generateDesign(n.params * 4L, par.set, fun = lhs::maximinLHS)
   }
 
   learner = checkLearner(learner, control, fun)
 
   assertClass(control, "MBOControl")
 
-  n.params = sum(getParamLengths(par.set))
   control$noisy = isNoisy(fun)
   control$minimize = shouldBeMinimized(fun)
+
   control = checkStuff(fun, design, learner, control)
   control$infill.crit = initCrit(control$infill.crit, fun, design, learner, control)
 

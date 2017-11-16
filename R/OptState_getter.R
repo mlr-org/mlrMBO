@@ -24,12 +24,22 @@ getOptStateModels = function(opt.state) {
   models
 }
 
-getOptStateTasks = function(opt.state) {
+getOptStateTasks = function(opt.state, predictive = FALSE) {
   if (is.null(opt.state$tasks) || getOptStateLoop(opt.state) != opt.state$tasks.loop) {
     tasks = makeTasks(opt.state)
     setOptStateTasks(opt.state, tasks)
   } else {
     tasks = opt.state$tasks
+  }
+  control = getOptProblemControl(getOptStateOptProblem(opt.state))
+  if (predictive && !is.null(control$conceptdrift.drift.param) && conceptdrift.learn.drift) {
+    fixed.x = getOptStateFixedLearnableParam(opt.state)
+    tasks = lapply(tasks, function(z) {
+      data = z$env$data
+      data[[control$conceptdrift.drift.param]] = fixed.x
+      z = mlr:::changeData(task = z, data = data)
+      return(z)
+    })
   }
   tasks
 }
@@ -177,10 +187,7 @@ getOptStateParSet = function(opt.state) {
   if (!is.null(control$conceptdrift.drift.param) && control$conceptdrift.learn.drift) {
     par.set = getOptProblemParSet(opt.problem, original.par.set = TRUE)
     fixed.x = getOptStateFixedLearnableParam(opt.state)
-    pars = par.set$pars[names(fixed.x)]
-    pars = Map(function(par, val) insert(par, list(lower = val, upper = val)), pars, fixed.x)
-    par.set$pars[names(fixed.x)] = setNames(pars, names(fixed.x))
-    par.set
+    fixParamSet(par.set, fixed.x)
   } else {
     getOptProblemParSet(opt.problem)
   }

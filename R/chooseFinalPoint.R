@@ -15,9 +15,15 @@ chooseFinalPoint = function(opt.state) {
   opt.problem =  getOptStateOptProblem(opt.state)
   opt.path = getOptStateOptPath(opt.state)
   control = getOptProblemControl(opt.problem)
-  switch (control$final.method,
-    "last.proposed" = getOptPathLength(opt.path),
-    "best.true.y" = getOptPathBestIndex(opt.path, ties = "random"),
-    "best.predicted" = which(rank(ifelse(control$minimize, 1, -1) *
-      predict(getOptStateModels(opt.state)$models[[1L]], task = getOptStateTasks(opt.state)[[1]])$data$response, ties.method = "random") == 1L))
+  if (control$final.method == "last.proposed") {
+    getOptPathLength(opt.path)
+  } else if (control$final.method == "best.true.y") {
+    getOptPathBestIndex(opt.path, ties = "random")
+  } else if (control$final.method == "best.predicted") {
+    maximize.mult = ifelse(control$minimize, 1, -1)
+    model = getOptStateModels(opt.state)$models[[1L]]
+    task = getOptStateTasks(opt.state, predictive = TRUE)[[1]]
+    pred = predict(model, task = task)
+    which(rank(maximize.mult * pred$data$response, ties.method = "random") == 1L)
+  }
 }

@@ -72,6 +72,7 @@ makeMBOLearner = function(control, fun, config = list(), ...) {
       lrn = setHyperPars(lrn, nugget.stability = 10^-8)
     else
       lrn = setHyperPars(lrn, nugget.estim = TRUE, jitter = TRUE)
+    lrn = makeRemoveConstantFeaturesWrapper(lrn)
   } else {
     lrn = makeLearner("regr.randomForest", se.method = "jackknife", keep.inbag = TRUE, config = config)
     if (hasRequires(ps))
