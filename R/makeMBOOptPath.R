@@ -7,12 +7,12 @@
 makeMBOOptPath = function(opt.problem) {
   par.set = getOptProblemParSet(opt.problem)
   control = getOptProblemControl(opt.problem)
-  if (!is.null(control$conceptdrift.drift.param)) {
+  if (!is.null(getOptProblemDriftParam(opt.problem))) {
     if (control$conceptdrift.learn.drift) {
       par.set = getOptProblemParSet(opt.problem, original.par.set = TRUE)
     }
     op = OptPathNgCd$new(
-      drift.param = control$conceptdrift.drift.param,
+      drift.param = getOptProblemDriftParam(opt.problem),
       window.function = control$conceptdrift.window.function,
       par.set = par.set,
       y.names = control$y.name,

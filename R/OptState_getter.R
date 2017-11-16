@@ -31,12 +31,13 @@ getOptStateTasks = function(opt.state, predictive = FALSE) {
   } else {
     tasks = opt.state$tasks
   }
-  control = getOptProblemControl(getOptStateOptProblem(opt.state))
-  if (predictive && !is.null(control$conceptdrift.drift.param) && conceptdrift.learn.drift) {
+  opt.problem = getOptStateOptProblem(opt.state)
+  control = getOptProblemControl(opt.problem)
+  if (predictive && !is.null(getOptProblemDriftParam(opt.problem)) && control$conceptdrift.learn.drift) {
     fixed.x = getOptStateFixedLearnableParam(opt.state)
     tasks = lapply(tasks, function(z) {
       data = z$env$data
-      data[[control$conceptdrift.drift.param]] = fixed.x
+      data[[getOptProblemDriftParam(opt.problem)]] = fixed.x
       z = mlr:::changeData(task = z, data = data)
       return(z)
     })
@@ -159,9 +160,9 @@ getOptStateFixedParam = function(opt.state) {
   dob = getOptStateLoop(opt.state)
   opt.problem = getOptStateOptProblem(opt.state)
   control = getOptProblemControl(opt.problem)
-  if (!is.null(control$conceptdrift.drift.param) && !control$conceptdrift.learn.drift) {
+  if (!is.null(getOptProblemDriftParam(opt.problem)) && !control$conceptdrift.learn.drift) {
     res = list(control$conceptdrift.drift.function(dob))
-    res = setNames(res, control$conceptdrift.drift.param)
+    res = setNames(res, getOptProblemDriftParam(opt.problem))
   } else {
     res = list()
   }
@@ -172,9 +173,9 @@ getOptStateFixedLearnableParam = function(opt.state) {
   dob = getOptStateLoop(opt.state)
   opt.problem = getOptStateOptProblem(opt.state)
   control = getOptProblemControl(opt.problem)
-  if (!is.null(control$conceptdrift.drift.param) && control$conceptdrift.learn.drift) {
+  if (!is.null(getOptProblemDriftParam(opt.problem)) && control$conceptdrift.learn.drift) {
     res = list(control$conceptdrift.drift.function(dob))
-    res = setNames(res, control$conceptdrift.drift.param)
+    res = setNames(res, getOptProblemDriftParam(opt.problem))
   } else {
     res = list()
   }
@@ -184,7 +185,7 @@ getOptStateFixedLearnableParam = function(opt.state) {
 getOptStateParSet = function(opt.state) {
   opt.problem = getOptStateOptProblem(opt.state)
   control = getOptProblemControl(opt.problem)
-  if (!is.null(control$conceptdrift.drift.param) && control$conceptdrift.learn.drift) {
+  if (!is.null(getOptProblemDriftParam(opt.problem)) && control$conceptdrift.learn.drift) {
     par.set = getOptProblemParSet(opt.problem, original.par.set = TRUE)
     fixed.x = getOptStateFixedLearnableParam(opt.state)
     fixParamSet(par.set, fixed.x)

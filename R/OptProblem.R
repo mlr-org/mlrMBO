@@ -114,3 +114,9 @@ print.OptProblem = function(x, ...) {
   catf("Surrogate Learner:")
   print(getOptProblemLearner(x))
 }
+
+# Concept Drift Stuff #####
+
+getOptProblemDriftParam = function(opt.problem) {
+  attr(getOptProblemFun(opt.problem), "drift.param")
+}

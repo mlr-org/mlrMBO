@@ -9,9 +9,9 @@ initOptProblem = function(fun, design, learner, control, show.info, more.args) {
     checkInitDesign(design, par.set) 
   } else {
     n.params = sum(getParamLengths(par.set))
-    if (!is.null(control$conceptdrift.drift.param) && control$conceptdrift.learn.drift) {
+    if (!is.null(attr(fun, "drift.param")) && control$conceptdrift.learn.drift) {
       fixed.x = list(control$conceptdrift.drift.function(0))
-      fixed.x = setNames(fixed.x, control$conceptdrift.drift.param)
+      fixed.x = setNames(fixed.x, attr(fun, "drift.param"))
       par.set = attr(fun, "original.par.set")
       par.set = fixParamSet(par.set, fixed.x)
     }

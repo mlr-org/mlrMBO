@@ -140,7 +140,7 @@ checkStuff = function(fun, design, learner, control) {
   return(control)
 
   # concept drift stuff
-  if (!is.null(control$conceptdrift.drift.param)) {
+  if (!is.null(getOptProblemDriftParam(opt.problem))) {
     if (is.null(attr(fun, "original.par.set"))) {
       stop("The function has to have an attribute with the original.par.set!")
     }
