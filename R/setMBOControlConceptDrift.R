@@ -15,7 +15,7 @@
 #' @family MBOControl
 #' @export
 setMBOControlConceptDrift = function(control,
-  drift.function = NULL,
+  drift.function = identity,
   window.function = identity,
   learn.drift = FALSE,
   calculate.th.final.point = FALSE) {
@@ -30,6 +30,9 @@ setMBOControlConceptDrift = function(control,
   control$conceptdrift.window.function = window.function %??% control$conceptdrift.window.function
   control$conceptdrift.learn.drift = learn.drift %??% control$conceptdrift.learn.drift
   control$calculate.th.final.point = calculate.th.final.point %??% control$calculate.th.final.point
+  if(control$final.method != "best.predicted"){
+    stopf("final.method = %s does not make sense for CD.", control$final.method)
+  }
 
   return(control)
 }

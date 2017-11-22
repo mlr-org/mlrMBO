@@ -55,3 +55,14 @@ getHyperParsString2 = function(learner, show.missing.values = TRUE) {
   s = mapply(paramValueToString, pars, hps, MoreArgs = list(show.missing.values = show.missing.values))
   paste(ns, s, sep = "=", collapse = ",")
 }
+
+#overwrite outdated BBmisc stuff
+
+dropNamed = function(x, drop = character(0L)) {
+  if (is.data.table(x)) {
+    cols = setdiff(names(x), drop)
+    x[, cols, with = FALSE]
+  } else {
+    BBmisc::dropNamed(x, drop)
+  }
+}

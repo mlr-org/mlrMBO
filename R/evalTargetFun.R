@@ -39,7 +39,7 @@ evalTargetFun.OptState = function(opt.state, xs, extras) {
     wrapFun = function(x) {
       st = proc.time()
       fixed.x = getOptStateFixedParam(opt.state)
-      x = insert(x, fixed.x)  
+      x = insert(x, fixed.x)
       y = do.call(getOptProblemFun(opt.problem), insert(list(x = x), getOptProblemMoreArgs(opt.problem)))
       user.extras = fixed.x # in case no concept drift is present this will be list()
       # here we extract additional stuff which the user wants to log in the opt path

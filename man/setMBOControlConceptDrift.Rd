@@ -4,21 +4,26 @@
 \alias{setMBOControlConceptDrift}
 \title{Set concept drift options.}
 \usage{
-setMBOControlConceptDrift(control, drift.param = NULL,
-  drift.function = NULL, window.function = NULL)
+setMBOControlConceptDrift(control, drift.function = identity,
+  window.function = identity, learn.drift = FALSE,
+  calculate.th.final.point = FALSE)
 }
 \arguments{
 \item{control}{[\code{\link{MBOControl}}]\cr
 Control object for mbo.}
 
-\item{drift.param}{[\code{character(1)}]\cr
-Which parameter determines the drift position we are in?}
-
 \item{drift.function}{[\code{function}]\cr
 Function that returns the position in the drift we are in, depending on the dob.}
 
 \item{window.function}{[\code{function}]\cr
-Function that returns a subset of the OptPathNg. eg. \code{function(op) {r = op$clone(); r$data = tail(r$data); r}}}
+Function that returns a subset of the OptPathNg. eg. \code{function(x) {tail(x, 10)}}}
+
+\item{learn.drift}{[\code{logical(1)}]\cr
+Should the drift param be included in the surrogate?}
+
+\item{calculate.th.final.point}{[\code{logical(1)}]\cr
+Should the best predicted y be added to the opt.path after each iteration?
+Note, that this will be always the theoretical best values of the previous dob!}
 }
 \value{
 [\code{\link{MBOControl}}].
