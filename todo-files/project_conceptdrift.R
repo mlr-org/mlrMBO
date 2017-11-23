@@ -1,6 +1,7 @@
 mydev()
 library(ggplot2)
 fn = makeAlpine02Function(2)
+#fn = makeBraninFunction()
 autoplot(fn, render.levels = TRUE)
 
 # we will take x1 as a time factor and optimize over x2
@@ -9,10 +10,11 @@ autoplot(fn, render.levels = TRUE)
 # For the intial design, the concept does not change?
 w.fn = wrapSmoofConceptDrift(fn = fn, drift.param = "x1")
 
-mbo.iters = 60
+mbo.iters = 30
 start.drift = 0.2
+end.drift = -2
 drift.range = unlist(attr(w.fn, "original.par.set")$pars[[attr(w.fn, "drift.param")]][c("lower", "upper")])
-drift.range = drift.range + c(start.drift, 0)
+drift.range = drift.range + c(start.drift, end.drift)
 
 slow.drift = function(dob) {
   drift.range[1] + (dob/mbo.iters) * diff(drift.range)
@@ -33,6 +35,8 @@ ctrl = setMBOControlTermination(ctrl, iter = mbo.iters)
 
 res = mbo(fun = w.fn, control = ctrl)
 
+plot(res$final.opt.state)
+
 res$opt.path$window.function = identity
 as.data.frame(res$opt.path)
 g = autoplot(fn, render.levels = TRUE, show.optimum = TRUE) 
@@ -41,7 +45,7 @@ g = g + geom_line(data = as.data.frame(res$opt.path), mapping = aes(x = x1, y = 
 g
 
 #FIXME: Make working: ?
-#plot(res$opt.state)
+#plot(res$final.opt.state)
 
 ### Parameter will be also learned
 
@@ -49,11 +53,15 @@ ctrl = makeMBOControl(final.method = "best.predicted")
 ctrl = setMBOControlConceptDrift(
   control = ctrl,
   drift.function = slow.drift,
+  window.function = tail.window,
   learn.drift = TRUE,
   calculate.th.final.point = TRUE)
 ctrl = setMBOControlTermination(ctrl, iter = mbo.iters)
 
 res = mbo(fun = w.fn, control = ctrl)
+
+plot(res$final.opt.state)
+ggsave("tmp.pdf")
 
 res$opt.path$window.function = identity
 as.data.frame(res$opt.path)
@@ -61,3 +69,11 @@ g = autoplot(fn, render.levels = TRUE, show.optimum = TRUE)
 g = g + geom_text(data = as.data.frame(res$opt.path), mapping = aes(label = dob), color = "white")
 g = g + geom_line(data = as.data.frame(res$opt.path), mapping = aes(x = x1, y = final.x.x2))
 g
+
+### a hard cut
+
+fun = function(x) {
+  if(x[1] < 50) {
+    
+  }
+}
