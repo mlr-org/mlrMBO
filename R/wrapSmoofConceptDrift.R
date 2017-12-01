@@ -12,6 +12,33 @@
 wrapSmoofConceptDrift = function(fn, drift.param) {
   assertClass(fn, "smoof_function")
   par.set = getParamSet(fn)
+  if (isTRUE(par.set$pars[[drift.param]]$type == "discrete")) {
+    fn = wrapSmoofConceptDriftDiscrete(fn, drift.param)
+    wrapSmoofConceptDriftNumeric(fn, drift.param)
+  } else {
+    wrapSmoofConceptDriftNumeric(fn, drift.param)
+  }
+}
+
+wrapSmoofConceptDriftDiscrete = function(fn, drift.param) {
+  par.set = getParamSet(fn)
+  disc.values = getValues(par.set$pars[[drift.param]])
+  num.replacement.par = makeNumericParam(id = drift.param, lower = 1, upper = length(disc.values) + 1)
+  par.set.wrap = par.set
+  par.set.wrap$pars[[drift.param]] = num.replacement.par
+  stopifnot("x" %in% formalArgs(fn))
+  fun.wrap = function(x) {
+    disc.ind = min(floor(x[[drift.param]]), length(disc.values))
+    x[[drift.param]] = disc.values[[disc.ind]]
+    fn(x)
+  }
+  attributes(fun.wrap) = attributes(fun)
+  fun.wrap = setAttribute(fun.wrap, "par.set", value = par.set.wrap)
+  fun.wrap
+}
+
+wrapSmoofConceptDriftNumeric = function(fn, drift.param) {
+  par.set = getParamSet(fn)
   if (isVector(par.set)) {
     ps.length = getParamLengths(par.set)
     if (length(ps.length)>1) {

@@ -39,7 +39,7 @@ plot(res$final.opt.state)
 
 res$opt.path$window.function = identity
 as.data.frame(res$opt.path)
-g = autoplot(fn, render.levels = TRUE, show.optimum = TRUE) 
+g = autoplot(fn, render.levels = TRUE, show.optimum = TRUE)
 g = g + geom_text(data = as.data.frame(res$opt.path), mapping = aes(label = dob), color = "white")
 g = g + geom_line(data = as.data.frame(res$opt.path), mapping = aes(x = x1, y = final.x.x2))
 g
@@ -65,15 +65,15 @@ ggsave("tmp.pdf")
 
 res$opt.path$window.function = identity
 as.data.frame(res$opt.path)
-g = autoplot(fn, render.levels = TRUE, show.optimum = TRUE) 
+g = autoplot(fn, render.levels = TRUE, show.optimum = TRUE)
 g = g + geom_text(data = as.data.frame(res$opt.path), mapping = aes(label = dob), color = "white")
 g = g + geom_line(data = as.data.frame(res$opt.path), mapping = aes(x = x1, y = final.x.x2))
 g
 
 ### a hard cut
 
-fun = function(x) {
-  if(x[1] < 50) {
-    
-  }
-}
+fun = makeSwiler2014Function()
+fun(x = list(x1 = "1", x2 = 0.2, x3 = 0.2))
+fun = wrapSmoofConceptDriftDiscrete(fun, "x1")
+fun(x = list(x1 = 1, x2 = 0.2, x3 = 0.2))
+plot2DNumeric(fun)
