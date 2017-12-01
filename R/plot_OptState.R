@@ -72,14 +72,15 @@ plot.OptState = function(x, scale.panels = FALSE, ...) {
   mdata = data.table::melt(plot.data, id.vars = x.ids.complete)
   mdata$variable = factor(mdata$variable, levels = intersect(use.only.columns, levels(mdata$variable)))
   if (scale.panels) {
-    predict.range = range(mdata[get("variable")=="mean", "value"])
-    mdata[, ':='("value", normalize(x = get("value"), method = "range")), by = "variable"]
-    design.complete[[y.ids]] = (design.complete[[y.ids]] + (0 - predict.range[1])) / diff(predict.range)
+    #predict.range = range(mdata[get("variable")=="mean", "value"])
+    #mdata[, ':='("value", normalize(x = get("value"), method = "range")), by = "variable"]
+    #design.complete[[y.ids]] = design.complete[[y.ids]] + (0 - predict.range[1])) / diff(predict.range)
+    mdata[,  ':='('value', normalize(get("value"), method = "range")), by = "variable"]
   }
   if (par.count.numeric == 2) {
-    g = ggplot2::ggplot(mdata, ggplot2::aes_string(x = x.ids.complete[1], y = x.ids.complete[2], fill = "value"))
-    g = g + ggplot2::geom_tile()
-    g = g + ggplot2::geom_point(data = design.complete, mapping = ggplot2::aes_string(x = x.ids.complete[1], y = x.ids.complete[2], fill = y.ids[1], shape = "type"))
+    g = ggplot2::ggplot(mdata, ggplot2::aes_string(x = x.ids.complete[1], y = x.ids.complete[2]))
+    g = g + ggplot2::geom_tile(aes_string(fill = "value"))
+    g = g + ggplot2::geom_point(data = design.complete, mapping = ggplot2::aes_string(x = x.ids.complete[1], y = x.ids.complete[2], shape = "type"))
     g = g + ggplot2::facet_grid(~variable)
     brewer.div = colorRampPalette(RColorBrewer::brewer.pal(11, "Spectral"), interpolate = "spline")
     g = g + ggplot2::scale_fill_gradientn(colours = brewer.div(200))
