@@ -83,11 +83,16 @@ makeMBOInfillCrit = function(fun, name, id,
 print.MBOInfillCrit = function(x, ...) {
   components = getMBOInfillCritComponents(x)
   params = getMBOInfillCritParams(x)
+  requirements = c()
+  if (hasRequiresInfillCritStandardError(x))
+    requirements = c(requirements, "SE estimation")
+  if (hasRequiresInfillCritTime(x))
+    requirements = c(requirements, "runtime estimation")
   catf("Infill criterion            : %s (%s)", getMBOInfillCritName(x),
     getMBOInfillCritId(x))
     catf("  Direction of optimization : %s", x$opt.direction)
-  if (hasRequiresInfillCritStandardError(x))
-    catf("  Requirement               : SE estimation")
+  if (length(requirements) > 0)
+    catf("  Requirements              : %s", collapse(requirements, sep = ", "))
   if (length(components) > 0)
     catf("  Components                : %s", collapse(components, sep = ", "))
   if (length(params) > 0)
