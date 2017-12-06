@@ -73,6 +73,14 @@
 #'   Default is \code{\link[mlr]{mse}}.
 #' @param output.num.format [\code{logical(1)}]\cr
 #'   Format string for the precision of the numeric output of mbo.
+#' @param on.surrogate.error [\code{character(1)}]\cr
+#'   What should happen when the surrogate learner can not train the model.
+#'   Possible values are:
+#'   \dQuote{stop}: R exception is generated.
+#'   \dQuote{warn}: The error will be converted to a waring and a random point will be proposed.
+#'   \dQuote{quiet}: Same as “warn” but without the warning.
+#'   Default is: \dQuote{stop}.
+#'   
 #' @return [\code{\link{MBOControl}}].
 #' @aliases MBOControl
 #' @family MBOControl
@@ -91,7 +99,8 @@ makeMBOControl = function(n.objectives = 1L,
   resample.at = integer(0),
   resample.desc = makeResampleDesc("CV", iter = 10),
   resample.measures = list(mse),
-  output.num.format = "%.3g"
+  output.num.format = "%.3g",
+  on.surrogate.error = "stop"
 ) {
 
   n.objectives = asInt(n.objectives, lower = 1L)
@@ -123,6 +132,8 @@ makeMBOControl = function(n.objectives = 1L,
 
   assertString(output.num.format)
 
+  assertChoice(on.surrogate.error, c("warn", "stop", "quiet"))
+
   control = makeS3Obj("MBOControl",
     n.objectives = n.objectives,
     propose.points = propose.points,
@@ -140,6 +151,7 @@ makeMBOControl = function(n.objectives = 1L,
     resample.at = resample.at,
     resample.measures = resample.measures,
     output.num.format = output.num.format,
+    on.surrogate.error = on.surrogate.error,
     multifid = FALSE
   )
 
