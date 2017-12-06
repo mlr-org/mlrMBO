@@ -240,6 +240,44 @@ makeMBOInfillCritEQI = function(eqi.beta = 0.75, se.threshold = 1e-6) {
   )
 }
 
+#' @export
+#' @rdname infillcrits
+makeMBOInfillCritEIs = function(se.threshold = 1e-6) {
+  assertNumber(se.threshold, lower = 1e-20)
+  force(se.threshold)
+  makeMBOInfillCrit(
+    fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
+      model = models[[1L]]
+      time.model = models$time.model
+      maximize.mult = ifelse(control$minimize, 1, -1)
+      y = maximize.mult * design[, control$y.name]
+      p = predict(model, newdata = points)$data
+      p.time = predict(time.model, newdata = points)$data$response
+      p.mu = maximize.mult * p$response
+      p.se = p$se
+      y.min = min(y)
+      d = y.min - p.mu
+      xcr = d / p.se
+      xcr.prob = pnorm(xcr)
+      xcr.dens = dnorm(xcr)
+      ei = (d * xcr.prob + p.se * xcr.dens) / log(p.time)
+      res = ifelse(p.se < se.threshold, 0, -ei)
+      if (attributes) {
+        res = setAttribute(res, "crit.components", data.frame(se = p$se, mean = p$response))
+      }
+      return(res)
+    },
+    name = "Expected improvement per second",
+    id = "eis",
+    components = c("se", "mean"),
+    params = list(se.threshold = se.threshold),
+    opt.direction = "maximize",
+    requires.se = TRUE,
+    requires.time = TRUE
+  )
+}
+
+
 # ====================
 # MULTI-CRITERIA STUFF
 # ====================

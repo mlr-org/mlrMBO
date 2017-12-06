@@ -15,7 +15,8 @@
 \title{Create an infill criterion.}
 \usage{
 makeMBOInfillCrit(fun, name, id, opt.direction = "minimize",
-  components = character(0L), params = list(), requires.se = FALSE)
+  components = character(0L), params = list(), requires.se = FALSE,
+  requires.time = FALSE)
 }
 \arguments{
 \item{fun}{[\code{function(points, models, control, par.set, design, iter)}]\cr
@@ -60,6 +61,10 @@ Default is the empty list.}
 \item{requires.se}{[\code{logical(1)}]\cr
 Does the infill criterion require the regression learner to provide a standard
 error estimation?
+Default is \code{FALSE}.}
+
+\item{requires.time}{[\code{logical(1)}]\cr
+Does the infill criterion require estimated runtime of the target function based on the \code{time.model}?
 Default is \code{FALSE}.}
 }
 \value{

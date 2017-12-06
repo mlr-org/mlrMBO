@@ -42,13 +42,16 @@
 #'   Does the infill criterion require the regression learner to provide a standard
 #'   error estimation?
 #'   Default is \code{FALSE}.
+#' @param requires.time [\code{logical(1)}]\cr
+#'   Does the infill criterion require estimated runtime of the target function based on the \code{time.model}?
+#'   Default is \code{FALSE}.
 #' @return [\code{\link{MBOInfillCrit}}]
 #' @rdname MBOInfillCrit
 #' @aliases MBOInfillCrit
 #' @export
 makeMBOInfillCrit = function(fun, name, id,
   opt.direction = "minimize", components = character(0L), params = list(),
-  requires.se = FALSE) {
+  requires.se = FALSE, requires.time = FALSE) {
   assertFunction(
     fun,
     args = c("points", "models", "control",
@@ -61,6 +64,7 @@ makeMBOInfillCrit = function(fun, name, id,
   assertCharacter(components, unique = TRUE)
   assertList(params)
   assertFlag(requires.se)
+  assertFlag(requires.time)
 
   ic = makeS3Obj(c(paste0("InfillCrit", toupper(id)), "MBOInfillCrit"),
     fun = fun,
@@ -69,7 +73,8 @@ makeMBOInfillCrit = function(fun, name, id,
     opt.direction = opt.direction,
     components = components,
     params = params,
-    requires.se = requires.se
+    requires.se = requires.se,
+    requires.time = requires.time
   )
   return(ic)
 }

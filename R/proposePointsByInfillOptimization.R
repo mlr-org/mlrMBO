@@ -34,6 +34,8 @@ proposePointsByInfillOptimization = function(opt.state, par.set = NULL, control 
   if (!ch$ok) return(ch$prop)
 
   design = convertOptPathToDf(opt.path, control)
+  if (hasRequiresInfillCritTime(control$infill.crit))
+    models$time.model = getOptStateTimeModel(opt.state)
   infill.crit.fun = control$infill.crit$fun
   infill.opt.fun = getInfillOptFunction(control$infill.opt)
   # store time to propose single point
