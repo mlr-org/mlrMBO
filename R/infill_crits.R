@@ -300,6 +300,10 @@ makeMBOInfillCritDIB = function(cb.lambda = 1, sms.eps = NULL) {
   )
 }
 
+# ============================
+# Experimental Infill Criteria
+# ============================
+
 #' @export
 #' @rdname infillcrits
 makeMBOInfillCritAdaCB = function(cb.lambda.start = NULL, cb.lambda.end = NULL) {
@@ -310,20 +314,36 @@ makeMBOInfillCritAdaCB = function(cb.lambda.start = NULL, cb.lambda.end = NULL) 
   makeMBOInfillCrit(
     fun = function(points, models, control, par.set, design, iter, progress, attributes = FALSE) {
       assertNumber(progress)
-      model = models[[1L]]
-      maximize.mult = ifelse(control$minimize, 1, -1)
-      p = predict(model, newdata = points)$data
       cb.lambda = (1-progress) * cb.lambda.start + progress * cb.lambda.end
-      res = maximize.mult * p$response - cb.lambda * p$se
-      if (attributes) {
-        res = setAttribute(res, "crit.components", data.frame(se = p$se, mean = p$response, lambda = cb.lambda))
-      }
-      return(res)
+      crit = makeMBOInfillCritCB(cb.lambda = cb.lambda)
+      crit$fun
     },
     name = "Adaptive Confidence bound",
     id = "adacb",
     components = c("se", "mean", "lambda"),
     params = list(cb.lambda.start = cb.lambda.start, cb.lambda.end = cb.lambda.end),
+    opt.direction = "objective",
+    requires.se = TRUE
+  )
+}
+
+
+#' @export
+#' @rdname infillcrits
+makeMBOInfillCritRandomCB = function(lambda.random.gen = function(x) rexp(x, rate = 1/2)) {
+  assertFunction(lambda.random.gen)
+  force(lambda.random.gen)
+  makeMBOInfillCrit(
+    fun = function(points, models, control, par.set, design, iter, progress, attributes = FALSE) {
+      cb.lambda = lambda.random.gen(1)
+      assertNumber(cb.lambda, lower = 0)
+      crit = makeMBOInfillCritCB(cb.lambda = cb.lambda)
+      crit$fun
+    },
+    name = "Random Confidence bound",
+    id = "rcb",
+    components = c("se", "mean", "lambda"),
+    params = list(lambda.random.gen = lambda.random.gen),
     opt.direction = "objective",
     requires.se = TRUE
   )

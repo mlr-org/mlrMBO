@@ -96,3 +96,10 @@ crit.eqi = makeMBOInfillCritEQI()
 #' @format NULL
 #' @keywords NULL
 crit.dib1 = makeMBOInfillCritDIB(cb.lambda = 1)
+#' @rdname MBOInfillCrit
+#' @export
+#' @usage NULL
+#' @docType NULL
+#' @format NULL
+#' @keywords NULL
+crit.rexp2cb = makeMBOInfillCritRandomCB(lambda.random.gen = function(x) rexp(x, 0.5))
