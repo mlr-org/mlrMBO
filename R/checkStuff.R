@@ -10,13 +10,14 @@
 #   Learner object.
 # @param control [\code{\link{MBOControl}}]
 #   MBO control object.
-checkStuff = function(fun, par.set, design, learner, control) {
+checkStuff = function(fun, design, learner, control) {
   assertFunction(fun)
-  assertClass(par.set, "ParamSet")
   if (!is.null(design))
     assertClass(design, "data.frame")
   assertClass(control, "MBOControl")
   assertClass(learner, "Learner")
+
+  par.set = getParamSet(fun)
 
   if (getNumberOfObjectives(fun) != control$n.objectives) {
     stopf("Objective function has %i objectives, but the control object assumes %i.",
@@ -81,7 +82,7 @@ checkStuff = function(fun, par.set, design, learner, control) {
 
   if (is.null(control$target.fun.value)) {
     # If we minimize, target is -Inf, for maximize it is Inf
-    control$target.fun.value = if (control$minimize[1L]) -Inf else Inf
+    control$target.fun.value = ifelse(shouldBeMinimized(fun), -Inf, Inf)
   } else {
     assertNumber(control$target.fun.value, na.ok = FALSE)
   }

@@ -23,7 +23,8 @@
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-
+  
+  
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -74,6 +75,9 @@
     </li>
     <li>
       <a href="../articles/supplementary/noisy_optimization.html">Noisy Optimization</a>
+    </li>
+    <li>
+      <a href="../articles/supplementary/infill_criteria.html">Infill Criteria</a>
     </li>
     <li>
       <a href="../articles/supplementary/machine_learning_with_mlrmbo.html">Machine learning with mlrMBO</a>
@@ -143,7 +147,7 @@ The population size is set to <code>propose.points</code>.
 The selection criterion is <code>moimbo.selection</code>.
 If this method is selected the infill criterion in <code>setMBOInfillCrit</code> is ignored.
 &#8220;cl&#8221;: Proposes points by constant liar strategy.
-Only meaningfull if <code>infill.crit == "cb"</code>
+Only meaningful if <code>infill.crit == "cb"</code>
 In the first step the kriging model is fitted based on the real data and the best point is calculated
 according to the regular EI-criterion.
 Then, the function value of the best point is simply guessed by the worst seen function evaluation.
@@ -167,7 +171,7 @@ Default is &#8220;ei.dist&#8221;.</p></td>
       <th>moimbo.dist</th>
       <td><p>[<code>character(1)</code>]
 Distance function used in multi-objective EA.
-Possible values are: &#8220;nearest.neigbor&#8221;, &#8220;nearest.better&#8221;.
+Possible values are: &#8220;nearest.neighbor&#8221;, &#8220;nearest.better&#8221;.
 Default is &#8220;nearest.better&#8221;.</p></td>
     </tr>
     <tr>

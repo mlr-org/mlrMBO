@@ -23,7 +23,8 @@
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-
+  
+  
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -74,6 +75,9 @@
     </li>
     <li>
       <a href="../articles/supplementary/noisy_optimization.html">Noisy Optimization</a>
+    </li>
+    <li>
+      <a href="../articles/supplementary/infill_criteria.html">Infill Criteria</a>
     </li>
     <li>
       <a href="../articles/supplementary/machine_learning_with_mlrmbo.html">Machine learning with mlrMBO</a>
@@ -185,7 +189,7 @@ return a list with the following elements:</p><dl class='dl-horizontal'>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>fn</span> <span class='kw'>=</span> <span class='kw'>smoof</span><span class='kw'>::</span><span class='fu'>makeSphereFunction</span>(<span class='fl'>1L</span>)
+    <pre class="examples"><div class='input'><span class='no'>fn</span> <span class='kw'>=</span> <span class='kw pkg'>smoof</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/smoof/topics/makeSphereFunction'>makeSphereFunction</a></span>(<span class='fl'>1L</span>)
 <span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='makeMBOControl.html'>makeMBOControl</a></span>()
 
 <span class='co'># custom termination condition (stop if target function value reached)</span>
@@ -222,8 +226,8 @@ return a list with the following elements:</p><dl class='dl-horizontal'>
 #&gt; 2        &lt;NA&gt;         NA initdesign           NA        NA          NA     NA
 #&gt; 3        &lt;NA&gt;         NA initdesign           NA        NA          NA     NA
 #&gt; 4        &lt;NA&gt;         NA initdesign           NA        NA          NA     NA
-#&gt; 5        &lt;NA&gt;      0.022  infill_cb         0.04 1.9675182 -0.19517220      1
-#&gt; 6        &lt;NA&gt;      0.027  infill_cb         0.04 0.3035529 -0.02400451      1</div></pre>
+#&gt; 5        &lt;NA&gt;      0.024  infill_cb        0.050 1.9675182 -0.19517220      1
+#&gt; 6        &lt;NA&gt;      0.023  infill_cb        0.054 0.3035529 -0.02400451      1</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

@@ -23,7 +23,8 @@
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-
+  
+  
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -74,6 +75,9 @@
     </li>
     <li>
       <a href="../articles/supplementary/noisy_optimization.html">Noisy Optimization</a>
+    </li>
+    <li>
+      <a href="../articles/supplementary/infill_criteria.html">Infill Criteria</a>
     </li>
     <li>
       <a href="../articles/supplementary/machine_learning_with_mlrmbo.html">Machine learning with mlrMBO</a>
@@ -141,12 +145,12 @@ Hence, mbo allows imputation of bad values via the control option <code>impute.y
 
     <strong>Logging:</strong> All error messages are logged into the optimization path <code>opt.path</code> if problems occur.</p>
 <p><strong>Mechanism II - The mlr's on.learner.error</strong>
-This procdues a FailureModel for the surrogate, if it crashed (issue 6). A random point (or multiple ones)
+This produces a FailureModel for the surrogate, if it crashed (issue 6). A random point (or multiple ones)
 are proposed now for the current iteration. And we pray that we can fit the model again in the
 next iteration.
 <strong>Logging:</strong> The entry &#8220;model.error&#8221; is set in the opt.path.</p>
 <p><strong>Mechanism III - Filtering of proposed point which are too close</strong></p>
-<p>Issue 6 is solved by filtering points that are to close to other porposed points or points already
+<p>Issue 6 is solved by filtering points that are to close to other proposed points or points already
 proposed in preceding iterations. Filtering in this context means replacing the proposed points by
 a randomly generated new point. The heuristics mechanism is (de)activated via the logical
 <code>filter.proposed.points.tol</code> parameter of the <code><a href='setMBOControlInfill.html'>setMBOControlInfill</a></code> function, which defaults to

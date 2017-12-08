@@ -34,7 +34,7 @@ exampleRunMultiObj= function(fun, design = NULL, learner, control, points.per.di
   if (is.null(design))
     design = generateDesign(4 * n.params, par.set)
 
-  learner = checkLearner(learner, par.set, control, fun)
+  learner = checkLearner(learner, control, fun)
   assertClass(control, "MBOControl")
   minimize = shouldBeMinimized(fun)
   control$noisy = isNoisy(fun)

@@ -62,8 +62,8 @@ test_that("mbo works with impute and failure model", {
   des$y = apply(des, 1, testf.fsphere.2d)
   des$y[nrow(des)] = 123
   # make sure model does not break, and we get a failure model
-  learner = makeLearner("regr.km", config = list(on.learner.error = "quiet"))
-  ctrl = makeMBOControl()
+  learner = makeLearner("regr.km")
+  ctrl = makeMBOControl(on.surrogate.error = "quiet")
   ctrl = setMBOControlTermination(ctrl, iters = 2L)
   ctrl = setMBOControlInfill(ctrl, crit = crit.mr, opt.focussearch.points = 10L)
   or = mbo(testf.fsphere.2d, des, learner = learner, control = ctrl)
@@ -71,4 +71,13 @@ test_that("mbo works with impute and failure model", {
   op = as.data.frame(or$opt.path)
   expect_true(!is.na(op$error.model[13L]))
   expect_true(!is.na(op$error.model[14L]))
+
+  # test with an infill that has infill components
+  # https://github.com/mlr-org/mlrMBO/issues/302
+  ctrl = setMBOControlInfill(ctrl, crit = crit.ei, opt = "focussearch", opt.focussearch.points = 10L)
+  learner = setPredictType(learner, "se")
+  or = mbo(testf.fsphere.2d, des, learner = learner, control = ctrl)
+  op = as.data.frame(or$opt.path)
+  expect_character(as.character(op$error.model[13L]), pattern = "leading minor of order")
+  expect_true(all(op$prop.type[13:14] == "random_error"))
 })

@@ -25,7 +25,7 @@ BugReports: https://github.com/mlr-org/mlrMBO/issues
 Depends:
     mlr (>= 2.10),
     ParamHelpers (>= 1.10),
-    smoof (>= 1.4)
+    smoof (>= 1.5.1)
 Imports:
     backports (>= 1.1.0),
     BBmisc (>= 1.11),

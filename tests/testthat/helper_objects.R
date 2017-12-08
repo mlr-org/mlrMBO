@@ -51,3 +51,17 @@ testf.fsphere.2d.slow = makeSingleObjectiveFunction(
   global.opt.params = getGlobalOptimum(testf.fsphere.2d)$param,
   global.opt.value = getGlobalOptimum(testf.fsphere.2d)$value
 )
+
+# mixed space test functio
+testp.mixed = makeParamSet(
+  makeDiscreteParam("disc1", values = c("a", "b")),
+  makeNumericParam("num1", lower = 0, upper = 1)
+)
+testf.mixed = makeSingleObjectiveFunction(
+  fn = function(x) {
+    ifelse(x$disc1 == "a", x$num1 * 2 - 1, 1 - x$num1)
+  },
+  par.set = testp.mixed,
+  has.simple.signature = FALSE
+)
+testd.mixed = generateTestDesign(10L, testp.mixed)

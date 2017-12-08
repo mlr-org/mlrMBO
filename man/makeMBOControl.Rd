@@ -12,7 +12,8 @@ makeMBOControl(n.objectives = 1L, propose.points = 1L,
   save.file.path = file.path(getwd(), "mlr_run.RData"),
   store.model.at = NULL, resample.at = integer(0),
   resample.desc = makeResampleDesc("CV", iter = 10),
-  resample.measures = list(mse), output.num.format = "\%.3g")
+  resample.measures = list(mse), output.num.format = "\%.3g",
+  on.surrogate.error = "stop")
 }
 \arguments{
 \item{n.objectives}{[\code{integer(1)}]\cr
@@ -100,6 +101,14 @@ Default is \code{\link[mlr]{mse}}.}
 
 \item{output.num.format}{[\code{logical(1)}]\cr
 Format string for the precision of the numeric output of mbo.}
+
+\item{on.surrogate.error}{[\code{character(1)}]\cr
+What should happen when the surrogate learner can not train the model.
+Possible values are:
+\dQuote{stop}: R exception is generated.
+\dQuote{warn}: The error will be converted to a waring and a random point will be proposed.
+\dQuote{quiet}: Same as “warn” but without the warning.
+Default is: \dQuote{stop}.}
 }
 \value{
 [\code{\link{MBOControl}}].
