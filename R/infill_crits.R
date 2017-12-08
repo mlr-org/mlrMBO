@@ -311,20 +311,18 @@ makeMBOInfillCritAdaCB = function(cb.lambda.start = NULL, cb.lambda.end = NULL) 
   assertNumber(cb.lambda.end, lower = 0, null.ok = TRUE)
   force(cb.lambda.start)
   force(cb.lambda.end)
-  makeMBOInfillCrit(
-    fun = function(points, models, control, par.set, design, iter, progress, attributes = FALSE) {
-      assertNumber(progress)
-      cb.lambda = (1-progress) * cb.lambda.start + progress * cb.lambda.end
-      crit = makeMBOInfillCritCB(cb.lambda = cb.lambda)
-      crit$fun
-    },
-    name = "Adaptive Confidence bound",
-    id = "adacb",
-    components = c("se", "mean", "lambda"),
-    params = list(cb.lambda.start = cb.lambda.start, cb.lambda.end = cb.lambda.end),
-    opt.direction = "objective",
-    requires.se = TRUE
-  )
+  crit = makeMBOInfillCritCB()
+  orig.fun = crit$fun
+  crit$fun = function(points, models, control, par.set, design, iter, progress, attributes = FALSE) {
+    assertNumber(progress)
+    cb.lambda = (1-progress) * cb.lambda.start + progress * cb.lambda.end
+    assign("cb.lambda", cb.lambda, envir = environment(orig.fun))
+    orig.fun(points, models, control, par.set, design, iter, progress, attributes)
+  }
+  crit$name = "Adaptive Confidence bound"
+  crit$id = "adacb"
+  crit$params = list(cb.lambda.start = cb.lambda.start, cb.lambda.end = cb.lambda.end)
+  return(addClasses(crit, "InfillCritAdaCB"))
 }
 
 
@@ -332,19 +330,25 @@ makeMBOInfillCritAdaCB = function(cb.lambda.start = NULL, cb.lambda.end = NULL) 
 #' @rdname infillcrits
 makeMBOInfillCritRandomCB = function(lambda.random.gen = function(x) rexp(x, rate = 1/2)) {
   assertFunction(lambda.random.gen)
+  last.iter = -1
+  last.cb.lambda = NULL
   force(lambda.random.gen)
-  makeMBOInfillCrit(
-    fun = function(points, models, control, par.set, design, iter, progress, attributes = FALSE) {
+  crit = makeMBOInfillCritCB()
+  orig.fun = crit$fun
+  crit$fun = function(points, models, control, par.set, design, iter, progress, attributes = FALSE) {
+    if (last.iter != iter) {
       cb.lambda = lambda.random.gen(1)
-      assertNumber(cb.lambda, lower = 0)
-      crit = makeMBOInfillCritCB(cb.lambda = cb.lambda)
-      crit$fun
-    },
-    name = "Random Confidence bound",
-    id = "rcb",
-    components = c("se", "mean", "lambda"),
-    params = list(lambda.random.gen = lambda.random.gen),
-    opt.direction = "objective",
-    requires.se = TRUE
-  )
+      last.iter <<- iter
+      last.cb.lambda <<- cb.lambda
+    } else {
+      cb.lambda = last.cb.lambda
+    }
+    assertNumber(cb.lambda, lower = 0)
+    assign("cb.lambda", cb.lambda, envir = environment(orig.fun))
+    orig.fun(points, models, control, par.set, design, iter, progress, attributes)
+  }
+  crit$name = "Random Confidence bound"
+  crit$id = "rcb"
+  crit$params = list(lambda.random.gen = lambda.random.gen)
+  return(addClasses(crit, "InfillCritRCB"))
 }

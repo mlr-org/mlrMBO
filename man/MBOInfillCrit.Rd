@@ -12,6 +12,7 @@
 \alias{crit.aei}
 \alias{crit.eqi}
 \alias{crit.dib1}
+\alias{crit.rexp2cb}
 \title{Create an infill criterion.}
 \usage{
 makeMBOInfillCrit(fun, name, id, opt.direction = "minimize",

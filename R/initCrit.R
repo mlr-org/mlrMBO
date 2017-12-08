@@ -41,12 +41,17 @@ initCrit.InfillCritCB = function(crit, fun, design, learner, control) {
 }
 
 #' @export
-initCrit.InfillCritADACB = function(crit, fun, design, learner, control) {
+initCrit.InfillCritAdaCB = function(crit, fun, design, learner, control) {
   cb.lambda = crit$params$cb.lambda
   if (is.null(cb.lambda))
     cb.lambda = ifelse(isSimpleNumeric(getParamSet(fun)), 1, 2)
   crit = makeMBOInfillCritAdaCB(2 * cb.lambda, 0.5 * cb.lambda)
   initCritOptDirection(crit, fun)
+}
+
+#' @export
+initCrit.InfillCritRCB = function(crit, fun, design, learner, control) {
+  initCrit.default(crit, fun, design, learner, control)
 }
 
 
