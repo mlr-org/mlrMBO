@@ -2,6 +2,7 @@ context("smart schedule")
 options(parallelMap.logging = FALSE)
 
 test_that("smart schedule works", {
+  skip_on_appveyor()
   set.seed(3)
   objfun = makeSingleObjectiveFunction(
     fn = function(x) {
@@ -42,7 +43,9 @@ test_that("smart schedule works", {
     control = setMBOControlInfill(control = control, crit = "cb", crit.cb.lambda = x$crit.cb.lambda, opt.focussearch.maxit = 2L, opt.focussearch.points = 50L)
     control = setMBOControlMultiPoint(control = control, cb.multiple = x$multipoint.cb.multiple)
     des = generateTestDesign(5L, getParamSet(objfun))
+    parallelMap::parallelStartMulticore(2L)
     or = mbo(fun = objfun, design = des, learner = surrogat.learner, control = control)
+    parallelMap::parallelStop()
     op.df = as.data.frame(or$opt.path)
     expect_true(nrow(op.df) == 15)
     expect_true(all(na.omit(op.df$predicted.time) %btwn% c(9,11)))
@@ -52,6 +55,7 @@ test_that("smart schedule works", {
     expect_true(!all(is.na(op.df$scheduled.job)))
     expect_true(!all(is.na(op.df$scheduled.priority)))
     expect_true(!all(is.na(op.df$multipoint.cb.lambda)))
+    expect_true(length(unique(op.df[op.df$dob == 1]$pid))>1)
     if (x$schedule.method == "smartParallelMap") {
       expect_true(abs(mean(op.df$multipoint.cb.lambda, na.rm = TRUE) - x$crit.cb.lambda) < sd(op.df$multipoint.cb.lambda, na.rm = TRUE))  
     }
