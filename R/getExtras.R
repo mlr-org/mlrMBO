@@ -134,6 +134,7 @@ getExtras = function(n, prop, train.time, control) {
     }
     ex$exec.timestamp = NA_integer_
     ex$pid = NA_integer_
+    ex$exec.time.real = NA_real_
     # infill.crit components
     ex = insert(ex, as.list(prop$crit.components[i,,drop = FALSE]))
     exs[[i]] = ex

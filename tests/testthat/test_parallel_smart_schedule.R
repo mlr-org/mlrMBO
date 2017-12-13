@@ -28,6 +28,7 @@ test_that("smart schedule works", {
   setups = rbind(setups, data.frame(schedule.method = "smartParallelMap", schedule.priority = "infill", multipoint.cb.multiple = "static.quantiles", schedule.priority.time = TRUE, schedule.cluster = FALSE, crit.cb.lambda = 2))
   
   surrogat.learner = makeLearner("regr.lm", predict.type = "se")
+  
   #ors = rowLapply(setups, function(x) {
   for (i in seq_row(setups)) {
     x = as.list(setups[i,])

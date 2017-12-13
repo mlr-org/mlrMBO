@@ -41,10 +41,10 @@ evalTargetFun.OptState = function(opt.state, xs, extras, xs.schedule.info = NULL
       user.extras = c(user.extras, attr(y, "extras"))
       y = setAttribute(y, "extras", NULL)
     }
+    st = (proc.time() - st)[3]
     if (hasAttributes(y, "exec.time")) {
+      user.extras = c(user.extras, list(exec.time.real = st))
       st = attr(y, "exec.time")
-    } else {
-      st = (proc.time() - st)[3]
     }
     list(y = y, time = st, user.extras = user.extras)
   }

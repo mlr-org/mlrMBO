@@ -77,7 +77,7 @@ test_that("asyn MBO works with mboContinue", {
     has.simple.signature = FALSE
   )
 
-  learner = makeLearner("regr.randomForest", predict.type = "se", ntree = 50, ntree.for.se = 20)
+  learner = makeLearner("regr.randomForest", predict.type = "se", ntree = 50)
   des = generateTestDesign(6L, getParamSet(f))
   ctrl = makeMBOControl(schedule.method = "asyn", save.file.path = save.file, save.on.disk.at = 0:5)
   ctrl = setMBOControlTermination(ctrl, iters = 4L)
