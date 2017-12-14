@@ -21,9 +21,10 @@ convertToDesign.OptState = function(opt.state, opt.path, control) {
     df = convertToDesign(opt.path, control)
     return(df)
   }
-  opt.path = getOptStateOptPath(opt.state)
+
+  opt.path = opt.path %??% getOptStateOptPath(opt.state)
   opt.problem = getOptStateOptProblem(opt.state)
-  control = getOptProblemControl(opt.problem)
+  control = control %??% getOptProblemControl(opt.problem)
 
   # FIXME Fix for Issue https://github.com/mlr-org/mlrMBO/issues/407
   # Maybe there is a better way?
@@ -39,4 +40,8 @@ convertToDesign.OptState = function(opt.state, opt.path, control) {
 convertToDesign.OptPath = function(opt.path, control) {
   df = as.data.frame(opt.path, include.rest = FALSE)
   convertDataFrameCols(df, ints.as.num = TRUE, logicals.as.factor = TRUE)
+}
+
+convertToDesign.Task = function(task) {
+  getTaskData(task)
 }
