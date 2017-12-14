@@ -79,7 +79,9 @@ makeMBOInfillCritEI = function(se.threshold = 1e-6) {
     fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
       model = models[[1L]]
       maximize.mult = ifelse(control$minimize, 1, -1)
+      assertString(control$y.name)
       y = maximize.mult * design[, control$y.name]
+      assertNumeric(y, any.missing = FALSE)
       p = predict(model, newdata = points)$data
       p.mu = maximize.mult * p$response
       p.se = p$se
@@ -112,7 +114,7 @@ makeMBOInfillCritCB = function(cb.lambda = NULL) {
   makeMBOInfillCrit(
     fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
       model = models[[1L]]
-      maximize.mult = ifelse(control$minimize, 1, -1)
+      maximize.mult = if (control$minimize) 1 else -1
       p = predict(model, newdata = points)$data
       #FIXME: removed cb.inflate.se for now (see issue #309)
       # if (cb.inflate.se) {
@@ -154,7 +156,7 @@ makeMBOInfillCritAEI = function(aei.use.nugget = FALSE, se.threshold = 1e-6) {
   makeMBOInfillCrit(
     fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
       model = models[[1L]]
-      maximize.mult = ifelse(control$minimize, 1, -1)
+      maximize.mult = if (control$minimize) 1 else -1
       p = predict(model, newdata = points)$data
       p.mu = maximize.mult * p$response
       p.se = p$se
@@ -200,7 +202,7 @@ makeMBOInfillCritEQI = function(eqi.beta = 0.75, se.threshold = 1e-6) {
   makeMBOInfillCrit(
     fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
       model = models[[1L]]
-      maximize.mult = ifelse(control$minimize, 1, -1)
+      maximize.mult = if (control$minimize) 1 else -1
       # compute q.min
       design_x = design[, (colnames(design) %nin% control$y.name), drop = FALSE]
       p.current.model = predict(object = model, newdata = design_x)$data
