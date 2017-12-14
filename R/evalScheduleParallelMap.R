@@ -24,6 +24,15 @@ evalScheduleParallelMap = function(wrapFun, xs, xs.trafo, xs.schedule.info = NUL
 
 evalScheduleSmartParallelMap = function(wrapFun, xs, xs.trafo, xs.schedule.info = NULL, extras = NULL, opt.state) {
 
+  # save values of extras whitch are unique
+  train.time = na.omit(sapply(extras, function (i) i$train.time, simplify = TRUE))
+  propose.time = na.omit(sapply(extras, function (i) i$propose.time, simplify = TRUE))
+  extras = lapply(extras, function (i) {
+    i$train.time = NA_real_
+    i$propose.time = NA_real_
+    i
+  })
+	
   if (!is.null(xs.schedule.info$times)) {
     control = getOptProblemControl(getOptStateOptProblem(opt.state))
     schedule.nodes = control$schedule.nodes
@@ -87,6 +96,10 @@ evalScheduleSmartParallelMap = function(wrapFun, xs, xs.trafo, xs.schedule.info 
       extras[[i]]$scheduled.priority = xs.schedule.info$priorities[i]
     }
   }
+	
+  #insert train and propose time
+  extras[[1]]$train.time = train.time
+  extras[[1]]$propose.time = propose.time
 
   #FIXME: xs.schedule.info auch noch sortieren?
   evalScheduleParallelMap(wrapFun = wrapFun, xs = xs, xs.trafo = xs.trafo, xs.schedule.info = xs.schedule.info, extras = extras, opt.state = opt.state)

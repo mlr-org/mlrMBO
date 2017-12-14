@@ -9,6 +9,16 @@ evalScheduleKnapsack = function(wrapFun, xs, xs.trafo, xs.schedule.info = NULL, 
     control = getOptProblemControl(getOptStateOptProblem(opt.state))
     schedule.nodes = control$schedule.nodes
     
+    # save values of extras whitch are unique
+    train.time = na.omit(sapply(extras, function (i) i$train.time, simplify = TRUE))
+    propose.time = na.omit(sapply(extras, function (i) i$propose.time, simplify = TRUE))
+    
+    extras = lapply(extras, function (i) {
+    	i$train.time = NA_real_
+    	i$propose.time = NA_real_
+    	i
+    })
+    
     # order everything according to priorities in xs.schedule.info
     order.idx = order(xs.schedule.info$priorities, decreasing = TRUE)
     xs = xs[order.idx]
@@ -133,5 +143,10 @@ evalScheduleKnapsack = function(wrapFun, xs, xs.trafo, xs.schedule.info = NULL, 
       extras[[i]]$ks.used = ks.use
     }
   }
+	
+	#insert train and propose time
+	extras[[1]]$train.time = train.time
+	extras[[1]]$propose.time = propose.time
+	
   evalScheduleParallelMap(wrapFun = wrapFun, xs = xs, xs.trafo = xs.trafo, xs.schedule.info = xs.schedule.info, extras = extras, opt.state = opt.state)
 }
