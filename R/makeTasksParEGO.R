@@ -24,16 +24,16 @@ makeTasksParEGO = function(opt.state) {
   return(tasks)
 }
 
-generateParEgoDfData = function(opt.state, opt.path = NULL, control = NULL) {
+generateParEgoDfData = function(opt.state) {
 
-  opt.path = opt.path %??% getOptStateOptPath(opt.state)
+  opt.path = getOptStateOptPath(opt.state)
   opt.problem = getOptStateOptProblem(opt.state)
-  control = control %??% getOptProblemControl(opt.problem)
+  control = getOptProblemControl(opt.problem)
   all.possible.weights = getOptProblemAllPossibleWeights(opt.problem)
 
   n.points = control$propose.points
   # get data + normalize the targets to [0, 1] + drop them from data
-  data = convertToDesign(opt.state)
+  data = convertToDesign(opt.path, control)
   data = dropNamed(data, control$y.name)
   y = getOptPathY(opt.path)
   if (control$multiobj.parego.normalize == "standard") {

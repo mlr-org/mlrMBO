@@ -70,14 +70,14 @@ getPlotData = function(data, idx, idx.nsga2.paretofront, name) {
 
 # get Dataset for fill background with infill.crit
 # Note: models is a single model for parego and mspot, for dib a list of models
-getInfillCritGrid = function(crit.name, points.per.dim, models, control, par.set, opt.path, iter) {
+getInfillCritGrid = function(crit.name, points.per.dim, models, control, par.set, designs, iter) {
   critfun = control$infill.crit$fun
   xgrid = generateGridDesign(par.set = par.set, resolution = points.per.dim)
   opt.direction = if (crit.name %in% c("ei")) -1 else 1
   if (inherits(models, "FailureModel"))
     xgrid[[crit.name]] = NA
   else
-    xgrid[[crit.name]] = opt.direction * critfun(xgrid, models, control, par.set, opt.path, iter)
+    xgrid[[crit.name]] = opt.direction * critfun(xgrid, models, control, par.set, designs, iter)
   return(xgrid)
 }
 

@@ -47,7 +47,7 @@ NULL
 #' @rdname infillcrits
 makeMBOInfillCritMeanResponse = function() {
   makeMBOInfillCrit(
-    fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
+    fun = function(points, models, control, par.set, designs, iter, attributes = FALSE) {
       ifelse(control$minimize, 1, -1) * predict(models[[1L]], newdata = points)$data$response
     },
     name = "Mean response",
@@ -60,7 +60,7 @@ makeMBOInfillCritMeanResponse = function() {
 #' @rdname infillcrits
 makeMBOInfillCritStandardError = function() {
   makeMBOInfillCrit(
-    fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
+    fun = function(points, models, control, par.set, designs, iter, attributes = FALSE) {
        -predict(models[[1L]], newdata = points)$data$se
     },
     name = "Standard error",
@@ -76,9 +76,10 @@ makeMBOInfillCritEI = function(se.threshold = 1e-6) {
   assertNumber(se.threshold, lower = 1e-20)
   force(se.threshold)
   makeMBOInfillCrit(
-    fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
+    fun = function(points, models, control, par.set, designs, iter, attributes = FALSE) {
       model = models[[1L]]
-      maximize.mult = ifelse(control$minimize, 1, -1)
+      design = designs[[1]]
+      maximize.mult = if (control$minimize) 1 else -1
       assertString(control$y.name)
       y = maximize.mult * design[, control$y.name]
       assertNumeric(y, any.missing = FALSE)
@@ -112,7 +113,7 @@ makeMBOInfillCritCB = function(cb.lambda = NULL) {
   assertNumber(cb.lambda, lower = 0, null.ok = TRUE)
   force(cb.lambda)
   makeMBOInfillCrit(
-    fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
+    fun = function(points, models, control, par.set, designs, iter, attributes = FALSE) {
       model = models[[1L]]
       maximize.mult = if (control$minimize) 1 else -1
       p = predict(model, newdata = points)$data
@@ -154,8 +155,9 @@ makeMBOInfillCritAEI = function(aei.use.nugget = FALSE, se.threshold = 1e-6) {
   force(se.threshold)
 
   makeMBOInfillCrit(
-    fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
+    fun = function(points, models, control, par.set, designs, iter, attributes = FALSE) {
       model = models[[1L]]
+      design = designs[[1L]]
       maximize.mult = if (control$minimize) 1 else -1
       p = predict(model, newdata = points)$data
       p.mu = maximize.mult * p$response
@@ -200,8 +202,9 @@ makeMBOInfillCritEQI = function(eqi.beta = 0.75, se.threshold = 1e-6) {
   force(se.threshold)
 
   makeMBOInfillCrit(
-    fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
+    fun = function(points, models, control, par.set, designs, iter, attributes = FALSE) {
       model = models[[1L]]
+      design = designs[[1L]]
       maximize.mult = if (control$minimize) 1 else -1
       # compute q.min
       design_x = design[, (colnames(design) %nin% control$y.name), drop = FALSE]
@@ -253,10 +256,12 @@ makeMBOInfillCritDIB = function(cb.lambda = 1, sms.eps = NULL) {
   if (!is.null(sms.eps))
     assertNumber(sms.eps, lower = 0, finite = TRUE)
   makeMBOInfillCrit(
-    fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
+    fun = function(points, models, control, par.set, designs, iter, attributes = FALSE) {
+      design = designs[[1]]
       # get ys and cb-value-matrix for new points, minimize version
       maximize.mult = ifelse(control$minimize, 1, -1)
-      ys = as.matrix(design[, control$y.name]) %*% diag(maximize.mult)
+      ys = Map(function(i, y.name) designs[[i]][, y.name], i = seq_along(control$y.name), y.name = control$y.name)
+      ys = do.call(cbind, ys) %*% diag(maximize.mult)
 
       ps = lapply(models, predict, newdata = points)
       means = extractSubList(ps, c("data", "response"), simplify = "cols")

@@ -50,10 +50,11 @@ getMultiObjRefPoint = function (ys, control, minimize = control$minimize) {
 
 # evaluate an infill crit on multiple models (one per objective in multi-objective)
 # returns matrix of crit vals, rows = points, cols = crits
-evalCritFunForMultiObjModels = function(infill.crit.fun, points, models, control, par.set, design, iter) {
+evalCritFunForMultiObjModels = function(infill.crit.fun, points, models, control, par.set, designs, iter) {
   asMatrixCols(lapply(seq_along(models), function(i) {
       # we need to make sure mininimize in control is a scalar, so we can multiply it in infill crits...
       control$minimize = control$minimize[i]
-      infill.crit.fun(points, models[i], control, par.set, design, iter)
+      control$y.name = control$y.name[i]
+      infill.crit.fun(points, models[i], control, par.set, designs[i], iter)
   }))
 }
