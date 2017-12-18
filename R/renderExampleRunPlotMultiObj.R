@@ -106,10 +106,10 @@ makeXPlot = function(data.x, idx, idx.nsga2.paretofront, method, x.name, crit.na
     control2$multiobj.use.scalarized.y = TRUE
     control2$y.name = "y.scalar"
     design2 = opt.path[idx$past, ]
+    ys = as.matrix(opt.path[, control$y.name])
+    weights = as.matrix(opt.path[opt.path$dob == iter, paste0("parego.weight.", seq_along(control$y.name))])
     design2 = dropNamed(design2, control$y.name)
-    # FIXME
-    # Use generateParEgoDfData?
-    stop("Not implemented")
+    design2$y.scalar = t(weights %*% t(ys))
     data.crit = getInfillCritGrid(crit.name, points.per.dim, models,
                                   control2, par.set, list(design2), iter)
     pl.xspace = fillBackgroundWithInfillCrit(pl.xspace, data.crit, x.name, crit.name) +
