@@ -60,7 +60,19 @@ wrapSmoofConceptDriftNumeric = function(fn, drift.param) {
   fn = setAttribute(fn, "original.global.opt.value", attr(fn, "global.opt.value"))
   fn = setAttribute(fn, "par.set", value = sub.par.set)
   fn = setAttribute(fn, "global.opt.params", value = NULL)
-  fn = setAttribute(fn, "original.global.opt.value", value = NULL)
+  fn = setAttribute(fn, "global.opt.value", value = NULL)
   fn = setAttribute(fn, "drift.param", value = drift.param)
+  return(fn)
+}
+
+unwrapSmoofConceptDriftNumeric = function(fn) {
+  attrs = attributes(fn)
+  attr.names = names(attrs)
+  attr.names$drift.param = NULL
+  original.values.inds = grepl("^original\\.", attr.names)
+  original.attrs = attrs[original.values.inds]
+  names(original.attrs) = sub("^original\\.", "", names(original.attrs))
+  attrs = insert(attrs, original.attrs)
+  attributes(fn) = attrs
   return(fn)
 }
