@@ -12,6 +12,16 @@ evalMBODesign.OptState = function(opt.state) {
   control = getOptProblemControl(opt.problem)
   par.set = getOptStateParSet(opt.state)
   pids = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
+  
+  drift.param = getOptProblemDriftParam(opt.problem)
+  if (!is.null(drift.param) && control$conceptdrift.learn.drift) {
+    if (is.null(design[[drift.param]])) {
+      design[[drift.param]] = control$conceptdrift.drift.function(0)  
+    }
+  } else if (!is.null(drift.param) && !control$conceptdrift.learn.drift && !is.null(design[[drift.param]])) {
+    design[[drift.param]] = NULL
+  }
+
   y.name = control$y.name
 
   # get dummy "extras object" for init design
@@ -20,7 +30,7 @@ evalMBODesign.OptState = function(opt.state) {
   # check that the provided design one seems ok
   # sanity check: are paramter values and colnames of design consistent?
   if (!setequal(setdiff(colnames(design), y.name), pids))
-    stop("Column names of design 'design' must match names of parameters in 'par.set'!")
+    stopf("Column names of design 'design' must match names of parameters in 'par.set'! Missmatches: %s", collapse(symdiff(setdiff(colnames(design), y.name), pids)))
 
   # sanity check: do not allow transformed designs
   # if no trafo attribute provided we act on the assumption that the design is not transformed
