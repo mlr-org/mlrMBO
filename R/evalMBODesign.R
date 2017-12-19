@@ -13,6 +13,7 @@ evalMBODesign.OptState = function(opt.state) {
   par.set = getOptStateParSet(opt.state)
   pids = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
   
+  # concept drift handling of initial design, add CD param or drop it
   drift.param = getOptProblemDriftParam(opt.problem)
   if (!is.null(drift.param) && control$conceptdrift.learn.drift) {
     if (is.null(design[[drift.param]])) {
