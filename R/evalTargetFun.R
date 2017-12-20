@@ -44,7 +44,7 @@ evalTargetFun.OptState = function(opt.state, xs, extras) {
       user.extras = fixed.x # in case no concept drift is present this will be list()
       # here we extract additional stuff which the user wants to log in the opt path
       if (hasAttributes(y, "extras")) {
-        user.extras = attr(y, "extras")
+        user.extras = insert(user.extras, attr(y, "extras"))
         y = setAttribute(y, "extras", NULL)
       }
       st = proc.time() - st
