@@ -80,7 +80,7 @@
 #'   \dQuote{warn}: The error will be converted to a waring and a random point will be proposed.
 #'   \dQuote{quiet}: Same as “warn” but without the warning.
 #'   Default is: \dQuote{stop}.
-#'   
+#'
 #' @return [\code{\link{MBOControl}}].
 #' @aliases MBOControl
 #' @family MBOControl
@@ -190,7 +190,7 @@ print.MBOControl = function(x, ...) {
       catf("Infill optimizer              : %s", x$infill.opt)
       catf("Infill optimizer restarts     : %i", x$infill.opt.restarts)
     } else {
-      catf("Multipoint method             : %s", x$multipoint.method)
+      catf("Multi-point method            : %s", x$multipoint.method)
     }
     catf("Final point by                : %s", x$final.method)
   }

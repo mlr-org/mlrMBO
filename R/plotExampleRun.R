@@ -32,7 +32,7 @@
 #'   is plotted above and below.
 #'   Default is 1.
 #' @param single.prop.point.plots [\code{logical(1)}]\cr
-#'   Parameter for MOI-MBO Multipoint proposal: Should every proposed point
+#'   Parameter for MOI-MBO Multi-point proposal: Should every proposed point
 #'   be displayed in a single plot - or one plot per Iteration? Default is FALSE
 #'   indicating single plots per proposed points.
 #' @param xlim [\code{numeric(2)}]\cr
@@ -120,7 +120,7 @@ plotExampleRun = function(object, iters, pause = interactive(),
       single.prop.point.plots = single.prop.point.plots, xlim = xlim, ylim = ylim,
       point.size = point.size, line.size = line.size, trafo = trafo, colors = colors, gg.objects = gg.objects, ...)
     if (!any(vlapply(plots, inherits, what = "ggplot"))) {
-      # in this case we have multi-objective multipoint proposal: list of plots for each proposed point
+      # in this case we have multi-objective multi-point proposal: list of plots for each proposed point
       for (jter in seq_along(plots)) {
         arrangePlots(plots[[jter]], multi.crit)
         if (pause && !(iter == getLast(iters) && jter == length(plots)))

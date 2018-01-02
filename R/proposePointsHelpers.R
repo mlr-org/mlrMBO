@@ -51,7 +51,7 @@ createSinglePointControls = function(control, crit, crit.pars = NULL) {
 
 # perform a deep copy of an opt.path object
 # so we can store (temporary) stuff in it, without changing the real opt.path
-# needed in CL and DIB multipoint
+# needed in CL and DIB multi-point
 deepCopyOptPath = function(op) {
   op2 = op
   op2$env = new.env()

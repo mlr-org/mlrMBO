@@ -1,7 +1,7 @@
-#' @title Get names of supported multipoint infill-criteria optimizers.
+#' @title Get names of supported multi-point infill-criteria optimizers.
 #'
 #' @description
-#' Returns all names of supported multipoint infill-criteria optimizers.
+#' Returns all names of supported multi-point infill-criteria optimizers.
 #'
 #' @return [\code{character}]
 #' @export

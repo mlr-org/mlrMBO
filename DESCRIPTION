@@ -6,7 +6,7 @@ Description: Flexible and comprehensive R toolbox for model-based optimization
     conditional parameters. The machine learning toolbox 'mlr' provide dozens
     of regression learners to model the performance of the target algorithm with
     respect to the parameter settings. It provides many different infill criteria
-    to guide the search process. Additional features include multipoint batch
+    to guide the search process. Additional features include multi-point batch
     proposal, parallel execution as well as visualization and sophisticated
     logging mechanisms, which is especially useful for teaching and understanding
     of algorithm behavior. 'mlrMBO' is implemented in a modular fashion, such that
