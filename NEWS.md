@@ -3,6 +3,7 @@
 * `makeMBOControl()` has `on.surrogate.error` argument which enables random proposals if the surrogate model fails.
 * With `initSMBO()`, `updateSMBO()` and `finalizeSMBO()` it is now possible to do a human-in-the-loop MBO.
 * The result now contains the `final.opt.state`.
+* Plot method for `OptState` objects.
 
 # mlrMBO 1.1.0
 
