@@ -27,12 +27,16 @@ plot.OptState = function(x, scale.panels = FALSE, ...) {
   par.count.numeric = sum(par.is.numeric)
   par.count.discrete = par.dim - par.count.numeric
   opt.path = getOptStateOptPath(opt.state)
-  old.window.function = opt.path$window.function
-  opt.path$window.function = identity
+  if ("OptPathNgCd" %in% class(opt.path)) {
+    old.window.function = opt.path$window.function
+    opt.path$window.function = identity
+  }
   design = convertOptPathToDf(opt.path, control)
   opdf = as.data.frame(opt.path)
   dobs = getOptPathDOB(opt.path)
-  opt.path$window.function = old.window.function
+  if ("OptPathNgCd" %in% class(opt.path)) {
+    opt.path$window.function = old.window.function
+  }
   models = getOptStateModels(opt.state)$models
   x.ids.complete = getParamIds(par.set.complete, repeated = TRUE, with.nr = TRUE)
   x.ids = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)

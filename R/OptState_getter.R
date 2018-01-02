@@ -127,14 +127,14 @@ getOptStateFinalPoints = function(opt.state, unify = FALSE) {
       best.ind = which(rank(maximize.mult * pred$data$response, ties.method = "min") == 1L)
       if (length(best.ind) > 1) {
         # if we have ties the model might give constant predictions so we use the best y from the observations
-        stop("has been triggered")
         sub.best.ind = which(rank(maximize.mult * getOptPathY(opt.path)[best.ind], ties.method = "random") == 1L)
         best.ind = best.ind[sub.best.ind]
       }
       getBestOp(best.ind)
     } else if (control$final.method == "predict") {
+      # FIXME: Untested, just an idea!
       control2 = control
-      control2$infill.crit$fun = crit.mr
+      control2$infill.crit = crit.mr
       control2$propose.points = 1L
       prop = proposePointsByInfillOptimization(opt.state, control = control2)
       list(
