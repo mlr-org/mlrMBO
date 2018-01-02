@@ -1,4 +1,4 @@
-#FIXME: briefly explain multipoint proposal for all thre methods
+#FIXME: briefly explain multi-point proposal for all three methods
 
 #' @title Set multi-objective options.
 #' @description

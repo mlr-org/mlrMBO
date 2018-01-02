@@ -152,7 +152,7 @@ updateSMBO(opt.state, x = prop$prop.points, y = y)
 
 ## Proposal of multiple points
 
-Using multipoint-MBO you can also obtain multiple suggestions at each call of `proposePoints()`.
+Using Multi-Point MBO you can also obtain multiple suggestions at each call of `proposePoints()`.
 
 ```{r multipoint}
 ctrl = makeMBOControl(propose.points = 4)

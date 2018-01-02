@@ -140,8 +140,8 @@ _Note:_ You can also create your own stopping condition(s).
 
 ### setMBOControlMultiPoint
 
-This extends a MBO control object with options for multipoint proposal.
-Multipoint proposal means, that multiple points are proposed and evaluated, which is especially useful for parallel batch evaluation. For a detailed introduction, check the Vignette on parallelization.
+This extends a MBO control object with options for multi-point proposal.
+Multi-point proposal means, that multiple points are proposed and evaluated, which is especially useful for parallel batch evaluation. For a detailed introduction, check the Vignette on parallelization.
 
 ### setMBOControlMultiCrit
 

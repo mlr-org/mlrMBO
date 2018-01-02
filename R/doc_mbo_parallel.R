@@ -16,7 +16,7 @@
 #' }
 #' Details regarding the latter:
 #' \describe{
-#' \item{single-objective MBO with LCB multipoint}{Parallel optimization of LCBs for the lambda-values.}
+#' \item{single-objective MBO with LCB multi-point}{Parallel optimization of LCBs for the lambda-values.}
 #' \item{Multi-objective MBO with ParEGO}{Parallel optimization of scalarization functions.}
 #' }
 #'
