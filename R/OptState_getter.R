@@ -108,12 +108,43 @@ getOptStateFinalPoints = function(opt.state, unify = FALSE) {
   opt.path = getOptStateOptPath(opt.state)
 
   if (control$n.objectives == 1L) {
-    final.index = chooseFinalPoint(opt.state)
-    list(
-      x = getOptPathX(opt.path)[final.index, , drop = FALSE],
-      y = getOptPathY(opt.path)[final.index],
-      best.ind = final.index
-    )
+    getBestOp = function(ind) {
+      list(
+        x = getOptPathX(opt.path)[ind, , drop = FALSE],
+        y = getOptPathY(opt.path)[ind],
+        best.ind = ind
+      )
+    }
+    if (control$final.method == "last.proposed") {
+      getBestOp(getOptPathLength(opt.path))
+    } else if (control$final.method == "best.true.y") {
+      getBestOp(getOptPathBestIndex(opt.path, ties = "random"))
+    } else if (control$final.method == "best.predicted") {
+      maximize.mult = ifelse(control$minimize, 1, -1)
+      model = getOptStateModels(opt.state)$models[[1L]]
+      task = getOptStateTasks(opt.state, predictive = TRUE)[[1]]
+      pred = predict(model, task = task)
+      best.ind = which(rank(maximize.mult * pred$data$response, ties.method = "min") == 1L)
+      if (length(best.ind) > 1) {
+        # if we have ties the model might give constant predictions so we use the best y from the observations
+        stop("has been triggered")
+        sub.best.ind = which(rank(maximize.mult * getOptPathY(opt.path)[best.ind], ties.method = "random") == 1L)
+        best.ind = best.ind[sub.best.ind]
+      }
+      getBestOp(best.ind)
+    } else if (control$final.method == "predict") {
+      control2 = control
+      control2$infill.crit$fun = crit.mr
+      control2$propose.points = 1L
+      prop = proposePointsByInfillOptimization(opt.state, control = control2)
+      list(
+        best.ind = NA_integer_,
+        x = prop$prop.points[1,],
+        y = prop$crit.vals[1]
+      )
+    } else {
+      stop ("should not happen")
+    }
   } else {
     inds = getOptPathParetoFront(opt.path, index = TRUE)
     pareto.set = lapply(inds, function(i) getOptPathEl(opt.path, i)$x)
