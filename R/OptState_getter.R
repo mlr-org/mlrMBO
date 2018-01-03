@@ -130,7 +130,7 @@ getOptStateFinalPoints = function(opt.state, unify = FALSE) {
       if (length(best.ind) > 1) {
         sub.best.ind = which(rank(maximize.mult * getOptPathY(opt.path)[best.ind], ties.method = "random") == 1L)
         best.ind = best.ind[sub.best.ind]
-      } else if (contrl$fix.first.iter && getOptStateLoop(opt.state) < 2){
+      } else if (control$fix.first.iter && getOptStateLoop(opt.state) < 2){
         # sometimes the first model does not work reliable
         best.ind = which.min(maximize.mult * pred$data$truth)
       }
