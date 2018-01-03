@@ -120,15 +120,19 @@ getOptStateFinalPoints = function(opt.state, unify = FALSE) {
     } else if (control$final.method == "best.true.y") {
       getBestOp(getOptPathBestIndex(opt.path, ties = "random"))
     } else if (control$final.method == "best.predicted") {
+      browser()
       maximize.mult = ifelse(control$minimize, 1, -1)
       model = getOptStateModels(opt.state)$models[[1L]]
       task = getOptStateTasks(opt.state, predictive = TRUE)[[1]]
       pred = predict(model, task = task)
       best.ind = which(rank(maximize.mult * pred$data$response, ties.method = "min") == 1L)
+      # if we have ties the model might give constant predictions so we use the best y from the observations
       if (length(best.ind) > 1) {
-        # if we have ties the model might give constant predictions so we use the best y from the observations
         sub.best.ind = which(rank(maximize.mult * getOptPathY(opt.path)[best.ind], ties.method = "random") == 1L)
         best.ind = best.ind[sub.best.ind]
+      } else if (getOptStateLoop(opt.state) < 2 & which.min(maximize.mult * pred$data$truth) != which.min(maximize.mult * pred$data$response)){
+        # if model is realy unsecure, use the best true y instead
+        best.ind = which.min(maximize.mult * pred$data$truth)
       }
       getBestOp(best.ind)
     } else if (control$final.method == "predict") {
