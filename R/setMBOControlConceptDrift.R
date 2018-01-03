@@ -18,18 +18,21 @@ setMBOControlConceptDrift = function(control,
   drift.function = identity,
   window.function = identity,
   learn.drift = FALSE,
-  calculate.th.final.point = FALSE) {
+  calculate.th.final.point = FALSE,
+  fix.first.iter = FALSE) {
 
   assertClass(control, "MBOControl")
   assertFunction(drift.function, args = "dob")
   assertFunction(window.function, args = "x")
   assertFlag(learn.drift)
   assertFlag(calculate.th.final.point)
+  assertFlag(fix.first.iter)
 
   control$conceptdrift.drift.function = drift.function %??% control$conceptdrift.drift.function
   control$conceptdrift.window.function = window.function %??% control$conceptdrift.window.function
   control$conceptdrift.learn.drift = learn.drift %??% control$conceptdrift.learn.drift
   control$calculate.th.final.point = calculate.th.final.point %??% control$calculate.th.final.point
+  control$fix.first.iter = fix.first.iter %??% control$fix.first.iter
   # if we have window.function == identity and learn.drift == FALSE we allow to use other final methods!
   if((!identical(identity, window.function) || learn.drift) && control$final.method != "best.predicted"){
     stopf("final.method = %s does not make sense for CD.", control$final.method)
