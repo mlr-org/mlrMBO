@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Get properties of MBO infill criterion. — getMBOInfillCrit • mlrMBO</title>
+<title>Initialize a manual sequential MBO run. — initSMBO • mlrMBO</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -114,39 +114,69 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Get properties of MBO infill criterion.</h1>
+    <h1>Initialize a manual sequential MBO run.</h1>
     </div>
 
     
-    <p>Returns properties of an infill criterion, e.g., name or id.</p>
+    <p>When you want to run a human-in-the-loop MBO run you need to initialize it first.</p>
     
 
-    <pre class="usage"><span class='fu'>getMBOInfillCritParams</span>(<span class='no'>x</span>)
-
-<span class='fu'>getMBOInfillCritParam</span>(<span class='no'>x</span>, <span class='no'>par.name</span>)
-
-<span class='fu'>getMBOInfillCritName</span>(<span class='no'>x</span>)
-
-<span class='fu'>getMBOInfillCritId</span>(<span class='no'>x</span>)
-
-<span class='fu'>hasRequiresInfillCritStandardError</span>(<span class='no'>x</span>)
-
-<span class='fu'>getMBOInfillCritComponents</span>(<span class='no'>x</span>)</pre>
+    <pre class="usage"><span class='fu'>initSMBO</span>(<span class='no'>par.set</span>, <span class='no'>design</span>, <span class='kw'>learner</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>control</span>, <span class='kw'>minimize</span> <span class='kw'>=</span> <span class='fu'>rep</span>(<span class='fl'>TRUE</span>,
+  <span class='no'>control</span>$<span class='no'>n.objectives</span>), <span class='kw'>noisy</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>show.info</span> <span class='kw'>=</span> <span class='fu'>getOption</span>(<span class='st'>"mlrMBO.show.info"</span>, <span class='fl'>TRUE</span>))</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x</th>
-      <td><p>[<code><a href='MBOInfillCrit.html'>MBOInfillCrit</a></code>]
-Infill criterion.</p></td>
+      <th>par.set</th>
+      <td><p>[<code><a href='http://www.rdocumentation.org/packages/ParamHelpers/topics/makeParamSet'>ParamSet</a></code>]
+See <code><a href='mbo.html'>mbo</a></code>.</p></td>
     </tr>
     <tr>
-      <th>par.name</th>
-      <td><p>[<code>character(1)</code>]
-Parameter name.</p></td>
+      <th>design</th>
+      <td><p>[<code>data.frame</code>]
+Initial design as data frame.
+If the y-values are not already present in design, mbo will evaluate the points.
+If the parameters have corresponding trafo functions, the design must not be transformed before it is passed!
+Functions to generate designs are available in <code>ParamHelpers</code>: <code><a href='http://www.rdocumentation.org/packages/ParamHelpers/topics/generateDesign'>generateDesign</a></code>, <code><a href='http://www.rdocumentation.org/packages/ParamHelpers/topics/generateGridDesign'>generateGridDesign</a></code>, <code><a href='http://www.rdocumentation.org/packages/ParamHelpers/topics/generateRandomDesign'>generateRandomDesign</a></code>.
+Default is <code>NULL</code>, which means <code><a href='http://www.rdocumentation.org/packages/ParamHelpers/topics/generateDesign'>generateDesign</a></code> is called and a design of size 4 times number of all parameters is created
+The points are drawn via <code><a href='http://www.rdocumentation.org/packages/lhs/topics/maximinLHS'>maximinLHS</a></code> to maximize the minimal distance between design points.</p></td>
+    </tr>
+    <tr>
+      <th>learner</th>
+      <td><p>[<code><a href='http://www.rdocumentation.org/packages/mlr/topics/makeLearner'>Learner</a></code>]
+Regression learner from mlr, which is used as a surrogate to model our fitness function.
+If <code>NULL</code> (default), the default learner is determined as described here: <a href='makeMBOLearner.html'>mbo_default_learner</a>.</p></td>
+    </tr>
+    <tr>
+      <th>control</th>
+      <td><p>[<code><a href='makeMBOControl.html'>MBOControl</a></code>]
+Control object for mbo.</p></td>
+    </tr>
+    <tr>
+      <th>minimize</th>
+      <td><p>[<code>logical</code>]
+Should objective values of the target functions be minimized? One value par objective.
+Default is <code>TRUE</code> for every objective.</p></td>
+    </tr>
+    <tr>
+      <th>noisy</th>
+      <td><p>[<code>logical(1)</code>]
+Is the target function noisy?
+Default is <code>FALSE</code>.</p></td>
+    </tr>
+    <tr>
+      <th>show.info</th>
+      <td><p>[<code>logical(1)</code>]
+Verbose output on console?
+Default is <code>TRUE</code>.</p></td>
     </tr>
     </table>
+    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>[<code><a href='OptState.html'>OptState</a></code>]</p>
     
 
   </div>
@@ -154,7 +184,9 @@ Parameter name.</p></td>
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-                </ul>
+      
+      <li><a href="#value">Value</a></li>
+          </ul>
 
   </div>
 </div>

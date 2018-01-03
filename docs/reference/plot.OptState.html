@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Get properties of MBO infill criterion. — getMBOInfillCrit • mlrMBO</title>
+<title>Generate ggplot2 Object — plot.OptState • mlrMBO</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -114,37 +114,33 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Get properties of MBO infill criterion.</h1>
+    <h1>Generate ggplot2 Object</h1>
     </div>
 
     
-    <p>Returns properties of an infill criterion, e.g., name or id.</p>
+    <p>Plots the values of the infill criterion for a 1- and 2-dimensional numerical search space for a given <code><a href='OptState.html'>OptState</a></code>.</p>
     
 
-    <pre class="usage"><span class='fu'>getMBOInfillCritParams</span>(<span class='no'>x</span>)
-
-<span class='fu'>getMBOInfillCritParam</span>(<span class='no'>x</span>, <span class='no'>par.name</span>)
-
-<span class='fu'>getMBOInfillCritName</span>(<span class='no'>x</span>)
-
-<span class='fu'>getMBOInfillCritId</span>(<span class='no'>x</span>)
-
-<span class='fu'>hasRequiresInfillCritStandardError</span>(<span class='no'>x</span>)
-
-<span class='fu'>getMBOInfillCritComponents</span>(<span class='no'>x</span>)</pre>
+    <pre class="usage"><span class='co'># S3 method for OptState</span>
+<span class='fu'>plot</span>(<span class='no'>x</span>, <span class='kw'>scale.panels</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>[<code><a href='MBOInfillCrit.html'>MBOInfillCrit</a></code>]
-Infill criterion.</p></td>
+      <td><p>[<code>OptState</code>]
+The OptState.</p></td>
     </tr>
     <tr>
-      <th>par.name</th>
-      <td><p>[<code>character(1)</code>]
-Parameter name.</p></td>
+      <th>scale.panels</th>
+      <td><p>[<code>logical(1)</code>]
+If <code>TRUE</code> the values in each panel will be scaled to [0,1].</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>[any] 
+Not used.</p></td>
     </tr>
     </table>
     

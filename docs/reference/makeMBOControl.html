@@ -82,6 +82,9 @@
     <li>
       <a href="../articles/supplementary/machine_learning_with_mlrmbo.html">Machine learning with mlrMBO</a>
     </li>
+    <li>
+      <a href="../articles/supplementary/human_in_the_loop_MBO.html">Human-in-the-loop MBO</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -125,7 +128,8 @@
   <span class='kw'>save.file.path</span> <span class='kw'>=</span> <span class='fu'>file.path</span>(<span class='fu'>getwd</span>(), <span class='st'>"mlr_run.RData"</span>),
   <span class='kw'>store.model.at</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>resample.at</span> <span class='kw'>=</span> <span class='fu'>integer</span>(<span class='fl'>0</span>),
   <span class='kw'>resample.desc</span> <span class='kw'>=</span> <span class='fu'>makeResampleDesc</span>(<span class='st'>"CV"</span>, <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>10</span>),
-  <span class='kw'>resample.measures</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='no'>mse</span>), <span class='kw'>output.num.format</span> <span class='kw'>=</span> <span class='st'>"%.3g"</span>)</pre>
+  <span class='kw'>resample.measures</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='no'>mse</span>), <span class='kw'>output.num.format</span> <span class='kw'>=</span> <span class='st'>"%.3g"</span>,
+  <span class='kw'>on.surrogate.error</span> <span class='kw'>=</span> <span class='st'>"stop"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -247,6 +251,16 @@ Default is <code><a href='http://www.rdocumentation.org/packages/mlr/topics/meas
       <th>output.num.format</th>
       <td><p>[<code>logical(1)</code>]
 Format string for the precision of the numeric output of mbo.</p></td>
+    </tr>
+    <tr>
+      <th>on.surrogate.error</th>
+      <td><p>[<code>character(1)</code>]
+What should happen when the surrogate learner can not train the model.
+Possible values are:
+&#8220;stop&#8221;: R exception is generated.
+&#8220;warn&#8221;: The error will be converted to a waring and a random point will be proposed.
+&#8220;quiet&#8221;: Same as “warn” but without the warning.
+Default is: &#8220;stop&#8221;.</p></td>
     </tr>
     </table>
     
