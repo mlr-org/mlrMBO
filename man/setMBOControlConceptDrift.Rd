@@ -6,7 +6,7 @@
 \usage{
 setMBOControlConceptDrift(control, drift.function = identity,
   window.function = identity, learn.drift = FALSE,
-  calculate.th.final.point = FALSE)
+  calculate.th.final.point = FALSE, fix.first.iter = FALSE)
 }
 \arguments{
 \item{control}{[\code{\link{MBOControl}}]\cr
