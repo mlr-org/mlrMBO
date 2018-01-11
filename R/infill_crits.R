@@ -257,7 +257,6 @@ makeMBOInfillCritDIB = function(cb.lambda = 1, sms.eps = NULL) {
     assertNumber(sms.eps, lower = 0, finite = TRUE)
   makeMBOInfillCrit(
     fun = function(points, models, control, par.set, designs, iter, attributes = FALSE) {
-      design = designs[[1]]
       # get ys and cb-value-matrix for new points, minimize version
       maximize.mult = ifelse(control$minimize, 1, -1)
       ys = Map(function(i, y.name) designs[[i]][, y.name], i = seq_along(control$y.name), y.name = control$y.name)
