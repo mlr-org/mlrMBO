@@ -8,7 +8,7 @@ output:
       smooth_scroll: false
     dev: svg
 vignette: >
-  %\VignetteIndexEntry{Mixed Space Optimization}
+  %\VignetteIndexEntry{Human-in-the-loop MBO}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
