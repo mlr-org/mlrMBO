@@ -156,5 +156,6 @@ minimizes that.
 Other MBOControl: \code{\link{makeMBOControl}},
   \code{\link{setMBOControlMultiObj}},
   \code{\link{setMBOControlMultiPoint}},
+  \code{\link{setMBOControlNoisy}},
   \code{\link{setMBOControlTermination}}
 }
