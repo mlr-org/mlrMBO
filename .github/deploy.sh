@@ -11,6 +11,6 @@ git config push.default matching
 git add --force man/*
 git add --force README.md
 git add --force docs/*
-git rm -r --cached docs/*_cache/
+git rm -rn $(find . -type d -name '*_cache')
 git commit man DESCRIPTION NAMESPACE README.md docs -m "update auto-generated documentation [ci skip]" -m "$TRAVIS_COMMIT_MSG" || true
 git push
