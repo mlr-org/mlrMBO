@@ -1,0 +1,171 @@
+---
+title: "Human-in-the-loop MBO"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: true
+      smooth_scroll: false
+    dev: svg
+vignette: >
+  %\VignetteIndexEntry{Human-in-the-loop MBO}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE, cache = FALSE}
+library(mlrMBO)
+library(ggplot2)
+set.seed(123)
+knitr::opts_chunk$set(cache = TRUE, collapse = FALSE, dev = "svg", fig.height = 3.5)
+knitr::knit_hooks$set(document = function(x){
+  gsub("```\n*```r*\n*", "", x)
+})
+
+hidden.objective = function(x) 1 + sin(x[1]*5) + 0.1 * sum(x^2)
+```
+
+## Purpose
+
+This Vignette shows you how to use **mlrMBO** for a guided optimization.
+In this setting **mlrMBO** proposes a candidate configuration and you can then decide for yourself whether you want to evaluate it or another value.
+You have to evaluate the objective function manually.
+The value and the result have to be feed back to **mlrMBO**.
+Afterwards you can request the next candidate and so on.
+
+## Introduction
+
+Before we start the optimization you need to define the search space:
+
+```{r parset}
+ps = makeParamSet(
+  makeNumericParam("q", lower = -1, upper = 2),
+  makeIntegerParam("v", lower = -2, upper = 3)
+)
+```
+
+Furthermore we need an initial design that includes the results of the evaluated function
+
+```{r init design}
+des = generateDesign(n = 7, par.set = ps)
+des
+```
+
+After evaluating the objective function manually we can add the results
+
+```{r add results}
+des$y = c(1.20, 0.97, 0.91, 3.15, 0.58, 1.12, 0.50)
+```
+
+Now we define our **mlrMBO**-Control object.
+For this example we stick to the defaults except that we set the infill-criterion to the **Expected Improvement**
+
+```{r mbocontrol}
+ctrl = makeMBOControl()
+ctrl = setMBOControlInfill(ctrl, crit = crit.ei)
+```
+
+These information are enough to get us started and initialize the sequential MBO.
+
+```{r initSMBO}
+opt.state = initSMBO(par.set = ps, design = des, control = ctrl, minimize = TRUE, noisy = FALSE)
+```
+
+At each state the `opt.state` object can be plotted to visualize the predictions of the surrogate model
+
+```{r plotOptState1}
+plot(opt.state)
+```
+
+The first panel shows the value of the infill criterion.
+The higher the value the more this area is desirable to be explored to find the optimum.
+In the following panels the mean prediction of the surrogate and the uncertainty estimation is plotted.
+
+Let's see which point MBO suggests we should evaluate in the next step:
+
+```{r proposePoints1}
+proposePoints(opt.state)
+```
+
+We don't have to stick to the suggestion and evaluate another point:
+```{r evaluate}
+x = data.frame(q = 1.7, v = 1)
+```
+
+After we evaluated the objective function manually we get a return value of `2.19`.
+We take both values to update MBO:
+
+```{r update MBO}
+updateSMBO(opt.state, x = x, y = 2.19)
+```
+
+Now we can plot the state again and ask for a proposal:
+
+```{r plotOptState2}
+plot(opt.state)
+(prop = proposePoints(opt.state))
+```
+
+This time we evaluated the exact proposed points and get a value of `0.13`.
+
+```{r update MBO 2}
+updateSMBO(opt.state, x = prop$prop.points, y = 0.13)
+```
+
+Let's assume we want to stop here.
+To get to the usual MBO result you can call:
+
+```{r}
+res = finalizeSMBO(opt.state)
+res$x
+res$y
+```
+
+### Semi Automatic MBO
+
+You can combine the human-in-the-loop MBO with a simple loop to let MBO run for a while and just interfere once in a while.
+
+```{r}
+f = function(q, v) 1 + sin(q*5) + 0.1 * (q^2 + v^2)
+for (i in 1:10) {
+  prop = proposePoints(opt.state)
+  x = dfRowsToList(df = prop$prop.points, par.set = ps)
+  y = do.call(f, x[[1]])
+  updateSMBO(opt.state, x = prop$prop.points, y = y)
+}
+proposePoints(opt.state)
+```
+
+## Continue a normal MBO Run
+
+You can also continue a normal call of `mbo()` using this manual interface:
+
+```{r continue mbo}
+fun = makeAlpine02Function(1)
+res = mbo(fun = fun, control = ctrl)
+opt.state = res$final.opt.state
+plot(opt.state, scale.panels = TRUE)
+(prop = proposePoints(opt.state))
+y = fun(prop$prop.points)
+updateSMBO(opt.state, x = prop$prop.points, y = y)
+# ...
+```
+
+## Proposal of multiple points
+
+Using Multi-Point MBO you can also obtain multiple suggestions at each call of `proposePoints()`.
+
+```{r multipoint}
+ctrl = makeMBOControl(propose.points = 4)
+ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCritEI())
+ctrl = setMBOControlMultiPoint(ctrl, method = "cl")
+opt.state = initSMBO(par.set = ps, design = des, control = ctrl, minimize = TRUE, noisy = FALSE)
+(prop = proposePoints(opt.state))
+```
+
+It's also okay to just evaluate a subset of these points.
+
+```{r update multipoint}
+updateSMBO(opt.state, x = prop$prop.points[1:2,], y = list(2.28, 1.67))
+# ...
+```
