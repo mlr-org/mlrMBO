@@ -6,9 +6,14 @@ r:
 - devel
 r_packages:
 - devtools
+- animation
 r_github_packages:
 - jimhester/covr
 - hadley/pkgdown
+addons:
+  apt:
+    packages:
+      - imagemagick
 env:
   matrix:
   - _R_CHECK_LENGTH_1_CONDITION_=true
