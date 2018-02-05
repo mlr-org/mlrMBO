@@ -112,9 +112,9 @@ checkStuff = function(fun, design, learner, control) {
             "\nBut this learner does not support prediction of standard errors!"))
       }
       if (control$multipoint.method == "cl" && infill.crit.id != "ei")
-        stopf("Multipoint proposal using constant liar needs the infill criterion 'ei' (expected improvement), but you used '%s'!", infill.crit.id)
+        stopf("Multi-point proposal using constant liar needs the infill criterion 'ei' (expected improvement), but you used '%s'!", infill.crit.id)
       if (control$multipoint.method == "cb" && infill.crit.id != "cb")
-        stopf("Multipoint proposal using parallel cb needs the infill criterion 'cb' (confidence bound), but you used '%s'!", infill.crit.id)
+        stopf("Multi-point proposal using parallel cb needs the infill criterion 'cb' (confidence bound), but you used '%s'!", infill.crit.id)
     }
   }
 

@@ -1,18 +1,28 @@
 language: r
 sudo: false
 cache: packages
-
 r:
-  - release
-  - devel
-
+- release
+- devel
+r_packages:
+- devtools
+- animation #vignettes: animation.Rmd
+- e1071 #vignette: machine_learning_with_mlrmbo.Rmd
 r_github_packages:
-  - jimhester/covr
-
+- jimhester/covr
+- hadley/pkgdown
+addons:
+  apt:
+    packages:
+      - imagemagick
 env:
+  matrix:
+  - _R_CHECK_LENGTH_1_CONDITION_=true
   global:
-    - secure: "e2QLomaUqNvpHnGNdBXS4VO2/UWokrKl9UgYrqWo+fhpXaJiJuONNPNL44BuWZR2Cy7noTHrevVbTKBkGpqJR42mkjzcjd6qyR1Ctiveir+84/HTtmexouIUn5OFRH5dgyt/gquld31RlHlSYoKho3nZ7D7SnVExov9tp2FGRhU="
-
-# commented out because this call always needed 10+ minutes and time outed for travis
+    secure: efki/PoCvROHC5GMOWqL3hiYeU/no71mnw927ZLF/D0eo3L0aBjT6533KWy3S8w+kg4ilgZzoS5/Nu6PuVFmfPmOiXKj95ZZVkuHDjnAiBFPsowneruOAYNMpwGlM1A3Z3T6jTjtX+FtvlgukhVNrkNoXFy5SmZ5pclic0Z7zfM=
+before_script:
+- R --no-save <<< 'library("devtools"); document()'
 after_success:
-  - Rscript -e 'covr::codecov()'
+- if [[ "$TRAVIS_PULL_REQUEST" == "false" && "$TRAVIS_BRANCH" == "master" && "${TRAVIS_R_VERSION_STRING}"
+  == "release" ]]; then bash .github/deploy.sh; fi;
+- if [[ "${TRAVIS_R_VERSION_STRING}" == "release" ]]; then Rscript -e 'covr::coveralls()'; fi;

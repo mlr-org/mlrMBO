@@ -59,6 +59,9 @@
     <li>
       <a href="../articles/supplementary/machine_learning_with_mlrmbo.html">Machine learning with mlrMBO</a>
     </li>
+    <li>
+      <a href="../articles/supplementary/human_in_the_loop_MBO.html">Human-in-the-loop MBO</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -231,27 +234,27 @@ control =<span class="st"> </span><span class="kw"><a href="../reference/setMBOC
 ## Optimization path
 ## 5 + 10 entries in total, displaying last 10 (or less):
 ##                x           y dob eol error.message exec.time            ei
-## 6   0.1424200502  0.08209419   1  NA          &lt;NA&gt;         0 -3.210524e-02
-## 7  -0.0587906203 -0.05684837   2  NA          &lt;NA&gt;         0 -2.895198e-02
-## 8  -0.0078713135 -0.09917464   3  NA          &lt;NA&gt;         0 -4.123167e-03
-## 9   0.0009136003 -0.09998887   4  NA          &lt;NA&gt;         0 -1.465564e-03
-## 10 -0.0023368623 -0.09992718   5  NA          &lt;NA&gt;         0 -1.602634e-04
-## 11  0.0042282952 -0.09976164   6  NA          &lt;NA&gt;         0 -7.825227e-05
-## 12 -0.0004786400 -0.09999694   7  NA          &lt;NA&gt;         0 -3.685421e-05
-## 13 -0.5011804833  0.25303607   8  NA          &lt;NA&gt;         0 -1.283909e-05
-## 14  0.0327825630 -0.08595717   9  NA          &lt;NA&gt;         0 -1.574032e-05
-## 15  0.0001293507 -0.09999978  10  NA          &lt;NA&gt;         0 -1.035293e-05
+## 6   0.1424200502  0.08209419   1  NA          &lt;NA&gt;     0.000 -3.210524e-02
+## 7  -0.0587906203 -0.05684837   2  NA          &lt;NA&gt;     0.000 -2.895198e-02
+## 8  -0.0078713135 -0.09917464   3  NA          &lt;NA&gt;     0.000 -4.123167e-03
+## 9   0.0009136003 -0.09998887   4  NA          &lt;NA&gt;     0.000 -1.465564e-03
+## 10 -0.0023368623 -0.09992718   5  NA          &lt;NA&gt;     0.000 -1.602634e-04
+## 11  0.0042282952 -0.09976164   6  NA          &lt;NA&gt;     0.000 -7.825227e-05
+## 12 -0.0004786400 -0.09999694   7  NA          &lt;NA&gt;     0.000 -3.685421e-05
+## 13 -0.5011804833  0.25303607   8  NA          &lt;NA&gt;     0.001 -1.283909e-05
+## 14  0.0327825630 -0.08595717   9  NA          &lt;NA&gt;     0.000 -1.574032e-05
+## 15  0.0001293507 -0.09999978  10  NA          &lt;NA&gt;     0.000 -1.035293e-05
 ##    error.model train.time prop.type propose.time           se        mean
-## 6         &lt;NA&gt;      0.195 infill_ei        0.156 6.915038e-02 -0.10692782
-## 7         &lt;NA&gt;      0.341 infill_ei        0.051 7.139280e-02 -0.09925429
-## 8         &lt;NA&gt;      0.016 infill_ei        0.049 1.174245e-02 -0.09714923
-## 9         &lt;NA&gt;      0.015 infill_ei        0.050 1.928035e-03 -0.10030872
-## 10        &lt;NA&gt;      0.017 infill_ei        0.162 4.537499e-04 -0.09994572
-## 11        &lt;NA&gt;      0.028 infill_ei        0.049 4.007375e-04 -0.09978520
-## 12        &lt;NA&gt;      0.015 infill_ei        0.047 8.330914e-05 -0.09999587
-## 13        &lt;NA&gt;      0.017 infill_ei        0.045 1.710874e-01  0.48800629
-## 14        &lt;NA&gt;      0.019 infill_ei        0.046 6.460668e-03 -0.08425606
-## 15        &lt;NA&gt;      0.018 infill_ei        0.048 2.210341e-05 -0.09999986</code></pre></div>
+## 6         &lt;NA&gt;      0.302 infill_ei        0.236 6.915038e-02 -0.10692782
+## 7         &lt;NA&gt;      0.519 infill_ei        0.070 7.139280e-02 -0.09925429
+## 8         &lt;NA&gt;      0.029 infill_ei        0.067 1.174245e-02 -0.09714923
+## 9         &lt;NA&gt;      0.022 infill_ei        0.073 1.928035e-03 -0.10030872
+## 10        &lt;NA&gt;      0.024 infill_ei        0.068 4.537499e-04 -0.09994572
+## 11        &lt;NA&gt;      0.044 infill_ei        0.099 4.007375e-04 -0.09978520
+## 12        &lt;NA&gt;      0.024 infill_ei        0.082 8.330914e-05 -0.09999587
+## 13        &lt;NA&gt;      0.036 infill_ei        0.081 1.710874e-01  0.48800629
+## 14        &lt;NA&gt;      0.028 infill_ei        0.082 6.460668e-03 -0.08425606
+## 15        &lt;NA&gt;      0.027 infill_ei        0.083 2.210341e-05 -0.09999986</code></pre></div>
 </div>
 </div>
 <div id="visualization" class="section level2">
@@ -265,7 +268,7 @@ control =<span class="st"> </span><span class="kw"><a href="../reference/setMBOC
 ## Parameter names             : x
 ## Parameter types             : numericvector
 ## Global Opt (known)          : -1.0000e-01
-## Gap for best point          : 2.1884e-05
+## Gap for best point          : 5.3246e-05
 ## True points per dim.        : 50
 ## Objectives                    : 1
 ## Points proposed per iter      : 1
@@ -280,10 +283,10 @@ control =<span class="st"> </span><span class="kw"><a href="../reference/setMBOC
 ## Final point by                : best.true.y
 ## Learner                     : regr.km
 ## Learner settings:
-## jitter=FALSE,covtype=matern3_2,control=trace=FALSE
+## jitter=FALSE,covtype=matern3_2,control=&lt;list&gt;
 ## Recommended parameters:
-## x=0.00128
-## Objective: y = -9.998e-02
+## x=0.002
+## Objective: y = -9.995e-02
 <span class="kw"><a href="../reference/plotExampleRun.html">plotExampleRun</a></span>(run, <span class="dt">iters =</span> <span class="kw">c</span>(1L, 2L, 10L), <span class="dt">pause =</span> <span class="ot">FALSE</span>)
 ## Loading required package: ggplot2</code></pre></div>
 <p><img src="mlrMBO_files/figure-html/cosine_plot_examplerun-1.svg" width="672"><img src="mlrMBO_files/figure-html/cosine_plot_examplerun-2.svg" width="672"><img src="mlrMBO_files/figure-html/cosine_plot_examplerun-3.svg" width="672"></p>
@@ -317,7 +320,7 @@ control =<span class="st"> </span><span class="kw"><a href="../reference/setMBOC
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>

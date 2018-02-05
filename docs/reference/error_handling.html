@@ -82,6 +82,9 @@
     <li>
       <a href="../articles/supplementary/machine_learning_with_mlrmbo.html">Machine learning with mlrMBO</a>
     </li>
+    <li>
+      <a href="../articles/supplementary/human_in_the_loop_MBO.html">Human-in-the-loop MBO</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -124,7 +127,7 @@ process. mlrMBO tries to handle most of them as smart as possible.</p>
 <li><p>4The target function crashes the whole R process.</p></li>
 <li><p>5The surrogate machine learning model might crash.
     Kriging quite often can run into numerical problems.</p></li>
-<li><p>6The proposal mechanism - in multipoint or single point mode - produces
+<li><p>6The proposal mechanism - in multi-point or single point mode - produces
     a point which is either close to another candidate point in the same iteration or
     an already visited point in a previous iteration.</p></li>
 <li><p>7The mbo process exits / stops / crashes itself. Maybe because it hit a walltime.</p></li>
@@ -192,7 +195,7 @@ the state is stored. It is overwritten (= extended) in each saving iteration.</p
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>

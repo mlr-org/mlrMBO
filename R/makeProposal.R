@@ -2,7 +2,7 @@
 # @param control [MBOcontrol]
 # @param prop.points [data.frame (nxk)]
 #   columns: each parameter
-#   rows: each point proposal (usually 1-row, multipoint: more rows)
+#   rows: each point proposal (usually 1-row, multi-point: more rows)
 # @param propose.time [numeric (n)]
 #   Vector with time it took for each proposal corresponding to each row (see above)
 # @param prop.type [character (n)]

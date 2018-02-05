@@ -1,0 +1,216 @@
+---
+title: "Machine learning with mlrMBO: Tuning hyperparameters with model-based optimization"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: true
+      smooth_scroll: false
+    dev: svg
+vignette: >
+  %\VignetteIndexEntry{Machine learning with mlrMBO}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r hidden_setup, include = FALSE, cache = FALSE}
+library(mlrMBO)
+library(rgenoud)
+set.seed(123)
+knitr::opts_chunk$set(cache = TRUE, collapse = FALSE, dev = "svg")
+knitr::knit_hooks$set(document = function(x){
+  gsub("```\n*```r*\n*", "", x)
+})
+```
+
+## Purpose
+
+This Vignette is supposed to give you an introduction on how to use `mlrMBO` for hyperparameter tuning in the context of machine learning using the `mlr` package.
+
+## `mlr`
+
+For the purpose of hyperparameter tuning, we will use the [`mlr`](/mlr-tutorial/devel/html/index.html) package.
+`mlr` provides a framework for machine learning in R that comes with a broad range of machine learning functionalities and is easily extendable.
+One possible approach is to use `mlr` to train a learner and evaluate its performance for a given hyperparameter configuration in the objective function.
+Alternatively, we can access `mlrMBO`'s model-based optimization directly using [`mlr`'s tuning functionalities](/mlr-tutorial/devel/html/tune/index.html).
+This yields the benefit of integrating hyperparameter tuning with model-based optimization into your machine learning experiments without any overhead.
+
+## Preparations
+
+First, we load the required packages.
+Next, we configure `mlr` to suppress the learner output to improve output readability.
+Additionally, we define a global variable giving the number of tuning iterations.
+Note that this number is set (very) low to reduce runtime.
+
+```{r setup}
+library(mlrMBO)
+library(mlr)
+
+configureMlr(on.learner.warning = "quiet", show.learner.output = FALSE)
+
+iters = 5
+```
+
+## 1 Custom objective function to evaluate performance
+
+As an example, we tune the `cost` and the `gamma` parameter of a rbf-SVM on the [Iris data](https://en.wikipedia.org/wiki/Iris_flower_data_set).
+First, we define the parameter set.
+Note that the transformations added in the `trafo` argument mean, that we tune the parameters on a logarithmic scale.
+
+```{r paramset}
+par.set = makeParamSet(
+  makeNumericParam("cost", -15, 15, trafo = function(x) 2^x),
+  makeNumericParam("gamma", -15, 15, trafo = function(x) 2^x)
+)
+```
+
+Next, we define the objective function.
+First, we define a learner and set its hyperparameters by using `makeLearner`.
+To evaluate its performance we use the `resample` function which automatically takes care of fitting the model and evaluating it on a test set.
+In this example, resampling is done using 3-fold cross-validation, by passing the `ResampleDesc` object `cv3`, that comes predefined with `mlr`, as an argument to `resample`.
+The measure to be optimized can be specified (e.g by passing `measures = ber`, for the *balanced error rate*), however `mlr` has a default for each task type.
+For classification the `mmce`(Mean misclassification rate) is the default.
+Like [in this example](mixed_space_optimization.html "Mixed Space Optimization"), we set `minimize = TRUE` and `has.simple.signature = FALSE`.
+Note that the `iris.task` is provided automatically when loading `mlr`.
+
+```{r objective_function}
+svm = makeSingleObjectiveFunction(name = "svm.tuning",
+  fn = function(x) {
+    lrn = makeLearner("classif.svm", par.vals = x)
+    resample(lrn, iris.task, cv3, show.info = FALSE)$aggr
+  },
+  par.set = par.set,
+  noisy = TRUE,
+  has.simple.signature = FALSE,
+  minimize = TRUE
+)
+```
+
+Now we create a default `MBOControl` object and tune the rbf-SVM.
+
+```{r}
+ctrl = makeMBOControl()
+ctrl = setMBOControlTermination(ctrl, iters = iters)
+
+res = mbo(svm, control = ctrl, show.info = FALSE)
+print(res)
+res$x
+res$y
+op = as.data.frame(res$opt.path)
+plot(cummin(op$y), type = "l", ylab = "mmce", xlab = "iteration")
+```
+
+
+## 2 Using `mlr`'s tuning interface
+
+Instead of defining an objective function where the learner's performance is evaluated, we can make use of model-based optimization directly from `mlr`.
+We just create a `TuneControl` object, passing the `MBOControl` object to it.
+Then we call [`tuneParams`](/mlr-tutorial/devel/html/tune/index.html) to tune the hyperparameters.
+
+```{r mlr_tuning}
+ctrl = makeMBOControl()
+ctrl = setMBOControlTermination(ctrl, iters = iters)
+tune.ctrl = makeTuneControlMBO(mbo.control = ctrl)
+res = tuneParams(makeLearner("classif.svm"), iris.task, cv3, par.set = par.set, control = tune.ctrl,
+  show.info = FALSE)
+print(res)
+res$x
+res$y
+op.y = getOptPathY(res$opt.path)
+plot(cummin(op.y), type = "l", ylab = "mmce", xlab = "iteration")
+```
+
+## Hierarchical mixed space optimization
+
+In many cases, the hyperparameter space is not just numerical but mixed and often even hierarchical.
+This can easily be done out-of-the-box and needs no adaption to our previous example.
+(Recall that a suitable surrogate model is chosen automatically, as explained [here](../mlrMBO.html#surrogate-model).)
+To demonstrate this, we tune the `cost` and the `kernel` parameter of a SVM.
+When `kernel` takes the `radial` value, `gamma` needs to be specified.
+For a `polynomial` kernel, the `degree` needs to be specified.
+
+```{r hierarchical_paramset}
+par.set = makeParamSet(
+  makeDiscreteParam("kernel", values = c("radial", "polynomial", "linear")),
+  makeNumericParam("cost", -15, 15, trafo = function(x) 2^x),
+  makeNumericParam("gamma", -15, 15, trafo = function(x) 2^x, requires = quote(kernel == "radial")),
+  makeIntegerParam("degree", lower = 1, upper = 4, requires = quote(kernel == "polynomial"))
+)
+```
+
+Now we can just repeat the setup from the previous example and tune the hyperparameters.
+
+```{r hierarchical_tuning}
+ctrl = makeMBOControl()
+ctrl = setMBOControlTermination(ctrl, iters = iters)
+tune.ctrl = makeTuneControlMBO(mbo.control = ctrl)
+res = tuneParams(makeLearner("classif.svm"), iris.task, cv3, par.set = par.set, control = tune.ctrl,
+  show.info = FALSE)
+```
+
+## Parallelization and multi-point proposals
+
+We can easily add multi-point proposals and parallelize it using the `parallelMap` package.
+(Note that the chosen *multicore* back-end for parallelization does not work on windows machines.
+Please refer to the [parallelization section](parallelization.html) for details on parallelization and multi point proposals.)
+In each iteration, we propose as many points as CPUs used for parallelization.
+As infill criterion we use Expected Improvement.
+
+```{r parallel_tuning}
+library(parallelMap)
+ncpus = 2L
+
+ctrl = makeMBOControl(propose.points = ncpus)
+ctrl = setMBOControlTermination(ctrl, iters = iters)
+ctrl = setMBOControlInfill(ctrl, crit = crit.ei)
+ctrl = setMBOControlMultiPoint(ctrl, method = "cl", cl.lie = min)
+tune.ctrl = makeTuneControlMBO(mbo.control = ctrl)
+parallelStartMulticore(cpus = ncpus)
+res = tuneParams(makeLearner("classif.svm"), iris.task, cv3, par.set = par.set, control = tune.ctrl, show.info = FALSE)
+parallelStop()
+```
+
+## Usecase: Pipeline configuration
+
+It is also possible to tune a whole machine learning pipeline, i.e. preprocessing and model configuration.
+The example pipeline is:
+  * Feature filtering based on an ANOVA test or covariance, such that between 50% and 100% of the features remain.
+  * Select either a SVM or a naive Bayes classifier.
+  * Tune parameters of the selected classifier.
+
+First, we define the parameter space:
+
+```{r pipeline_tuning_parset}
+par.set = makeParamSet(
+  makeDiscreteParam("fw.method", values = c("anova.test", "variance")),
+  makeNumericParam("fw.perc", lower = 0.1, upper = 1),
+  makeDiscreteParam("selected.learner", values = c("classif.svm", "classif.naiveBayes")),
+  makeNumericParam("classif.svm.cost", -15, 15, trafo = function(x) 2^x,
+    require = quote(selected.learner == "classif.svm")),
+  makeNumericParam("classif.svm.gamma", -15, 15, trafo = function(x) 2^x,
+    requires = quote(classif.svm.kernel == "radial" & selected.learner == "classif.svm")),
+  makeIntegerParam("classif.svm.degree", lower = 1, upper = 4,
+    requires = quote(classif.svm.kernel == "polynomial" & selected.learner == "classif.svm")),
+  makeDiscreteParam("classif.svm.kernel", values = c("radial", "polynomial", "linear"),
+    require = quote(selected.learner == "classif.svm"))
+)
+```
+
+Next, we create the control objects and a suitable learner, combining `makeFilterWrapper()` with `makeModelMultiplexer()`.
+(Please refer to the [advanced tuning chapter of the mlr tutorial](/mlr-tutorial/devel/html/advanced_tune/index.html#tuning-across-whole-model-spaces-with-modelmultiplexer) for details.)
+Afterwards, we can run `tuneParams()` and check the results.
+
+```{r pipeline_tuning}
+ctrl = makeMBOControl()
+ctrl = setMBOControlTermination(ctrl, iters = iters)
+lrn = makeFilterWrapper(makeModelMultiplexer(list("classif.svm", "classif.naiveBayes")))
+tune.ctrl = makeTuneControlMBO(mbo.control = ctrl)
+
+res = tuneParams(lrn, iris.task, cv3, par.set = par.set, control = tune.ctrl, show.info = FALSE)
+print(res)
+res$x
+res$y
+op = as.data.frame(res$opt.path)
+plot(cummin(op$mmce.test.mean), type = "l", ylab = "mmce", xlab = "iteration")
+
+```

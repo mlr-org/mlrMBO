@@ -82,6 +82,9 @@
     <li>
       <a href="../articles/supplementary/machine_learning_with_mlrmbo.html">Machine learning with mlrMBO</a>
     </li>
+    <li>
+      <a href="../articles/supplementary/human_in_the_loop_MBO.html">Human-in-the-loop MBO</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -116,6 +119,17 @@
     </div>
 
     <div class="contents">
+    <div id="mlrmbo-1-1-1" class="section level1">
+<h1 class="hasAnchor">
+<a href="#mlrmbo-1-1-1" class="anchor"></a>mlrMBO 1.1.1</h1>
+<ul>
+<li>
+<code><a href="../reference/makeMBOControl.html">makeMBOControl()</a></code> has <code>on.surrogate.error</code> argument which enables random proposals if the surrogate model fails.</li>
+<li>With <code><a href="../reference/initSMBO.html">initSMBO()</a></code>, <code><a href="../reference/updateSMBO.html">updateSMBO()</a></code> and <code><a href="../reference/finalizeSMBO.html">finalizeSMBO()</a></code> it is now possible to do a human-in-the-loop MBO.</li>
+<li>The result now contains the <code>final.opt.state</code>.</li>
+<li>Plot method for <code>OptState</code> objects.</li>
+</ul>
+</div>
     <div id="mlrmbo-1-1-0" class="section level1">
 <h1 class="hasAnchor">
 <a href="#mlrmbo-1-1-0" class="anchor"></a>mlrMBO 1.1.0</h1>
@@ -139,6 +153,7 @@
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
+        <li><a href="#mlrmbo-1-1-1">1.1.1</a></li>
         <li><a href="#mlrmbo-1-1-0">1.1.0</a></li>
         <li><a href="#mlrmbo-1-0-0">1.0.0</a></li>
       </ul>

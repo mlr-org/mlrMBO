@@ -6,7 +6,7 @@ Description: Flexible and comprehensive R toolbox for model-based optimization
     conditional parameters. The machine learning toolbox 'mlr' provide dozens
     of regression learners to model the performance of the target algorithm with
     respect to the parameter settings. It provides many different infill criteria
-    to guide the search process. Additional features include multipoint batch
+    to guide the search process. Additional features include multi-point batch
     proposal, parallel execution as well as visualization and sophisticated
     logging mechanisms, which is especially useful for teaching and understanding
     of algorithm behavior. 'mlrMBO' is implemented in a modular fashion, such that
@@ -14,7 +14,7 @@ Description: Flexible and comprehensive R toolbox for model-based optimization
     cases.
 Authors@R: c(
     person("Bernd", "Bischl", email = "bernd_bischl@gmx.net", role = c("aut")),
-    person("Jakob", "Bossek", email = "jakob.bossek@tu-dortmund.de", role = "aut"),
+    person("Jakob", "Bossek", email = "j.bossek@gmail.com", role = "aut"),
     person("Jakob", "Richter", email = "code@jakob-r.de", role = c("aut", "cre")),
     person("Daniel", "Horn", email = "daniel.horn@tu-dortmund.de", role = "aut"),
     person("Michel", "Lang", email = "michellang@gmail.com", role = "aut"),
@@ -59,6 +59,6 @@ Suggests:
 LazyData: yes
 Encoding: UTF-8
 ByteCompile: yes
-Version: 1.1.1
+Version: 1.1.2
 RoxygenNote: 6.0.1
 VignetteBuilder: knitr

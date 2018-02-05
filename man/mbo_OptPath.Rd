@@ -20,7 +20,7 @@ The extras are:
   \item{final\_eval}{If \code{final.evals} is set in \code{\link{makeMBOControl}}: Final evaluations of the proposed solution to reduce noise in y.}
   }
 }
-\item{parego.weight}{Weight vector sampled for multipoint ParEGO}
+\item{parego.weight}{Weight vector sampled for multi-point ParEGO}
 \item{...}{Depending on the chosen infill criterion there will be additional columns, e.g. \code{se} and \code{mean} for the Expected Improvement)}
 }
 

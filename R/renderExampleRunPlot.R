@@ -28,7 +28,7 @@
 #'   is plotted above and below.
 #'   Default is 1.
 #' @param single.prop.point.plots [\code{logical(1)}]\cr
-#'   Parameter for MOI-MBO Multipoint proposal: Should every proposed point
+#'   Parameter for MOI-MBO Multi-point proposal: Should every proposed point
 #'   be displayed in a single plot - or one plot per Iteration? Default is FALSE
 #'   indicating single plots per proposed points.
 #' @param xlim [\code{numeric(2)}]\cr

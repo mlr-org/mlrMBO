@@ -59,7 +59,7 @@ plot.OptState = function(x, scale.panels = FALSE, ...) {
   # prepare data for ggplot2
   mdata = data.table::melt(plot.data, id.vars = x.ids)
   mdata$variable = factor(mdata$variable, levels = intersect(use.only.columns, levels(mdata$variable)))
-  if (scale.panels) {
+  if (scale.panels && par.dim == 2) {
     predict.range = range(mdata[get("variable")=="mean", "value"])
     mdata[, ':='("value", normalize(x = get("value"), method = "range")), by = "variable"]
     design[[y.ids]] = (design[[y.ids]] + (0 - predict.range[1])) / diff(predict.range)
@@ -82,7 +82,11 @@ plot.OptState = function(x, scale.panels = FALSE, ...) {
     } else {
       formula.txt = "~variable"
     }
-    g = g + ggplot2::facet_grid(as.formula(formula.txt))
+    if (scale.panels && par.dim == 1) {
+      g = g + ggplot2::facet_wrap(as.formula(formula.txt), nrow = 1, scales = "free_y")
+    } else {
+      g = g + ggplot2::facet_grid(as.formula(formula.txt))
+    }
   }
   g = g + ggplot2::scale_shape_manual(values = c(init = 16, seq = 15))
   g
