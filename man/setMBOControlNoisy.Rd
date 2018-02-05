@@ -4,7 +4,8 @@
 \alias{setMBOControlNoisy}
 \title{Set multipoint proposal options.}
 \usage{
-setMBOControlNoisy(control, instances = NULL, instance.param = NULL)
+setMBOControlNoisy(control, instances = NULL, instance.param = NULL,
+  self.replicating = NULL)
 }
 \arguments{
 \item{control}{[\code{\link{MBOControl}}]\cr
@@ -15,6 +16,9 @@ How many instances of one parameter will be calculated?}
 
 \item{instance.param}{[\code{character(1)}]\cr
 What is the name of the function param that defines the instance?}
+
+\item{self.replicating}{[\code{logical(1)}]\cr
+TRUE if the function returns a vector of noisy results for one input. Then \code{instances} specifies the length of the result we expect.}
 }
 \value{
 [\code{\link{MBOControl}}].

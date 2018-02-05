@@ -12,7 +12,8 @@ test_that("mbo works with multiple instances of noisy problems", {
   ctrl = setMBOControlInfill(ctrl, crit = crit.aei, opt.focussearch.points = 100L)
   ctrl = setMBOControlNoisy(ctrl, instances = 5L)
   or = mbo(fun, control = ctrl)
-  expect_true(all(table(opdf$x) == 5)
+  opdf = as.data.frame(or$opt.path)
+  expect_true(all(table(opdf$x) == 5))
 })
 
 test_that("mbo works with multiple fixed instances of noisy problems", {
@@ -30,7 +31,7 @@ test_that("mbo works with multiple fixed instances of noisy problems", {
   or = mbo(fun, control = ctrl)
   opdf = as.data.frame(or$opt.path)
   expect_true(all(opdf$i %in% 1:5))
-  expect_true(all(table(opdf$x) == 5)
+  expect_true(all(table(opdf$x) == 5))
 })
 
 test_that("mbo works with self replicating instances of noisy problems", {
@@ -47,5 +48,5 @@ test_that("mbo works with self replicating instances of noisy problems", {
   or = mbo(fun, control = ctrl)
   opdf = as.data.frame(or$opt.path)
   expect_true(all(opdf$noisy.repl %in% 1:5))
-  expect_true(all(table(opdf$x) == 5)
+  expect_true(all(table(opdf$x) == 5))
 })
