@@ -4,6 +4,7 @@
 \alias{makeMBOInfillCrit}
 \alias{MBOInfillCrit}
 \alias{crit.ei}
+\alias{crit.eis}
 \alias{crit.mr}
 \alias{crit.se}
 \alias{crit.cb}
@@ -80,6 +81,7 @@ the package allows for the creation of custom infill criteria.
 
 \describe{
 \item{crit.ei}{Expected Improvement}
+\item{crit.eis}{Expected Improvement per second}
 \item{crit.mr}{Mean response}
 \item{crit.se}{Standard error}
 \item{crit.cb}{Confidence bound with lambda automatically chosen, see \code{\link{infillcrits}}}

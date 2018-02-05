@@ -252,7 +252,7 @@ makeMBOInfillCritEIs = function(se.threshold = 1e-6) {
       maximize.mult = ifelse(control$minimize, 1, -1)
       y = maximize.mult * design[, control$y.name]
       p = predict(model, newdata = points)$data
-      p.time = predict(time.model, newdata = points)$data$response
+      p.time = exp(predict(time.model, newdata = points)$data$response) #time is modeled on log-scale
       p.mu = maximize.mult * p$response
       p.se = p$se
       y.min = min(y)
@@ -260,7 +260,7 @@ makeMBOInfillCritEIs = function(se.threshold = 1e-6) {
       xcr = d / p.se
       xcr.prob = pnorm(xcr)
       xcr.dens = dnorm(xcr)
-      ei = (d * xcr.prob + p.se * xcr.dens) / log(p.time)
+      ei = (d * xcr.prob + p.se * xcr.dens) / p.time
       res = ifelse(p.se < se.threshold, 0, -ei)
       if (attributes) {
         res = setAttribute(res, "crit.components", data.frame(se = p$se, mean = p$response))

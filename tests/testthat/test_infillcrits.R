@@ -44,16 +44,18 @@ test_that("infill crits", {
     opdf = as.data.frame(or$opt.path)
     opdf = split(opdf, opdf$prop.type)
 
-    if (!is.null(opdf$infill_ei))
+    if (!is.null(opdf[["infill_ei"]]))
       expect_true(!anyMissing(opdf$infill_ei[, c("ei","se","mean")]))
-    if (!is.null(opdf$infill_cb)) {
-      expect_true(!anyMissing(opdf$infill_cb[, c("se","mean","lambda")]))
+    if (!is.null(opdf[["infill_eis"]]))
+      expect_true(!anyMissing(opdf$infill_ei[, c("eis","se","mean")]))
+    if (!is.null(opdf[["infill_cb"]])) {
+      expect_true(!anyMissing(opdf[["infill_cb"]][, c("se","mean","lambda")]))
       expect_true(all(opdf$infill_cb$lambda == 2))
     }
     if (!is.null(opdf$infill_aei))
-      expect_true(!anyMissing(opdf$infill_aei[, c("se","mean","tau")]))
+      expect_true(!anyMissing(opdf[["infill_aei"]][, c("se","mean","tau")]))
     if (!is.null(opdf$infill_eqi))
-      expect_true(!anyMissing(opdf$infill_eqi[, c("se","mean","tau")]))
+      expect_true(!anyMissing(opdf[["infill_eqi"]][, c("se","mean","tau")]))
     expect_true(nrow(opdf$final_eval) == 10L)
   }
 
@@ -94,6 +96,20 @@ test_that("infill crits", {
   des = generateTestDesign(ninit, getParamSet(funs[[1]]$f1))
   or = mbo(funs[[1]]$f1, des, learner = makeLearner("regr.km", predict.type = "se", nugget.estim = TRUE), control = ctrl)
   expect_lt(or$y, 50)
+
+  # special function for EIs
+  f3 = makeSingleObjectiveFunction("test",
+    fn = function(x) {
+      Sys.sleep(runif(1, 0.01, 0.05))
+      sin(x)
+    },
+  par.set = makeParamSet(makeNumericParam("x", lower = -5, upper = 5))
+  )
+  des = generateTestDesign(ninit, getParamSet(f3))
+  for (lrn in learners) {
+    or = mbo(f3, des, learner = lrn, control = mycontrol(crit.eis))
+    mycheck(or, TRUE)
+  }
 })
 
 
@@ -102,4 +118,3 @@ test_that("infill crit printer works",  {
   expect_output(print(crit.cb), "cb.lambda=<NULL>")
   expect_output(print(crit.ei), "Direction of optimization : maximize")
 })
-
