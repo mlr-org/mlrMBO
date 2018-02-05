@@ -28,7 +28,7 @@ getExtras = function(n, prop, train.time, control) {
     # pregenerate a dummmy "prop" data structure
     prop = list(crit.vals = matrix(NA_real_, nrow = n, ncol = k), propose.time = NA_real_, errors.model = NA_character_, prop.type = rep("initdesign", n))
     # a) no infill crit components for MCO
-    # b) infill crit is ignored for multipoint moimbo, in which case we don't use any components
+    # b) infill crit is ignored for multi-point moimbo, in which case we don't use any components
     if (allow.crit.components) {
       prop$crit.components = getMBOInfillCritDummyComponents(infill.crit)
     }

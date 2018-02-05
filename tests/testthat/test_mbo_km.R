@@ -62,8 +62,8 @@ test_that("mbo works with impute and failure model", {
   des$y = apply(des, 1, testf.fsphere.2d)
   des$y[nrow(des)] = 123
   # make sure model does not break, and we get a failure model
-  learner = makeLearner("regr.km", config = list(on.learner.error = "quiet"))
-  ctrl = makeMBOControl()
+  learner = makeLearner("regr.km")
+  ctrl = makeMBOControl(on.surrogate.error = "quiet")
   ctrl = setMBOControlTermination(ctrl, iters = 2L)
   ctrl = setMBOControlInfill(ctrl, crit = crit.mr, opt.focussearch.points = 10L)
   or = mbo(testf.fsphere.2d, des, learner = learner, control = ctrl)

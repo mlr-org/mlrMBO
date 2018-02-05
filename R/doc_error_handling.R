@@ -12,7 +12,7 @@
 #'   \item{4}{The target function crashes the whole R process.}
 #'   \item{5}{The surrogate machine learning model might crash.
 #'     Kriging quite often can run into numerical problems.}
-#'   \item{6}{The proposal mechanism - in multipoint or single point mode - produces
+#'   \item{6}{The proposal mechanism - in multi-point or single point mode - produces
 #'     a point which is either close to another candidate point in the same iteration or
 #'     an already visited point in a previous iteration.}
 #'   \item{7}{The mbo process exits / stops / crashes itself. Maybe because it hit a walltime.}

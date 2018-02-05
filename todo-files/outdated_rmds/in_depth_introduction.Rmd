@@ -10,7 +10,7 @@ objfun1 = makeBraninFunction()
 autoplot(objfun1, render.levels = TRUE, show.optimum = TRUE)
 ```
 
-The following steps are needed to start a surrogate-based optimization with our package. 
+The following steps are needed to start a surrogate-based optimization with our package.
 Each step ends with an R object, which is then passed to ```mbo()```, i.e., to the working horse of **mlrMBO**.
 
 1. define the objective function and its parameters by using the package **smoof**
@@ -49,13 +49,13 @@ For more details see `?makeSingleObjectiveFunction`.
 
 The second argument of the `mbo()` function - `design` - is the initial design with default setting `NULL`.
 
-An easy (and recommended) way to create an initial design is to use the `generateDesign` function from the **ParamHelpers** package. 
-If no design is given (i.e. `design = NULL`) a Maximin Latin Hypercube `lhs::maximinLHS` design is used with `n = 4 * getNumberOfParameters(objfun1)` points. 
-Other possibilities to generate designs are for example `generateGridDesign` and `generateRandomDesign`. 
+An easy (and recommended) way to create an initial design is to use the `generateDesign` function from the **ParamHelpers** package.
+If no design is given (i.e. `design = NULL`) a Maximin Latin Hypercube `lhs::maximinLHS` design is used with `n = 4 * getNumberOfParameters(objfun1)` points.
+Other possibilities to generate designs are for example `generateGridDesign` and `generateRandomDesign`.
 
 _Note:_ If special designs are desired (e.g., orthogonal designs), they can be given as a `data.frame` but you have to be aware that the output resembles the output of `generateDesign`.
 
-For our objective function `objfun1` we create a slightly larger number of initial points than the default suggests. 
+For our objective function `objfun1` we create a slightly larger number of initial points than the default suggests.
 ```{r}
 n = 5 * getNumberOfParameters(objfun1)
 design1 = generateDesign(n = n, par.set = getParamSet(objfun1), fun = lhs::randomLHS)
@@ -80,13 +80,13 @@ surr.km = makeLearner("regr.km", predict.type = "se", covtype = "matern3_2", con
 
 In fact you can use any other regression learner from **mlr** as a surrogate.
 Depending on the *infill criterion* we will set later it is important that the learner can predict the *uncertainty* (defined by `predict.type = "se"`) alongside the *mean* prediction.
-Another popular surrogate is the random forest. 
+Another popular surrogate is the random forest.
 It's use is explained in the section for [mixed space optimization](mixed_space_optimization.md).
 
 
 ## MBOControl
 
-The `MBOControl` object controls the optimization process and is created with `makeMBOControl`. 
+The `MBOControl` object controls the optimization process and is created with `makeMBOControl`.
 General control arguments can be set when creating it.
 
 * `n.objectives`: The number of objectives. 1 implies normal single criteria optimization and is covered in this page. For values >1 see [multi-objective optimization](multi_objective_optimization.md).
@@ -103,7 +103,7 @@ It is highly recomended to adjust the settings to suit your optimization problem
 
 ### Argument _crit_
 
-One of the most important questions is to define how the next design points in the sequential loop are chosen. 
+One of the most important questions is to define how the next design points in the sequential loop are chosen.
 5 different infill criteria can be set via the `crit` argument in `setMBOControlInfill`:
 
 * `mean`: mean response of the surrogate model
@@ -121,14 +121,14 @@ Then points closer then the value of `filter.proposed.points.tol` to an already 
 
 ### Argument _opt_
 
-The key idea behind model-based optimization is to substitute the expensive optimization on the black-box with optimization on the surrogate as this is deemed to be cheaper. 
+The key idea behind model-based optimization is to substitute the expensive optimization on the black-box with optimization on the surrogate as this is deemed to be cheaper.
 To optimize the infill criterion on the surrogate we also need an optimizer.
-The optimum of the infill criterion function gives us the next point that 
+The optimum of the infill criterion function gives us the next point that
 Which one to use can be defined with the `opt` argument.
 The possibilities are:
 
 * `focussearch`: A Latin Hypercube design of size `opt.focussearch.points` (default 10000) is sampled in the parameter space (by `randomLHS`) and the design point with the best prediction of the infill criterion is determined. Then, the parameter space is shrunk around this point. This step is repeated `opt.focussearch.maxit` (default 5) times and the best observed point is passed back.
-* `cmaes`: The optimal point is found with a covariance matrix adapting evolutionary strategy from the **cmaes** package. If the strategy fails, a random point is generated and a warning is given. Further control arguments can be provided in `opt.cmaes.control` as a list. 
+* `cmaes`: The optimal point is found with a covariance matrix adapting evolutionary strategy from the **cmaes** package. If the strategy fails, a random point is generated and a warning is given. Further control arguments can be provided in `opt.cmaes.control` as a list.
 * `ea`: Use an evolutionary multiobjective optimization algorithm from the package **emoa** to determine the best point. The population size mu can be set by  `opt.ea.mu` (default value is 10). (mu+1) means that in each population only one child is generated using crossover und mutation operators. The parameters `eta` and `p` of the latter two operators can be adjusted via the attributes `opt.ea.sbx.eta`, `opt.ea.sbx.p`,`opt.ea.pm.eta` and `opt.ea.pm.p`. The default number of EA iterations is 500 and can be changed by `opt.ea.maxit` attribute.
 * `nsga2`: Use the non-dominated sorting genetic algorithm from the package **nsga2R** to determine the best point. This algorithm should be used for [multi objective optimization](multi_objective_optimization.md).
 
@@ -141,7 +141,7 @@ _Note:_ Only the `focussearch` optimizer is suitable for for categorical paramet
 ## setMBOControlTermination
 
 With this control function different criteria to stop the fitting process can be specified. You can set multiple different criteria and the first one that is met will terminate the optimization process.
-You can set: 
+You can set:
 
 * `iters`: The maximum number of iterations
 * `time.budget`: A maximum running time in seconds
@@ -152,11 +152,11 @@ _Note:_ You can also easily create your own stopping condition(s).
 
 ## setMBOControlMultiPoint
 
-This extends a MBO control object with options for multipoint proposal. Multipoint proposal means, that multiple points are proposed and evaluated, which is especially useful for parallel batch evaluation. For a detailed introduction, check the [multi-point tutorial](multipoint.md).
+This extends a MBO control object with options for multi-point proposal. Multi-point proposal means, that multiple points are proposed and evaluated, which is especially useful for parallel batch evaluation. For a detailed introduction, check the [multi-point tutorial](multipoint.md).
 
 ### Argument: _method_
 
-Define the method used for multipoint proposals, currently 3 different methods are supported:
+Define the method used for multi-point proposals, currently 3 different methods are supported:
 
 * `cb`: Proposes multiple points by optimizing the confidence bound criterion `propose.points` times with different lambda values. Generally this works the same way as for the single point case, i.e. specify `infill.opt`. The lambdas are drawn from an exp(1)-distribution.
 * `multicrit`: Use a evolutionary multicriteria optimization. This is a (mu+1) type evolutionary algorithm and runs for `multicrit.maxit` generations. The population size is set to `propose.points`.
@@ -164,7 +164,7 @@ Define the method used for multipoint proposals, currently 3 different methods a
 
 ## setMBOControlMultiFid
 
-Add multi-fidelity options to the `MBOControl` control object. This is useful when certain parameters increase the performance as well as the calculation cost. The idea is to combine the optimization of fast fitting low-fidelity models and more accurate but expensive high-fidelity models. The parameter on which the fidelity depends on is specified as `param` and the order of the values to train the learner with in `lvls`. The costs for the different levels can be specified directly or estimated by a model based on the execution time of the currently evaluated points.  
+Add multi-fidelity options to the `MBOControl` control object. This is useful when certain parameters increase the performance as well as the calculation cost. The idea is to combine the optimization of fast fitting low-fidelity models and more accurate but expensive high-fidelity models. The parameter on which the fidelity depends on is specified as `param` and the order of the values to train the learner with in `lvls`. The costs for the different levels can be specified directly or estimated by a model based on the execution time of the currently evaluated points.
 
 ## setMBOControlMultiCrit
 

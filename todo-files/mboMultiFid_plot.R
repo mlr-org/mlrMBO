@@ -15,25 +15,25 @@ genPlotData = function(compound.model, opt.path, control, fun, res = 100, lvl.co
   # predict all the y values by the model
   p = predict(compound.model, newdata = grid.design)
   z = infillCritMultiFid2(
-    points = dropNamed(grid.design, ".multifid.lvl"), 
-    model = compound.model, 
-    control = control, 
-    par.set = par.set, 
-    design = old.points, 
-    lvl.cors = lvl.cors, 
-    lvl.sds = lvl.sds, 
+    points = dropNamed(grid.design, ".multifid.lvl"),
+    model = compound.model,
+    control = control,
+    par.set = par.set,
+    design = old.points,
+    lvl.cors = lvl.cors,
+    lvl.sds = lvl.sds,
     lvl = grid.design$.multifid.lvl)
   z.df = do.call(cbind.data.frame, z)
   all = cbind(grid.design, y = p$data$response, z)
   xname = getParamIds(par.set.lower)
   best.points.z = infillCritMultiFid2(
-    points = dropNamed(best.points, ".multifid.lvl"), 
-    model = compound.model, 
-    control = control, 
-    par.set = par.set, 
-    design = old.points, 
-    lvl.cors = lvl.cors, 
-    lvl.sds = lvl.sds, 
+    points = dropNamed(best.points, ".multifid.lvl"),
+    model = compound.model,
+    control = control,
+    par.set = par.set,
+    design = old.points,
+    lvl.cors = lvl.cors,
+    lvl.sds = lvl.sds,
     lvl = best.points$.multifid.lvl)
   best.points$y = predict(compound.model, newdata = best.points)$data$response
   best.points = do.call(cbind, c(list(best.points), best.points.z))
@@ -57,7 +57,7 @@ plotMultiFidStep = function(plotdata, subset.variable = character(0), title = ch
 plotMultiFidStep1d = function(plotdata, subset.variable = character(0), title = character(0), add.g = list()) {
   xname = plotdata$xname
   m.all = melt(plotdata$all, id.vars = c(xname, ".multifid.lvl"))
-    
+
   m.all = m.all[m.all$variable != "ei" | (m.all$variable == "ei" & m.all$.multifid.lvl == max(m.all$.multifid.lvl)), ] # drop EI for not last .multifid.lvl
   old.points = rename(plotdata$old.points, c("y"="value"))
   old.points$variable = "y"
@@ -68,13 +68,13 @@ plotMultiFidStep1d = function(plotdata, subset.variable = character(0), title = 
     m.all = subset(m.all, subset = m.all$variable %in% subset.variable)
     m.best.points = subset(m.best.points, subset = m.best.points$variable %in% subset.variable)
   }
-  vars.needed = c("value", xname, ".multifid.lvl", "variable") 
-  
+  vars.needed = c("value", xname, ".multifid.lvl", "variable")
+
   assertSubset(vars.needed, colnames(m.all))
   assertSubset(vars.needed, colnames(old.points))
   assertSubset(vars.needed, colnames(m.best.points))
 
-  g = ggplot(m.all, aes_string(x = xname, y = "value", color = "as.factor(.multifid.lvl)", group = "as.factor(.multifid.lvl)"))
+  g = ggplot(m.all, ggplotaes_string(x = xname, y = "value", color = "as.factor(.multifid.lvl)", group = "as.factor(.multifid.lvl)"))
   g = g + geom_line()
   g = g + geom_point(data = old.points)
   g = g + geom_vline(data = m.best.points, aes_string(xintercept = xname, color = "as.factor(.multifid.lvl)"), lty=2)
@@ -103,8 +103,8 @@ plotMultiFidStep2dRaw = function(plotdata, subset.variable = character(0), add.g
     m.all = melt(plotdata$all, id.vars = c(xname, ".multifid.lvl"))
     if (length(subset.variable))
       m.all = m.all[m.all$variable == var,]
-    g = plotMultiFidStep2dRawEach(m.all, xname, 
-      old.points = plotdata$old.points[,c(xname, ".multifid.lvl")], 
+    g = plotMultiFidStep2dRawEach(m.all, xname,
+      old.points = plotdata$old.points[,c(xname, ".multifid.lvl")],
       best.points = plotdata$best.points[,c(xname, ".multifid.lvl")],
       add.g = add.g)
     return(g)
