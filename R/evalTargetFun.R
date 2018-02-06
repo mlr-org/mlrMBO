@@ -80,9 +80,13 @@ evalTargetFun.OptState = function(opt.state, xs, extras) {
   if (isTRUE(control$noisy.instances > 1L) && control$noisy.self.replicating) {
     xs.trafo = rep(xs.trafo, each = control$noisy.instances)
     res = lapply(res, function(r) {
-      lapply(seq_along(r$y), function(i) {
-        list(y = r$y[i], time = r$time / length(r$y), user.extras = c(r$user.extras, setNames(list(i), control$noisy.instance.param)))
-      })
+      if (is.error(r)) {
+        rep(list(r), control$noisy.instances)
+      } else {
+        lapply(seq_along(r$y), function(i) {
+          list(y = r$y[i], time = r$time / length(r$y), user.extras = c(r$user.extras, setNames(list(i), control$noisy.instance.param)))
+        })
+      }
     })
     res = unlist(res, recursive = FALSE)
   }
