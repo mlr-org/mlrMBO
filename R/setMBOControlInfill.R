@@ -132,7 +132,7 @@ setMBOControlInfill = function(control,
 
   assertClass(control, "MBOControl")
 
-  control$infill.crit = coalesce(crit, control$infill.crit, makeMBOInfillCritCB())
+  control$infill.crit = crit %??% control$infill.crit %??% makeMBOInfillCritCB()
   assertClass(control$infill.crit, "MBOInfillCrit")
 
   assertCount(interleave.random.points)
