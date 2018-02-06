@@ -103,3 +103,9 @@ test_that("infill crit printer works",  {
   expect_output(print(crit.ei), "Direction of optimization : maximize")
 })
 
+test_that("setMBOControlInfill handles errors", {
+  #https://github.com/mlr-org/mlrMBO/issues/417
+  ctrl = makeMBOControl()
+  expect_error(setMBOControlInfill(ctrl, crit = undefined()), "could not find function \"undefined\"")
+  expect_error(setMBOControlInfill(ctrl, crit = undefined), "object 'undefined' not found")
+})
