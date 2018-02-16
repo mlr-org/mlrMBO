@@ -59,9 +59,9 @@ makeOptState = function(opt.problem, loop = 0L, tasks = NULL, models = NULL,
   opt.state$models.loop = -1L #the loop the models where generated
   opt.state$tasks.loop = -1L #the loop the tasks where generated
   opt.state$time.model = time.model
-  opt.state$opt.result = coalesce(opt.result, makeOptResult())
+  opt.state$opt.result = opt.result %??% makeOptResult()
   opt.state$state = state #possible states: init, iter, iter.exceeded, time.exceeded, exec.time.exceeded
-  opt.state$opt.path = coalesce(opt.path, makeMBOOptPath(opt.problem))
+  opt.state$opt.path = opt.path %??% makeMBOOptPath(opt.problem)
   opt.state$time.last.saved = time.last.saved
   opt.state$loop.starttime = loop.starttime
   opt.state$time.used = time.used
