@@ -18,6 +18,8 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -25,6 +27,22 @@
 <script src="../pkgdown.js"></script>
   
   
+<meta property="og:title" content="Parallelization in mlrMBO — mbo_parallel" />
+
+<meta property="og:description" content="In mlrMBO you can parallelize the tuning on two different levels to speed up computation:
+mlrMBO.fevalMultiple evaluations of the target function.
+mlrMBO.propose.pointsOptimization of the infill criteria if multiple are used (e.g. ParEGO and ParallelLCB)
+Internally the evaluation of the target function is realized with the R package parallelMap.
+See the mlrMBO tutorial and the Github project pages of parallelMap for instructions on how to set up parallelization.
+The different levels of parallelization can be specified in parallelStart*.
+Details for the levels mentioned above are given below:
+Evaluation of the objective function can be parallelized in cases multiple points are to be evaluated at once. These are: evaluation of the initial design, multiple proposed points per iteration and evaluation of the target function in exampleRun. (Level: mlrMBO.feval)
+Model fitting / point proposal - in some cases where independent, expensive operations are performed. (Level: mlrMBO.propose.points)
+Details regarding the latter:
+single-objective MBO with LCB multi-pointParallel optimization of LCBs for the lambda-values.
+Multi-objective MBO with ParEGOParallel optimization of scalarization functions.
+" />
+<meta name="twitter:card" content="summary" />
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 

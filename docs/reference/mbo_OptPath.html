@@ -18,6 +18,8 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -25,6 +27,28 @@
 <script src="../pkgdown.js"></script>
   
   
+<meta property="og:title" content="OptPath in mlrMBO — mbo_OptPath" />
+
+<meta property="og:description" content="In mlrMBO the OptPath contains extra information next to the information documented in OptPath.
+The extras are:
+train.timeTime to train the model(s) that produced the points. Only the first slot of the vector is used (if we have multiple points), rest are NA.
+propose.timeTime needed to propose the point. If we have individual timings from the proposal mechanism, we have one different value per point here. If all were generated in one go, we only have one timing, we store it in the slot for the first point, rest are NA.
+errors.modelPossible Error Messages. If point-producing model(s) crashed they are replicated for all n points, if only one error message was passed we store it for the first point, rest are NA.
+prop.typeType of point proposal. Possible values are
+  
+  initdesignPoints actually not proposed, but in the initial design.
+  infill\_xHere x is a placeholder for the selected infill criterion, e.g., infill\_ei for expected improvement.
+  random\_interleaveUniformly sampled points added additionally to the proposed points.
+  random\_filteredIf filtering of proposed points located too close to each other is active, these are replaced by random points.
+  final\_evalIf final.evals is set in makeMBOControl: Final evaluations of the proposed solution to reduce noise in y.
+  
+parego.weightWeight vector sampled for multi-point ParEGO
+...Depending on the chosen infill criterion there will be additional columns, e.g. se and mean for the Expected Improvement)
+" />
+
+<meta property="og:description" content="Moreover, the user may pass additional &#8220;user extras&#8221; by appending a named list
+of scalar values to the return value of the objective function." />
+<meta name="twitter:card" content="summary" />
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
