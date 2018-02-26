@@ -10,7 +10,7 @@ r_packages:
 - e1071 #vignette: machine_learning_with_mlrmbo.Rmd
 r_github_packages:
 - jimhester/covr
-- hadley/pkgdown
+- r-lib/pkgdown
 addons:
   apt:
     packages:
