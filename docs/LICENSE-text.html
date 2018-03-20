@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Multi-Objective result object. — MBOMultiObjResult • mlrMBO</title>
+<title>License • mlrMBO</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -22,23 +22,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
-<link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script>
-<script src="../pkgdown.js"></script>
-<meta property="og:title" content="Multi-Objective result object. — MBOMultiObjResult" />
-
-<meta property="og:description" content="
-pareto.front [matrix]Pareto front of all evaluated points.
-pareto.set [list of lists]Pareto set of all evaluated points.
-pareto.inds [numeric]Indices of the Pareto-optimal points in the opt.path
-opt.path [OptPath]Optimization path.
-    Includes all evaluated points and additional information as documented in mbo_OptPath.
-    You can convert it via as.data.frame.
-final.state [character] The final termination state. Gives information why the optimization ended
-models [List of WrappedModel]List of saved regression models.
-control[MBOControl] Control object used in optimization
-" />
-<meta name="twitter:card" content="summary" />
+<link href="pkgdown.css" rel="stylesheet">
+<script src="jquery.sticky-kit.min.js"></script>
+<script src="pkgdown.js"></script>
+<meta property="og:title" content="License" />
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -51,7 +38,7 @@ control[MBOControl] Control object used in optimization
   </head>
 
   <body>
-    <div class="container template-reference-topic">
+    <div class="container template-title-body">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -61,12 +48,12 @@ control[MBOControl] Control object used in optimization
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">mlrMBO</a>
+      <a class="navbar-brand" href="index.html">mlrMBO</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../articles/mlrMBO.html">
+  <a href="articles/mlrMBO.html">
     <span class="fa fa-bolt"></span>
      
     Quickstart
@@ -82,27 +69,27 @@ control[MBOControl] Control object used in optimization
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/supplementary/mixed_space_optimization.html">Mixed Space Optimization</a>
+      <a href="articles/supplementary/mixed_space_optimization.html">Mixed Space Optimization</a>
     </li>
     <li>
-      <a href="../articles/supplementary/parallelization.html">Parallelization</a>
+      <a href="articles/supplementary/parallelization.html">Parallelization</a>
     </li>
     <li>
-      <a href="../articles/supplementary/noisy_optimization.html">Noisy Optimization</a>
+      <a href="articles/supplementary/noisy_optimization.html">Noisy Optimization</a>
     </li>
     <li>
-      <a href="../articles/supplementary/infill_criteria.html">Infill Criteria</a>
+      <a href="articles/supplementary/infill_criteria.html">Infill Criteria</a>
     </li>
     <li>
-      <a href="../articles/supplementary/machine_learning_with_mlrmbo.html">Machine learning with mlrMBO</a>
+      <a href="articles/supplementary/machine_learning_with_mlrmbo.html">Machine learning with mlrMBO</a>
     </li>
     <li>
-      <a href="../articles/supplementary/human_in_the_loop_MBO.html">Human-in-the-loop MBO</a>
+      <a href="articles/supplementary/human_in_the_loop_MBO.html">Human-in-the-loop MBO</a>
     </li>
   </ul>
 </li>
 <li>
-  <a href="../reference/index.html">
+  <a href="reference/index.html">
     <span class="fa fa-book"></span>
      
     Reference
@@ -126,36 +113,19 @@ control[MBOControl] Control object used in optimization
       </header>
 
       <div class="row">
-  <div class="col-md-9 contents">
+  <div class="contents col-md-9">
     <div class="page-header">
-    <h1>Multi-Objective result object.</h1>
-    <small>Source: <a href='https:/github.com/mlr-org/mlrMBO/blob/master/R/MBOResult.R'><code>R/MBOResult.R</code></a></small>
+      <h1>License</h1>
     </div>
 
-    
-    <ul>
-<li><p>pareto.front [<code>matrix</code>]Pareto front of all evaluated points.</p></li>
-<li><p>pareto.set [<code>list</code> of <code>list</code>s]Pareto set of all evaluated points.</p></li>
-<li><p>pareto.inds [<code>numeric</code>]Indices of the Pareto-optimal points in the opt.path</p></li>
-<li><p>opt.path [<code><a href='http://www.rdocumentation.org/packages/ParamHelpers/topics/OptPath'>OptPath</a></code>]Optimization path.
-    Includes all evaluated points and additional information as documented in <a href='mbo_OptPath.html'>mbo_OptPath</a>.
-    You can convert it via <code>as.data.frame</code>.</p></li>
-<li><p>final.state [<code>character</code>] The final termination state. Gives information why the optimization ended</p></li>
-<li><p>models [List of <code><a href='http://www.rdocumentation.org/packages/mlr/topics/makeWrappedModel'>WrappedModel</a></code>]List of saved regression models.</p></li>
-<li><p>control[<code>MBOControl</code>] Control object used in optimization</p></li>
-</ul>
-    
-
-        
+<pre>YEAR: 2018
+COPYRIGHT HOLDER: Bernd Bischl
+</pre>
 
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-                </ul>
 
-  </div>
 </div>
+
 
       <footer>
       <div class="copyright">
