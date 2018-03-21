@@ -159,7 +159,7 @@ This is done by introducing a new variable for each _method_.
 ```{r wrapper}
 wrap.fun = function(x) {
   x$j = if (x$method == "a") x$ja else x$jb
-  x = dropNamed(x, c("ja", "jb"))
+  x = x[setdiff(names(x), c("ja", "jb"))]
   fun(x)
 }
 ```
