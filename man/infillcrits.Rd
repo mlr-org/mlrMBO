@@ -10,7 +10,6 @@
 \alias{makeMBOInfillCritEQI}
 \alias{makeMBOInfillCritDIB}
 \alias{makeMBOInfillCritAdaCB}
-\alias{makeMBOInfillCritRandomCB}
 \title{Infill criteria.}
 \usage{
 makeMBOInfillCritMeanResponse()
@@ -28,8 +27,6 @@ makeMBOInfillCritEQI(eqi.beta = 0.75, se.threshold = 1e-06)
 makeMBOInfillCritDIB(cb.lambda = 1, sms.eps = NULL)
 
 makeMBOInfillCritAdaCB(cb.lambda.start = NULL, cb.lambda.end = NULL)
-
-makeMBOInfillCritRandomCB(lambda.random.gen = function(x) rexp(x, rate = 1/2))
 }
 \arguments{
 \item{se.threshold}{[\code{numeric(1)}]\cr
