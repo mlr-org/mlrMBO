@@ -20,7 +20,7 @@ proposePointsByInfillOptimization = function(opt.state, par.set = NULL, control 
   opt.path = coalesce(opt.path, getOptStateOptPath(opt.state))
   iter = getOptStateLoop(opt.state)
   infill.crit.id = getMBOInfillCritId(control$infill.crit)
-
+  progress = getOptStateProgress(opt.state)
   #FIXME: maybe better do this in setMBOControlMultifid?
   if (control$multifid) {
     infill.crit.id = "multifid"
@@ -40,12 +40,12 @@ proposePointsByInfillOptimization = function(opt.state, par.set = NULL, control 
   secs = measureTime({
     prop.points = infill.opt.fun(infill.crit.fun, models = models,
       control = control, par.set = par.set, opt.path = opt.path,
-      design = design, iter = iter, ...)
+      design = design, iter = iter, progress = progress, ...)
   })
   prop.points.converted = convertDataFrameCols(prop.points, ints.as.num = TRUE,
     logicals.as.factor = TRUE)
   crit.vals = infill.crit.fun(prop.points.converted, models, control, par.set,
-    design, iter, attributes = TRUE, ...)
+    design, iter, progress = progress, attributes = TRUE, ...)
   crit.components = attr(crit.vals, "crit.components")
   crit.vals = matrix(crit.vals, ncol = 1L)
 
