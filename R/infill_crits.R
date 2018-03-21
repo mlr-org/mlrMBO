@@ -324,31 +324,3 @@ makeMBOInfillCritAdaCB = function(cb.lambda.start = NULL, cb.lambda.end = NULL) 
   crit$params = list(cb.lambda.start = cb.lambda.start, cb.lambda.end = cb.lambda.end)
   return(addClasses(crit, "InfillCritAdaCB"))
 }
-
-
-#' @export
-#' @rdname infillcrits
-makeMBOInfillCritRandomCB = function(lambda.random.gen = function(x) rexp(x, rate = 1/2)) {
-  assertFunction(lambda.random.gen)
-  last.iter = -1
-  last.cb.lambda = NULL
-  force(lambda.random.gen)
-  crit = makeMBOInfillCritCB()
-  orig.fun = crit$fun
-  crit$fun = function(points, models, control, par.set, design, iter, progress, attributes = FALSE) {
-    if (last.iter != iter) {
-      cb.lambda = lambda.random.gen(1)
-      last.iter <<- iter
-      last.cb.lambda <<- cb.lambda
-    } else {
-      cb.lambda = last.cb.lambda
-    }
-    assertNumber(cb.lambda, lower = 0)
-    assign("cb.lambda", cb.lambda, envir = environment(orig.fun))
-    orig.fun(points, models, control, par.set, design, iter, progress, attributes)
-  }
-  crit$name = "Random Confidence bound"
-  crit$id = "rcb"
-  crit$params = list(lambda.random.gen = lambda.random.gen)
-  return(addClasses(crit, "InfillCritRCB"))
-}

@@ -49,12 +49,6 @@ initCrit.InfillCritAdaCB = function(crit, fun, design, learner, control) {
   initCritOptDirection(crit, fun)
 }
 
-#' @export
-initCrit.InfillCritRCB = function(crit, fun, design, learner, control) {
-  initCrit.default(crit, fun, design, learner, control)
-}
-
-
 # sets the opt.direction to minimize or maximize depending on the object function.
 initCritOptDirection = function(crit, fun) {
   if (crit$opt.direction == "objective") {
