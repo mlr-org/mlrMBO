@@ -136,15 +136,7 @@ ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/setMBOC
 <p>These information are enough to get us started and initialize the sequential MBO.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">opt.state =<span class="st"> </span><span class="kw"><a href="../../reference/initSMBO.html">initSMBO</a></span>(<span class="dt">par.set =</span> ps, <span class="dt">design =</span> des, <span class="dt">control =</span> ctrl, <span class="dt">minimize =</span> <span class="ot">TRUE</span>, <span class="dt">noisy =</span> <span class="ot">FALSE</span>)</code></pre></div>
 <p>At each state the <code>opt.state</code> object can be plotted to visualize the predictions of the surrogate model</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(opt.state)
-## Loading required package: rgenoud
-## ##  rgenoud (Version 5.8-1.0, Build Date: 2017-10-10)
-## ##  See http://sekhon.berkeley.edu/rgenoud for additional documentation.
-## ##  Please cite software as:
-## ##   Walter Mebane, Jr. and Jasjeet S. Sekhon. 2011.
-## ##   ``Genetic Optimization Using Derivatives: The rgenoud package for R.''
-## ##   Journal of Statistical Software, 42(11): 1-26. 
-## ##</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(opt.state)</code></pre></div>
 <p><img src="human_in_the_loop_MBO_files/figure-html/plotOptState1-1.svg" width="672"></p>
 <p>The first panel shows the value of the infill criterion. The higher the value the more this area is desirable to be explored to find the optimum. In the following panels the mean prediction of the surrogate and the uncertainty estimation is plotted.</p>
 <p>Let’s see which point MBO suggests we should evaluate in the next step:</p>
@@ -154,7 +146,7 @@ ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/setMBOC
 ## 150 1.011225 -1
 ## 
 ## $propose.time
-## [1] 0.269
+## [1] 0.293
 ## 
 ## $prop.type
 ## [1] "infill_ei"
@@ -185,7 +177,7 @@ ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/setMBOC
 ## 941 0.9937339 0
 ## 
 ## $propose.time
-## [1] 0.095
+## [1] 0.1
 ## 
 ## $prop.type
 ## [1] "infill_ei"
@@ -232,7 +224,7 @@ for (i in <span class="dv">1</span>:<span class="dv">10</span>) {
 ## 387 -0.3000646 0
 ## 
 ## $propose.time
-## [1] 0.144
+## [1] 0.128
 ## 
 ## $prop.type
 ## [1] "infill_ei"
@@ -282,7 +274,7 @@ opt.state =<span class="st"> </span>res$final.opt.state
 ## 487 1.836319
 ## 
 ## $propose.time
-## [1] 0.081
+## [1] 0.102
 ## 
 ## $prop.type
 ## [1] "infill_ei"
@@ -321,7 +313,7 @@ opt.state =<span class="st"> </span><span class="kw"><a href="../../reference/in
 ## 447  1.99999879 0
 ## 
 ## $propose.time
-## [1] 0.089 0.091 0.097 0.100
+## [1] 0.106 0.103 0.107 0.146
 ## 
 ## $prop.type
 ## [1] "infill_ei" "infill_ei" "infill_ei" "infill_ei"

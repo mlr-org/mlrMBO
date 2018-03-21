@@ -128,7 +128,7 @@
 
     <pre class="usage"><span class='fu'>setMBOControlTermination</span>(<span class='no'>control</span>, <span class='kw'>iters</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>time.budget</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>exec.time.budget</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>target.fun.value</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>max.evals</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>more.termination.conds</span> <span class='kw'>=</span> <span class='fu'>list</span>())</pre>
+  <span class='kw'>more.termination.conds</span> <span class='kw'>=</span> <span class='fu'>list</span>(), <span class='kw'>use.for.adaptive.infill</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -182,6 +182,14 @@ return a list with the following elements:</p><dl class='dl-horizontal'>
   <dt>message [<code>character(1)</code>]</dt><dd><p>Termination message. At the moment we just allow <code>term.custom</code>.</p></dd>
 </dl></td>
     </tr>
+    <tr>
+      <th>use.for.adaptive.infill</th>
+      <td><p>[<code>character(1)</code>|NULL]<br />
+Which termination criterion should determine the progress that is used for adaptive infill criteria like [<code><a href='infillcrits.html'>makeMBOInfillCritAdaCB</a></code>].
+The default is <code>NULL</code> which means, that the first supplied argument is taken, following the order of the function signature.
+Other values can be <code>"iters"</code>, <code>"time.budget"</code>, etc.<br />
+If you want to to use it together with a criterion you supplied in <code>more.termination.conds</code>, <code>more.termination.conds</code> has to be a named list and the function further has to return a list element <code>progress</code> with values between 0 and 1.</p></td>
+    </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -224,8 +232,8 @@ return a list with the following elements:</p><dl class='dl-horizontal'>
 #&gt; 4 + 0 entries in total, displaying last 10 (or less):
 #&gt;            x           y dob eol error.message exec.time cb error.model
 #&gt; 1 -4.1242155 17.00915378   0  NA          &lt;NA&gt;     0.000 NA        &lt;NA&gt;
-#&gt; 2 -0.3230631  0.10436978   0  NA          &lt;NA&gt;     0.001 NA        &lt;NA&gt;
-#&gt; 3  3.9285863 15.43379006   0  NA          &lt;NA&gt;     0.000 NA        &lt;NA&gt;
+#&gt; 2 -0.3230631  0.10436978   0  NA          &lt;NA&gt;     0.000 NA        &lt;NA&gt;
+#&gt; 3  3.9285863 15.43379006   0  NA          &lt;NA&gt;     0.001 NA        &lt;NA&gt;
 #&gt; 4  0.1007838  0.01015737   0  NA          &lt;NA&gt;     0.000 NA        &lt;NA&gt;
 #&gt;   train.time  prop.type propose.time se mean lambda
 #&gt; 1         NA initdesign           NA NA   NA     NA

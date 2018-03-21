@@ -143,14 +143,6 @@ ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/setMBOC
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Kriging can create a lot of console output, which we want tu surpress here:</span>
 <span class="kw">configureMlr</span>(<span class="dt">on.learner.warning =</span> <span class="st">"quiet"</span>, <span class="dt">show.learner.output =</span> <span class="ot">FALSE</span>)
 res =<span class="st"> </span><span class="kw"><a href="../../reference/mbo.html">mbo</a></span>(obj.fun, <span class="dt">control =</span> ctrl, <span class="dt">show.info =</span> <span class="ot">FALSE</span>)
-## Loading required package: rgenoud
-## ##  rgenoud (Version 5.8-1.0, Build Date: 2017-10-10)
-## ##  See http://sekhon.berkeley.edu/rgenoud for additional documentation.
-## ##  Please cite software as:
-## ##   Walter Mebane, Jr. and Jasjeet S. Sekhon. 2011.
-## ##   ``Genetic Optimization Using Derivatives: The rgenoud package for R.''
-## ##   Journal of Statistical Software, 42(11): 1-26. 
-## ##
 res$x
 ## $x
 ## [1] 1.310184
