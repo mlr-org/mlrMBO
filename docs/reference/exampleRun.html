@@ -18,13 +18,33 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+<meta property="og:title" content="Perform an mbo run on a test function and and visualize what happens. — exampleRun" />
+
+<meta property="og:description" content="Usually used for 1D or 2D examples,
+useful for figuring out how stuff works and for teaching purposes.
+Currently only parameter spaces with numerical parameters are supported.
+For visualization, run plotExampleRun on the resulting object.
+What is displayed is documented here: plotExampleRun.
+Rendering the plots without displaying them is possible via the function
+renderExampleRunPlot.
+Please note the following things:
+- The true objective function (and later everything which is predicted from our surrogate model)
+  is evaluated on a regular spaced grid. These evaluations are stored in the result object.
+  You can control the resolution of this grid via points.per.dim.
+  Parallelization of these evaluations is possible with the R package parallelMap on the level mlrMBO.feval.
+- In every iteration the fitted, approximating surrogate model is stored in the result object
+  (via store.model.at in control) so we can later visualize it quickly.
+- The global optimum of the function (if defined) is extracted from the passed smoof function.
+- If the passed objective function fun does not provide the true, unnoisy objective function
+  some features will not be displayed (for example the gap between the best point so far and the global optimum)." />
+<meta name="twitter:card" content="summary" />
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -82,6 +102,9 @@
     <li>
       <a href="../articles/supplementary/machine_learning_with_mlrmbo.html">Machine learning with mlrMBO</a>
     </li>
+    <li>
+      <a href="../articles/supplementary/human_in_the_loop_MBO.html">Human-in-the-loop MBO</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -112,6 +135,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Perform an mbo run on a test function and and visualize what happens.</h1>
+    <small>Source: <a href='https:/github.com/mlr-org/mlrMBO/blob/master/R/exampleRun.R'><code>R/exampleRun.R</code></a></small>
     </div>
 
     
@@ -217,7 +241,7 @@ Default is <code>TRUE</code>.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
@@ -225,3 +249,4 @@ Default is <code>TRUE</code>.</p></td>
 
   </body>
 </html>
+

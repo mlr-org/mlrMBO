@@ -18,13 +18,17 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+<meta property="og:title" content="Set MBO options. — makeMBOControl" />
+
+<meta property="og:description" content="Creates a control object for MBO optimization." />
+<meta name="twitter:card" content="summary" />
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -82,6 +86,9 @@
     <li>
       <a href="../articles/supplementary/machine_learning_with_mlrmbo.html">Machine learning with mlrMBO</a>
     </li>
+    <li>
+      <a href="../articles/supplementary/human_in_the_loop_MBO.html">Human-in-the-loop MBO</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -112,6 +119,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Set MBO options.</h1>
+    <small>Source: <a href='https:/github.com/mlr-org/mlrMBO/blob/master/R/makeMBOControl.R'><code>R/makeMBOControl.R</code></a></small>
     </div>
 
     
@@ -125,7 +133,8 @@
   <span class='kw'>save.file.path</span> <span class='kw'>=</span> <span class='fu'>file.path</span>(<span class='fu'>getwd</span>(), <span class='st'>"mlr_run.RData"</span>),
   <span class='kw'>store.model.at</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>resample.at</span> <span class='kw'>=</span> <span class='fu'>integer</span>(<span class='fl'>0</span>),
   <span class='kw'>resample.desc</span> <span class='kw'>=</span> <span class='fu'>makeResampleDesc</span>(<span class='st'>"CV"</span>, <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>10</span>),
-  <span class='kw'>resample.measures</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='no'>mse</span>), <span class='kw'>output.num.format</span> <span class='kw'>=</span> <span class='st'>"%.3g"</span>)</pre>
+  <span class='kw'>resample.measures</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='no'>mse</span>), <span class='kw'>output.num.format</span> <span class='kw'>=</span> <span class='st'>"%.3g"</span>,
+  <span class='kw'>on.surrogate.error</span> <span class='kw'>=</span> <span class='st'>"stop"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -248,6 +257,16 @@ Default is <code><a href='http://www.rdocumentation.org/packages/mlr/topics/meas
       <td><p>[<code>logical(1)</code>]
 Format string for the precision of the numeric output of mbo.</p></td>
     </tr>
+    <tr>
+      <th>on.surrogate.error</th>
+      <td><p>[<code>character(1)</code>]
+What should happen when the surrogate learner can not train the model.
+Possible values are:
+&#8220;stop&#8221;: R exception is generated.
+&#8220;warn&#8221;: The error will be converted to a waring and a random point will be proposed.
+&#8220;quiet&#8221;: Same as “warn” but without the warning.
+Default is: &#8220;stop&#8221;.</p></td>
+    </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -282,7 +301,7 @@ Format string for the precision of the numeric output of mbo.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
@@ -290,3 +309,4 @@ Format string for the precision of the numeric output of mbo.</p></td>
 
   </body>
 </html>
+

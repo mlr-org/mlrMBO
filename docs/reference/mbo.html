@@ -18,13 +18,17 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+<meta property="og:title" content="Optimizes a function with sequential model based optimization. — mbo" />
+
+<meta property="og:description" content="See mbo_parallel for all parallelization options." />
+<meta name="twitter:card" content="summary" />
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -82,6 +86,9 @@
     <li>
       <a href="../articles/supplementary/machine_learning_with_mlrmbo.html">Machine learning with mlrMBO</a>
     </li>
+    <li>
+      <a href="../articles/supplementary/human_in_the_loop_MBO.html">Human-in-the-loop MBO</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -112,6 +119,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Optimizes a function with sequential model based optimization.</h1>
+    <small>Source: <a href='https:/github.com/mlr-org/mlrMBO/blob/master/R/mbo.R'><code>R/mbo.R</code></a></small>
     </div>
 
     
@@ -193,7 +201,7 @@ Further arguments passed to fitness function.</p></td>
 <span class='no'>des</span> <span class='kw'>=</span> <span class='fu'>generateDesign</span>(<span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>5L</span>, <span class='fu'>getParamSet</span>(<span class='no'>obj.fun</span>), <span class='kw'>fun</span> <span class='kw'>=</span> <span class='kw pkg'>lhs</span><span class='kw ns'>::</span><span class='no'><a href='http://www.rdocumentation.org/packages/lhs/topics/maximinLHS'>maximinLHS</a></span>)
 
 <span class='co'># start mbo</span>
-<span class='no'>res</span> <span class='kw'>=</span> <span class='fu'>mbo</span>(<span class='no'>obj.fun</span>, <span class='kw'>design</span> <span class='kw'>=</span> <span class='no'>des</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='no'>ctrl</span>)</div><div class='output co'>#&gt; <span class='message'>Loading required package: rgenoud</span></div><div class='output co'>#&gt; <span class='message'>##  rgenoud (Version 5.7-12.4, Build Date: 2015-07-19)</span>
+<span class='no'>res</span> <span class='kw'>=</span> <span class='fu'>mbo</span>(<span class='no'>obj.fun</span>, <span class='kw'>design</span> <span class='kw'>=</span> <span class='no'>des</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='no'>ctrl</span>)</div><div class='output co'>#&gt; <span class='message'>Loading required package: rgenoud</span></div><div class='output co'>#&gt; <span class='message'>##  rgenoud (Version 5.8-1.0, Build Date: 2017-10-10)</span>
 #&gt; <span class='message'>##  See http://sekhon.berkeley.edu/rgenoud for additional documentation.</span>
 #&gt; <span class='message'>##  Please cite software as:</span>
 #&gt; <span class='message'>##   Walter Mebane, Jr. and Jasjeet S. Sekhon. 2011.</span>
@@ -201,38 +209,38 @@ Further arguments passed to fitness function.</p></td>
 #&gt; <span class='message'>##   Journal of Statistical Software, 42(11): 1-26. </span>
 #&gt; <span class='message'>##</span></div><div class='input'>
 <span class='fu'>print</span>(<span class='no'>res</span>)</div><div class='output co'>#&gt; Recommended parameters:
-#&gt; x=0.0715,-1
-#&gt; Objective: y = -0.836
+#&gt; x=-0.0306,-0.0169
+#&gt; Objective: y = -0.016
 #&gt; 
 #&gt; Optimization path
 #&gt; 5 + 3 entries in total, displaying last 10 (or less):
 #&gt;            x1          x2           y dob eol error.message exec.time
-#&gt; 1  0.49412784  0.27838269  0.51896329   0  NA          &lt;NA&gt;     0.000
-#&gt; 2  0.19221587  0.09660861  0.13340534   0  NA          &lt;NA&gt;     0.000
-#&gt; 3 -0.57942149 -0.38791501 -0.04252991   0  NA          &lt;NA&gt;     0.000
-#&gt; 4  0.87832955 -0.72457760  0.10864358   0  NA          &lt;NA&gt;     0.000
-#&gt; 5 -0.98750787  0.69022501  1.61188250   0  NA          &lt;NA&gt;     0.000
-#&gt; 6  0.99980615 -0.23732034  0.76451342   1  NA          &lt;NA&gt;     0.000
-#&gt; 7 -0.11653973 -0.59226928 -0.54466372   2  NA          &lt;NA&gt;     0.000
-#&gt; 8  0.07150345 -0.99997326 -0.83634379   3  NA          &lt;NA&gt;     0.001
-#&gt;           cb error.model train.time  prop.type propose.time        se
-#&gt; 1         NA        &lt;NA&gt;         NA initdesign           NA        NA
-#&gt; 2         NA        &lt;NA&gt;         NA initdesign           NA        NA
-#&gt; 3         NA        &lt;NA&gt;         NA initdesign           NA        NA
-#&gt; 4         NA        &lt;NA&gt;         NA initdesign           NA        NA
-#&gt; 5         NA        &lt;NA&gt;         NA initdesign           NA        NA
-#&gt; 6 -0.4123341        &lt;NA&gt;      0.254  infill_cb        0.122 0.3238450
-#&gt; 7 -0.3683559        &lt;NA&gt;      0.677  infill_cb        0.090 0.4615345
-#&gt; 8 -1.0342509        &lt;NA&gt;      0.036  infill_cb        0.076 0.2278121
+#&gt; 1 -0.96769994 -0.26626679  0.67331156   0  NA          &lt;NA&gt;         0
+#&gt; 2  0.44030435  0.66288338  0.80926007   0  NA          &lt;NA&gt;         0
+#&gt; 3 -0.19704022 -0.01344260  0.02538265   0  NA          &lt;NA&gt;         0
+#&gt; 4 -0.40088904  0.31590690  0.47139064   0  NA          &lt;NA&gt;         0
+#&gt; 5  0.89315279 -0.69099140  0.16042044   0  NA          &lt;NA&gt;         0
+#&gt; 6 -0.03064098 -0.01689882 -0.01595915   1  NA          &lt;NA&gt;         0
+#&gt; 7  0.99488843 -0.03780885  0.95200314   2  NA          &lt;NA&gt;         0
+#&gt; 8 -0.03312970  0.92322899  0.79865123   3  NA          &lt;NA&gt;         0
+#&gt;            cb error.model train.time  prop.type propose.time        se
+#&gt; 1          NA        &lt;NA&gt;         NA initdesign           NA        NA
+#&gt; 2          NA        &lt;NA&gt;         NA initdesign           NA        NA
+#&gt; 3          NA        &lt;NA&gt;         NA initdesign           NA        NA
+#&gt; 4          NA        &lt;NA&gt;         NA initdesign           NA        NA
+#&gt; 5          NA        &lt;NA&gt;         NA initdesign           NA        NA
+#&gt; 6 -0.07233364        &lt;NA&gt;      0.458  infill_cb        0.214 0.1763127
+#&gt; 7 -0.17151623        &lt;NA&gt;      1.139  infill_cb        0.123 0.1596647
+#&gt; 8 -0.14165197        &lt;NA&gt;      0.064  infill_cb        0.082 0.2242090
 #&gt;          mean lambda
 #&gt; 1          NA     NA
 #&gt; 2          NA     NA
 #&gt; 3          NA     NA
 #&gt; 4          NA     NA
 #&gt; 5          NA     NA
-#&gt; 6 -0.08848917      1
-#&gt; 7  0.09317866      1
-#&gt; 8 -0.80643879      1</div><span class='co'># NOT RUN {</span>
+#&gt; 6  0.10397906      1
+#&gt; 7 -0.01185153      1
+#&gt; 8  0.08255703      1</div><span class='co'># NOT RUN {</span>
 <span class='fu'>plot</span>(<span class='no'>res</span>)
 <span class='co'># }</span></pre>
   </div>
@@ -255,7 +263,7 @@ Further arguments passed to fitness function.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
@@ -263,3 +271,4 @@ Further arguments passed to fitness function.</p></td>
 
   </body>
 </html>
+

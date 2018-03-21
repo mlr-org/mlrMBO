@@ -18,13 +18,28 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+<meta property="og:title" content="Renders plots for exampleRun objects and displays them. — plotExampleRun" />
+
+<meta property="og:description" content="The graphical output depends on the target function at hand.
+- For 1D numeric functions the upper plot shows the true function (if known),
+the model and the (infill) points. The lower plot shows the infill criterion.
+- For 2D mixed target functions only one plot is displayed.
+- For 2D numeric only target functions up to four plots are presented to the
+  viewer:
+  - levelplot of the true function landscape (with [infill] points),
+  - levelplot of the model landscape (with [infill] points),
+  - levelplot of the infill criterion
+  - levelplot of the standard error (only if learner supports standard error estimation).
+- For bi-criteria target functions the upper plot shows the target space and the lower
+  plot displays the x-space." />
+<meta name="twitter:card" content="summary" />
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -82,6 +97,9 @@
     <li>
       <a href="../articles/supplementary/machine_learning_with_mlrmbo.html">Machine learning with mlrMBO</a>
     </li>
+    <li>
+      <a href="../articles/supplementary/human_in_the_loop_MBO.html">Human-in-the-loop MBO</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -112,6 +130,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Renders plots for exampleRun objects and displays them.</h1>
+    <small>Source: <a href='https:/github.com/mlr-org/mlrMBO/blob/master/R/plotExampleRun.R'><code>R/plotExampleRun.R</code></a></small>
     </div>
 
     
@@ -172,7 +191,7 @@ Default is 1.</p></td>
     <tr>
       <th>single.prop.point.plots</th>
       <td><p>[<code>logical(1)</code>]
-Parameter for MOI-MBO Multipoint proposal: Should every proposed point
+Parameter for MOI-MBO Multi-point proposal: Should every proposed point
 be displayed in a single plot - or one plot per Iteration? Default is FALSE
 indicating single plots per proposed points.</p></td>
     </tr>
@@ -256,7 +275,7 @@ Currently not used.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
@@ -264,3 +283,4 @@ Currently not used.</p></td>
 
   </body>
 </html>
+

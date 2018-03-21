@@ -59,6 +59,9 @@
     <li>
       <a href="../../articles/supplementary/machine_learning_with_mlrmbo.html">Machine learning with mlrMBO</a>
     </li>
+    <li>
+      <a href="../../articles/supplementary/human_in_the_loop_MBO.html">Human-in-the-loop MBO</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -182,22 +185,22 @@ run2 =<span class="st"> </span><span class="kw"><a href="../../reference/mbo.htm
 ## [mbo] 0: j=6; method=b : y = 0.96 : 0.0 secs : initdesign
 ## [mbo] 0: j=3.92; method=a : y = -0.704 : 0.0 secs : initdesign
 ## [mbo] 1: j=5.81; method=b : y = 0.892 : 0.0 secs : infill_cb
-## [mbo] 2: j=5.36; method=a : y = -0.796 : 0.0 secs : infill_cb
-## [mbo] 3: j=5.68; method=b : y = 0.822 : 0.0 secs : infill_cb
-## [mbo] 4: j=2.33; method=a : y = 0.722 : 0.0 secs : infill_cb
-## [mbo] 5: j=5.59; method=b : y = 0.766 : 0.0 secs : infill_cb
-## [mbo] 6: j=5.52; method=a : y = -0.69 : 0.0 secs : infill_cb
-## [mbo] 7: j=5.55; method=a : y = -0.67 : 0.0 secs : infill_cb
-## [mbo] 8: j=3.2; method=a : y = -0.0554 : 0.0 secs : infill_cb
-## [mbo] 9: j=2.66; method=b : y = -0.888 : 0.0 secs : infill_cb
-## [mbo] 10: j=2.5; method=b : y = -0.802 : 0.0 secs : infill_cb</code></pre></div>
+## [mbo] 2: j=5.68; method=a : y = -0.569 : 0.0 secs : infill_cb
+## [mbo] 3: j=5.82; method=a : y = -0.446 : 0.0 secs : infill_cb
+## [mbo] 4: j=6.12; method=a : y = -0.164 : 0.0 secs : infill_cb
+## [mbo] 5: j=5.1; method=b : y = 0.381 : 0.0 secs : infill_cb
+## [mbo] 6: j=2.87; method=a : y = 0.264 : 0.0 secs : infill_cb
+## [mbo] 7: j=5.93; method=a : y = -0.345 : 0.0 secs : infill_cb
+## [mbo] 8: j=2.89; method=a : y = 0.248 : 0.0 secs : infill_cb
+## [mbo] 9: j=3.41; method=b : y = -0.965 : 0.0 secs : infill_cb
+## [mbo] 10: j=2.91; method=b : y = -0.974 : 0.0 secs : infill_cb</code></pre></div>
 <p>The console output gives a live overview of all all evaluated points.</p>
 <p>Let’s look at the parts of the result that tell us the optimal reached value and its corresponding setting:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">run2$y
-## [1] -0.9710349
+## [1] -0.974266
 run2$x
 ## $j
-## [1] 2.900321
+## [1] 2.914238
 ## 
 ## $method
 ## [1] "b"</code></pre></div>
@@ -248,25 +251,25 @@ lrn =<span class="st"> </span><span class="kw">makeImputeWrapper</span>(lrn, <sp
 run3 =<span class="st"> </span><span class="kw"><a href="../../reference/mbo.html">mbo</a></span>(objfun3, <span class="dt">learner =</span> lrn, <span class="dt">design =</span> design3, <span class="dt">control =</span> control2, <span class="dt">show.info =</span> <span class="ot">FALSE</span>)
 run3$x
 ## $method
-## [1] "b"
+## [1] "a"
 ## 
 ## $ja
-## [1] NA
+## [1] 4.345174
 ## 
 ## $jb
-## [1] 3.221655
+## [1] NA
 run3$y
-## [1] -0.9967967</code></pre></div>
+## [1] -0.933331</code></pre></div>
 <p>Unfortunately our problem is now categorical and 3-dimensional to the eyes of <code>mlrMBO</code> so there is no implemented method to visualize the optimization. However we can analyze the residuals to see which surrogate was more accurate:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">op2 =<span class="st"> </span><span class="kw">as.data.frame</span>(run2$opt.path)
 op3 =<span class="st"> </span><span class="kw">as.data.frame</span>(run3$opt.path)
 
 <span class="co"># residual variance of the surrogate model for the first example</span>
 <span class="kw">var</span>(op2$mean -<span class="st"> </span>op2$y, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)
-## [1] 0.3560709
+## [1] 0.3369387
 <span class="co"># residual variance of the advanced surrogate model with independetly treat ed jaand jb</span>
 <span class="kw">var</span>(op3$mean -<span class="st"> </span>op3$y, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)
-## [1] 0.3126729</code></pre></div>
+## [1] 0.2360068</code></pre></div>
 <p>As you can see our new approach could improve the fit of the surrogate.</p>
 </div>
 <div id="remarks" class="section level2">

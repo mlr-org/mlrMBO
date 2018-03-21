@@ -60,7 +60,7 @@ updateSMBO = function(opt.state, x, y) {
 
   assertDataFrame(x)
   if (nrow(x) > 1 && !is.list(y)) {
-    stopf("For a multipoint update y has to be a list.")
+    stopf("For a multi-point update y has to be a list.")
   }
   if (!is.list(y)) {
     y = list(y)
