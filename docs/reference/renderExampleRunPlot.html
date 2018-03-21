@@ -133,7 +133,7 @@ the model and the (infill) points. The lower plot shows the infill criterion.
     <div class="page-header">
     <h1>Renders plots for exampleRun objects, either in 1D or 2D, or
 exampleRunMultiObj objects.</h1>
-    <small>Source: <a href='https:/github.com/mlr-org/mlrMBO/blob/master/R/renderExampleRunPlot.R'><code>R/renderExampleRunPlot.R</code></a></small>
+    <small>Source: <a href='https://github.com/mlr-org/mlrMBO/blob/master/R/renderExampleRunPlot.R'><code>R/renderExampleRunPlot.R</code></a></small>
     </div>
 
     
@@ -161,23 +161,23 @@ the model and the (infill) points. The lower plot shows the infill criterion.
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>object</th>
-      <td><p>[<code>function</code>]
+      <td><p>[<code>function</code>]<br />
 <code>MBOExampleRun</code> or <code>MBOExampleRunMultiObj</code> object.</p></td>
     </tr>
     <tr>
       <th>iter</th>
-      <td><p>[<code>integer</code>]
+      <td><p>[<code>integer</code>]<br />
 Selected iteration of <code>object</code> to render plots for.</p></td>
     </tr>
     <tr>
       <th>densregion</th>
-      <td><p>[<code>logical(1)</code>]
+      <td><p>[<code>logical(1)</code>]<br />
 Should the background be shaded? Default is <code>TRUE</code>.
 Only used if learner supports computation of standard error.</p></td>
     </tr>
     <tr>
       <th>se.factor</th>
-      <td><p>[<code>numeric(1)</code>]
+      <td><p>[<code>numeric(1)</code>]<br />
 If the model provides local standard error estimation,
 in addition to the mean response <code>yhat(x) +- se.factor * se(x)</code>
 is plotted above and below.
@@ -185,20 +185,20 @@ Default is 1.</p></td>
     </tr>
     <tr>
       <th>single.prop.point.plots</th>
-      <td><p>[<code>logical(1)</code>]
+      <td><p>[<code>logical(1)</code>]<br />
 Parameter for MOI-MBO Multi-point proposal: Should every proposed point
 be displayed in a single plot - or one plot per Iteration? Default is FALSE
 indicating single plots per proposed points.</p></td>
     </tr>
     <tr>
       <th>xlim</th>
-      <td><p>[<code>numeric(2)</code>]
+      <td><p>[<code>numeric(2)</code>]<br />
 For 1D: <code>xlim</code> parameter for first and second plot.
 Default is range of x-values evaluated in run object <code>object</code>.</p></td>
     </tr>
     <tr>
       <th>ylim</th>
-      <td><p>[<code>numeric(2)</code>]
+      <td><p>[<code>numeric(2)</code>]<br />
 For 1D: <code>ylim</code> parameter for first plot, for the second plot <code>ylim</code> is always set
 automatically, depending on the range of the evaluated infill criterion.
 Default for the first plot is a heuristic to have the true function
@@ -207,17 +207,17 @@ change the <code>ylim</code> setting between plot iterations.</p></td>
     </tr>
     <tr>
       <th>point.size</th>
-      <td><p>[<code>numeric(1)</code>]
+      <td><p>[<code>numeric(1)</code>]<br />
 Point size for plotted points. Default is 3.</p></td>
     </tr>
     <tr>
       <th>line.size</th>
-      <td><p>[<code>numeric(1)</code>]
+      <td><p>[<code>numeric(1)</code>]<br />
 Line width of the graphs of plotted functions.</p></td>
     </tr>
     <tr>
       <th>trafo</th>
-      <td><p>[<code>list</code>]
+      <td><p>[<code>list</code>]<br />
 List of transformation functions of type <code>MBOTrafoFunction</code> for
 the different plots.
 For 1D: The list elements should be named with &#8220;y&#8221; (applied to objective function and model)
@@ -237,7 +237,7 @@ and green for the actual iteration.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>[any]
+      <td><p>[any]<br />
 Currently not used.</p></td>
     </tr>
     </table>

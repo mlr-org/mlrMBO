@@ -119,7 +119,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Set MBO options.</h1>
-    <small>Source: <a href='https:/github.com/mlr-org/mlrMBO/blob/master/R/makeMBOControl.R'><code>R/makeMBOControl.R</code></a></small>
+    <small>Source: <a href='https://github.com/mlr-org/mlrMBO/blob/master/R/makeMBOControl.R'><code>R/makeMBOControl.R</code></a></small>
     </div>
 
     
@@ -141,20 +141,20 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>n.objectives</th>
-      <td><p>[<code>integer(1)</code>]
+      <td><p>[<code>integer(1)</code>]<br />
 How many objectives are to be optimized? <code>n.objectives = 1</code> implies normal single
 criteria optimization, <code>n.objectives &gt; 1</code> implies multi-objective optimization.
 Default is 1.</p></td>
     </tr>
     <tr>
       <th>propose.points</th>
-      <td><p>[<code>integer(1)</code>]
+      <td><p>[<code>integer(1)</code>]<br />
 Number of proposed / really evaluated points each iteration.
 Default is 1.</p></td>
     </tr>
     <tr>
       <th>final.method</th>
-      <td><p>[<code>character(1)</code>]
+      <td><p>[<code>character(1)</code>]<br />
 How should the final point be proposed. Possible values are:
 &#8220;best.true.y&#8221;: Return best point ever visited according to true value of target function.
 Can be bad if target function is noisy.
@@ -165,19 +165,19 @@ Default is: &#8220;best.true.y&#8221;.</p></td>
     </tr>
     <tr>
       <th>final.evals</th>
-      <td><p>[<code>integer(1)</code>]
+      <td><p>[<code>integer(1)</code>]<br />
 How many target function evals should be done at final point to reduce noise?
 Default is 0.</p></td>
     </tr>
     <tr>
       <th>y.name</th>
-      <td><p>[<code>character</code>]
+      <td><p>[<code>character</code>]<br />
 Vector for names of y-columns for target values in optimization path.
 Default is &#8220;y_i&#8221;, i = 1, ..., n.objectives.</p></td>
     </tr>
     <tr>
       <th>impute.y.fun</th>
-      <td><p>[<code>function(x, y, opt.path, ...)</code>*]
+      <td><p>[<code>function(x, y, opt.path, ...)</code>*]<br />
 Functions that gets triggered if your objective evaluation produced
 a) an exception b) a return object of invalid type c) a numeric vector that
 contains <code>NA</code>, <code>NaN</code>, <code>Inf</code>.
@@ -192,20 +192,20 @@ result.</p></td>
     </tr>
     <tr>
       <th>trafo.y.fun</th>
-      <td><p>[<code>MBOTrafoFunction</code>]
+      <td><p>[<code>MBOTrafoFunction</code>]<br />
 Sometimes it is favorable to transform the target function values before modeling. Provide a
 MBO transformation function to do so.</p></td>
     </tr>
     <tr>
       <th>suppress.eval.errors</th>
-      <td><p>[<code>logical(1)</code>]
+      <td><p>[<code>logical(1)</code>]<br />
 Should reporting of error messages during target function evaluations be suppressed?
 Only used if <code>impute.errors</code> is <code>TRUE</code>.
 Default is <code>TRUE</code>.</p></td>
     </tr>
     <tr>
       <th>save.on.disk.at</th>
-      <td><p>[<code>integer</code>] 
+      <td><p>[<code>integer</code>] <br />
 Sequential optimization iteration when the actual state should be saved
 on disk. Iteration 0 denotes the initial design. If the optimization
 stops with an crucial error, it can be restarted with this file via the
@@ -214,20 +214,20 @@ Default is <code>integer(0L)</code>, i. e., not to save.</p></td>
     </tr>
     <tr>
       <th>save.on.disk.at.time</th>
-      <td><p>[<code>integer</code>] 
+      <td><p>[<code>integer</code>] <br />
 Same as above. But here you define the time which have to be passed until the last save in seconds. Any finite value will lead to save at end.
 Default is <code>Inf</code>, i. e., not to save ever.</p></td>
     </tr>
     <tr>
       <th>save.file.path</th>
-      <td><p>[<code>character(1)</code>] 
+      <td><p>[<code>character(1)</code>] <br />
 If <code>save.on.disk.at</code> is used, this is the name of the file where the data
 will be saved.
 Default &#8220;mbo_run.RData&#8221; in your current working directory.</p></td>
     </tr>
     <tr>
       <th>store.model.at</th>
-      <td><p>[<code>integer</code>]
+      <td><p>[<code>integer</code>]<br />
 Sequential optimization iterations when the model should be saved.
 Iteration 1 is the model fit for the initial design, iters + 1 is a final
 save containing the final results of the optimization. .
@@ -235,31 +235,31 @@ Default is <code>iters + 1</code>.</p></td>
     </tr>
     <tr>
       <th>resample.at</th>
-      <td><p>[<code>integer</code>]
+      <td><p>[<code>integer</code>]<br />
 At which iterations should the model be resampled and assessed?
 Iteration 0 does some resampling on the initial design.
 Default is none.</p></td>
     </tr>
     <tr>
       <th>resample.desc</th>
-      <td><p>[<code><a href='http://www.rdocumentation.org/packages/mlr/topics/makeResampleDesc'>ResampleDesc</a></code>]
+      <td><p>[<code><a href='http://www.rdocumentation.org/packages/mlr/topics/makeResampleDesc'>ResampleDesc</a></code>]<br />
 How should the model be resampled?
 Default is 10-fold CV.</p></td>
     </tr>
     <tr>
       <th>resample.measures</th>
-      <td><p>[list of <code><a href='http://www.rdocumentation.org/packages/mlr/topics/makeMeasure'>Measure</a></code>]
+      <td><p>[list of <code><a href='http://www.rdocumentation.org/packages/mlr/topics/makeMeasure'>Measure</a></code>]<br />
 Performance measures to assess model with during resampling.
 Default is <code><a href='http://www.rdocumentation.org/packages/mlr/topics/measures'>mse</a></code>.</p></td>
     </tr>
     <tr>
       <th>output.num.format</th>
-      <td><p>[<code>logical(1)</code>]
+      <td><p>[<code>logical(1)</code>]<br />
 Format string for the precision of the numeric output of mbo.</p></td>
     </tr>
     <tr>
       <th>on.surrogate.error</th>
-      <td><p>[<code>character(1)</code>]
+      <td><p>[<code>character(1)</code>]<br />
 What should happen when the surrogate learner can not train the model.
 Possible values are:
 &#8220;stop&#8221;: R exception is generated.

@@ -119,7 +119,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Optimizes a function with sequential model based optimization.</h1>
-    <small>Source: <a href='https:/github.com/mlr-org/mlrMBO/blob/master/R/mbo.R'><code>R/mbo.R</code></a></small>
+    <small>Source: <a href='https://github.com/mlr-org/mlrMBO/blob/master/R/mbo.R'><code>R/mbo.R</code></a></small>
     </div>
 
     
@@ -134,7 +134,7 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>fun</th>
-      <td><p>[<code>smoof_function</code>]
+      <td><p>[<code>smoof_function</code>]<br />
 Fitness function to optimize.
 For one dimensional target functions you can obtain a <code>smoof_function</code> by using <code><a href='http://www.rdocumentation.org/packages/smoof/topics/makeSingleObjectiveFunction'>makeSingleObjectiveFunction</a></code>.
 For multi dimensional functions use <code><a href='http://www.rdocumentation.org/packages/smoof/topics/makeMultiObjectiveFunction'>makeMultiObjectiveFunction</a></code>.
@@ -145,7 +145,7 @@ Each of these values will be stored additionally in the optimization path.</p></
     </tr>
     <tr>
       <th>design</th>
-      <td><p>[<code>data.frame</code>]
+      <td><p>[<code>data.frame</code>]<br />
 Initial design as data frame.
 If the y-values are not already present in design, mbo will evaluate the points.
 If the parameters have corresponding trafo functions, the design must not be transformed before it is passed!
@@ -155,24 +155,24 @@ The points are drawn via <code><a href='http://www.rdocumentation.org/packages/l
     </tr>
     <tr>
       <th>learner</th>
-      <td><p>[<code><a href='http://www.rdocumentation.org/packages/mlr/topics/makeLearner'>Learner</a></code>]
+      <td><p>[<code><a href='http://www.rdocumentation.org/packages/mlr/topics/makeLearner'>Learner</a></code>]<br />
 Regression learner from mlr, which is used as a surrogate to model our fitness function.
 If <code>NULL</code> (default), the default learner is determined as described here: <a href='makeMBOLearner.html'>mbo_default_learner</a>.</p></td>
     </tr>
     <tr>
       <th>control</th>
-      <td><p>[<code><a href='makeMBOControl.html'>MBOControl</a></code>]
+      <td><p>[<code><a href='makeMBOControl.html'>MBOControl</a></code>]<br />
 Control object for mbo.</p></td>
     </tr>
     <tr>
       <th>show.info</th>
-      <td><p>[<code>logical(1)</code>]
+      <td><p>[<code>logical(1)</code>]<br />
 Verbose output on console?
 Default is <code>TRUE</code>.</p></td>
     </tr>
     <tr>
       <th>more.args</th>
-      <td><p>[list]
+      <td><p>[list]<br />
 Further arguments passed to fitness function.</p></td>
     </tr>
     </table>
@@ -215,23 +215,23 @@ Further arguments passed to fitness function.</p></td>
 #&gt; Optimization path
 #&gt; 5 + 3 entries in total, displaying last 10 (or less):
 #&gt;            x1          x2           y dob eol error.message exec.time
-#&gt; 1 -0.96769994 -0.26626679  0.67331156   0  NA          &lt;NA&gt;         0
-#&gt; 2  0.44030435  0.66288338  0.80926007   0  NA          &lt;NA&gt;         0
-#&gt; 3 -0.19704022 -0.01344260  0.02538265   0  NA          &lt;NA&gt;         0
-#&gt; 4 -0.40088904  0.31590690  0.47139064   0  NA          &lt;NA&gt;         0
-#&gt; 5  0.89315279 -0.69099140  0.16042044   0  NA          &lt;NA&gt;         0
-#&gt; 6 -0.03064098 -0.01689882 -0.01595915   1  NA          &lt;NA&gt;         0
-#&gt; 7  0.99488843 -0.03780885  0.95200314   2  NA          &lt;NA&gt;         0
-#&gt; 8 -0.03312970  0.92322899  0.79865123   3  NA          &lt;NA&gt;         0
+#&gt; 1 -0.96769994 -0.26626679  0.67331156   0  NA          &lt;NA&gt;     0.000
+#&gt; 2  0.44030435  0.66288338  0.80926007   0  NA          &lt;NA&gt;     0.000
+#&gt; 3 -0.19704022 -0.01344260  0.02538265   0  NA          &lt;NA&gt;     0.000
+#&gt; 4 -0.40088904  0.31590690  0.47139064   0  NA          &lt;NA&gt;     0.000
+#&gt; 5  0.89315279 -0.69099140  0.16042044   0  NA          &lt;NA&gt;     0.000
+#&gt; 6 -0.03064098 -0.01689882 -0.01595915   1  NA          &lt;NA&gt;     0.000
+#&gt; 7  0.99488843 -0.03780885  0.95200314   2  NA          &lt;NA&gt;     0.000
+#&gt; 8 -0.03312970  0.92322899  0.79865123   3  NA          &lt;NA&gt;     0.001
 #&gt;            cb error.model train.time  prop.type propose.time        se
 #&gt; 1          NA        &lt;NA&gt;         NA initdesign           NA        NA
 #&gt; 2          NA        &lt;NA&gt;         NA initdesign           NA        NA
 #&gt; 3          NA        &lt;NA&gt;         NA initdesign           NA        NA
 #&gt; 4          NA        &lt;NA&gt;         NA initdesign           NA        NA
 #&gt; 5          NA        &lt;NA&gt;         NA initdesign           NA        NA
-#&gt; 6 -0.07233364        &lt;NA&gt;      0.458  infill_cb        0.214 0.1763127
-#&gt; 7 -0.17151623        &lt;NA&gt;      1.139  infill_cb        0.123 0.1596647
-#&gt; 8 -0.14165197        &lt;NA&gt;      0.064  infill_cb        0.082 0.2242090
+#&gt; 6 -0.07233364        &lt;NA&gt;      0.479  infill_cb        0.206 0.1763127
+#&gt; 7 -0.17151623        &lt;NA&gt;      1.143  infill_cb        0.112 0.1596647
+#&gt; 8 -0.14165197        &lt;NA&gt;      0.075  infill_cb        0.079 0.2242090
 #&gt;          mean lambda
 #&gt; 1          NA     NA
 #&gt; 2          NA     NA

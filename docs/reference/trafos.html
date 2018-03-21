@@ -125,13 +125,13 @@ value." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Transformation methods.</h1>
-    <small>Source: <a href='https:/github.com/mlr-org/mlrMBO/blob/master/R/makeMBOTrafoFunction.R'><code>R/makeMBOTrafoFunction.R</code></a></small>
+    <small>Source: <a href='https://github.com/mlr-org/mlrMBO/blob/master/R/makeMBOTrafoFunction.R'><code>R/makeMBOTrafoFunction.R</code></a></small>
     </div>
 
     
     <ul>
-<li><p><b>logTrafo</b> Natural logarithm.</p></li>
-<li><p><b>sqrtTrafo</b> Square root.</p></li>
+<li><p><b>logTrafo</b><br /> Natural logarithm.</p></li>
+<li><p><b>sqrtTrafo</b><br /> Square root.</p></li>
 </ul><p>If negative values occur and the trafo function can handle only positive values,
 a shift of the form x - min(x) + 1 is performed prior to the transformation if the
 argument <code>handle.violations</code> is set to &#8220;warn&#8221; which is the default
@@ -147,13 +147,13 @@ value.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>base</th>
-      <td><p>[<code>numeric(1)</code>]
+      <td><p>[<code>numeric(1)</code>]<br />
 The base with respect to which logarithms are computed.
 Default is <code>10</code>.</p></td>
     </tr>
     <tr>
       <th>handle.violations</th>
-      <td><p>[<code>character(1)</code>]
+      <td><p>[<code>character(1)</code>]<br />
 What should be done, if negative values occur? Setting this option to
 &#8220;warn&#8221;, which is the default, shifts the function. &#8220;error&#8221;
 stops the process immediately.</p></td>
