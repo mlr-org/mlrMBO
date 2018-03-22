@@ -8,6 +8,7 @@
 \alias{makeMBOInfillCritCB}
 \alias{makeMBOInfillCritAEI}
 \alias{makeMBOInfillCritEQI}
+\alias{makeMBOInfillCritEIs}
 \alias{makeMBOInfillCritDIB}
 \alias{makeMBOInfillCritAdaCB}
 \title{Infill criteria.}
@@ -23,6 +24,8 @@ makeMBOInfillCritCB(cb.lambda = NULL)
 makeMBOInfillCritAEI(aei.use.nugget = FALSE, se.threshold = 1e-06)
 
 makeMBOInfillCritEQI(eqi.beta = 0.75, se.threshold = 1e-06)
+
+makeMBOInfillCritEIs(se.threshold = 1e-06)
 
 makeMBOInfillCritDIB(cb.lambda = 1, sms.eps = NULL)
 

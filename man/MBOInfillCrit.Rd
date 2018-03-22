@@ -4,6 +4,7 @@
 \alias{makeMBOInfillCrit}
 \alias{MBOInfillCrit}
 \alias{crit.ei}
+\alias{crit.eis}
 \alias{crit.mr}
 \alias{crit.se}
 \alias{crit.cb}
@@ -15,7 +16,8 @@
 \title{Create an infill criterion.}
 \usage{
 makeMBOInfillCrit(fun, name, id, opt.direction = "minimize",
-  components = character(0L), params = list(), requires.se = FALSE)
+  components = character(0L), params = list(), requires.se = FALSE,
+  requires.time = FALSE)
 }
 \arguments{
 \item{fun}{[\code{function(points, models, control, par.set, design, iter)}]\cr
@@ -62,6 +64,10 @@ Default is the empty list.}
 Does the infill criterion require the regression learner to provide a standard
 error estimation?
 Default is \code{FALSE}.}
+
+\item{requires.time}{[\code{logical(1)}]\cr
+Does the infill criterion require estimated runtime of the target function based on the \code{time.model}?
+Default is \code{FALSE}.}
 }
 \value{
 [\code{\link{MBOInfillCrit}}]
@@ -76,6 +82,7 @@ the package allows for the creation of custom infill criteria.
 
 \describe{
 \item{crit.ei}{Expected Improvement}
+\item{crit.eis}{Expected Improvement per second}
 \item{crit.mr}{Mean response}
 \item{crit.se}{Standard error}
 \item{crit.cb}{Confidence bound with lambda automatically chosen, see \code{\link{infillcrits}}}

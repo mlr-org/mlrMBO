@@ -23,6 +23,7 @@ NULL
 #' @section Predefined standard infill criteria:
 #' \describe{
 #' \item{crit.ei}{Expected Improvement}
+#' \item{crit.eis}{Expected Improvement per second}
 #' \item{crit.mr}{Mean response}
 #' \item{crit.se}{Standard error}
 #' \item{crit.cb}{Confidence bound with lambda automatically chosen, see \code{\link{infillcrits}}}
@@ -40,6 +41,13 @@ NULL
 #' @format NULL
 #' @keywords NULL
 crit.ei = makeMBOInfillCritEI()
+#' @rdname MBOInfillCrit
+#' @export
+#' @usage NULL
+#' @docType NULL
+#' @format NULL
+#' @keywords NULL
+crit.eis = makeMBOInfillCritEIs()
 #' @rdname MBOInfillCrit
 #' @export
 #' @usage NULL

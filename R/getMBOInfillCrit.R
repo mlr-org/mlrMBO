@@ -49,6 +49,14 @@ hasRequiresInfillCritStandardError = function(x) {
 
 #' @export
 #' @rdname getMBOInfillCrit
+hasRequiresInfillCritTime = function(x) {
+  assertClass(x, "MBOInfillCrit")
+  return(x$requires.time)
+}
+
+
+#' @export
+#' @rdname getMBOInfillCrit
 getMBOInfillCritComponents = function(x) {
   assertClass(x, "MBOInfillCrit")
   return(x$components)

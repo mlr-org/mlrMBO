@@ -43,13 +43,16 @@
 #'   Does the infill criterion require the regression learner to provide a standard
 #'   error estimation?
 #'   Default is \code{FALSE}.
+#' @param requires.time [\code{logical(1)}]\cr
+#'   Does the infill criterion require estimated runtime of the target function based on the \code{time.model}?
+#'   Default is \code{FALSE}.
 #' @return [\code{\link{MBOInfillCrit}}]
 #' @rdname MBOInfillCrit
 #' @aliases MBOInfillCrit
 #' @export
 makeMBOInfillCrit = function(fun, name, id,
   opt.direction = "minimize", components = character(0L), params = list(),
-  requires.se = FALSE) {
+  requires.se = FALSE, requires.time = FALSE) {
   assertFunction(
     fun,
     args = c("points", "models", "control", "par.set", "design", "iter", "progress", "attributes"),
@@ -61,6 +64,7 @@ makeMBOInfillCrit = function(fun, name, id,
   assertCharacter(components, unique = TRUE)
   assertList(params)
   assertFlag(requires.se)
+  assertFlag(requires.time)
 
   ic = makeS3Obj(c(paste0("InfillCrit", toupper(id)), "MBOInfillCrit"),
     fun = fun,
@@ -69,7 +73,8 @@ makeMBOInfillCrit = function(fun, name, id,
     opt.direction = opt.direction,
     components = components,
     params = params,
-    requires.se = requires.se
+    requires.se = requires.se,
+    requires.time = requires.time
   )
   return(ic)
 }
@@ -78,11 +83,16 @@ makeMBOInfillCrit = function(fun, name, id,
 print.MBOInfillCrit = function(x, ...) {
   components = getMBOInfillCritComponents(x)
   params = getMBOInfillCritParams(x)
+  requirements = c()
+  if (hasRequiresInfillCritStandardError(x))
+    requirements = c(requirements, "SE estimation")
+  if (hasRequiresInfillCritTime(x))
+    requirements = c(requirements, "runtime estimation")
   catf("Infill criterion            : %s (%s)", getMBOInfillCritName(x),
     getMBOInfillCritId(x))
     catf("  Direction of optimization : %s", x$opt.direction)
-  if (hasRequiresInfillCritStandardError(x))
-    catf("  Requirement               : SE estimation")
+  if (length(requirements) > 0)
+    catf("  Requirements              : %s", collapse(requirements, sep = ", "))
   if (length(components) > 0)
     catf("  Components                : %s", collapse(components, sep = ", "))
   if (length(params) > 0)
