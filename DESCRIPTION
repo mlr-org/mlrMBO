@@ -35,6 +35,7 @@ Imports:
     lhs,
     parallelMap (>= 1.3)
 Suggests:
+    akima,
     cmaesr (>= 1.0.3),
     ggplot2,
     RColorBrewer,

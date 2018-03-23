@@ -30,21 +30,21 @@ test_that("termination criteria works", {
     }
 
     or = mbo(this.f, design = design, control = ctrl, learner = learner)
-    expect_equal(or$final.state, term.set$state)
+    expect_equal(or$final.state, term.set$state, info = term.set$state)
 
     if (term.set$state == "term.iter") {
-      expect_equal(getOptPathLength(or$opt.path), term.set$arg$iters + nrow(design))
+      expect_equal(getOptPathLength(or$opt.path), term.set$arg$iters + nrow(design), info = term.set$state)
     }
     if (term.set$state == "term.yval") {
-      expect_lt(or$y, term.set$arg$target.fun.value)
+      expect_true(or$y < term.set$arg$target.fun.value, info = term.set$state)
       term.set$arg$target.fun.value = term.set$arg$target.fun.value * (-1)
       ctrl = do.call(setMBOControlTermination, c(list(control = ctrl), term.set$arg))
       or.max = mbo(f.max, design = design.max, control = ctrl, learner = learner)
-      expect_gt(getOptPathLength(or$opt.path), nrow(design.max))
-      expect_lt(abs(getOptPathLength(or$opt.path)-getOptPathLength(or.max$opt.path)), 3)
+      expect_true(getOptPathLength(or$opt.path) > nrow(design.max), info = term.set$state)
+      expect_true(abs(getOptPathLength(or$opt.path)-getOptPathLength(or.max$opt.path)) < 3, info = term.set$state)
     }
     if (term.set$state == "term.feval") {
-      expect_equal(getOptPathLength(or$opt.path), term.set$arg$max.evals)
+      expect_equal(getOptPathLength(or$opt.path), term.set$arg$max.evals, info = term.set$state)
     }
   }
 })

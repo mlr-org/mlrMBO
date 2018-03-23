@@ -72,10 +72,7 @@ test_that("mboContinue", {
 
 
 test_that("mboContinue works when at end", {
-  f = makeSingleObjectiveFunction(
-    fn = function(x) sum(x^2),
-    par.set = makeNumericParamSet(len = 2L, lower = -2, upper = 1)
-  )
+  f = testf.fsphere.2d
   learner = makeLearner("regr.rpart")
   save.file = tempfile(fileext = ".RData")
   des = generateTestDesign(10L, getParamSet(f))
