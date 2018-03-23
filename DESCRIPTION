@@ -35,7 +35,6 @@ Imports:
     lhs,
     parallelMap (>= 1.3)
 Suggests:
-    akima,
     cmaesr (>= 1.0.3),
     ggplot2,
     RColorBrewer,
@@ -48,14 +47,12 @@ Suggests:
     kernlab,
     kknn,
     knitr,
-    mco,
     nnet,
     party,
     randomForest,
     rmarkdown,
     rpart,
     testthat,
-    eaf,
     covr
 LazyData: yes
 Encoding: UTF-8
