@@ -2,15 +2,6 @@ context("adaptive infill crits")
 
 test_that("adaptive infill crit works with all termination criteria", {
 
-  terminations = list(
-    list(iters = 3L),
-    list(time.budget = 1L),
-    list(exec.time.budget = 1L, iters = 13, use.for.adaptive.infill = "exec.time.budget"),
-    list(target.fun.value = 0.025, iters = 13, use.for.adaptive.infill = "target.fun.value"),
-    list(target.fun.value = -0.025, iters = 13, use.for.adaptive.infill = "target.fun.value"),
-    list(max.evals = 13L)
-  )
-
   f = testf.fsphere.1d
   f.slow = testf.fsphere.1d.slow
   f.max = convertToMaximization(f)
@@ -18,6 +9,15 @@ test_that("adaptive infill crit works with all termination criteria", {
   design.max = design
   design$y = apply(design, 1, f)
   design.max$y = apply(design.max, 1, f.max)
+
+  terminations = list(
+    list(iters = 4L),
+    list(time.budget = 2),
+    list(exec.time.budget = 1.5, iters = 13, use.for.adaptive.infill = "exec.time.budget"),
+    list(target.fun.value = min(design$y)/3, iters = 13, use.for.adaptive.infill = "target.fun.value"),
+    list(target.fun.value = max(design.max$y)/3, iters = 13, use.for.adaptive.infill = "target.fun.value"),
+    list(max.evals = nrow(design) + 4L)
+  )
 
   ctrl = makeMBOControl()
   ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCritAdaCB())
