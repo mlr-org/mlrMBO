@@ -5,7 +5,7 @@ test_that("infill crits", {
   niters = 3L
   funs = list(
     "2D" = list(
-      f1 = smoof::makeSphereFunction(2L),
+      f1 = testf.fsphere.2d,
       f2 = smoof::makeSingleObjectiveFunction(
         fn = function(x) sum(x^2) + rnorm(1, 0, 0.5),
         par.set = makeNumericParamSet("x", 2, -5, 5),
@@ -13,10 +13,7 @@ test_that("infill crits", {
       )
     ),
     "1D" = list(
-      f1 = smoof::makeSingleObjectiveFunction(
-        fn = function(x) x^2,
-        par.set = makeNumericParamSet("x", 1, -7, 7)
-      ),
+      f1 = testf.fsphere.1d,
       f2 = smoof::makeSingleObjectiveFunction(
         fn = function(x) x^2 + rnorm(1, 0, 0.5),
         par.set = makeNumericParamSet("x", 1, -7, 7),
@@ -39,7 +36,7 @@ test_that("infill crits", {
     if (minimize)
       expect_true(or$y < 10)
     else
-      expect_true(or$y > 30)
+      expect_true(or$y > 20)
 
     opdf = as.data.frame(or$opt.path)
     opdf = split(opdf, opdf$prop.type)
