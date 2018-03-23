@@ -23,8 +23,7 @@ env:
 before_script:
 - R --no-save <<< 'library("devtools"); document()'
 after_success:
-- 'if [[ "$TRAVIS_PULL_REQUEST" == "false" && "$TRAVIS_BRANCH" == "master" && "${TRAVIS_R_VERSION_STRING}"
-  == "release" && $TRAVIS_EVENT_TYPE != "cron" ]]; then
+- 'if [[ "$TRAVIS_PULL_REQUEST" == "false" && "$TRAVIS_BRANCH" == "master" && "$TRAVIS_R_VERSION_STRING" == "release" && "$TRAVIS_EVENT_TYPE" != "cron" ]] ; then
     R --no-save <<< "devtools::install(); pkgdown::build_site()";
     git checkout master;
     export TRAVIS_COMMIT_MSG="$(git log --format=%B --no-merges -n 1)";
@@ -40,7 +39,6 @@ after_success:
     git commit man DESCRIPTION NAMESPACE README.md docs -m "update auto-generated documentation [ci skip]" -m "$TRAVIS_COMMIT_MSG" || true;
     git push;
   fi;'
-- 'if [[ ${TRAVIS_R_VERSION_STRING}"
-  == "devel" && $TRAVIS_EVENT_TYPE != "cron" ]] ; then
+- 'if [[ "$TRAVIS_R_VERSION_STRING" == "devel" && "$TRAVIS_EVENT_TYPE" != "cron" ]] ; then
     Rscript -e "covr::coveralls()";
   fi;'
