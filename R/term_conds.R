@@ -76,11 +76,11 @@ makeMBOTerminationTargetFunValue = function(target.fun.value) {
     control = getOptProblemControl(opt.problem)
     opt.path = getOptStateOptPath(opt.state)
     opt.dir = if (control$minimize) 1L else -1L
-    init.best = min(getOptPathY(opt.path)[getOptPathDOB(opt.path) == 0])
+    init.best = getOptPathY(opt.path)[getOptPathBestIndex(opt.path, dob = 0)]
     current.best = getOptPathY(opt.path)[getOptPathBestIndex(opt.path)]
     term = (current.best * opt.dir <= target.fun.value * opt.dir)
     message = if (!term) NA_character_ else sprintf("Target function value %f reached.", target.fun.value)
-    return(list(term = term, message = message, code = "term.yval", progress = (init.best - current.best)/(init.best - target.fun.value)))
+    return(list(term = term, message = message, code = "term.yval", progress = abs(init.best - current.best)/abs(init.best - target.fun.value)))
   }
 }
 

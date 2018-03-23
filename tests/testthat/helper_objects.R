@@ -35,21 +35,21 @@ testfmco2 = makeMultiObjectiveFunction(
 testdesmco2 = generateTestDesign(10L, getParamSet(testfmco2))
 
 # slow test function
-testf.fsphere.2d.slow = makeSingleObjectiveFunction(
+testf.fsphere.1d.slow = makeSingleObjectiveFunction(
   name = "slow.function",
   fn = function(...) {
     Sys.sleep(0.25)
-    testf.fsphere.2d(...)
+    testf.fsphere.1d(...)
   },
   has.simple.signature = TRUE,
-  vectorized = isVectorized(testf.fsphere.2d),
-  noisy = isNoisy(testf.fsphere.2d),
-  par.set = getParamSet(testf.fsphere.2d),
-  minimize = shouldBeMinimized(testf.fsphere.2d),
-  fn.mean = getMeanFunction(testf.fsphere.2d),
-  tags = getTags(testf.fsphere.2d),
-  global.opt.params = getGlobalOptimum(testf.fsphere.2d)$param,
-  global.opt.value = getGlobalOptimum(testf.fsphere.2d)$value
+  vectorized = isVectorized(testf.fsphere.1d),
+  noisy = isNoisy(testf.fsphere.1d),
+  par.set = getParamSet(testf.fsphere.1d),
+  minimize = shouldBeMinimized(testf.fsphere.1d),
+  fn.mean = getMeanFunction(testf.fsphere.1d),
+  tags = getTags(testf.fsphere.1d),
+  global.opt.params = getGlobalOptimum(testf.fsphere.1d)$param,
+  global.opt.value = getGlobalOptimum(testf.fsphere.1d)$value
 )
 
 # mixed space test functio
