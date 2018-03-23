@@ -10,7 +10,7 @@ test_that("infillopt ea", {
 
   des = testd.fsphere.2d
   res = mbo(obj.fun, des, control = ctrl)
-  expect_true(res$y < 0.2, info = "real")
+  expect_true(res$y < 0.5, info = "real")
 
   obj.fun = smoof::makeSingleObjectiveFunction(
     fn = function(x) x$num1^2 + x$int1,
@@ -23,5 +23,5 @@ test_that("infillopt ea", {
 
   des = generateTestDesign(10L, getParamSet(obj.fun))
   res = mbo(obj.fun, des, control = ctrl)
-  expect_true(res$y < 0.2, info = "integer mixed")
+  expect_true(res$y < 0.5, info = "integer mixed")
 })
