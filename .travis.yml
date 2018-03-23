@@ -39,5 +39,8 @@ after_success:
     git rm -r --cached $(find . -type d -name "*_cache");
     git commit man DESCRIPTION NAMESPACE README.md docs -m "update auto-generated documentation [ci skip]" -m "$TRAVIS_COMMIT_MSG" || true;
     git push;
+  fi;'
+- 'if [[ ${TRAVIS_R_VERSION_STRING}"
+  == "devel" && $TRAVIS_EVENT_TYPE != "cron" ]] ; then
     Rscript -e "covr::coveralls()";
   fi;'
