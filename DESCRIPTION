@@ -48,10 +48,12 @@ Suggests:
     kernlab,
     kknn,
     knitr,
+    mco,
     nnet,
     party,
     randomForest,
     rmarkdown,
+    rgenoud,
     rpart,
     testthat,
     covr
