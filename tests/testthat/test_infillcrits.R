@@ -36,7 +36,7 @@ test_that("infill crits", {
     if (minimize)
       expect_true(or$y < 10)
     else
-      expect_true(or$y > 25)
+      expect_true(or$y > 20)
 
     opdf = as.data.frame(or$opt.path)
     opdf = split(opdf, opdf$prop.type)
