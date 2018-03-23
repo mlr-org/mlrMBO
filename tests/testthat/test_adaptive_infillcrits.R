@@ -39,7 +39,7 @@ test_that("adaptive infill crit works with all termination criteria", {
     df = as.data.frame(or$opt.path)
     expect_true(any(df$lambda > 1))
     expect_true(length(unique(df$lambda))>2)
-    expect_true(all(diff(df$lambda[!is.na(df$lambda)])<0))
+    expect_true(all(diff(df$lambda[!is.na(df$lambda)])<=0))
     expect_true(all(df$prop.type %in% c("infill_adacb", "initdesign")))
     expect_numeric(df$adacb)
   }
