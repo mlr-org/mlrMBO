@@ -15,7 +15,7 @@ test_that("termination criteria works", {
     list(arg = list(iters = 3L), state = "term.iter"),
     list(arg = list(time.budget = 3L), state = "term.time"),
     list(arg = list(exec.time.budget = 2), state = "term.exectime"),
-    list(arg = list(target.fun.value = min(design$y) / 2, iters = 30L), state = "term.yval"),
+    list(arg = list(target.fun.value = min(design$y) / 3, iters = 30L), state = "term.yval"),
     list(arg = list(max.evals = nrow(design) + 2L), state = "term.feval")
   )
 
@@ -40,7 +40,8 @@ test_that("termination criteria works", {
       term.set$arg$target.fun.value = term.set$arg$target.fun.value * (-1)
       ctrl = do.call(setMBOControlTermination, c(list(control = ctrl), term.set$arg))
       or.max = mbo(f.max, design = design.max, control = ctrl, learner = learner)
-      expect_lt(abs(getOptPathLength(or$opt.path)-getOptPathLength(or.max$opt.path)), 2)
+      expect_gt(getOptPathLength(or$opt.path), nrow(design.max))
+      expect_lt(abs(getOptPathLength(or$opt.path)-getOptPathLength(or.max$opt.path)), 3)
     }
     if (term.set$state == "term.feval") {
       expect_equal(getOptPathLength(or$opt.path), term.set$arg$max.evals)
