@@ -18,13 +18,20 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+<meta property="og:title" content="Create an infill criterion. — makeMBOInfillCrit" />
+
+<meta property="og:description" content="The infill criterion guides the model based search process.
+The most prominent infill criteria, e.g., expected improvement, lower
+confidence bound and others, are already implemented in mlrMBO. Moreover,
+the package allows for the creation of custom infill criteria." />
+<meta name="twitter:card" content="summary" />
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -115,6 +122,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Create an infill criterion.</h1>
+    <small>Source: <a href='https://github.com/mlr-org/mlrMBO/blob/master/R/makeMBOInfillCrit.R'><code>R/makeMBOInfillCrit.R</code></a>, <a href='https://github.com/mlr-org/mlrMBO/blob/master/R/zzz.R'><code>R/zzz.R</code></a></small>
     </div>
 
     
@@ -132,7 +140,7 @@ the package allows for the creation of custom infill criteria.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>fun</th>
-      <td><p>[<code>function(points, models, control, par.set, design, iter)</code>]
+      <td><p>[<code>function(points, models, control, par.set, design, iter)</code>]<br />
  A function which expects the following parameters in exactly this order
  and return a numeric vector of criteria values at the points:</p><dl class='dl-horizontal'>
    <dt>points [<code>data.frame</code>]</dt><dd><p>n points where to evaluate.</p></dd>
@@ -141,30 +149,31 @@ the package allows for the creation of custom infill criteria.</p>
    <dt>par.set [<code>ParamSet</code>]</dt><dd><p>Parameter set.</p></dd>
    <dt>design [<code>data.frame</code>]</dt><dd><p>Design of already visited points.</p></dd>
    <dt>iter [<code>integer(1)</code>]</dt><dd><p>Current iteration.</p></dd>
+   <dt>progress [<code>numeric{1}</code>]</dt><dd><p>A value between 0 and 1 indicating the progress of the optimization.</p></dd>
    <dt>attributes [<code>logical{1}</code>]</dt><dd><p>Are there attributes appended to the return
     value that should be added to the <code>OptPath</code>?</p></dd>
  </dl><p>Important: Internally, this function will be minimized. So the proposals will be where this function is low.</p></td>
     </tr>
     <tr>
       <th>name</th>
-      <td><p>[<code>character(1)</code>]
+      <td><p>[<code>character(1)</code>]<br />
 Full name of the criterion.</p></td>
     </tr>
     <tr>
       <th>id</th>
-      <td><p>[<code>character(1)</code>]
+      <td><p>[<code>character(1)</code>]<br />
 Short name of the criterion.
 Used internally and in plots.</p></td>
     </tr>
     <tr>
       <th>opt.direction</th>
-      <td><p>[<code>character(1)</code>]
+      <td><p>[<code>character(1)</code>]<br />
 Only for visualization: Shall this criterion be plotted as if it were to be minimized (<code>minimize</code>), maximized (<code>maximize</code>) or is the direction the same as for the objective function (<code>objective</code>)?
 Default is <code>minimize</code>.</p></td>
     </tr>
     <tr>
       <th>components</th>
-      <td><p>[<code>character</code>]
+      <td><p>[<code>character</code>]<br />
 Infill criteria may not return proposed point(s) only. Additional
 information can be returned by appending a named <code>list</code> &#8220;crit.components&#8221;
 to the returned value as an attribute.
@@ -174,14 +183,14 @@ Default is the empty character vector.</p></td>
     </tr>
     <tr>
       <th>params</th>
-      <td><p>[<code>list</code>]
+      <td><p>[<code>list</code>]<br />
 Named list of parameters for the infill criterion. There values may be used
 by <span class="pkg">mlrMBO</span> internally.
 Default is the empty list.</p></td>
     </tr>
     <tr>
       <th>requires.se</th>
-      <td><p>[<code>logical(1)</code>]
+      <td><p>[<code>logical(1)</code>]<br />
 Does the infill criterion require the regression learner to provide a standard
 error estimation?
 Default is <code>FALSE</code>.</p></td>
@@ -236,3 +245,4 @@ Default is <code>FALSE</code>.</p></td>
 
   </body>
 </html>
+

@@ -18,13 +18,33 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+<meta property="og:title" content="Perform an mbo run on a test function and and visualize what happens. — exampleRun" />
+
+<meta property="og:description" content="Usually used for 1D or 2D examples,
+useful for figuring out how stuff works and for teaching purposes.
+Currently only parameter spaces with numerical parameters are supported.
+For visualization, run plotExampleRun on the resulting object.
+What is displayed is documented here: plotExampleRun.
+Rendering the plots without displaying them is possible via the function
+renderExampleRunPlot.
+Please note the following things:
+- The true objective function (and later everything which is predicted from our surrogate model)
+  is evaluated on a regular spaced grid. These evaluations are stored in the result object.
+  You can control the resolution of this grid via points.per.dim.
+  Parallelization of these evaluations is possible with the R package parallelMap on the level mlrMBO.feval.
+- In every iteration the fitted, approximating surrogate model is stored in the result object
+  (via store.model.at in control) so we can later visualize it quickly.
+- The global optimum of the function (if defined) is extracted from the passed smoof function.
+- If the passed objective function fun does not provide the true, unnoisy objective function
+  some features will not be displayed (for example the gap between the best point so far and the global optimum)." />
+<meta name="twitter:card" content="summary" />
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -115,6 +135,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Perform an mbo run on a test function and and visualize what happens.</h1>
+    <small>Source: <a href='https://github.com/mlr-org/mlrMBO/blob/master/R/exampleRun.R'><code>R/exampleRun.R</code></a></small>
     </div>
 
     
@@ -146,7 +167,7 @@ Rendering the plots without displaying them is possible via the function
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>fun</th>
-      <td><p>[<code>smoof_function</code>]
+      <td><p>[<code>smoof_function</code>]<br />
 Fitness function to optimize.
 For one dimensional target functions you can obtain a <code>smoof_function</code> by using <code><a href='http://www.rdocumentation.org/packages/smoof/topics/makeSingleObjectiveFunction'>makeSingleObjectiveFunction</a></code>.
 For multi dimensional functions use <code><a href='http://www.rdocumentation.org/packages/smoof/topics/makeMultiObjectiveFunction'>makeMultiObjectiveFunction</a></code>.
@@ -157,7 +178,7 @@ Each of these values will be stored additionally in the optimization path.</p></
     </tr>
     <tr>
       <th>design</th>
-      <td><p>[<code>data.frame</code>]
+      <td><p>[<code>data.frame</code>]<br />
 Initial design as data frame.
 If the y-values are not already present in design, mbo will evaluate the points.
 If the parameters have corresponding trafo functions, the design must not be transformed before it is passed!
@@ -167,31 +188,31 @@ The points are drawn via <code><a href='http://www.rdocumentation.org/packages/l
     </tr>
     <tr>
       <th>learner</th>
-      <td><p>[<code><a href='http://www.rdocumentation.org/packages/mlr/topics/makeLearner'>Learner</a></code>]
+      <td><p>[<code><a href='http://www.rdocumentation.org/packages/mlr/topics/makeLearner'>Learner</a></code>]<br />
 Regression learner from mlr, which is used as a surrogate to model our fitness function.
 If <code>NULL</code> (default), the default learner is determined as described here: <a href='makeMBOLearner.html'>mbo_default_learner</a>.</p></td>
     </tr>
     <tr>
       <th>control</th>
-      <td><p>[<code><a href='makeMBOControl.html'>MBOControl</a></code>]
+      <td><p>[<code><a href='makeMBOControl.html'>MBOControl</a></code>]<br />
 Control object for mbo.</p></td>
     </tr>
     <tr>
       <th>points.per.dim</th>
-      <td><p>[<code>integer</code>]
+      <td><p>[<code>integer</code>]<br />
 Number of (regular spaced) locations at which to
 sample the <code>fun</code> function per dimension.
 Default is 50.</p></td>
     </tr>
     <tr>
       <th>noisy.evals</th>
-      <td><p>[<code>integer(1)</code>]
+      <td><p>[<code>integer(1)</code>]<br />
 Number of function evaluations per point if <code>fun</code> is noisy.
 Default is 10.</p></td>
     </tr>
     <tr>
       <th>show.info</th>
-      <td><p>[<code>logical(1)</code>]
+      <td><p>[<code>logical(1)</code>]<br />
 Verbose output on console?
 Default is <code>TRUE</code>.</p></td>
     </tr>
@@ -228,3 +249,4 @@ Default is <code>TRUE</code>.</p></td>
 
   </body>
 </html>
+

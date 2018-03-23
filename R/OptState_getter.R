@@ -124,11 +124,16 @@ getOptStateState = function(opt.state) {
 
 getOptStateTermination = function(opt.state) {
   terminate = shouldTerminate.OptState(opt.state)
+  setOptStateProgress(opt.state, terminate$progress)
   # update only if termination condition is met
   if (terminate$term) {
     setOptStateState(opt.state, terminate$code)
   }
   terminate
+}
+
+getOptStateProgress = function(opt.state) {
+  opt.state$progress
 }
 
 getOptStateValidStates = function() {
@@ -138,3 +143,4 @@ getOptStateValidStates = function() {
 getOptStateValidTerminationStates = function() {
   c("term.iter", "term.time", "term.exectime", "term.yval", "term.feval", "term.custom")
 }
+

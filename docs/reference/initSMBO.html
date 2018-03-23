@@ -18,13 +18,17 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+<meta property="og:title" content="Initialize a manual sequential MBO run. — initSMBO" />
+
+<meta property="og:description" content="When you want to run a human-in-the-loop MBO run you need to initialize it first." />
+<meta name="twitter:card" content="summary" />
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -115,6 +119,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Initialize a manual sequential MBO run.</h1>
+    <small>Source: <a href='https://github.com/mlr-org/mlrMBO/blob/master/R/SMBO.R'><code>R/SMBO.R</code></a></small>
     </div>
 
     
@@ -130,12 +135,12 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>par.set</th>
-      <td><p>[<code><a href='http://www.rdocumentation.org/packages/ParamHelpers/topics/makeParamSet'>ParamSet</a></code>]
+      <td><p>[<code><a href='http://www.rdocumentation.org/packages/ParamHelpers/topics/makeParamSet'>ParamSet</a></code>]<br />
 See <code><a href='mbo.html'>mbo</a></code>.</p></td>
     </tr>
     <tr>
       <th>design</th>
-      <td><p>[<code>data.frame</code>]
+      <td><p>[<code>data.frame</code>]<br />
 Initial design as data frame.
 If the y-values are not already present in design, mbo will evaluate the points.
 If the parameters have corresponding trafo functions, the design must not be transformed before it is passed!
@@ -145,30 +150,30 @@ The points are drawn via <code><a href='http://www.rdocumentation.org/packages/l
     </tr>
     <tr>
       <th>learner</th>
-      <td><p>[<code><a href='http://www.rdocumentation.org/packages/mlr/topics/makeLearner'>Learner</a></code>]
+      <td><p>[<code><a href='http://www.rdocumentation.org/packages/mlr/topics/makeLearner'>Learner</a></code>]<br />
 Regression learner from mlr, which is used as a surrogate to model our fitness function.
 If <code>NULL</code> (default), the default learner is determined as described here: <a href='makeMBOLearner.html'>mbo_default_learner</a>.</p></td>
     </tr>
     <tr>
       <th>control</th>
-      <td><p>[<code><a href='makeMBOControl.html'>MBOControl</a></code>]
+      <td><p>[<code><a href='makeMBOControl.html'>MBOControl</a></code>]<br />
 Control object for mbo.</p></td>
     </tr>
     <tr>
       <th>minimize</th>
-      <td><p>[<code>logical</code>]
+      <td><p>[<code>logical</code>]<br />
 Should objective values of the target functions be minimized? One value par objective.
 Default is <code>TRUE</code> for every objective.</p></td>
     </tr>
     <tr>
       <th>noisy</th>
-      <td><p>[<code>logical(1)</code>]
+      <td><p>[<code>logical(1)</code>]<br />
 Is the target function noisy?
 Default is <code>FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>show.info</th>
-      <td><p>[<code>logical(1)</code>]
+      <td><p>[<code>logical(1)</code>]<br />
 Verbose output on console?
 Default is <code>TRUE</code>.</p></td>
     </tr>
@@ -205,3 +210,4 @@ Default is <code>TRUE</code>.</p></td>
 
   </body>
 </html>
+

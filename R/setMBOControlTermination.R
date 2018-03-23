@@ -31,6 +31,11 @@
 #'     termination condition is met.}
 #'     \item{message [\code{character(1)}]}{Termination message. At the moment we just allow \code{term.custom}.}
 #'   }
+#' @param use.for.adaptive.infill [\code{character(1)}|NULL]\cr
+#'   Which termination criterion should determine the progress that is used for adaptive infill criteria like [\code{\link{makeMBOInfillCritAdaCB}}].
+#'   The default is \code{NULL} which means, that the first supplied argument is taken, following the order of the function signature.
+#'   Other values can be \code{"iters"}, \code{"time.budget"}, etc.\cr
+#'   If you want to to use it together with a criterion you supplied in \code{more.termination.conds}, \code{more.termination.conds} has to be a named list and the function further has to return a list element \code{progress} with values between 0 and 1.
 #' @return [\code{\link{MBOControl}}].
 #' @family MBOControl
 #' @export
@@ -56,9 +61,10 @@
 #' res = mbo(fn, control = ctrl)
 #' print(res)
 setMBOControlTermination = function(control,
-  iters = NULL, time.budget = NULL, exec.time.budget = NULL, target.fun.value = NULL, max.evals = NULL, more.termination.conds = list()) {
+  iters = NULL, time.budget = NULL, exec.time.budget = NULL, target.fun.value = NULL, max.evals = NULL, more.termination.conds = list(), use.for.adaptive.infill = NULL) {
 
   assertList(more.termination.conds)
+  assertCharacter(use.for.adaptive.infill, null.ok = TRUE)
 
   stop.conds = more.termination.conds
 
@@ -68,31 +74,39 @@ setMBOControlTermination = function(control,
   }
 
   if (!is.null(iters)) {
-    stop.conds = c(stop.conds, makeMBOTerminationMaxIter(iters))
+    stop.conds = c(stop.conds, iters = makeMBOTerminationMaxIter(iters))
   }
 
   if (!is.null(time.budget)) {
-    stop.conds = c(stop.conds, makeMBOTerminationMaxBudget(time.budget))
+    stop.conds = c(stop.conds, time.budget = makeMBOTerminationMaxBudget(time.budget))
   }
 
   if (!is.null(exec.time.budget)) {
-    stop.conds = c(stop.conds, makeMBOTerminationMaxExecBudget(exec.time.budget))
-  }
-
-  if (!is.null(max.evals)) {
-    stop.conds = c(stop.conds, makeMBOTerminationMaxEvals(max.evals))
+    stop.conds = c(stop.conds, exec.time.budget = makeMBOTerminationMaxExecBudget(exec.time.budget))
   }
 
   if (!is.null(target.fun.value)) {
     if (control$n.objectives > 1L)
       stop("Specifying target.fun.value is only useful in single-objective optimization.")
-    stop.conds = c(stop.conds, makeMBOTerminationTargetFunValue(target.fun.value))
+    stop.conds = c(stop.conds, target.fun.value = makeMBOTerminationTargetFunValue(target.fun.value))
   }
+
+  if (!is.null(max.evals)) {
+    stop.conds = c(stop.conds, max.evals = makeMBOTerminationMaxEvals(max.evals))
+  }
+
 
   # sanity check termination conditions
   lapply(stop.conds, function(stop.on) {
     assertFunction(stop.on, args = "opt.state")
   })
+
+  # sanity check, whether use.for.adaptive.infill was set to an active criterion
+  if (is.null(use.for.adaptive.infill)) {
+    use.for.adaptive.infill = names(stop.conds)[1]
+  } else {
+    assertSubset(use.for.adaptive.infill, names(stop.conds))
+  }
 
   control$stop.conds = stop.conds
 
@@ -101,6 +115,7 @@ setMBOControlTermination = function(control,
   control$time.budget = coalesce(time.budget, control$time.budget, Inf)
   control$exec.time.budget = coalesce(exec.time.budget, control$exec.time.budget, Inf)
   control$max.evals = coalesce(max.evals, Inf)
+  control$use.for.adaptive.infill = use.for.adaptive.infill
 
   return(control)
 }

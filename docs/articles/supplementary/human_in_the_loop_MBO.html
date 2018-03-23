@@ -8,8 +8,11 @@
 <title>Human-in-the-loop MBO • mlrMBO</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
-<!-- pkgdown --><link href="../../pkgdown.css" rel="stylesheet">
-<script src="../../jquery.sticky-kit.min.js"></script><script src="../../pkgdown.js"></script><!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- pkgdown --><link href="../../pkgdown.css" rel="stylesheet">
+<script src="../../jquery.sticky-kit.min.js"></script><script src="../../pkgdown.js"></script><meta property="og:title" content="Human-in-the-loop MBO">
+<meta property="og:description" content="">
+<meta name="twitter:card" content="summary">
+<!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
@@ -93,7 +96,10 @@
     <div class="page-header toc-ignore">
       <h1>Human-in-the-loop MBO</h1>
             
-          </div>
+      
+      <small>Source: <a href="https://github.com/mlr-org/mlrMBO/blob/master/vignettes/supplementary/human_in_the_loop_MBO.Rmd"><code>vignettes/supplementary/human_in_the_loop_MBO.Rmd</code></a></small>
+
+    </div>
 
     
     
@@ -130,15 +136,7 @@ ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/setMBOC
 <p>These information are enough to get us started and initialize the sequential MBO.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">opt.state =<span class="st"> </span><span class="kw"><a href="../../reference/initSMBO.html">initSMBO</a></span>(<span class="dt">par.set =</span> ps, <span class="dt">design =</span> des, <span class="dt">control =</span> ctrl, <span class="dt">minimize =</span> <span class="ot">TRUE</span>, <span class="dt">noisy =</span> <span class="ot">FALSE</span>)</code></pre></div>
 <p>At each state the <code>opt.state</code> object can be plotted to visualize the predictions of the surrogate model</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(opt.state)
-## Loading required package: rgenoud
-## ##  rgenoud (Version 5.8-1.0, Build Date: 2017-10-10)
-## ##  See http://sekhon.berkeley.edu/rgenoud for additional documentation.
-## ##  Please cite software as:
-## ##   Walter Mebane, Jr. and Jasjeet S. Sekhon. 2011.
-## ##   ``Genetic Optimization Using Derivatives: The rgenoud package for R.''
-## ##   Journal of Statistical Software, 42(11): 1-26. 
-## ##</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(opt.state)</code></pre></div>
 <p><img src="human_in_the_loop_MBO_files/figure-html/plotOptState1-1.svg" width="672"></p>
 <p>The first panel shows the value of the infill criterion. The higher the value the more this area is desirable to be explored to find the optimum. In the following panels the mean prediction of the surrogate and the uncertainty estimation is plotted.</p>
 <p>Let’s see which point MBO suggests we should evaluate in the next step:</p>
@@ -148,7 +146,7 @@ ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/setMBOC
 ## 150 1.011225 -1
 ## 
 ## $propose.time
-## [1] 0.237
+## [1] 0.293
 ## 
 ## $prop.type
 ## [1] "infill_ei"
@@ -179,7 +177,7 @@ ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/setMBOC
 ## 941 0.9937339 0
 ## 
 ## $propose.time
-## [1] 0.099
+## [1] 0.1
 ## 
 ## $prop.type
 ## [1] "infill_ei"
@@ -226,7 +224,7 @@ for (i in <span class="dv">1</span>:<span class="dv">10</span>) {
 ## 387 -0.3000646 0
 ## 
 ## $propose.time
-## [1] 0.142
+## [1] 0.128
 ## 
 ## $prop.type
 ## [1] "infill_ei"
@@ -276,7 +274,7 @@ opt.state =<span class="st"> </span>res$final.opt.state
 ## 487 1.836319
 ## 
 ## $propose.time
-## [1] 0.09
+## [1] 0.102
 ## 
 ## $prop.type
 ## [1] "infill_ei"
@@ -315,7 +313,7 @@ opt.state =<span class="st"> </span><span class="kw"><a href="../../reference/in
 ## 447  1.99999879 0
 ## 
 ## $propose.time
-## [1] 0.113 0.101 0.112 0.111
+## [1] 0.106 0.103 0.107 0.146
 ## 
 ## $prop.type
 ## [1] "infill_ei" "infill_ei" "infill_ei" "infill_ei"

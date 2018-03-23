@@ -203,7 +203,7 @@ Afterwards, we can run `tuneParams()` and check the results.
 ```{r pipeline_tuning}
 ctrl = makeMBOControl()
 ctrl = setMBOControlTermination(ctrl, iters = iters)
-lrn = makeFilterWrapper(makeModelMultiplexer(list("classif.svm", "classif.naiveBayes")))
+lrn = makeFilterWrapper(makeModelMultiplexer(list("classif.svm", "classif.naiveBayes")), fw.method = "variance")
 tune.ctrl = makeTuneControlMBO(mbo.control = ctrl)
 
 res = tuneParams(lrn, iris.task, cv3, par.set = par.set, control = tune.ctrl, show.info = FALSE)

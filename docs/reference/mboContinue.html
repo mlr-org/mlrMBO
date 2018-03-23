@@ -18,13 +18,18 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+<meta property="og:title" content="Continues an mbo run from a save-file. — mboContinue" />
+
+<meta property="og:description" content="Useful if your optimization is likely to crash,
+so you can continue from a save point and will not lose too much information and runtime." />
+<meta name="twitter:card" content="summary" />
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -115,6 +120,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Continues an mbo run from a save-file.</h1>
+    <small>Source: <a href='https://github.com/mlr-org/mlrMBO/blob/master/R/mboContinue.R'><code>R/mboContinue.R</code></a></small>
     </div>
 
     
@@ -129,7 +135,7 @@ so you can continue from a save point and will not lose too much information and
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>opt.state</th>
-      <td><p>[<code>OptState</code> | <code>character(1)</code>]
+      <td><p>[<code>OptState</code> | <code>character(1)</code>]<br />
 Either the <code>save.state</code> slot of an <code>MBOResult</code> object, or a file path of a saved MBO state.
 See <code>save.on.disk.at</code> argument of <code><a href='makeMBOControl.html'>MBOControl</a></code> object.</p></td>
     </tr>
@@ -166,3 +172,4 @@ See <code>save.on.disk.at</code> argument of <code><a href='makeMBOControl.html'
 
   </body>
 </html>
+

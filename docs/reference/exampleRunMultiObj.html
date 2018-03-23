@@ -18,13 +18,21 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+<meta property="og:title" content="Perform an MBO run on a multi-objective test function and and visualize what happens. — exampleRunMultiObj" />
+
+<meta property="og:description" content="Only available for 2D -&gt; 2D examples,
+useful for figuring out how stuff works and for teaching purposes.
+Currently only parameter spaces with numerical parameters are supported.
+For visualization, run plotExampleRun on the resulting object.
+What is displayed is documented here: plotExampleRun." />
+<meta name="twitter:card" content="summary" />
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -115,6 +123,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Perform an MBO run on a multi-objective test function and and visualize what happens.</h1>
+    <small>Source: <a href='https://github.com/mlr-org/mlrMBO/blob/master/R/exampleRunMultiObj.R'><code>R/exampleRunMultiObj.R</code></a></small>
     </div>
 
     
@@ -134,7 +143,7 @@ What is displayed is documented here: <code><a href='plotExampleRun.html'>plotEx
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>fun</th>
-      <td><p>[<code>smoof_function</code>]
+      <td><p>[<code>smoof_function</code>]<br />
 Fitness function to optimize.
 For one dimensional target functions you can obtain a <code>smoof_function</code> by using <code><a href='http://www.rdocumentation.org/packages/smoof/topics/makeSingleObjectiveFunction'>makeSingleObjectiveFunction</a></code>.
 For multi dimensional functions use <code><a href='http://www.rdocumentation.org/packages/smoof/topics/makeMultiObjectiveFunction'>makeMultiObjectiveFunction</a></code>.
@@ -145,7 +154,7 @@ Each of these values will be stored additionally in the optimization path.</p></
     </tr>
     <tr>
       <th>design</th>
-      <td><p>[<code>data.frame</code>]
+      <td><p>[<code>data.frame</code>]<br />
 Initial design as data frame.
 If the y-values are not already present in design, mbo will evaluate the points.
 If the parameters have corresponding trafo functions, the design must not be transformed before it is passed!
@@ -155,37 +164,37 @@ The points are drawn via <code><a href='http://www.rdocumentation.org/packages/l
     </tr>
     <tr>
       <th>learner</th>
-      <td><p>[<code><a href='http://www.rdocumentation.org/packages/mlr/topics/makeLearner'>Learner</a></code>]
+      <td><p>[<code><a href='http://www.rdocumentation.org/packages/mlr/topics/makeLearner'>Learner</a></code>]<br />
 Regression learner from mlr, which is used as a surrogate to model our fitness function.
 If <code>NULL</code> (default), the default learner is determined as described here: <a href='makeMBOLearner.html'>mbo_default_learner</a>.</p></td>
     </tr>
     <tr>
       <th>control</th>
-      <td><p>[<code><a href='makeMBOControl.html'>MBOControl</a></code>]
+      <td><p>[<code><a href='makeMBOControl.html'>MBOControl</a></code>]<br />
 Control object for mbo.</p></td>
     </tr>
     <tr>
       <th>points.per.dim</th>
-      <td><p>[<code>integer</code>]
+      <td><p>[<code>integer</code>]<br />
 Number of (regular spaced) locations at which to
 sample the <code>fun</code> function per dimension.
 Default is 50.</p></td>
     </tr>
     <tr>
       <th>show.info</th>
-      <td><p>[<code>logical(1)</code>]
+      <td><p>[<code>logical(1)</code>]<br />
 Verbose output on console?
 Default is <code>TRUE</code>.</p></td>
     </tr>
     <tr>
       <th>nsga2.args</th>
-      <td><p>[<code>list</code>]
+      <td><p>[<code>list</code>]<br />
 Further arguments passed to the nsga2 call.
 Default is <code>list()</code>.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>[any]
+      <td><p>[any]<br />
 Further arguments passed to the learner.</p></td>
     </tr>
     </table>
@@ -228,3 +237,4 @@ of the nsga2 front is used.</p>
 
   </body>
 </html>
+

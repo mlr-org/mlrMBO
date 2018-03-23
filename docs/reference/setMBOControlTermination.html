@@ -18,13 +18,17 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+<meta property="og:title" content="Set termination options. — setMBOControlTermination" />
+
+<meta property="og:description" content="Extends an MBO control object with infill criteria and infill optimizer options." />
+<meta name="twitter:card" content="summary" />
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -115,6 +119,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Set termination options.</h1>
+    <small>Source: <a href='https://github.com/mlr-org/mlrMBO/blob/master/R/setMBOControlTermination.R'><code>R/setMBOControlTermination.R</code></a></small>
     </div>
 
     
@@ -123,31 +128,31 @@
 
     <pre class="usage"><span class='fu'>setMBOControlTermination</span>(<span class='no'>control</span>, <span class='kw'>iters</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>time.budget</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>exec.time.budget</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>target.fun.value</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>max.evals</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>more.termination.conds</span> <span class='kw'>=</span> <span class='fu'>list</span>())</pre>
+  <span class='kw'>more.termination.conds</span> <span class='kw'>=</span> <span class='fu'>list</span>(), <span class='kw'>use.for.adaptive.infill</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>control</th>
-      <td><p>[<code><a href='makeMBOControl.html'>MBOControl</a></code>]
+      <td><p>[<code><a href='makeMBOControl.html'>MBOControl</a></code>]<br />
 Control object for mbo.</p></td>
     </tr>
     <tr>
       <th>iters</th>
-      <td><p>[<code>integer(1)</code>]
+      <td><p>[<code>integer(1)</code>]<br />
 Number of sequential optimization steps.</p></td>
     </tr>
     <tr>
       <th>time.budget</th>
-      <td><p>[<code>integer(1)</code> | NULL]
+      <td><p>[<code>integer(1)</code> | NULL]<br />
 Running time budget in seconds. Note that the actual mbo run can take more time since
 the condition is checked after each iteration.
 The default <code>NULL</code> means: There is no time budget.</p></td>
     </tr>
     <tr>
       <th>exec.time.budget</th>
-      <td><p>[<code>integer(1)</code> | NULL]
+      <td><p>[<code>integer(1)</code> | NULL]<br />
 Execution time (time spent executing the function passed to <code>mbo</code>)
 budget in seconds. Note that the actual mbo run can take more time since
 the condition is checked after each iteration.
@@ -155,20 +160,20 @@ The default <code>NULL</code> means: There is no execution time budget.</p></td>
     </tr>
     <tr>
       <th>target.fun.value</th>
-      <td><p>[<code>numeric(1)</code>] | NULL]
+      <td><p>[<code>numeric(1)</code>] | NULL]<br />
 Termination criterion for single-objective optimization: Stop if a function evaluation
 is better than this given target.value.
 The default <code>NULL</code> means: The function value won't be taken into account for termination.</p></td>
     </tr>
     <tr>
       <th>max.evals</th>
-      <td><p>[<code>integer(1) | NULL</code>]
+      <td><p>[<code>integer(1) | NULL</code>]<br />
 Maximal number of function evaluations.
 The default <code>NULL</code> means: The total number of evaluations won't be taken into account for termination.</p></td>
     </tr>
     <tr>
       <th>more.termination.conds</th>
-      <td><p>[<code>list</code>]
+      <td><p>[<code>list</code>]<br />
 Optional list of termination conditions. Each condition needs to be a function
 of a single argument <code>opt.state</code> of type <code><a href='OptState.html'>OptState</a></code> and should
 return a list with the following elements:</p><dl class='dl-horizontal'>
@@ -176,6 +181,14 @@ return a list with the following elements:</p><dl class='dl-horizontal'>
   termination condition is met.</p></dd>
   <dt>message [<code>character(1)</code>]</dt><dd><p>Termination message. At the moment we just allow <code>term.custom</code>.</p></dd>
 </dl></td>
+    </tr>
+    <tr>
+      <th>use.for.adaptive.infill</th>
+      <td><p>[<code>character(1)</code>|NULL]<br />
+Which termination criterion should determine the progress that is used for adaptive infill criteria like [<code><a href='infillcrits.html'>makeMBOInfillCritAdaCB</a></code>].
+The default is <code>NULL</code> which means, that the first supplied argument is taken, following the order of the function signature.
+Other values can be <code>"iters"</code>, <code>"time.budget"</code>, etc.<br />
+If you want to to use it together with a criterion you supplied in <code>more.termination.conds</code>, <code>more.termination.conds</code> has to be a named list and the function further has to return a list element <code>progress</code> with values between 0 and 1.</p></td>
     </tr>
     </table>
     
@@ -218,10 +231,10 @@ return a list with the following elements:</p><dl class='dl-horizontal'>
 #&gt; Optimization path
 #&gt; 4 + 0 entries in total, displaying last 10 (or less):
 #&gt;            x           y dob eol error.message exec.time cb error.model
-#&gt; 1 -4.1242155 17.00915378   0  NA          &lt;NA&gt;         0 NA        &lt;NA&gt;
-#&gt; 2 -0.3230631  0.10436978   0  NA          &lt;NA&gt;         0 NA        &lt;NA&gt;
-#&gt; 3  3.9285863 15.43379006   0  NA          &lt;NA&gt;         0 NA        &lt;NA&gt;
-#&gt; 4  0.1007838  0.01015737   0  NA          &lt;NA&gt;         0 NA        &lt;NA&gt;
+#&gt; 1 -4.1242155 17.00915378   0  NA          &lt;NA&gt;     0.000 NA        &lt;NA&gt;
+#&gt; 2 -0.3230631  0.10436978   0  NA          &lt;NA&gt;     0.000 NA        &lt;NA&gt;
+#&gt; 3  3.9285863 15.43379006   0  NA          &lt;NA&gt;     0.001 NA        &lt;NA&gt;
+#&gt; 4  0.1007838  0.01015737   0  NA          &lt;NA&gt;     0.000 NA        &lt;NA&gt;
 #&gt;   train.time  prop.type propose.time se mean lambda
 #&gt; 1         NA initdesign           NA NA   NA     NA
 #&gt; 2         NA initdesign           NA NA   NA     NA
@@ -257,3 +270,4 @@ return a list with the following elements:</p><dl class='dl-horizontal'>
 
   </body>
 </html>
+
