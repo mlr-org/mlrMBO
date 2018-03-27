@@ -44,6 +44,7 @@ proposePointsMOIMBO = function(opt.state, ...) {
 
   opt.problem = getOptStateOptProblem(opt.state)
   models = getOptStateModels(opt.state)$models
+  designs = getOptStateDesigns(opt.state)
   par.set = getOptProblemParSet(opt.problem)
   control = getOptProblemControl(opt.problem)
   opt.path = getOptStateOptPath(opt.state)
@@ -52,7 +53,6 @@ proposePointsMOIMBO = function(opt.state, ...) {
 
   n = control$propose.points
   objective = control$multipoint.moimbo.objective
-  design = convertOptPathToDf(opt.path, control)
 
   ch = checkFailedModels(models, par.set, n)
   if (!ch$ok) {
@@ -80,12 +80,12 @@ proposePointsMOIMBO = function(opt.state, ...) {
   infill.ei = makeMBOInfillCritEI()$fun
   # mbo infill crits are always minimized
   if (objective == "mean.dist") {
-    Y[, 1] = infill.mean(X, models, control, par.set, design)
+    Y[, 1] = infill.mean(X, models, control, par.set, designs)
   } else if (objective == "ei.dist") {
-    Y[, 1] = infill.ei(X, models, control, par.set, design)
+    Y[, 1] = infill.ei(X, models, control, par.set, designs)
   } else if (objective %in% c("mean.se", "mean.se.dist")) {
-    Y[, 1] = infill.mean(X, models, control, par.set, design)
-    Y[, 2] = infill.se(X, models, control, par.set, design)
+    Y[, 1] = infill.mean(X, models, control, par.set, designs)
+    Y[, 2] = infill.se(X, models, control, par.set, designs)
   }
 
   # use first Y criterion to for nearest better
@@ -109,12 +109,12 @@ proposePointsMOIMBO = function(opt.state, ...) {
       Y = rbind(Y, rep(NA, y.dim))
       # mbo infill crits are always minimized
       if (objective == "mean.dist") {
-        Y[nrow(Y), 1] = infill.mean(child2, models, control, par.set, design)
+        Y[nrow(Y), 1] = infill.mean(child2, models, control, par.set, designs)
       } else if (objective == "ei.dist") {
-        Y[nrow(Y), 1] = infill.ei(child2, models, control, par.set, design)
+        Y[nrow(Y), 1] = infill.ei(child2, models, control, par.set, designs)
       } else if (objective %in% c("mean.se", "mean.se.dist")) {
-        Y[nrow(Y), 1] = infill.mean(child2, models, control, par.set, design)
-        Y[nrow(Y), 2] = infill.se(child2, models, control, par.set, design)
+        Y[nrow(Y), 1] = infill.mean(child2, models, control, par.set, designs)
+        Y[nrow(Y), 2] = infill.se(child2, models, control, par.set, designs)
       }
       # use first Y criterion to for nearest better
       if (objective %in% c("mean.dist", "ei.dist", "mean.se.dist"))

@@ -10,7 +10,7 @@
 #   MBO control object.
 # @return [\code{list(\link[mlr]{SupervisedTask}})]
 makeTasksMultiObj = function(opt.path, control) {
-  data = convertOptPathToDf(opt.path, control)
+  data = convertToDesign(opt.path, control)
 
   # FIXME: trafo.y.fun should be a list of length y.name
   # user selected to (log)-transform the y-column

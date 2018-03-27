@@ -52,7 +52,7 @@ makeMBOInfillCrit = function(fun, name, id,
   requires.se = FALSE) {
   assertFunction(
     fun,
-    args = c("points", "models", "control", "par.set", "design", "iter", "progress", "attributes"),
+    args = c("points", "models", "control", "par.set", "designs", "iter", "progress", "attributes"),
     ordered = TRUE)
 
   assertString(name)

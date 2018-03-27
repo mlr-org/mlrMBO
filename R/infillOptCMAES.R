@@ -5,15 +5,15 @@
 # @param infill.crit [\code{function}]\cr
 #   Infill criterion function.
 # @param models [\code{\link{WrappedModel}}]\cr
-#   Model fitted on design.
+#   Model fitted on designs.
 # @param control [\code{\link{MBOControl}}]\cr
 #   Control object.
 # @param par.set [\code{\link[ParamHelpers]{ParamSet}}]\cr
 #   Parameter set.
 # @param opt.path [\code{\link[ParamHelpers{OptPath}}]\cr
 #   Optimization path / archive.
-# @param design [\code{data.frame}]\cr
-#   Design of already visited points.
+# @param designs [list of \code{data.frame}]\cr
+#   List with usually one element containing the Design of already visited points.
 # @param iter [\integer(1)]
 #   Current iteration
 # @param ... [\code{ANY}]\cr
@@ -24,7 +24,7 @@
 
 # the first start is always at the best point of the current opt.path.
 # works only for numerics and integers, latter are simply rounded.
-infillOptCMAES = function(infill.crit, models, control, par.set, opt.path, design, iter, ...) {
+infillOptCMAES = function(infill.crit, models, control, par.set, opt.path, designs, iter, ...) {
   rep.pids = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
   cmaes.control = control$infill.opt.cmaes.control
 
@@ -32,7 +32,7 @@ infillOptCMAES = function(infill.crit, models, control, par.set, opt.path, desig
     fn = function(x) {
       newdata = as.data.frame(t(x))
       colnames(newdata) = rep.pids
-      infill.crit(newdata, models, control, par.set, design, iter, ...)
+      infill.crit(newdata, models, control, par.set, designs, iter, ...)
     },
     par.set = par.set,
     vectorized = TRUE

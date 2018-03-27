@@ -57,11 +57,11 @@ renderExampleRunPlot.MBOExampleRunMultiObj = function(object, iter, densregion =
       }
       pl.xspace = makeXPlot(data.x, idx.propose, idx.nsga2.paretofront, method,
         x.name, infill.crit.id, prop.models, control, par.set, opt.path,
-        object$points.per.dim, iter, 1L, object, colors)
+        object$points.per.dim, iter, control$propose.points, object, colors)
 
       # Render Y Space Plot
       pl.yspace = makeYPlot(data.y, idx.propose, idx.nsga2.paretofront, method,
-        y.name, opt.path, control, iter, 1L, object, colors)
+        y.name, opt.path, control, iter, control$propose.points, object, colors)
 
       plots[[propose.iter]] = list(pl.set = pl.xspace, pl.front = pl.yspace)
     }
@@ -79,10 +79,15 @@ makeXPlot = function(data.x, idx, idx.nsga2.paretofront, method, x.name, crit.na
   # first, fill background if possible. note: 2 different plots for mspot since
   # we have 2 infill crits, one per model
   if (method == "mspot") {
+    control1 = control2 = control
+    control1$minimize = control$minimize[1]
+    control1$y.name = control$y.name[1]
     data.crit1 = getInfillCritGrid(crit.name, points.per.dim, models[1],
-      control, par.set, opt.path[idx$past, ])
+      control1, par.set, list(opt.path[idx$past, ]))
+    control2$minimize = control$minimize[2]
+    control2$y.name = control$y.name[2]
     data.crit2 = getInfillCritGrid(crit.name, points.per.dim, models[2],
-      control, par.set, opt.path[idx$past, ])
+      control2, par.set, list(opt.path[idx$past, ]))
 
     crit1.plot = fillBackgroundWithInfillCrit(pl.xspace, data.crit1, x.name, crit.name) +
       ggplot2::ggtitle("XSpace - model 1")
@@ -94,13 +99,29 @@ makeXPlot = function(data.x, idx, idx.nsga2.paretofront, method, x.name, crit.na
       crit2 = createBasicSpacePlot(crit2.plot, gg.points.xspace, iter, object, x.name, 0.8, "x", colors)
     )
   }
-  if (method %in% c("parego", "dib")) {
-    if (propose.points == 1L) {
-      data.crit = getInfillCritGrid(crit.name, points.per.dim, models,
-        control, par.set, opt.path[idx$past, ], iter)
-      pl.xspace = fillBackgroundWithInfillCrit(pl.xspace, data.crit, x.name, crit.name) +
-        ggplot2::ggtitle("XSpace")
-    }
+  if (method == "parego") {
+    control2 = control
+    control2$n.objectives = 1L
+    control2$minimize = TRUE
+    control2$multiobj.use.scalarized.y = TRUE
+    control2$y.name = "y.scalar"
+    design2 = opt.path[idx$past, ]
+    ys = as.matrix(opt.path[idx$past, control$y.name])
+    weights = as.matrix(opt.path[opt.path$dob == iter, paste0("parego.weight.", seq_along(control$y.name)), drop = FALSE])
+    design2 = dropNamed(design2, control$y.name)
+    weighted.y = (weights %*% t(ys))
+    # FIXME, maybe apply(ys, 1, min) or something
+    design2$y.scalar = weighted.y[1,] #For control$propose.points>1 we just show the first
+    data.crit = getInfillCritGrid(crit.name, points.per.dim, models, control2, par.set, list(design2), iter)
+    pl.xspace = fillBackgroundWithInfillCrit(pl.xspace, data.crit, x.name, crit.name) +
+      ggplot2::ggtitle("XSpace")
+  }
+  if (method == "dib") {
+    #FIXME: For ParEGO we have to modify the design and add a scalarized y?
+    designs = Map(function(i) dropNamed(opt.path[idx$past, ], control$y.name[-i]), seq_along(control$y.name))
+    data.crit = getInfillCritGrid(crit.name, points.per.dim, models, control, par.set, designs, iter)
+    pl.xspace = fillBackgroundWithInfillCrit(pl.xspace, data.crit, x.name, crit.name) +
+      ggplot2::ggtitle("XSpace")
     pl.xspace = createBasicSpacePlot(pl.xspace, gg.points.xspace, iter, object, x.name, 0.8, "x", colors)
   }
   return(pl.xspace)

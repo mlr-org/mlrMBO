@@ -6,7 +6,7 @@
 #FIXME should we shrink if a local value is NA (dependent param)
 #
 # See infillOptCMAES.R for interface explanation.
-infillOptFocus = function(infill.crit, models, control, par.set, opt.path, ...) {
+infillOptFocus = function(infill.crit, models, control, par.set, opt.path, designs, iter, ...) {
   global.y = Inf
 
   # restart the whole crap some times
@@ -22,7 +22,7 @@ infillOptFocus = function(infill.crit, models, control, par.set, opt.path, ...) 
       # convert to param encoding our model was trained on and can use
       newdesign = convertDataFrameCols(newdesign, ints.as.num = TRUE, logicals.as.factor = TRUE)
 
-      y = infill.crit(newdesign, models, control, ps.local, ...)
+      y = infill.crit(newdesign, models, control, ps.local, designs, iter, ...)
 
 
       # get current best value

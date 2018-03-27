@@ -26,15 +26,15 @@ plot.OptState = function(x, scale.panels = FALSE, ...) {
   par.count.numeric = sum(par.is.numeric)
   par.count.discrete = par.dim - par.count.numeric
   opt.path = getOptStateOptPath(opt.state)
-  design = convertOptPathToDf(opt.path, control)
   models = getOptStateModels(opt.state)$models
+  designs = getOptStateDesigns(opt.state)
   x.ids = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
   y.ids = control$y.name
   infill = control$infill.crit
 
   # the data we need to plot
   points = generateGridDesign(par.set, 100, trafo = TRUE)
-  infill.res = infill$fun(points = points, models = models, control = control, par.set = par.set, design = design, attributes = TRUE, iter = getOptStateLoop(opt.state))
+  infill.res = infill$fun(points = points, models = models, control = control, par.set = par.set, designs = designs, attributes = TRUE, iter = getOptStateLoop(opt.state))
 
   crit.components = attr(infill.res, "crit.components")
   if (!is.null(crit.components)) {
@@ -47,6 +47,8 @@ plot.OptState = function(x, scale.panels = FALSE, ...) {
     plot.data$infill = -1 * plot.data$infill
   }
   colnames(plot.data)[1] = control$infill.crit$id
+
+  design = designs[[1]]
 
   # add types to points
   design$type = ifelse(getOptPathDOB(opt.path) == 0, "init", "seq")
