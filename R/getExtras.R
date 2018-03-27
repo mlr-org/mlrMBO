@@ -20,14 +20,16 @@ getExtras = function(n, prop, train.time, control) {
   # this happens in init design
   infill.crit = control$infill.crit
   infill.crit.id = getMBOInfillCritId(control$infill.crit)
+
+  allow.crit.components = control$n.objectives == 1L && !is.null(getMBOInfillCritComponents(infill.crit)) && (is.null(control$multipoint.method) || control$multipoint.method != "moimbo")
+
   if (is.null(prop)) {
     k = ifelse(control$n.objectives > 1L && control$multiobj.method == "mspot", control$n.objectives + 1, 1L)
     # pregenerate a dummmy "prop" data structure
     prop = list(crit.vals = matrix(NA_real_, nrow = n, ncol = k), propose.time = NA_real_, errors.model = NA_character_, prop.type = rep("initdesign", n))
-    # a) no infill crit components for MCO 
-    # b) infill crit is ignored for multipoint moimbo, in which case we don't use any components
-    if (control$n.objectives == 1L && !is.null(getMBOInfillCritComponents(infill.crit)) && 
-        (is.null(control$multipoint.method) || control$multipoint.method != "moimbo")) {
+    # a) no infill crit components for MCO
+    # b) infill crit is ignored for multi-point moimbo, in which case we don't use any components
+    if (allow.crit.components) {
       prop$crit.components = getMBOInfillCritDummyComponents(infill.crit)
     }
     # if (control$multifid) {
@@ -75,7 +77,9 @@ getExtras = function(n, prop, train.time, control) {
       ex$propose.time = if (i == 1) prop$propose.time else NA_real_
     }
     # infill.crit components
-    ex = insert(ex, as.list(prop$crit.components[i,,drop = FALSE]))
+    if (allow.crit.components) {
+      ex = insert(ex, as.list(prop$crit.components[i,,drop = FALSE]))
+    }
     exs[[i]] = ex
   }
   return(exs)

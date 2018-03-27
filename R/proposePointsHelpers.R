@@ -1,7 +1,7 @@
 # some functions call proposePointByInfillOptimization multiple times
 # this helpers joins these results to a single result
 joinProposedPoints = function(props) {
-  list(
+  makeProposal(
     prop.points = do.call(rbind, extractSubList(props, "prop.points", simplify = FALSE)),
     crit.vals = do.call(rbind, extractSubList(props, "crit.vals", simplify = FALSE)),
     propose.time = do.call(c, extractSubList(props, "propose.time", simplify = FALSE)),
@@ -14,19 +14,20 @@ joinProposedPoints = function(props) {
 # generate a few random points if ANY model failed
 checkFailedModels = function(models, par.set, npoints, control) {
   isfail = vlapply(models, isFailureModel)
-  prop = NULL
   if (any(isfail)) {
     # if error in any model, return first msg
     prop.points = generateDesign(npoints, par.set, randomLHS)
-    prop$prop.points = convertDataFrameCols(prop.points, ints.as.num = TRUE, logicals.as.factor = TRUE)
-    # mspot is the special kid, that needs multiple crit vals
-    if (control$n.objectives > 1L && control$multiobj.method == "mspot")
-      prop$crit.vals = matrix(rep(NA_real_), nrow = npoints, ncol = control$n.objectives + 1)
-    else
-      prop$crit.vals = matrix(rep(NA_real_, npoints), ncol = 1L)
-    prop$errors.model = getFailureModelMsg(models[[which.first(isfail)]])
-    prop$propose.time = rep(NA_real_, npoints)
+    prop.points = convertDataFrameCols(prop.points, ints.as.num = TRUE, logicals.as.factor = TRUE)
+    prop = makeProposal(
+      control = control,
+      prop.points = prop.points,
+      prop.type = "random_error",
+      errors.model = getFailureModelMsg(models[[which.first(isfail)]])
+    )
+  } else {
+    prop = NULL
   }
+
   return(list(ok = all(!isfail), prop = prop))
 }
 
@@ -50,7 +51,7 @@ createSinglePointControls = function(control, crit, crit.pars = NULL) {
 
 # perform a deep copy of an opt.path object
 # so we can store (temporary) stuff in it, without changing the real opt.path
-# needed in CL and DIB multipoint
+# needed in CL and DIB multi-point
 deepCopyOptPath = function(op) {
   op2 = op
   op2$env = new.env()

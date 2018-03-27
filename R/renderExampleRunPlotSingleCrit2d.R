@@ -34,10 +34,9 @@ renderExampleRunPlot2d = function(x, iter,
   critfun = control$infill.crit$fun
   se = (x$learner$predict.type == "se")
 
-  opt.direction = 1
-  if (infill.crit.id %in% c("ei")) {
-    opt.direction = -1
-  }
+  # we need to maximize expected improvement
+  opt.direction = getMBOInfillCritMultiplier(control$infill.crit)
+
   opt.path = as.data.frame(mbo.res$opt.path)
 
   idx.init = which(opt.path$dob == 0)
@@ -57,23 +56,23 @@ renderExampleRunPlot2d = function(x, iter,
   infill.se = makeMBOInfillCritStandardError()$fun
 
   if (model.ok) {
-    evals$yhat = ifelse(control$minimize, 1, -1) * infill.mean(evals.x, models, control, par.set, opt.path[idx.past, ])
+    evals$yhat = ifelse(control$minimize, 1, -1) * infill.mean(evals.x, models, control, par.set, list(opt.path[idx.past, ]))
     if (se) {
       evals$se = -infill.se(evals.x, models, control, par.set, opt.path[idx.past, ])
     }
     if (proppoints == 1L) {
-      evals[[infill.crit.id]] = opt.direction * critfun(evals.x, models, control, par.set, opt.path[idx.past, ])
+      evals[[infill.crit.id]] = opt.direction * critfun(evals.x, models, control, par.set, list(opt.path[idx.past, ]))
     } else {
       objective = control$multipoint.moimbo.objective
       if (control$multipoint.method == "cb") {
-        evals[[infill.crit.id]] = opt.direction * infill.mean(evals.x, models, control, par.set, opt.path[idx.past, ])
+        evals[[infill.crit.id]] = opt.direction * infill.mean(evals.x, models, control, par.set, list(opt.path[idx.past, ]))
       } else {
         if (objective == "mean.dist") {
-          evals[[infill.crit.id]] = opt.direction * infill.mean(evals.x, models, control, par.set, opt.path[idx.past, ])
+          evals[[infill.crit.id]] = opt.direction * infill.mean(evals.x, models, control, par.set, list(opt.path[idx.past, ]))
         } else if (objective == "ei.dist") {
-          evals[[infill.crit.id]] = opt.direction * infill.ei(evals.x, models, control, par.set, opt.path[idx.past, ])
+          evals[[infill.crit.id]] = opt.direction * infill.ei(evals.x, models, control, par.set, list(opt.path[idx.past, ]))
         } else if (objective %in% c("mean.se", "mean.se.dist")) {
-          evals[[infill.crit.id]] = opt.direction * infill.mean(evals.x, models, control, par.set, opt.path[idx.past, ])
+          evals[[infill.crit.id]] = opt.direction * infill.mean(evals.x, models, control, par.set, list(opt.path[idx.past, ]))
         }
       }
     }
@@ -179,7 +178,7 @@ renderExampleRunPlot2d = function(x, iter,
     # FIXME: the following ~ 15 lines is copy and paste stuff (see exampleRun_autplot_1d.R)
     if (se) {
       evals.x = evals[, names.x, drop = FALSE]
-      evals$se = -infill.se(evals.x, models, control, par.set, opt.path[idx.past, ])
+      evals$se = -infill.se(evals.x, models, control, par.set, list(opt.path[idx.past, ]))
       evals$se.min = evals$yhat - se.factor * evals$se
       evals$se.max = evals$yhat + se.factor * evals$se
     }

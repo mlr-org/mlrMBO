@@ -10,13 +10,14 @@
 #   Learner object.
 # @param control [\code{\link{MBOControl}}]
 #   MBO control object.
-checkStuff = function(fun, par.set, design, learner, control) {
+checkStuff = function(fun, design, learner, control) {
   assertFunction(fun)
-  assertClass(par.set, "ParamSet")
   if (!is.null(design))
     assertClass(design, "data.frame")
   assertClass(control, "MBOControl")
   assertClass(learner, "Learner")
+
+  par.set = getParamSet(fun)
 
   if (getNumberOfObjectives(fun) != control$n.objectives) {
     stopf("Objective function has %i objectives, but the control object assumes %i.",
@@ -40,6 +41,9 @@ checkStuff = function(fun, par.set, design, learner, control) {
 
   if (!hasFiniteBoxConstraints(par.set))
     stop("mbo requires finite box constraints!")
+
+  if (hasOtherConstraints(fun))
+    stop("mbo only can handle box-constraints defined in the par.set!")
 
   if (hasDiscrete(par.set) && !hasLearnerProperties(learner, "factors"))
     stop("Provided learner does not support factor parameters.")
@@ -78,7 +82,7 @@ checkStuff = function(fun, par.set, design, learner, control) {
 
   if (is.null(control$target.fun.value)) {
     # If we minimize, target is -Inf, for maximize it is Inf
-    control$target.fun.value = if (control$minimize[1L]) -Inf else Inf
+    control$target.fun.value = ifelse(shouldBeMinimized(fun), -Inf, Inf)
   } else {
     assertNumber(control$target.fun.value, na.ok = FALSE)
   }
@@ -108,9 +112,9 @@ checkStuff = function(fun, par.set, design, learner, control) {
             "\nBut this learner does not support prediction of standard errors!"))
       }
       if (control$multipoint.method == "cl" && infill.crit.id != "ei")
-        stopf("Multipoint proposal using constant liar needs the infill criterion 'ei' (expected improvement), but you used '%s'!", infill.crit.id)
+        stopf("Multi-point proposal using constant liar needs the infill criterion 'ei' (expected improvement), but you used '%s'!", infill.crit.id)
       if (control$multipoint.method == "cb" && infill.crit.id != "cb")
-        stopf("Multipoint proposal using parallel cb needs the infill criterion 'cb' (confidence bound), but you used '%s'!", infill.crit.id)
+        stopf("Multi-point proposal using parallel cb needs the infill criterion 'cb' (confidence bound), but you used '%s'!", infill.crit.id)
     }
   }
 

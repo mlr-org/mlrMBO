@@ -18,19 +18,44 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
+<meta property="og:title" content="OptPath in mlrMBO — mbo_OptPath" />
 
+<meta property="og:description" content="In mlrMBO the OptPath contains extra information next to the information documented in OptPath.
+The extras are:
+train.timeTime to train the model(s) that produced the points. Only the first slot of the vector is used (if we have multiple points), rest are NA.
+propose.timeTime needed to propose the point. If we have individual timings from the proposal mechanism, we have one different value per point here. If all were generated in one go, we only have one timing, we store it in the slot for the first point, rest are NA.
+errors.modelPossible Error Messages. If point-producing model(s) crashed they are replicated for all n points, if only one error message was passed we store it for the first point, rest are NA.
+prop.typeType of point proposal. Possible values are
+  
+  initdesignPoints actually not proposed, but in the initial design.
+  infill\_xHere x is a placeholder for the selected infill criterion, e.g., infill\_ei for expected improvement.
+  random\_interleaveUniformly sampled points added additionally to the proposed points.
+  random\_filteredIf filtering of proposed points located too close to each other is active, these are replaced by random points.
+  final\_evalIf final.evals is set in makeMBOControl: Final evaluations of the proposed solution to reduce noise in y.
+  
+parego.weightWeight vector sampled for multi-point ParEGO
+...Depending on the chosen infill criterion there will be additional columns, e.g. se and mean for the Expected Improvement)
+" />
+
+<meta property="og:description" content="Moreover, the user may pass additional &#8220;user extras&#8221; by appending a named list
+of scalar values to the return value of the objective function." />
+<meta name="twitter:card" content="summary" />
 <!-- mathjax -->
-<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+<script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
+
+
   </head>
 
   <body>
@@ -65,10 +90,22 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/mixed_space_optimization.html">Mixed Space Optimization</a>
+      <a href="../articles/supplementary/mixed_space_optimization.html">Mixed Space Optimization</a>
     </li>
     <li>
-      <a href="../articles/parallelization.html">Parallelization</a>
+      <a href="../articles/supplementary/parallelization.html">Parallelization</a>
+    </li>
+    <li>
+      <a href="../articles/supplementary/noisy_optimization.html">Noisy Optimization</a>
+    </li>
+    <li>
+      <a href="../articles/supplementary/infill_criteria.html">Infill Criteria</a>
+    </li>
+    <li>
+      <a href="../articles/supplementary/machine_learning_with_mlrmbo.html">Machine learning with mlrMBO</a>
+    </li>
+    <li>
+      <a href="../articles/supplementary/human_in_the_loop_MBO.html">Human-in-the-loop MBO</a>
     </li>
   </ul>
 </li>
@@ -100,29 +137,26 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>OptPath in mlrMBO</h1>
+    <small>Source: <a href='https://github.com/mlr-org/mlrMBO/blob/master/R/doc_mbo_OptPath.R'><code>R/doc_mbo_OptPath.R</code></a></small>
     </div>
 
     
     <p>In mlrMBO the <code><a href='http://www.rdocumentation.org/packages/ParamHelpers/topics/OptPath'>OptPath</a></code> contains extra information next to the information documented in <code><a href='http://www.rdocumentation.org/packages/ParamHelpers/topics/OptPath'>OptPath</a></code>.</p>
-
-    <p>The extras are:
-<dl class='dl-horizontal'>
-<dt>train.time</dt><dd>Time to train the model(s) that produced the points. Only the first slot of the vector is used (if we have multiple points), rest are NA.</dd>
-<dt>propose.time</dt><dd>Time needed to propose the point. If we have individual timings from the proposal mechanism, we have one different value per point here. If all were generated in one go, we only have one timing, we store it in the slot for the first point, rest are NA.</dd>
-<dt>errors.model</dt><dd>Possible Error Messages. If point-producing model(s) crashed they are replicated for all n points, if only one error message was passed we store it for the first point, rest are NA.</dd>
-<dt>prop.type</dt><dd>Type of point proposal. Possible values are
+<p>The extras are:</p><dl class='dl-horizontal'>
+<dt>train.time</dt><dd><p>Time to train the model(s) that produced the points. Only the first slot of the vector is used (if we have multiple points), rest are NA.</p></dd>
+<dt>propose.time</dt><dd><p>Time needed to propose the point. If we have individual timings from the proposal mechanism, we have one different value per point here. If all were generated in one go, we only have one timing, we store it in the slot for the first point, rest are NA.</p></dd>
+<dt>errors.model</dt><dd><p>Possible Error Messages. If point-producing model(s) crashed they are replicated for all n points, if only one error message was passed we store it for the first point, rest are NA.</p></dd>
+<dt>prop.type</dt><dd><p>Type of point proposal. Possible values are
   <dl class='dl-horizontal'>
-  <dt>initdesign</dt><dd>Points actually not proposed, but in the initial design.</dd>
-  <dt>infill\_x</dt><dd>Here x is a placeholder for the selected infill criterion, e.g., infill\_ei for expected improvement.</dd>
-  <dt>random\_interleave</dt><dd>Uniformly sampled points added additionally to the proposed points.</dd>
-  <dt>random\_filtered</dt><dd>If filtering of proposed points located too close to each other is active, these are replaced by random points.</dd>
-  <dt>final\_eval</dt><dd>If <code>final.evals</code> is set in <code><a href='makeMBOControl.html'>makeMBOControl</a></code>: Final evaluations of the proposed solution to reduce noise in y.</dd>
-  </dl></p>
-
-    <p></dd>
-<dt>parego.weight</dt><dd>Weight vector sampled for multipoint ParEGO</dd>
-<dt>...</dt><dd>Depending on the chosen infill criterion there will be additional columns, e.g. <code>se</code> and <code>mean</code> for the Expected Improvement)</dd>
-</dl></p>
+  <dt>initdesign</dt><dd><p>Points actually not proposed, but in the initial design.</p></dd>
+  <dt>infill\_x</dt><dd><p>Here x is a placeholder for the selected infill criterion, e.g., infill\_ei for expected improvement.</p></dd>
+  <dt>random\_interleave</dt><dd><p>Uniformly sampled points added additionally to the proposed points.</p></dd>
+  <dt>random\_filtered</dt><dd><p>If filtering of proposed points located too close to each other is active, these are replaced by random points.</p></dd>
+  <dt>final\_eval</dt><dd><p>If <code>final.evals</code> is set in <code><a href='makeMBOControl.html'>makeMBOControl</a></code>: Final evaluations of the proposed solution to reduce noise in y.</p></dd>
+  </dl></p></dd>
+<dt>parego.weight</dt><dd><p>Weight vector sampled for multi-point ParEGO</p></dd>
+<dt>...</dt><dd><p>Depending on the chosen infill criterion there will be additional columns, e.g. <code>se</code> and <code>mean</code> for the Expected Improvement)</p></dd>
+</dl>
 
     <p>Moreover, the user may pass additional &#8220;user extras&#8221; by appending a named list
 of scalar values to the return value of the objective function.</p>
@@ -145,7 +179,7 @@ of scalar values to the return value of the objective function.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
@@ -153,3 +187,4 @@ of scalar values to the return value of the objective function.</p>
 
   </body>
 </html>
+

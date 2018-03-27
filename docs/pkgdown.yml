@@ -1,0 +1,13 @@
+pandoc: 1.15.2
+pkgdown: 0.1.0.9000
+pkgdown_sha: 5e4825875751c009444c56ce43d06324ec53e910
+articles:
+  animation: helpers/animation.html
+  mlrMBO: mlrMBO.html
+  human_in_the_loop_MBO: supplementary/human_in_the_loop_MBO.html
+  infill_criteria: supplementary/infill_criteria.html
+  machine_learning_with_mlrmbo: supplementary/machine_learning_with_mlrmbo.html
+  mixed_space_optimization: supplementary/mixed_space_optimization.html
+  noisy_optimization: supplementary/noisy_optimization.html
+  parallelization: supplementary/parallelization.html
+

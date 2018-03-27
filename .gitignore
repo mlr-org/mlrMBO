@@ -10,8 +10,8 @@ src/*.so
 plots
 tests/testthat/Rplots.pdf
 *.sublime-*
-vignettes/mlrMBO_cache/
-vignettes/mlrMBO_files/
+vignettes/*_files/
 vignettes/*.html
-docs/articles/*_cache/
+vignettes/*.R
+*_cache
 .Rproj.user

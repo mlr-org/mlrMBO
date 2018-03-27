@@ -6,7 +6,7 @@
 #FIXME should we shrink if a local value is NA (dependent param)
 #
 # See infillOptCMAES.R for interface explanation.
-infillOptFocus = function(infill.crit, models, control, par.set, opt.path, design, iter, ...) {
+infillOptFocus = function(infill.crit, models, control, par.set, opt.path, designs, iter, ...) {
   global.y = Inf
 
   # restart the whole crap some times
@@ -22,7 +22,7 @@ infillOptFocus = function(infill.crit, models, control, par.set, opt.path, desig
       # convert to param encoding our model was trained on and can use
       newdesign = convertDataFrameCols(newdesign, ints.as.num = TRUE, logicals.as.factor = TRUE)
 
-      y = infill.crit(newdesign, models, control, ps.local, design, iter, ...)
+      y = infill.crit(newdesign, models, control, ps.local, designs, iter, ...)
 
 
       # get current best value
@@ -55,9 +55,7 @@ infillOptFocus = function(infill.crit, models, control, par.set, opt.path, desig
              # randomly drop a level, which is not val
              if (length(par$values) > 1L) {
                val.names = names(par$values)
-               # remove current val from delete options, should work also for NA
-               val.names = setdiff(val.names, val)
-               to.del = sample(seq_along(val.names), 1)
+               to.del = sample(which(val.names != val), 1L)
                par$values = par$values[-to.del]
              }
            }

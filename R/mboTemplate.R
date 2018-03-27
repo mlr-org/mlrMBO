@@ -35,7 +35,7 @@ mboTemplate.OptState = function(obj) {
     return(opt.state)
   }
   repeat {
-    prop = proposePoints.OptState(opt.state)
+    prop = proposePoints(opt.state)
     evalProposedPoints.OptState(opt.state, prop)
     finalizeMboLoop(opt.state)
     terminate = getOptStateTermination(opt.state)

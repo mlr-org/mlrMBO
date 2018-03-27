@@ -25,7 +25,7 @@
 #' @return [\code{MBOExampleRunMultiObj}]
 #' @export
 exampleRunMultiObj= function(fun, design = NULL, learner, control, points.per.dim = 50,
-  show.info = NULL, nsga2.args = list(), ...) {
+  show.info = getOption("mlrMBO.show.info", TRUE), nsga2.args = list(), ...) {
 
   assertClass(fun, "smoof_multi_objective_function")
   par.set = getParamSet(fun)
@@ -34,16 +34,12 @@ exampleRunMultiObj= function(fun, design = NULL, learner, control, points.per.di
   if (is.null(design))
     design = generateDesign(4 * n.params, par.set)
 
-  learner = checkLearner(learner, par.set, control, fun)
+  learner = checkLearner(learner, control, fun)
   assertClass(control, "MBOControl")
   minimize = shouldBeMinimized(fun)
   control$noisy = isNoisy(fun)
   control$minimize = minimize
   ref.point = smoof::getRefPoint(fun)
-
-  if (is.null(show.info)) {
-    show.info = getOption("mlrMBO.show.info", TRUE)
-  }
   assertLogical(show.info, len = 1L, any.missing = FALSE)
   ny = getNumberOfObjectives(fun)
 
@@ -91,7 +87,7 @@ exampleRunMultiObj= function(fun, design = NULL, learner, control, points.per.di
 
   showInfo(show.info, "Performing MBO on function.")
   showInfo(show.info, "Initial design: %i. Sequential iterations: %i.", control$init.design.points, control$iters)
-  showInfo(show.info, "Learner: %s. Settings:\n%s", learner$id, mlr:::getHyperParsString(learner, show.missing.values = FALSE))
+  showInfo(show.info, "Learner: %s. Settings:\n%s", learner$id, getHyperParsString2(learner, show.missing.values = FALSE))
 
   # run optimizer now
   res = mbo(fun, design, learner = learner, control = control, show.info = show.info)
@@ -151,7 +147,7 @@ print.MBOExampleRunMultiObj = function(x, ...) {
   catf("Parameter types               : %s", collapse(x$par.types))
   print(x$control)
   catf("Learner                       : %s", x$learner$id)
-  catf("Learner settings:\n%s", mlr:::getHyperParsString(x$learner, show.missing.values = FALSE))
+  catf("Learner settings:\n%s", getHyperParsString2(x$learner, show.missing.values = FALSE))
   catf("Hypervolume                   : %.4e", x$mbo.hypervolume)
   catf("NSGA2 Hypervolume (6000 FEs)  : %.4e", x$nsga2.hypervolume)
 }

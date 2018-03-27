@@ -12,10 +12,28 @@
 # @return [\code{list}] List with elements
 #   tasks: list of tasks
 #   weights: matrix of used weight vectors
-makeTasksParEGO = function(opt.path, control, all.possible.weights) {
+makeTasksParEGO = function(opt.state) {
+
+  res = generateParEgoDfData(opt.state)
+  # create the scalarized regression tasks
+  tasks = apply(res$lambdas, 1, function(lambda) {
+    data = generateParEgoDf(res, lambda)
+    makeRegrTask(target = "y.scalar", data = data) 
+  })
+  attr(tasks, "weight.mat") = res$lambdas
+  return(tasks)
+}
+
+generateParEgoDfData = function(opt.state) {
+
+  opt.path = getOptStateOptPath(opt.state)
+  opt.problem = getOptStateOptProblem(opt.state)
+  control = getOptProblemControl(opt.problem)
+  all.possible.weights = getOptProblemAllPossibleWeights(opt.problem)
+
   n.points = control$propose.points
   # get data + normalize the targets to [0, 1] + drop them from data
-  data = convertOptPathToDf(opt.path, control)
+  data = convertToDesign(opt.path, control)
   data = dropNamed(data, control$y.name)
   y = getOptPathY(opt.path)
   if (control$multiobj.parego.normalize == "standard") {
@@ -58,15 +76,18 @@ makeTasksParEGO = function(opt.path, control, all.possible.weights) {
   }
   lambdas = rbind(margin.points, lambdas)
 
-  # create the scalarized regression tasks
-  tasks = vector(mode = "list", length = n.points)
-  for (loop in seq_len(n.points)) {
-    # make sure to minimize, then create scalarized response
-    lambda = lambdas[loop,, drop = TRUE] * ifelse(control$minimize, 1, -1)
-    y2 = y %*% diag(lambda)
-    data$y.scalar = apply(y2, 1, max) + control$multiobj.parego.rho * rowSums(y2)
-    tasks[[loop]] = makeRegrTask(target = "y.scalar", data = data)
-  }
-  attr(tasks, "weight.mat") = lambdas
-  return(tasks)
+  list(
+    lambdas = lambdas,
+    minimize = control$minimize,
+    multiobj.parego.rho = control$multiobj.parego.rho,
+    y = y,
+    data = data
+  )
+}
+
+generateParEgoDf = function(res, lambda) {
+  lambda = lambda * ifelse(res$minimize, 1, -1)
+  y2 = res$y %*% diag(lambda)
+  res$data$y.scalar = apply(y2, 1, max) + res$multiobj.parego.rho * rowSums(y2)
+  return(res$data)
 }

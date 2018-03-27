@@ -4,7 +4,7 @@
 \alias{plotExampleRun}
 \title{Renders plots for exampleRun objects and displays them.}
 \usage{
-plotExampleRun(object, iters, pause = TRUE, densregion = TRUE,
+plotExampleRun(object, iters, pause = interactive(), densregion = TRUE,
   se.factor = 1, single.prop.point.plots = FALSE, xlim = NULL,
   ylim = NULL, point.size = 3, line.size = 1, trafo = NULL,
   colors = c("red", "blue", "green"), gg.objects = list(), ...)
@@ -20,7 +20,7 @@ Default is all iterations.}
 
 \item{pause}{[\code{logical(1)}]\cr
 Should the process be paused after each iteration?
-Default is \code{TRUE}.}
+Default is \code{interactive()}.}
 
 \item{densregion}{[\code{logical(1)}]\cr
 Should the background be shaded? Default is \code{TRUE}.
@@ -33,7 +33,7 @@ is plotted above and below.
 Default is 1.}
 
 \item{single.prop.point.plots}{[\code{logical(1)}]\cr
-Parameter for MOI-MBO Multipoint proposal: Should every proposed point
+Parameter for MOI-MBO Multi-point proposal: Should every proposed point
 be displayed in a single plot - or one plot per Iteration? Default is FALSE
 indicating single plots per proposed points.}
 
@@ -49,7 +49,7 @@ and \code{yhat(x) +- se.factor2 * se(x)} both in the plot. Note that this heuris
 change the \code{ylim} setting between plot iterations.}
 
 \item{point.size}{[\code{numeric(1)}]\cr
-Point size for ploted points. Default ist 3.}
+Point size for plotted points. Default is 3.}
 
 \item{line.size}{[\code{numeric(1)}]\cr
 Line width of the graphs of plotted functions.}
@@ -66,8 +66,8 @@ If a single function is provided, this function is used for all plots.}
 
 \item{colors}{[\code{character(3)}]
 Specify colors for point in the plots. Must be a vector of length 3,
-each element a color for the type design, prop and seq respectivly.
-Default is red for the initial design, blue for allready proposed points
+each element a color for the type design, prop and seq respectively.
+Default is red for the initial design, blue for already proposed points
 and green for the actual iteration.}
 
 \item{gg.objects}{[\code{list)}]

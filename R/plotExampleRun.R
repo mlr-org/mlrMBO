@@ -22,7 +22,7 @@
 #'   Default is all iterations.
 #' @param pause [\code{logical(1)}]\cr
 #'   Should the process be paused after each iteration?
-#'   Default is \code{TRUE}.
+#'   Default is \code{interactive()}.
 #' @param densregion [\code{logical(1)}]\cr
 #'   Should the background be shaded? Default is \code{TRUE}.
 #'   Only used if learner supports computation of standard error.
@@ -32,7 +32,7 @@
 #'   is plotted above and below.
 #'   Default is 1.
 #' @param single.prop.point.plots [\code{logical(1)}]\cr
-#'   Parameter for MOI-MBO Multipoint proposal: Should every proposed point
+#'   Parameter for MOI-MBO Multi-point proposal: Should every proposed point
 #'   be displayed in a single plot - or one plot per Iteration? Default is FALSE
 #'   indicating single plots per proposed points.
 #' @param xlim [\code{numeric(2)}]\cr
@@ -45,7 +45,7 @@
 #'   and \code{yhat(x) +- se.factor2 * se(x)} both in the plot. Note that this heuristic might
 #'   change the \code{ylim} setting between plot iterations.
 #' @param point.size [\code{numeric(1)}]\cr
-#'   Point size for ploted points. Default ist 3.
+#'   Point size for plotted points. Default is 3.
 #' @param line.size [\code{numeric(1)}]\cr
 #'   Line width of the graphs of plotted functions.
 #' @param trafo [\code{list}]\cr
@@ -59,8 +59,8 @@
 #'   If a single function is provided, this function is used for all plots.
 #' @param colors [\code{character(3)}]
 #'   Specify colors for point in the plots. Must be a vector of length 3,
-#'   each element a color for the type design, prop and seq respectivly.
-#'   Default is red for the initial design, blue for allready proposed points
+#'   each element a color for the type design, prop and seq respectively.
+#'   Default is red for the initial design, blue for already proposed points
 #'   and green for the actual iteration.
 #' @param gg.objects [\code{list)}]
 #'   List of \code{gg} objects that should be added to all ggplots.
@@ -68,7 +68,7 @@
 #'   Currently not used.
 #' @return Nothing.
 #' @export
-plotExampleRun = function(object, iters, pause = TRUE,
+plotExampleRun = function(object, iters, pause = interactive(),
   densregion = TRUE, se.factor = 1, single.prop.point.plots = FALSE,
   xlim = NULL, ylim = NULL,
   point.size = 3, line.size = 1,
@@ -120,7 +120,7 @@ plotExampleRun = function(object, iters, pause = TRUE,
       single.prop.point.plots = single.prop.point.plots, xlim = xlim, ylim = ylim,
       point.size = point.size, line.size = line.size, trafo = trafo, colors = colors, gg.objects = gg.objects, ...)
     if (!any(vlapply(plots, inherits, what = "ggplot"))) {
-      # in this case we have multi-objective multipoint proposal: list of plots for each proposed point
+      # in this case we have multi-objective multi-point proposal: list of plots for each proposed point
       for (jter in seq_along(plots)) {
         arrangePlots(plots[[jter]], multi.crit)
         if (pause && !(iter == getLast(iters) && jter == length(plots)))

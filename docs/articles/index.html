@@ -18,19 +18,23 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-
+<meta property="og:title" content="Articles" />
 <!-- mathjax -->
-<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+<script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
+
+
   </head>
 
   <body>
@@ -65,10 +69,22 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/mixed_space_optimization.html">Mixed Space Optimization</a>
+      <a href="../articles/supplementary/mixed_space_optimization.html">Mixed Space Optimization</a>
     </li>
     <li>
-      <a href="../articles/parallelization.html">Parallelization</a>
+      <a href="../articles/supplementary/parallelization.html">Parallelization</a>
+    </li>
+    <li>
+      <a href="../articles/supplementary/noisy_optimization.html">Noisy Optimization</a>
+    </li>
+    <li>
+      <a href="../articles/supplementary/infill_criteria.html">Infill Criteria</a>
+    </li>
+    <li>
+      <a href="../articles/supplementary/machine_learning_with_mlrmbo.html">Machine learning with mlrMBO</a>
+    </li>
+    <li>
+      <a href="../articles/supplementary/human_in_the_loop_MBO.html">Human-in-the-loop MBO</a>
     </li>
   </ul>
 </li>
@@ -97,7 +113,7 @@
       </header>
 
       <div class="page-header">
-  <h1>Vignette reference <small>version&nbsp;1.0.0</small></h1>
+  <h1>Articles <small>version&nbsp;1.1.2</small></h1>
 </div>
 
 <div class="row">
@@ -108,9 +124,13 @@
 
       <ul>
         <li><a href="helpers/animation.html">animate MBO Run</a></li>
-        <li><a href="mixed_space_optimization.html">Mixed Space Optimization</a></li>
-        <li><a href="mlrMBO.html">mlrMBO: Quick introduction</a></li>
-        <li><a href="parallelization.html">Parallelization</a></li>
+        <li><a href="mlrMBO.html">mlrMBO: A brief introduction</a></li>
+        <li><a href="supplementary/human_in_the_loop_MBO.html">Human-in-the-loop MBO</a></li>
+        <li><a href="supplementary/infill_criteria.html">Infill criteria</a></li>
+        <li><a href="supplementary/machine_learning_with_mlrmbo.html">Machine learning with mlrMBO: Tuning hyperparameters with model-based optimization</a></li>
+        <li><a href="supplementary/mixed_space_optimization.html">Mixed Space Optimization</a></li>
+        <li><a href="supplementary/noisy_optimization.html">Noisy Optimization</a></li>
+        <li><a href="supplementary/parallelization.html">Parallelization</a></li>
       </ul>
     </div>
   </div>
@@ -122,7 +142,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
@@ -130,3 +150,4 @@
 
   </body>
 </html>
+

@@ -1,4 +1,4 @@
-context("mbo")
+context("mbo rf")
 
 test_that("mbo works with rf", {
   learner = makeLearner("regr.randomForest")

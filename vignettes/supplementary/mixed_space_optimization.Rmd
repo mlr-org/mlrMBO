@@ -1,0 +1,246 @@
+---
+title: "Mixed Space Optimization"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: true
+      smooth_scroll: false
+    dev: svg
+vignette: >
+  %\VignetteIndexEntry{Mixed Space Optimization}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE, cache = FALSE}
+library(mlrMBO)
+library(rgenoud)
+set.seed(123)
+knitr::opts_chunk$set(cache = TRUE, collapse = FALSE, dev = "svg")
+knitr::knit_hooks$set(document = function(x){
+  gsub("```\n*```r*\n*", "", x)
+})
+```
+
+## Purpose
+
+This Vignette is supposed to give you an introduction to use **mlrMBO** for mixed-space optimization, meaning to optimize an objective function with a domain that is not only real-valued but also contains discrete values like *names*.
+
+## Mixed Space Optimization
+
+### Objective Function
+
+We construct an exemplary objective function using `smoof::makeSingleObjetiveFunction()`.
+The `par.set` argument has to be a `ParamSet` object from the **ParamHelpers** package, which provides information about the parameters of the objective function and their constraints for optimization.
+The objective function will be 3-dimensional with the inputs `j` and `method`.
+`j` is in the interval $[0,2\pi]$
+The Parameter `method` is categorical and can be either `"a"` or `"b"`.
+In this case we want to minimize the function, so we have to set `minimize = TRUE`.
+As the parameters are of different types (e.g. numeric and categorical), the function expects a list instead of a vector as its argument, which is specified by `has.simple.signature = FALSE`.
+For further information about he **smoof** package we refer to the [github page](https://github.com/jakobbossek/smoof).
+
+```{r objective_function}
+library(mlrMBO)
+library(ggplot2)
+
+fun = function(x) {
+  j = x$j
+  method = x$method
+  perf = ifelse(method == "a", sin(j), cos(j))
+  return(perf)
+}
+
+objfun2 = makeSingleObjectiveFunction(
+  name = "mixed_example",
+  fn = fun,
+  par.set = makeParamSet(
+    makeNumericParam("j", lower = 0,upper = 2 * pi),
+    makeDiscreteParam("method", values = c("a", "b"))
+  ),
+  has.simple.signature = FALSE,
+  minimize = TRUE
+)
+
+# visualize the function
+autoplot(objfun2)
+```
+
+### Sorrogate Learner
+
+For this kind of parameter space a regression method for the surrogate is necessary that supports *factors*.
+To list all *mlr* learners that support factors and uncertainty estimation you can run `listLearners("regr", properties = c("factors", "se"))`.
+A popular choice for these scenarios is the *Random Forest*.
+
+```{r}
+surr.rf = makeLearner("regr.randomForest", predict.type = "se")
+```
+
+### Infill Criterion
+
+Although technically possible the *Expected Imrovement* that we used for the numerical parameter space and the *Kriging* surrogate, the *Confidence Bound* (`makeMBOInfillCritCB()`) or also called statistical upper/lower bound is recommended for *Random Forest* regression.
+The reason is, that the *Expected Improvement* is founded on the Gaussian posterior distribution given by the Kriging estimator, which is not given by the Random Forest regression.
+For *minimization* the *lower* Confidence Bound is given by $UCB(x) = \hat{\mu}(x) - \lambda \cdot \hat{s}(x)$.
+We set $\lambda = 5$.
+For the infill criteria optimization we set `opt.focussearch.points = 500`, to increase the speed of the tutorial.
+
+```{r control_object}
+control2 = makeMBOControl()
+control2 = setMBOControlInfill(
+  control = control2,
+  crit = makeMBOInfillCritCB(cb.lambda = 5),
+  opt.focussearch.points = 500
+)
+```
+
+### Termination
+
+We want to stop after 10 MBO iterations, meaning 10 function evaluations in this example (not including the initial design):
+
+```{r termination}
+control2 = setMBOControlTermination(
+  control = control2,
+  iters = 10
+)
+```
+
+### Initial Design
+
+The initial design is set to size of 8:
+
+```{r init_design}
+design2 = generateDesign(n = 8, par.set = getParamSet(objfun2))
+```
+
+Note that the initial design has to be big enough to cover all discrete values and ideally all combinations of discrete values including integers.
+If we had 2 discrete variables one with 5 and one with 3 discrete values the initial design should be at least of size 15.
+Usually `generateDesign()` takes care that the points are spread uniformly.
+
+### Optimization
+
+Finally, we start the optimization with `mbo()` with suppressed learner output from *mlr* and we print the result object to obtain the input that lead to the best objective:
+
+```{r mbo_run, results='hold'}
+# Surpresses output of learners
+mlr::configureMlr(show.info = FALSE, show.learner.output = FALSE, on.learner.warning = "quiet")
+run2 = mbo(objfun2, design = design2, learner = surr.rf, control = control2, show.info = TRUE)
+```
+The console output gives a live overview of all all evaluated points.
+
+Let's look at the parts of the result that tell us the optimal reached value and its corresponding setting:
+
+```{r mbo_res}
+run2$y
+run2$x
+```
+
+## Visualization
+
+Visualization is only possible for 2-dimensional objective functions, of which one is the categorical dimension.
+Exactly like in our exemplary function.
+
+Again, to obtain all the data that is necessary to generate the plot we have to call the optimization through `exampleRun()`:
+
+```{r example_run_2d}
+ex.run2 = exampleRun(objfun2, design = design2, learner = surr.rf, control = control2, show.info = FALSE)
+```
+
+And let's visualize the results:
+
+```{r plot_example_run_2d, warning=FALSE}
+plotExampleRun(ex.run2, iters = c(1L, 2L, 10L), pause = FALSE)
+```
+
+## Improved Example for Dependent Parameters
+
+Looking back at our example we notice that the behavior of the function for $j$ totally changes depending on the chosen _method_.
+If such dependency is known beforehand it totally makes sense to let the surrogate know that $j$ should be treated differently depending on the chosen _method_.
+This is done by introducing a new variable for each _method_.
+
+```{r wrapper}
+wrap.fun = function(x) {
+  x$j = if (x$method == "a") x$ja else x$jb
+  x = x[setdiff(names(x), c("ja", "jb"))]
+  fun(x)
+}
+```
+
+We have to also change the parameter space accordingly:
+
+```{r wrapper_par_space}
+ps.wrap = makeParamSet(
+  makeDiscreteParam("method", values = c("a", "b")),
+  makeNumericParam("ja", lower = 0,upper = 2 * pi, requires = quote(method == "a")),
+  makeNumericParam("jb", lower = 0,upper = 2 * pi, requires = quote(method == "b"))
+  )
+```
+
+Let's wrap this up in a new objective function using `smoof`:
+
+```{r wrapper_smoof}
+objfun3 = makeSingleObjectiveFunction(
+  name = "mixed_example: Dependent J",
+  fn = wrap.fun,
+  par.set = ps.wrap,
+  has.simple.signature = FALSE,
+  minimize = TRUE
+)
+```
+
+As we have dependent parameters now there will be missing values in the design for the surrogate.
+This means e.g. that when we use `method=a` the parameter `jb` will be `NA`.
+Hence, our learner for the surrogate has to be able to deal with missing values.
+The random forest is not natively able to do that but works perfect using the _separate-class method_ [Ding et. al. An investigation of missing data methods for classification trees applied to binary response data.](http://people.stern.nyu.edu/jsimonof/jmlr10.pdf).
+When no learner is supplied, mlrMBO takes care of that automatically, by using a _random forest_ wrapped in an _impute wrapper_.
+
+You can do it manually like this:
+
+```{r impute_wrapper}
+lrn = makeLearner("regr.randomForest", predict.type = "se", ntree = 200)
+lrn = makeImputeWrapper(lrn, classes = list(numeric = imputeMax(2), factor = imputeConstant("__miss__")))
+```
+
+Or you call `makeMBOLearner` which is exactly what happens when no learner is supplied to `mbo()` with the advantage that now you can change the parameters manually before calling `mbo()`.
+
+```{r makeMBOLearner}
+lrn = makeMBOLearner(control = control2, fun = objfun3, ntree = 200)
+```
+
+And now let's directly run the optimization without further changing the control object from above.
+
+```{r wrapper_run}
+design3 = generateDesign(n = 8, par.set = getParamSet(objfun3))
+run3 = mbo(objfun3, learner = lrn, design = design3, control = control2, show.info = FALSE)
+run3$x
+run3$y
+```
+Unfortunately our problem is now categorical and 3-dimensional to the eyes of `mlrMBO` so there is no implemented method to visualize the optimization.
+However we can analyze the residuals to see which surrogate was more accurate:
+
+```{r residual_comparison}
+op2 = as.data.frame(run2$opt.path)
+op3 = as.data.frame(run3$opt.path)
+
+# residual variance of the surrogate model for the first example
+var(op2$mean - op2$y, na.rm = TRUE)
+# residual variance of the advanced surrogate model with independetly treat ed jaand jb
+var(op3$mean - op3$y, na.rm = TRUE)
+```
+As you can see our new approach could improve the fit of the surrogate.
+
+
+## Remarks
+
+In comparison to optimization on a purely numerical search space with functions that are not too crazy mixed space optimization comes with some twists that we want to mention here.
+
+### Random Forests as surrogate
+
+The biggest drawback of using _random forests_ versus _Kriging_ is the lack of _"spacial uncertainty"_.
+Whereas in Kriging can model uncertainty in areas where no observations are made thanks to the co-variance that gets higher for points that are far away from already visited points, the random forest lacks of this information.
+For the random forest the uncertainty is based on the diversity of the results of the individual individual forests.
+Naturally, the diversity is higher in areas where the results of the objective function are diverse.
+For deterministic functions or functions with just a little noise this is mainly the case in the proximity of steep slopes of the objective function.
+This can lead to proposed points that are located at slopes but not actually in the _valley_.
+Furthermore the diversity of the prediction of the individual trees can also be quite low outside the area of observed values leading to less proposals in the area between proposed points and the actual boundaries of the search space.
+To combat this problem it can make sense to manually add points at the boundaries of the search space to the initial design.
+

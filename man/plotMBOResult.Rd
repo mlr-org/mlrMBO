@@ -6,9 +6,11 @@
 \alias{plot.MBOMultiObjResult}
 \title{MBO Result Plotting}
 \usage{
-\method{plot}{MBOSingleObjResult}(x, iters = NULL, pause = TRUE, ...)
+\method{plot}{MBOSingleObjResult}(x, iters = NULL, pause = interactive(),
+  ...)
 
-\method{plot}{MBOMultiObjResult}(x, iters = NULL, pause = TRUE, ...)
+\method{plot}{MBOMultiObjResult}(x, iters = NULL, pause = interactive(),
+  ...)
 }
 \arguments{
 \item{x}{[\code{MBOResult}]\cr
@@ -19,13 +21,13 @@ Iterations to be plotted, 0 indicates the initial design. Default is all iterati
 
 \item{pause}{[\code{logical(1)}]\cr
 Should the process be paused after each iteration?
-Default is \code{TRUE}.}
+Default is \code{interactive()}.}
 
 \item{...}{Additional parameters for the \code{\link[ParamHelpers]{plotOptPath}}
 function in package \code{ParamHelpers}.}
 }
 \description{
-Plots any MBO result objects. Plots for X-Space, Y-Space and any coloumn in
+Plots any MBO result objects. Plots for X-Space, Y-Space and any column in
 the optimization path are available. This function uses
 \code{\link[ParamHelpers]{plotOptPath}} from package \code{ParamHelpers}.
 }

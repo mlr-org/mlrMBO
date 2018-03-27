@@ -7,7 +7,7 @@
 #'
 #' @details
 #' In the multi-objective case we recommend to set \code{cb.lambda} to
-#' \eqn{q(0.5 \cdot \pi_{CB}^(1 / n))} where \eqn{q} is the quantile
+#' \eqn{q(0.5 \cdot \pi_{CB}^{(1 / n)})} where \eqn{q} is the quantile
 #' function of the standard normal distribution, \eqn{\pi_CB} is the probability
 #' of improvement value and \eqn{n} is the number of objectives of the considered problem.
 #'
@@ -24,6 +24,13 @@
 #   Calculates the range of the mean and standard error and multiplies the standard error
 #   with the quotient of theses ranges.
 #   Default is \code{FALSE}.
+#' @param cb.lambda.start [\code{numeric(1)} | \code{NULL}]\cr
+#'  The value of \code{cb.lambda} at the beginning of the optimization.
+#'  The \code{makeMBOInfillCritAdaCB} crit takes the progress of the optimization determined by the termination criterion to linearly move from \code{cb.lambda.start} to \code{cb.lambda.end}.
+#'  The initial desgin does not account for the progress of the optimization.
+#'  Eexcept for \code{makeMBOTerminationMaxExecBudget}) if you dont pass a precalculated initial design.
+#' @param cb.lambda.end [\code{numeric(1)} | \code{NULL}]\cr
+#'  The value of \code{cb.lambda} at the end of the optimization.
 #' @param aei.use.nugget [\code{logical(1)}]\cr
 #'   Should the nugget effect be used for the pure variance estimation for augmented
 #'   expected improvement?
@@ -35,6 +42,7 @@
 #'   Epsilon for epsilon-dominance for \code{dib.indicator = "sms"}.
 #'   Default is \code{NULL}, in this case it is adaptively set.
 #' @name infillcrits
+#' @seealso \code{\link{makeMBOInfillCrit}}
 #' @rdname infillcrits
 NULL
 
@@ -46,11 +54,12 @@ NULL
 #' @rdname infillcrits
 makeMBOInfillCritMeanResponse = function() {
   makeMBOInfillCrit(
-    fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
+    fun = function(points, models, control, par.set, designs, iter, progress, attributes = FALSE) {
       ifelse(control$minimize, 1, -1) * predict(models[[1L]], newdata = points)$data$response
     },
     name = "Mean response",
-    id = "mean"
+    id = "mean",
+    opt.direction = "objective"
   )
 }
 
@@ -58,12 +67,13 @@ makeMBOInfillCritMeanResponse = function() {
 #' @rdname infillcrits
 makeMBOInfillCritStandardError = function() {
   makeMBOInfillCrit(
-    fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
+    fun = function(points, models, control, par.set, designs, iter, progress, attributes = FALSE) {
        -predict(models[[1L]], newdata = points)$data$se
     },
     name = "Standard error",
     id = "se",
-    requires.se = TRUE
+    requires.se = TRUE,
+    opt.direction = "maximize"
   )
 }
 
@@ -73,10 +83,13 @@ makeMBOInfillCritEI = function(se.threshold = 1e-6) {
   assertNumber(se.threshold, lower = 1e-20)
   force(se.threshold)
   makeMBOInfillCrit(
-    fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
+    fun = function(points, models, control, par.set, designs, iter, progress, attributes = FALSE) {
       model = models[[1L]]
-      maximize.mult = ifelse(control$minimize, 1, -1)
+      design = designs[[1]]
+      maximize.mult = if (control$minimize) 1 else -1
+      assertString(control$y.name)
       y = maximize.mult * design[, control$y.name]
+      assertNumeric(y, any.missing = FALSE)
       p = predict(model, newdata = points)$data
       p.mu = maximize.mult * p$response
       p.se = p$se
@@ -96,7 +109,7 @@ makeMBOInfillCritEI = function(se.threshold = 1e-6) {
     id = "ei",
     components = c("se", "mean"),
     params = list(se.threshold = se.threshold),
-    minimize = FALSE,
+    opt.direction = "maximize",
     requires.se = TRUE
   )
 }
@@ -107,9 +120,9 @@ makeMBOInfillCritCB = function(cb.lambda = NULL) {
   assertNumber(cb.lambda, lower = 0, null.ok = TRUE)
   force(cb.lambda)
   makeMBOInfillCrit(
-    fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
+    fun = function(points, models, control, par.set, designs, iter, progress, attributes = FALSE) {
       model = models[[1L]]
-      maximize.mult = ifelse(control$minimize, 1, -1)
+      maximize.mult = if (control$minimize) 1 else -1
       p = predict(model, newdata = points)$data
       #FIXME: removed cb.inflate.se for now (see issue #309)
       # if (cb.inflate.se) {
@@ -135,6 +148,7 @@ makeMBOInfillCritCB = function(cb.lambda = NULL) {
     id = "cb",
     components = c("se", "mean", "lambda"),
     params = list(cb.lambda = cb.lambda),
+    opt.direction = "objective",
     requires.se = TRUE
   )
 }
@@ -148,9 +162,10 @@ makeMBOInfillCritAEI = function(aei.use.nugget = FALSE, se.threshold = 1e-6) {
   force(se.threshold)
 
   makeMBOInfillCrit(
-    fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
+    fun = function(points, models, control, par.set, designs, iter, progress, attributes = FALSE) {
       model = models[[1L]]
-      maximize.mult = ifelse(control$minimize, 1, -1)
+      design = designs[[1L]]
+      maximize.mult = if (control$minimize) 1 else -1
       p = predict(model, newdata = points)$data
       p.mu = maximize.mult * p$response
       p.se = p$se
@@ -176,10 +191,11 @@ makeMBOInfillCritAEI = function(aei.use.nugget = FALSE, se.threshold = 1e-6) {
       }
       return(res)
     },
-    name = "Augmeted expected improvement",
+    name = "Augmented expected improvement",
     id = "aei",
     components = c("se", "mean", "tau"),
     params = list(aei.use.nugget = aei.use.nugget),
+    opt.direction = "maximize",
     requires.se = TRUE
   )
 }
@@ -193,11 +209,12 @@ makeMBOInfillCritEQI = function(eqi.beta = 0.75, se.threshold = 1e-6) {
   force(se.threshold)
 
   makeMBOInfillCrit(
-    fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
+    fun = function(points, models, control, par.set, designs, iter, progress, attributes = FALSE) {
       model = models[[1L]]
-      maximize.mult = ifelse(control$minimize, 1, -1)
+      design = designs[[1L]]
+      maximize.mult = if (control$minimize) 1 else -1
       # compute q.min
-      design_x = design[, (colnames(design) %nin% control$y.name)]
+      design_x = design[, (colnames(design) %nin% control$y.name), drop = FALSE]
       p.current.model = predict(object = model, newdata = design_x)$data
       q.min = min(maximize.mult * p.current.model$response + qnorm(eqi.beta) * p.current.model$se)
 
@@ -230,6 +247,7 @@ makeMBOInfillCritEQI = function(eqi.beta = 0.75, se.threshold = 1e-6) {
     components = c("se", "mean", "tau"),
     id = "eqi",
     params = list(eqi.beta = eqi.beta),
+    opt.direction = "maximize",
     requires.se = TRUE
   )
 }
@@ -245,10 +263,11 @@ makeMBOInfillCritDIB = function(cb.lambda = 1, sms.eps = NULL) {
   if (!is.null(sms.eps))
     assertNumber(sms.eps, lower = 0, finite = TRUE)
   makeMBOInfillCrit(
-    fun = function(points, models, control, par.set, design, iter, attributes = FALSE) {
+    fun = function(points, models, control, par.set, designs, iter, progress, attributes = FALSE) {
       # get ys and cb-value-matrix for new points, minimize version
       maximize.mult = ifelse(control$minimize, 1, -1)
-      ys = as.matrix(design[, control$y.name]) %*% diag(maximize.mult)
+      ys = Map(function(i, y.name) designs[[i]][, y.name], i = seq_along(control$y.name), y.name = control$y.name)
+      ys = do.call(cbind, ys) %*% diag(maximize.mult)
 
       ps = lapply(models, predict, newdata = points)
       means = extractSubList(ps, c("data", "response"), simplify = "cols")
@@ -279,9 +298,35 @@ makeMBOInfillCritDIB = function(cb.lambda = 1, sms.eps = NULL) {
       }
       return(crit.vals)
     },
-    name = "Directed Indicator Based Search",
+    name = "Direct indicator-based",
     id = "dib",
     params = list(cb.lambda = cb.lambda, sms.eps = sms.eps),
+    opt.direction = "maximize",
     requires.se = TRUE
   )
+}
+
+# ============================
+# Experimental Infill Criteria
+# ============================
+
+#' @export
+#' @rdname infillcrits
+makeMBOInfillCritAdaCB = function(cb.lambda.start = NULL, cb.lambda.end = NULL) {
+  assertNumber(cb.lambda.start, lower = 0, null.ok = TRUE)
+  assertNumber(cb.lambda.end, lower = 0, null.ok = TRUE)
+  force(cb.lambda.start)
+  force(cb.lambda.end)
+  crit = makeMBOInfillCritCB()
+  orig.fun = crit$fun
+  crit$fun = function(points, models, control, par.set, design, iter, progress, attributes = FALSE) {
+    assertNumber(progress)
+    cb.lambda = (1-progress) * cb.lambda.start + progress * cb.lambda.end
+    assign("cb.lambda", cb.lambda, envir = environment(orig.fun))
+    orig.fun(points, models, control, par.set, design, iter, progress, attributes)
+  }
+  crit$name = "Adaptive Confidence bound"
+  crit$id = "adacb"
+  crit$params = list(cb.lambda.start = cb.lambda.start, cb.lambda.end = cb.lambda.end)
+  return(addClasses(crit, "InfillCritAdaCB"))
 }

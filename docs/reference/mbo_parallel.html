@@ -18,19 +18,38 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
+<meta property="og:title" content="Parallelization in mlrMBO — mbo_parallel" />
 
+<meta property="og:description" content="In mlrMBO you can parallelize the tuning on two different levels to speed up computation:
+mlrMBO.fevalMultiple evaluations of the target function.
+mlrMBO.propose.pointsOptimization of the infill criteria if multiple are used (e.g. ParEGO and ParallelLCB)
+Internally the evaluation of the target function is realized with the R package parallelMap.
+See the mlrMBO tutorial and the Github project pages of parallelMap for instructions on how to set up parallelization.
+The different levels of parallelization can be specified in parallelStart*.
+Details for the levels mentioned above are given below:
+Evaluation of the objective function can be parallelized in cases multiple points are to be evaluated at once. These are: evaluation of the initial design, multiple proposed points per iteration and evaluation of the target function in exampleRun. (Level: mlrMBO.feval)
+Model fitting / point proposal - in some cases where independent, expensive operations are performed. (Level: mlrMBO.propose.points)
+Details regarding the latter:
+single-objective MBO with LCB multi-pointParallel optimization of LCBs for the lambda-values.
+Multi-objective MBO with ParEGOParallel optimization of scalarization functions.
+" />
+<meta name="twitter:card" content="summary" />
 <!-- mathjax -->
-<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+<script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
+
+
   </head>
 
   <body>
@@ -65,10 +84,22 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/mixed_space_optimization.html">Mixed Space Optimization</a>
+      <a href="../articles/supplementary/mixed_space_optimization.html">Mixed Space Optimization</a>
     </li>
     <li>
-      <a href="../articles/parallelization.html">Parallelization</a>
+      <a href="../articles/supplementary/parallelization.html">Parallelization</a>
+    </li>
+    <li>
+      <a href="../articles/supplementary/noisy_optimization.html">Noisy Optimization</a>
+    </li>
+    <li>
+      <a href="../articles/supplementary/infill_criteria.html">Infill Criteria</a>
+    </li>
+    <li>
+      <a href="../articles/supplementary/machine_learning_with_mlrmbo.html">Machine learning with mlrMBO</a>
+    </li>
+    <li>
+      <a href="../articles/supplementary/human_in_the_loop_MBO.html">Human-in-the-loop MBO</a>
     </li>
   </ul>
 </li>
@@ -100,33 +131,23 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Parallelization in mlrMBO</h1>
+    <small>Source: <a href='https://github.com/mlr-org/mlrMBO/blob/master/R/doc_mbo_parallel.R'><code>R/doc_mbo_parallel.R</code></a></small>
     </div>
 
     
-    <p>In mlrMBO you can parallize the tuning on two different levels to speed up computation:
-<ul>
-<li><code>mlrMBO.feval</code>Multiple evaluations of the target function.
-  </li>
-<li><code>mlrMBO.propose.points</code>Optimization of the infill criteria if multiple are used (e.g. ParEGO and ParallelLCB)
-</li>
-</ul></p>
-
-    <p>Internally the evaluation of the target function is realized with the R package parallelMap.
+    <p>In mlrMBO you can parallelize the tuning on two different levels to speed up computation:</p><ul>
+<li><p><code>mlrMBO.feval</code>Multiple evaluations of the target function.</p></li>
+<li><p><code>mlrMBO.propose.points</code>Optimization of the infill criteria if multiple are used (e.g. ParEGO and ParallelLCB)</p></li>
+</ul><p>Internally the evaluation of the target function is realized with the R package parallelMap.
 See the mlrMBO tutorial and the Github project pages of parallelMap for instructions on how to set up parallelization.
 The different levels of parallelization can be specified in <code>parallelStart*</code>.
-Details for the levels mentioned above are given below:
-<ul>
-<li>Evaluation of the objective function can be parallelized in cases multiple points are to be evaluated at once. These are: evaluation of the initial design, multiple proposed points per iteration and evaluation of the target function in <code><a href='exampleRun.html'>exampleRun</a></code>. (Level: <code>mlrMBO.feval</code>)
-</li>
-<li>Model fitting / point proposal - in some cases where independent, expensive operations are performed. (Level: <code>mlrMBO.propose.points</code>)
-</li>
-</ul></p>
-
-    <p>Details regarding the latter:
-<dl class='dl-horizontal'>
-<dt>single-objective MBO with LCB multipoint</dt><dd>Parallel optimization of LCBs for the lambda-values.</dd>
-<dt>Multi-objective MBO with ParEGO</dt><dd>Parallel optimization of scalarization functions.</dd>
-</dl></p>
+Details for the levels mentioned above are given below:</p><ul>
+<li><p>Evaluation of the objective function can be parallelized in cases multiple points are to be evaluated at once. These are: evaluation of the initial design, multiple proposed points per iteration and evaluation of the target function in <code><a href='exampleRun.html'>exampleRun</a></code>. (Level: <code>mlrMBO.feval</code>)</p></li>
+<li><p>Model fitting / point proposal - in some cases where independent, expensive operations are performed. (Level: <code>mlrMBO.propose.points</code>)</p></li>
+</ul><p>Details regarding the latter:</p><dl class='dl-horizontal'>
+<dt>single-objective MBO with LCB multi-point</dt><dd><p>Parallel optimization of LCBs for the lambda-values.</p></dd>
+<dt>Multi-objective MBO with ParEGO</dt><dd><p>Parallel optimization of scalarization functions.</p></dd>
+</dl>
     
 
         
@@ -146,7 +167,7 @@ Details for the levels mentioned above are given below:
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
@@ -154,3 +175,4 @@ Details for the levels mentioned above are given below:
 
   </body>
 </html>
+

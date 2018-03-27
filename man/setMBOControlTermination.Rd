@@ -6,7 +6,7 @@
 \usage{
 setMBOControlTermination(control, iters = NULL, time.budget = NULL,
   exec.time.budget = NULL, target.fun.value = NULL, max.evals = NULL,
-  more.termination.conds = list())
+  more.termination.conds = list(), use.for.adaptive.infill = NULL)
 }
 \arguments{
 \item{control}{[\code{\link{MBOControl}}]\cr
@@ -44,6 +44,12 @@ return a list with the following elements:
   termination condition is met.}
   \item{message [\code{character(1)}]}{Termination message. At the moment we just allow \code{term.custom}.}
 }}
+
+\item{use.for.adaptive.infill}{[\code{character(1)}|NULL]\cr
+Which termination criterion should determine the progress that is used for adaptive infill criteria like [\code{\link{makeMBOInfillCritAdaCB}}].
+The default is \code{NULL} which means, that the first supplied argument is taken, following the order of the function signature.
+Other values can be \code{"iters"}, \code{"time.budget"}, etc.\cr
+If you want to to use it together with a criterion you supplied in \code{more.termination.conds}, \code{more.termination.conds} has to be a named list and the function further has to return a list element \code{progress} with values between 0 and 1.}
 }
 \value{
 [\code{\link{MBOControl}}].

@@ -34,6 +34,11 @@ getOptStateTasks = function(opt.state) {
   tasks
 }
 
+getOptStateDesigns = function(opt.state) {
+  tasks = getOptStateTasks(opt.state)
+  lapply(tasks, getTaskData)
+}
+
 getOptStateTimeModel = function(opt.state) {
   opt.path = getOptStateOptPath(opt.state)
   time.model = opt.state$time.model
@@ -89,10 +94,9 @@ getOptStateFinalPoints = function(opt.state, unify = FALSE) {
 
   if (control$n.objectives == 1L) {
     final.index = chooseFinalPoint(opt.state)
-    best = getOptPathEl(opt.path, final.index)
     list(
-      x = best$x,
-      y = as.numeric(best$y),
+      x = getOptPathX(opt.path)[final.index, , drop = FALSE],
+      y = getOptPathY(opt.path)[final.index],
       best.ind = final.index
     )
   } else {
@@ -120,11 +124,16 @@ getOptStateState = function(opt.state) {
 
 getOptStateTermination = function(opt.state) {
   terminate = shouldTerminate.OptState(opt.state)
+  setOptStateProgress(opt.state, terminate$progress)
   # update only if termination condition is met
   if (terminate$term) {
     setOptStateState(opt.state, terminate$code)
   }
   terminate
+}
+
+getOptStateProgress = function(opt.state) {
+  opt.state$progress
 }
 
 getOptStateValidStates = function() {
@@ -134,3 +143,4 @@ getOptStateValidStates = function() {
 getOptStateValidTerminationStates = function() {
   c("term.iter", "term.time", "term.exectime", "term.yval", "term.feval", "term.custom")
 }
+

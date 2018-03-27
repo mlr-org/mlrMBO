@@ -12,7 +12,7 @@
 #'   \item{4}{The target function crashes the whole R process.}
 #'   \item{5}{The surrogate machine learning model might crash.
 #'     Kriging quite often can run into numerical problems.}
-#'   \item{6}{The proposal mechanism - in multipoint or single point mode - produces
+#'   \item{6}{The proposal mechanism - in multi-point or single point mode - produces
 #'     a point which is either close to another candidate point in the same iteration or
 #'     an already visited point in a previous iteration.}
 #'   \item{7}{The mbo process exits / stops / crashes itself. Maybe because it hit a walltime.}
@@ -37,7 +37,7 @@
 #'
 #'
 #' \strong{Mechanism II - The mlr's on.learner.error}
-#' This procdues a FailureModel for the surrogate, if it crashed (issue 6). A random point (or multiple ones)
+#' This produces a FailureModel for the surrogate, if it crashed (issue 6). A random point (or multiple ones)
 #' are proposed now for the current iteration. And we pray that we can fit the model again in the
 #' next iteration.
 #
@@ -46,7 +46,7 @@
 #'
 #' \strong{Mechanism III - Filtering of proposed point which are too close}
 #'
-#' Issue 6 is solved by filtering points that are to close to other porposed points or points already
+#' Issue 6 is solved by filtering points that are to close to other proposed points or points already
 #' proposed in preceding iterations. Filtering in this context means replacing the proposed points by
 #' a randomly generated new point. The heuristics mechanism is (de)activated via the logical
 #' \code{filter.proposed.points.tol} parameter of the \code{\link{setMBOControlInfill}} function, which defaults to

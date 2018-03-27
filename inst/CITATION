@@ -1,0 +1,15 @@
+bibentry(
+  bibtype = "Manual",
+  key = "mlrMBO",
+  title = "{{{mlrMBO}}: {{A Modular Framework}} for {{Model}}-{{Based Optimization}} of {{Expensive Black}}-{{Box Functions}}}",
+  author = c(
+    person("Bernd", "Bischl"),
+    person("Jakob", "Richter"),
+    person("Jakob", "Bossek"),
+    person("Daniel", "Horn"),
+    person("Janek", "Thomas"),
+    person("Michel", "Lang")
+  ),
+  year = "2017",
+  url = "http://arxiv.org/abs/1703.03373"
+)

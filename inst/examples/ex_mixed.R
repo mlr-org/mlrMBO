@@ -1,10 +1,13 @@
-
+#####################################################
+###
+### optimizing mixed space function
+###
+#####################################################
+\dontrun{
 library(mlrMBO)
 library(ggplot2)
-library(smoof)
 set.seed(1)
 configureMlr(show.learner.output = FALSE)
-pause = interactive()
 
 obj.fun = makeSingleObjectiveFunction(
   name = "Mixed functions",
@@ -24,8 +27,8 @@ obj.fun = makeSingleObjectiveFunction(
 
 ctrl = makeMBOControl(propose.points = 1L)
 ctrl = setMBOControlTermination(ctrl, iters = 10L)
-ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCritEI(), opt = "focussearch",
-  opt.focussearch.points = 500L)
+ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCritEI(), 
+  opt = "focussearch", opt.focussearch.points = 500L)
 
 lrn = makeMBOLearner(ctrl, obj.fun)
 
@@ -36,4 +39,5 @@ run = exampleRun(obj.fun, design = design, learner = lrn,
 
 print(run)
 
-plotExampleRun(run, pause = pause, densregion = TRUE, gg.objects = list(theme_bw()))
+plotExampleRun(run, densregion = TRUE, gg.objects = list(theme_bw()))
+}

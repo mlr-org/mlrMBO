@@ -1,4 +1,4 @@
-#FIXME: briefly explain multipoint proposal for all thre methods
+#FIXME: briefly explain multi-point proposal for all three methods
 
 #' @title Set multi-objective options.
 #' @description
@@ -9,7 +9,7 @@
 #'   Which multi-objective method should be used?
 #'   \dQuote{parego}: The ParEGO algorithm.
 #'   \dQuote{dib}: Direct indicator-based method. Subsumes SMS-EGO and epsilon-EGO.
-#'   \dQuote{mspot}: Directly optimizes multcrit problem where we substitute the true
+#'   \dQuote{mspot}: Directly optimizes multicrit problem where we substitute the true
 #'   objectives with model-based infill crits via an EMOA.
 #'   All methods can also propose multiple points in parallel.
 #'   Default is \dQuote{dib}.
@@ -40,8 +40,8 @@
 #'   Default is 1, if only 1 point is proposed each iteration, otherwise 5.
 #' @param parego.use.margin.points [\code{logical}]\cr
 #'   For each target function: Should the weight vector (0, ..., 0, 1, 0, ..., 0),
-#'   i.e. the weight vector with only 0 and a single 1 at the i.th position for
-#'   the i.th target function, be drawn with probability 1? Number of TRUE entries
+#'   i.e. the weight vector with only 0 and a single 1 at the i-th position for
+#'   the i-th target function, be drawn with probability 1? Number of TRUE entries
 #'   must be less or equal to \code{propose.points}
 #'   Default is not to do this.
 #' @param parego.normalize [\code{character}] \cr
@@ -53,7 +53,7 @@
 #' @param mspot.select.crit [\code{\link{MBOInfillCrit}}]\cr
 #'   Which infill.crit to use in the candidate selection. After the NSGA2
 #'   proposed a set of candidates, \dQuote{propose.points} are selected via
-#'   the hypervoume contribution of this infill.crit.
+#'   the hypervolume contribution of this infill.crit.
 #'   Possible values are \dQuote{crit.mr} and \dQuote{crit.cb} (or any other InfillCrit generated with \code{\link{makeMBOInfillCritCB}}), default is \dQuote{crit.mr}.
 #' @return [\code{\link{MBOControl}}].
 #'
@@ -89,7 +89,7 @@
 #' Jeong, S.; Obayashi, S.: Efficient global optimization (EGO) for Multi-Objective Problem and Data Mining.
 #' In: Proc. IEEE Congress on
 #' Evolutionary Computation (CEC 2005), Edinburgh, UK, Corne, D.;
-#' et al. (eds.), IEEE, 2005, ISBN 0-7803-9363-5, pp. 2138-2145
+#' et.al. (eds.), IEEE, 2005, ISBN 0-7803-9363-5, pp. 2138-2145
 #'
 #' @family MBOControl
 #' @export
@@ -152,10 +152,9 @@ setMBOControlMultiObj = function(control,
     if (propose.points == 1L) {
       parego.sample.more.weights = 1L
     } else if (!is.null(parego.sample.more.weights)) {
-      parego.sample.more.weights = asInt(parego.sample.more.weights)
+      parego.sample.more.weights = asInt(parego.sample.more.weights, lower = 1, na.ok = FALSE)
     }
     control$multiobj.parego.sample.more.weights = coalesce(parego.sample.more.weights, control$multiobj.parego.sample.more.weights, 5L)
-    assertInt(control$multiobj.parego.sample.more.weights, na.ok = FALSE, lower = 1)
 
     control$multiobj.parego.use.margin.points = coalesce(parego.use.margin.points, control$multiobj.parego.use.margin.points, rep(FALSE, control$n.objectives))
     assertLogical(control$multiobj.parego.use.margin.points, len = n.objectives, any.missing = FALSE)

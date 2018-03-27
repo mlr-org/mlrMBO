@@ -1,4 +1,3 @@
-#' @import backports
 #' @import BBmisc
 #' @import checkmate
 #' @import grDevices
@@ -8,11 +7,13 @@
 #' @import smoof
 #' @import stats
 #' @import utils
+#' @import data.table
 #' @importFrom lhs randomLHS
 #' @useDynLib mlrMBO c_sms_indicator c_eps_indicator
 NULL
 
 .onLoad = function(libname, pkgname) { # nocov start
+  backports::import(pkgname)
   parallelRegisterLevels(package = "mlrMBO", levels = c("propose.points", "feval"))
 } # nocov end
 
@@ -27,9 +28,9 @@ NULL
 #' \item{crit.cb}{Confidence bound with lambda automatically chosen, see \code{\link{infillcrits}}}
 #' \item{crit.cb1}{Confidence bound with lambda=1}
 #' \item{crit.cb2}{Confidence bound with lambda=2}
-#' \item{crit.aei}{Augmeted expected improvement}
+#' \item{crit.aei}{Augmented expected improvement}
 #' \item{crit.eqi}{Expected quantile improvement}
-#' \item{crit.dib1}{Directed indicator based search with lambda=1}
+#' \item{crit.dib1}{Direct indicator-based with lambda=1}
 #' }
 #'
 #' @rdname MBOInfillCrit

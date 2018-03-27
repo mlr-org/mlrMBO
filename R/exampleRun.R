@@ -12,7 +12,7 @@
 #' Please note the following things:
 #' - The true objective function (and later everything which is predicted from our surrogate model)
 #'   is evaluated on a regular spaced grid. These evaluations are stored in the result object.
-#'   You can control the resultion of this grid via \code{points.per.dim}.
+#'   You can control the resolution of this grid via \code{points.per.dim}.
 #'   Parallelization of these evaluations is possible with the R package parallelMap on the level \code{mlrMBO.feval}.
 #' - In every iteration the fitted, approximating surrogate model is stored in the result object
 #'   (via \code{store.model.at} in \code{control}) so we can later visualize it quickly.
@@ -31,7 +31,7 @@
 #' @return [\code{MBOExampleRun}]
 #' @export
 exampleRun = function(fun, design = NULL, learner = NULL, control,
-  points.per.dim = 50, noisy.evals = 10, show.info = NULL) {
+  points.per.dim = 50, noisy.evals = 10, show.info = getOption("mlrMBO.show.info", TRUE)) {
 
   assertClass(fun, "smoof_single_objective_function")
   par.set = getParamSet(fun)
@@ -40,14 +40,12 @@ exampleRun = function(fun, design = NULL, learner = NULL, control,
   noisy = isNoisy(fun)
   control$noisy = noisy
   control$minimize = shouldBeMinimized(fun)
-  learner = checkLearner(learner, par.set, control, fun)
+  learner = checkLearner(learner, control, fun)
   assertClass(control, "MBOControl")
   points.per.dim = asCount(points.per.dim, positive = TRUE)
   noisy.evals = asCount(noisy.evals, positive = TRUE)
   fun.mean = smoof::getMeanFunction(fun)
-  if (is.null(show.info))
-    show.info = getOption("mlrMBO.show.info", TRUE)
-  assertLogical(show.info, len = 1L, any.missing = FALSE)
+  assertFlag(show.info)
 
   if (smoof::hasGlobalOptimum(fun))
     global.opt = smoof::getGlobalOptimum(fun)$value
@@ -93,7 +91,7 @@ exampleRun = function(fun, design = NULL, learner = NULL, control,
     messagef("Performing MBO on function.")
     if (is.null(design))
       messagef("Initial design: %i. Sequential iterations: %i.", control$init.design.points, control$iters)
-    messagef("Learner: %s. Settings:\n%s", learner$id, mlr:::getHyperParsString(learner, show.missing.values = FALSE))
+    messagef("Learner: %s. Settings:\n%s", learner$id, getHyperParsString2(learner, show.missing.values = FALSE))
   }
 
   # run optimizer now
@@ -125,7 +123,7 @@ exampleRun = function(fun, design = NULL, learner = NULL, control,
     global.opt = global.opt,
     global.opt.estim = global.opt.estim,
     learner = learner,
-    control = control,
+    control = res$control,
     mbo.res = res
   )
 }
@@ -142,7 +140,7 @@ print.MBOExampleRun = function(x, ...) {
   catf("True points per dim.        : %s", collapse(x$points.per.dim))
   print(x$control)
   catf("Learner                     : %s", x$learner$id)
-  catf("Learner settings:\n%s", mlr:::getHyperParsString(x$learner, show.missing.values = FALSE))
+  catf("Learner settings:\n%s", getHyperParsString2(x$learner, show.missing.values = FALSE))
   mr = x$mbo.res
   op = mr$opt.path
   catf("Recommended parameters:")
