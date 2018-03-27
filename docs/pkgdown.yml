@@ -1,6 +1,6 @@
 pandoc: 1.15.2
 pkgdown: 0.1.0.9000
-pkgdown_sha: 5e4825875751c009444c56ce43d06324ec53e910
+pkgdown_sha: 102692f3308f63c174b4782502f61168deed8e73
 articles:
   animation: helpers/animation.html
   mlrMBO: mlrMBO.html

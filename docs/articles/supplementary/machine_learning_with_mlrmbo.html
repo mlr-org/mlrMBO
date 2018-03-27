@@ -27,8 +27,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../../index.html">mlrMBO</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../../index.html">mlrMBO</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.1.2</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
@@ -158,27 +162,27 @@ res =<span class="st"> </span><span class="kw"><a href="../../reference/mbo.html
 ## Optimization path
 ## 8 + 5 entries in total, displaying last 10 (or less):
 ##          cost       gamma          y dob eol error.message exec.time
-## 4    1.980396   7.0965714 0.64666667   0  NA          &lt;NA&gt;     0.136
-## 5    9.567881  -2.0376947 0.09333333   0  NA          &lt;NA&gt;     0.182
-## 6  -11.411875   9.2000031 0.78666667   0  NA          &lt;NA&gt;     0.160
-## 7   13.790890  13.3973753 0.73333333   0  NA          &lt;NA&gt;     0.145
-## 8  -10.864032 -11.6256564 0.70666667   0  NA          &lt;NA&gt;     0.146
-## 9   -7.169453  -3.2438288 0.70666667   1  NA          &lt;NA&gt;     0.164
-## 10   4.776882  -1.4930382 0.06666667   2  NA          &lt;NA&gt;     0.131
-## 11   7.007218  -3.2128683 0.03333333   3  NA          &lt;NA&gt;     0.139
-## 12   8.618027  -4.7439627 0.04666667   4  NA          &lt;NA&gt;     0.154
-## 13   5.676042   0.3092058 0.06000000   5  NA          &lt;NA&gt;     0.140
+## 4    1.980396   7.0965714 0.64666667   0  NA          &lt;NA&gt;     0.132
+## 5    9.567881  -2.0376947 0.09333333   0  NA          &lt;NA&gt;     0.156
+## 6  -11.411875   9.2000031 0.78666667   0  NA          &lt;NA&gt;     0.134
+## 7   13.790890  13.3973753 0.73333333   0  NA          &lt;NA&gt;     0.144
+## 8  -10.864032 -11.6256564 0.70666667   0  NA          &lt;NA&gt;     0.139
+## 9   -7.169453  -3.2438288 0.70666667   1  NA          &lt;NA&gt;     0.140
+## 10   4.776882  -1.4930382 0.06666667   2  NA          &lt;NA&gt;     0.148
+## 11   7.007218  -3.2128683 0.03333333   3  NA          &lt;NA&gt;     0.149
+## 12   8.618027  -4.7439627 0.04666667   4  NA          &lt;NA&gt;     0.124
+## 13   5.676042   0.3092058 0.06000000   5  NA          &lt;NA&gt;     0.139
 ##             cb error.model train.time  prop.type propose.time         se
 ## 4           NA        &lt;NA&gt;         NA initdesign           NA         NA
 ## 5           NA        &lt;NA&gt;         NA initdesign           NA         NA
 ## 6           NA        &lt;NA&gt;         NA initdesign           NA         NA
 ## 7           NA        &lt;NA&gt;         NA initdesign           NA         NA
 ## 8           NA        &lt;NA&gt;         NA initdesign           NA         NA
-## 9  -0.03268684        &lt;NA&gt;      0.447  infill_cb        0.269 0.10408864
-## 10 -0.09869215        &lt;NA&gt;      1.383  infill_cb        0.117 0.16880860
-## 11 -0.03984242        &lt;NA&gt;      0.072  infill_cb        0.101 0.06884957
-## 12 -0.02613630        &lt;NA&gt;      0.091  infill_cb        0.106 0.09058801
-## 13 -0.01333824        &lt;NA&gt;      0.076  infill_cb        0.118 0.10805501
+## 9  -0.03268684        &lt;NA&gt;      0.430  infill_cb        0.262 0.10408864
+## 10 -0.09869215        &lt;NA&gt;      1.285  infill_cb        0.143 0.16880860
+## 11 -0.03984242        &lt;NA&gt;      0.076  infill_cb        0.104 0.06884957
+## 12 -0.02613630        &lt;NA&gt;      0.114  infill_cb        0.113 0.09058801
+## 13 -0.01333824        &lt;NA&gt;      0.087  infill_cb        0.136 0.10805501
 ##          mean lambda
 ## 4          NA     NA
 ## 5          NA     NA
@@ -296,20 +300,29 @@ tune.ctrl =<span class="st"> </span><span class="kw"><a href="http://www.rdocume
 res =<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/mlr/topics/tuneParams">tuneParams</a></span>(lrn, iris.task, cv3, <span class="dt">par.set =</span> par.set, <span class="dt">control =</span> tune.ctrl, <span class="dt">show.info =</span> <span class="ot">FALSE</span>)
 <span class="kw">print</span>(res)
 ## Tune result:
-## Op. pars: fw.method=variance; fw.perc=0.694; selected.learner=classif.naiveBayes
-## mmce.test.mean=0.0466667
+## Op. pars: fw.method=anova.test; fw.perc=0.495; selected.learner=classif.svm; classif.svm.cost=0.11; classif.svm.degree=1; classif.svm.kernel=polynomial
+## mmce.test.mean=0.0200000
 res$x
 ## $fw.method
-## [1] "variance"
+## [1] "anova.test"
 ## 
 ## $fw.perc
-## [1] 0.6936187
+## [1] 0.4954506
 ## 
 ## $selected.learner
-## [1] "classif.naiveBayes"
+## [1] "classif.svm"
+## 
+## $classif.svm.cost
+## [1] 0.1098686
+## 
+## $classif.svm.degree
+## [1] 1
+## 
+## $classif.svm.kernel
+## [1] "polynomial"
 res$y
 ## mmce.test.mean 
-##     0.04666667
+##           0.02
 op =<span class="st"> </span><span class="kw">as.data.frame</span>(res$opt.path)
 <span class="kw">plot</span>(<span class="kw">cummin</span>(op$mmce.test.mean), <span class="dt">type =</span> <span class="st">"l"</span>, <span class="dt">ylab =</span> <span class="st">"mmce"</span>, <span class="dt">xlab =</span> <span class="st">"iteration"</span>)</code></pre></div>
 <p><img src="machine_learning_with_mlrmbo_files/figure-html/pipeline_tuning-1.svg" width="672"></p>

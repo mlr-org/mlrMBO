@@ -29,6 +29,8 @@
 
 <meta property="og:description" content="See mbo_parallel for all parallelization options." />
 <meta name="twitter:card" content="summary" />
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -51,8 +53,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">mlrMBO</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">mlrMBO</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.1.2</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -129,7 +135,7 @@
     <pre class="usage"><span class='fu'>mbo</span>(<span class='no'>fun</span>, <span class='kw'>design</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>learner</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>control</span>,
   <span class='kw'>show.info</span> <span class='kw'>=</span> <span class='fu'>getOption</span>(<span class='st'>"mlrMBO.show.info"</span>, <span class='fl'>TRUE</span>), <span class='kw'>more.args</span> <span class='kw'>=</span> <span class='fu'>list</span>())</pre>
     
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
@@ -229,9 +235,9 @@ Further arguments passed to fitness function.</p></td>
 #&gt; 3          NA        &lt;NA&gt;         NA initdesign           NA        NA
 #&gt; 4          NA        &lt;NA&gt;         NA initdesign           NA        NA
 #&gt; 5          NA        &lt;NA&gt;         NA initdesign           NA        NA
-#&gt; 6 -0.07233364        &lt;NA&gt;      0.495  infill_cb        0.456 0.1763127
-#&gt; 7 -0.17151623        &lt;NA&gt;      1.062  infill_cb        0.155 0.1596647
-#&gt; 8 -0.14165197        &lt;NA&gt;      0.076  infill_cb        0.070 0.2242090
+#&gt; 6 -0.07233364        &lt;NA&gt;      0.465  infill_cb        0.247 0.1763127
+#&gt; 7 -0.17151623        &lt;NA&gt;      1.084  infill_cb        0.119 0.1596647
+#&gt; 8 -0.14165197        &lt;NA&gt;      0.063  infill_cb        0.102 0.2242090
 #&gt;          mean lambda
 #&gt; 1          NA     NA
 #&gt; 2          NA     NA
