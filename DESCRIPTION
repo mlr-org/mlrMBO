@@ -14,12 +14,12 @@ Description: Flexible and comprehensive R toolbox for model-based optimization
     single components can be easily replaced or adapted by the user for specific
     use cases.
 Authors@R: c(
-    person("Bernd", "Bischl", email = "bernd_bischl@gmx.net", role = c("aut")),
-    person("Jakob", "Bossek", email = "j.bossek@gmail.com", role = "aut"),
-    person("Jakob", "Richter", email = "code@jakob-r.de", role = c("aut", "cre")),
+    person("Bernd", "Bischl", email = "bernd_bischl@gmx.net", role = c("aut"), comment = c(ORCID = "0000-0001-6002-6980")),
+    person("Jakob", "Richter", email = "code@jakob-r.de", role = c("aut", "cre"), comment = c(ORCID = "0000-0003-4481-5554")),
+    person("Jakob", "Bossek", email = "j.bossek@gmail.com", role = "aut", comment = c(ORCID = "0000-0002-4121-4668")),
     person("Daniel", "Horn", email = "daniel.horn@tu-dortmund.de", role = "aut"),
-    person("Michel", "Lang", email = "michellang@gmail.com", role = "aut"),
-    person("Janek", "Thomas", email = "janek.thomas@stat.uni-muenchen.de", role = "aut"))
+    person("Michel", "Lang", email = "michellang@gmail.com", role = "aut", comment = c(ORCID = "0000-0001-9754-0393")),
+    person("Janek", "Thomas", email = "janek.thomas@stat.uni-muenchen.de", role = "aut", comment = c(ORCID = "0000-0003-4511-6245")))
 License: BSD_2_clause + file LICENSE
 URL: https://github.com/mlr-org/mlrMBO
 BugReports: https://github.com/mlr-org/mlrMBO/issues

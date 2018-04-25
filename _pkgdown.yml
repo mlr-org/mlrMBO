@@ -1,3 +1,5 @@
+url: https://mlr-org.github.io/mlrMBO
+
 template:
   params:
     bootswatch: cosmo
@@ -22,6 +24,8 @@ navbar:
         href: articles/supplementary/machine_learning_with_mlrmbo.html
       - text: Human-in-the-loop MBO
         href: articles/supplementary/human_in_the_loop_MBO.html
+      - text: mlrMBO and the Command Line
+        href: articles/supplementary/mlrmbo_and_the_command_line.html
   - text: Reference
     icon: fa-book
     href: reference/index.html
