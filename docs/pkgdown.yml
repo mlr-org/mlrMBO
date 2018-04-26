@@ -1,6 +1,6 @@
 pandoc: 1.15.2
-pkgdown: 0.1.0.9000
-pkgdown_sha: 102692f3308f63c174b4782502f61168deed8e73
+pkgdown: 1.0.0
+pkgdown_sha: d43ca38c74827d1d6babc3a80d48cd3a8e8fad8c
 articles:
   animation: helpers/animation.html
   mlrMBO: mlrMBO.html
@@ -8,6 +8,10 @@ articles:
   infill_criteria: supplementary/infill_criteria.html
   machine_learning_with_mlrmbo: supplementary/machine_learning_with_mlrmbo.html
   mixed_space_optimization: supplementary/mixed_space_optimization.html
+  mlrmbo_and_the_command_line: supplementary/mlrmbo_and_the_command_line.html
   noisy_optimization: supplementary/noisy_optimization.html
   parallelization: supplementary/parallelization.html
+urls:
+  reference: https://mlr-org.github.io/mlrMBO/reference
+  article: https://mlr-org.github.io/mlrMBO/articles
 

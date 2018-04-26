@@ -18,7 +18,7 @@
 <![endif]-->
 </head>
 <body>
-    <div class="container template-vignette">
+    <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
@@ -69,6 +69,9 @@
     <li>
       <a href="../../articles/supplementary/human_in_the_loop_MBO.html">Human-in-the-loop MBO</a>
     </li>
+    <li>
+      <a href="../../articles/supplementary/mlrmbo_and_the_command_line.html">mlrMBO and the Command Line</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -96,18 +99,18 @@
 
       
       </header><div class="row">
-  <div class="col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>Mixed Space Optimization</h1>
             
       
-      <small>Source: <a href="https://github.com/mlr-org/mlrMBO/blob/master/vignettes/supplementary/mixed_space_optimization.Rmd"><code>vignettes/supplementary/mixed_space_optimization.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/mlr-org/mlrMBO/blob/master/vignettes/supplementary/mixed_space_optimization.Rmd"><code>vignettes/supplementary/mixed_space_optimization.Rmd</code></a></small>
+      <div class="hidden name"><code>mixed_space_optimization.Rmd</code></div>
 
     </div>
 
     
     
-<div class="contents">
 <div id="purpose" class="section level2">
 <h2 class="hasAnchor">
 <a href="#purpose" class="anchor"></a>Purpose</h2>
@@ -143,7 +146,7 @@ objfun2 =<span class="st"> </span><span class="kw">makeSingleObjectiveFunction</
 
 <span class="co"># visualize the function</span>
 <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/autoplot">autoplot</a></span>(objfun2)</code></pre></div>
-<p><img src="mixed_space_optimization_files/figure-html/objective_function-1.svg" width="672"></p>
+<p><img src="mixed_space_optimization_files/figure-html/objective_function-1.png" width="700"></p>
 </div>
 <div id="sorrogate-learner" class="section level3">
 <h3 class="hasAnchor">
@@ -225,7 +228,7 @@ run2$x
 <p>And let’s visualize the results:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../../reference/plotExampleRun.html">plotExampleRun</a></span>(ex.run2, <span class="dt">iters =</span> <span class="kw">c</span>(1L, 2L, 10L), <span class="dt">pause =</span> <span class="ot">FALSE</span>)
 ## Loading required package: gridExtra</code></pre></div>
-<p><img src="mixed_space_optimization_files/figure-html/plot_example_run_2d-1.svg" width="672"><img src="mixed_space_optimization_files/figure-html/plot_example_run_2d-2.svg" width="672"><img src="mixed_space_optimization_files/figure-html/plot_example_run_2d-3.svg" width="672"></p>
+<p><img src="mixed_space_optimization_files/figure-html/plot_example_run_2d-1.png" width="700"><img src="mixed_space_optimization_files/figure-html/plot_example_run_2d-2.png" width="700"><img src="mixed_space_optimization_files/figure-html/plot_example_run_2d-3.png" width="700"></p>
 </div>
 <div id="improved-example-for-dependent-parameters" class="section level2">
 <h2 class="hasAnchor">
@@ -292,7 +295,6 @@ op3 =<span class="st"> </span><span class="kw">as.data.frame</span>(run3$opt.pat
 <p>The biggest drawback of using <em>random forests</em> versus <em>Kriging</em> is the lack of <em>“spacial uncertainty”</em>. Whereas in Kriging can model uncertainty in areas where no observations are made thanks to the co-variance that gets higher for points that are far away from already visited points, the random forest lacks of this information. For the random forest the uncertainty is based on the diversity of the results of the individual individual forests. Naturally, the diversity is higher in areas where the results of the objective function are diverse. For deterministic functions or functions with just a little noise this is mainly the case in the proximity of steep slopes of the objective function. This can lead to proposed points that are located at slopes but not actually in the <em>valley</em>. Furthermore the diversity of the prediction of the individual trees can also be quite low outside the area of observed values leading to less proposals in the area between proposed points and the actual boundaries of the search space. To combat this problem it can make sense to manually add points at the boundaries of the search space to the initial design.</p>
 </div>
 </div>
-</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -313,7 +315,7 @@ op3 =<span class="st"> </span><span class="kw">as.data.frame</span>(run3$opt.pat
 
 
       <footer><div class="copyright">
-  <p>Developed by Bernd Bischl, Jakob Bossek, Jakob Richter, Daniel Horn, Michel Lang, Janek Thomas.</p>
+  <p>Developed by Bernd Bischl, Jakob Richter, Jakob Bossek, Daniel Horn, Michel Lang, Janek Thomas.</p>
 </div>
 
 <div class="pkgdown">
@@ -322,6 +324,8 @@ op3 =<span class="st"> </span><span class="kw">as.data.frame</span>(run3$opt.pat
 
       </footer>
 </div>
+
+  
 
   </body>
 </html>

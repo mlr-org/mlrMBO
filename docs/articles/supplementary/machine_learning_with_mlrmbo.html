@@ -18,7 +18,7 @@
 <![endif]-->
 </head>
 <body>
-    <div class="container template-vignette">
+    <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
@@ -69,6 +69,9 @@
     <li>
       <a href="../../articles/supplementary/human_in_the_loop_MBO.html">Human-in-the-loop MBO</a>
     </li>
+    <li>
+      <a href="../../articles/supplementary/mlrmbo_and_the_command_line.html">mlrMBO and the Command Line</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -96,18 +99,18 @@
 
       
       </header><div class="row">
-  <div class="col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>Machine learning with mlrMBO: Tuning hyperparameters with model-based optimization</h1>
             
       
-      <small>Source: <a href="https://github.com/mlr-org/mlrMBO/blob/master/vignettes/supplementary/machine_learning_with_mlrmbo.Rmd"><code>vignettes/supplementary/machine_learning_with_mlrmbo.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/mlr-org/mlrMBO/blob/master/vignettes/supplementary/machine_learning_with_mlrmbo.Rmd"><code>vignettes/supplementary/machine_learning_with_mlrmbo.Rmd</code></a></small>
+      <div class="hidden name"><code>machine_learning_with_mlrmbo.Rmd</code></div>
 
     </div>
 
     
     
-<div class="contents">
 <div id="purpose" class="section level2">
 <h2 class="hasAnchor">
 <a href="#purpose" class="anchor"></a>Purpose</h2>
@@ -162,27 +165,27 @@ res =<span class="st"> </span><span class="kw"><a href="../../reference/mbo.html
 ## Optimization path
 ## 8 + 5 entries in total, displaying last 10 (or less):
 ##          cost       gamma          y dob eol error.message exec.time
-## 4    1.980396   7.0965714 0.64666667   0  NA          &lt;NA&gt;     0.135
-## 5    9.567881  -2.0376947 0.09333333   0  NA          &lt;NA&gt;     0.150
-## 6  -11.411875   9.2000031 0.78666667   0  NA          &lt;NA&gt;     0.128
-## 7   13.790890  13.3973753 0.73333333   0  NA          &lt;NA&gt;     0.129
-## 8  -10.864032 -11.6256564 0.70666667   0  NA          &lt;NA&gt;     0.128
-## 9   -7.169453  -3.2438288 0.70666667   1  NA          &lt;NA&gt;     0.133
-## 10   4.776882  -1.4930382 0.06666667   2  NA          &lt;NA&gt;     0.126
-## 11   7.007218  -3.2128683 0.03333333   3  NA          &lt;NA&gt;     0.134
-## 12   8.618027  -4.7439627 0.04666667   4  NA          &lt;NA&gt;     0.134
-## 13   5.676042   0.3092058 0.06000000   5  NA          &lt;NA&gt;     0.133
+## 4    1.980396   7.0965714 0.64666667   0  NA          &lt;NA&gt;     0.124
+## 5    9.567881  -2.0376947 0.09333333   0  NA          &lt;NA&gt;     0.119
+## 6  -11.411875   9.2000031 0.78666667   0  NA          &lt;NA&gt;     0.131
+## 7   13.790890  13.3973753 0.73333333   0  NA          &lt;NA&gt;     0.124
+## 8  -10.864032 -11.6256564 0.70666667   0  NA          &lt;NA&gt;     0.119
+## 9   -7.169453  -3.2438288 0.70666667   1  NA          &lt;NA&gt;     0.129
+## 10   4.776882  -1.4930382 0.06666667   2  NA          &lt;NA&gt;     0.149
+## 11   7.007218  -3.2128683 0.03333333   3  NA          &lt;NA&gt;     0.117
+## 12   8.618027  -4.7439627 0.04666667   4  NA          &lt;NA&gt;     0.143
+## 13   5.676042   0.3092058 0.06000000   5  NA          &lt;NA&gt;     0.143
 ##             cb error.model train.time  prop.type propose.time         se
 ## 4           NA        &lt;NA&gt;         NA initdesign           NA         NA
 ## 5           NA        &lt;NA&gt;         NA initdesign           NA         NA
 ## 6           NA        &lt;NA&gt;         NA initdesign           NA         NA
 ## 7           NA        &lt;NA&gt;         NA initdesign           NA         NA
 ## 8           NA        &lt;NA&gt;         NA initdesign           NA         NA
-## 9  -0.03268684        &lt;NA&gt;      0.436  infill_cb        0.257 0.10408864
-## 10 -0.09869215        &lt;NA&gt;      1.240  infill_cb        0.100 0.16880860
-## 11 -0.03984242        &lt;NA&gt;      0.068  infill_cb        0.103 0.06884957
-## 12 -0.02613630        &lt;NA&gt;      0.093  infill_cb        0.125 0.09058801
-## 13 -0.01333824        &lt;NA&gt;      0.076  infill_cb        0.113 0.10805501
+## 9  -0.03268684        &lt;NA&gt;      0.077  infill_cb        0.099 0.10408864
+## 10 -0.09869215        &lt;NA&gt;      0.165  infill_cb        0.100 0.16880860
+## 11 -0.03984242        &lt;NA&gt;      0.083  infill_cb        0.114 0.06884957
+## 12 -0.02613630        &lt;NA&gt;      0.578  infill_cb        0.130 0.09058801
+## 13 -0.01333824        &lt;NA&gt;      0.067  infill_cb        0.097 0.10805501
 ##          mean lambda
 ## 4          NA     NA
 ## 5          NA     NA
@@ -204,7 +207,7 @@ res$y
 ## [1] 0.03333333
 op =<span class="st"> </span><span class="kw">as.data.frame</span>(res$opt.path)
 <span class="kw">plot</span>(<span class="kw">cummin</span>(op$y), <span class="dt">type =</span> <span class="st">"l"</span>, <span class="dt">ylab =</span> <span class="st">"mmce"</span>, <span class="dt">xlab =</span> <span class="st">"iteration"</span>)</code></pre></div>
-<p><img src="machine_learning_with_mlrmbo_files/figure-html/unnamed-chunk-1-1.svg" width="672"></p>
+<p><img src="machine_learning_with_mlrmbo_files/figure-html/unnamed-chunk-1-1.png" width="700"></p>
 </div>
 <div id="using-mlrs-tuning-interface" class="section level2">
 <h2 class="hasAnchor">
@@ -230,7 +233,7 @@ res$y
 ##     0.04666667
 op.y =<span class="st"> </span><span class="kw">getOptPathY</span>(res$opt.path)
 <span class="kw">plot</span>(<span class="kw">cummin</span>(op.y), <span class="dt">type =</span> <span class="st">"l"</span>, <span class="dt">ylab =</span> <span class="st">"mmce"</span>, <span class="dt">xlab =</span> <span class="st">"iteration"</span>)</code></pre></div>
-<p><img src="machine_learning_with_mlrmbo_files/figure-html/mlr_tuning-1.svg" width="672"></p>
+<p><img src="machine_learning_with_mlrmbo_files/figure-html/mlr_tuning-1.png" width="700"></p>
 </div>
 <div id="hierarchical-mixed-space-optimization" class="section level2">
 <h2 class="hasAnchor">
@@ -325,8 +328,7 @@ res$y
 ##           0.02
 op =<span class="st"> </span><span class="kw">as.data.frame</span>(res$opt.path)
 <span class="kw">plot</span>(<span class="kw">cummin</span>(op$mmce.test.mean), <span class="dt">type =</span> <span class="st">"l"</span>, <span class="dt">ylab =</span> <span class="st">"mmce"</span>, <span class="dt">xlab =</span> <span class="st">"iteration"</span>)</code></pre></div>
-<p><img src="machine_learning_with_mlrmbo_files/figure-html/pipeline_tuning-1.svg" width="672"></p>
-</div>
+<p><img src="machine_learning_with_mlrmbo_files/figure-html/pipeline_tuning-1.png" width="700"></p>
 </div>
   </div>
 
@@ -351,7 +353,7 @@ op =<span class="st"> </span><span class="kw">as.data.frame</span>(res$opt.path)
 
 
       <footer><div class="copyright">
-  <p>Developed by Bernd Bischl, Jakob Bossek, Jakob Richter, Daniel Horn, Michel Lang, Janek Thomas.</p>
+  <p>Developed by Bernd Bischl, Jakob Richter, Jakob Bossek, Daniel Horn, Michel Lang, Janek Thomas.</p>
 </div>
 
 <div class="pkgdown">
@@ -360,6 +362,8 @@ op =<span class="st"> </span><span class="kw">as.data.frame</span>(res$opt.path)
 
       </footer>
 </div>
+
+  
 
   </body>
 </html>

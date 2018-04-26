@@ -18,7 +18,7 @@
 <![endif]-->
 </head>
 <body>
-    <div class="container template-vignette">
+    <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
@@ -69,6 +69,9 @@
     <li>
       <a href="../../articles/supplementary/human_in_the_loop_MBO.html">Human-in-the-loop MBO</a>
     </li>
+    <li>
+      <a href="../../articles/supplementary/mlrmbo_and_the_command_line.html">mlrMBO and the Command Line</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -96,18 +99,18 @@
 
       
       </header><div class="row">
-  <div class="col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>Parallelization</h1>
             
       
-      <small>Source: <a href="https://github.com/mlr-org/mlrMBO/blob/master/vignettes/supplementary/parallelization.Rmd"><code>vignettes/supplementary/parallelization.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/mlr-org/mlrMBO/blob/master/vignettes/supplementary/parallelization.Rmd"><code>vignettes/supplementary/parallelization.Rmd</code></a></small>
+      <div class="hidden name"><code>parallelization.Rmd</code></div>
 
     </div>
 
     
     
-<div class="contents">
 <div id="purpose" class="section level2">
 <h2 class="hasAnchor">
 <a href="#purpose" class="anchor"></a>Purpose</h2>
@@ -127,7 +130,7 @@
 obj.fun =<span class="st"> </span><span class="kw">makeBraninFunction</span>()
 <span class="co"># visualize the function</span>
 <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/autoplot">autoplot</a></span>(obj.fun, <span class="dt">render.levels =</span> <span class="ot">TRUE</span>, <span class="dt">show.optimum =</span> <span class="ot">TRUE</span>)</code></pre></div>
-<p><img src="parallelization_files/figure-html/objective_function-1.png" width="672"></p>
+<p><img src="parallelization_files/figure-html/objective_function-1.png" width="700"></p>
 <p>In our example we will have <em>two CPUs</em> that we want to utilize for the evaluation of the black-box function.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(mlrMBO)
 ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span>(<span class="dt">propose.points =</span> <span class="dv">2</span>)</code></pre></div>
@@ -158,7 +161,7 @@ res =<span class="st"> </span><span class="kw"><a href="../../reference/mbo.html
 <p>As you can see from the console output of <code>parallelMap</code> the initial design will also be evaluated in parallel.</p>
 <p>In the end a small plot that uses the <code>opt.path</code> which is stored in the result of the MBO Optimization process to visualize which points were proposed in which iteration. The zeros are the points from the initial design, 1 for the first iteration and so on.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/autoplot">autoplot</a></span>(obj.fun, <span class="dt">render.levels =</span> <span class="ot">TRUE</span>, <span class="dt">show.optimum =</span> <span class="ot">TRUE</span>) +<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_text">geom_text</a></span>(<span class="dt">data =</span> <span class="kw">as.data.frame</span>(res$opt.path), <span class="dt">mapping =</span> <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">label =</span> dob), <span class="dt">color =</span> <span class="st">"white"</span>)</code></pre></div>
-<p><img src="parallelization_files/figure-html/cl_res-1.png" width="672"></p>
+<p><img src="parallelization_files/figure-html/cl_res-1.png" width="700"></p>
 </div>
 <div id="confidence-bound" class="section level3">
 <h3 class="hasAnchor">
@@ -166,7 +169,7 @@ res =<span class="st"> </span><span class="kw"><a href="../../reference/mbo.html
 <p>If we decided to use the <strong>confidence bound</strong> as an infill criterion, because e.g. the parameter space contains discrete values and we decided for the random forest as an infill criterion, then we suggest to use the <strong>random lambda</strong> method to generate multiple proposals per iteration. Note that this time we rely on MBO to automatically use the random forest for the surrogate as the objective function contains the discrete variable <code>x1</code>. Also we now specify the number of initial design points manually according to the number of levels of the discrete variable.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">obj.fun =<span class="st"> </span><span class="kw">makeSwiler2014Function</span>()
 <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/autoplot">autoplot</a></span>(obj.fun, <span class="dt">render.levels =</span> <span class="ot">TRUE</span>)</code></pre></div>
-<p><img src="parallelization_files/figure-html/obj.fun.dis-1.png" width="672"></p>
+<p><img src="parallelization_files/figure-html/obj.fun.dis-1.png" width="700"></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span>(<span class="dt">propose.points =</span> <span class="dv">2</span>)
 ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/setMBOControlInfill.html">setMBOControlInfill</a></span>(ctrl, <span class="dt">crit =</span> crit.cb)
 ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/setMBOControlMultiPoint.html">setMBOControlMultiPoint</a></span>(ctrl, <span class="dt">method =</span> <span class="st">"cb"</span>)
@@ -177,7 +180,7 @@ design =<span class="st"> </span><span class="kw">generateDesign</span>(<span cl
 res =<span class="st"> </span><span class="kw"><a href="../../reference/mbo.html">mbo</a></span>(obj.fun, <span class="dt">control =</span> ctrl, <span class="dt">design =</span> design, <span class="dt">show.info =</span> <span class="ot">FALSE</span>)
 <span class="kw"><a href="http://www.rdocumentation.org/packages/parallelMap/topics/parallelStop">parallelStop</a></span>()
 <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/autoplot">autoplot</a></span>(obj.fun, <span class="dt">render.levels =</span> <span class="ot">TRUE</span>) +<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/geom_text">geom_text</a></span>(<span class="dt">data =</span> <span class="kw">as.data.frame</span>(res$opt.path), <span class="dt">mapping =</span> <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/aes">aes</a></span>(<span class="dt">label =</span> dob), <span class="dt">color =</span> <span class="st">"white"</span>)</code></pre></div>
-<p><img src="parallelization_files/figure-html/obj.fun.dis-2.png" width="672"></p>
+<p><img src="parallelization_files/figure-html/obj.fun.dis-2.png" width="700"></p>
 </div>
 </div>
 <div id="parallelization-of-the-objective-function" class="section level2">
@@ -206,7 +209,7 @@ general.scale =<span class="st"> </span><span class="kw"><a href="http://www.rdo
 <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/autoplot">autoplot</a></span>(obj.fun.single, <span class="dt">render.levels =</span> <span class="ot">TRUE</span>) +<span class="st"> </span>general.scale
 ## Scale for 'fill' is already present. Adding another scale for 'fill',
 ## which will replace the existing scale.</code></pre></div>
-<p><img src="parallelization_files/figure-html/custom_noisy_obj-1.png" width="672"></p>
+<p><img src="parallelization_files/figure-html/custom_noisy_obj-1.png" width="700"></p>
 <p>Now let’s create an objective function that uses parallelization internally by using the function <code><a href="http://www.rdocumentation.org/packages/parallelMap/topics/parallelMap">parallelMap()</a></code> of the equally named package.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="http://www.rdocumentation.org/packages/parallelMap/topics/parallelRegisterLevels">parallelRegisterLevels</a></span>(<span class="dt">levels =</span> <span class="st">"objective"</span>)
 obj.fun.parallel =<span class="st"> </span><span class="kw">makeSingleObjectiveFunction</span>(
@@ -224,7 +227,7 @@ obj.fun.parallel =<span class="st"> </span><span class="kw">makeSingleObjectiveF
 <span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/autoplot">autoplot</a></span>(obj.fun.parallel, <span class="dt">render.levels =</span> <span class="ot">TRUE</span>) +<span class="st"> </span>general.scale
 ## Scale for 'fill' is already present. Adding another scale for 'fill',
 ## which will replace the existing scale.</code></pre></div>
-<p><img src="parallelization_files/figure-html/custom_noisy_parallel-1.png" width="672"></p>
+<p><img src="parallelization_files/figure-html/custom_noisy_parallel-1.png" width="700"></p>
 <p>As we can easily see the replicated and averaged evaluation of the target function apparently smoothed the output. This will improve optimization directly. However the objective function is still noisy and we have to adapt the settings a little. Details are given in the Vignette about noisy optimization.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(mlr)
 ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span>(<span class="dt">final.method =</span> <span class="st">"best.predicted"</span>)
@@ -235,7 +238,6 @@ res.parallel =<span class="st"> </span><span class="kw"><a href="../../reference
 <span class="kw"><a href="http://www.rdocumentation.org/packages/parallelMap/topics/parallelStop">parallelStop</a></span>()
 res.parallel</code></pre></div>
 <p>As you can see in the output of <code>parallelMap</code> we now parallelize the level <code>custom.objective</code> and not as previously <code>mlrMBO.feval</code>. If you forget to register your own level <code>parallelMap</code> will parallelize the first call of <code>parallelMap</code> and that would be the call we do internally to evaluate the proposed points.</p>
-</div>
 </div>
 </div>
   </div>
@@ -257,7 +259,7 @@ res.parallel</code></pre></div>
 
 
       <footer><div class="copyright">
-  <p>Developed by Bernd Bischl, Jakob Bossek, Jakob Richter, Daniel Horn, Michel Lang, Janek Thomas.</p>
+  <p>Developed by Bernd Bischl, Jakob Richter, Jakob Bossek, Daniel Horn, Michel Lang, Janek Thomas.</p>
 </div>
 
 <div class="pkgdown">
@@ -266,6 +268,8 @@ res.parallel</code></pre></div>
 
       </footer>
 </div>
+
+  
 
   </body>
 </html>

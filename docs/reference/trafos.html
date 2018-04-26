@@ -25,6 +25,9 @@
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
+
+
+
 <meta property="og:title" content="Transformation methods. — trafos" />
 
 <meta property="og:description" content="
@@ -101,6 +104,9 @@ value." />
     <li>
       <a href="../articles/supplementary/human_in_the_loop_MBO.html">Human-in-the-loop MBO</a>
     </li>
+    <li>
+      <a href="../articles/supplementary/mlrmbo_and_the_command_line.html">mlrMBO and the Command Line</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -120,6 +126,7 @@ value." />
   </a>
 </li>
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -127,13 +134,15 @@ value." />
       
       </header>
 
-      <div class="row">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Transformation methods.</h1>
-    <small>Source: <a href='https://github.com/mlr-org/mlrMBO/blob/master/R/makeMBOTrafoFunction.R'><code>R/makeMBOTrafoFunction.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/mlr-org/mlrMBO/blob/master/R/makeMBOTrafoFunction.R'><code>R/makeMBOTrafoFunction.R</code></a></small>
+    <div class="hidden name"><code>trafos.Rd</code></div>
     </div>
 
+    <div class="ref-description">
     
     <ul>
 <li><p><b>logTrafo</b><br /> Natural logarithm.</p></li>
@@ -143,6 +152,7 @@ a shift of the form x - min(x) + 1 is performed prior to the transformation if t
 argument <code>handle.violations</code> is set to &#8220;warn&#8221; which is the default
 value.</p>
     
+    </div>
 
     <pre class="usage"><span class='fu'>trafoLog</span>(<span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>handle.violations</span> <span class='kw'>=</span> <span class='st'>"warn"</span>)
 
@@ -185,7 +195,7 @@ stops the process immediately.</p></td>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Bernd Bischl, Jakob Bossek, Jakob Richter, Daniel Horn, Michel Lang, Janek Thomas.</p>
+  <p>Developed by Bernd Bischl, Jakob Richter, Jakob Bossek, Daniel Horn, Michel Lang, Janek Thomas.</p>
 </div>
 
 <div class="pkgdown">
@@ -194,6 +204,8 @@ stops the process immediately.</p></td>
 
       </footer>
    </div>
+
+  
 
   </body>
 </html>

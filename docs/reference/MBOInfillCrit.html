@@ -25,6 +25,9 @@
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
+
+
+
 <meta property="og:title" content="Create an infill criterion. — makeMBOInfillCrit" />
 
 <meta property="og:description" content="The infill criterion guides the model based search process.
@@ -98,6 +101,9 @@ the package allows for the creation of custom infill criteria." />
     <li>
       <a href="../articles/supplementary/human_in_the_loop_MBO.html">Human-in-the-loop MBO</a>
     </li>
+    <li>
+      <a href="../articles/supplementary/mlrmbo_and_the_command_line.html">mlrMBO and the Command Line</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -117,6 +123,7 @@ the package allows for the creation of custom infill criteria." />
   </a>
 </li>
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -124,19 +131,22 @@ the package allows for the creation of custom infill criteria." />
       
       </header>
 
-      <div class="row">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Create an infill criterion.</h1>
-    <small>Source: <a href='https://github.com/mlr-org/mlrMBO/blob/master/R/makeMBOInfillCrit.R'><code>R/makeMBOInfillCrit.R</code></a>, <a href='https://github.com/mlr-org/mlrMBO/blob/master/R/zzz.R'><code>R/zzz.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/mlr-org/mlrMBO/blob/master/R/makeMBOInfillCrit.R'><code>R/makeMBOInfillCrit.R</code></a>, <a href='https://github.com/mlr-org/mlrMBO/blob/master/R/zzz.R'><code>R/zzz.R</code></a></small>
+    <div class="hidden name"><code>MBOInfillCrit.Rd</code></div>
     </div>
 
+    <div class="ref-description">
     
     <p>The infill criterion guides the model based search process.
 The most prominent infill criteria, e.g., expected improvement, lower
 confidence bound and others, are already implemented in mlrMBO. Moreover,
 the package allows for the creation of custom infill criteria.</p>
     
+    </div>
 
     <pre class="usage"><span class='fu'>makeMBOInfillCrit</span>(<span class='no'>fun</span>, <span class='no'>name</span>, <span class='no'>id</span>, <span class='kw'>opt.direction</span> <span class='kw'>=</span> <span class='st'>"minimize"</span>,
   <span class='kw'>components</span> <span class='kw'>=</span> <span class='fu'>character</span>(<span class='fl'>0L</span>), <span class='kw'>params</span> <span class='kw'>=</span> <span class='fu'>list</span>(), <span class='kw'>requires.se</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
@@ -239,7 +249,7 @@ Default is <code>FALSE</code>.</p></td>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Bernd Bischl, Jakob Bossek, Jakob Richter, Daniel Horn, Michel Lang, Janek Thomas.</p>
+  <p>Developed by Bernd Bischl, Jakob Richter, Jakob Bossek, Daniel Horn, Michel Lang, Janek Thomas.</p>
 </div>
 
 <div class="pkgdown">
@@ -248,6 +258,8 @@ Default is <code>FALSE</code>.</p></td>
 
       </footer>
    </div>
+
+  
 
   </body>
 </html>

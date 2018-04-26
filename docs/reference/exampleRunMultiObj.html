@@ -25,6 +25,9 @@
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
+
+
+
 <meta property="og:title" content="Perform an MBO run on a multi-objective test function and and visualize what happens. — exampleRunMultiObj" />
 
 <meta property="og:description" content="Only available for 2D -&gt; 2D examples,
@@ -99,6 +102,9 @@ What is displayed is documented here: plotExampleRun." />
     <li>
       <a href="../articles/supplementary/human_in_the_loop_MBO.html">Human-in-the-loop MBO</a>
     </li>
+    <li>
+      <a href="../articles/supplementary/mlrmbo_and_the_command_line.html">mlrMBO and the Command Line</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -118,6 +124,7 @@ What is displayed is documented here: plotExampleRun." />
   </a>
 </li>
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -125,13 +132,15 @@ What is displayed is documented here: plotExampleRun." />
       
       </header>
 
-      <div class="row">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Perform an MBO run on a multi-objective test function and and visualize what happens.</h1>
-    <small>Source: <a href='https://github.com/mlr-org/mlrMBO/blob/master/R/exampleRunMultiObj.R'><code>R/exampleRunMultiObj.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/mlr-org/mlrMBO/blob/master/R/exampleRunMultiObj.R'><code>R/exampleRunMultiObj.R</code></a></small>
+    <div class="hidden name"><code>exampleRunMultiObj.Rd</code></div>
     </div>
 
+    <div class="ref-description">
     
     <p>Only available for 2D -&gt; 2D examples,
 useful for figuring out how stuff works and for teaching purposes.
@@ -139,6 +148,7 @@ Currently only parameter spaces with numerical parameters are supported.
 For visualization, run <code>plotExampleRun</code> on the resulting object.
 What is displayed is documented here: <code><a href='plotExampleRun.html'>plotExampleRun</a></code>.</p>
     
+    </div>
 
     <pre class="usage"><span class='fu'>exampleRunMultiObj</span>(<span class='no'>fun</span>, <span class='kw'>design</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>learner</span>, <span class='no'>control</span>,
   <span class='kw'>points.per.dim</span> <span class='kw'>=</span> <span class='fl'>50</span>, <span class='kw'>show.info</span> <span class='kw'>=</span> <span class='fu'>getOption</span>(<span class='st'>"mlrMBO.show.info"</span>, <span class='fl'>TRUE</span>),
@@ -231,7 +241,7 @@ of the nsga2 front is used.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Bernd Bischl, Jakob Bossek, Jakob Richter, Daniel Horn, Michel Lang, Janek Thomas.</p>
+  <p>Developed by Bernd Bischl, Jakob Richter, Jakob Bossek, Daniel Horn, Michel Lang, Janek Thomas.</p>
 </div>
 
 <div class="pkgdown">
@@ -240,6 +250,8 @@ of the nsga2 front is used.</p>
 
       </footer>
    </div>
+
+  
 
   </body>
 </html>

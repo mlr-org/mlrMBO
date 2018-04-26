@@ -25,6 +25,9 @@
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
+
+
+
 <meta property="og:title" content="Error handling for mlrMBO — error_handling" />
 
 <meta property="og:description" content="There are multiple types of errors that can occur during one optimization
@@ -153,6 +156,9 @@ the state is stored. It is overwritten (= extended) in each saving iteration." /
     <li>
       <a href="../articles/supplementary/human_in_the_loop_MBO.html">Human-in-the-loop MBO</a>
     </li>
+    <li>
+      <a href="../articles/supplementary/mlrmbo_and_the_command_line.html">mlrMBO and the Command Line</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -172,6 +178,7 @@ the state is stored. It is overwritten (= extended) in each saving iteration." /
   </a>
 </li>
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -179,13 +186,15 @@ the state is stored. It is overwritten (= extended) in each saving iteration." /
       
       </header>
 
-      <div class="row">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Error handling for mlrMBO</h1>
-    <small>Source: <a href='https://github.com/mlr-org/mlrMBO/blob/master/R/doc_error_handling.R'><code>R/doc_error_handling.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/mlr-org/mlrMBO/blob/master/R/doc_error_handling.R'><code>R/doc_error_handling.R</code></a></small>
+    <div class="hidden name"><code>error_handling.Rd</code></div>
     </div>
 
+    <div class="ref-description">
     
     <p>There are multiple types of errors that can occur during one optimization
 process. mlrMBO tries to handle most of them as smart as possible.</p>
@@ -247,6 +256,7 @@ saved state. This function only requires the path of the saved state.</p>
 this seems a bit stupid. <code>save.file.path</code> defines the path of the RData file where
 the state is stored. It is overwritten (= extended) in each saving iteration.</p>
     
+    </div>
 
         
 
@@ -261,7 +271,7 @@ the state is stored. It is overwritten (= extended) in each saving iteration.</p
 
       <footer>
       <div class="copyright">
-  <p>Developed by Bernd Bischl, Jakob Bossek, Jakob Richter, Daniel Horn, Michel Lang, Janek Thomas.</p>
+  <p>Developed by Bernd Bischl, Jakob Richter, Jakob Bossek, Daniel Horn, Michel Lang, Janek Thomas.</p>
 </div>
 
 <div class="pkgdown">
@@ -270,6 +280,8 @@ the state is stored. It is overwritten (= extended) in each saving iteration.</p
 
       </footer>
    </div>
+
+  
 
   </body>
 </html>

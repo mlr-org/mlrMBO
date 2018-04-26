@@ -26,6 +26,9 @@ exampleRunMultiObj objects. — renderExampleRunPlot • mlrMBO</title>
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
+
+
+
 <meta property="og:title" content="Renders plots for exampleRun objects, either in 1D or 2D, or
 exampleRunMultiObj objects. — renderExampleRunPlot" />
 
@@ -108,6 +111,9 @@ the model and the (infill) points. The lower plot shows the infill criterion.
     <li>
       <a href="../articles/supplementary/human_in_the_loop_MBO.html">Human-in-the-loop MBO</a>
     </li>
+    <li>
+      <a href="../articles/supplementary/mlrmbo_and_the_command_line.html">mlrMBO and the Command Line</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -127,6 +133,7 @@ the model and the (infill) points. The lower plot shows the infill criterion.
   </a>
 </li>
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -134,14 +141,16 @@ the model and the (infill) points. The lower plot shows the infill criterion.
       
       </header>
 
-      <div class="row">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Renders plots for exampleRun objects, either in 1D or 2D, or
 exampleRunMultiObj objects.</h1>
-    <small>Source: <a href='https://github.com/mlr-org/mlrMBO/blob/master/R/renderExampleRunPlot.R'><code>R/renderExampleRunPlot.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/mlr-org/mlrMBO/blob/master/R/renderExampleRunPlot.R'><code>R/renderExampleRunPlot.R</code></a></small>
+    <div class="hidden name"><code>renderExampleRunPlot.Rd</code></div>
     </div>
 
+    <div class="ref-description">
     
     <p>The graphical output depends on the target function at hand.
 - For 1D numeric functions the upper plot shows the true function (if known),
@@ -156,6 +165,7 @@ the model and the (infill) points. The lower plot shows the infill criterion.
 - For bi-criteria target functions the upper plot shows the target space and the lower
   plot displays the x-space.</p>
     
+    </div>
 
     <pre class="usage"><span class='fu'>renderExampleRunPlot</span>(<span class='no'>object</span>, <span class='no'>iter</span>, <span class='kw'>densregion</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>se.factor</span> <span class='kw'>=</span> <span class='fl'>1</span>,
   <span class='kw'>single.prop.point.plots</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>xlim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ylim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
@@ -268,7 +278,7 @@ Currently not used.</p></td>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Bernd Bischl, Jakob Bossek, Jakob Richter, Daniel Horn, Michel Lang, Janek Thomas.</p>
+  <p>Developed by Bernd Bischl, Jakob Richter, Jakob Bossek, Daniel Horn, Michel Lang, Janek Thomas.</p>
 </div>
 
 <div class="pkgdown">
@@ -277,6 +287,8 @@ Currently not used.</p></td>
 
       </footer>
    </div>
+
+  
 
   </body>
 </html>

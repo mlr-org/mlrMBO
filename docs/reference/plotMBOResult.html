@@ -25,6 +25,9 @@
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
+
+
+
 <meta property="og:title" content="MBO Result Plotting — plotMBOResult" />
 
 <meta property="og:description" content="Plots any MBO result objects. Plots for X-Space, Y-Space and any column in
@@ -97,6 +100,9 @@ plotOptPath from package ParamHelpers." />
     <li>
       <a href="../articles/supplementary/human_in_the_loop_MBO.html">Human-in-the-loop MBO</a>
     </li>
+    <li>
+      <a href="../articles/supplementary/mlrmbo_and_the_command_line.html">mlrMBO and the Command Line</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -116,6 +122,7 @@ plotOptPath from package ParamHelpers." />
   </a>
 </li>
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -123,18 +130,21 @@ plotOptPath from package ParamHelpers." />
       
       </header>
 
-      <div class="row">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>MBO Result Plotting</h1>
-    <small>Source: <a href='https://github.com/mlr-org/mlrMBO/blob/master/R/plot_MBOResult.R'><code>R/plot_MBOResult.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/mlr-org/mlrMBO/blob/master/R/plot_MBOResult.R'><code>R/plot_MBOResult.R</code></a></small>
+    <div class="hidden name"><code>plotMBOResult.Rd</code></div>
     </div>
 
+    <div class="ref-description">
     
     <p>Plots any MBO result objects. Plots for X-Space, Y-Space and any column in
 the optimization path are available. This function uses
 <code><a href='http://www.rdocumentation.org/packages/ParamHelpers/topics/plotOptPath'>plotOptPath</a></code> from package <code>ParamHelpers</code>.</p>
     
+    </div>
 
     <pre class="usage"><span class='co'># S3 method for MBOSingleObjResult</span>
 <span class='fu'>plot</span>(<span class='no'>x</span>, <span class='kw'>iters</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>pause</span> <span class='kw'>=</span> <span class='fu'>interactive</span>(),
@@ -183,7 +193,7 @@ function in package <code>ParamHelpers</code>.</p></td>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Bernd Bischl, Jakob Bossek, Jakob Richter, Daniel Horn, Michel Lang, Janek Thomas.</p>
+  <p>Developed by Bernd Bischl, Jakob Richter, Jakob Bossek, Daniel Horn, Michel Lang, Janek Thomas.</p>
 </div>
 
 <div class="pkgdown">
@@ -192,6 +202,8 @@ function in package <code>ParamHelpers</code>.</p></td>
 
       </footer>
    </div>
+
+  
 
   </body>
 </html>

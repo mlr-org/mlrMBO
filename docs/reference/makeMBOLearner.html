@@ -25,6 +25,9 @@
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
+
+
+
 <meta property="og:title" content="Generate default learner. — makeMBOLearner" />
 
 <meta property="og:description" content="This is a helper function that generates a default surrogate, based on properties of the objective
@@ -130,6 +133,9 @@ Ding et.al. (2010)." />
     <li>
       <a href="../articles/supplementary/human_in_the_loop_MBO.html">Human-in-the-loop MBO</a>
     </li>
+    <li>
+      <a href="../articles/supplementary/mlrmbo_and_the_command_line.html">mlrMBO and the Command Line</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -149,6 +155,7 @@ Ding et.al. (2010)." />
   </a>
 </li>
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -156,13 +163,15 @@ Ding et.al. (2010)." />
       
       </header>
 
-      <div class="row">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Generate default learner.</h1>
-    <small>Source: <a href='https://github.com/mlr-org/mlrMBO/blob/master/R/makeMBOLearner.R'><code>R/makeMBOLearner.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/mlr-org/mlrMBO/blob/master/R/makeMBOLearner.R'><code>R/makeMBOLearner.R</code></a></small>
+    <div class="hidden name"><code>makeMBOLearner.Rd</code></div>
     </div>
 
+    <div class="ref-description">
     
     <p>This is a helper function that generates a default surrogate, based on properties of the objective
 function and the selected infill criterion.</p>
@@ -201,6 +210,7 @@ We simply handle those with an imputation method, added to the random forest:</p
 </ul><p>Both of these techniques make sense for tree-based methods and are usually hard to beat, see
 Ding et.al. (2010).</p>
     
+    </div>
 
     <pre class="usage"><span class='fu'>makeMBOLearner</span>(<span class='no'>control</span>, <span class='no'>fun</span>, <span class='kw'>config</span> <span class='kw'>=</span> <span class='fu'>list</span>(), <span class='no'>...</span>)</pre>
     
@@ -257,7 +267,7 @@ Journal of Machine Learning Research 11.Jan (2010): 131-170.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Bernd Bischl, Jakob Bossek, Jakob Richter, Daniel Horn, Michel Lang, Janek Thomas.</p>
+  <p>Developed by Bernd Bischl, Jakob Richter, Jakob Bossek, Daniel Horn, Michel Lang, Janek Thomas.</p>
 </div>
 
 <div class="pkgdown">
@@ -266,6 +276,8 @@ Journal of Machine Learning Research 11.Jan (2010): 131-170.</p>
 
       </footer>
    </div>
+
+  
 
   </body>
 </html>

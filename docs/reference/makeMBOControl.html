@@ -25,6 +25,9 @@
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
+
+
+
 <meta property="og:title" content="Set MBO options. — makeMBOControl" />
 
 <meta property="og:description" content="Creates a control object for MBO optimization." />
@@ -95,6 +98,9 @@
     <li>
       <a href="../articles/supplementary/human_in_the_loop_MBO.html">Human-in-the-loop MBO</a>
     </li>
+    <li>
+      <a href="../articles/supplementary/mlrmbo_and_the_command_line.html">mlrMBO and the Command Line</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -114,6 +120,7 @@
   </a>
 </li>
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -121,16 +128,19 @@
       
       </header>
 
-      <div class="row">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Set MBO options.</h1>
-    <small>Source: <a href='https://github.com/mlr-org/mlrMBO/blob/master/R/makeMBOControl.R'><code>R/makeMBOControl.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/mlr-org/mlrMBO/blob/master/R/makeMBOControl.R'><code>R/makeMBOControl.R</code></a></small>
+    <div class="hidden name"><code>makeMBOControl.Rd</code></div>
     </div>
 
+    <div class="ref-description">
     
     <p>Creates a control object for MBO optimization.</p>
     
+    </div>
 
     <pre class="usage"><span class='fu'>makeMBOControl</span>(<span class='kw'>n.objectives</span> <span class='kw'>=</span> <span class='fl'>1L</span>, <span class='kw'>propose.points</span> <span class='kw'>=</span> <span class='fl'>1L</span>,
   <span class='kw'>final.method</span> <span class='kw'>=</span> <span class='st'>"best.true.y"</span>, <span class='kw'>final.evals</span> <span class='kw'>=</span> <span class='fl'>0L</span>, <span class='kw'>y.name</span> <span class='kw'>=</span> <span class='st'>"y"</span>,
@@ -281,10 +291,10 @@ Default is: &#8220;stop&#8221;.</p></td>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <p>Other MBOControl: <code><a href='setMBOControlInfill.html'>setMBOControlInfill</a></code>,
+    <div class='dont-index'><p>Other MBOControl: <code><a href='setMBOControlInfill.html'>setMBOControlInfill</a></code>,
   <code><a href='setMBOControlMultiObj.html'>setMBOControlMultiObj</a></code>,
   <code><a href='setMBOControlMultiPoint.html'>setMBOControlMultiPoint</a></code>,
-  <code><a href='setMBOControlTermination.html'>setMBOControlTermination</a></code></p>
+  <code><a href='setMBOControlTermination.html'>setMBOControlTermination</a></code></p></div>
     
 
   </div>
@@ -303,7 +313,7 @@ Default is: &#8220;stop&#8221;.</p></td>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Bernd Bischl, Jakob Bossek, Jakob Richter, Daniel Horn, Michel Lang, Janek Thomas.</p>
+  <p>Developed by Bernd Bischl, Jakob Richter, Jakob Bossek, Daniel Horn, Michel Lang, Janek Thomas.</p>
 </div>
 
 <div class="pkgdown">
@@ -312,6 +322,8 @@ Default is: &#8220;stop&#8221;.</p></td>
 
       </footer>
    </div>
+
+  
 
   </body>
 </html>

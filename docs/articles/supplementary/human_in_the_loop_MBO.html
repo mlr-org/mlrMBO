@@ -18,7 +18,7 @@
 <![endif]-->
 </head>
 <body>
-    <div class="container template-vignette">
+    <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
@@ -69,6 +69,9 @@
     <li>
       <a href="../../articles/supplementary/human_in_the_loop_MBO.html">Human-in-the-loop MBO</a>
     </li>
+    <li>
+      <a href="../../articles/supplementary/mlrmbo_and_the_command_line.html">mlrMBO and the Command Line</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -96,18 +99,18 @@
 
       
       </header><div class="row">
-  <div class="col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>Human-in-the-loop MBO</h1>
             
       
-      <small>Source: <a href="https://github.com/mlr-org/mlrMBO/blob/master/vignettes/supplementary/human_in_the_loop_MBO.Rmd"><code>vignettes/supplementary/human_in_the_loop_MBO.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/mlr-org/mlrMBO/blob/master/vignettes/supplementary/human_in_the_loop_MBO.Rmd"><code>vignettes/supplementary/human_in_the_loop_MBO.Rmd</code></a></small>
+      <div class="hidden name"><code>human_in_the_loop_MBO.Rmd</code></div>
 
     </div>
 
     
     
-<div class="contents">
 <div id="purpose" class="section level2">
 <h2 class="hasAnchor">
 <a href="#purpose" class="anchor"></a>Purpose</h2>
@@ -141,7 +144,7 @@ ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/setMBOC
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">opt.state =<span class="st"> </span><span class="kw"><a href="../../reference/initSMBO.html">initSMBO</a></span>(<span class="dt">par.set =</span> ps, <span class="dt">design =</span> des, <span class="dt">control =</span> ctrl, <span class="dt">minimize =</span> <span class="ot">TRUE</span>, <span class="dt">noisy =</span> <span class="ot">FALSE</span>)</code></pre></div>
 <p>At each state the <code>opt.state</code> object can be plotted to visualize the predictions of the surrogate model</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(opt.state)</code></pre></div>
-<p><img src="human_in_the_loop_MBO_files/figure-html/plotOptState1-1.svg" width="672"></p>
+<p><img src="human_in_the_loop_MBO_files/figure-html/plotOptState1-1.png" width="700"></p>
 <p>The first panel shows the value of the infill criterion. The higher the value the more this area is desirable to be explored to find the optimum. In the following panels the mean prediction of the surrogate and the uncertainty estimation is plotted.</p>
 <p>Let’s see which point MBO suggests we should evaluate in the next step:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../../reference/proposePoints.html">proposePoints</a></span>(opt.state)
@@ -150,7 +153,7 @@ ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/setMBOC
 ## 150 1.011225 -1
 ## 
 ## $propose.time
-## [1] 0.265
+## [1] 0.082
 ## 
 ## $prop.type
 ## [1] "infill_ei"
@@ -174,14 +177,14 @@ ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/setMBOC
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../../reference/updateSMBO.html">updateSMBO</a></span>(opt.state, <span class="dt">x =</span> x, <span class="dt">y =</span> <span class="fl">2.19</span>)</code></pre></div>
 <p>Now we can plot the state again and ask for a proposal:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(opt.state)</code></pre></div>
-<p><img src="human_in_the_loop_MBO_files/figure-html/plotOptState2-1.svg" width="672"></p>
+<p><img src="human_in_the_loop_MBO_files/figure-html/plotOptState2-1.png" width="700"></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(<span class="dt">prop =</span> <span class="kw"><a href="../../reference/proposePoints.html">proposePoints</a></span>(opt.state))
 ## $prop.points
 ##             q v
 ## 941 0.9937339 0
 ## 
 ## $propose.time
-## [1] 0.131
+## [1] 0.118
 ## 
 ## $prop.type
 ## [1] "infill_ei"
@@ -228,7 +231,7 @@ for (i in <span class="dv">1</span>:<span class="dv">10</span>) {
 ## 387 -0.3000646 0
 ## 
 ## $propose.time
-## [1] 0.124
+## [1] 0.094
 ## 
 ## $prop.type
 ## [1] "infill_ei"
@@ -271,14 +274,14 @@ res =<span class="st"> </span><span class="kw"><a href="../../reference/mbo.html
 ## [mbo] 10: x=1.84 : y = 1.31 : 0.0 secs : infill_ei
 opt.state =<span class="st"> </span>res$final.opt.state
 <span class="kw">plot</span>(opt.state, <span class="dt">scale.panels =</span> <span class="ot">TRUE</span>)</code></pre></div>
-<p><img src="human_in_the_loop_MBO_files/figure-html/continue%20mbo-1.svg" width="672"></p>
+<p><img src="human_in_the_loop_MBO_files/figure-html/continue%20mbo-1.png" width="700"></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(<span class="dt">prop =</span> <span class="kw"><a href="../../reference/proposePoints.html">proposePoints</a></span>(opt.state))
 ## $prop.points
 ##            x
 ## 487 1.836319
 ## 
 ## $propose.time
-## [1] 0.084
+## [1] 0.078
 ## 
 ## $prop.type
 ## [1] "infill_ei"
@@ -317,7 +320,7 @@ opt.state =<span class="st"> </span><span class="kw"><a href="../../reference/in
 ## 447  1.99999879 0
 ## 
 ## $propose.time
-## [1] 0.096 0.101 0.106 0.100
+## [1] 0.080 0.087 0.104 0.085
 ## 
 ## $prop.type
 ## [1] "infill_ei" "infill_ei" "infill_ei" "infill_ei"
@@ -345,7 +348,6 @@ opt.state =<span class="st"> </span><span class="kw"><a href="../../reference/in
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../../reference/updateSMBO.html">updateSMBO</a></span>(opt.state, <span class="dt">x =</span> prop$prop.points[<span class="dv">1</span>:<span class="dv">2</span>,], <span class="dt">y =</span> <span class="kw">list</span>(<span class="fl">2.28</span>, <span class="fl">1.67</span>))
 <span class="co"># ...</span></code></pre></div>
 </div>
-</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -365,7 +367,7 @@ opt.state =<span class="st"> </span><span class="kw"><a href="../../reference/in
 
 
       <footer><div class="copyright">
-  <p>Developed by Bernd Bischl, Jakob Bossek, Jakob Richter, Daniel Horn, Michel Lang, Janek Thomas.</p>
+  <p>Developed by Bernd Bischl, Jakob Richter, Jakob Bossek, Daniel Horn, Michel Lang, Janek Thomas.</p>
 </div>
 
 <div class="pkgdown">
@@ -374,6 +376,8 @@ opt.state =<span class="st"> </span><span class="kw"><a href="../../reference/in
 
       </footer>
 </div>
+
+  
 
   </body>
 </html>

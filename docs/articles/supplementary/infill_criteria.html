@@ -18,7 +18,7 @@
 <![endif]-->
 </head>
 <body>
-    <div class="container template-vignette">
+    <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
@@ -69,6 +69,9 @@
     <li>
       <a href="../../articles/supplementary/human_in_the_loop_MBO.html">Human-in-the-loop MBO</a>
     </li>
+    <li>
+      <a href="../../articles/supplementary/mlrmbo_and_the_command_line.html">mlrMBO and the Command Line</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -96,18 +99,18 @@
 
       
       </header><div class="row">
-  <div class="col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>Infill criteria</h1>
             
       
-      <small>Source: <a href="https://github.com/mlr-org/mlrMBO/blob/master/vignettes/supplementary/infill_criteria.Rmd"><code>vignettes/supplementary/infill_criteria.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/mlr-org/mlrMBO/blob/master/vignettes/supplementary/infill_criteria.Rmd"><code>vignettes/supplementary/infill_criteria.Rmd</code></a></small>
+      <div class="hidden name"><code>infill_criteria.Rmd</code></div>
 
     </div>
 
     
     
-<div class="contents">
 <div id="purpose" class="section level2">
 <h2 class="hasAnchor">
 <a href="#purpose" class="anchor"></a>Purpose</h2>
@@ -152,7 +155,7 @@ ctrl.mean =<span class="st"> </span><span class="kw"><a href="../../reference/se
 <p>For the optimization run we use <code><a href="../../reference/exampleRun.html">exampleRun()</a></code> instead of <code><a href="../../reference/mbo.html">mbo()</a></code> in order to visualize it with <code><a href="../../reference/plotExampleRun.html">plotExampleRun()</a></code>. As we only want to look at the first and last iteration, we set <code>iters = c(1L, 5L)</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">run.mean =<span class="st"> </span><span class="kw"><a href="../../reference/exampleRun.html">exampleRun</a></span>(test.fun, <span class="dt">design =</span> design, <span class="dt">learner =</span> lrn.km, <span class="dt">control =</span> ctrl.mean)
 <span class="kw"><a href="../../reference/plotExampleRun.html">plotExampleRun</a></span>(run.mean, <span class="dt">pause =</span> <span class="ot">FALSE</span>, <span class="dt">iters =</span> <span class="kw">c</span>(1L, 5L))</code></pre></div>
-<p><img src="infill_criteria_files/figure-html/mean-1.svg" width="672"><img src="infill_criteria_files/figure-html/mean-2.svg" width="672"></p>
+<p><img src="infill_criteria_files/figure-html/mean-1.png" width="700"><img src="infill_criteria_files/figure-html/mean-2.png" width="700"></p>
 <p>In the figures the solid line shows the test function, the dashed line the estimated mean of the surrogate model, the red points the initial design points, green squares further design points and the blue triangles the proposed points. We see that new design points are only proposed at the local optimum. Indeed we are seeing here only five iterations, but the optimization also stagnates with more iterations at the local optimum. This is because new proposals are made always at the minimum of the surrogate model and thus there is no exploration anymore. Let’s try it next with an infill criterion that does exploitation as well as exploration.</p>
 </div>
 <div id="expected-improvement" class="section level4">
@@ -168,10 +171,9 @@ ctrl.ei =<span class="st"> </span><span class="kw"><a href="../../reference/setM
 <p>Again we use <code><a href="../../reference/exampleRun.html">exampleRun()</a></code> instead of mbo to visualize the results.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">run.ei =<span class="st"> </span><span class="kw"><a href="../../reference/exampleRun.html">exampleRun</a></span>(test.fun, <span class="dt">design =</span> design, <span class="dt">learner =</span> lrn.km, <span class="dt">control =</span> ctrl.ei)
 <span class="kw"><a href="../../reference/plotExampleRun.html">plotExampleRun</a></span>(run.ei, <span class="dt">pause =</span> <span class="ot">FALSE</span>)</code></pre></div>
-<p><img src="infill_criteria_files/figure-html/plotei-1.svg" width="672"><img src="infill_criteria_files/figure-html/plotei-2.svg" width="672"><img src="infill_criteria_files/figure-html/plotei-3.svg" width="672"><img src="infill_criteria_files/figure-html/plotei-4.svg" width="672"><img src="infill_criteria_files/figure-html/plotei-5.svg" width="672"></p>
+<p><img src="infill_criteria_files/figure-html/plotei-1.png" width="700"><img src="infill_criteria_files/figure-html/plotei-2.png" width="700"><img src="infill_criteria_files/figure-html/plotei-3.png" width="700"><img src="infill_criteria_files/figure-html/plotei-4.png" width="700"><img src="infill_criteria_files/figure-html/plotei-5.png" width="700"></p>
 <p>In the figures the uncertainty is displayed by the shaded area. The lower part of a plot shows the Expected Improvement. Now we found the global optimum of the test function in only five iterations.</p>
 <p>This two examples show that exploration can be important to find the global optimum. If the learner supports the variance estimate, <em>Expected Improvement</em> or <em>Confidence Bound</em> is a good choice for the infill criterion.</p>
-</div>
 </div>
 </div>
 </div>
@@ -192,7 +194,7 @@ ctrl.ei =<span class="st"> </span><span class="kw"><a href="../../reference/setM
 
 
       <footer><div class="copyright">
-  <p>Developed by Bernd Bischl, Jakob Bossek, Jakob Richter, Daniel Horn, Michel Lang, Janek Thomas.</p>
+  <p>Developed by Bernd Bischl, Jakob Richter, Jakob Bossek, Daniel Horn, Michel Lang, Janek Thomas.</p>
 </div>
 
 <div class="pkgdown">
@@ -201,6 +203,8 @@ ctrl.ei =<span class="st"> </span><span class="kw"><a href="../../reference/setM
 
       </footer>
 </div>
+
+  
 
   </body>
 </html>

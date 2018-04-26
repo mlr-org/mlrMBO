@@ -25,6 +25,9 @@
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
+
+
+
 <meta property="og:title" content="Extends mbo control object with infill criteria and infill optimizer options. — setMBOControlInfill" />
 
 <meta property="og:description" content="Please note that internally all infill criteria are minimized. So for some of them,
@@ -98,6 +101,9 @@ minimizes that." />
     <li>
       <a href="../articles/supplementary/human_in_the_loop_MBO.html">Human-in-the-loop MBO</a>
     </li>
+    <li>
+      <a href="../articles/supplementary/mlrmbo_and_the_command_line.html">mlrMBO and the Command Line</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -117,6 +123,7 @@ minimizes that." />
   </a>
 </li>
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -124,19 +131,22 @@ minimizes that." />
       
       </header>
 
-      <div class="row">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Extends mbo control object with infill criteria and infill optimizer options.</h1>
-    <small>Source: <a href='https://github.com/mlr-org/mlrMBO/blob/master/R/setMBOControlInfill.R'><code>R/setMBOControlInfill.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/mlr-org/mlrMBO/blob/master/R/setMBOControlInfill.R'><code>R/setMBOControlInfill.R</code></a></small>
+    <div class="hidden name"><code>setMBOControlInfill.Rd</code></div>
     </div>
 
+    <div class="ref-description">
     
     <p>Please note that internally all infill criteria are minimized. So for some of them,
 we internally compute their negated version, e.g., for EI or also for CB when the objective is to
 be maximized. In the latter case mlrMBO actually computes the negative upper confidence bound and
 minimizes that.</p>
     
+    </div>
 
     <pre class="usage"><span class='fu'>setMBOControlInfill</span>(<span class='no'>control</span>, <span class='kw'>crit</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>interleave.random.points</span> <span class='kw'>=</span> <span class='fl'>0L</span>,
   <span class='kw'>filter.proposed.points</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>filter.proposed.points.tol</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
@@ -333,10 +343,10 @@ nsga2 param. Default is 10.</p></td>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <p>Other MBOControl: <code><a href='makeMBOControl.html'>makeMBOControl</a></code>,
+    <div class='dont-index'><p>Other MBOControl: <code><a href='makeMBOControl.html'>makeMBOControl</a></code>,
   <code><a href='setMBOControlMultiObj.html'>setMBOControlMultiObj</a></code>,
   <code><a href='setMBOControlMultiPoint.html'>setMBOControlMultiPoint</a></code>,
-  <code><a href='setMBOControlTermination.html'>setMBOControlTermination</a></code></p>
+  <code><a href='setMBOControlTermination.html'>setMBOControlTermination</a></code></p></div>
     
 
   </div>
@@ -355,7 +365,7 @@ nsga2 param. Default is 10.</p></td>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Bernd Bischl, Jakob Bossek, Jakob Richter, Daniel Horn, Michel Lang, Janek Thomas.</p>
+  <p>Developed by Bernd Bischl, Jakob Richter, Jakob Bossek, Daniel Horn, Michel Lang, Janek Thomas.</p>
 </div>
 
 <div class="pkgdown">
@@ -364,6 +374,8 @@ nsga2 param. Default is 10.</p></td>
 
       </footer>
    </div>
+
+  
 
   </body>
 </html>
