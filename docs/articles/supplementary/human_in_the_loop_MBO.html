@@ -120,233 +120,233 @@
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
 <p>Before we start the optimization you need to define the search space:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ps =<span class="st"> </span><span class="kw">makeParamSet</span>(
-  <span class="kw">makeNumericParam</span>(<span class="st">"q"</span>, <span class="dt">lower =</span> -<span class="dv">1</span>, <span class="dt">upper =</span> <span class="dv">2</span>),
-  <span class="kw">makeIntegerParam</span>(<span class="st">"v"</span>, <span class="dt">lower =</span> -<span class="dv">2</span>, <span class="dt">upper =</span> <span class="dv">3</span>)
-)</code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1">ps =<span class="st"> </span><span class="kw">makeParamSet</span>(</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">  <span class="kw">makeNumericParam</span>(<span class="st">"q"</span>, <span class="dt">lower =</span> <span class="dv">-1</span>, <span class="dt">upper =</span> <span class="dv">2</span>),</a>
+<a class="sourceLine" id="cb1-3" data-line-number="3">  <span class="kw">makeIntegerParam</span>(<span class="st">"v"</span>, <span class="dt">lower =</span> <span class="dv">-2</span>, <span class="dt">upper =</span> <span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb1-4" data-line-number="4">)</a></code></pre></div>
 <p>Furthermore we need an initial design that includes the results of the evaluated function</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">des =<span class="st"> </span><span class="kw">generateDesign</span>(<span class="dt">n =</span> <span class="dv">7</span>, <span class="dt">par.set =</span> ps)
-des
-##             q  v
-## 1  1.18696772  2
-## 2 -0.61436073  0
-## 3 -0.03739097 -1
-## 4  1.58945409  3
-## 5 -0.43089112  2
-## 6  0.69478728 -2
-## 7  1.09551685  1</code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">des =<span class="st"> </span><span class="kw">generateDesign</span>(<span class="dt">n =</span> <span class="dv">7</span>, <span class="dt">par.set =</span> ps)</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2">des</a>
+<a class="sourceLine" id="cb2-3" data-line-number="3">##             q  v</a>
+<a class="sourceLine" id="cb2-4" data-line-number="4">## 1  1.18696772  2</a>
+<a class="sourceLine" id="cb2-5" data-line-number="5">## 2 -0.61436073  0</a>
+<a class="sourceLine" id="cb2-6" data-line-number="6">## 3 -0.03739097 -1</a>
+<a class="sourceLine" id="cb2-7" data-line-number="7">## 4  1.58945409  3</a>
+<a class="sourceLine" id="cb2-8" data-line-number="8">## 5 -0.43089112  2</a>
+<a class="sourceLine" id="cb2-9" data-line-number="9">## 6  0.69478728 -2</a>
+<a class="sourceLine" id="cb2-10" data-line-number="10">## 7  1.09551685  1</a></code></pre></div>
 <p>After evaluating the objective function manually we can add the results</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">des$y =<span class="st"> </span><span class="kw">c</span>(<span class="fl">1.20</span>, <span class="fl">0.97</span>, <span class="fl">0.91</span>, <span class="fl">3.15</span>, <span class="fl">0.58</span>, <span class="fl">1.12</span>, <span class="fl">0.50</span>)</code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">des<span class="op">$</span>y =<span class="st"> </span><span class="kw">c</span>(<span class="fl">1.20</span>, <span class="fl">0.97</span>, <span class="fl">0.91</span>, <span class="fl">3.15</span>, <span class="fl">0.58</span>, <span class="fl">1.12</span>, <span class="fl">0.50</span>)</a></code></pre></div>
 <p>Now we define our <strong>mlrMBO</strong>-Control object. For this example we stick to the defaults except that we set the infill-criterion to the <strong>Expected Improvement</strong></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span>()
-ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/setMBOControlInfill.html">setMBOControlInfill</a></span>(ctrl, <span class="dt">crit =</span> crit.ei)</code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span>()</a>
+<a class="sourceLine" id="cb4-2" data-line-number="2">ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/setMBOControlInfill.html">setMBOControlInfill</a></span>(ctrl, <span class="dt">crit =</span> crit.ei)</a></code></pre></div>
 <p>These information are enough to get us started and initialize the sequential MBO.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">opt.state =<span class="st"> </span><span class="kw"><a href="../../reference/initSMBO.html">initSMBO</a></span>(<span class="dt">par.set =</span> ps, <span class="dt">design =</span> des, <span class="dt">control =</span> ctrl, <span class="dt">minimize =</span> <span class="ot">TRUE</span>, <span class="dt">noisy =</span> <span class="ot">FALSE</span>)</code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">opt.state =<span class="st"> </span><span class="kw"><a href="../../reference/initSMBO.html">initSMBO</a></span>(<span class="dt">par.set =</span> ps, <span class="dt">design =</span> des, <span class="dt">control =</span> ctrl, <span class="dt">minimize =</span> <span class="ot">TRUE</span>, <span class="dt">noisy =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
 <p>At each state the <code>opt.state</code> object can be plotted to visualize the predictions of the surrogate model</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(opt.state)</code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw">plot</span>(opt.state)</a></code></pre></div>
 <p><img src="human_in_the_loop_MBO_files/figure-html/plotOptState1-1.png" width="700"></p>
 <p>The first panel shows the value of the infill criterion. The higher the value the more this area is desirable to be explored to find the optimum. In the following panels the mean prediction of the surrogate and the uncertainty estimation is plotted.</p>
 <p>Let’s see which point MBO suggests we should evaluate in the next step:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../../reference/proposePoints.html">proposePoints</a></span>(opt.state)
-## $prop.points
-##            q  v
-## 150 1.011225 -1
-## 
-## $propose.time
-## [1] 0.089
-## 
-## $prop.type
-## [1] "infill_ei"
-## 
-## $crit.vals
-##            [,1]
-## [1,] -0.2222111
-## 
-## $crit.components
-##          se      mean
-## 1 0.4272983 0.4049185
-## 
-## $errors.model
-## [1] NA
-## 
-## attr(,"class")
-## [1] "Proposal" "list"</code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw"><a href="../../reference/proposePoints.html">proposePoints</a></span>(opt.state)</a>
+<a class="sourceLine" id="cb7-2" data-line-number="2">## $prop.points</a>
+<a class="sourceLine" id="cb7-3" data-line-number="3">##            q  v</a>
+<a class="sourceLine" id="cb7-4" data-line-number="4">## 150 1.011225 -1</a>
+<a class="sourceLine" id="cb7-5" data-line-number="5">## </a>
+<a class="sourceLine" id="cb7-6" data-line-number="6">## $propose.time</a>
+<a class="sourceLine" id="cb7-7" data-line-number="7">## [1] 0.085</a>
+<a class="sourceLine" id="cb7-8" data-line-number="8">## </a>
+<a class="sourceLine" id="cb7-9" data-line-number="9">## $prop.type</a>
+<a class="sourceLine" id="cb7-10" data-line-number="10">## [1] "infill_ei"</a>
+<a class="sourceLine" id="cb7-11" data-line-number="11">## </a>
+<a class="sourceLine" id="cb7-12" data-line-number="12">## $crit.vals</a>
+<a class="sourceLine" id="cb7-13" data-line-number="13">##            [,1]</a>
+<a class="sourceLine" id="cb7-14" data-line-number="14">## [1,] -0.2222111</a>
+<a class="sourceLine" id="cb7-15" data-line-number="15">## </a>
+<a class="sourceLine" id="cb7-16" data-line-number="16">## $crit.components</a>
+<a class="sourceLine" id="cb7-17" data-line-number="17">##          se      mean</a>
+<a class="sourceLine" id="cb7-18" data-line-number="18">## 1 0.4272983 0.4049185</a>
+<a class="sourceLine" id="cb7-19" data-line-number="19">## </a>
+<a class="sourceLine" id="cb7-20" data-line-number="20">## $errors.model</a>
+<a class="sourceLine" id="cb7-21" data-line-number="21">## [1] NA</a>
+<a class="sourceLine" id="cb7-22" data-line-number="22">## </a>
+<a class="sourceLine" id="cb7-23" data-line-number="23">## attr(,"class")</a>
+<a class="sourceLine" id="cb7-24" data-line-number="24">## [1] "Proposal" "list"</a></code></pre></div>
 <p>We don’t have to stick to the suggestion and evaluate another point:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">q =</span> <span class="fl">1.7</span>, <span class="dt">v =</span> <span class="dv">1</span>)</code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1">x =<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">q =</span> <span class="fl">1.7</span>, <span class="dt">v =</span> <span class="dv">1</span>)</a></code></pre></div>
 <p>After we evaluated the objective function manually we get a return value of <code>2.19</code>. We take both values to update MBO:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../../reference/updateSMBO.html">updateSMBO</a></span>(opt.state, <span class="dt">x =</span> x, <span class="dt">y =</span> <span class="fl">2.19</span>)</code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw"><a href="../../reference/updateSMBO.html">updateSMBO</a></span>(opt.state, <span class="dt">x =</span> x, <span class="dt">y =</span> <span class="fl">2.19</span>)</a></code></pre></div>
 <p>Now we can plot the state again and ask for a proposal:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(opt.state)</code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="kw">plot</span>(opt.state)</a></code></pre></div>
 <p><img src="human_in_the_loop_MBO_files/figure-html/plotOptState2-1.png" width="700"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(<span class="dt">prop =</span> <span class="kw"><a href="../../reference/proposePoints.html">proposePoints</a></span>(opt.state))
-## $prop.points
-##             q v
-## 941 0.9937339 0
-## 
-## $propose.time
-## [1] 0.114
-## 
-## $prop.type
-## [1] "infill_ei"
-## 
-## $crit.vals
-##            [,1]
-## [1,] -0.1836443
-## 
-## $crit.components
-##          se      mean
-## 1 0.3871173 0.4447291
-## 
-## $errors.model
-## [1] NA
-## 
-## attr(,"class")
-## [1] "Proposal" "list"</code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1">(<span class="dt">prop =</span> <span class="kw"><a href="../../reference/proposePoints.html">proposePoints</a></span>(opt.state))</a>
+<a class="sourceLine" id="cb11-2" data-line-number="2">## $prop.points</a>
+<a class="sourceLine" id="cb11-3" data-line-number="3">##             q v</a>
+<a class="sourceLine" id="cb11-4" data-line-number="4">## 941 0.9937339 0</a>
+<a class="sourceLine" id="cb11-5" data-line-number="5">## </a>
+<a class="sourceLine" id="cb11-6" data-line-number="6">## $propose.time</a>
+<a class="sourceLine" id="cb11-7" data-line-number="7">## [1] 0.109</a>
+<a class="sourceLine" id="cb11-8" data-line-number="8">## </a>
+<a class="sourceLine" id="cb11-9" data-line-number="9">## $prop.type</a>
+<a class="sourceLine" id="cb11-10" data-line-number="10">## [1] "infill_ei"</a>
+<a class="sourceLine" id="cb11-11" data-line-number="11">## </a>
+<a class="sourceLine" id="cb11-12" data-line-number="12">## $crit.vals</a>
+<a class="sourceLine" id="cb11-13" data-line-number="13">##            [,1]</a>
+<a class="sourceLine" id="cb11-14" data-line-number="14">## [1,] -0.1836443</a>
+<a class="sourceLine" id="cb11-15" data-line-number="15">## </a>
+<a class="sourceLine" id="cb11-16" data-line-number="16">## $crit.components</a>
+<a class="sourceLine" id="cb11-17" data-line-number="17">##          se      mean</a>
+<a class="sourceLine" id="cb11-18" data-line-number="18">## 1 0.3871173 0.4447291</a>
+<a class="sourceLine" id="cb11-19" data-line-number="19">## </a>
+<a class="sourceLine" id="cb11-20" data-line-number="20">## $errors.model</a>
+<a class="sourceLine" id="cb11-21" data-line-number="21">## [1] NA</a>
+<a class="sourceLine" id="cb11-22" data-line-number="22">## </a>
+<a class="sourceLine" id="cb11-23" data-line-number="23">## attr(,"class")</a>
+<a class="sourceLine" id="cb11-24" data-line-number="24">## [1] "Proposal" "list"</a></code></pre></div>
 <p>This time we evaluated the exact proposed points and get a value of <code>0.13</code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../../reference/updateSMBO.html">updateSMBO</a></span>(opt.state, <span class="dt">x =</span> prop$prop.points, <span class="dt">y =</span> <span class="fl">0.13</span>)</code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"><span class="kw"><a href="../../reference/updateSMBO.html">updateSMBO</a></span>(opt.state, <span class="dt">x =</span> prop<span class="op">$</span>prop.points, <span class="dt">y =</span> <span class="fl">0.13</span>)</a></code></pre></div>
 <p>Let’s assume we want to stop here. To get to the usual MBO result you can call:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res =<span class="st"> </span><span class="kw"><a href="../../reference/finalizeSMBO.html">finalizeSMBO</a></span>(opt.state)
-res$x
-## $q
-## [1] 0.9937339
-## 
-## $v
-## [1] 0
-res$y
-## [1] 0.13</code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1">res =<span class="st"> </span><span class="kw"><a href="../../reference/finalizeSMBO.html">finalizeSMBO</a></span>(opt.state)</a>
+<a class="sourceLine" id="cb13-2" data-line-number="2">res<span class="op">$</span>x</a>
+<a class="sourceLine" id="cb13-3" data-line-number="3">## $q</a>
+<a class="sourceLine" id="cb13-4" data-line-number="4">## [1] 0.9937339</a>
+<a class="sourceLine" id="cb13-5" data-line-number="5">## </a>
+<a class="sourceLine" id="cb13-6" data-line-number="6">## $v</a>
+<a class="sourceLine" id="cb13-7" data-line-number="7">## [1] 0</a>
+<a class="sourceLine" id="cb13-8" data-line-number="8">res<span class="op">$</span>y</a>
+<a class="sourceLine" id="cb13-9" data-line-number="9">## [1] 0.13</a></code></pre></div>
 <div id="semi-automatic-mbo" class="section level3">
 <h3 class="hasAnchor">
 <a href="#semi-automatic-mbo" class="anchor"></a>Semi Automatic MBO</h3>
 <p>You can combine the human-in-the-loop MBO with a simple loop to let MBO run for a while and just interfere once in a while.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">f =<span class="st"> </span>function(q, v) <span class="dv">1</span> +<span class="st"> </span><span class="kw">sin</span>(q*<span class="dv">5</span>) +<span class="st"> </span><span class="fl">0.1</span> *<span class="st"> </span>(q^<span class="dv">2</span> +<span class="st"> </span>v^<span class="dv">2</span>)
-for (i in <span class="dv">1</span>:<span class="dv">10</span>) {
-  prop =<span class="st"> </span><span class="kw"><a href="../../reference/proposePoints.html">proposePoints</a></span>(opt.state)
-  x =<span class="st"> </span><span class="kw">dfRowsToList</span>(<span class="dt">df =</span> prop$prop.points, <span class="dt">par.set =</span> ps)
-  y =<span class="st"> </span><span class="kw">do.call</span>(f, x[[<span class="dv">1</span>]])
-  <span class="kw"><a href="../../reference/updateSMBO.html">updateSMBO</a></span>(opt.state, <span class="dt">x =</span> prop$prop.points, <span class="dt">y =</span> y)
-}
-<span class="kw"><a href="../../reference/proposePoints.html">proposePoints</a></span>(opt.state)
-## $prop.points
-##              q v
-## 387 -0.3000646 0
-## 
-## $propose.time
-## [1] 0.102
-## 
-## $prop.type
-## [1] "infill_ei"
-## 
-## $crit.vals
-##              [,1]
-## [1,] -0.002831849
-## 
-## $crit.components
-##            se       mean
-## 1 0.009017027 0.01173291
-## 
-## $errors.model
-## [1] NA
-## 
-## attr(,"class")
-## [1] "Proposal" "list"</code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1">f =<span class="st"> </span><span class="cf">function</span>(q, v) <span class="dv">1</span> <span class="op">+</span><span class="st"> </span><span class="kw">sin</span>(q<span class="op">*</span><span class="dv">5</span>) <span class="op">+</span><span class="st"> </span><span class="fl">0.1</span> <span class="op">*</span><span class="st"> </span>(q<span class="op">^</span><span class="dv">2</span> <span class="op">+</span><span class="st"> </span>v<span class="op">^</span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb14-2" data-line-number="2"><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>) {</a>
+<a class="sourceLine" id="cb14-3" data-line-number="3">  prop =<span class="st"> </span><span class="kw"><a href="../../reference/proposePoints.html">proposePoints</a></span>(opt.state)</a>
+<a class="sourceLine" id="cb14-4" data-line-number="4">  x =<span class="st"> </span><span class="kw">dfRowsToList</span>(<span class="dt">df =</span> prop<span class="op">$</span>prop.points, <span class="dt">par.set =</span> ps)</a>
+<a class="sourceLine" id="cb14-5" data-line-number="5">  y =<span class="st"> </span><span class="kw">do.call</span>(f, x[[<span class="dv">1</span>]])</a>
+<a class="sourceLine" id="cb14-6" data-line-number="6">  <span class="kw"><a href="../../reference/updateSMBO.html">updateSMBO</a></span>(opt.state, <span class="dt">x =</span> prop<span class="op">$</span>prop.points, <span class="dt">y =</span> y)</a>
+<a class="sourceLine" id="cb14-7" data-line-number="7">}</a>
+<a class="sourceLine" id="cb14-8" data-line-number="8"><span class="kw"><a href="../../reference/proposePoints.html">proposePoints</a></span>(opt.state)</a>
+<a class="sourceLine" id="cb14-9" data-line-number="9">## $prop.points</a>
+<a class="sourceLine" id="cb14-10" data-line-number="10">##              q v</a>
+<a class="sourceLine" id="cb14-11" data-line-number="11">## 387 -0.3000646 0</a>
+<a class="sourceLine" id="cb14-12" data-line-number="12">## </a>
+<a class="sourceLine" id="cb14-13" data-line-number="13">## $propose.time</a>
+<a class="sourceLine" id="cb14-14" data-line-number="14">## [1] 0.1</a>
+<a class="sourceLine" id="cb14-15" data-line-number="15">## </a>
+<a class="sourceLine" id="cb14-16" data-line-number="16">## $prop.type</a>
+<a class="sourceLine" id="cb14-17" data-line-number="17">## [1] "infill_ei"</a>
+<a class="sourceLine" id="cb14-18" data-line-number="18">## </a>
+<a class="sourceLine" id="cb14-19" data-line-number="19">## $crit.vals</a>
+<a class="sourceLine" id="cb14-20" data-line-number="20">##              [,1]</a>
+<a class="sourceLine" id="cb14-21" data-line-number="21">## [1,] -0.002831849</a>
+<a class="sourceLine" id="cb14-22" data-line-number="22">## </a>
+<a class="sourceLine" id="cb14-23" data-line-number="23">## $crit.components</a>
+<a class="sourceLine" id="cb14-24" data-line-number="24">##            se       mean</a>
+<a class="sourceLine" id="cb14-25" data-line-number="25">## 1 0.009017027 0.01173291</a>
+<a class="sourceLine" id="cb14-26" data-line-number="26">## </a>
+<a class="sourceLine" id="cb14-27" data-line-number="27">## $errors.model</a>
+<a class="sourceLine" id="cb14-28" data-line-number="28">## [1] NA</a>
+<a class="sourceLine" id="cb14-29" data-line-number="29">## </a>
+<a class="sourceLine" id="cb14-30" data-line-number="30">## attr(,"class")</a>
+<a class="sourceLine" id="cb14-31" data-line-number="31">## [1] "Proposal" "list"</a></code></pre></div>
 </div>
 </div>
 <div id="continue-a-normal-mbo-run" class="section level2">
 <h2 class="hasAnchor">
 <a href="#continue-a-normal-mbo-run" class="anchor"></a>Continue a normal MBO Run</h2>
 <p>You can also continue a normal call of <code><a href="../../reference/mbo.html">mbo()</a></code> using this manual interface:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fun =<span class="st"> </span><span class="kw">makeAlpine02Function</span>(<span class="dv">1</span>)
-res =<span class="st"> </span><span class="kw"><a href="../../reference/mbo.html">mbo</a></span>(<span class="dt">fun =</span> fun, <span class="dt">control =</span> ctrl)
-## Computing y column(s) for design. Not provided.
-## [mbo] 0: x=2.9 : y = 0.404 : 0.0 secs : initdesign
-## [mbo] 0: x=0.95 : y = 0.793 : 0.0 secs : initdesign
-## [mbo] 0: x=9.8 : y = -1.14 : 0.0 secs : initdesign
-## [mbo] 0: x=5.7 : y = -1.32 : 0.0 secs : initdesign
-## [mbo] 1: x=1.62e-05 : y = 6.5e-08 : 0.0 secs : infill_ei
-## [mbo] 2: x=1.63 : y = 1.27 : 0.0 secs : infill_ei
-## [mbo] 3: x=1.89 : y = 1.31 : 0.0 secs : infill_ei
-## [mbo] 4: x=1.79 : y = 1.31 : 0.0 secs : infill_ei
-## [mbo] 5: x=1.84 : y = 1.31 : 0.0 secs : infill_ei
-## [mbo] 6: x=2.03 : y = 1.28 : 0.0 secs : infill_ei
-## [mbo] 7: x=1.82 : y = 1.31 : 0.0 secs : infill_ei
-## [mbo] 8: x=1.86 : y = 1.31 : 0.0 secs : infill_ei
-## [mbo] 9: x=1.83 : y = 1.31 : 0.0 secs : infill_ei
-## [mbo] 10: x=1.84 : y = 1.31 : 0.0 secs : infill_ei
-opt.state =<span class="st"> </span>res$final.opt.state
-<span class="kw">plot</span>(opt.state, <span class="dt">scale.panels =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1">fun =<span class="st"> </span><span class="kw">makeAlpine02Function</span>(<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb15-2" data-line-number="2">res =<span class="st"> </span><span class="kw"><a href="../../reference/mbo.html">mbo</a></span>(<span class="dt">fun =</span> fun, <span class="dt">control =</span> ctrl)</a>
+<a class="sourceLine" id="cb15-3" data-line-number="3">## Computing y column(s) for design. Not provided.</a>
+<a class="sourceLine" id="cb15-4" data-line-number="4">## [mbo] 0: x=2.9 : y = 0.404 : 0.0 secs : initdesign</a>
+<a class="sourceLine" id="cb15-5" data-line-number="5">## [mbo] 0: x=0.95 : y = 0.793 : 0.0 secs : initdesign</a>
+<a class="sourceLine" id="cb15-6" data-line-number="6">## [mbo] 0: x=9.8 : y = -1.14 : 0.0 secs : initdesign</a>
+<a class="sourceLine" id="cb15-7" data-line-number="7">## [mbo] 0: x=5.7 : y = -1.32 : 0.0 secs : initdesign</a>
+<a class="sourceLine" id="cb15-8" data-line-number="8">## [mbo] 1: x=1.62e-05 : y = 6.5e-08 : 0.0 secs : infill_ei</a>
+<a class="sourceLine" id="cb15-9" data-line-number="9">## [mbo] 2: x=1.63 : y = 1.27 : 0.0 secs : infill_ei</a>
+<a class="sourceLine" id="cb15-10" data-line-number="10">## [mbo] 3: x=1.89 : y = 1.31 : 0.0 secs : infill_ei</a>
+<a class="sourceLine" id="cb15-11" data-line-number="11">## [mbo] 4: x=1.79 : y = 1.31 : 0.0 secs : infill_ei</a>
+<a class="sourceLine" id="cb15-12" data-line-number="12">## [mbo] 5: x=1.84 : y = 1.31 : 0.0 secs : infill_ei</a>
+<a class="sourceLine" id="cb15-13" data-line-number="13">## [mbo] 6: x=2.03 : y = 1.28 : 0.0 secs : infill_ei</a>
+<a class="sourceLine" id="cb15-14" data-line-number="14">## [mbo] 7: x=1.82 : y = 1.31 : 0.0 secs : infill_ei</a>
+<a class="sourceLine" id="cb15-15" data-line-number="15">## [mbo] 8: x=1.86 : y = 1.31 : 0.0 secs : infill_ei</a>
+<a class="sourceLine" id="cb15-16" data-line-number="16">## [mbo] 9: x=1.83 : y = 1.31 : 0.0 secs : infill_ei</a>
+<a class="sourceLine" id="cb15-17" data-line-number="17">## [mbo] 10: x=1.84 : y = 1.31 : 0.0 secs : infill_ei</a>
+<a class="sourceLine" id="cb15-18" data-line-number="18">opt.state =<span class="st"> </span>res<span class="op">$</span>final.opt.state</a>
+<a class="sourceLine" id="cb15-19" data-line-number="19"><span class="kw">plot</span>(opt.state, <span class="dt">scale.panels =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
 <p><img src="human_in_the_loop_MBO_files/figure-html/continue%20mbo-1.png" width="700"></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(<span class="dt">prop =</span> <span class="kw"><a href="../../reference/proposePoints.html">proposePoints</a></span>(opt.state))
-## $prop.points
-##            x
-## 487 1.836319
-## 
-## $propose.time
-## [1] 0.076
-## 
-## $prop.type
-## [1] "infill_ei"
-## 
-## $crit.vals
-##               [,1]
-## [1,] -4.518056e-05
-## 
-## $crit.components
-##             se     mean
-## 1 0.0001131826 1.307619
-## 
-## $errors.model
-## [1] NA
-## 
-## attr(,"class")
-## [1] "Proposal" "list"
-y =<span class="st"> </span><span class="kw">fun</span>(prop$prop.points)
-<span class="kw"><a href="../../reference/updateSMBO.html">updateSMBO</a></span>(opt.state, <span class="dt">x =</span> prop$prop.points, <span class="dt">y =</span> y)
-<span class="co"># ...</span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1">(<span class="dt">prop =</span> <span class="kw"><a href="../../reference/proposePoints.html">proposePoints</a></span>(opt.state))</a>
+<a class="sourceLine" id="cb16-2" data-line-number="2">## $prop.points</a>
+<a class="sourceLine" id="cb16-3" data-line-number="3">##            x</a>
+<a class="sourceLine" id="cb16-4" data-line-number="4">## 487 1.836319</a>
+<a class="sourceLine" id="cb16-5" data-line-number="5">## </a>
+<a class="sourceLine" id="cb16-6" data-line-number="6">## $propose.time</a>
+<a class="sourceLine" id="cb16-7" data-line-number="7">## [1] 0.083</a>
+<a class="sourceLine" id="cb16-8" data-line-number="8">## </a>
+<a class="sourceLine" id="cb16-9" data-line-number="9">## $prop.type</a>
+<a class="sourceLine" id="cb16-10" data-line-number="10">## [1] "infill_ei"</a>
+<a class="sourceLine" id="cb16-11" data-line-number="11">## </a>
+<a class="sourceLine" id="cb16-12" data-line-number="12">## $crit.vals</a>
+<a class="sourceLine" id="cb16-13" data-line-number="13">##               [,1]</a>
+<a class="sourceLine" id="cb16-14" data-line-number="14">## [1,] -4.518056e-05</a>
+<a class="sourceLine" id="cb16-15" data-line-number="15">## </a>
+<a class="sourceLine" id="cb16-16" data-line-number="16">## $crit.components</a>
+<a class="sourceLine" id="cb16-17" data-line-number="17">##             se     mean</a>
+<a class="sourceLine" id="cb16-18" data-line-number="18">## 1 0.0001131826 1.307619</a>
+<a class="sourceLine" id="cb16-19" data-line-number="19">## </a>
+<a class="sourceLine" id="cb16-20" data-line-number="20">## $errors.model</a>
+<a class="sourceLine" id="cb16-21" data-line-number="21">## [1] NA</a>
+<a class="sourceLine" id="cb16-22" data-line-number="22">## </a>
+<a class="sourceLine" id="cb16-23" data-line-number="23">## attr(,"class")</a>
+<a class="sourceLine" id="cb16-24" data-line-number="24">## [1] "Proposal" "list"</a>
+<a class="sourceLine" id="cb16-25" data-line-number="25">y =<span class="st"> </span><span class="kw">fun</span>(prop<span class="op">$</span>prop.points)</a>
+<a class="sourceLine" id="cb16-26" data-line-number="26"><span class="kw"><a href="../../reference/updateSMBO.html">updateSMBO</a></span>(opt.state, <span class="dt">x =</span> prop<span class="op">$</span>prop.points, <span class="dt">y =</span> y)</a>
+<a class="sourceLine" id="cb16-27" data-line-number="27"><span class="co"># ...</span></a></code></pre></div>
 </div>
 <div id="proposal-of-multiple-points" class="section level2">
 <h2 class="hasAnchor">
 <a href="#proposal-of-multiple-points" class="anchor"></a>Proposal of multiple points</h2>
 <p>Using Multi-Point MBO you can also obtain multiple suggestions at each call of <code><a href="../../reference/proposePoints.html">proposePoints()</a></code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span>(<span class="dt">propose.points =</span> <span class="dv">4</span>)
-ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/setMBOControlInfill.html">setMBOControlInfill</a></span>(ctrl, <span class="dt">crit =</span> <span class="kw"><a href="../../reference/infillcrits.html">makeMBOInfillCritEI</a></span>())
-ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/setMBOControlMultiPoint.html">setMBOControlMultiPoint</a></span>(ctrl, <span class="dt">method =</span> <span class="st">"cl"</span>)
-opt.state =<span class="st"> </span><span class="kw"><a href="../../reference/initSMBO.html">initSMBO</a></span>(<span class="dt">par.set =</span> ps, <span class="dt">design =</span> des, <span class="dt">control =</span> ctrl, <span class="dt">minimize =</span> <span class="ot">TRUE</span>, <span class="dt">noisy =</span> <span class="ot">FALSE</span>)
-(<span class="dt">prop =</span> <span class="kw"><a href="../../reference/proposePoints.html">proposePoints</a></span>(opt.state))
-## $prop.points
-##               q v
-## 844 -0.92029797 1
-## 642  0.07998039 1
-## 963 -0.99995339 2
-## 447  1.99999879 0
-## 
-## $propose.time
-## [1] 0.090 0.090 0.108 0.089
-## 
-## $prop.type
-## [1] "infill_ei" "infill_ei" "infill_ei" "infill_ei"
-## 
-## $crit.vals
-##             [,1]
-## [1,] -0.24670322
-## [2,] -0.14032897
-## [3,] -0.07620927
-## [4,] -0.05269038
-## 
-## $crit.components
-##          se      mean
-## 1 0.4996289 0.4114801
-## 2 0.1836356 0.3909594
-## 3 0.1156264 0.4487536
-## 4 0.4739049 0.8999264
-## 
-## $errors.model
-## [1] NA NA NA NA
-## 
-## attr(,"class")
-## [1] "Proposal" "list"</code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1">ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span>(<span class="dt">propose.points =</span> <span class="dv">4</span>)</a>
+<a class="sourceLine" id="cb17-2" data-line-number="2">ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/setMBOControlInfill.html">setMBOControlInfill</a></span>(ctrl, <span class="dt">crit =</span> <span class="kw"><a href="../../reference/infillcrits.html">makeMBOInfillCritEI</a></span>())</a>
+<a class="sourceLine" id="cb17-3" data-line-number="3">ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/setMBOControlMultiPoint.html">setMBOControlMultiPoint</a></span>(ctrl, <span class="dt">method =</span> <span class="st">"cl"</span>)</a>
+<a class="sourceLine" id="cb17-4" data-line-number="4">opt.state =<span class="st"> </span><span class="kw"><a href="../../reference/initSMBO.html">initSMBO</a></span>(<span class="dt">par.set =</span> ps, <span class="dt">design =</span> des, <span class="dt">control =</span> ctrl, <span class="dt">minimize =</span> <span class="ot">TRUE</span>, <span class="dt">noisy =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb17-5" data-line-number="5">(<span class="dt">prop =</span> <span class="kw"><a href="../../reference/proposePoints.html">proposePoints</a></span>(opt.state))</a>
+<a class="sourceLine" id="cb17-6" data-line-number="6">## $prop.points</a>
+<a class="sourceLine" id="cb17-7" data-line-number="7">##               q v</a>
+<a class="sourceLine" id="cb17-8" data-line-number="8">## 844 -0.92029797 1</a>
+<a class="sourceLine" id="cb17-9" data-line-number="9">## 642  0.07998039 1</a>
+<a class="sourceLine" id="cb17-10" data-line-number="10">## 963 -0.99995339 2</a>
+<a class="sourceLine" id="cb17-11" data-line-number="11">## 447  1.99999879 0</a>
+<a class="sourceLine" id="cb17-12" data-line-number="12">## </a>
+<a class="sourceLine" id="cb17-13" data-line-number="13">## $propose.time</a>
+<a class="sourceLine" id="cb17-14" data-line-number="14">## [1] 0.081 0.088 0.090 0.087</a>
+<a class="sourceLine" id="cb17-15" data-line-number="15">## </a>
+<a class="sourceLine" id="cb17-16" data-line-number="16">## $prop.type</a>
+<a class="sourceLine" id="cb17-17" data-line-number="17">## [1] "infill_ei" "infill_ei" "infill_ei" "infill_ei"</a>
+<a class="sourceLine" id="cb17-18" data-line-number="18">## </a>
+<a class="sourceLine" id="cb17-19" data-line-number="19">## $crit.vals</a>
+<a class="sourceLine" id="cb17-20" data-line-number="20">##             [,1]</a>
+<a class="sourceLine" id="cb17-21" data-line-number="21">## [1,] -0.24670322</a>
+<a class="sourceLine" id="cb17-22" data-line-number="22">## [2,] -0.14032897</a>
+<a class="sourceLine" id="cb17-23" data-line-number="23">## [3,] -0.07620927</a>
+<a class="sourceLine" id="cb17-24" data-line-number="24">## [4,] -0.05269038</a>
+<a class="sourceLine" id="cb17-25" data-line-number="25">## </a>
+<a class="sourceLine" id="cb17-26" data-line-number="26">## $crit.components</a>
+<a class="sourceLine" id="cb17-27" data-line-number="27">##          se      mean</a>
+<a class="sourceLine" id="cb17-28" data-line-number="28">## 1 0.4996289 0.4114801</a>
+<a class="sourceLine" id="cb17-29" data-line-number="29">## 2 0.1836356 0.3909594</a>
+<a class="sourceLine" id="cb17-30" data-line-number="30">## 3 0.1156264 0.4487536</a>
+<a class="sourceLine" id="cb17-31" data-line-number="31">## 4 0.4739049 0.8999264</a>
+<a class="sourceLine" id="cb17-32" data-line-number="32">## </a>
+<a class="sourceLine" id="cb17-33" data-line-number="33">## $errors.model</a>
+<a class="sourceLine" id="cb17-34" data-line-number="34">## [1] NA NA NA NA</a>
+<a class="sourceLine" id="cb17-35" data-line-number="35">## </a>
+<a class="sourceLine" id="cb17-36" data-line-number="36">## attr(,"class")</a>
+<a class="sourceLine" id="cb17-37" data-line-number="37">## [1] "Proposal" "list"</a></code></pre></div>
 <p>It’s also okay to just evaluate a subset of these points.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../../reference/updateSMBO.html">updateSMBO</a></span>(opt.state, <span class="dt">x =</span> prop$prop.points[<span class="dv">1</span>:<span class="dv">2</span>,], <span class="dt">y =</span> <span class="kw">list</span>(<span class="fl">2.28</span>, <span class="fl">1.67</span>))
-<span class="co"># ...</span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="kw"><a href="../../reference/updateSMBO.html">updateSMBO</a></span>(opt.state, <span class="dt">x =</span> prop<span class="op">$</span>prop.points[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>,], <span class="dt">y =</span> <span class="kw">list</span>(<span class="fl">2.28</span>, <span class="fl">1.67</span>))</a>
+<a class="sourceLine" id="cb18-2" data-line-number="2"><span class="co"># ...</span></a></code></pre></div>
 </div>
   </div>
 
