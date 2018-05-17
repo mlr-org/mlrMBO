@@ -53,7 +53,7 @@ library(mlrMBO)
 
 1. Define **objective function** and its parameters using the package `smoof`.
 2. Generate **initial design** (optional).
-3. Define mlr` learner for **surrogate model** (optional).
+3. Define `mlr` learner for **surrogate model** (optional).
 4. Set up a **MBO control** object.
 5. Start the optimization with `mbo()`.
 
