@@ -9,9 +9,8 @@ r_packages:
 - devtools
 - animation #vignettes: animation.Rmd
 - e1071 #vignette: machine_learning_with_mlrmbo.Rmd
-r_github_packages:
-- jimhester/covr
-- r-lib/pkgdown
+- pkgdown
+- covr
 addons:
   apt:
     packages:
