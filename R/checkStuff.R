@@ -90,7 +90,7 @@ checkStuff = function(fun, design, learner, control) {
   if (length(control$save.on.disk.at) > 0L && (control$iters + 1) %nin% control$save.on.disk.at)
     warningf("You turned off the final saving of the optimization result at (iter + 1)! Do you really want this?")
   if (length(control$save.on.disk.at) > 0 || is.finite(control$save.on.disk.at.time)) {
-    control$save.on.disk.at = asInteger(control$save.on.disk.at, any.missing = FALSE, lower = 0 , upper = control$iters + 1)
+    control$save.on.disk.at = asInteger(control$save.on.disk.at, any.missing = FALSE, lower = 0)
     assertPathForOutput(control$save.file.path)
   }
   control$store.model.at = coalesce(control$store.model.at, control$iters + 1)
