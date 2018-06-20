@@ -21,14 +21,17 @@
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
+<!-- sticky kit -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
 
 
 
 <meta property="og:title" content="Function reference" />
+
 
 
 <!-- mathjax -->
@@ -98,6 +101,9 @@
     <li>
       <a href="../articles/supplementary/mlrmbo_and_the_command_line.html">mlrMBO and the Command Line</a>
     </li>
+    <li>
+      <a href="../articles/supplementary/adaptive_infill_criteria.html">Adaptive Infill Criteria</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -134,6 +140,7 @@
     <table class="ref-index">
 
     <colgroup>
+      
       <col class="alias" />
       <col class="title" />
     </colgroup>
@@ -146,31 +153,31 @@
         </th>
       </tr>
       <tr>
-        <!--  -->
+        
         <td>
           <p><code><a href="makeMBOControl.html">makeMBOControl()</a></code> </p>
         </td>
         <td><p>Set MBO options.</p></td>
       </tr><tr>
-        <!--  -->
+        
         <td>
           <p><code><a href="setMBOControlInfill.html">setMBOControlInfill()</a></code> </p>
         </td>
         <td><p>Extends mbo control object with infill criteria and infill optimizer options.</p></td>
       </tr><tr>
-        <!--  -->
+        
         <td>
           <p><code><a href="setMBOControlMultiObj.html">setMBOControlMultiObj()</a></code> </p>
         </td>
         <td><p>Set multi-objective options.</p></td>
       </tr><tr>
-        <!--  -->
+        
         <td>
           <p><code><a href="setMBOControlMultiPoint.html">setMBOControlMultiPoint()</a></code> </p>
         </td>
         <td><p>Set multipoint proposal options.</p></td>
       </tr><tr>
-        <!--  -->
+        
         <td>
           <p><code><a href="setMBOControlTermination.html">setMBOControlTermination()</a></code> </p>
         </td>
@@ -184,35 +191,73 @@
         </th>
       </tr>
       <tr>
-        <!--  -->
+        
         <td>
           <p><code><a href="mbo.html">mbo()</a></code> </p>
         </td>
         <td><p>Optimizes a function with sequential model based optimization.</p></td>
       </tr><tr>
-        <!--  -->
+        
         <td>
           <p><code><a href="mboContinue.html">mboContinue()</a></code> </p>
         </td>
         <td><p>Continues an mbo run from a save-file.</p></td>
       </tr><tr>
-        <!--  -->
+        
         <td>
           <p><code><a href="mboFinalize.html">mboFinalize()</a></code> </p>
         </td>
         <td><p>Finalizes an mbo run from a save-file.</p></td>
       </tr><tr>
-        <!--  -->
+        
         <td>
           <p><code><a href="mbo_parallel.html">mbo_parallel</a></code> </p>
         </td>
         <td><p>Parallelization in mlrMBO</p></td>
       </tr><tr>
-        <!--  -->
+        
         <td>
           <p><code><a href="mlrMBO_examples.html">mlrMBO_examples</a></code> </p>
         </td>
         <td><p>mlrMBO examples</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-human-in-the-loop-mbo" class="hasAnchor"><a href="#section-human-in-the-loop-mbo" class="anchor"></a>Human in the loop MBO</h2>
+          <p class="section-desc"><p>Controlling sequential manual MBO</p></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="initSMBO.html">initSMBO()</a></code> </p>
+        </td>
+        <td><p>Initialize a manual sequential MBO run.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="proposePoints.html">proposePoints()</a></code> </p>
+        </td>
+        <td><p>Propose candidates for the objective function</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="updateSMBO.html">updateSMBO()</a></code> </p>
+        </td>
+        <td><p>Updates SMBO with the new observations</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="finalizeSMBO.html">finalizeSMBO()</a></code> </p>
+        </td>
+        <td><p>Finalizes the SMBO Optimization</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plot.OptState.html">plot(<i>&lt;OptState&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Generate ggplot2 Object</p></td>
       </tr>
     </tbody><tbody>
       <tr>
@@ -222,31 +267,31 @@
         </th>
       </tr>
       <tr>
-        <!--  -->
+        
         <td>
           <p><code><a href="setMBOControlInfill.html">setMBOControlInfill()</a></code> </p>
         </td>
         <td><p>Extends mbo control object with infill criteria and infill optimizer options.</p></td>
       </tr><tr>
-        <!--  -->
+        
         <td>
           <p><code><a href="infillcrits.html">makeMBOInfillCritMeanResponse()</a></code> <code><a href="infillcrits.html">makeMBOInfillCritStandardError()</a></code> <code><a href="infillcrits.html">makeMBOInfillCritEI()</a></code> <code><a href="infillcrits.html">makeMBOInfillCritCB()</a></code> <code><a href="infillcrits.html">makeMBOInfillCritAEI()</a></code> <code><a href="infillcrits.html">makeMBOInfillCritEQI()</a></code> <code><a href="infillcrits.html">makeMBOInfillCritDIB()</a></code> <code><a href="infillcrits.html">makeMBOInfillCritAdaCB()</a></code> </p>
         </td>
         <td><p>Infill criteria.</p></td>
       </tr><tr>
-        <!--  -->
+        
         <td>
           <p><code><a href="MBOInfillCrit.html">makeMBOInfillCrit()</a></code> </p>
         </td>
         <td><p>Create an infill criterion.</p></td>
       </tr><tr>
-        <!--  -->
+        
         <td>
           <p><code><a href="getMBOInfillCrit.html">getMBOInfillCritParams()</a></code> <code><a href="getMBOInfillCrit.html">getMBOInfillCritParam()</a></code> <code><a href="getMBOInfillCrit.html">getMBOInfillCritName()</a></code> <code><a href="getMBOInfillCrit.html">getMBOInfillCritId()</a></code> <code><a href="getMBOInfillCrit.html">hasRequiresInfillCritStandardError()</a></code> <code><a href="getMBOInfillCrit.html">getMBOInfillCritComponents()</a></code> </p>
         </td>
         <td><p>Get properties of MBO infill criterion.</p></td>
       </tr><tr>
-        <!--  -->
+        
         <td>
           <p><code><a href="initCrit.html">initCrit()</a></code> </p>
         </td>
@@ -260,25 +305,25 @@
         </th>
       </tr>
       <tr>
-        <!--  -->
+        
         <td>
           <p><code><a href="MBOMultiObjResult.html">MBOMultiObjResult</a></code> </p>
         </td>
         <td><p>Multi-Objective result object.</p></td>
       </tr><tr>
-        <!--  -->
+        
         <td>
           <p><code><a href="MBOSingleObjResult.html">MBOSingleObjResult</a></code> </p>
         </td>
         <td><p>Single-Objective result object.</p></td>
       </tr><tr>
-        <!--  -->
+        
         <td>
           <p><code><a href="mbo_OptPath.html">mbo_OptPath</a></code> </p>
         </td>
         <td><p>OptPath in mlrMBO</p></td>
       </tr><tr>
-        <!--  -->
+        
         <td>
           <p><code><a href="plotMBOResult.html">plot(<i>&lt;MBOSingleObjResult&gt;</i>)</a></code> <code><a href="plotMBOResult.html">plot(<i>&lt;MBOMultiObjResult&gt;</i>)</a></code> </p>
         </td>
@@ -292,25 +337,25 @@
         </th>
       </tr>
       <tr>
-        <!--  -->
+        
         <td>
           <p><code><a href="exampleRun.html">exampleRun()</a></code> </p>
         </td>
         <td><p>Perform an mbo run on a test function and and visualize what happens.</p></td>
       </tr><tr>
-        <!--  -->
+        
         <td>
           <p><code><a href="exampleRunMultiObj.html">exampleRunMultiObj()</a></code> </p>
         </td>
         <td><p>Perform an MBO run on a multi-objective test function and and visualize what happens.</p></td>
       </tr><tr>
-        <!--  -->
+        
         <td>
           <p><code><a href="plotExampleRun.html">plotExampleRun()</a></code> </p>
         </td>
         <td><p>Renders plots for exampleRun objects and displays them.</p></td>
       </tr><tr>
-        <!--  -->
+        
         <td>
           <p><code><a href="renderExampleRunPlot.html">renderExampleRunPlot()</a></code> </p>
         </td>
@@ -325,67 +370,67 @@ exampleRunMultiObj objects.</p></td>
         </th>
       </tr>
       <tr>
-        <!--  -->
+        
         <td>
           <p><code><a href="error_handling.html">error_handling</a></code> </p>
         </td>
         <td><p>Error handling for mlrMBO</p></td>
       </tr><tr>
-        <!--  -->
+        
         <td>
           <p><code><a href="getGlobalOpt.html">getGlobalOpt()</a></code> </p>
         </td>
         <td><p>Helper function which returns the (estimated) global optimum.</p></td>
       </tr><tr>
-        <!--  -->
+        
         <td>
           <p><code><a href="getSupportedInfillOptFunctions.html">getSupportedInfillOptFunctions()</a></code> </p>
         </td>
         <td><p>Get names of supported infill-criteria optimizers.</p></td>
       </tr><tr>
-        <!--  -->
+        
         <td>
           <p><code><a href="getSupportedMultipointInfillOptFunctions.html">getSupportedMultipointInfillOptFunctions()</a></code> </p>
         </td>
         <td><p>Get names of supported multi-point infill-criteria optimizers.</p></td>
       </tr><tr>
-        <!--  -->
+        
         <td>
           <p><code><a href="makeMBOLearner.html">makeMBOLearner()</a></code> </p>
         </td>
         <td><p>Generate default learner.</p></td>
       </tr><tr>
-        <!--  -->
+        
         <td>
           <p><code><a href="makeMBOTrafoFunction.html">makeMBOTrafoFunction()</a></code> </p>
         </td>
         <td><p>Create a transformation function for MBOExampleRun.</p></td>
       </tr><tr>
-        <!--  -->
+        
         <td>
           <p><code><a href="OptProblem.html">OptProblem</a></code> </p>
         </td>
         <td><p>OptProblem object.</p></td>
       </tr><tr>
-        <!--  -->
+        
         <td>
           <p><code><a href="OptResult.html">OptResult</a></code> </p>
         </td>
         <td><p>OptResult object.</p></td>
       </tr><tr>
-        <!--  -->
+        
         <td>
           <p><code><a href="OptState.html">OptState</a></code> </p>
         </td>
         <td><p>OptState object.</p></td>
       </tr><tr>
-        <!--  -->
+        
         <td>
           <p><code><a href="print.MBOControl.html">print(<i>&lt;MBOControl&gt;</i>)</a></code> </p>
         </td>
         <td><p>Print mbo control object.</p></td>
       </tr><tr>
-        <!--  -->
+        
         <td>
           <p><code><a href="trafos.html">trafoLog()</a></code> <code><a href="trafos.html">trafoSqrt()</a></code> </p>
         </td>
@@ -400,6 +445,7 @@ exampleRunMultiObj objects.</p></td>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#section-mlrmbo-control">mlrMBO Control</a></li>
       <li><a href="#section-start-mbo">Start MBO</a></li>
+      <li><a href="#section-human-in-the-loop-mbo">Human in the loop MBO</a></li>
       <li><a href="#section-infill-criteria">Infill Criteria</a></li>
       <li><a href="#section-mbo-results">MBO Results</a></li>
       <li><a href="#section-example-runs">Example Runs</a></li>

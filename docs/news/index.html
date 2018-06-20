@@ -21,14 +21,17 @@
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
+<!-- sticky kit -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
 
 
 
 <meta property="og:title" content="Changelog" />
+
 
 
 <!-- mathjax -->
@@ -98,6 +101,9 @@
     <li>
       <a href="../articles/supplementary/mlrmbo_and_the_command_line.html">mlrMBO and the Command Line</a>
     </li>
+    <li>
+      <a href="../articles/supplementary/adaptive_infill_criteria.html">Adaptive Infill Criteria</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -132,6 +138,18 @@
       <small>Source: <a href='https://github.com/mlr-org/mlrMBO/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="mlrmbo-1-1-2" class="section level1">
+<h1 class="page-header">
+<a href="#mlrmbo-1-1-2" class="anchor"></a>mlrMBO 1.1.2<small> Unreleased </small>
+</h1>
+<ul>
+<li>Adaptive infill criterions. Infill criterions now have to support an <code>progress</code> argument. Termination criterions now can supply a <code>progress</code> return value.</li>
+<li>Fix for parEGO + EI (Issue <a href='https://github.com/mlr-org/mlrMBO/issues/407'>#407</a>)</li>
+<li>
+<code>save.on.disk</code> now can take arbitrary numeric vectors to specify iterations, when to save on disk.</li>
+<li>Spelling mistakes for infill criterions will now be cought. (Issue <a href='https://github.com/mlr-org/mlrMBO/issues/417'>#417</a>)</li>
+</ul>
+</div>
     <div id="mlrmbo-1-1-1" class="section level1">
 <h1 class="page-header">
 <a href="#mlrmbo-1-1-1" class="anchor"></a>mlrMBO 1.1.1<small> 2018-01-02 </small>
@@ -168,6 +186,7 @@
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
+        <li><a href="#mlrmbo-1-1-2">1.1.2</a></li>
         <li><a href="#mlrmbo-1-1-1">1.1.1</a></li>
         <li><a href="#mlrmbo-1-1-0">1.1.0</a></li>
         <li><a href="#mlrmbo-1-0-0">1.0.0</a></li>

@@ -21,9 +21,11 @@
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
+<!-- sticky kit -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
 
 
@@ -33,7 +35,7 @@
 <meta property="og:description" content="This is a helper function that generates a default surrogate, based on properties of the objective
 function and the selected infill criterion.
 For numeric-only (including integers) parameter spaces without any dependencies:
-A Kriging model &#8220;regr.km&#8221; with kernel &#8220;matern3_2&#8221; is created.
+A Kriging model &amp;#8220;regr.km&amp;#8221; with kernel &amp;#8220;matern3_2&amp;#8221; is created.
 If the objective function is deterministic we add a small nugget effect (10^-8*Var(y),
   y is vector of observed outcomes in current design) to increase numerical stability to
   hopefully prevent crashes of DiceKriging.
@@ -42,7 +44,7 @@ If the objective function is noisy the nugget effect will be estimated with
   Also jitter is set to TRUE to circumvent a problem with DiceKriging where already
   trained input values produce the exact trained output.
   For further information check the $note slot of the created learner.
-Instead of the default "BFGS" optimization method we use rgenoud ("gen"),
+Instead of the default &quot;BFGS&quot; optimization method we use rgenoud (&quot;gen&quot;),
   which is a hybrid algorithm, to combine global search based on genetic algorithms and local search
   based on gradients.
   This may improve the model fit and will less frequently produce a constant surrogate model.
@@ -50,10 +52,10 @@ Instead of the default "BFGS" optimization method we use rgenoud ("gen"),
 " />
 
 <meta property="og:description" content="For mixed numeric-categorical parameter spaces, or spaces with conditional parameters:
-A random regression forest &#8220;regr.randomForest&#8221; with 500 trees is created.
+A random regression forest &amp;#8220;regr.randomForest&amp;#8221; with 500 trees is created.
 The standard error of a prediction (if required by the infill criterion) is estimated
   by computing the jackknife-after-bootstrap.
-  This is the se.method = "jackknife" option of the regr.randomForest,
+  This is the se.method = &quot;jackknife&quot; option of the regr.randomForest,
   see this page for further info and alternatives.
 " />
 
@@ -63,10 +65,11 @@ We simply handle those with an imputation method, added to the random forest:
 If a numeric value is inactive, i.e., missing, it will be imputed by 2 times the
   maximum of observed values
 If a categorical value is inactive, i.e., missing, it will be imputed by the
-  special class label "__miss__"
+  special class label &quot;__miss__&quot;
 Both of these techniques make sense for tree-based methods and are usually hard to beat, see
 Ding et.al. (2010)." />
 <meta name="twitter:card" content="summary" />
+
 
 
 <!-- mathjax -->
@@ -135,6 +138,9 @@ Ding et.al. (2010)." />
     </li>
     <li>
       <a href="../articles/supplementary/mlrmbo_and_the_command_line.html">mlrMBO and the Command Line</a>
+    </li>
+    <li>
+      <a href="../articles/supplementary/adaptive_infill_criteria.html">Adaptive Infill Criteria</a>
     </li>
   </ul>
 </li>

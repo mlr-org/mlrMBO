@@ -21,9 +21,11 @@
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
+<!-- sticky kit -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
 
 
@@ -63,7 +65,7 @@ Logging: All error messages are logged into the optimization path opt.path if pr
 This produces a FailureModel for the surrogate, if it crashed (issue 6). A random point (or multiple ones)
 are proposed now for the current iteration. And we pray that we can fit the model again in the
 next iteration.
-Logging: The entry &#8220;model.error&#8221; is set in the opt.path." />
+Logging: The entry &amp;#8220;model.error&amp;#8221; is set in the opt.path." />
 
 <meta property="og:description" content="Mechanism III - Filtering of proposed point which are too close
 Issue 6 is solved by filtering points that are to close to other proposed points or points already
@@ -71,7 +73,7 @@ proposed in preceding iterations. Filtering in this context means replacing the 
 a randomly generated new point. The heuristics mechanism is (de)activated via the logical
 filter.proposed.points.tol parameter of the setMBOControlInfill function, which defaults to
 TRUE.(closeness of two points is determined via the filter.proposed.points.tol parameter).
-Logging: The logical entry &#8220;filtered.point&#8221; is set in the opt.path indicating whether the
+Logging: The logical entry &amp;#8220;filtered.point&amp;#8221; is set in the opt.path indicating whether the
 corresponding point was filtered." />
 
 <meta property="og:description" content="Mechanism IV - Continue optimization process
@@ -90,6 +92,7 @@ You will get a warning if you turn on saving in general, but not for the the fin
 this seems a bit stupid. save.file.path defines the path of the RData file where
 the state is stored. It is overwritten (= extended) in each saving iteration." />
 <meta name="twitter:card" content="summary" />
+
 
 
 <!-- mathjax -->
@@ -158,6 +161,9 @@ the state is stored. It is overwritten (= extended) in each saving iteration." /
     </li>
     <li>
       <a href="../articles/supplementary/mlrmbo_and_the_command_line.html">mlrMBO and the Command Line</a>
+    </li>
+    <li>
+      <a href="../articles/supplementary/adaptive_infill_criteria.html">Adaptive Infill Criteria</a>
     </li>
   </ul>
 </li>
