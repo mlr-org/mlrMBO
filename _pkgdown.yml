@@ -26,6 +26,8 @@ navbar:
         href: articles/supplementary/human_in_the_loop_MBO.html
       - text: mlrMBO and the Command Line
         href: articles/supplementary/mlrmbo_and_the_command_line.html
+      - text: Adaptive Infill Criteria
+        href: articles/supplementary/adaptive_infill_criteria.html
   - text: Reference
     icon: fa-book
     href: reference/index.html
@@ -44,7 +46,14 @@ reference:
       - mboFinalize
       - mbo_parallel
       - mlrMBO_examples
-
+  - title: "Human in the loop MBO"
+    desc: "Controlling sequential manual MBO"
+    contents:
+      - initSMBO
+      - proposePoints
+      - updateSMBO
+      - finalizeSMBO
+      - plot.OptState
   - title: "Infill Criteria"
     desc: "Infill Criteria and Functions to generate and interact with Infill Criteria."
     contents:

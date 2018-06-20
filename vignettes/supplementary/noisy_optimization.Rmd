@@ -1,12 +1,5 @@
 ---
 title: "Noisy Optimization"
-output:
-  html_document:
-    toc: true
-    toc_float:
-      collapsed: true
-      smooth_scroll: false
-    dev: svg
 vignette: >
   %\VignetteIndexEntry{Noisy Optimization}
   %\VignetteEngine{knitr::rmarkdown}

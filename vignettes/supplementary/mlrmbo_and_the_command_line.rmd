@@ -1,12 +1,5 @@
 ---
 title: mlrMBO and the command line
-output:
-  html_document:
-    toc: true
-    toc_float:
-      collapsed: true
-      smooth_scroll: false
-    dev: svg
 vignette: >
   %\VignetteIndexEntry{mlrMBO and the Command Line}
   %\VignetteEngine{knitr::rmarkdown}

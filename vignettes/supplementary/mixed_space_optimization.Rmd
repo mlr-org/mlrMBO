@@ -1,12 +1,5 @@
 ---
 title: "Mixed Space Optimization"
-output:
-  html_document:
-    toc: true
-    toc_float:
-      collapsed: true
-      smooth_scroll: false
-    dev: svg
 vignette: >
   %\VignetteIndexEntry{Mixed Space Optimization}
   %\VignetteEngine{knitr::rmarkdown}

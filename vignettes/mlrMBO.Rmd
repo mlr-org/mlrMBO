@@ -1,12 +1,5 @@
 ---
 title: "mlrMBO: A brief introduction"
-output:
-  html_document:
-    toc: true
-    toc_float:
-      collapsed: true
-      smooth_scroll: false
-    dev: svg
 vignette: >
   %\VignetteIndexEntry{Quick introduction}
   %\VignetteEngine{knitr::rmarkdown}

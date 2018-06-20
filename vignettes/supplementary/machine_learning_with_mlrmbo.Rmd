@@ -1,12 +1,5 @@
 ---
 title: "Machine learning with mlrMBO: Tuning hyperparameters with model-based optimization"
-output:
-  html_document:
-    toc: true
-    toc_float:
-      collapsed: true
-      smooth_scroll: false
-    dev: svg
 vignette: >
   %\VignetteIndexEntry{Machine learning with mlrMBO}
   %\VignetteEngine{knitr::rmarkdown}

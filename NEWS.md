@@ -1,3 +1,10 @@
+# mlrMBO 1.1.2
+
+* Adaptive infill criterions. Infill criterions now have to support an `progress` argument. Termination criterions now can supply a `progress` return value.
+* Fix for parEGO + EI (Issue #407)
+* `save.on.disk` now can take arbitrary numeric vectors to specify iterations, when to save on disk.
+* Spelling mistakes for infill criterions will now be cought. (Issue #417)
+
 # mlrMBO 1.1.1
 
 * `makeMBOControl()` has `on.surrogate.error` argument which enables random proposals if the surrogate model fails.
