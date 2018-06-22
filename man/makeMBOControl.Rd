@@ -120,5 +120,6 @@ Creates a control object for MBO optimization.
 Other MBOControl: \code{\link{setMBOControlInfill}},
   \code{\link{setMBOControlMultiObj}},
   \code{\link{setMBOControlMultiPoint}},
+  \code{\link{setMBOControlNoisy}},
   \code{\link{setMBOControlTermination}}
 }
