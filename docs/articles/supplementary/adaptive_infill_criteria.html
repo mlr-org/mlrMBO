@@ -29,7 +29,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">mlrMBO</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.1.2</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.1.3</span>
       </span>
     </div>
 
@@ -141,19 +141,19 @@
 <p>If we look at the OptPath we can see the different progress values and the resulting different values of lambda.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw">tail</span>(<span class="kw">as.data.frame</span>(res<span class="op">$</span>opt.path))</a>
 <a class="sourceLine" id="cb4-2" data-line-number="2">##              x1           x2            y dob eol error.message exec.time</a>
-<a class="sourceLine" id="cb4-3" data-line-number="3">## 13 2.253250e-06 2.413048e-04 3.675410e-15   5  NA          &lt;NA&gt;     0.001</a>
+<a class="sourceLine" id="cb4-3" data-line-number="3">## 13 2.253250e-06 2.413048e-04 3.675410e-15   5  NA          &lt;NA&gt;     0.000</a>
 <a class="sourceLine" id="cb4-4" data-line-number="4">## 14 7.260790e-02 2.917671e-05 4.614507e-07   6  NA          &lt;NA&gt;     0.000</a>
 <a class="sourceLine" id="cb4-5" data-line-number="5">## 15 2.964883e-02 7.929038e-01 6.074316e-04   7  NA          &lt;NA&gt;     0.000</a>
-<a class="sourceLine" id="cb4-6" data-line-number="6">## 16 1.093351e-01 1.578041e-01 5.450214e-03   8  NA          &lt;NA&gt;     0.000</a>
+<a class="sourceLine" id="cb4-6" data-line-number="6">## 16 1.093351e-01 1.578041e-01 5.450214e-03   8  NA          &lt;NA&gt;     0.001</a>
 <a class="sourceLine" id="cb4-7" data-line-number="7">## 17 3.208831e-02 8.497908e-02 2.596644e-04   9  NA          &lt;NA&gt;     0.000</a>
 <a class="sourceLine" id="cb4-8" data-line-number="8">## 18 3.711983e-02 9.999830e-01 1.945162e-04  10  NA          &lt;NA&gt;     0.000</a>
 <a class="sourceLine" id="cb4-9" data-line-number="9">##           adacb error.model train.time    prop.type propose.time</a>
-<a class="sourceLine" id="cb4-10" data-line-number="10">## 13 -0.069853148        &lt;NA&gt;      0.065 infill_adacb        0.105</a>
-<a class="sourceLine" id="cb4-11" data-line-number="11">## 14 -0.035825253        &lt;NA&gt;      0.061 infill_adacb        0.094</a>
-<a class="sourceLine" id="cb4-12" data-line-number="12">## 15 -0.021211102        &lt;NA&gt;      0.075 infill_adacb        0.090</a>
-<a class="sourceLine" id="cb4-13" data-line-number="13">## 16 -0.015330788        &lt;NA&gt;      0.065 infill_adacb        0.099</a>
-<a class="sourceLine" id="cb4-14" data-line-number="14">## 17 -0.008690331        &lt;NA&gt;      0.064 infill_adacb        0.090</a>
-<a class="sourceLine" id="cb4-15" data-line-number="15">## 18 -0.005462255        &lt;NA&gt;      0.061 infill_adacb        0.096</a>
+<a class="sourceLine" id="cb4-10" data-line-number="10">## 13 -0.069853148        &lt;NA&gt;      0.121 infill_adacb        0.170</a>
+<a class="sourceLine" id="cb4-11" data-line-number="11">## 14 -0.035825253        &lt;NA&gt;      0.145 infill_adacb        0.161</a>
+<a class="sourceLine" id="cb4-12" data-line-number="12">## 15 -0.021211102        &lt;NA&gt;      0.134 infill_adacb        0.157</a>
+<a class="sourceLine" id="cb4-13" data-line-number="13">## 16 -0.015330788        &lt;NA&gt;      0.111 infill_adacb        0.165</a>
+<a class="sourceLine" id="cb4-14" data-line-number="14">## 17 -0.008690331        &lt;NA&gt;      0.147 infill_adacb        0.162</a>
+<a class="sourceLine" id="cb4-15" data-line-number="15">## 18 -0.005462255        &lt;NA&gt;      0.119 infill_adacb        0.165</a>
 <a class="sourceLine" id="cb4-16" data-line-number="16">##             se          mean lambda</a>
 <a class="sourceLine" id="cb4-17" data-line-number="17">## 13 0.056667869  0.0009816880   1.25</a>
 <a class="sourceLine" id="cb4-18" data-line-number="18">## 14 0.023797073 -0.0096484730   1.10</a>
