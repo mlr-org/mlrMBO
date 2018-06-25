@@ -10,7 +10,6 @@ intensifyOptState = function(opt.state) {
     )
 }
 
-
 intensifyIncumbent = function(opt.state) {
 
   # some intialization
