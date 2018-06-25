@@ -144,7 +144,7 @@ getOptStateValidTerminationStates = function() {
   c("term.iter", "term.time", "term.exectime", "term.yval", "term.feval", "term.custom")
 }
 
-getOptStateIntesification = function(opt.state) {
+getOptStateIntensification = function(opt.state) {
   opt.problem = getOptStateOptProblem(opt.state)
   control = getOptProblemControl(opt.problem)
   return(!is.null(control$noisy.method) && control$noisy.method %in% c("incumbent", "ocba"))

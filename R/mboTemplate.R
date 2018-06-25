@@ -37,7 +37,7 @@ mboTemplate.OptState = function(obj) {
   repeat {
     prop = proposePoints(opt.state)
     evalProposedPoints.OptState(opt.state, prop)
-    intensify = getOptStateIntesification(opt.state)
+    intensify = getOptStateIntensification(opt.state)
     if (intensify) {
       intensifyOptState(opt.state)
     }
