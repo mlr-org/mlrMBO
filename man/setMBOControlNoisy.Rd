@@ -2,14 +2,24 @@
 % Please edit documentation in R/setMBOControlNoisy.R
 \name{setMBOControlNoisy}
 \alias{setMBOControlNoisy}
-\title{Set multipoint proposal options.}
+\title{Set options for handling noisy functions.}
 \usage{
-setMBOControlNoisy(control, instances = NULL, instance.param = NULL,
-  self.replicating = NULL)
+setMBOControlNoisy(control, method = NULL, instances = NULL,
+  instance.param = NULL, self.replicating = NULL,
+  incumbent.nchallengers = NULL, ocba.budget = NULL, ocba.initial = NULL)
 }
 \arguments{
 \item{control}{[\code{\link{MBOControl}}]\cr
 Control object for mbo.}
+
+\item{method}{[\code{character(1)}]\cr
+Which of the replication strategies should be used? Possible values are:
+\dQuote{fixed}: Every point is evaluated \code{instances} times. \cr
+\dQuote{incumbent}: Use an incumbent strategy as intensification strategy. 
+ The size of the set of additional challengers (apart from the incumbent) can be specified in \code{incumbent.nchallengers}. \cr
+\dQuote{ocba}: Distribution replication budget according to OCBA. 
+ The replication budget per iteration is specified in \code{ocba.budget},
+ the initial number of iterations per parameter is specified in \code{ocba.initial}. \cr}
 
 \item{instances}{[\code{integer(1)}]\cr
 How many instances of one parameter will be calculated?}
@@ -19,12 +29,22 @@ What is the name of the function param that defines the instance?}
 
 \item{self.replicating}{[\code{logical(1)}]\cr
 TRUE if the function returns a vector of noisy results for one input. Then \code{instances} specifies the length of the result we expect.}
+
+\item{incumbent.nchallengers}{[\code{integer(1)}]\cr
+The size of the set of additional challengers (apart from the incumbent), defaults to \code{0}.}
+
+\item{ocba.budget}{[\code{integer(1)}]\cr
+The budget that is allocated in each iteration per Optimal Computing Budget Allocation (OCBA) rule, defaults to 10.}
+
+\item{ocba.initial}{[\code{integer(1)}]\cr
+The number of initial replications at each new point, defaults to \code{3}. 
+This needs to be larger than 1, since OCBA requires an initial variance estimate at each point.}
 }
 \value{
 [\code{\link{MBOControl}}].
 }
 \description{
-Extends an MBO control object with options for multipoint proposal.
+Extends an MBO control object with options for handling noisy functions.
 }
 \seealso{
 Other MBOControl: \code{\link{makeMBOControl}},
