@@ -57,11 +57,15 @@ test_that("mbo works with ocba replication strategy", {
 
 
 test_that("mbo with replication works in multidimensional case", {
+  f = makeAckleyFunction(5L)
 
-  fun = makeNoisy(smoof::makeAckleyFunction(5L), noise = function(x) x^2)
+  fun = makeSingleObjectiveFunction(
+  	fn = function(x) f(x) + rnorm(1, sd = 2), 
+  	par.set = getParamSet(f)
+  	)
 
   ctrl = makeMBOControl()
-  ctrl = setMBOControlTermination(ctrl, iters = 3L)
+  ctrl = setMBOControlTermination(ctrl, iters = 10L)
   ctrl = setMBOControlNoisy(ctrl, method = "ocba", ocba.budget = 12L, ocba.initial = 3L)
 
   or = mbo(fun, control = ctrl)
@@ -74,13 +78,15 @@ test_that("mbo with replication works in multidimensional case", {
   # each point is evaluated 3L times at least
   opdfs = setDT(opdf)[, .N, by = eval(paste("x", 1:5, sep = ""))]
   expect_true(all(opdfs$N >= 3L))
-
 })
 
 
 test_that("per instance aggregation works for different functions", {
-
-  fun = makeNoisy(smoof::makeAckleyFunction(1L), noise = function(x) x^2)
+  f = makeAckleyFunction(1L)
+  fun = makeSingleObjectiveFunction(
+  	fn = function(x) f(x) + rnorm(1, sd = 2), 
+  	par.set = getParamSet(f)
+  )
 
   ctrl = makeMBOControl()
   ctrl = setMBOControlTermination(ctrl, iters = 3L)
