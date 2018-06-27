@@ -63,7 +63,7 @@ test_that("mbo with replication works in multidimensional case", {
   	)
 
   ctrl = makeMBOControl()
-  ctrl = setMBOControlTermination(ctrl, iters = 10L)
+  ctrl = setMBOControlTermination(ctrl, iters = 5L)
   ctrl = setMBOControlNoisy(ctrl, method = "ocba", ocba.budget = 12L, ocba.initial = 3L)
 
   or = mbo(fun, control = ctrl)
@@ -77,7 +77,6 @@ test_that("mbo with replication works in multidimensional case", {
   opdfs = setDT(opdf)[, .N, by = eval(paste("x", 1:5, sep = ""))]
   expect_true(all(opdfs$N >= 3L))
 })
-
 
 test_that("per instance aggregation works for different functions", {
   f = makeAckleyFunction(1L)
