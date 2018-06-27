@@ -1,8 +1,6 @@
 intensifyOptState = function(opt.state) {
   opt.problem = getOptStateOptProblem(opt.state)
   control = getOptProblemControl(opt.problem)
-
-  par.set = getOptProblemParSet(opt.problem)
   
   switch(control$noisy.method, 
       "incumbent" = intensifyIncumbent(opt.state),
@@ -12,43 +10,48 @@ intensifyOptState = function(opt.state) {
 
 intensifyIncumbent = function(opt.state) {
 
-  # some intialization
   opt.problem = getOptStateOptProblem(opt.state)
   control = getOptProblemControl(opt.problem)
-  par.set = getOptProblemParSet(opt.problem)
-
   op = as.data.table(getOptStateOptPath(opt.state))
   par.names = colnames(op)[1:(which(colnames(op) == "y") - 1)] #FIXME: This sucks
   
-  # calculate summary of the design 
+  # get a summary of the design  
   ds = getOptPathSummary(opt.state, par.names)
   nds = nrow(ds)
 
-  # evaluate incumbent   
+  # incumbent: current best point w. r. t. mean over all function evaluations
+  # the newest point cannot be the incumbent, it is always a challenger
+  # DOES NOT WORK FOR MULTIPOINT PROPOSAL YET
   inc = which.min(ds[- nds, ]$y) 
-  replicatePoint(opt.state, x = ds[inc, ..par.names], type = paste("incumbent"))
+  # incumbent is replicated once in each iteration
+  replicatePoint(opt.state, x = ds[inc, ..par.names], type = "incumbent", reps = 1L)
 
   # determine a set of challengers
-  if (control$noisy.incumbent.nchallengers == 0L && nds > 2) {
+  if (control$noisy.incumbent.nchallengers == 0L) {
     cls = c(nds)
   } else {
+    # determine set of p points to be challenged against incumbent
+    # incumbent is excluded (cannot be challenged against itself)
+    # and new point is always set as a challenger
+    # points are drawn randomly without replacement with probability prop. to their function value
     cls = setdiff(seq_len(nds), c(inc, nds))
     p = min(control$noisy.incumbent.nchallengers, nds - 2)
-    # calculate probabilities w. r. t. target function values 
     probs = exp(- ds[cls, ]$y) / sum(exp(- ds[cls, ]$y))
     cls = sample(cls, size = p, prob = probs, replace = FALSE)
     cls = c(cls, nds)
   }
 
+  # start the race
   for (cl in cls) {
 
     r = 1L
-    replicatePoint(opt.state, x = ds[cl, ..par.names], type = paste("challenger"))
+    replicatePoint(opt.state, x = ds[cl, ..par.names], type = paste("challenger"), reps = r)
     ds = getOptPathSummary(opt.state, par.names)
 
+    # proceed as long as challenger has less runs than incumbent and is better than incumbent
     while((ds[cl, "runs"] < ds[inc, "runs"]) && (ds[cl, "y"] < ds[inc, "y"])) {
       r = 2L * r
-      replicatePoint(opt.state, x = ds[cl, ..par.names], type = paste("challenger"))
+      replicatePoint(opt.state, x = ds[cl, ..par.names], type = paste("challenger"), reps = r)
       ds = getOptPathSummary(opt.state, par.names)
     }
 
@@ -56,12 +59,17 @@ intensifyIncumbent = function(opt.state) {
   return(opt.state)
 }
 
-replicatePoint = function(opt.state, x, type) {
+replicatePoint = function(opt.state, x, type, reps = 1L) {
+
+  x = data.frame(x)
+  # replicate rows according to the number of desired replicates
+  xrep = data.frame(unlist(rep(x, reps)))
+  names(xrep) = names(x)
    
   opt.problem = getOptStateOptProblem(opt.state)
   control = getOptProblemControl(opt.problem)
 
-  prop = makeProposal(control, x, prop.type = rep(type, nrow(x)))
+  prop = makeProposal(control, xrep, prop.type = rep(type, nrow(xrep)))
   evalProposedPoints.OptState(opt.state, prop)
 
   return(opt.state)
