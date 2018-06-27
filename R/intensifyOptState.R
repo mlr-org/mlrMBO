@@ -61,10 +61,9 @@ intensifyIncumbent = function(opt.state) {
 
 replicatePoint = function(opt.state, x, type, reps = 1L) {
 
-  x = data.frame(x)
   # replicate rows according to the number of desired replicates
-  xrep = data.frame(unlist(rep(x, reps)))
-  names(xrep) = names(x)
+  xs = seq_len(nrow(x))
+  xrep = x[rep(xs, reps), ]
    
   opt.problem = getOptStateOptProblem(opt.state)
   control = getOptProblemControl(opt.problem)
