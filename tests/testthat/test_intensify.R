@@ -1,7 +1,3 @@
-# setwd(dir = "C:/Users/jumoo/Desktop/repos/mlrMBO")
-
-# load_all() # load everything 
-
 context("mbo intensification")
 
 test_that("mbo works with incumbent strategy", {
@@ -12,6 +8,25 @@ test_that("mbo works with incumbent strategy", {
 	  noisy = TRUE
 	)
 
+  for(i in 1:10) {
+  ctrl = makeMBOControl()
+  ctrl = setMBOControlTermination(ctrl, iters = 5L)
+  ctrl = setMBOControlNoisy(ctrl, method = "incumbent", incumbent.nchallengers = 2L)
+  or = mbo(fun, control = ctrl)
+  opdf = as.data.frame(or$opt.path)
+
+  # incumbent and proposed point are evaluated once in each iteration
+  expect_true(all(table(opdf$prop.type)[c("incumbent", "infill_cb")] == 5L))
+  # exactly 3 challengers are evaluated in each iteration (1 new point + 2 old points)  
+  expect_true(all(setDT(opdf)[opdf$prop.type == "challenger", .(length(unique(x))), by = "dob"]$V1 == 3L))
+
+  # incumbent of iteration i + 1 should be the best point of iteration i
+  opdfs = setDT(opdf)[, .(ymean = cumsum(y) / (1:.N), dob = dob), by = x]
+  opdfs = opdfs[, .SD[.N], by = .(dob, x)]
+  best = opdfs[, .(xmin = x[which.min(ymean)]), by = .(dob)]
+  expect_true(all(best$xmin[1:5] == opdf[opdf$prop.type == "incumbent", ]$x))
+
+  }
   ctrl = makeMBOControl()
   ctrl = setMBOControlTermination(ctrl, iters = 5L)
 	ctrl = setMBOControlNoisy(ctrl, method = "incumbent", incumbent.nchallengers = 2L)
