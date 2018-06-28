@@ -18,13 +18,36 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
+
+<!-- sticky kit -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+
+
+
+<meta property="og:title" content="Renders plots for exampleRun objects and displays them. — plotExampleRun" />
+
+<meta property="og:description" content="The graphical output depends on the target function at hand.
+- For 1D numeric functions the upper plot shows the true function (if known),
+the model and the (infill) points. The lower plot shows the infill criterion.
+- For 2D mixed target functions only one plot is displayed.
+- For 2D numeric only target functions up to four plots are presented to the
+  viewer:
+  - levelplot of the true function landscape (with [infill] points),
+  - levelplot of the model landscape (with [infill] points),
+  - levelplot of the infill criterion
+  - levelplot of the standard error (only if learner supports standard error estimation).
+- For bi-criteria target functions the upper plot shows the target space and the lower
+  plot displays the x-space." />
+<meta name="twitter:card" content="summary" />
+
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -47,8 +70,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">mlrMBO</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">mlrMBO</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.1.3</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -85,6 +112,12 @@
     <li>
       <a href="../articles/supplementary/human_in_the_loop_MBO.html">Human-in-the-loop MBO</a>
     </li>
+    <li>
+      <a href="../articles/supplementary/mlrmbo_and_the_command_line.html">mlrMBO and the Command Line</a>
+    </li>
+    <li>
+      <a href="../articles/supplementary/adaptive_infill_criteria.html">Adaptive Infill Criteria</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -104,6 +137,7 @@
   </a>
 </li>
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -111,12 +145,15 @@
       
       </header>
 
-      <div class="row">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Renders plots for exampleRun objects and displays them.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/mlr-org/mlrMBO/blob/master/R/plotExampleRun.R'><code>R/plotExampleRun.R</code></a></small>
+    <div class="hidden name"><code>plotExampleRun.Rd</code></div>
     </div>
 
+    <div class="ref-description">
     
     <p>The graphical output depends on the target function at hand.
 - For 1D numeric functions the upper plot shows the true function (if known),
@@ -131,42 +168,43 @@ the model and the (infill) points. The lower plot shows the infill criterion.
 - For bi-criteria target functions the upper plot shows the target space and the lower
   plot displays the x-space.</p>
     
+    </div>
 
     <pre class="usage"><span class='fu'>plotExampleRun</span>(<span class='no'>object</span>, <span class='no'>iters</span>, <span class='kw'>pause</span> <span class='kw'>=</span> <span class='fu'>interactive</span>(), <span class='kw'>densregion</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>se.factor</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>single.prop.point.plots</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>xlim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>ylim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>point.size</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='kw'>line.size</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>trafo</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>colors</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"red"</span>, <span class='st'>"blue"</span>, <span class='st'>"green"</span>), <span class='kw'>gg.objects</span> <span class='kw'>=</span> <span class='fu'>list</span>(), <span class='no'>...</span>)</pre>
     
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>object</th>
-      <td><p>[<code>function</code>]
+      <td><p>[<code>function</code>]<br />
 <code>MBOExampleRun</code> object from <code>exampleRun</code> or
 <code>MBOExampleRunMultiObj</code> object from <code>exampleRunMultiObj</code>.</p></td>
     </tr>
     <tr>
       <th>iters</th>
-      <td><p>[<code>integer</code>]
+      <td><p>[<code>integer</code>]<br />
 Selected iterations of <code>object</code> to produce plots.
 Default is all iterations.</p></td>
     </tr>
     <tr>
       <th>pause</th>
-      <td><p>[<code>logical(1)</code>]
+      <td><p>[<code>logical(1)</code>]<br />
 Should the process be paused after each iteration?
 Default is <code>interactive()</code>.</p></td>
     </tr>
     <tr>
       <th>densregion</th>
-      <td><p>[<code>logical(1)</code>]
+      <td><p>[<code>logical(1)</code>]<br />
 Should the background be shaded? Default is <code>TRUE</code>.
 Only used if learner supports computation of standard error.</p></td>
     </tr>
     <tr>
       <th>se.factor</th>
-      <td><p>[<code>numeric(1)</code>]
+      <td><p>[<code>numeric(1)</code>]<br />
 If the model provides local standard error estimation,
 in addition to the mean response <code>yhat(x) +- se.factor * se(x)</code>
 is plotted above and below.
@@ -174,20 +212,20 @@ Default is 1.</p></td>
     </tr>
     <tr>
       <th>single.prop.point.plots</th>
-      <td><p>[<code>logical(1)</code>]
+      <td><p>[<code>logical(1)</code>]<br />
 Parameter for MOI-MBO Multi-point proposal: Should every proposed point
 be displayed in a single plot - or one plot per Iteration? Default is FALSE
 indicating single plots per proposed points.</p></td>
     </tr>
     <tr>
       <th>xlim</th>
-      <td><p>[<code>numeric(2)</code>]
+      <td><p>[<code>numeric(2)</code>]<br />
 For 1D: <code>xlim</code> parameter for first and second plot.
 Default is range of x-values evaluated in run object <code>x</code>.</p></td>
     </tr>
     <tr>
       <th>ylim</th>
-      <td><p>[<code>numeric(2)</code>]
+      <td><p>[<code>numeric(2)</code>]<br />
 For 1D: <code>ylim</code> parameter for first plot, for the second plot <code>ylim</code> is always set
 automatically, depending on the range of the evaluated infill criterion.
 Default for the first plot is a heuristic to have the true function
@@ -196,17 +234,17 @@ change the <code>ylim</code> setting between plot iterations.</p></td>
     </tr>
     <tr>
       <th>point.size</th>
-      <td><p>[<code>numeric(1)</code>]
+      <td><p>[<code>numeric(1)</code>]<br />
 Point size for plotted points. Default is 3.</p></td>
     </tr>
     <tr>
       <th>line.size</th>
-      <td><p>[<code>numeric(1)</code>]
+      <td><p>[<code>numeric(1)</code>]<br />
 Line width of the graphs of plotted functions.</p></td>
     </tr>
     <tr>
       <th>trafo</th>
-      <td><p>[<code>list</code>]
+      <td><p>[<code>list</code>]<br />
 List of transformation functions of type <code>MBOTrafoFunction</code> for
 the different plots.
 For 1D: The list elements should be named with &#8220;y&#8221; (applied to objective function and model)
@@ -231,7 +269,7 @@ List of <code>gg</code> objects that should be added to all ggplots.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>[any]
+      <td><p>[any]<br />
 Currently not used.</p></td>
     </tr>
     </table>
@@ -255,15 +293,18 @@ Currently not used.</p></td>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Bernd Bischl, Jakob Bossek, Jakob Richter, Daniel Horn, Michel Lang, Janek Thomas.</p>
+  <p>Developed by Bernd Bischl, Jakob Richter, Jakob Bossek, Daniel Horn, Michel Lang, Janek Thomas.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
    </div>
 
+  
+
   </body>
 </html>
+

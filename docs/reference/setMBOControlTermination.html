@@ -18,13 +18,25 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
+
+<!-- sticky kit -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+
+
+
+<meta property="og:title" content="Set termination options. — setMBOControlTermination" />
+
+<meta property="og:description" content="Extends an MBO control object with infill criteria and infill optimizer options." />
+<meta name="twitter:card" content="summary" />
+
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -47,8 +59,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">mlrMBO</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">mlrMBO</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.1.3</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -85,6 +101,12 @@
     <li>
       <a href="../articles/supplementary/human_in_the_loop_MBO.html">Human-in-the-loop MBO</a>
     </li>
+    <li>
+      <a href="../articles/supplementary/mlrmbo_and_the_command_line.html">mlrMBO and the Command Line</a>
+    </li>
+    <li>
+      <a href="../articles/supplementary/adaptive_infill_criteria.html">Adaptive Infill Criteria</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -104,6 +126,7 @@
   </a>
 </li>
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -111,43 +134,47 @@
       
       </header>
 
-      <div class="row">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Set termination options.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/mlr-org/mlrMBO/blob/master/R/setMBOControlTermination.R'><code>R/setMBOControlTermination.R</code></a></small>
+    <div class="hidden name"><code>setMBOControlTermination.Rd</code></div>
     </div>
 
+    <div class="ref-description">
     
     <p>Extends an MBO control object with infill criteria and infill optimizer options.</p>
     
+    </div>
 
     <pre class="usage"><span class='fu'>setMBOControlTermination</span>(<span class='no'>control</span>, <span class='kw'>iters</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>time.budget</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>exec.time.budget</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>target.fun.value</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>max.evals</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>more.termination.conds</span> <span class='kw'>=</span> <span class='fu'>list</span>())</pre>
+  <span class='kw'>more.termination.conds</span> <span class='kw'>=</span> <span class='fu'>list</span>(), <span class='kw'>use.for.adaptive.infill</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>control</th>
-      <td><p>[<code><a href='makeMBOControl.html'>MBOControl</a></code>]
+      <td><p>[<code><a href='makeMBOControl.html'>MBOControl</a></code>]<br />
 Control object for mbo.</p></td>
     </tr>
     <tr>
       <th>iters</th>
-      <td><p>[<code>integer(1)</code>]
+      <td><p>[<code>integer(1)</code>]<br />
 Number of sequential optimization steps.</p></td>
     </tr>
     <tr>
       <th>time.budget</th>
-      <td><p>[<code>integer(1)</code> | NULL]
+      <td><p>[<code>integer(1)</code> | NULL]<br />
 Running time budget in seconds. Note that the actual mbo run can take more time since
 the condition is checked after each iteration.
 The default <code>NULL</code> means: There is no time budget.</p></td>
     </tr>
     <tr>
       <th>exec.time.budget</th>
-      <td><p>[<code>integer(1)</code> | NULL]
+      <td><p>[<code>integer(1)</code> | NULL]<br />
 Execution time (time spent executing the function passed to <code>mbo</code>)
 budget in seconds. Note that the actual mbo run can take more time since
 the condition is checked after each iteration.
@@ -155,20 +182,20 @@ The default <code>NULL</code> means: There is no execution time budget.</p></td>
     </tr>
     <tr>
       <th>target.fun.value</th>
-      <td><p>[<code>numeric(1)</code>] | NULL]
+      <td><p>[<code>numeric(1)</code>] | NULL]<br />
 Termination criterion for single-objective optimization: Stop if a function evaluation
 is better than this given target.value.
 The default <code>NULL</code> means: The function value won't be taken into account for termination.</p></td>
     </tr>
     <tr>
       <th>max.evals</th>
-      <td><p>[<code>integer(1) | NULL</code>]
+      <td><p>[<code>integer(1) | NULL</code>]<br />
 Maximal number of function evaluations.
 The default <code>NULL</code> means: The total number of evaluations won't be taken into account for termination.</p></td>
     </tr>
     <tr>
       <th>more.termination.conds</th>
-      <td><p>[<code>list</code>]
+      <td><p>[<code>list</code>]<br />
 Optional list of termination conditions. Each condition needs to be a function
 of a single argument <code>opt.state</code> of type <code><a href='OptState.html'>OptState</a></code> and should
 return a list with the following elements:</p><dl class='dl-horizontal'>
@@ -176,6 +203,14 @@ return a list with the following elements:</p><dl class='dl-horizontal'>
   termination condition is met.</p></dd>
   <dt>message [<code>character(1)</code>]</dt><dd><p>Termination message. At the moment we just allow <code>term.custom</code>.</p></dd>
 </dl></td>
+    </tr>
+    <tr>
+      <th>use.for.adaptive.infill</th>
+      <td><p>[<code>character(1)</code>|NULL]<br />
+Which termination criterion should determine the progress that is used for adaptive infill criteria like [<code><a href='infillcrits.html'>makeMBOInfillCritAdaCB</a></code>].
+The default is <code>NULL</code> which means, that the first supplied argument is taken, following the order of the function signature.
+Other values can be <code>"iters"</code>, <code>"time.budget"</code>, etc.<br />
+If you want to to use it together with a criterion you supplied in <code>more.termination.conds</code>, <code>more.termination.conds</code> has to be a named list and the function further has to return a list element <code>progress</code> with values between 0 and 1.</p></td>
     </tr>
     </table>
     
@@ -185,10 +220,10 @@ return a list with the following elements:</p><dl class='dl-horizontal'>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <p>Other MBOControl: <code><a href='makeMBOControl.html'>makeMBOControl</a></code>,
+    <div class='dont-index'><p>Other MBOControl: <code><a href='makeMBOControl.html'>makeMBOControl</a></code>,
   <code><a href='setMBOControlInfill.html'>setMBOControlInfill</a></code>,
   <code><a href='setMBOControlMultiObj.html'>setMBOControlMultiObj</a></code>,
-  <code><a href='setMBOControlMultiPoint.html'>setMBOControlMultiPoint</a></code></p>
+  <code><a href='setMBOControlMultiPoint.html'>setMBOControlMultiPoint</a></code></p></div>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -245,15 +280,18 @@ return a list with the following elements:</p><dl class='dl-horizontal'>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Bernd Bischl, Jakob Bossek, Jakob Richter, Daniel Horn, Michel Lang, Janek Thomas.</p>
+  <p>Developed by Bernd Bischl, Jakob Richter, Jakob Bossek, Daniel Horn, Michel Lang, Janek Thomas.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
    </div>
 
+  
+
   </body>
 </html>
+

@@ -1,12 +1,5 @@
 ---
 title: "Mixed Space Optimization"
-output:
-  html_document:
-    toc: true
-    toc_float:
-      collapsed: true
-      smooth_scroll: false
-    dev: svg
 vignette: >
   %\VignetteIndexEntry{Mixed Space Optimization}
   %\VignetteEngine{knitr::rmarkdown}
@@ -15,8 +8,9 @@ vignette: >
 
 ```{r setup, include = FALSE, cache = FALSE}
 library(mlrMBO)
+library(rgenoud)
 set.seed(123)
-knitr::opts_chunk$set(cache = TRUE, collapse = FALSE, dev = "svg")
+knitr::opts_chunk$set(cache = TRUE, collapse = FALSE)
 knitr::knit_hooks$set(document = function(x){
   gsub("```\n*```r*\n*", "", x)
 })
@@ -159,7 +153,7 @@ This is done by introducing a new variable for each _method_.
 ```{r wrapper}
 wrap.fun = function(x) {
   x$j = if (x$method == "a") x$ja else x$jb
-  x = dropNamed(x, c("ja", "jb"))
+  x = x[setdiff(names(x), c("ja", "jb"))]
   fun(x)
 }
 ```

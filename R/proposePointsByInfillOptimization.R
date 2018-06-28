@@ -11,16 +11,18 @@
 #   errors.models [character] : model errors, resulting in randomly proposed points.
 #                               length is one string PER PROPOSED POINT, not per element of <models>
 #                               NA if the model was Ok, or the (first) error message if some model crashed
-proposePointsByInfillOptimization = function(opt.state, par.set = NULL, control = NULL, opt.path = NULL, models = NULL, ...) {
+proposePointsByInfillOptimization = function(opt.state, par.set = NULL, control = NULL, opt.path = NULL, models = NULL, designs = NULL, ...) {
   opt.problem = getOptStateOptProblem(opt.state)
-  if (is.null(models)) models = getOptStateModels(opt.state)$models
-  models = if (inherits(models, "WrappedModel")) list(models) else models
-  par.set = coalesce(par.set, getOptProblemParSet(opt.problem))
-  control = coalesce(control, getOptProblemControl(opt.problem))
-  opt.path = coalesce(opt.path, getOptStateOptPath(opt.state))
+  models = models %??% getOptStateModels(opt.state)$models
+  if (inherits(models, "WrappedModel")) models = list(models)
+  par.set = par.set %??% getOptProblemParSet(opt.problem)
+  designs = designs %??% getOptStateDesigns(opt.state)
+  if (inherits(designs, "data.frame")) designs = list(designs)
+  control = control %??% getOptProblemControl(opt.problem)
+  opt.path = opt.path %??% getOptStateOptPath(opt.state)
   iter = getOptStateLoop(opt.state)
   infill.crit.id = getMBOInfillCritId(control$infill.crit)
-
+  progress = getOptStateProgress(opt.state)
   #FIXME: maybe better do this in setMBOControlMultifid?
   if (control$multifid) {
     infill.crit.id = "multifid"
@@ -33,19 +35,18 @@ proposePointsByInfillOptimization = function(opt.state, par.set = NULL, control 
   ch = checkFailedModels(models, par.set, n, control = control)
   if (!ch$ok) return(ch$prop)
 
-  design = convertOptPathToDf(opt.path, control)
   infill.crit.fun = control$infill.crit$fun
   infill.opt.fun = getInfillOptFunction(control$infill.opt)
   # store time to propose single point
   secs = measureTime({
     prop.points = infill.opt.fun(infill.crit.fun, models = models,
       control = control, par.set = par.set, opt.path = opt.path,
-      design = design, iter = iter, ...)
+      designs = designs, iter = iter, progress = progress, ...)
   })
   prop.points.converted = convertDataFrameCols(prop.points, ints.as.num = TRUE,
     logicals.as.factor = TRUE)
   crit.vals = infill.crit.fun(prop.points.converted, models, control, par.set,
-    design, iter, attributes = TRUE, ...)
+    designs, iter, progress = progress, attributes = TRUE, ...)
   crit.components = attr(crit.vals, "crit.components")
   crit.vals = matrix(crit.vals, ncol = 1L)
 

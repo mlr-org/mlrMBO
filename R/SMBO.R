@@ -69,7 +69,7 @@ updateSMBO = function(opt.state, x, y) {
   assertNumeric(y[[1]], len = control$n.objectives)
 
 
-  infill.values = control$infill.crit$fun(points = x, models = getOptStateModels(opt.state)[[1]], control = control, design = convertOptPathToDf(opt.path, control), attributes = TRUE, iter = getOptStateLoop(opt.state))
+  infill.values = control$infill.crit$fun(points = x, models = getOptStateModels(opt.state)[[1]], control = control, designs = getOptStateDesigns(opt.state), attributes = TRUE, iter = getOptStateLoop(opt.state))
 
   prop = makeProposal(
     control = control,

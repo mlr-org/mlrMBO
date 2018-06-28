@@ -1,12 +1,5 @@
 ---
 title: "mlrMBO: A brief introduction"
-output:
-  html_document:
-    toc: true
-    toc_float:
-      collapsed: true
-      smooth_scroll: false
-    dev: svg
 vignette: >
   %\VignetteIndexEntry{Quick introduction}
   %\VignetteEngine{knitr::rmarkdown}
@@ -15,8 +8,9 @@ vignette: >
 
 ```{r setup, include = FALSE, cache = FALSE}
 library(mlrMBO)
+library(rgenoud)
 set.seed(123)
-knitr::opts_chunk$set(cache = TRUE, collapse = FALSE, dev = "svg")
+knitr::opts_chunk$set(cache = TRUE, collapse = FALSE)
 knitr::knit_hooks$set(document = function(x){
   gsub("```\n*```r*\n*", "", x)
 })
@@ -52,7 +46,7 @@ library(mlrMBO)
 
 1. Define **objective function** and its parameters using the package `smoof`.
 2. Generate **initial design** (optional).
-3. Define mlr` learner for **surrogate model** (optional).
+3. Define `mlr` learner for **surrogate model** (optional).
 4. Set up a **MBO control** object.
 5. Start the optimization with `mbo()`.
 

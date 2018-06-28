@@ -1,6 +1,6 @@
 context("manual smbo")
 
-test_that("human in the middle smbo works", {
+test_that("human in the loop smbo works", {
   fun = testf.fsphere.2d
   des = testd.fsphere.2d
   des$y = apply(des, 1, fun)
@@ -9,9 +9,9 @@ test_that("human in the middle smbo works", {
 
   opt.state = initSMBO(par.set = ps, design = des, control = ctrl)
   prop = proposePoints(opt.state)
-  assertList(prop)
-  assertDataFrame(prop$prop.points)
-  assertSetEqual(names(prop$prop.points), getParamIds(ps, TRUE, TRUE))
+  expect_list(prop)
+  expect_data_frame(prop$prop.points)
+  expect_set_equal(names(prop$prop.points), getParamIds(ps, TRUE, TRUE))
 
   x = data.frame(x1 = 0, x2 = 0)
   y = fun(x = x)
@@ -32,7 +32,7 @@ test_that("human in the middle smbo works", {
   expect_set_equal(names(or$x), names(testp.fsphere.2d$pars))
 })
 
-test_that("human in the middle smbo works for multi objective", {
+test_that("human in the loop smbo works for multi objective", {
   par.set = getParamSet(testf.zdt1.2d)
   des = testd.zdt1.2d
   res = t(apply(des, 1, testf.zdt1.2d))
@@ -42,14 +42,17 @@ test_that("human in the middle smbo works for multi objective", {
   des = cbind(des,res)
   opt.state = initSMBO(par.set, design = des, control = control, noisy = FALSE, minimize = shouldBeMinimized(testf.zdt1.2d))
   plot(opt.state)
-  proposePoints(opt.state)
+  prop = proposePoints(opt.state)
+  expect_list(prop)
+  expect_data_frame(prop$prop.points)
   x = data.frame(x1 = 0.0002, x2 = 0.1)
   y = testf.zdt1.2d(x = x)
   updateSMBO(opt.state, x = x, y = y)
   or = finalizeSMBO(opt.state)
+  expect_matrix(or$pareto.front)
 })
 
-test_that("human in the middle smbo works for mixed spaces", {
+test_that("human in the loop smbo works for mixed spaces", {
   par.set = testp.mixed
   fun = testf.mixed
   design = testd.mixed

@@ -39,6 +39,8 @@ NULL
 #  @param time.used \code{integer(1)} \cr
 #    The time in seconds we are already used for optimization since the very start.
 #    This counts all iterations together and is necessary for continuation with a given time budget.
+#  @param progress \code{numeric(1)} \cr
+#    The progress in percent determined by the termination criterion.
 
 # IMPORTANT NOTE:
 # See this as a constructor and it's variables as member variables.
@@ -48,7 +50,7 @@ NULL
 
 makeOptState = function(opt.problem, loop = 0L, tasks = NULL, models = NULL,
   time.model = NULL, opt.result = NULL, state = "init", opt.path = NULL,
-  time.last.saved = Sys.time(), loop.starttime = Sys.time(), time.used = 0L, time.created = Sys.time()) {
+  time.last.saved = Sys.time(), loop.starttime = Sys.time(), time.used = 0L, progress = 0, time.created = Sys.time()) {
 
   opt.state = new.env()
 
@@ -65,6 +67,7 @@ makeOptState = function(opt.problem, loop = 0L, tasks = NULL, models = NULL,
   opt.state$time.last.saved = time.last.saved
   opt.state$loop.starttime = loop.starttime
   opt.state$time.used = time.used
+  opt.state$progress = progress
 
   opt.state$random.seed = getRandomSeed()
   opt.state$time.created = time.created

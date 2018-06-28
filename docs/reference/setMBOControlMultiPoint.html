@@ -18,13 +18,25 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
+
+<!-- sticky kit -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+
+
+
+<meta property="og:title" content="Set multipoint proposal options. — setMBOControlMultiPoint" />
+
+<meta property="og:description" content="Extends an MBO control object with options for multipoint proposal." />
+<meta name="twitter:card" content="summary" />
+
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -47,8 +59,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">mlrMBO</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">mlrMBO</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.1.3</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -85,6 +101,12 @@
     <li>
       <a href="../articles/supplementary/human_in_the_loop_MBO.html">Human-in-the-loop MBO</a>
     </li>
+    <li>
+      <a href="../articles/supplementary/mlrmbo_and_the_command_line.html">mlrMBO and the Command Line</a>
+    </li>
+    <li>
+      <a href="../articles/supplementary/adaptive_infill_criteria.html">Adaptive Infill Criteria</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -104,6 +126,7 @@
   </a>
 </li>
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -111,32 +134,36 @@
       
       </header>
 
-      <div class="row">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Set multipoint proposal options.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/mlr-org/mlrMBO/blob/master/R/setMBOControlMultiPoint.R'><code>R/setMBOControlMultiPoint.R</code></a></small>
+    <div class="hidden name"><code>setMBOControlMultiPoint.Rd</code></div>
     </div>
 
+    <div class="ref-description">
     
     <p>Extends an MBO control object with options for multipoint proposal.</p>
     
+    </div>
 
     <pre class="usage"><span class='fu'>setMBOControlMultiPoint</span>(<span class='no'>control</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>cl.lie</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>moimbo.objective</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>moimbo.dist</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>moimbo.selection</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>moimbo.maxit</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>moimbo.sbx.eta</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>moimbo.sbx.p</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>moimbo.pm.eta</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>moimbo.pm.p</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>control</th>
-      <td><p>[<code><a href='makeMBOControl.html'>MBOControl</a></code>]
+      <td><p>[<code><a href='makeMBOControl.html'>MBOControl</a></code>]<br />
 Control object for mbo.</p></td>
     </tr>
     <tr>
       <th>method</th>
-      <td><p>[<code>character(1)</code>]
+      <td><p>[<code>character(1)</code>]<br />
 Method used for proposal of multiple infill points, for parallel batch evaluation.
 Possible values are:
 &#8220;cb&#8221;: Proposes points by optimizing the confidence bound &#8220;cb&#8221; criterion,
@@ -160,26 +187,26 @@ Default is <code>cb</code>.</p></td>
     </tr>
     <tr>
       <th>cl.lie</th>
-      <td><p>[<code>function</code>]
+      <td><p>[<code>function</code>]<br />
 Function used by constant liar method for lying. Default is <code>min</code>.</p></td>
     </tr>
     <tr>
       <th>moimbo.objective</th>
-      <td><p>[<code>character(1)</code>]
+      <td><p>[<code>character(1)</code>]<br />
 Objectives which are optimized in multi-objective approach.
 Possible values are: &#8220;mean.dist&#8221;, &#8220;ei.dist&#8221;, &#8220;mean.se&#8221;, &#8220;mean.se.dist&#8221;.
 Default is &#8220;ei.dist&#8221;.</p></td>
     </tr>
     <tr>
       <th>moimbo.dist</th>
-      <td><p>[<code>character(1)</code>]
+      <td><p>[<code>character(1)</code>]<br />
 Distance function used in multi-objective EA.
 Possible values are: &#8220;nearest.neighbor&#8221;, &#8220;nearest.better&#8221;.
 Default is &#8220;nearest.better&#8221;.</p></td>
     </tr>
     <tr>
       <th>moimbo.selection</th>
-      <td><p>[<code>character(1)</code>]
+      <td><p>[<code>character(1)</code>]<br />
 Method used for selecting 1 element for removal from the population
 in each iteration of the multi-objective EA.
 Possible values are:
@@ -191,31 +218,31 @@ Default is <code>hypervolume</code>.</p></td>
     </tr>
     <tr>
       <th>moimbo.maxit</th>
-      <td><p>[<code>character(1)</code>]
+      <td><p>[<code>character(1)</code>]<br />
 Number of generations for multi-objective EA.
 Default is 100.</p></td>
     </tr>
     <tr>
       <th>moimbo.sbx.eta</th>
-      <td><p>[<code>numeric(1)</code>]
+      <td><p>[<code>numeric(1)</code>]<br />
 Distance parameter of crossover distribution, see <code><a href='http://www.rdocumentation.org/packages/emoa/topics/sbx_operator'>sbx_operator</a></code>.
 Default is 15.</p></td>
     </tr>
     <tr>
       <th>moimbo.sbx.p</th>
-      <td><p>[<code>numeric(1)</code>]
+      <td><p>[<code>numeric(1)</code>]<br />
 Probability of 1-point crossover, see <code><a href='http://www.rdocumentation.org/packages/emoa/topics/sbx_operator'>sbx_operator</a></code>.
 Default is 1.</p></td>
     </tr>
     <tr>
       <th>moimbo.pm.eta</th>
-      <td><p>[<code>numeric(1)</code>]
+      <td><p>[<code>numeric(1)</code>]<br />
 Distance parameter of mutation distribution, see <code><a href='http://www.rdocumentation.org/packages/emoa/topics/pm_operator'>pm_operator</a></code>.
 Default is 15.</p></td>
     </tr>
     <tr>
       <th>moimbo.pm.p</th>
-      <td><p>[<code>numeric(1)</code>]
+      <td><p>[<code>numeric(1)</code>]<br />
 Probability of 1-point mutation, see <code><a href='http://www.rdocumentation.org/packages/emoa/topics/pm_operator'>pm_operator</a></code>.
 Default is 1.</p></td>
     </tr>
@@ -227,10 +254,10 @@ Default is 1.</p></td>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <p>Other MBOControl: <code><a href='makeMBOControl.html'>makeMBOControl</a></code>,
+    <div class='dont-index'><p>Other MBOControl: <code><a href='makeMBOControl.html'>makeMBOControl</a></code>,
   <code><a href='setMBOControlInfill.html'>setMBOControlInfill</a></code>,
   <code><a href='setMBOControlMultiObj.html'>setMBOControlMultiObj</a></code>,
-  <code><a href='setMBOControlTermination.html'>setMBOControlTermination</a></code></p>
+  <code><a href='setMBOControlTermination.html'>setMBOControlTermination</a></code></p></div>
     
 
   </div>
@@ -249,15 +276,18 @@ Default is 1.</p></td>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Bernd Bischl, Jakob Bossek, Jakob Richter, Daniel Horn, Michel Lang, Janek Thomas.</p>
+  <p>Developed by Bernd Bischl, Jakob Richter, Jakob Bossek, Daniel Horn, Michel Lang, Janek Thomas.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
    </div>
 
+  
+
   </body>
 </html>
+

@@ -18,13 +18,60 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
+
+<!-- sticky kit -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+
+
+
+<meta property="og:title" content="Generate default learner. — makeMBOLearner" />
+
+<meta property="og:description" content="This is a helper function that generates a default surrogate, based on properties of the objective
+function and the selected infill criterion.
+For numeric-only (including integers) parameter spaces without any dependencies:
+A Kriging model &amp;#8220;regr.km&amp;#8221; with kernel &amp;#8220;matern3_2&amp;#8221; is created.
+If the objective function is deterministic we add a small nugget effect (10^-8*Var(y),
+  y is vector of observed outcomes in current design) to increase numerical stability to
+  hopefully prevent crashes of DiceKriging.
+If the objective function is noisy the nugget effect will be estimated with
+  nugget.estim = TRUE (but you can override this in ....
+  Also jitter is set to TRUE to circumvent a problem with DiceKriging where already
+  trained input values produce the exact trained output.
+  For further information check the $note slot of the created learner.
+Instead of the default &quot;BFGS&quot; optimization method we use rgenoud (&quot;gen&quot;),
+  which is a hybrid algorithm, to combine global search based on genetic algorithms and local search
+  based on gradients.
+  This may improve the model fit and will less frequently produce a constant surrogate model.
+  You can also override this setting in ....
+" />
+
+<meta property="og:description" content="For mixed numeric-categorical parameter spaces, or spaces with conditional parameters:
+A random regression forest &amp;#8220;regr.randomForest&amp;#8221; with 500 trees is created.
+The standard error of a prediction (if required by the infill criterion) is estimated
+  by computing the jackknife-after-bootstrap.
+  This is the se.method = &quot;jackknife&quot; option of the regr.randomForest,
+  see this page for further info and alternatives.
+" />
+
+<meta property="og:description" content="If additionally dependencies are in present in the parameter space, inactive conditional parameters
+are represented by missing NA values in the training design data.frame.
+We simply handle those with an imputation method, added to the random forest:
+If a numeric value is inactive, i.e., missing, it will be imputed by 2 times the
+  maximum of observed values
+If a categorical value is inactive, i.e., missing, it will be imputed by the
+  special class label &quot;__miss__&quot;
+Both of these techniques make sense for tree-based methods and are usually hard to beat, see
+Ding et.al. (2010)." />
+<meta name="twitter:card" content="summary" />
+
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -47,8 +94,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">mlrMBO</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">mlrMBO</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.1.3</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -85,6 +136,12 @@
     <li>
       <a href="../articles/supplementary/human_in_the_loop_MBO.html">Human-in-the-loop MBO</a>
     </li>
+    <li>
+      <a href="../articles/supplementary/mlrmbo_and_the_command_line.html">mlrMBO and the Command Line</a>
+    </li>
+    <li>
+      <a href="../articles/supplementary/adaptive_infill_criteria.html">Adaptive Infill Criteria</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -104,6 +161,7 @@
   </a>
 </li>
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -111,12 +169,15 @@
       
       </header>
 
-      <div class="row">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Generate default learner.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/mlr-org/mlrMBO/blob/master/R/makeMBOLearner.R'><code>R/makeMBOLearner.R</code></a></small>
+    <div class="hidden name"><code>makeMBOLearner.Rd</code></div>
     </div>
 
+    <div class="ref-description">
     
     <p>This is a helper function that generates a default surrogate, based on properties of the objective
 function and the selected infill criterion.</p>
@@ -155,30 +216,31 @@ We simply handle those with an imputation method, added to the random forest:</p
 </ul><p>Both of these techniques make sense for tree-based methods and are usually hard to beat, see
 Ding et.al. (2010).</p>
     
+    </div>
 
     <pre class="usage"><span class='fu'>makeMBOLearner</span>(<span class='no'>control</span>, <span class='no'>fun</span>, <span class='kw'>config</span> <span class='kw'>=</span> <span class='fu'>list</span>(), <span class='no'>...</span>)</pre>
     
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>control</th>
-      <td><p>[<code><a href='makeMBOControl.html'>MBOControl</a></code>]
+      <td><p>[<code><a href='makeMBOControl.html'>MBOControl</a></code>]<br />
 Control object for mbo.</p></td>
     </tr>
     <tr>
       <th>fun</th>
-      <td><p>[<code>smoof_function</code>] 
+      <td><p>[<code>smoof_function</code>] <br />
 The same objective function which is also passed to <code><a href='mbo.html'>mbo</a></code>.</p></td>
     </tr>
     <tr>
       <th>config</th>
-      <td><p>[<code>named list</code>] 
+      <td><p>[<code>named list</code>] <br />
 Named list of config option to overwrite global settings set via <code><a href='http://www.rdocumentation.org/packages/mlr/topics/configureMlr'>configureMlr</a></code> for this specific learner.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>[any]
+      <td><p>[any]<br />
 Further parameters passed to the constructed learner.
 Will overwrite mlrMBO's defaults.</p></td>
     </tr>
@@ -211,15 +273,18 @@ Journal of Machine Learning Research 11.Jan (2010): 131-170.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Bernd Bischl, Jakob Bossek, Jakob Richter, Daniel Horn, Michel Lang, Janek Thomas.</p>
+  <p>Developed by Bernd Bischl, Jakob Richter, Jakob Bossek, Daniel Horn, Michel Lang, Janek Thomas.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
    </div>
 
+  
+
   </body>
 </html>
+

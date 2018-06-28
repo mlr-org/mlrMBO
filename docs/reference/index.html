@@ -18,13 +18,22 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
+
+<!-- sticky kit -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+
+
+
+<meta property="og:title" content="Function reference" />
+
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -47,8 +56,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">mlrMBO</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">mlrMBO</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.1.3</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -85,6 +98,12 @@
     <li>
       <a href="../articles/supplementary/human_in_the_loop_MBO.html">Human-in-the-loop MBO</a>
     </li>
+    <li>
+      <a href="../articles/supplementary/mlrmbo_and_the_command_line.html">mlrMBO and the Command Line</a>
+    </li>
+    <li>
+      <a href="../articles/supplementary/adaptive_infill_criteria.html">Adaptive Infill Criteria</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -104,6 +123,7 @@
   </a>
 </li>
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -111,279 +131,313 @@
       
       </header>
 
-      <div class="row">
-  <div class="col-md-9">
+<div class="row">
+  <div class="contents col-md-9">
     <div class="page-header">
-      <h1>
-        Reference
-        <small>version&nbsp;1.1.2</small>
-      </h1>
+      <h1>Reference</h1>
     </div>
 
-    <div class="contents">
-      <table class="ref-index">
+    <table class="ref-index">
 
-      <colgroup>
-        <col class="alias" />
-        <col class="title" />
-      </colgroup>
+    <colgroup>
+      
+      <col class="alias" />
+      <col class="title" />
+    </colgroup>
 
-      <tbody>
-        <tr>
-          <th colspan="2">
-            <h2 id="section-mlrmbo-control" class="hasAnchor"><a href="#section-mlrmbo-control" class="anchor"></a>mlrMBO Control</h2>
-            <p class="section-desc"><p>Functions for setting and manipulating the mlrMBO Control Object.</p></p>
-          </th>
-        </tr>
-        <tr>
-          <!--  -->
-          <td>
-            <p><code><a href="makeMBOControl.html">makeMBOControl</a></code> </p>
-          </td>
-          <td><p>Set MBO options.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="setMBOControlInfill.html">setMBOControlInfill</a></code> </p>
-          </td>
-          <td><p>Extends mbo control object with infill criteria and infill optimizer options.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="setMBOControlMultiObj.html">setMBOControlMultiObj</a></code> </p>
-          </td>
-          <td><p>Set multi-objective options.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="setMBOControlMultiPoint.html">setMBOControlMultiPoint</a></code> </p>
-          </td>
-          <td><p>Set multipoint proposal options.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="setMBOControlTermination.html">setMBOControlTermination</a></code> </p>
-          </td>
-          <td><p>Set termination options.</p></td>
-        </tr>
-      </tbody><tbody>
-        <tr>
-          <th colspan="2">
-            <h2 id="section-start-mbo" class="hasAnchor"><a href="#section-start-mbo" class="anchor"></a>Start MBO</h2>
-            <p class="section-desc"><p>How to start and continue MBO runs.</p></p>
-          </th>
-        </tr>
-        <tr>
-          <!--  -->
-          <td>
-            <p><code><a href="mbo.html">mbo</a></code> </p>
-          </td>
-          <td><p>Optimizes a function with sequential model based optimization.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="mboContinue.html">mboContinue</a></code> </p>
-          </td>
-          <td><p>Continues an mbo run from a save-file.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="mboFinalize.html">mboFinalize</a></code> </p>
-          </td>
-          <td><p>Finalizes an mbo run from a save-file.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p></p>
-          </td>
-          <td><p>Parallelization in mlrMBO</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p></p>
-          </td>
-          <td><p>mlrMBO examples</p></td>
-        </tr>
-      </tbody><tbody>
-        <tr>
-          <th colspan="2">
-            <h2 id="section-infill-criteria" class="hasAnchor"><a href="#section-infill-criteria" class="anchor"></a>Infill Criteria</h2>
-            <p class="section-desc"><p>Infill Criteria and Functions to generate and interact with Infill Criteria.</p></p>
-          </th>
-        </tr>
-        <tr>
-          <!--  -->
-          <td>
-            <p><code><a href="setMBOControlInfill.html">setMBOControlInfill</a></code> </p>
-          </td>
-          <td><p>Extends mbo control object with infill criteria and infill optimizer options.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="infillcrits.html">makeMBOInfillCritMeanResponse</a></code> <code><a href="infillcrits.html">makeMBOInfillCritStandardError</a></code> <code><a href="infillcrits.html">makeMBOInfillCritEI</a></code> <code><a href="infillcrits.html">makeMBOInfillCritCB</a></code> <code><a href="infillcrits.html">makeMBOInfillCritAEI</a></code> <code><a href="infillcrits.html">makeMBOInfillCritEQI</a></code> <code><a href="infillcrits.html">makeMBOInfillCritDIB</a></code> </p>
-          </td>
-          <td><p>Infill criteria.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="MBOInfillCrit.html">makeMBOInfillCrit</a></code> </p>
-          </td>
-          <td><p>Create an infill criterion.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="getMBOInfillCrit.html">getMBOInfillCritParams</a></code> <code><a href="getMBOInfillCrit.html">getMBOInfillCritParam</a></code> <code><a href="getMBOInfillCrit.html">getMBOInfillCritName</a></code> <code><a href="getMBOInfillCrit.html">getMBOInfillCritId</a></code> <code><a href="getMBOInfillCrit.html">hasRequiresInfillCritStandardError</a></code> <code><a href="getMBOInfillCrit.html">getMBOInfillCritComponents</a></code> </p>
-          </td>
-          <td><p>Get properties of MBO infill criterion.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="initCrit.html">initCrit</a></code> </p>
-          </td>
-          <td><p>Initialize an MBO infill criterion.</p></td>
-        </tr>
-      </tbody><tbody>
-        <tr>
-          <th colspan="2">
-            <h2 id="section-mbo-results" class="hasAnchor"><a href="#section-mbo-results" class="anchor"></a>MBO Results</h2>
-            <p class="section-desc"><p>Understanding the results.</p></p>
-          </th>
-        </tr>
-        <tr>
-          <!--  -->
-          <td>
-            <p></p>
-          </td>
-          <td><p>Multi-Objective result object.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p></p>
-          </td>
-          <td><p>Single-Objective result object.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p></p>
-          </td>
-          <td><p>OptPath in mlrMBO</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="plotMBOResult.html">plot</a></code> </p>
-          </td>
-          <td><p>MBO Result Plotting</p></td>
-        </tr>
-      </tbody><tbody>
-        <tr>
-          <th colspan="2">
-            <h2 id="section-example-runs" class="hasAnchor"><a href="#section-example-runs" class="anchor"></a>Example Runs</h2>
-            <p class="section-desc"><p>Visualize MBO runs using Example Runs.</p></p>
-          </th>
-        </tr>
-        <tr>
-          <!--  -->
-          <td>
-            <p><code><a href="exampleRunMultiObj.html">exampleRunMultiObj</a></code> </p>
-          </td>
-          <td><p>Perform an MBO run on a multi-objective test function and and visualize what happens.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="exampleRun.html">exampleRun</a></code> </p>
-          </td>
-          <td><p>Perform an mbo run on a test function and and visualize what happens.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="plotExampleRun.html">plotExampleRun</a></code> </p>
-          </td>
-          <td><p>Renders plots for exampleRun objects and displays them.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="renderExampleRunPlot.html">renderExampleRunPlot</a></code> </p>
-          </td>
-          <td><p>Renders plots for exampleRun objects, either in 1D or 2D, or
+    <tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-mlrmbo-control" class="hasAnchor"><a href="#section-mlrmbo-control" class="anchor"></a>mlrMBO Control</h2>
+          <p class="section-desc"><p>Functions for setting and manipulating the mlrMBO Control Object.</p></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="makeMBOControl.html">makeMBOControl()</a></code> </p>
+        </td>
+        <td><p>Set MBO options.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="setMBOControlInfill.html">setMBOControlInfill()</a></code> </p>
+        </td>
+        <td><p>Extends mbo control object with infill criteria and infill optimizer options.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="setMBOControlMultiObj.html">setMBOControlMultiObj()</a></code> </p>
+        </td>
+        <td><p>Set multi-objective options.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="setMBOControlMultiPoint.html">setMBOControlMultiPoint()</a></code> </p>
+        </td>
+        <td><p>Set multipoint proposal options.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="setMBOControlTermination.html">setMBOControlTermination()</a></code> </p>
+        </td>
+        <td><p>Set termination options.</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-start-mbo" class="hasAnchor"><a href="#section-start-mbo" class="anchor"></a>Start MBO</h2>
+          <p class="section-desc"><p>How to start and continue MBO runs.</p></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="mbo.html">mbo()</a></code> </p>
+        </td>
+        <td><p>Optimizes a function with sequential model based optimization.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="mboContinue.html">mboContinue()</a></code> </p>
+        </td>
+        <td><p>Continues an mbo run from a save-file.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="mboFinalize.html">mboFinalize()</a></code> </p>
+        </td>
+        <td><p>Finalizes an mbo run from a save-file.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="mbo_parallel.html">mbo_parallel</a></code> </p>
+        </td>
+        <td><p>Parallelization in mlrMBO</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="mlrMBO_examples.html">mlrMBO_examples</a></code> </p>
+        </td>
+        <td><p>mlrMBO examples</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-human-in-the-loop-mbo" class="hasAnchor"><a href="#section-human-in-the-loop-mbo" class="anchor"></a>Human in the loop MBO</h2>
+          <p class="section-desc"><p>Controlling sequential manual MBO</p></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="initSMBO.html">initSMBO()</a></code> </p>
+        </td>
+        <td><p>Initialize a manual sequential MBO run.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="proposePoints.html">proposePoints()</a></code> </p>
+        </td>
+        <td><p>Propose candidates for the objective function</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="updateSMBO.html">updateSMBO()</a></code> </p>
+        </td>
+        <td><p>Updates SMBO with the new observations</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="finalizeSMBO.html">finalizeSMBO()</a></code> </p>
+        </td>
+        <td><p>Finalizes the SMBO Optimization</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plot.OptState.html">plot(<i>&lt;OptState&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Generate ggplot2 Object</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-infill-criteria" class="hasAnchor"><a href="#section-infill-criteria" class="anchor"></a>Infill Criteria</h2>
+          <p class="section-desc"><p>Infill Criteria and Functions to generate and interact with Infill Criteria.</p></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="setMBOControlInfill.html">setMBOControlInfill()</a></code> </p>
+        </td>
+        <td><p>Extends mbo control object with infill criteria and infill optimizer options.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="infillcrits.html">makeMBOInfillCritMeanResponse()</a></code> <code><a href="infillcrits.html">makeMBOInfillCritStandardError()</a></code> <code><a href="infillcrits.html">makeMBOInfillCritEI()</a></code> <code><a href="infillcrits.html">makeMBOInfillCritCB()</a></code> <code><a href="infillcrits.html">makeMBOInfillCritAEI()</a></code> <code><a href="infillcrits.html">makeMBOInfillCritEQI()</a></code> <code><a href="infillcrits.html">makeMBOInfillCritDIB()</a></code> <code><a href="infillcrits.html">makeMBOInfillCritAdaCB()</a></code> </p>
+        </td>
+        <td><p>Infill criteria.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="MBOInfillCrit.html">makeMBOInfillCrit()</a></code> </p>
+        </td>
+        <td><p>Create an infill criterion.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="getMBOInfillCrit.html">getMBOInfillCritParams()</a></code> <code><a href="getMBOInfillCrit.html">getMBOInfillCritParam()</a></code> <code><a href="getMBOInfillCrit.html">getMBOInfillCritName()</a></code> <code><a href="getMBOInfillCrit.html">getMBOInfillCritId()</a></code> <code><a href="getMBOInfillCrit.html">hasRequiresInfillCritStandardError()</a></code> <code><a href="getMBOInfillCrit.html">getMBOInfillCritComponents()</a></code> </p>
+        </td>
+        <td><p>Get properties of MBO infill criterion.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="initCrit.html">initCrit()</a></code> </p>
+        </td>
+        <td><p>Initialize an MBO infill criterion.</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-mbo-results" class="hasAnchor"><a href="#section-mbo-results" class="anchor"></a>MBO Results</h2>
+          <p class="section-desc"><p>Understanding the results.</p></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="MBOMultiObjResult.html">MBOMultiObjResult</a></code> </p>
+        </td>
+        <td><p>Multi-Objective result object.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="MBOSingleObjResult.html">MBOSingleObjResult</a></code> </p>
+        </td>
+        <td><p>Single-Objective result object.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="mbo_OptPath.html">mbo_OptPath</a></code> </p>
+        </td>
+        <td><p>OptPath in mlrMBO</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plotMBOResult.html">plot(<i>&lt;MBOSingleObjResult&gt;</i>)</a></code> <code><a href="plotMBOResult.html">plot(<i>&lt;MBOMultiObjResult&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>MBO Result Plotting</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-example-runs" class="hasAnchor"><a href="#section-example-runs" class="anchor"></a>Example Runs</h2>
+          <p class="section-desc"><p>Visualize MBO runs using Example Runs.</p></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="exampleRun.html">exampleRun()</a></code> </p>
+        </td>
+        <td><p>Perform an mbo run on a test function and and visualize what happens.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="exampleRunMultiObj.html">exampleRunMultiObj()</a></code> </p>
+        </td>
+        <td><p>Perform an MBO run on a multi-objective test function and and visualize what happens.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plotExampleRun.html">plotExampleRun()</a></code> </p>
+        </td>
+        <td><p>Renders plots for exampleRun objects and displays them.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="renderExampleRunPlot.html">renderExampleRunPlot()</a></code> </p>
+        </td>
+        <td><p>Renders plots for exampleRun objects, either in 1D or 2D, or
 exampleRunMultiObj objects.</p></td>
-        </tr>
-      </tbody><tbody>
-        <tr>
-          <th colspan="2">
-            <h2 id="section-other" class="hasAnchor"><a href="#section-other" class="anchor"></a>Other</h2>
-            <p class="section-desc"></p>
-          </th>
-        </tr>
-        <tr>
-          <!--  -->
-          <td>
-            <p></p>
-          </td>
-          <td><p>Error handling for mlrMBO</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="getGlobalOpt.html">getGlobalOpt</a></code> </p>
-          </td>
-          <td><p>Helper function which returns the (estimated) global optimum.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="getSupportedInfillOptFunctions.html">getSupportedInfillOptFunctions</a></code> </p>
-          </td>
-          <td><p>Get names of supported infill-criteria optimizers.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="getSupportedMultipointInfillOptFunctions.html">getSupportedMultipointInfillOptFunctions</a></code> </p>
-          </td>
-          <td><p>Get names of supported multi-point infill-criteria optimizers.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="makeMBOLearner.html">makeMBOLearner</a></code> </p>
-          </td>
-          <td><p>Generate default learner.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="makeMBOTrafoFunction.html">makeMBOTrafoFunction</a></code> </p>
-          </td>
-          <td><p>Create a transformation function for MBOExampleRun.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p></p>
-          </td>
-          <td><p>OptProblem object.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p></p>
-          </td>
-          <td><p>OptResult object.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p></p>
-          </td>
-          <td><p>OptState object.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="print.MBOControl.html">print</a></code> </p>
-          </td>
-          <td><p>Print mbo control object.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="trafos.html">trafoLog</a></code> <code><a href="trafos.html">trafoSqrt</a></code> </p>
-          </td>
-          <td><p>Transformation methods.</p></td>
-        </tr>
-      </tbody>
-      </table>
-    </div>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-other" class="hasAnchor"><a href="#section-other" class="anchor"></a>Other</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="error_handling.html">error_handling</a></code> </p>
+        </td>
+        <td><p>Error handling for mlrMBO</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="getGlobalOpt.html">getGlobalOpt()</a></code> </p>
+        </td>
+        <td><p>Helper function which returns the (estimated) global optimum.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="getSupportedInfillOptFunctions.html">getSupportedInfillOptFunctions()</a></code> </p>
+        </td>
+        <td><p>Get names of supported infill-criteria optimizers.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="getSupportedMultipointInfillOptFunctions.html">getSupportedMultipointInfillOptFunctions()</a></code> </p>
+        </td>
+        <td><p>Get names of supported multi-point infill-criteria optimizers.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="makeMBOLearner.html">makeMBOLearner()</a></code> </p>
+        </td>
+        <td><p>Generate default learner.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="makeMBOTrafoFunction.html">makeMBOTrafoFunction()</a></code> </p>
+        </td>
+        <td><p>Create a transformation function for MBOExampleRun.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="OptProblem.html">OptProblem</a></code> </p>
+        </td>
+        <td><p>OptProblem object.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="OptResult.html">OptResult</a></code> </p>
+        </td>
+        <td><p>OptResult object.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="OptState.html">OptState</a></code> </p>
+        </td>
+        <td><p>OptState object.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="print.MBOControl.html">print(<i>&lt;MBOControl&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Print mbo control object.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="trafos.html">trafoLog()</a></code> <code><a href="trafos.html">trafoSqrt()</a></code> </p>
+        </td>
+        <td><p>Transformation methods.</p></td>
+      </tr>
+    </tbody>
+    </table>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -391,6 +445,7 @@ exampleRunMultiObj objects.</p></td>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#section-mlrmbo-control">mlrMBO Control</a></li>
       <li><a href="#section-start-mbo">Start MBO</a></li>
+      <li><a href="#section-human-in-the-loop-mbo">Human in the loop MBO</a></li>
       <li><a href="#section-infill-criteria">Infill Criteria</a></li>
       <li><a href="#section-mbo-results">MBO Results</a></li>
       <li><a href="#section-example-runs">Example Runs</a></li>
@@ -401,15 +456,18 @@ exampleRunMultiObj objects.</p></td>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Bernd Bischl, Jakob Bossek, Jakob Richter, Daniel Horn, Michel Lang, Janek Thomas.</p>
+  <p>Developed by Bernd Bischl, Jakob Richter, Jakob Bossek, Daniel Horn, Michel Lang, Janek Thomas.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
    </div>
 
+  
+
   </body>
 </html>
+

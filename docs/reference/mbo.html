@@ -18,13 +18,25 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
+
+<!-- sticky kit -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+
+
+
+<meta property="og:title" content="Optimizes a function with sequential model based optimization. — mbo" />
+
+<meta property="og:description" content="See mbo_parallel for all parallelization options." />
+<meta name="twitter:card" content="summary" />
+
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -47,8 +59,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">mlrMBO</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">mlrMBO</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.1.3</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -85,6 +101,12 @@
     <li>
       <a href="../articles/supplementary/human_in_the_loop_MBO.html">Human-in-the-loop MBO</a>
     </li>
+    <li>
+      <a href="../articles/supplementary/mlrmbo_and_the_command_line.html">mlrMBO and the Command Line</a>
+    </li>
+    <li>
+      <a href="../articles/supplementary/adaptive_infill_criteria.html">Adaptive Infill Criteria</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -104,6 +126,7 @@
   </a>
 </li>
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -111,25 +134,29 @@
       
       </header>
 
-      <div class="row">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Optimizes a function with sequential model based optimization.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/mlr-org/mlrMBO/blob/master/R/mbo.R'><code>R/mbo.R</code></a></small>
+    <div class="hidden name"><code>mbo.Rd</code></div>
     </div>
 
+    <div class="ref-description">
     
     <p>See <a href='mbo_parallel.html'>mbo_parallel</a> for all parallelization options.</p>
     
+    </div>
 
     <pre class="usage"><span class='fu'>mbo</span>(<span class='no'>fun</span>, <span class='kw'>design</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>learner</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>control</span>,
   <span class='kw'>show.info</span> <span class='kw'>=</span> <span class='fu'>getOption</span>(<span class='st'>"mlrMBO.show.info"</span>, <span class='fl'>TRUE</span>), <span class='kw'>more.args</span> <span class='kw'>=</span> <span class='fu'>list</span>())</pre>
     
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>fun</th>
-      <td><p>[<code>smoof_function</code>]
+      <td><p>[<code>smoof_function</code>]<br />
 Fitness function to optimize.
 For one dimensional target functions you can obtain a <code>smoof_function</code> by using <code><a href='http://www.rdocumentation.org/packages/smoof/topics/makeSingleObjectiveFunction'>makeSingleObjectiveFunction</a></code>.
 For multi dimensional functions use <code><a href='http://www.rdocumentation.org/packages/smoof/topics/makeMultiObjectiveFunction'>makeMultiObjectiveFunction</a></code>.
@@ -140,7 +167,7 @@ Each of these values will be stored additionally in the optimization path.</p></
     </tr>
     <tr>
       <th>design</th>
-      <td><p>[<code>data.frame</code>]
+      <td><p>[<code>data.frame</code>]<br />
 Initial design as data frame.
 If the y-values are not already present in design, mbo will evaluate the points.
 If the parameters have corresponding trafo functions, the design must not be transformed before it is passed!
@@ -150,24 +177,24 @@ The points are drawn via <code><a href='http://www.rdocumentation.org/packages/l
     </tr>
     <tr>
       <th>learner</th>
-      <td><p>[<code><a href='http://www.rdocumentation.org/packages/mlr/topics/makeLearner'>Learner</a></code>]
+      <td><p>[<code><a href='http://www.rdocumentation.org/packages/mlr/topics/makeLearner'>Learner</a></code>]<br />
 Regression learner from mlr, which is used as a surrogate to model our fitness function.
 If <code>NULL</code> (default), the default learner is determined as described here: <a href='makeMBOLearner.html'>mbo_default_learner</a>.</p></td>
     </tr>
     <tr>
       <th>control</th>
-      <td><p>[<code><a href='makeMBOControl.html'>MBOControl</a></code>]
+      <td><p>[<code><a href='makeMBOControl.html'>MBOControl</a></code>]<br />
 Control object for mbo.</p></td>
     </tr>
     <tr>
       <th>show.info</th>
-      <td><p>[<code>logical(1)</code>]
+      <td><p>[<code>logical(1)</code>]<br />
 Verbose output on console?
 Default is <code>TRUE</code>.</p></td>
     </tr>
     <tr>
       <th>more.args</th>
-      <td><p>[list]
+      <td><p>[list]<br />
 Further arguments passed to fitness function.</p></td>
     </tr>
     </table>
@@ -196,7 +223,7 @@ Further arguments passed to fitness function.</p></td>
 <span class='no'>des</span> <span class='kw'>=</span> <span class='fu'>generateDesign</span>(<span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>5L</span>, <span class='fu'>getParamSet</span>(<span class='no'>obj.fun</span>), <span class='kw'>fun</span> <span class='kw'>=</span> <span class='kw pkg'>lhs</span><span class='kw ns'>::</span><span class='no'><a href='http://www.rdocumentation.org/packages/lhs/topics/maximinLHS'>maximinLHS</a></span>)
 
 <span class='co'># start mbo</span>
-<span class='no'>res</span> <span class='kw'>=</span> <span class='fu'>mbo</span>(<span class='no'>obj.fun</span>, <span class='kw'>design</span> <span class='kw'>=</span> <span class='no'>des</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='no'>ctrl</span>)</div><div class='output co'>#&gt; <span class='message'>Loading required package: rgenoud</span></div><div class='output co'>#&gt; <span class='message'>##  rgenoud (Version 5.8-1.0, Build Date: 2017-10-10)</span>
+<span class='no'>res</span> <span class='kw'>=</span> <span class='fu'>mbo</span>(<span class='no'>obj.fun</span>, <span class='kw'>design</span> <span class='kw'>=</span> <span class='no'>des</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='no'>ctrl</span>)</div><div class='output co'>#&gt; <span class='message'>Loading required package: rgenoud</span></div><div class='output co'>#&gt; <span class='message'>##  rgenoud (Version 5.8-2.0, Build Date: 2018-04-03)</span>
 #&gt; <span class='message'>##  See http://sekhon.berkeley.edu/rgenoud for additional documentation.</span>
 #&gt; <span class='message'>##  Please cite software as:</span>
 #&gt; <span class='message'>##   Walter Mebane, Jr. and Jasjeet S. Sekhon. 2011.</span>
@@ -224,9 +251,9 @@ Further arguments passed to fitness function.</p></td>
 #&gt; 3          NA        &lt;NA&gt;         NA initdesign           NA        NA
 #&gt; 4          NA        &lt;NA&gt;         NA initdesign           NA        NA
 #&gt; 5          NA        &lt;NA&gt;         NA initdesign           NA        NA
-#&gt; 6 -0.07233364        &lt;NA&gt;      0.258  infill_cb        0.124 0.1763127
-#&gt; 7 -0.17151623        &lt;NA&gt;      0.633  infill_cb        0.070 0.1596647
-#&gt; 8 -0.14165197        &lt;NA&gt;      0.036  infill_cb        0.052 0.2242090
+#&gt; 6 -0.07233364        &lt;NA&gt;      0.168  infill_cb        0.152 0.1763127
+#&gt; 7 -0.17151623        &lt;NA&gt;      0.141  infill_cb        0.190 0.1596647
+#&gt; 8 -0.14165197        &lt;NA&gt;      0.116  infill_cb        0.126 0.2242090
 #&gt;          mean lambda
 #&gt; 1          NA     NA
 #&gt; 2          NA     NA
@@ -254,15 +281,18 @@ Further arguments passed to fitness function.</p></td>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Bernd Bischl, Jakob Bossek, Jakob Richter, Daniel Horn, Michel Lang, Janek Thomas.</p>
+  <p>Developed by Bernd Bischl, Jakob Richter, Jakob Bossek, Daniel Horn, Michel Lang, Janek Thomas.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
    </div>
 
+  
+
   </body>
 </html>
+

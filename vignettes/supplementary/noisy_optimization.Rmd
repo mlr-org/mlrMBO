@@ -1,12 +1,5 @@
 ---
 title: "Noisy Optimization"
-output:
-  html_document:
-    toc: true
-    toc_float:
-      collapsed: true
-      smooth_scroll: false
-    dev: svg
 vignette: >
   %\VignetteIndexEntry{Noisy Optimization}
   %\VignetteEngine{knitr::rmarkdown}
@@ -15,8 +8,9 @@ vignette: >
 
 ```{r setup, include = FALSE, cache = FALSE}
 library(mlrMBO)
+library(rgenoud)
 set.seed(1)
-knitr::opts_chunk$set(cache = TRUE, collapse = FALSE, dev = "svg")
+knitr::opts_chunk$set(cache = TRUE, collapse = FALSE)
 knitr::knit_hooks$set(document = function(x){
   gsub("```\n*```r*\n*", "", x)
 })

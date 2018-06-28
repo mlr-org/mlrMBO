@@ -18,13 +18,28 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
+
+<!-- sticky kit -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+
+
+
+<meta property="og:title" content="Extends mbo control object with infill criteria and infill optimizer options. — setMBOControlInfill" />
+
+<meta property="og:description" content="Please note that internally all infill criteria are minimized. So for some of them,
+we internally compute their negated version, e.g., for EI or also for CB when the objective is to
+be maximized. In the latter case mlrMBO actually computes the negative upper confidence bound and
+minimizes that." />
+<meta name="twitter:card" content="summary" />
+
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -47,8 +62,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">mlrMBO</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">mlrMBO</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.1.3</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -85,6 +104,12 @@
     <li>
       <a href="../articles/supplementary/human_in_the_loop_MBO.html">Human-in-the-loop MBO</a>
     </li>
+    <li>
+      <a href="../articles/supplementary/mlrmbo_and_the_command_line.html">mlrMBO and the Command Line</a>
+    </li>
+    <li>
+      <a href="../articles/supplementary/adaptive_infill_criteria.html">Adaptive Infill Criteria</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -104,6 +129,7 @@
   </a>
 </li>
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -111,18 +137,22 @@
       
       </header>
 
-      <div class="row">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Extends mbo control object with infill criteria and infill optimizer options.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/mlr-org/mlrMBO/blob/master/R/setMBOControlInfill.R'><code>R/setMBOControlInfill.R</code></a></small>
+    <div class="hidden name"><code>setMBOControlInfill.Rd</code></div>
     </div>
 
+    <div class="ref-description">
     
     <p>Please note that internally all infill criteria are minimized. So for some of them,
 we internally compute their negated version, e.g., for EI or also for CB when the objective is to
 be maximized. In the latter case mlrMBO actually computes the negative upper confidence bound and
 minimizes that.</p>
     
+    </div>
 
     <pre class="usage"><span class='fu'>setMBOControlInfill</span>(<span class='no'>control</span>, <span class='kw'>crit</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>interleave.random.points</span> <span class='kw'>=</span> <span class='fl'>0L</span>,
   <span class='kw'>filter.proposed.points</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>filter.proposed.points.tol</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
@@ -134,24 +164,24 @@ minimizes that.</p>
   <span class='kw'>opt.nsga2.generations</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>opt.nsga2.cprob</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>opt.nsga2.cdist</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>opt.nsga2.mprob</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>opt.nsga2.mdist</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>control</th>
-      <td><p>[<code><a href='makeMBOControl.html'>MBOControl</a></code>]
+      <td><p>[<code><a href='makeMBOControl.html'>MBOControl</a></code>]<br />
 Control object for mbo.</p></td>
     </tr>
     <tr>
       <th>crit</th>
-      <td><p>[<code><a href='MBOInfillCrit.html'>MBOInfillCrit</a></code>]
+      <td><p>[<code><a href='MBOInfillCrit.html'>MBOInfillCrit</a></code>]<br />
 How should infill points be rated. See <code><a href='infillcrits.html'>infillcrits</a></code> for an overview
 of available infill criteria or implement a custom one via <code><a href='MBOInfillCrit.html'>makeMBOInfillCrit</a></code>.#
 Default is &#8220;(lower) confidence bound&#8221; (see <code><a href='infillcrits.html'>makeMBOInfillCritCB</a></code>).</p></td>
     </tr>
     <tr>
       <th>interleave.random.points</th>
-      <td><p>[<code>integer(1)</code>]
+      <td><p>[<code>integer(1)</code>]<br />
 Add <code>interleave.random.points</code> uniformly sampled points additionally to the
 regular proposed points in each step.
 If <code>crit="random"</code> this value will be neglected.
@@ -159,7 +189,7 @@ Default is 0.</p></td>
     </tr>
     <tr>
       <th>filter.proposed.points</th>
-      <td><p>[<code>logical(1)</code>]
+      <td><p>[<code>logical(1)</code>]<br />
 Design points located too close to each other can lead to
 numerical problems when using e.g. kriging as a surrogate model.
 This may solve the 'leading minor of order ...' error during model fit.
@@ -173,14 +203,14 @@ Default is <code>FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>filter.proposed.points.tol</th>
-      <td><p>[<code>numeric(1)</code>]
+      <td><p>[<code>numeric(1)</code>]<br />
 Tolerance value filtering of proposed points. We currently use a maximum metric
 to calculate the distance between points.
 Default is 0.0001.</p></td>
     </tr>
     <tr>
       <th>opt</th>
-      <td><p>[<code>character(1)</code>]
+      <td><p>[<code>character(1)</code>]<br />
 How should SINGLE points be proposed by using the surrogate model. Possible values are:
 &#8220;focussearch&#8221;: In several iteration steps the parameter space is
 focused on an especial promising region according to infill criterion.
@@ -194,7 +224,7 @@ Alternatively, you may pass a function name as string.</p></td>
     </tr>
     <tr>
       <th>opt.restarts</th>
-      <td><p>[<code>integer(1)</code>]
+      <td><p>[<code>integer(1)</code>]<br />
 Number of independent restarts for optimizer of infill criterion.
 If <code>opt == "cmaes"</code> the first start point for the optimizer is always the
 currently best point in the design of already visited points. Subsequent starting
@@ -205,109 +235,109 @@ Default is 3.</p></td>
     </tr>
     <tr>
       <th>opt.focussearch.maxit</th>
-      <td><p>[<code>integer(1)</code>]
+      <td><p>[<code>integer(1)</code>]<br />
 For <code>opt = "focussearch"</code>:
 Number of iteration to shrink local focus.
 Default is 5.</p></td>
     </tr>
     <tr>
       <th>opt.focussearch.points</th>
-      <td><p>[<code>integer(1)</code>]
+      <td><p>[<code>integer(1)</code>]<br />
 For <code>opt = "focussearch"</code>:
 Number of points in each iteration of the focus search optimizer.
 Default is 1000.</p></td>
     </tr>
     <tr>
       <th>opt.cmaes.control</th>
-      <td><p>[<code>list</code>]
+      <td><p>[<code>list</code>]<br />
 For <code>opt = "cmaes"</code>:
 Control argument for cmaes optimizer.
 For the default see the help page of the underlying optimizer <code><a href='http://www.rdocumentation.org/packages/cmaesr/topics/cmaes'>cmaes</a></code>.</p></td>
     </tr>
     <tr>
       <th>opt.ea.maxit</th>
-      <td><p>[<code>integer(1)</code>]
+      <td><p>[<code>integer(1)</code>]<br />
 For <code>opt = "ea"</code>:
 Number of iterations / generations of EA.
 Default is 500.</p></td>
     </tr>
     <tr>
       <th>opt.ea.mu</th>
-      <td><p>[<code>integer(1)</code>]
+      <td><p>[<code>integer(1)</code>]<br />
 For <code>opt = "ea"</code>:
 Population size of EA.
 The default is 10 times the number of parameters of the function to optimize.</p></td>
     </tr>
     <tr>
       <th>opt.ea.sbx.eta</th>
-      <td><p>[<code>numeric(1)</code>]
+      <td><p>[<code>numeric(1)</code>]<br />
 For <code>opt = "ea"</code>:
 Distance parameter of crossover distribution , see <code><a href='http://www.rdocumentation.org/packages/emoa/topics/sbx_operator'>sbx_operator</a></code>.
 Default is 15.</p></td>
     </tr>
     <tr>
       <th>opt.ea.sbx.p</th>
-      <td><p>[<code>numeric(1)</code>]
+      <td><p>[<code>numeric(1)</code>]<br />
 For <code>opt = "ea"</code>:
 Probability of 1-point crossover, see <code><a href='http://www.rdocumentation.org/packages/emoa/topics/sbx_operator'>sbx_operator</a></code>.
 Default is 0.5.</p></td>
     </tr>
     <tr>
       <th>opt.ea.pm.eta</th>
-      <td><p>[<code>numeric(1)</code>]
+      <td><p>[<code>numeric(1)</code>]<br />
 For <code>opt = "ea"</code>:
 Distance parameter of mutation distribution, see <code><a href='http://www.rdocumentation.org/packages/emoa/topics/pm_operator'>pm_operator</a></code>.
 Default is 15.</p></td>
     </tr>
     <tr>
       <th>opt.ea.pm.p</th>
-      <td><p>[<code>numeric(1)</code>]
+      <td><p>[<code>numeric(1)</code>]<br />
 For <code>opt = "ea"</code>:
 Probability of 1-point mutation, see <code><a href='http://www.rdocumentation.org/packages/emoa/topics/pm_operator'>pm_operator</a></code>.
 Default is 0.5.</p></td>
     </tr>
     <tr>
       <th>opt.ea.lambda</th>
-      <td><p>[<code>numeric{1}</code>]
+      <td><p>[<code>numeric{1}</code>]<br />
 For <code>opt.ea = "ea"</code>.
 Number of children generated in each generation.
 Default is 1.</p></td>
     </tr>
     <tr>
       <th>opt.nsga2.popsize</th>
-      <td><p>[<code>numeric{1}</code>]
+      <td><p>[<code>numeric{1}</code>]<br />
 For <code>opt.multiobj.method = "nsga2"</code>.
 Population size of nsga2.
 Default is 100.</p></td>
     </tr>
     <tr>
       <th>opt.nsga2.generations</th>
-      <td><p>[<code>numeric{1}</code>]
+      <td><p>[<code>numeric{1}</code>]<br />
 For <code>opt.multiobj.method = "nsga2"</code>.
 Number of populations for of nsga2.
 Default is 50.</p></td>
     </tr>
     <tr>
       <th>opt.nsga2.cprob</th>
-      <td><p>[<code>numeric{1}</code>]
+      <td><p>[<code>numeric{1}</code>]<br />
 For <code>opt.multiobj.method = "nsga2"</code>.
 nsga2 param. Default is 0.7.</p></td>
     </tr>
     <tr>
       <th>opt.nsga2.cdist</th>
-      <td><p>[<code>numeric{1}</code>]
+      <td><p>[<code>numeric{1}</code>]<br />
 For <code>opt.multiobj.method = "nsga2"</code>.
 nsga2 param. Default is 5.</p></td>
     </tr>
     <tr>
       <th>opt.nsga2.mprob</th>
-      <td><p>[<code>numeric{1}</code>]
+      <td><p>[<code>numeric{1}</code>]<br />
 For <code>opt.multiobj.method = "nsga2"</code>.
 nsga2 param. Default is 0.2.</p></td>
     </tr>
     <tr>
       <th>opt.nsga2.mdist</th>
-      <td><p>[<code>numeric{1}</code>]
+      <td><p>[<code>numeric{1}</code>]<br />
 For <code>opt.multiobj.method = "nsga2"</code>.
 nsga2 param. Default is 10.</p></td>
     </tr>
@@ -319,10 +349,10 @@ nsga2 param. Default is 10.</p></td>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <p>Other MBOControl: <code><a href='makeMBOControl.html'>makeMBOControl</a></code>,
+    <div class='dont-index'><p>Other MBOControl: <code><a href='makeMBOControl.html'>makeMBOControl</a></code>,
   <code><a href='setMBOControlMultiObj.html'>setMBOControlMultiObj</a></code>,
   <code><a href='setMBOControlMultiPoint.html'>setMBOControlMultiPoint</a></code>,
-  <code><a href='setMBOControlTermination.html'>setMBOControlTermination</a></code></p>
+  <code><a href='setMBOControlTermination.html'>setMBOControlTermination</a></code></p></div>
     
 
   </div>
@@ -341,15 +371,18 @@ nsga2 param. Default is 10.</p></td>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Bernd Bischl, Jakob Bossek, Jakob Richter, Daniel Horn, Michel Lang, Janek Thomas.</p>
+  <p>Developed by Bernd Bischl, Jakob Richter, Jakob Bossek, Daniel Horn, Michel Lang, Janek Thomas.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
    </div>
 
+  
+
   </body>
 </html>
+
