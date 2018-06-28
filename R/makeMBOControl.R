@@ -187,7 +187,6 @@ print.MBOControl = function(x, ...) {
   } else {
     if (x$propose.points == 1) {
       print(x$infill.crit)
-      catf("")
       catf("Infill optimizer              : %s", x$infill.opt)
       catf("Infill optimizer restarts     : %i", x$infill.opt.restarts)
     } else {
@@ -195,13 +194,4 @@ print.MBOControl = function(x, ...) {
     }
     catf("Final point by                : %s", x$final.method)
   }
-
-  # if (!is.null(x$noisy.method))
-  #   if (x$noisy.method == "fixed")
-  #     catf("Replication strategy          : fixed (noisy instances = %i)", x$noisy.instances)
-  #   if (x$noisy.method == "ocba")
-  #     catf("Replication strategy          : ocba (initial budget = %i, replication budget = %i)", 
-  #       x$noisy.ocba.budget, x$noisy.ocba.initial)
-  #   if(x$noisy.method == "incumbent")
-  #     catf("Replication strategy          : incumbent (number of challengers = (1 + %i)", x$noisy.incumbent.nchallengers)
 }
