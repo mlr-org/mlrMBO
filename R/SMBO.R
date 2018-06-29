@@ -49,6 +49,8 @@ initSMBO = function(par.set, design, learner = NULL, control, minimize = rep(TRU
 #'   Outcome of the optimization.
 #'   For multiple results use a list.
 #'   For a result of a multi-objective function use a numeric vector.
+#'   For multiple results of for noisy instances use a list.
+#'   Each list element should correspond to one x value.
 #'
 #' @return [\code{\link{OptState}}]
 #' @export
