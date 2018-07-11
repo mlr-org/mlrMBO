@@ -247,21 +247,23 @@ If you want to to use it together with a criterion you supplied in <code>more.te
 <span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'>setMBOControlTermination</span>(<span class='no'>ctrl</span>, <span class='kw'>more.termination.conds</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='fu'>yTargetValueTerminator</span>(<span class='fl'>0.05</span>)))
 <span class='no'>res</span> <span class='kw'>=</span> <span class='fu'><a href='mbo.html'>mbo</a></span>(<span class='no'>fn</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='no'>ctrl</span>)
 <span class='fu'>print</span>(<span class='no'>res</span>)</div><div class='output co'>#&gt; Recommended parameters:
-#&gt; x=0.101
-#&gt; Objective: y = 0.010
+#&gt; x=0.0042
+#&gt; Objective: y = 0.000
 #&gt; 
 #&gt; Optimization path
-#&gt; 4 + 0 entries in total, displaying last 10 (or less):
-#&gt;            x           y dob eol error.message exec.time cb error.model
-#&gt; 1 -4.1242155 17.00915378   0  NA          &lt;NA&gt;         0 NA        &lt;NA&gt;
-#&gt; 2 -0.3230631  0.10436978   0  NA          &lt;NA&gt;         0 NA        &lt;NA&gt;
-#&gt; 3  3.9285863 15.43379006   0  NA          &lt;NA&gt;         0 NA        &lt;NA&gt;
-#&gt; 4  0.1007838  0.01015737   0  NA          &lt;NA&gt;         0 NA        &lt;NA&gt;
-#&gt;   train.time  prop.type propose.time se mean lambda
-#&gt; 1         NA initdesign           NA NA   NA     NA
-#&gt; 2         NA initdesign           NA NA   NA     NA
-#&gt; 3         NA initdesign           NA NA   NA     NA
-#&gt; 4         NA initdesign           NA NA   NA     NA</div></pre>
+#&gt; 4 + 1 entries in total, displaying last 10 (or less):
+#&gt;             x            y dob eol error.message exec.time       cb error.model
+#&gt; 1  4.68194391 2.192060e+01   0  NA          &lt;NA&gt;     0.000       NA        &lt;NA&gt;
+#&gt; 2  0.57912163 3.353819e-01   0  NA          &lt;NA&gt;     0.001       NA        &lt;NA&gt;
+#&gt; 3 -3.19594558 1.021407e+01   0  NA          &lt;NA&gt;     0.000       NA        &lt;NA&gt;
+#&gt; 4 -0.58781997 3.455323e-01   0  NA          &lt;NA&gt;     0.000       NA        &lt;NA&gt;
+#&gt; 5  0.00420156 1.765310e-05   1  NA          &lt;NA&gt;     0.001 -1.86575        &lt;NA&gt;
+#&gt;   train.time  prop.type propose.time       se       mean lambda
+#&gt; 1         NA initdesign           NA       NA         NA     NA
+#&gt; 2         NA initdesign           NA       NA         NA     NA
+#&gt; 3         NA initdesign           NA       NA         NA     NA
+#&gt; 4         NA initdesign           NA       NA         NA     NA
+#&gt; 5      0.076  infill_cb        0.367 1.490817 -0.3749323      1</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
