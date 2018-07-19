@@ -44,6 +44,12 @@ infillOptCMAES = function(infill.crit, models, control, par.set, opt.path, desig
     )))
   }
 
+  if (!("restart.triggers " %in% names(names(cmaes.control)))) {
+    cmaes.control = BBmisc::insert(cmaes.control, list(
+      restart.triggers = BBmisc::extractSubList(getDefaultStoppingConditions(), "name")
+    ))
+  }
+
   # set number of restarts
   cmaes.control = BBmisc::insert(cmaes.control, list(max.restarts = control$infill.opt.restarts))
 
