@@ -54,8 +54,13 @@ infillOptCMAES = function(infill.crit, models, control, par.set, opt.path, desig
   cmaes.control = BBmisc::insert(cmaes.control, list(max.restarts = control$infill.opt.restarts))
 
   # select first start point as currently best
-  start.point = unlist(getOptPathEl(opt.path, getOptPathBestIndex(opt.path))$x)
-  result = cmaesr::cmaes(fn, start.point = start.point, monitor = NULL, control = cmaes.control)
+  # FIXME: Intelligent start point for multi crit
+  if (control$n.objectives == 1L) {
+    start.point = unlist(getOptPathEl(opt.path, getOptPathBestIndex(opt.path))$x)
+    result = cmaesr::cmaes(fn, start.point = start.point, monitor = NULL, control = cmaes.control)
+  } else {
+    result = cmaesr::cmaes(fn, monitor = NULL, control = cmaes.control)
+  }
 
   # all CMA-ES runs failed. Therefore we sample a random point and warn
   res = NULL
