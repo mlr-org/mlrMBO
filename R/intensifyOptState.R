@@ -121,7 +121,9 @@ distributeOCBA = function(ds, budget) {
   
   # search for the best and second-best dsign
   b = order(ds$y)[1]
-  s = order(ds$y)[2]
+  or = order(ds$y)[2:nds]
+  s = or[ds[or, ]$ysd > 0][1]
+
   
   # vector of ratios
   ratio = rep(0, nds)
@@ -130,13 +132,17 @@ distributeOCBA = function(ds, budget) {
   # calculate ratios
   tmp = (ds[b, ]$y - ds[s, ]$y) / (ds[b, ]$y - ds[- c(s, b), ]$y)
   ratio[- c(s, b)] = tmp^2 * ds[- c(s, b), ]$ysd^2 / ds[s, ]$ysd^2
-  ratio[b] = ds[b, ]$ysd * sqrt(sum(ratio^2 / ds$ysd^2))
+
+  # numerically ysd is sometimes 0 (in fact, this has prob. 0 in the noisy case)
+  # these indices need to be excluded
+  ysdval = which(ds$ysd > 0)
+  ratio[b] = ds[b, ]$ysd * sqrt(sum(ratio[ysdval]^2 / ds$ysd[ysdval]^2))
   
   # additional replications
   add = rep(0, nds)
   
-  # do not disable any dsign
-  disabled = rep(FALSE, nds)
+  # disable designs where ratio is zero
+  disabled = (ratio == 0)
   
   more_alloc = TRUE
   
@@ -164,7 +170,7 @@ roundPreserveSum = function(x, digits = 0) {
   up = 10 ^ digits
   x = x * up
   y = floor(x)
-  indices = tail(order(x-y), round(sum(x)) - sum(y))
+  indices = tail(order(x - y), round(sum(x)) - sum(y))
   y[indices] = y[indices] + 1
   y / up
 }
