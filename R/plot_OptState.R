@@ -33,7 +33,8 @@ plot.OptState = function(x, scale.panels = FALSE, ...) {
   infill = control$infill.crit
 
   # the data we need to plot
-  points = generateGridDesign(par.set, 100, trafo = TRUE)
+  points = generateGridDesign(par.set, 100, trafo = FALSE)
+  
   infill.res = infill$fun(points = points, models = models, control = control, par.set = par.set, designs = designs, attributes = TRUE, iter = getOptStateLoop(opt.state))
 
   crit.components = attr(infill.res, "crit.components")

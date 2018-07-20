@@ -29,7 +29,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">mlrMBO</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.1.2</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.1.3</span>
       </span>
     </div>
 
@@ -156,7 +156,7 @@
 <a class="sourceLine" id="cb7-4" data-line-number="4">## 150 1.011225 -1</a>
 <a class="sourceLine" id="cb7-5" data-line-number="5">## </a>
 <a class="sourceLine" id="cb7-6" data-line-number="6">## $propose.time</a>
-<a class="sourceLine" id="cb7-7" data-line-number="7">## [1] 0.09</a>
+<a class="sourceLine" id="cb7-7" data-line-number="7">## [1] 0.247</a>
 <a class="sourceLine" id="cb7-8" data-line-number="8">## </a>
 <a class="sourceLine" id="cb7-9" data-line-number="9">## $prop.type</a>
 <a class="sourceLine" id="cb7-10" data-line-number="10">## [1] "infill_ei"</a>
@@ -184,21 +184,21 @@
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1">(<span class="dt">prop =</span> <span class="kw"><a href="../../reference/proposePoints.html">proposePoints</a></span>(opt.state))</a>
 <a class="sourceLine" id="cb11-2" data-line-number="2">## $prop.points</a>
 <a class="sourceLine" id="cb11-3" data-line-number="3">##             q v</a>
-<a class="sourceLine" id="cb11-4" data-line-number="4">## 941 0.9937339 0</a>
+<a class="sourceLine" id="cb11-4" data-line-number="4">## 905 0.9927394 0</a>
 <a class="sourceLine" id="cb11-5" data-line-number="5">## </a>
 <a class="sourceLine" id="cb11-6" data-line-number="6">## $propose.time</a>
-<a class="sourceLine" id="cb11-7" data-line-number="7">## [1] 0.083</a>
+<a class="sourceLine" id="cb11-7" data-line-number="7">## [1] 0.262</a>
 <a class="sourceLine" id="cb11-8" data-line-number="8">## </a>
 <a class="sourceLine" id="cb11-9" data-line-number="9">## $prop.type</a>
 <a class="sourceLine" id="cb11-10" data-line-number="10">## [1] "infill_ei"</a>
 <a class="sourceLine" id="cb11-11" data-line-number="11">## </a>
 <a class="sourceLine" id="cb11-12" data-line-number="12">## $crit.vals</a>
 <a class="sourceLine" id="cb11-13" data-line-number="13">##            [,1]</a>
-<a class="sourceLine" id="cb11-14" data-line-number="14">## [1,] -0.1836443</a>
+<a class="sourceLine" id="cb11-14" data-line-number="14">## [1,] -0.1836472</a>
 <a class="sourceLine" id="cb11-15" data-line-number="15">## </a>
 <a class="sourceLine" id="cb11-16" data-line-number="16">## $crit.components</a>
 <a class="sourceLine" id="cb11-17" data-line-number="17">##          se      mean</a>
-<a class="sourceLine" id="cb11-18" data-line-number="18">## 1 0.3871173 0.4447291</a>
+<a class="sourceLine" id="cb11-18" data-line-number="18">## 1 0.3884125 0.4456437</a>
 <a class="sourceLine" id="cb11-19" data-line-number="19">## </a>
 <a class="sourceLine" id="cb11-20" data-line-number="20">## $errors.model</a>
 <a class="sourceLine" id="cb11-21" data-line-number="21">## [1] NA</a>
@@ -211,7 +211,7 @@
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1">res =<span class="st"> </span><span class="kw"><a href="../../reference/finalizeSMBO.html">finalizeSMBO</a></span>(opt.state)</a>
 <a class="sourceLine" id="cb13-2" data-line-number="2">res<span class="op">$</span>x</a>
 <a class="sourceLine" id="cb13-3" data-line-number="3">## $q</a>
-<a class="sourceLine" id="cb13-4" data-line-number="4">## [1] 0.9937339</a>
+<a class="sourceLine" id="cb13-4" data-line-number="4">## [1] 0.9927394</a>
 <a class="sourceLine" id="cb13-5" data-line-number="5">## </a>
 <a class="sourceLine" id="cb13-6" data-line-number="6">## $v</a>
 <a class="sourceLine" id="cb13-7" data-line-number="7">## [1] 0</a>
@@ -230,22 +230,22 @@
 <a class="sourceLine" id="cb14-7" data-line-number="7">}</a>
 <a class="sourceLine" id="cb14-8" data-line-number="8"><span class="kw"><a href="../../reference/proposePoints.html">proposePoints</a></span>(opt.state)</a>
 <a class="sourceLine" id="cb14-9" data-line-number="9">## $prop.points</a>
-<a class="sourceLine" id="cb14-10" data-line-number="10">##              q v</a>
-<a class="sourceLine" id="cb14-11" data-line-number="11">## 387 -0.3000646 0</a>
+<a class="sourceLine" id="cb14-10" data-line-number="10">##            q  v</a>
+<a class="sourceLine" id="cb14-11" data-line-number="11">## 989 1.999999 -2</a>
 <a class="sourceLine" id="cb14-12" data-line-number="12">## </a>
 <a class="sourceLine" id="cb14-13" data-line-number="13">## $propose.time</a>
-<a class="sourceLine" id="cb14-14" data-line-number="14">## [1] 0.11</a>
+<a class="sourceLine" id="cb14-14" data-line-number="14">## [1] 0.294</a>
 <a class="sourceLine" id="cb14-15" data-line-number="15">## </a>
 <a class="sourceLine" id="cb14-16" data-line-number="16">## $prop.type</a>
 <a class="sourceLine" id="cb14-17" data-line-number="17">## [1] "infill_ei"</a>
 <a class="sourceLine" id="cb14-18" data-line-number="18">## </a>
 <a class="sourceLine" id="cb14-19" data-line-number="19">## $crit.vals</a>
 <a class="sourceLine" id="cb14-20" data-line-number="20">##              [,1]</a>
-<a class="sourceLine" id="cb14-21" data-line-number="21">## [1,] -0.002831849</a>
+<a class="sourceLine" id="cb14-21" data-line-number="21">## [1,] -0.002831756</a>
 <a class="sourceLine" id="cb14-22" data-line-number="22">## </a>
 <a class="sourceLine" id="cb14-23" data-line-number="23">## $crit.components</a>
-<a class="sourceLine" id="cb14-24" data-line-number="24">##            se       mean</a>
-<a class="sourceLine" id="cb14-25" data-line-number="25">## 1 0.009017027 0.01173291</a>
+<a class="sourceLine" id="cb14-24" data-line-number="24">##          se   mean</a>
+<a class="sourceLine" id="cb14-25" data-line-number="25">## 1 0.7983306 1.8549</a>
 <a class="sourceLine" id="cb14-26" data-line-number="26">## </a>
 <a class="sourceLine" id="cb14-27" data-line-number="27">## $errors.model</a>
 <a class="sourceLine" id="cb14-28" data-line-number="28">## [1] NA</a>
@@ -261,19 +261,19 @@
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1">fun =<span class="st"> </span><span class="kw">makeAlpine02Function</span>(<span class="dv">1</span>)</a>
 <a class="sourceLine" id="cb15-2" data-line-number="2">res =<span class="st"> </span><span class="kw"><a href="../../reference/mbo.html">mbo</a></span>(<span class="dt">fun =</span> fun, <span class="dt">control =</span> ctrl)</a>
 <a class="sourceLine" id="cb15-3" data-line-number="3">## Computing y column(s) for design. Not provided.</a>
-<a class="sourceLine" id="cb15-4" data-line-number="4">## [mbo] 0: x=2.9 : y = 0.404 : 0.0 secs : initdesign</a>
-<a class="sourceLine" id="cb15-5" data-line-number="5">## [mbo] 0: x=0.95 : y = 0.793 : 0.0 secs : initdesign</a>
-<a class="sourceLine" id="cb15-6" data-line-number="6">## [mbo] 0: x=9.8 : y = -1.14 : 0.0 secs : initdesign</a>
-<a class="sourceLine" id="cb15-7" data-line-number="7">## [mbo] 0: x=5.7 : y = -1.32 : 0.0 secs : initdesign</a>
-<a class="sourceLine" id="cb15-8" data-line-number="8">## [mbo] 1: x=1.62e-05 : y = 6.5e-08 : 0.0 secs : infill_ei</a>
-<a class="sourceLine" id="cb15-9" data-line-number="9">## [mbo] 2: x=1.63 : y = 1.27 : 0.0 secs : infill_ei</a>
-<a class="sourceLine" id="cb15-10" data-line-number="10">## [mbo] 3: x=1.89 : y = 1.31 : 0.0 secs : infill_ei</a>
-<a class="sourceLine" id="cb15-11" data-line-number="11">## [mbo] 4: x=1.79 : y = 1.31 : 0.0 secs : infill_ei</a>
-<a class="sourceLine" id="cb15-12" data-line-number="12">## [mbo] 5: x=1.84 : y = 1.31 : 0.0 secs : infill_ei</a>
-<a class="sourceLine" id="cb15-13" data-line-number="13">## [mbo] 6: x=2.03 : y = 1.28 : 0.0 secs : infill_ei</a>
-<a class="sourceLine" id="cb15-14" data-line-number="14">## [mbo] 7: x=1.82 : y = 1.31 : 0.0 secs : infill_ei</a>
-<a class="sourceLine" id="cb15-15" data-line-number="15">## [mbo] 8: x=1.86 : y = 1.31 : 0.0 secs : infill_ei</a>
-<a class="sourceLine" id="cb15-16" data-line-number="16">## [mbo] 9: x=1.83 : y = 1.31 : 0.0 secs : infill_ei</a>
+<a class="sourceLine" id="cb15-4" data-line-number="4">## [mbo] 0: x=1.83 : y = 1.31 : 0.0 secs : initdesign</a>
+<a class="sourceLine" id="cb15-5" data-line-number="5">## [mbo] 0: x=5.65 : y = -1.41 : 0.0 secs : initdesign</a>
+<a class="sourceLine" id="cb15-6" data-line-number="6">## [mbo] 0: x=9.98 : y = -1.66 : 0.0 secs : initdesign</a>
+<a class="sourceLine" id="cb15-7" data-line-number="7">## [mbo] 0: x=2.71 : y = 0.694 : 0.0 secs : initdesign</a>
+<a class="sourceLine" id="cb15-8" data-line-number="8">## [mbo] 1: x=1.03e-05 : y = 3.3e-08 : 0.0 secs : infill_ei</a>
+<a class="sourceLine" id="cb15-9" data-line-number="9">## [mbo] 2: x=1.44 : y = 1.19 : 0.0 secs : infill_ei</a>
+<a class="sourceLine" id="cb15-10" data-line-number="10">## [mbo] 3: x=1.73 : y = 1.3 : 0.0 secs : infill_ei</a>
+<a class="sourceLine" id="cb15-11" data-line-number="11">## [mbo] 4: x=1.97 : y = 1.29 : 0.0 secs : infill_ei</a>
+<a class="sourceLine" id="cb15-12" data-line-number="12">## [mbo] 5: x=1.88 : y = 1.31 : 0.0 secs : infill_ei</a>
+<a class="sourceLine" id="cb15-13" data-line-number="13">## [mbo] 6: x=1.8 : y = 1.31 : 0.0 secs : infill_ei</a>
+<a class="sourceLine" id="cb15-14" data-line-number="14">## [mbo] 7: x=1.85 : y = 1.31 : 0.0 secs : infill_ei</a>
+<a class="sourceLine" id="cb15-15" data-line-number="15">## [mbo] 8: x=1.82 : y = 1.31 : 0.0 secs : infill_ei</a>
+<a class="sourceLine" id="cb15-16" data-line-number="16">## [mbo] 9: x=1.84 : y = 1.31 : 0.0 secs : infill_ei</a>
 <a class="sourceLine" id="cb15-17" data-line-number="17">## [mbo] 10: x=1.84 : y = 1.31 : 0.0 secs : infill_ei</a>
 <a class="sourceLine" id="cb15-18" data-line-number="18">opt.state =<span class="st"> </span>res<span class="op">$</span>final.opt.state</a>
 <a class="sourceLine" id="cb15-19" data-line-number="19"><span class="kw">plot</span>(opt.state, <span class="dt">scale.panels =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
@@ -281,21 +281,21 @@
 <div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1">(<span class="dt">prop =</span> <span class="kw"><a href="../../reference/proposePoints.html">proposePoints</a></span>(opt.state))</a>
 <a class="sourceLine" id="cb16-2" data-line-number="2">## $prop.points</a>
 <a class="sourceLine" id="cb16-3" data-line-number="3">##            x</a>
-<a class="sourceLine" id="cb16-4" data-line-number="4">## 487 1.836319</a>
+<a class="sourceLine" id="cb16-4" data-line-number="4">## 900 1.836608</a>
 <a class="sourceLine" id="cb16-5" data-line-number="5">## </a>
 <a class="sourceLine" id="cb16-6" data-line-number="6">## $propose.time</a>
-<a class="sourceLine" id="cb16-7" data-line-number="7">## [1] 0.094</a>
+<a class="sourceLine" id="cb16-7" data-line-number="7">## [1] 0.211</a>
 <a class="sourceLine" id="cb16-8" data-line-number="8">## </a>
 <a class="sourceLine" id="cb16-9" data-line-number="9">## $prop.type</a>
 <a class="sourceLine" id="cb16-10" data-line-number="10">## [1] "infill_ei"</a>
 <a class="sourceLine" id="cb16-11" data-line-number="11">## </a>
 <a class="sourceLine" id="cb16-12" data-line-number="12">## $crit.vals</a>
 <a class="sourceLine" id="cb16-13" data-line-number="13">##               [,1]</a>
-<a class="sourceLine" id="cb16-14" data-line-number="14">## [1,] -4.518056e-05</a>
+<a class="sourceLine" id="cb16-14" data-line-number="14">## [1,] -4.900045e-05</a>
 <a class="sourceLine" id="cb16-15" data-line-number="15">## </a>
 <a class="sourceLine" id="cb16-16" data-line-number="16">## $crit.components</a>
-<a class="sourceLine" id="cb16-17" data-line-number="17">##             se     mean</a>
-<a class="sourceLine" id="cb16-18" data-line-number="18">## 1 0.0001131826 1.307619</a>
+<a class="sourceLine" id="cb16-17" data-line-number="17">##             se    mean</a>
+<a class="sourceLine" id="cb16-18" data-line-number="18">## 1 0.0001226682 1.30762</a>
 <a class="sourceLine" id="cb16-19" data-line-number="19">## </a>
 <a class="sourceLine" id="cb16-20" data-line-number="20">## $errors.model</a>
 <a class="sourceLine" id="cb16-21" data-line-number="21">## [1] NA</a>
@@ -316,31 +316,31 @@
 <a class="sourceLine" id="cb17-4" data-line-number="4">opt.state =<span class="st"> </span><span class="kw"><a href="../../reference/initSMBO.html">initSMBO</a></span>(<span class="dt">par.set =</span> ps, <span class="dt">design =</span> des, <span class="dt">control =</span> ctrl, <span class="dt">minimize =</span> <span class="ot">TRUE</span>, <span class="dt">noisy =</span> <span class="ot">FALSE</span>)</a>
 <a class="sourceLine" id="cb17-5" data-line-number="5">(<span class="dt">prop =</span> <span class="kw"><a href="../../reference/proposePoints.html">proposePoints</a></span>(opt.state))</a>
 <a class="sourceLine" id="cb17-6" data-line-number="6">## $prop.points</a>
-<a class="sourceLine" id="cb17-7" data-line-number="7">##               q v</a>
-<a class="sourceLine" id="cb17-8" data-line-number="8">## 844 -0.92029797 1</a>
-<a class="sourceLine" id="cb17-9" data-line-number="9">## 642  0.07998039 1</a>
-<a class="sourceLine" id="cb17-10" data-line-number="10">## 963 -0.99995339 2</a>
-<a class="sourceLine" id="cb17-11" data-line-number="11">## 447  1.99999879 0</a>
+<a class="sourceLine" id="cb17-7" data-line-number="7">##               q  v</a>
+<a class="sourceLine" id="cb17-8" data-line-number="8">## 206  1.01120376 -1</a>
+<a class="sourceLine" id="cb17-9" data-line-number="9">## 601 -0.99999462  1</a>
+<a class="sourceLine" id="cb17-10" data-line-number="10">## 229  1.99999651 -1</a>
+<a class="sourceLine" id="cb17-11" data-line-number="11">## 839  0.09192547  1</a>
 <a class="sourceLine" id="cb17-12" data-line-number="12">## </a>
 <a class="sourceLine" id="cb17-13" data-line-number="13">## $propose.time</a>
-<a class="sourceLine" id="cb17-14" data-line-number="14">## [1] 0.083 0.087 0.096 0.086</a>
+<a class="sourceLine" id="cb17-14" data-line-number="14">## [1] 0.232 0.236 0.240 0.240</a>
 <a class="sourceLine" id="cb17-15" data-line-number="15">## </a>
 <a class="sourceLine" id="cb17-16" data-line-number="16">## $prop.type</a>
 <a class="sourceLine" id="cb17-17" data-line-number="17">## [1] "infill_ei" "infill_ei" "infill_ei" "infill_ei"</a>
 <a class="sourceLine" id="cb17-18" data-line-number="18">## </a>
 <a class="sourceLine" id="cb17-19" data-line-number="19">## $crit.vals</a>
-<a class="sourceLine" id="cb17-20" data-line-number="20">##             [,1]</a>
-<a class="sourceLine" id="cb17-21" data-line-number="21">## [1,] -0.24670322</a>
-<a class="sourceLine" id="cb17-22" data-line-number="22">## [2,] -0.14032897</a>
-<a class="sourceLine" id="cb17-23" data-line-number="23">## [3,] -0.07620927</a>
-<a class="sourceLine" id="cb17-24" data-line-number="24">## [4,] -0.05269038</a>
+<a class="sourceLine" id="cb17-20" data-line-number="20">##            [,1]</a>
+<a class="sourceLine" id="cb17-21" data-line-number="21">## [1,] -0.2222118</a>
+<a class="sourceLine" id="cb17-22" data-line-number="22">## [2,] -0.1981637</a>
+<a class="sourceLine" id="cb17-23" data-line-number="23">## [3,] -0.1819547</a>
+<a class="sourceLine" id="cb17-24" data-line-number="24">## [4,] -0.1161587</a>
 <a class="sourceLine" id="cb17-25" data-line-number="25">## </a>
 <a class="sourceLine" id="cb17-26" data-line-number="26">## $crit.components</a>
 <a class="sourceLine" id="cb17-27" data-line-number="27">##          se      mean</a>
-<a class="sourceLine" id="cb17-28" data-line-number="28">## 1 0.4996289 0.4114801</a>
-<a class="sourceLine" id="cb17-29" data-line-number="29">## 2 0.1836356 0.3909594</a>
-<a class="sourceLine" id="cb17-30" data-line-number="30">## 3 0.1156264 0.4487536</a>
-<a class="sourceLine" id="cb17-31" data-line-number="31">## 4 0.4739049 0.8999264</a>
+<a class="sourceLine" id="cb17-28" data-line-number="28">## 1 0.4273212 0.4049324</a>
+<a class="sourceLine" id="cb17-29" data-line-number="29">## 2 0.4905439 0.4950896</a>
+<a class="sourceLine" id="cb17-30" data-line-number="30">## 3 0.3201713 0.4031498</a>
+<a class="sourceLine" id="cb17-31" data-line-number="31">## 4 0.1613512 0.4142050</a>
 <a class="sourceLine" id="cb17-32" data-line-number="32">## </a>
 <a class="sourceLine" id="cb17-33" data-line-number="33">## $errors.model</a>
 <a class="sourceLine" id="cb17-34" data-line-number="34">## [1] NA NA NA NA</a>
