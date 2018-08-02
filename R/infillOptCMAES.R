@@ -41,7 +41,7 @@ infillOptCMAES = function(infill.crit, models, control, par.set, opt.path, desig
   cmaes.control = insert(list(stop.ons = c(cmaesr::getDefaultStoppingConditions())), cmaes.control)
 
   cmaes.control = insert(list(
-      restart.triggers = extractSubList(cmaesr::getDefaultStoppingConditions(), "name")), cmaes.control)
+      restart.triggers = extractSubList(cmaes.control$stop.ons, "code")), cmaes.control)
 
   # set number of restarts
   cmaes.control = insert(cmaes.control, list(max.restarts = control$infill.opt.restarts))
