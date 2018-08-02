@@ -38,27 +38,21 @@ infillOptCMAES = function(infill.crit, models, control, par.set, opt.path, desig
     vectorized = TRUE
   )
 
-  if (!("stop.ons" %in% names(cmaes.control))) {
-    cmaes.control = BBmisc::insert(cmaes.control, list(stop.ons = c(
-      cmaesr::getDefaultStoppingConditions()
-    )))
-  }
+  cmaes.control = insert(list(stop.ons = c(cmaesr::getDefaultStoppingConditions())), cmaes.control)
 
-  if (!("restart.triggers" %in% names(cmaes.control))) {
-    cmaes.control = BBmisc::insert(cmaes.control, list(
-      restart.triggers = BBmisc::extractSubList(cmaes.control$stop.ons, "code")
-    ))
-  }
+  cmaes.control = insert(list(
+      restart.triggers = extractSubList(cmaesr::getDefaultStoppingConditions(), "name")), cmaes.control)
 
   # set number of restarts
-  cmaes.control = BBmisc::insert(cmaes.control, list(max.restarts = control$infill.opt.restarts))
+  cmaes.control = insert(cmaes.control, list(max.restarts = control$infill.opt.restarts))
 
   # select first start point as currently best
-  # FIXME: Intelligent start point for multi crit
   if (control$n.objectives == 1L) {
     start.point = unlist(getOptPathEl(opt.path, getOptPathBestIndex(opt.path))$x)
     result = cmaesr::cmaes(fn, start.point = start.point, monitor = NULL, control = cmaes.control)
   } else {
+    # FIXME: Intelligent start point for multi crit
+    # Note: cmaesr can only optimize single crit. But we might call cmaes to optimize single component.
     result = cmaesr::cmaes(fn, monitor = NULL, control = cmaes.control)
   }
 
