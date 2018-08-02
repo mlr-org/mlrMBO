@@ -38,13 +38,13 @@ infillOptCMAES = function(infill.crit, models, control, par.set, opt.path, desig
     vectorized = TRUE
   )
 
-  if (!("stop.ons" %in% names(names(cmaes.control)))) {
+  if (!("stop.ons" %in% names(cmaes.control))) {
     cmaes.control = BBmisc::insert(cmaes.control, list(stop.ons = c(
       cmaesr::getDefaultStoppingConditions()
     )))
   }
 
-  if (!("restart.triggers " %in% names(names(cmaes.control)))) {
+  if (!("restart.triggers " %in% names(cmaes.control))) {
     cmaes.control = BBmisc::insert(cmaes.control, list(
       restart.triggers = BBmisc::extractSubList(getDefaultStoppingConditions(), "name")
     ))
