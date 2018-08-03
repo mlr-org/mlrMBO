@@ -83,6 +83,6 @@ You can get citation info via `citation("mlrMBO")` or copy the following BibTex 
 Some parts of the package were created as part of other publications.
 If you use these parts, please cite the relevant work appropriately:
 
-* Multi-point proposals, including the new multi-objective infill criteria: [MOI-MBO: Multiobjective Infill for Parallel Model-Based Optimization](https://dx.doi.org/10.1007/978-3-319-09584-4_17)
-* Multi-objective optimization: [Model-Based Multi-objective Optimization: Taxonomy, Multi-Point Proposal, Toolbox and Benchmark](https://dx.doi.org/10.1007/978-3-319-15934-8_5)
-* Multi-objective optimization with categorical variables using the random forest as a surrogate: [Multi-objective parameter configuration of machine learning algorithms using model-based optimization](https://dx.doi.org/10.1109/SSCI.2016.7850221)
+* Multi-point proposals, including the new multi-objective infill criteria: [MOI-MBO: Multiobjective Infill for Parallel Model-Based Optimization](https://doi.org/10.1007/978-3-319-09584-4_17)
+* Multi-objective optimization: [Model-Based Multi-objective Optimization: Taxonomy, Multi-Point Proposal, Toolbox and Benchmark](https://doi.org/10.1007/978-3-319-15934-8_5)
+* Multi-objective optimization with categorical variables using the random forest as a surrogate: [Multi-objective parameter configuration of machine learning algorithms using model-based optimization](https://doi.org/10.1109/SSCI.2016.7850221)
