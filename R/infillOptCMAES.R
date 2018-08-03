@@ -57,7 +57,6 @@ infillOptCMAES = function(infill.crit, models, control, par.set, opt.path, desig
   }
 
   # all CMA-ES runs failed. Therefore we sample a random point and warn
-  res = NULL
   if (is.infinite(result$best.fitness)) {
     warningf("Infill optimizer CMA-ES crashed. Random point generated instead.")
     res = t(sampleValue(par.set))
