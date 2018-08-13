@@ -123,7 +123,7 @@
 <div id="infill-criteria-for-noisy-optimization" class="section level2">
 <h2 class="hasAnchor">
 <a href="#infill-criteria-for-noisy-optimization" class="anchor"></a>Infill criteria for noisy optimization</h2>
-<p>Like always let’s start with the function we want to optimize, but this time it will be noisy. Note that Kriging requires heteroscedasticity but slight dependencies of the variance on the <span class="math inline">\(\boldsymbol{x}\)</span> can be acceptable like in the following example:</p>
+<p>Like always let’s start with the function we want to optimize, but this time it will be noisy. Note that Kriging requires homoscedasticity but slight dependencies of the variance on the <span class="math inline">\(\boldsymbol{x}\)</span> can be acceptable like in the following example:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">library</span>(mlrMBO)</a>
 <a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw">library</span>(ggplot2)</a>
 <a class="sourceLine" id="cb1-3" data-line-number="3">fun =<span class="st"> </span><span class="cf">function</span>(x) {</a>
