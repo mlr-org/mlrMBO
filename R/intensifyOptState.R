@@ -119,7 +119,7 @@ distributeOCBA = function(ds, budget) {
   # TODO: until now only minimization possible 
   tbudget = budget + sum(ds$runs)
   
-  # search for the best and second-best dsign
+  # search for the best and second-best design
   b = order(ds$y)[1]
   or = order(ds$y)[2:nds]
   s = or[ds[or, ]$ysd > 0][1]
@@ -131,6 +131,7 @@ distributeOCBA = function(ds, budget) {
   
   # calculate ratios
   tmp = (ds[b, ]$y - ds[s, ]$y) / (ds[b, ]$y - ds[- c(s, b), ]$y)
+  tmp[!is.finite(tmp)] = min(tmp[is.finite(tmp)], 10e-10, na.rm = TRUE)
   ratio[- c(s, b)] = tmp^2 * ds[- c(s, b), ]$ysd^2 / ds[s, ]$ysd^2
 
   # numerically ysd is sometimes 0 (in fact, this has prob. 0 in the noisy case)
@@ -167,6 +168,7 @@ distributeOCBA = function(ds, budget) {
 }
 
 roundPreserveSum = function(x, digits = 0) {
+  x[!is.finite(x)] = 0 # happens because of 0 / 0 and should be 0
   up = 10 ^ digits
   x = x * up
   y = floor(x)
