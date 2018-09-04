@@ -101,3 +101,20 @@ makeMBOTerminationMaxEvals = function(max.evals) {
     return(list(term = term, message = message, code = "term.feval", progress = (evals-init.evals) / (max.evals-init.evals)))
   }
 }
+
+
+# @title
+# Time budget for identification condition.
+#
+# @param time.budget [numeric(1)]
+#   Time budget in seconds.
+makeMBOTerminationIdentificationMaxBudget = function(time.budget) {
+  assertNumber(time.budget, na.ok = FALSE)
+  force(time.budget)
+  function(opt.state) {
+    time.used = as.numeric(getOptStateTimeUsedIdentification(opt.state), units = "secs")
+    term = (time.used > time.budget)
+    message = if (!term) NA_character_ else sprintf("Time budged for identification %f reached.", time.budget)
+    return(list(term = term, message = message, code = "term.time", progress = time.used / time.budget))
+  }
+}

@@ -25,6 +25,10 @@
 #'   This needs to be larger than 1, since OCBA requires an initial variance estimate at each point.
 #' @param instance.aggregation [\code{function}]\cr
 #'   Should data be aggregated per instance? If yes, a function (e. g. mean) needs to be specified.  
+#' @param identification.pcs [\code{numeric(1)}]\cr
+#'   Minimum probability of correct selection. 
+#'   If an identification budget is set, the algorithm spends this to achieve a minimum probability of correct selection of the final point.
+#'   Defaults to \code{0.7}.
 #' @return [\code{\link{MBOControl}}].
 #' @family MBOControl
 #' @export
@@ -36,7 +40,8 @@ setMBOControlNoisy = function(control,
   self.replicating = NULL,
   incumbent.nchallengers = NULL, 
   ocba.budget = NULL,
-  ocba.initial = NULL) {
+  ocba.initial = NULL,
+  identification.pcs = NULL) {
 
   assertClass(control, "MBOControl")
   control$noisy.method = coalesce(method, control$noisy.method, "fixed")
@@ -45,9 +50,10 @@ setMBOControlNoisy = function(control,
   control$noisy.self.replicating = assertFlag(self.replicating, null.ok = TRUE, na.ok = FALSE) %??% control$noisy.self.replicating %??% FALSE
   control$noisy.instance.param = assertString(instance.param, null.ok = TRUE, na.ok = TRUE) %??% control$noisy.instance.param %??% ifelse(control$noisy.self.replicating, "noisy.repl", NA_character_)
   control$noisy.instance.aggregation = assertClass(instance.aggregation, "function", null.ok = TRUE) %??% control$noisy.instance.aggregation 
-  control$noisy.ocba.budget = assertInt(ocba.budget, lower = 1L, null.ok = TRUE, na.ok = FALSE) %??% control$noisy.ocba.budget %??% 10L
+  control$noisy.ocba.budget = assertInt(ocba.budget, lower = 1L, null.ok = TRUE, na.ok = FALSE) %??% control$noisy.ocba.budget %??% 3L
   control$noisy.ocba.initial = assertInt(ocba.initial, lower = 2L, null.ok = TRUE, na.ok = FALSE) %??% control$noisy.ocba.initial %??% 3L
   control$noisy.incumbent.nchallengers = assertInt(incumbent.nchallengers, lower = 0L, null.ok = TRUE, na.ok = FALSE) %??% control$noisy.incumbent.nchallengers %??% 0L
+  control$noisy.identification.pcs = assertNumeric(identification.pcs, lower = 0, upper = 1, null.ok = TRUE) %??% control$noisy.identification.pcs %??% 0.7
 
   if (control$noisy.self.replicating && control$noisy.instance.param != "noisy.repl") {
     stop("You can not change the instance.param for self replicating functions.")

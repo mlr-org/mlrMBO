@@ -34,6 +34,8 @@ mboTemplate.OptState = function(obj) {
       was satisfied right after the creation of the initial design!", terminate$message)
     return(opt.state)
   }
+
+  # optimization phase
   repeat {
     prop = proposePoints(opt.state)
     evalProposedPoints.OptState(opt.state, prop)
@@ -46,6 +48,13 @@ mboTemplate.OptState = function(obj) {
     if (terminate$term) {
       break
     }
+  }
+
+  # identification phase
+  identify = getOptStateIdentification(opt.state)
+  if (identify) {
+    setOptStateIdentificationStarttime(opt.state)
+    identifyFinalPoints(opt.state) 
   }
   opt.state
 }

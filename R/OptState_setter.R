@@ -41,6 +41,12 @@ setOptStateLoopStarttime = function(opt.state) {
   invisible()
 }
 
+setOptStateIdentificationStarttime = function(opt.state) {
+  opt.state$identification.starttime = Sys.time()
+  opt.state$identification.time.used = 0L
+  invisible()
+}
+
 setOptStateTimeUsed = function(opt.state, time.used = NULL, time.add = NULL) {
   if (!is.null(time.used)) {
     opt.state$time.used = time.used
@@ -62,5 +68,17 @@ setOptStateState = function(opt.state, state) {
 setOptStateProgress = function(opt.state, progress) {
   assertNumber(progress, null.ok = TRUE)
   opt.state$progress = progress
+  invisible()
+}
+
+setOptStateTimeUsedIdentification = function(opt.state, time.used = NULL, time.add = NULL) {
+  if (!is.null(time.used)) {
+    opt.state$identification.time.used = time.used
+  } else if (!is.null(time.add)) {
+    opt.state$identification.time.used = getOptStateTimeUsedIdentification(opt.state) + time.add
+  } else {
+    opt.state$identification.time.used = getOptStateTimeUsedIdentification(opt.state) + difftime(Sys.time(), getOptStateStartTimeIdentification(opt.state), units = "secs")
+    setOptStateIdentificationStarttime(opt.state)
+  }
   invisible()
 }

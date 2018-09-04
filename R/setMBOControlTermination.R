@@ -36,6 +36,10 @@
 #'   The default is \code{NULL} which means, that the first supplied argument is taken, following the order of the function signature.
 #'   Other values can be \code{"iters"}, \code{"time.budget"}, etc.\cr
 #'   If you want to to use it together with a criterion you supplied in \code{more.termination.conds}, \code{more.termination.conds} has to be a named list and the function further has to return a list element \code{progress} with values between 0 and 1.
+#' @param identification.time.budget [\code{integer(1)} | NULL] \cr
+#'   Time budget for identification in seconds. This budget is put on top to the runtime budget and 
+#'   used for final identification of the best point in the noisy case. Note that this doesn't make sense if the function is not noisy.
+#'   The default \code{NULL} means: there is no budget spent for final identification.
 #' @return [\code{\link{MBOControl}}].
 #' @family MBOControl
 #' @export
@@ -61,12 +65,14 @@
 #' res = mbo(fn, control = ctrl)
 #' print(res)
 setMBOControlTermination = function(control,
-  iters = NULL, time.budget = NULL, exec.time.budget = NULL, target.fun.value = NULL, max.evals = NULL, more.termination.conds = list(), use.for.adaptive.infill = NULL) {
+  iters = NULL, time.budget = NULL, exec.time.budget = NULL, target.fun.value = NULL, max.evals = NULL, more.termination.conds = list(), use.for.adaptive.infill = NULL,
+  identification.time.budget = NULL, identification.evals = NULL) {
 
   assertList(more.termination.conds)
   assertCharacter(use.for.adaptive.infill, null.ok = TRUE)
 
   stop.conds = more.termination.conds
+  stop.conds.identification = list()
 
   if (is.null(iters) && is.null(time.budget) && is.null(exec.time.budget) && is.null(max.evals) && length(stop.conds) == 0L) {
     stopf("You need to specify a maximal number of iteration, a time budget or at least
@@ -95,6 +101,13 @@ setMBOControlTermination = function(control,
     stop.conds = c(stop.conds, max.evals = makeMBOTerminationMaxEvals(max.evals))
   }
 
+  if (!is.null(identification.time.budget)) {
+    stop.conds.identification = c(stop.conds.identification, time.budget = makeMBOTerminationIdentificationMaxBudget(identification.time.budget))
+  }
+
+  if (!is.null(identification.evals)) {
+    stop.conds.identification = c(stop.conds.identification, max.evals = makeMBOTerminationMaxEvals(identification.evals))
+  }
 
   # sanity check termination conditions
   lapply(stop.conds, function(stop.on) {
@@ -109,6 +122,7 @@ setMBOControlTermination = function(control,
   }
 
   control$stop.conds = stop.conds
+  control$stop.conds.identification = stop.conds.identification
 
   # store stuff in control object since it is needed internally
   control$iters = coalesce(iters, control$iters, Inf)
@@ -116,6 +130,7 @@ setMBOControlTermination = function(control,
   control$exec.time.budget = coalesce(exec.time.budget, control$exec.time.budget, Inf)
   control$max.evals = coalesce(max.evals, Inf)
   control$use.for.adaptive.infill = use.for.adaptive.infill
+  control$identification.time.budget = coalesce(identification.time.budget, control$identification.time.budget, 0L)
 
   return(control)
 }

@@ -112,7 +112,7 @@ intensifyOCBA = function(opt.state) {
 }
 
 
-distributeOCBA = function(ds, budget) {
+distributeOCBA = function(ds, budget = 3L) {
 
   nds = nrow(ds)
 
