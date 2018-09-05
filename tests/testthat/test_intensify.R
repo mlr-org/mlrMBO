@@ -38,18 +38,18 @@ test_that("mbo works with ocba replication strategy", {
 
 	ctrl = makeMBOControl()
 	ctrl = setMBOControlTermination(ctrl, iters = 5L)
-	ctrl = setMBOControlNoisy(ctrl, method = "ocba", ocba.budget = 12L, ocba.initial = 3L)
+	ctrl = setMBOControlNoisy(ctrl, method = "ocba", ocba.budget = 3L, ocba.initial = 2L)
 
 	or = mbo(fun, control = ctrl)
 	opdf = as.data.frame(or$opt.path)
 
 	# in each iteration we do 12L replications
 	opdfs = setDT(opdf)[, .(N = sum(prop.type == "OCBA")), by = dob]
-	expect_true(all(opdfs[opdfs$dob > 0, "N"] == 12L))
+	expect_true(all(opdfs[opdfs$dob > 0, "N"] == 3L))
 
 	# each point is evaluated 3L times at least
 	opdfs = setDT(opdf)[, .N, by = "x"]
-	expect_true(all(opdfs$N >= 3L))
+	expect_true(all(opdfs$N >= 2L))
 
 })
 
