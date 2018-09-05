@@ -43,7 +43,6 @@ setOptStateLoopStarttime = function(opt.state) {
 
 setOptStateIdentificationStarttime = function(opt.state) {
   opt.state$identification.starttime = Sys.time()
-  opt.state$identification.time.used = 0L
   invisible()
 }
 

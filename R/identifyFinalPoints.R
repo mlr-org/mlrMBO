@@ -1,18 +1,18 @@
 identifyFinalPoints = function(opt.state, min.pcs = NULL, time.budget = NULL) {
   
-  min.pcs = min.pcs %??% control$noisy.identification.pcs
-
   # some initialization
   opt.problem = getOptStateOptProblem(opt.state)
   control = getOptProblemControl(opt.problem)
   par.set = getOptProblemParSet(opt.problem)
-
   op = as.data.table(getOptStateOptPath(opt.state))
   par.names = colnames(op)[1:(which(colnames(op) == "y") - 1)] #FIXME: This sucks
- 
+  min.pcs = min.pcs %??% getOptStatePCS(opt.state)
+
   # calculate summary of the design 
   ds = getOptPathSummary(opt.state, par.names)
   nds = nrow(ds)
+
+  # set start time for identification here 
 
   # make sure that initially, each point is evaluated at least minrep times 
   xinit = rep(seq_len(nds), pmax(2 - ds$runs, 0))
@@ -21,28 +21,41 @@ identifyFinalPoints = function(opt.state, min.pcs = NULL, time.budget = NULL) {
   setOptStateTimeUsedIdentification(opt.state)
   terminate = getOptStateTerminationIdentification(opt.state)
 
-  while(!terminate$term) {
-    prop = proposePoints(opt.state)
-    evalProposedPoints.OptState(opt.state, prop)
-    finalizeMboLoop(opt.state)
-    intensifyOptState(opt.state)
-    ds = getOptPathSummary(opt.state, par.names)
-    pcs = calculatePCS(ds)
-    while (pcs < min.pcs && !terminate$term) {
-      opt.state = intensifyOCBA(opt.state)
+  repeat {
+    pcs = calculatePCS(opt.state)
+    while(pcs < min.pcs && !terminate$term) {
       ds = getOptPathSummary(opt.state, par.names)
-      pcs = calculatePCS(ds)
+      add = distributeOCBA(ds, budget = 3)
+      reps = rep(seq_len(nds), add)
+      replicatePoint(opt.state, x = ds[reps, ..par.names], type = paste("identification"))
+      pcs = calculatePCS(opt.state)
       setOptStateTimeUsedIdentification(opt.state)
       terminate = getOptStateTerminationIdentification(opt.state)
+      showInfo(getOptProblemShowInfo(opt.problem), "[mbo] identification: P(CS) %.3f / %.3f", pcs, min.pcs)
     }
+
+    if(terminate$term)
+      break
+
+    setOptStateTimeUsedIdentification(opt.state)
+    terminate = getOptStateTerminationIdentification(opt.state)
+
+    showInfo(getOptProblemShowInfo(opt.problem), "[mbo] PCS reached: new point is added")
+    prop = proposePoints(opt.state)
+    evalProposedPoints.OptState(opt.state, prop)
+    intensifyOptState(opt.state)
+    finalizeMboLoop(opt.state)
   }
   return(opt.state)
 }
 
 
-calculatePCS = function(ds, i = NULL) {
+calculatePCS = function(opt.state, i = NULL) {
   # calculate the (approximate) probability of correct selection
   # best observed design
+  op = as.data.table(getOptStateOptPath(opt.state))
+  par.names = colnames(op)[1:(which(colnames(op) == "y") - 1)] #FIXME: This sucks
+  ds = getOptPathSummary(opt.state, par.names)
 
   if (is.null(i)) {
   	  ds = ds[order(ds$y), ]
