@@ -66,7 +66,7 @@
 #' print(res)
 setMBOControlTermination = function(control,
   iters = NULL, time.budget = NULL, exec.time.budget = NULL, target.fun.value = NULL, max.evals = NULL, more.termination.conds = list(), use.for.adaptive.infill = NULL,
-  identification.time.budget = NULL, identification.evals = NULL) {
+  identification.time.budget = NULL) {
 
   assertList(more.termination.conds)
   assertCharacter(use.for.adaptive.infill, null.ok = TRUE)
@@ -103,10 +103,6 @@ setMBOControlTermination = function(control,
 
   if (!is.null(identification.time.budget)) {
     stop.conds.identification = c(stop.conds.identification, time.budget = makeMBOTerminationIdentificationMaxBudget(identification.time.budget))
-  }
-
-  if (!is.null(identification.evals)) {
-    stop.conds.identification = c(stop.conds.identification, max.evals = makeMBOTerminationMaxEvals(identification.evals))
   }
 
   # sanity check termination conditions

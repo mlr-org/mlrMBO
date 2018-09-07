@@ -60,17 +60,12 @@ calculatePCS = function(opt.state) {
   par.names = colnames(op)[1:(which(colnames(op) == "y") - 1)] #FIXME: This sucks
   ds = getOptPathSummary(opt.state, par.names)
 
-  if (is.null(i)) {
-  	  ds = ds[order(ds$y), ]
-  } else {
-  	  ds = ds[c(i, setdiff(1:nrow(ds), i)), ]
-  }
-
+  ds = ds[order(ds$y), ]
   b = 1
 
   # mean anc covariance for vector (y1 - yb, y2 - yb, ..., yn - yb)
-  vf = rep(1, nrow(ds) - 1) 
-  trafo.mat = cbind(vf, diag(- vf)) # transformation matrix A
+  # vf = rep(1, nrow(ds) - 1) 
+  # trafo.mat = cbind(vf, diag(- vf)) # transformation matrix A
 
   m = ds[b, ]$y - ds[- b, ]$y
 
