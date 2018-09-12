@@ -37,7 +37,7 @@ test_that("final OCBA identification works with pcs constraint", {
   )
 
   ctrl = makeMBOControl()
-  ctrl = setMBOControlTermination(ctrl, time.budget = 2L, identification.time.budget = 5L)
+  ctrl = setMBOControlTermination(ctrl, time.budget = 2L, identification.time.budget = 10000L)
   ctrl = setMBOControlNoisy(ctrl, method = "ocba", ocba.initial = 2L, ocba.budget = 0L, identification.pcs = 0.01)
 
   or = mbo(fun, control = ctrl, show.info = TRUE)

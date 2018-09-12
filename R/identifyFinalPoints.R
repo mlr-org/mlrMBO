@@ -21,34 +21,21 @@ identifyFinalPoints = function(opt.state, min.pcs = NULL, time.budget = NULL) {
   setOptStateTimeUsedIdentification(opt.state)
   terminate = getOptStateTerminationIdentification(opt.state)
 
-  repeat {
-    pcs = calculatePCS(opt.state)
-    while(pcs < min.pcs) {
+  pcs = calculatePCS(opt.state)
+  while(pcs < min.pcs) {
       ds = getOptPathSummary(opt.state, par.names)
       add = distributeOCBA(ds, budget = 3)
       reps = rep(seq_len(nrow(ds)), add)
       replicatePoint(opt.state, x = ds[reps, ..par.names], type = paste("identification"))
-      pcs = calculatePCS(opt.state)
       setOptStateTimeUsedIdentification(opt.state)
       terminate = getOptStateTerminationIdentification(opt.state)
       showInfo(getOptProblemShowInfo(opt.problem), "[mbo] identification: P(CS) %.3f / %.3f", pcs, min.pcs)
+      pcs = calculatePCS(opt.state)
 
       if(terminate$term)
         break
-    }
-
-    if(terminate$term)
-      break
-
-    setOptStateTimeUsedIdentification(opt.state)
-    terminate = getOptStateTerminationIdentification(opt.state)
-
-    showInfo(getOptProblemShowInfo(opt.problem), "[mbo] PCS reached: new point is added")
-    prop = proposePoints(opt.state)
-    evalProposedPoints.OptState(opt.state, prop)
-    intensifyOptState(opt.state)
-    finalizeMboLoop(opt.state)
   }
+
   return(opt.state)
 }
 
