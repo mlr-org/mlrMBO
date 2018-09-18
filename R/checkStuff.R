@@ -131,11 +131,5 @@ checkStuff = function(fun, design, learner, control) {
       stopf("For multi-objective 'mspot' infil.opt must be set to 'nsga2'!")
   }
 
-  # multifidelity stuff
-
-  # propose point filtering
-  # FIXME: implement something that works for integer and discrte params
-  if (control$filter.proposed.points && hasDiscrete(par.set))
-    stop("Filtering proposed points currently not implemented for discrete parameters!")
   return(control)
 }

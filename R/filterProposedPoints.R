@@ -15,6 +15,8 @@ filterProposedPoints = function(prop, opt.state) {
   # prepare stuff
   n = nrow(prop$prop.points)
   design = getOptPathX(opt.path)
+  disc.params = getParamIds(filterParamsDiscrete(par.set), repeated = TRUE, with.nr = TRUE)
+
   if (control$multifid) {
     # we expect n == 1 for multifid!
     .multifid.lvl = prop$prop.points$.multifid.lvl
@@ -29,9 +31,14 @@ filterProposedPoints = function(prop, opt.state) {
   # look at min distance from i-point to current set (design + accepted)
   for (i in seq_len(n)) {
     pp = prop$prop.points[i, ]
-    min.dist = min(apply(design, 1L, calcMaxMetric, y = pp))
+    browser()
+    disc.pp = pp[, disc.params, drop = FALSE]
+    this.design = merge(design, disc.pp)
+    this.design = this.design[, names(this.design) %nin% disc.params, drop = FALSE]
+    this.pp = pp[, names(pp) %nin% disc.params, drop = FALSE]
+    min.dist = min(apply(this.design, 1L, calcMaxMetric, y = this.pp))
     # if too close, mark i-point, otherwise add it to set
-    if (min.dist < control$filter.proposed.points.tol)
+    if (is.na(min.dist) || min.dist < control$filter.proposed.points.tol)
       to.delete[i] = TRUE
     else
       design = rbind(design, pp)
