@@ -223,13 +223,8 @@ Further arguments passed to fitness function.</p></td>
 <span class='no'>des</span> <span class='kw'>=</span> <span class='fu'>generateDesign</span>(<span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>5L</span>, <span class='fu'>getParamSet</span>(<span class='no'>obj.fun</span>), <span class='kw'>fun</span> <span class='kw'>=</span> <span class='kw pkg'>lhs</span><span class='kw ns'>::</span><span class='no'><a href='http://www.rdocumentation.org/packages/lhs/topics/maximinLHS'>maximinLHS</a></span>)
 
 <span class='co'># start mbo</span>
-<span class='no'>res</span> <span class='kw'>=</span> <span class='fu'>mbo</span>(<span class='no'>obj.fun</span>, <span class='kw'>design</span> <span class='kw'>=</span> <span class='no'>des</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='no'>ctrl</span>)</div><div class='output co'>#&gt; <span class='message'>Loading required package: rgenoud</span></div><div class='output co'>#&gt; <span class='message'>##  rgenoud (Version 5.8-2.0, Build Date: 2018-04-03)</span>
-#&gt; <span class='message'>##  See http://sekhon.berkeley.edu/rgenoud for additional documentation.</span>
-#&gt; <span class='message'>##  Please cite software as:</span>
-#&gt; <span class='message'>##   Walter Mebane, Jr. and Jasjeet S. Sekhon. 2011.</span>
-#&gt; <span class='message'>##   ``Genetic Optimization Using Derivatives: The rgenoud package for R.''</span>
-#&gt; <span class='message'>##   Journal of Statistical Software, 42(11): 1-26. </span>
-#&gt; <span class='message'>##</span></div><div class='input'>
+<span class='no'>res</span> <span class='kw'>=</span> <span class='fu'>mbo</span>(<span class='no'>obj.fun</span>, <span class='kw'>design</span> <span class='kw'>=</span> <span class='no'>des</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='no'>ctrl</span>)
+
 <span class='fu'>print</span>(<span class='no'>res</span>)</div><div class='output co'>#&gt; Recommended parameters:
 #&gt; x=-0.0306,-0.0169
 #&gt; Objective: y = -0.016
@@ -237,23 +232,23 @@ Further arguments passed to fitness function.</p></td>
 #&gt; Optimization path
 #&gt; 5 + 3 entries in total, displaying last 10 (or less):
 #&gt;            x1          x2           y dob eol error.message exec.time
-#&gt; 1 -0.96769994 -0.26626679  0.67331156   0  NA          &lt;NA&gt;         0
-#&gt; 2  0.44030435  0.66288338  0.80926007   0  NA          &lt;NA&gt;         0
-#&gt; 3 -0.19704022 -0.01344260  0.02538265   0  NA          &lt;NA&gt;         0
-#&gt; 4 -0.40088904  0.31590690  0.47139064   0  NA          &lt;NA&gt;         0
-#&gt; 5  0.89315279 -0.69099140  0.16042044   0  NA          &lt;NA&gt;         0
-#&gt; 6 -0.03064098 -0.01689882 -0.01595915   1  NA          &lt;NA&gt;         0
-#&gt; 7  0.74929441 -0.04045232  0.52100082   2  NA          &lt;NA&gt;         0
-#&gt; 8 -0.92334595 -0.01841571  0.83415307   3  NA          &lt;NA&gt;         0
+#&gt; 1 -0.96769994 -0.26626679  0.67331156   0  NA          &lt;NA&gt;     0.001
+#&gt; 2  0.44030435  0.66288338  0.80926007   0  NA          &lt;NA&gt;     0.000
+#&gt; 3 -0.19704022 -0.01344260  0.02538265   0  NA          &lt;NA&gt;     0.000
+#&gt; 4 -0.40088904  0.31590690  0.47139064   0  NA          &lt;NA&gt;     0.000
+#&gt; 5  0.89315279 -0.69099140  0.16042044   0  NA          &lt;NA&gt;     0.000
+#&gt; 6 -0.03064098 -0.01689882 -0.01595915   1  NA          &lt;NA&gt;     0.000
+#&gt; 7  0.74929441 -0.04045232  0.52100082   2  NA          &lt;NA&gt;     0.000
+#&gt; 8 -0.92334595 -0.01841571  0.83415307   3  NA          &lt;NA&gt;     0.000
 #&gt;            cb error.model train.time  prop.type propose.time        se
 #&gt; 1          NA        &lt;NA&gt;         NA initdesign           NA        NA
 #&gt; 2          NA        &lt;NA&gt;         NA initdesign           NA        NA
 #&gt; 3          NA        &lt;NA&gt;         NA initdesign           NA        NA
 #&gt; 4          NA        &lt;NA&gt;         NA initdesign           NA        NA
 #&gt; 5          NA        &lt;NA&gt;         NA initdesign           NA        NA
-#&gt; 6 -0.07233364        &lt;NA&gt;      0.072  infill_cb        0.155 0.1763127
-#&gt; 7 -0.17097244        &lt;NA&gt;      0.044  infill_cb        0.162 0.1632562
-#&gt; 8 -0.08533772        &lt;NA&gt;      0.045  infill_cb        0.136 0.1050546
+#&gt; 6 -0.07233364        &lt;NA&gt;      0.101  infill_cb        0.210 0.1763127
+#&gt; 7 -0.17097244        &lt;NA&gt;      0.071  infill_cb        0.273 0.1632562
+#&gt; 8 -0.08533772        &lt;NA&gt;      0.602  infill_cb        0.231 0.1050546
 #&gt;           mean lambda
 #&gt; 1           NA     NA
 #&gt; 2           NA     NA

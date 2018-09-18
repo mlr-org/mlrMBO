@@ -7,8 +7,8 @@ exampleRunMultiObj objects.}
 \usage{
 renderExampleRunPlot(object, iter, densregion = TRUE, se.factor = 1,
   single.prop.point.plots = FALSE, xlim = NULL, ylim = NULL,
-  point.size = 3, line.size = 1, trafo = NULL, colors = c("red",
-  "blue", "green"), ...)
+  point.size = 3, line.size = 1, trafo = NULL, colors = c("red", "blue",
+  "green"), ...)
 }
 \arguments{
 \item{object}{[\code{function}]\cr
