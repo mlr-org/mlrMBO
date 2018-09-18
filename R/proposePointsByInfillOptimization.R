@@ -23,10 +23,6 @@ proposePointsByInfillOptimization = function(opt.state, par.set = NULL, control 
   iter = getOptStateLoop(opt.state)
   infill.crit.id = getMBOInfillCritId(control$infill.crit)
   progress = getOptStateProgress(opt.state)
-  #FIXME: maybe better do this in setMBOControlMultifid?
-  if (control$multifid) {
-    infill.crit.id = "multifid"
-  }
 
   n = control$propose.points
   prop.type = rep(paste0("infill_", infill.crit.id), n)
