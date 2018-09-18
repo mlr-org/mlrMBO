@@ -85,3 +85,4 @@ Other MBOControl: \code{\link{makeMBOControl}},
   \code{\link{setMBOControlMultiObj}},
   \code{\link{setMBOControlMultiPoint}}
 }
+\concept{MBOControl}
