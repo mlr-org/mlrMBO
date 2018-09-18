@@ -5,9 +5,10 @@
 \title{Set multipoint proposal options.}
 \usage{
 setMBOControlMultiPoint(control, method = NULL, cl.lie = NULL,
-  moimbo.objective = NULL, moimbo.dist = NULL, moimbo.selection = NULL,
-  moimbo.maxit = NULL, moimbo.sbx.eta = NULL, moimbo.sbx.p = NULL,
-  moimbo.pm.eta = NULL, moimbo.pm.p = NULL)
+  moimbo.objective = NULL, moimbo.dist = NULL,
+  moimbo.selection = NULL, moimbo.maxit = NULL,
+  moimbo.sbx.eta = NULL, moimbo.sbx.p = NULL, moimbo.pm.eta = NULL,
+  moimbo.pm.p = NULL)
 }
 \arguments{
 \item{control}{[\code{\link{MBOControl}}]\cr
@@ -90,3 +91,4 @@ Other MBOControl: \code{\link{makeMBOControl}},
   \code{\link{setMBOControlMultiObj}},
   \code{\link{setMBOControlTermination}}
 }
+\concept{MBOControl}
