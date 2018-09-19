@@ -33,7 +33,6 @@ filterProposedPoints = function(prop, opt.state) {
 
   for (i in seq_len(n)) {
     pp = prop$prop.points[i, ]
-    browser()
     min.dist = calcDistance(pp, design)
     trial = 0
     # min.dist can be NA for discrete only subspaces
@@ -43,8 +42,10 @@ filterProposedPoints = function(prop, opt.state) {
       trial = trial + 1
     }
     design = rbind(design, pp)
-    prop$prop.points[i, ] = pp
-    prop$prop.type[i] = "random_filter"
+    if (trial > 0) {
+      prop$prop.points[i, ] = pp
+      prop$prop.type[i] = "random_filter"
+    }
   }
 
   return(prop)

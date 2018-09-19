@@ -19,4 +19,26 @@ test_that("filter proposed points", {
   op = as.data.frame(res$opt.path)
   expect_true(all(op$prop.type[seq_row(testd.mixed)] != "random_filter"))
   expect_true(all(op$prop.type[-seq_row(testd.mixed)] == "random_filter"))
+
+  # more complicated case with dependencies
+  fun = function(x) {
+    if (x$method == "a") return(x$number)
+    if (x$cat == "Y") return(0.9)
+    return(0.1)
+  }
+  par.set = makeParamSet(
+    makeDiscreteParam("method", values = c("a", "b")),
+    makeNumericParam("number", lower = 0, upper = 1, requires = quote(method == "a")),
+    makeDiscreteParam("cat", values = c("Y", "Z"), requires = quote(method == "b"))
+  )
+  smoof.fun = makeSingleObjectiveFunction(
+    name = "mixed_example", fn = fun, par.set = par.set, has.simple.signature = FALSE
+  )
+  ctrl = makeMBOControl()
+  ctrl = setMBOControlTermination(ctrl, iters = 6L)
+  ctrl = setMBOControlInfill(ctrl, crit = crit.cb1, filter.proposed.points = TRUE, filter.proposed.points.tol = 0)
+  res = mbo(smoof.fun, control = ctrl, show.info = FALSE)
+  op = as.data.frame(res$opt.path)
+  expect_equal(sum(op$cat == "Y", na.rm = TRUE), 1)
+  expect_equal(sum(op$cat == "Z", na.rm = TRUE), 1)
 })
