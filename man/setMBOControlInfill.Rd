@@ -40,7 +40,7 @@ If \code{TRUE}, proposed points whose distance to design points or other current
 candidate points is smaller than \code{filter.proposed.points.tol}, are replaced by random points.
 If enabled, the column entry for \code{prop.type} is set to \dQuote{random_filter} in the resulting \code{opt.path},
 so you can see whether such a replacement happened.
-This does only work for numeric parameter sets without any discrete parameters.
+If the parameter set contains discrete values the distance will be calculated on the numeric subset of the design points that match the discrete values of the proposal.
 Default is \code{FALSE}.}
 
 \item{filter.proposed.points.tol}{[\code{numeric(1)}]\cr

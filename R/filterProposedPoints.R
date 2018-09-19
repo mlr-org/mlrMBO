@@ -23,17 +23,25 @@ filterProposedPoints = function(prop, opt.state) {
   # look at min distance from i-point to current set (design + accepted)
   for (i in seq_len(n)) {
     pp = prop$prop.points[i, ]
-    browser()
-    disc.pp = pp[, disc.params, drop = FALSE]
-    this.design = merge(design, disc.pp)
-    this.design = this.design[, names(this.design) %nin% disc.params, drop = FALSE]
-    this.pp = pp[, names(pp) %nin% disc.params, drop = FALSE]
-    min.dist = min(apply(this.design, 1L, calcMaxMetric, y = this.pp))
+
+    if (length(disc.params) > 0) {
+      # if we have discrete params subset the design to match the values of the discrete values in pp then calculate the distance on the numberic subset
+      disc.pp = pp[, disc.params, drop = FALSE]
+      this.design = merge(design, disc.pp)
+      this.design = this.design[, names(this.design) %nin% disc.params, drop = FALSE]
+      this.pp = pp[, names(pp) %nin% disc.params, drop = FALSE]
+      min.dist = min(apply(this.design, 1L, calcMaxMetric, y = this.pp))
+    } else {
+      min.dist = min(apply(design, 1L, calcMaxMetric, y = pp))
+    }
+
     # if too close, mark i-point, otherwise add it to set
-    if (is.na(min.dist) || min.dist < control$filter.proposed.points.tol)
+    # Note: min.dist can become NA if only discrete values are in the design (see above)
+    if (is.na(min.dist) || min.dist < control$filter.proposed.points.tol) {
       to.delete[i] = TRUE
-    else
+    } else {
       design = rbind(design, pp)
+    }
   }
 
   # for now replace removed design points with random points,
