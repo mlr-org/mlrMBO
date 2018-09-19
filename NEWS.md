@@ -2,7 +2,7 @@
 
 * Bugfix: `plot(opt.state)` now also works for Param Sets with transformations.
 * Bugfix: Infill optimization with CMAES now supports restarts.
-* Proposed points are filtered more reliable to avoid points too close to each other and also work for discrete parameter spaces.
+* Proposed points are filtered more reliable (if requested) to avoid points too close to each other and also work for discrete parameter spaces.
 
 # mlrMBO 1.1.2
 
