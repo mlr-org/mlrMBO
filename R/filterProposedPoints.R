@@ -17,13 +17,8 @@ filterProposedPoints = function(prop, opt.state) {
   design = getOptPathX(opt.path)
   disc.params = getParamIds(filterParamsDiscrete(par.set), repeated = TRUE, with.nr = TRUE)
 
-  calcMaxMetric = function(x, y) max(abs(x - y))
-  to.delete = rep(FALSE, n)
-
-  # look at min distance from i-point to current set (design + accepted)
-  for (i in seq_len(n)) {
-    pp = prop$prop.points[i, ]
-
+  calcDistance = function(pp, design) {
+    calcMaxMetric = function(x, y) max(abs(x - y))
     if (length(disc.params) > 0) {
       # if we have discrete params subset the design to match the values of the discrete values in pp then calculate the distance on the numberic subset
       disc.pp = pp[, disc.params, drop = FALSE]
@@ -34,25 +29,24 @@ filterProposedPoints = function(prop, opt.state) {
     } else {
       min.dist = min(apply(design, 1L, calcMaxMetric, y = pp))
     }
-
-    # if too close, mark i-point, otherwise add it to set
-    # Note: min.dist can become NA if only discrete values are in the design (see above)
-    if (is.na(min.dist) || min.dist < control$filter.proposed.points.tol) {
-      to.delete[i] = TRUE
-    } else {
-      design = rbind(design, pp)
-    }
   }
 
-  # for now replace removed design points with random points,
-  #  we leave all other data in prop like it is, we have prop.tye "random_filter"
-  n.replace = sum(to.delete)
-
-  if (n.replace > 0) {
-    # FIXME: we might want to do something smarter here. how about augmenting the current design?
-    prop$prop.points[to.delete, ] = generateRandomDesign(n.replace, par.set)
-    prop$prop.type[to.delete] = "random_filter"
+  for (i in seq_len(n)) {
+    pp = prop$prop.points[i, ]
+    browser()
+    min.dist = calcDistance(pp, design)
+    trial = 0
+    # min.dist can be NA for discrete only subspaces
+    while (is.na(min.dist) || min.dist < control$filter.proposed.points.tol && trial < 100) {
+      pp = generateRandomDesign(1, par.set)[1, ]
+      min.dist = calcDistance(pp, design)
+      trial = trial + 1
+    }
+    design = rbind(design, pp)
+    prop$prop.points[i, ] = pp
+    prop$prop.type[i] = "random_filter"
   }
 
   return(prop)
+
 }
