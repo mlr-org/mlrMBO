@@ -153,7 +153,7 @@ getOptStateIntensification = function(opt.state) {
 getOptStateIdentification = function(opt.state) {
   opt.problem = getOptStateOptProblem(opt.state)
   control = getOptProblemControl(opt.problem)
-  return(control$identification.time.budget > 0)
+  return(control$identification.time.budget > 0 | control$identification.max.evals > 0)
 }
 
 getOptStatePCS = function(opt.state) {

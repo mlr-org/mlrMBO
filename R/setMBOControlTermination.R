@@ -40,6 +40,10 @@
 #'   Time budget for identification in seconds. This budget is put on top to the runtime budget and 
 #'   used for final identification of the best point in the noisy case. Note that this doesn't make sense if the function is not noisy.
 #'   The default \code{NULL} means: there is no budget spent for final identification.
+#' @param identification.max.evals [\code{integer(1)} | NULL] \cr
+#'   Maximum number of evaluations performed for identification. This budget is put on top to the budget spent for optimization and 
+#'   used for final identification of the best point in the noisy case. Note that this doesn't make sense if the function is not noisy.
+#'   The default \code{NULL} means: there are no evaluations spent for final identification.
 #' @return [\code{\link{MBOControl}}].
 #' @family MBOControl
 #' @export
@@ -66,7 +70,7 @@
 #' print(res)
 setMBOControlTermination = function(control,
   iters = NULL, time.budget = NULL, exec.time.budget = NULL, target.fun.value = NULL, max.evals = NULL, more.termination.conds = list(), use.for.adaptive.infill = NULL,
-  identification.time.budget = NULL) {
+  identification.time.budget = NULL, identification.max.evals = NULL) {
 
   assertList(more.termination.conds)
   assertCharacter(use.for.adaptive.infill, null.ok = TRUE)
@@ -105,6 +109,10 @@ setMBOControlTermination = function(control,
     stop.conds.identification = c(stop.conds.identification, time.budget = makeMBOTerminationIdentificationMaxBudget(identification.time.budget))
   }
 
+  if (!is.null(identification.max.evals)) {
+    stop.conds.identification = c(stop.conds.identification, max.evals = makeMBOTerminationIdentificationMaxEvals(identification.max.evals))
+  }
+
   # sanity check termination conditions
   lapply(stop.conds, function(stop.on) {
     assertFunction(stop.on, args = "opt.state")
@@ -127,6 +135,7 @@ setMBOControlTermination = function(control,
   control$max.evals = coalesce(max.evals, Inf)
   control$use.for.adaptive.infill = use.for.adaptive.infill
   control$identification.time.budget = coalesce(identification.time.budget, control$identification.time.budget, 0L)
+  control$identification.max.evals = coalesce(identification.max.evals, control$identification.max.evals, 0L)
 
   return(control)
 }

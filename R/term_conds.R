@@ -118,3 +118,22 @@ makeMBOTerminationIdentificationMaxBudget = function(time.budget) {
     return(list(term = term, message = message, code = "term.time", progress = time.used / time.budget))
   }
 }
+
+
+# @title
+# Maximum evaluations for identification 
+#
+# @param time.budget [numeric(1)]
+#   Time budget in seconds.
+makeMBOTerminationIdentificationMaxEvals = function(max.evals) {
+  max.evals = asInt(max.evals, na.ok = FALSE, lower = 1L)
+  force(max.evals)
+  function(opt.state) {
+    opt.path = getOptStateOptPath(opt.state)
+    evals = getOptPathLength(opt.path)
+    id.evals = sum(as.data.frame(opt.path)$prop.type == "identification")
+    term = (id.evals > max.evals)
+    message = if (!term) NA_character_ else sprintf("Maximal number of function evaluations %i for identification reached.", max.evals)
+    return(list(term = term, message = message, code = "term.feval", progress = id.evals / max.evals))
+  }
+}

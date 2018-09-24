@@ -46,3 +46,24 @@ test_that("final OCBA identification works with pcs constraint", {
   pcs = mlrMBO:::calculatePCS(or$final.opt.state)
   expect_true(pcs > ctrl$noisy.identification.pcs)
 })
+
+
+test_that("identification works with budget constraint", {
+  ps = makeNumericParamSet("x", 1L, -3, 3)
+  fun = makeSingleObjectiveFunction(
+    fn = function(x) (x + 0.5)^2 + 5 * sin(3 * (x + 0.5)) + rnorm(1, sd = 2),
+    par.set = ps, 
+    noisy = TRUE
+  )
+
+  ctrl = makeMBOControl()
+  ctrl = setMBOControlTermination(ctrl, max.evals = 10L, identification.max.evals = 9L)
+  ctrl = setMBOControlNoisy(ctrl, method = "ocba", ocba.initial = 2L, ocba.budget = 0L, identification.pcs = 1)
+
+  or = mbo(fun, control = ctrl, show.info = TRUE)
+
+  # check if time works correctly 
+  ds = as.data.table(or$opt.path)
+  expect_true(sum(ds$prop.type == "identification") == 12L)
+})
+
