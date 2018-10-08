@@ -53,6 +53,7 @@ evalTargetFun.OptState = function(opt.state, xs, extras, xs.schedule.info = NULL
     smartParallelMap = evalScheduleSmartParallelMap,
     asyn = evalScheduleParallelMap,
     scheduleKnapsack = evalScheduleKnapsack,
+    advancedScheduling = evalAdvancedScheduling,
     evalScheduleParallelMap
   )
   
