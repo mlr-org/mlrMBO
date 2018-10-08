@@ -74,3 +74,62 @@ simpleGroupInfillCrit = function(points, opt.state, ...) {
 #   # cpu2 = c(110, 1, 160, 55)
 #   # ...
 # }
+
+proposePointsQKPCB = function(opt.state){
+  opt.problem = getOptStateOptProblem(opt.state)
+  control = getOptProblemControl(opt.problem)
+  
+  # returns as many points as specified
+  raw.points = proposePointsParallelCB(opt.state)
+  
+  propose.time = raw.points$propose.time[1]
+  raw.points$propose.time[1] = NA
+  
+  time.model = getOptStateTimeModel(opt.state)
+  time.prediction = predict(time.model, newdata = raw.points$prop.points)
+  predicted.time = getPredictionResponse(time.prediction)
+  predicted.time.se = getPredictionSE(time.prediction)
+  
+  # repair negative times
+  # replace negative times with smallest observed time or smallest postive predicted time
+  min.time = min(predicted.time[predicted.time > 0], getOptPathExecTimes(getOptStateOptPath(opt.state)), na.rm = TRUE)
+  predicted.time[predicted.time <= 0] = min.time
+
+  if(is.null(predicted.time.se))
+    predicted.time.se = rep(NA_real_, length(predicted.time))
+  
+  priorities = -raw.points$multipoint.cb.lambdas - min(-raw.points$multipoint.cb.lambdas) + 0.1
+  t.max = predicted.time[which.max(priorities)] + predicted.time.se[which.max(priorities)]
+  
+  if (control$schedule.cluster == "distance"){
+    priorities = distanceCluster(priorities = priorities, raw.points, opt.state = opt.state)
+    p.order = order(priorities, decreasing = TRUE)
+    occupied.time = 0
+    sel.points = rep(FALSE, length(priorities))
+    for (i in p.order){
+      if((predicted.time[i] + occupied.time) <= (t.max * control$schedule.nodes) && predicted.time[i] <= t.max){
+        sel.points[i] = TRUE
+        occupied.time = occupied.time + predicted.time[i]
+      }
+    }
+  } else {
+    predicted.time[predicted.time > t.max] = t.max * control$schedule.nodes + 1 # TODO more efficient solution
+    sel.points = greedyQKP(priorities, predicted.time, raw.points$prop.points,t.max * control$schedule.nodes)
+  }
+  res = list()
+  res$prop.points = raw.points$prop.points[sel.points,]
+  res$propose.time = raw.points$propose.time[sel.points]
+  res$train.time = raw.points$train.time[sel.points]
+  res$predicted.time = predicted.time[sel.points]
+  res$predicted.time.se = predicted.time.se[sel.points]
+  res$multipoint.cb.lambdas = raw.points$multipoint.cb.lambdas[sel.points]
+  res$crit.vals = raw.points$crit.vals[sel.points]
+  res$prop.type = raw.points$prop.type[sel.points]
+  res$errors.model = raw.points$errors.model[sel.points]
+  res$crit.components = raw.points$crit.components[sel.points,]
+  res$filter.replace = rep(FALSE,length(sel.points))
+  res$t.max = t.max
+  
+  res$propose.time[1] = propose.time
+  return(res)
+}
