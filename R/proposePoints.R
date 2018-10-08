@@ -33,6 +33,8 @@ proposePoints.OptState = function(opt.state){
       res = proposePointsInfillDistributed(opt.state)
     } else if (control$multipoint.method == "groupinfill") {
       res = proposePointsGroupInfill(opt.state)
+    } else if (control$multipoint.method == "groupQKP"){
+      res = proposePointsQKPCB(opt.state)
     }
   } else {
     if (control$multicrit.method == "parego") {
@@ -52,11 +54,12 @@ proposePoints.OptState = function(opt.state){
   if (!is.matrix(res$crit.vals))
     res$crit.vals = matrix(res$crit.vals, ncol = 1L)
 
-  if (control$filter.proposed.points) {
+  if (control$filter.proposed.points && !(control$multipoint.method == "groupQKP")) {
     res = filterProposedPoints(res, opt.state)
   }
 
-  if (control$schedule.method == "smartParallelMap"||control$schedule.method == "scheduleKnapsack") {
+  if (control$schedule.method == "smartParallelMap"||
+      control$schedule.method == "scheduleKnapsack") {
     time.model = getOptStateTimeModel(opt.state)
     time.prediction = predict(time.model, newdata = res$prop.points)
     res$predicted.time = getPredictionResponse(time.prediction)
