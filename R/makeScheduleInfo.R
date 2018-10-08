@@ -10,10 +10,16 @@ makeScheduleInfo = function(prop, opt.state) {
   } else if (control$multipoint.method == "cb" && control$schedule.priority == "balanced") {
     # highest priority for those with lambda close to desired lambda
     priorities =  -abs(log(prop$multipoint.cb.lambdas) - log(control$infill.crit.cb.lambda))
+  } else if (control$multipoint.method == "groupQKP"){
+    res = data.frame(
+      times = prop$predicted.time,
+      times.se = prop$predicted.time.se, 
+      t.max = prop$t.max)
+    return(res)
   } else if (control$schedule.priority == "infill"){
     # highest priority for those with lowest crit.val
     priorities = -prop$crit.vals
-  } else {
+  }else {
     stopf("Schedule Priority mehtod %s was not appliable!", control$schedule.priority)
   }
   
