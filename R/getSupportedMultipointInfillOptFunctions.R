@@ -6,5 +6,5 @@
 #' @return [\code{character}]
 #' @export
 getSupportedMultipointInfillOptFunctions = function() {
-  c("cl", "cb", "multicrit", "infilldistributed", "groupinfill")
+  c("cl", "cb", "multicrit", "infilldistributed", "groupinfill", "groupQKP")
 }
