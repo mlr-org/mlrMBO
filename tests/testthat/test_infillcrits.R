@@ -65,7 +65,7 @@ test_that("infill crits", {
   # we have converged and just waste time. we need to detect this somehow, or cope with it
   for (noisy in c(TRUE, FALSE)) {
     for (minimize in c(TRUE, FALSE)) {
-      crits = if (noisy) list(crit.aei, crit.eqi) else list(crit.mr, crit.se, crit.ei, crit.cb2)
+      crits = if (noisy) list(crit.aei, crit.eqi) else list(crit.mr, crit.se, crit.ei, crit.cb2, crit.poi)
       for (lrn in learners) {
         if (inherits(lrn, "regr.km"))
           lrn = setHyperPars(lrn, nugget.estim = noisy)
