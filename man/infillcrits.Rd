@@ -5,6 +5,7 @@
 \alias{makeMBOInfillCritMeanResponse}
 \alias{makeMBOInfillCritStandardError}
 \alias{makeMBOInfillCritEI}
+\alias{makeMBOInfillCritPOI}
 \alias{makeMBOInfillCritCB}
 \alias{makeMBOInfillCritAEI}
 \alias{makeMBOInfillCritEQI}
@@ -17,6 +18,8 @@ makeMBOInfillCritMeanResponse()
 makeMBOInfillCritStandardError()
 
 makeMBOInfillCritEI(se.threshold = 1e-06)
+
+makeMBOInfillCritPOI(se.threshold = 1e-06, epsilon = 0)
 
 makeMBOInfillCritCB(cb.lambda = NULL)
 

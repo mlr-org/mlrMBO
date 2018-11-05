@@ -102,4 +102,4 @@ crit.dib1 = makeMBOInfillCritDIB(cb.lambda = 1)
 #' @docType NULL
 #' @format NULL
 #' @keywords NULL
-crit.ei = makeMBOInfillCritPOI()
+crit.poi = makeMBOInfillCritPOI()
