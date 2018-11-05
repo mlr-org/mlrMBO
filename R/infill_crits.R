@@ -112,7 +112,7 @@ makeMBOInfillCritEI = function(se.threshold = 1e-6) {
 
 #' @export
 #' @rdname infillcrits
-makeMBOInfillCritPOI = function(se.threshold = 1e-6, epsilon = 0) {
+makeMBOInfillCritPOI = function(se.threshold = 1e-6) {
   assertNumber(se.threshold, lower = 1e-20)
   makeMBOInfillCrit(
     fun = function(points, models, control, par.set, designs, iter, progress, attributes = FALSE) {
