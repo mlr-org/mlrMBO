@@ -19,7 +19,7 @@ makeMBOInfillCritStandardError()
 
 makeMBOInfillCritEI(se.threshold = 1e-06)
 
-makeMBOInfillCritPOI(se.threshold = 1e-06, epsilon = 0)
+makeMBOInfillCritPOI(se.threshold = 1e-06)
 
 makeMBOInfillCritCB(cb.lambda = NULL)
 
