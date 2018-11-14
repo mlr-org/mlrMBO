@@ -86,3 +86,4 @@ Other MBOControl: \code{\link{makeMBOControl}},
   \code{\link{setMBOControlMultiPoint}},
   \code{\link{setMBOControlNoisy}}
 }
+\concept{MBOControl}

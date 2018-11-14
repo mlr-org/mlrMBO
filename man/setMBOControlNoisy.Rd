@@ -4,18 +4,11 @@
 \alias{setMBOControlNoisy}
 \title{Set multipoint proposal options.}
 \usage{
-setMBOControlNoisy(control, instances = NULL, instance.param = NULL,
-  self.replicating = NULL)
+setMBOControlNoisy(control, self.replicating)
 }
 \arguments{
 \item{control}{[\code{\link{MBOControl}}]\cr
 Control object for mbo.}
-
-\item{instances}{[\code{integer(1)}]\cr
-How many instances of one parameter will be calculated?}
-
-\item{instance.param}{[\code{character(1)}]\cr
-What is the name of the function param that defines the instance?}
 
 \item{self.replicating}{[\code{logical(1)}]\cr
 TRUE if the function returns a vector of noisy results for one input. Then \code{instances} specifies the length of the result we expect.}
@@ -33,3 +26,4 @@ Other MBOControl: \code{\link{makeMBOControl}},
   \code{\link{setMBOControlMultiPoint}},
   \code{\link{setMBOControlTermination}}
 }
+\concept{MBOControl}

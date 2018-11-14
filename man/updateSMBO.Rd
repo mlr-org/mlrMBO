@@ -18,7 +18,9 @@ One row per set of x values.}
 \item{y}{[\code{numeric|list}]
 Outcome of the optimization.
 For multiple results use a list.
-For a result of a multi-objective function use a numeric vector.}
+For a result of a multi-objective function use a numeric vector.
+For multiple results of for noisy instances use a list.
+Each list element should correspond to one x value.}
 }
 \value{
 [\code{\link{OptState}}]

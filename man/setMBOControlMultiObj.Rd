@@ -122,3 +122,4 @@ Other MBOControl: \code{\link{makeMBOControl}},
   \code{\link{setMBOControlNoisy}},
   \code{\link{setMBOControlTermination}}
 }
+\concept{MBOControl}
