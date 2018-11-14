@@ -135,7 +135,7 @@ evalTargetFun.OptState = function(opt.state, xs, extras) {
     # showInfo - use the trafo'd value here!
     showInfo(getOptProblemShowInfo(opt.problem), "[mbo] %i: %s : %s : %.1f secs%s : %s",
       dob,
-      paramValueToString(par.set, x.trafo, num.format = num.format),
+      paramValueToString(par.set, x.trafo, num.format = control$output.num.format),
       collapse(sprintf(num.format.string, control$y.name, y2), ", "),
       ytime,
       ifelse(y.valid, "", " (imputed)"),
