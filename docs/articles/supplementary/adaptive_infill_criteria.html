@@ -142,19 +142,19 @@
 <p>If we look at the OptPath we can see the different progress values and the resulting different values of lambda.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">tail</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.data.frame">as.data.frame</a></span>(res<span class="op">$</span>opt.path))</a>
 <a class="sourceLine" id="cb4-2" data-line-number="2">##              x1           x2            y dob eol error.message exec.time</a>
-<a class="sourceLine" id="cb4-3" data-line-number="3">## 13 5.676776e-01 0.9999671865 4.550843e-02   5  NA          &lt;NA&gt;     0.000</a>
-<a class="sourceLine" id="cb4-4" data-line-number="4">## 14 4.542560e-02 0.7392614374 1.646461e-03   6  NA          &lt;NA&gt;     0.000</a>
-<a class="sourceLine" id="cb4-5" data-line-number="5">## 15 5.996035e-02 0.1325370383 1.392139e-03   7  NA          &lt;NA&gt;     0.000</a>
-<a class="sourceLine" id="cb4-6" data-line-number="6">## 16 1.795771e-05 0.5674787582 3.196892e-10   8  NA          &lt;NA&gt;     0.001</a>
-<a class="sourceLine" id="cb4-7" data-line-number="7">## 17 1.722560e-06 0.8451022455 1.690776e-12   9  NA          &lt;NA&gt;     0.000</a>
-<a class="sourceLine" id="cb4-8" data-line-number="8">## 18 3.387556e-02 0.0000185278 6.378493e-08  10  NA          &lt;NA&gt;     0.000</a>
+<a class="sourceLine" id="cb4-3" data-line-number="3">## 13 5.676776e-01 0.9999671865 4.550843e-02   5  NA          &lt;NA&gt;         0</a>
+<a class="sourceLine" id="cb4-4" data-line-number="4">## 14 4.542560e-02 0.7392614374 1.646461e-03   6  NA          &lt;NA&gt;         0</a>
+<a class="sourceLine" id="cb4-5" data-line-number="5">## 15 5.996035e-02 0.1325370383 1.392139e-03   7  NA          &lt;NA&gt;         0</a>
+<a class="sourceLine" id="cb4-6" data-line-number="6">## 16 1.795771e-05 0.5674787582 3.196892e-10   8  NA          &lt;NA&gt;         0</a>
+<a class="sourceLine" id="cb4-7" data-line-number="7">## 17 1.722560e-06 0.8451022455 1.690776e-12   9  NA          &lt;NA&gt;         0</a>
+<a class="sourceLine" id="cb4-8" data-line-number="8">## 18 3.387556e-02 0.0000185278 6.378493e-08  10  NA          &lt;NA&gt;         0</a>
 <a class="sourceLine" id="cb4-9" data-line-number="9">##           adacb error.model train.time    prop.type propose.time</a>
-<a class="sourceLine" id="cb4-10" data-line-number="10">## 13 -0.046950329        &lt;NA&gt;      0.074 infill_adacb        0.385</a>
-<a class="sourceLine" id="cb4-11" data-line-number="11">## 14 -0.032767558        &lt;NA&gt;      0.083 infill_adacb        0.285</a>
-<a class="sourceLine" id="cb4-12" data-line-number="12">## 15 -0.020169425        &lt;NA&gt;      0.069 infill_adacb        0.381</a>
-<a class="sourceLine" id="cb4-13" data-line-number="13">## 16 -0.012337366        &lt;NA&gt;      0.066 infill_adacb        0.340</a>
-<a class="sourceLine" id="cb4-14" data-line-number="14">## 17 -0.007385376        &lt;NA&gt;      0.104 infill_adacb        0.566</a>
-<a class="sourceLine" id="cb4-15" data-line-number="15">## 18 -0.005424012        &lt;NA&gt;      0.108 infill_adacb        0.456</a>
+<a class="sourceLine" id="cb4-10" data-line-number="10">## 13 -0.046950329        &lt;NA&gt;      0.058 infill_adacb        0.254</a>
+<a class="sourceLine" id="cb4-11" data-line-number="11">## 14 -0.032767558        &lt;NA&gt;      0.088 infill_adacb        0.286</a>
+<a class="sourceLine" id="cb4-12" data-line-number="12">## 15 -0.020169425        &lt;NA&gt;      0.074 infill_adacb        0.277</a>
+<a class="sourceLine" id="cb4-13" data-line-number="13">## 16 -0.012337366        &lt;NA&gt;      0.067 infill_adacb        0.267</a>
+<a class="sourceLine" id="cb4-14" data-line-number="14">## 17 -0.007385376        &lt;NA&gt;      0.057 infill_adacb        0.259</a>
+<a class="sourceLine" id="cb4-15" data-line-number="15">## 18 -0.005424012        &lt;NA&gt;      0.378 infill_adacb        0.263</a>
 <a class="sourceLine" id="cb4-16" data-line-number="16">##             se          mean lambda</a>
 <a class="sourceLine" id="cb4-17" data-line-number="17">## 13 0.077479887  0.0498995297   1.25</a>
 <a class="sourceLine" id="cb4-18" data-line-number="18">## 14 0.027061084 -0.0030003658   1.10</a>
