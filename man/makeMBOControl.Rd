@@ -7,10 +7,10 @@
 \usage{
 makeMBOControl(n.objectives = 1L, propose.points = 1L,
   final.method = "best.true.y", final.evals = 0L, y.name = "y",
-  impute.y.fun = NULL, trafo.y.fun = NULL, suppress.eval.errors = TRUE,
-  save.on.disk.at = integer(0L), save.on.disk.at.time = Inf,
-  save.file.path = file.path(getwd(), "mlr_run.RData"),
-  store.model.at = NULL, resample.at = integer(0),
+  impute.y.fun = NULL, trafo.y.fun = NULL,
+  suppress.eval.errors = TRUE, save.on.disk.at = integer(0L),
+  save.on.disk.at.time = Inf, save.file.path = file.path(getwd(),
+  "mlr_run.RData"), store.model.at = NULL, resample.at = integer(0),
   resample.desc = makeResampleDesc("CV", iter = 10),
   resample.measures = list(mse), output.num.format = "\%.3g",
   on.surrogate.error = "stop")
@@ -108,6 +108,7 @@ Possible values are:
 \dQuote{stop}: R exception is generated.
 \dQuote{warn}: The error will be converted to a waring and a random point will be proposed.
 \dQuote{quiet}: Same as “warn” but without the warning.
+This will overwrite the mlr setting \code{on.learner.error} for the surrogate learner.
 Default is: \dQuote{stop}.}
 }
 \value{
@@ -122,3 +123,4 @@ Other MBOControl: \code{\link{setMBOControlInfill}},
   \code{\link{setMBOControlMultiPoint}},
   \code{\link{setMBOControlTermination}}
 }
+\concept{MBOControl}
