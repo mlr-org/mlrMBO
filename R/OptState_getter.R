@@ -120,7 +120,6 @@ getOptStateFinalPoints = function(opt.state, unify = FALSE) {
     } else if (control$final.method == "best.true.y") {
       getBestOp(getOptPathBestIndex(opt.path, ties = "random"))
     } else if (control$final.method == "best.predicted") {
-      browser()
       maximize.mult = ifelse(control$minimize, 1, -1)
       model = getOptStateModels(opt.state)$models[[1L]]
       task = getOptStateTasks(opt.state, predictive = TRUE)[[1]]
