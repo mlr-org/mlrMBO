@@ -35,12 +35,14 @@ getOptStateTasks = function(opt.state, predictive = FALSE) {
   control = getOptProblemControl(opt.problem)
   if (predictive && !is.null(getOptProblemDriftParam(opt.problem)) && control$conceptdrift.learn.drift) {
     fixed.x = getOptStateFixedLearnableParam(opt.state)
-    tasks = lapply(tasks, function(z) {
-      data = z$env$data
-      data[[getOptProblemDriftParam(opt.problem)]] = fixed.x
-      z = mlr:::changeData(task = z, data = data)
-      return(z)
-    })
+    if (length(fixed.x > 0)) {
+      tasks = lapply(tasks, function(z) {
+        data = z$env$data
+        data[, names(fixed.x)] = fixed.x
+        z = mlr:::changeData(task = z, data = data)
+        return(z)
+      })
+    }
   }
   tasks
 }
@@ -196,6 +198,7 @@ getOptStateFixedParam = function(opt.state) {
   control = getOptProblemControl(opt.problem)
   if (!is.null(getOptProblemDriftParam(opt.problem)) && !control$conceptdrift.learn.drift) {
     res = list(control$conceptdrift.drift.function(dob))
+    res = lapply(res, setNames, nm = NULL)
     res = setNames(res, getOptProblemDriftParam(opt.problem))
   } else {
     res = list()
@@ -209,6 +212,7 @@ getOptStateFixedLearnableParam = function(opt.state) {
   control = getOptProblemControl(opt.problem)
   if (!is.null(getOptProblemDriftParam(opt.problem)) && control$conceptdrift.learn.drift) {
     res = list(control$conceptdrift.drift.function(dob))
+    res = lapply(res, setNames, nm = NULL)
     res = setNames(res, getOptProblemDriftParam(opt.problem))
   } else {
     res = list()
