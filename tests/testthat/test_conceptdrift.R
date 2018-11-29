@@ -69,6 +69,17 @@ test_that("conceptdrift with time as covariate", {
   for (cname in mbo.cd.colnames) {
     expect_numeric(op1[[cname]][-(1:4*4)])
   }
+
+  ctrl = makeMBOControl(final.method = "predict")
+  ctrl = setMBOControlConceptDrift(
+    control = ctrl,
+    drift.function = slow.drift,
+    learn.drift = TRUE,
+    calculate.th.final.point = TRUE)
+  ctrl = setMBOControlTermination(ctrl, iter = mbo.iters)
+
+  res = mbo(fun = w.fn, control = ctrl)
+  op1 = as.data.frame(res$opt.path)
 })
 
 

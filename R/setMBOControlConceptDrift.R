@@ -34,7 +34,7 @@ setMBOControlConceptDrift = function(control,
   control$calculate.th.final.point = calculate.th.final.point %??% control$calculate.th.final.point
   control$fix.first.iter = fix.first.iter %??% control$fix.first.iter
   # if we have window.function == identity and learn.drift == FALSE we allow to use other final methods!
-  if((!identical(identity, window.function) || learn.drift) && control$final.method != "best.predicted"){
+  if((!identical(identity, window.function) || learn.drift) && !control$final.method %in% c("best.predicted", "predict")){
     stopf("final.method = %s does not make sense for CD.", control$final.method)
   }
 

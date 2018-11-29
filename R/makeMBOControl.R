@@ -17,6 +17,7 @@
 #'   \dQuote{last.proposed}: Return the last point proposed by the model.
 #'   \dQuote{best.predicted}: Use the final model to predict all points ever visited and use the best one.
 #'   This might average-out noisy function values.
+#'   \dQuote{predict}: Use the final model to find best point in search space using only the surrogate at this moment.
 #'   Default is: \dQuote{best.true.y}.
 #' @param final.evals [\code{integer(1)}]\cr
 #'   How many target function evals should be done at final point to reduce noise?
@@ -115,7 +116,7 @@ makeMBOControl = function(n.objectives = 1L,
 
   assertFlag(suppress.eval.errors)
 
-  assertChoice(final.method, choices = c("last.proposed", "best.true.y", "best.predicted"))
+  assertChoice(final.method, choices = c("last.proposed", "best.true.y", "best.predicted", "predict"))
   final.evals = asInt(final.evals, lower = 0L)
 
   if (n.objectives > 1L && length(y.name) == 1L && y.name == "y")
