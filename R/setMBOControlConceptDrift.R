@@ -36,7 +36,7 @@ setMBOControlConceptDrift = function(control,
   # if we have window.function == identity and learn.drift == FALSE we allow to use other final methods!
   if((!identical(identity, window.function) || learn.drift) && !control$final.method %in% c("best.predicted", "predict")){
     warningf("final.method = %s does not make sense for CD.", control$final.method)
-  }n
+  }
 
   return(control)
 }
