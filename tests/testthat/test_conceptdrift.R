@@ -59,6 +59,7 @@ test_that("conceptdrift with time as covariate", {
     learn.drift = TRUE,
     calculate.th.final.point = TRUE)
   ctrl = setMBOControlTermination(ctrl, iter = mbo.iters)
+  ctrl = setMBOControlInfill(ctrl, crit.aei)
 
   res = mbo(fun = w.fn, control = ctrl)
 

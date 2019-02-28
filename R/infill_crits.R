@@ -168,7 +168,7 @@ makeMBOInfillCritAEI = function(aei.use.nugget = FALSE, se.threshold = 1e-6) {
 
       # noise estimation
       pure.noise.var = if (aei.use.nugget)
-        pure.noise.var = model$learner.model@covariance@nugget
+        pure.noise.var = getLearnerModel(model, more.unwrap = TRUE)@covariance@nugget
       else
         estimateResidualVariance(model, data = design, target = control$y.name)
 
