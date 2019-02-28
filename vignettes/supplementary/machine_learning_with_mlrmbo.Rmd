@@ -1,12 +1,5 @@
 ---
 title: "Machine learning with mlrMBO: Tuning hyperparameters with model-based optimization"
-output:
-  html_document:
-    toc: true
-    toc_float:
-      collapsed: true
-      smooth_scroll: false
-    dev: svg
 vignette: >
   %\VignetteIndexEntry{Machine learning with mlrMBO}
   %\VignetteEngine{knitr::rmarkdown}
@@ -17,7 +10,7 @@ vignette: >
 library(mlrMBO)
 library(rgenoud)
 set.seed(123)
-knitr::opts_chunk$set(cache = TRUE, collapse = FALSE, dev = "svg")
+knitr::opts_chunk$set(cache = TRUE, collapse = FALSE)
 knitr::knit_hooks$set(document = function(x){
   gsub("```\n*```r*\n*", "", x)
 })
@@ -203,7 +196,7 @@ Afterwards, we can run `tuneParams()` and check the results.
 ```{r pipeline_tuning}
 ctrl = makeMBOControl()
 ctrl = setMBOControlTermination(ctrl, iters = iters)
-lrn = makeFilterWrapper(makeModelMultiplexer(list("classif.svm", "classif.naiveBayes")))
+lrn = makeFilterWrapper(makeModelMultiplexer(list("classif.svm", "classif.naiveBayes")), fw.method = "variance")
 tune.ctrl = makeTuneControlMBO(mbo.control = ctrl)
 
 res = tuneParams(lrn, iris.task, cv3, par.set = par.set, control = tune.ctrl, show.info = FALSE)

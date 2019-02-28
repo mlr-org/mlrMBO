@@ -10,7 +10,8 @@ proposePointsDIB = function(opt.state) {
 
   opt.problem = getOptStateOptProblem(opt.state)
   models = getOptStateModels(opt.state)$models
-  par.set = getOptStateParSet(opt.state)
+  designs = getOptStateDesigns(opt.state)
+  par.set = getOptStateParSet(opt.problem)
   control = getOptProblemControl(opt.problem)
   opt.path = getOptStateOptPath(opt.state)
   iter = getOptStateLoop(opt.state)
@@ -29,9 +30,8 @@ proposePointsDIB = function(opt.state) {
     dob = max(getOptPathDOB(opt.path)) + 1
     for (i in 1:control$propose.points) {
       prop = proposePointsByInfillOptimization(opt.state, control = control2, opt.path = opt.path2)
-      design = convertOptPathToDf(opt.path, control)
       cb = evalCritFunForMultiObjModels(cbFun, prop$prop.points, models, control2,
-        par.set, design, iter)[1L, ]
+        par.set, designs, iter)[1L, ]
       x = dfRowToList(prop$prop.points, par.set, 1)
       addOptPathEl(opt.path2, x = x, y = cb, dob = dob)
       props[[i]] = prop

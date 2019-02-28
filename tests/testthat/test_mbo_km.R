@@ -42,9 +42,9 @@ test_that("mbo works with km", {
   ctrl = setMBOControlTermination(ctrl, iters = 5L)
   ctrl = setMBOControlInfill(ctrl, crit = crit.ei,
     opt.focussearch.points = 100L)
-  # expect no output at all for show.info = FALSE
-  library(rgenoud)
-  expect_silent({or = mbo(f, des, control = ctrl, show.info = FALSE)})
+  # FIXME: We need suppressPackageStartupMessages to suppress rgenoud startup message, as messages are not cought yet by mlr https://github.com/mlr-org/mlr/pull/2273
+
+  expect_silent(suppressPackageStartupMessages({or = mbo(f, des, control = ctrl, show.info = FALSE)}))
   expect_number(or$y)
   expect_equal(getOptPathLength(or$opt.path), 15)
   df = as.data.frame(or$opt.path)
@@ -62,11 +62,13 @@ test_that("mbo works with impute and failure model", {
   des$y = apply(des, 1, testf.fsphere.2d)
   des$y[nrow(des)] = 123
   # make sure model does not break, and we get a failure model
-  learner = makeLearner("regr.km")
+  learner = makeLearner("regr.km", config = list(on.learner.error = "warn"))
   ctrl = makeMBOControl(on.surrogate.error = "quiet")
   ctrl = setMBOControlTermination(ctrl, iters = 2L)
   ctrl = setMBOControlInfill(ctrl, crit = crit.mr, opt.focussearch.points = 10L)
-  or = mbo(testf.fsphere.2d, des, learner = learner, control = ctrl)
+  expect_warning({
+    or = mbo(testf.fsphere.2d, des, learner = learner, control = ctrl)
+  }, "will be overwritten with mlrMBO setting on\\.surrogate\\.error = 'quiet'.")
   expect_equal(getOptPathLength(or$opt.path), 14)
   op = as.data.frame(or$opt.path)
   expect_true(!is.na(op$error.model[13L]))
@@ -75,7 +77,7 @@ test_that("mbo works with impute and failure model", {
   # test with an infill that has infill components
   # https://github.com/mlr-org/mlrMBO/issues/302
   ctrl = setMBOControlInfill(ctrl, crit = crit.ei, opt = "focussearch", opt.focussearch.points = 10L)
-  learner = setPredictType(learner, "se")
+  learner = makeLearner("regr.km", predict.type = "se")
   or = mbo(testf.fsphere.2d, des, learner = learner, control = ctrl)
   op = as.data.frame(or$opt.path)
   expect_character(as.character(op$error.model[13L]), pattern = "leading minor of order")

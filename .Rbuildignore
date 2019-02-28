@@ -16,3 +16,5 @@
 ^vignettes/.+_cache$
 ^vignettes/.+_files$
 ^vignettes/.+\.html$
+.github
+.covrignore

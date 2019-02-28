@@ -21,8 +21,10 @@ renderExampleRunPlot1d = function(x, iter,
   control = x$control
   noisy = control$noisy
   mbo.res = x$mbo.res
+  opt.path = mbo.res$opt.path
   models = mbo.res$models
   models = if (inherits(models, "WrappedModel")) list(models) else models
+  design = convertToDesign(opt.path, control)
   names(colors) = c("init", "prop", "seq")
 
   # check if standard error is available
@@ -30,12 +32,7 @@ renderExampleRunPlot1d = function(x, iter,
 
   propose.points = control$propose.points
   infill.crit.id = getMBOInfillCritId(control$infill.crit)
-  # if (control$multifid) {
-  #   infill.crit.id = "mfEI"
-  #   critfun = infillCritMultiFid.external
-  # } else {
-    critfun = control$infill.crit$fun
-  #}
+  critfun = control$infill.crit$fun
 
   # we need to maximize expected improvement
   opt.direction = getMBOInfillCritMultiplier(control$infill.crit)
@@ -50,7 +47,6 @@ renderExampleRunPlot1d = function(x, iter,
   }
 
   evals = x$evals
-  opt.path = mbo.res$opt.path
   evals.x = evals[, getParamIds(opt.path$par.set) , drop = FALSE]
 
   # helper function for building up data frame of different points
@@ -69,7 +65,7 @@ renderExampleRunPlot1d = function(x, iter,
   buildPointsData = function(opt.path, iter) {
     type = vcapply(getOptPathDOB(opt.path), getType, iter = iter)
     res = cbind.data.frame(
-      convertOptPathToDf(opt.path, control),
+      design,
       type = type
     )
     res[res$type %nin% "future",]
@@ -90,36 +86,29 @@ renderExampleRunPlot1d = function(x, iter,
   if (!inherits(model, "FailureModel")) {
     evals$yhat = ifelse(control$minimize, 1, -1) * infill.mean(evals.x, list(model), control)
 
+
     #FIXME: We might want to replace the following by a helper function so that we can reuse it in buildPointsData()
     if (propose.points == 1L) {
       evals[[infill.crit.id]] = opt.direction *
-        critfun(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past,, drop = FALSE])
+        critfun(evals.x, list(model), control, par.set, list(design[idx.past,, drop = FALSE]))
     } else {
       objective = control$multipoint.moimbo.objective
       if (objective == "mean.dist") {
-        evals[[infill.crit.id]] = opt.direction * infill.mean(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past,, drop = FALSE])
+        evals[[infill.crit.id]] = opt.direction * infill.mean(evals.x, list(model), control, par.set, list(design[idx.past,, drop = FALSE]))
       } else if (objective == "ei.dist") {
-        evals[[infill.crit.id]] = opt.direction * infill.ei(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past,, drop = FALSE])
+        evals[[infill.crit.id]] = opt.direction * infill.ei(evals.x, list(model), control, par.set, list(design[idx.past,, drop = FALSE]))
       } else if (objective %in% c("mean.se", "mean.se.dist")) {
-        evals[[infill.crit.id]] = opt.direction * infill.mean(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past,, drop = FALSE])
+        evals[[infill.crit.id]] = opt.direction * infill.mean(evals.x, list(model), control, par.set, list(design[idx.past,, drop = FALSE]))
       }
     }
     # prepare drawing of standard error (confidence interval)
     if (se) {
-      evals$se = -infill.se(evals.x, list(model), control, par.set, convertOptPathToDf(opt.path, control)[idx.past,, drop = FALSE])
+      evals$se = -infill.se(evals.x, list(model), control, par.set, list(design[idx.past,, drop = FALSE]))
     }
   }
 
   if (isNumeric(par.set, include.int = FALSE)) {
     gg.fun = data.table::setDF(data.table::melt(evals, id.vars = c(getParamIds(opt.path$par.set), if (se) "se" else NULL)))
-
-    if (control$multifid) {
-      #rename .multifid.lvl according to control object
-      repl = paste0(control$multifid.param, "=", control$multifid.lvls)
-      names(repl) = as.character(seq_along(control$multifid.lvls))
-      #gg.fun$.multifid.lvl = plyr::revalue(as.factor(gg.fun$.multifid.lvl), replace = repl)
-      gg.fun$.multifid.lvl = factor(gg.fun$.multifid.lvl, labels = repl)
-    }
 
     if (se) gg.fun$se = gg.fun$se * se.factor
 
@@ -148,28 +137,16 @@ renderExampleRunPlot1d = function(x, iter,
 
     # finally build the ggplot object(s)
     g = ggplot2::ggplot(data = gg.fun)
-    next.aes = ggplot2::aes_string(x = names.x, y = "value", color = "as.factor(.multifid.lvl)", group = "paste(variable,.multifid.lvl)", linetype = "variable")
-    if (!control$multifid) {
-      next.aes = dropNamed(next.aes, c("group","colour"))
-    }
+    next.aes = ggplot2::aes_string(x = names.x, y = "value", linetype = "variable")
     g = g + ggplot2::geom_line(next.aes, size = line.size)
     g = g + ggplot2::facet_grid(pane~., scales = "free")
     if (se && densregion) {
       #FIXME: We might lose transformation information here tr()
-      next.aes = ggplot2::aes_string(x = names.x, ymin = "value-se", ymax = "value+se", group = ".multifid.lvl")
-      if (!control$multifid) {
-        next.aes = dropNamed(next.aes, "group")
-      }
+      next.aes = ggplot2::aes_string(x = names.x, ymin = "value-se", ymax = "value+se")
       g = g + ggplot2::geom_ribbon(data = gg.fun[gg.fun$variable == "yhat", ], next.aes, alpha = 0.2)
     }
     g = g + ggplot2::geom_point(data = gg.points, ggplot2::aes_string(x = names.x, y = name.y, colour = "type", shape = "type"), size = point.size)
-    if (control$multifid) {
-      mf.colors = tail(RColorBrewer::brewer.pal(n = length(control$multifid.lvls)+1, name = "PuBu"), -1)
-      names(mf.colors) = levels(gg.fun$.multifid.lvl)
-    } else {
-      mf.colors = NULL
-    }
-    g = g + ggplot2::scale_colour_manual(values = c(mf.colors, colors), name = "type")
+    g = g + ggplot2::scale_colour_manual(values = colors, name = "type")
     g = g + ggplot2::scale_linetype(name = "type")
 
     if (noisy) {
@@ -181,7 +158,7 @@ renderExampleRunPlot1d = function(x, iter,
         gap = NA
       }
     } else {
-      gap = calculateGap(convertOptPathToDf(opt.path, control)[idx.pastpresent,, drop = FALSE], global.opt, control)
+      gap = calculateGap(design[idx.pastpresent,, drop = FALSE], global.opt, control)
     }
 
     g = g + ggplot2::ggtitle(sprintf("Iter = %i, Gap = %.4e", iter, gap))
@@ -218,7 +195,7 @@ renderExampleRunPlot1d = function(x, iter,
     pl.fun = pl.fun + ggplot2::scale_colour_discrete(name = "type")
     pl.fun = pl.fun + ggplot2::ggtitle(
       sprintf("Iter = %i, Gap = %.4e", iter,
-      calculateGap(convertOptPathToDf(opt.path, control)[idx.pastpresent,, drop = FALSE], global.opt, control))
+      calculateGap(design[idx.pastpresent,, drop = FALSE], global.opt, control))
     )
 
     pl.fun = pl.fun + ggplot2::theme(

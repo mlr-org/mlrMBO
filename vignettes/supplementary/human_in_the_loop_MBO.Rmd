@@ -1,22 +1,17 @@
 ---
 title: "Human-in-the-loop MBO"
-output:
-  html_document:
-    toc: true
-    toc_float:
-      collapsed: true
-      smooth_scroll: false
-    dev: svg
 vignette: >
-  %\VignetteIndexEntry{Mixed Space Optimization}
+  %\VignetteIndexEntry{Human-in-the-loop MBO}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include = FALSE, cache = FALSE}
 library(mlrMBO)
+library(rgenoud)
+library(ggplot2)
 set.seed(123)
-knitr::opts_chunk$set(cache = TRUE, collapse = FALSE, dev = "svg", fig.height = 3.5)
+knitr::opts_chunk$set(cache = TRUE, collapse = FALSE, fig.height = 3.5)
 knitr::knit_hooks$set(document = function(x){
   gsub("```\n*```r*\n*", "", x)
 })

@@ -1,16 +1,16 @@
 context("infillopt ea")
 
 test_that("infillopt ea", {
-  obj.fun = smoof::makeSphereFunction(2L)
+  obj.fun = testf.fsphere.2d
 
-  ctrl = makeMBOControl(propose.points = 1L)
+  ctrl = makeMBOControl()
   ctrl = setMBOControlTermination(ctrl, iters = 4L)
   ctrl = setMBOControlInfill(ctrl, crit = crit.ei, opt = "ea", opt.restarts = 2L,
     opt.ea.maxit = 75L, opt.ea.lambda = 1L)
 
-  des = generateTestDesign(20L, getParamSet(obj.fun))
+  des = testd.fsphere.2d
   res = mbo(obj.fun, des, control = ctrl)
-  expect_lt(res$y, 1e-1)
+  expect_true(res$y < 0.5, info = "real")
 
   obj.fun = smoof::makeSingleObjectiveFunction(
     fn = function(x) x$num1^2 + x$int1,
@@ -23,5 +23,5 @@ test_that("infillopt ea", {
 
   des = generateTestDesign(10L, getParamSet(obj.fun))
   res = mbo(obj.fun, des, control = ctrl)
-  expect_lt(res$y, 1e-1)
+  expect_true(res$y < 0.5, info = "integer mixed")
 })

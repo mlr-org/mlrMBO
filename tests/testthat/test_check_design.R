@@ -12,7 +12,7 @@ test_that("test checks for initial design and new design", {
   design1 = generateDesign(8, par.set)
   expect_false(checkInitDesign(design1, par.set))
 
-  design2 = generateDesign(30, par.set)
+  design2 = generateDesign(40, par.set)
   expect_true(checkInitDesign(design2, par.set))
 
   checked = checkPredictionData(design2, design1)

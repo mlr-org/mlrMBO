@@ -37,11 +37,14 @@
 #'
 #'
 #' \strong{Mechanism II - The mlr's on.learner.error}
-#' This produces a FailureModel for the surrogate, if it crashed (issue 6). A random point (or multiple ones)
-#' are proposed now for the current iteration. And we pray that we can fit the model again in the
-#' next iteration.
+#' If your surrogate learner crashes you can set \code{on.surrogate.error} in \code{\link{makeMBOControl}} to \dQuote{quiet} or \dQuote{warn}.
+#' This will set mlr's \code{on.learner.error} for the surrogate.
+#' It prevents MBO from crashing in total (issue 5), if the surrogate learner produces an error.
+#' As a resort a FailureModel will be returned instead of a the surrogate.
+#' Subsequently a random point (or multiple ones) are proposed now for the current iteration.
+#' And we pray that we can fit the model again in the next iteration.
 #
-#' \strong{Logging:} The entry \dQuote{model.error} is set in the opt.path.
+#' \strong{Logging:} The entry \dQuote{model.error} is set in the \code{opt.path}.
 #'
 #'
 #' \strong{Mechanism III - Filtering of proposed point which are too close}

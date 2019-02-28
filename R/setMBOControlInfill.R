@@ -132,7 +132,7 @@ setMBOControlInfill = function(control,
 
   assertClass(control, "MBOControl")
 
-  control$infill.crit = coalesce(crit, control$infill.crit, makeMBOInfillCritCB())
+  control$infill.crit = crit %??% control$infill.crit %??% makeMBOInfillCritCB()
   assertClass(control$infill.crit, "MBOInfillCrit")
 
   assertCount(interleave.random.points)
@@ -147,7 +147,7 @@ setMBOControlInfill = function(control,
   control$infill.opt = coalesce(opt, control$infill.opt, "focussearch")
   assertChoice(control$infill.opt, choices = getSupportedInfillOptFunctions())
 
-  control$infill.opt.restarts = coalesce(opt.restarts, control$infill.opt.restarts, 1L)
+  control$infill.opt.restarts = coalesce(opt.restarts, control$infill.opt.restarts, 3L)
   control$infill.opt.restarts = asCount(control$infill.opt.restarts)
   assertCount(control$infill.opt.restarts, na.ok = FALSE)
 

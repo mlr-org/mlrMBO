@@ -2,7 +2,7 @@
 # NSGA2 is used to create set of candidate soluation
 # Greedy cypervolume contribution selection is used to select prop.point from
 # from candidate points
-infillOptMultiObjNSGA2 = function(infill.crit, models, control, par.set, opt.path, design, iter, ...) {
+infillOptMultiObjNSGA2 = function(infill.crit, models, control, par.set, opt.path, designs, iter, ...) {
 
   # build target function for vectorized nsga2 and run it
   rep.pids = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
@@ -13,8 +13,9 @@ infillOptMultiObjNSGA2 = function(infill.crit, models, control, par.set, opt.pat
     asMatrixRows(lapply(seq_len(m), function(i) {
       # we need to make sure mininimize in control is a scalar, so we can multiply it in infill crits...
       control$minimize = control$minimize[i]
+      control$y.name = control$y.name[i]
       infill.crit(points = newdata, models = models[i], control = control,
-        par.set = par.set, design = design, iter = iter, ...)
+        par.set = par.set, designs = designs[i], iter = iter, ...)
     }))
   }
   res = mco::nsga2(fun.tmp, idim = getParamNr(par.set, devectorize = TRUE), odim = control$n.objectives,
@@ -34,17 +35,18 @@ infillOptMultiObjNSGA2 = function(infill.crit, models, control, par.set, opt.pat
   candidate.vals = asMatrixCols(lapply(seq_len(m), function(i) {
     # we need to make sure mininimize in control is a scalar, so we can multiply it in infill crits...
     control$minimize = control$minimize[i]
-
+    control$y.name = control$y.name[i]
     newdata = as.data.frame(res$par)
     colnames(newdata) = rep.pids
     hv.contr.crit(points = newdata, models = models[i], control = control,
-      par.set = par.set, design = design, iter = iter, ...)
+      par.set = par.set, designs = designs[i], iter = iter, ...)
   }))
 
   prop.points = matrix(nrow = 0, ncol = ncol(candidate.points))
   prop.vals = matrix(nrow = 0, ncol = ncol(candidate.vals))
   colnames(prop.vals) = control$y.name
-  ys = design[, control$y.name]
+  ys = Map(function(i, y.name) designs[[i]][,y.name], i = seq_along(control$y.name), y.name = control$y.name)
+  ys = do.call(cbind, ys)
 
   ref.point = getMultiObjRefPoint(ys, control)
   prop.hv.contrs = numeric(control$propose.points)
@@ -62,6 +64,6 @@ infillOptMultiObjNSGA2 = function(infill.crit, models, control, par.set, opt.pat
 
   # FIXME: cleanup - i'm reall unsure how to set the names of prop.points technically
   prop.points = as.data.frame(prop.points)
-  colnames(prop.points) = names(design[, colnames(design) %nin% control$y.name])
+  colnames(prop.points) = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
   list(prop.points = prop.points, prop.hv.contrs = prop.hv.contrs)
 }
