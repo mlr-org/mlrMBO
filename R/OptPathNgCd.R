@@ -1,4 +1,5 @@
 # Concept Drift OptPath
+
 OptPathNgCd = R6Class("OptPathNgCd",
   inherit = OptPathNg,
   public = list(

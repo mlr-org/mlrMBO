@@ -47,8 +47,8 @@ getOptStateTasks = function(opt.state, predictive = FALSE) {
   tasks
 }
 
-getOptStateDesigns = function(opt.state) {
-  tasks = getOptStateTasks(opt.state)
+getOptStateDesigns = function(opt.state, predictive = FALSE) {
+  tasks = getOptStateTasks(opt.state, predictive = predictive)
   lapply(tasks, getTaskData)
 }
 

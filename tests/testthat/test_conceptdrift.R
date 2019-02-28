@@ -31,7 +31,7 @@ test_that("conceptdrift with window", {
 
   library(ggplot2)
   g = plot(res$final.opt.state)
-  expect_class(g, "ggplot" )
+  expect_class(g, "ggplot")
 
   op1 = as.data.frame(res$opt.path)
   expect_data_frame(op1, nrows = 20)

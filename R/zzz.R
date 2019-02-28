@@ -10,6 +10,7 @@
 #' @import data.table
 #' @importFrom lhs randomLHS
 #' @useDynLib mlrMBO c_sms_indicator c_eps_indicator
+#' @importFrom R6 R6Class
 NULL
 
 .onLoad = function(libname, pkgname) { # nocov start

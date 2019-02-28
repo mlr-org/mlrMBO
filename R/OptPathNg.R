@@ -1,7 +1,5 @@
 ## mlr-org/mlrng/attic/OptPath.R - 18.09.2017
 
-#' @importFrom R6 R6Class
-#' @import data.table
 OptPathNg = R6Class(c("OptPathNg", "OptPath"),
   public = list(
     initialize = function(par.set, y.names = "y", minimize = TRUE) {

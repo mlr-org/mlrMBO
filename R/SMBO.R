@@ -79,7 +79,7 @@ updateSMBO = function(opt.state, x, y) {
     crit.components = attr(infill.values, "crit.components"))
 
   extras = getExtras(n = nrow(prop$prop.points), prop = prop, train.time = 0, control = control)
-  xs = dfRowsToList(prop$prop.points, getOptProblemParSet(getOptStateOptProblem(opt.state)))
+  xs = dfRowsToList(prop$prop.points, getOptStateParSet(opt.state))
 
   for (i in seq_along(xs)) {
     addOptPathEl(op = opt.path, x = xs[[i]], y = y[[i]], extra = extras[[i]])
