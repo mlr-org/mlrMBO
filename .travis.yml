@@ -1,5 +1,4 @@
 language: r
-dist: trusty
 sudo: false
 cache: packages
 r:
@@ -15,13 +14,14 @@ addons:
   apt:
     packages:
       - imagemagick
+      - libmagick++-dev
 env:
   matrix:
   - _R_CHECK_LENGTH_1_CONDITION_=true
   global:
     secure: efki/PoCvROHC5GMOWqL3hiYeU/no71mnw927ZLF/D0eo3L0aBjT6533KWy3S8w+kg4ilgZzoS5/Nu6PuVFmfPmOiXKj95ZZVkuHDjnAiBFPsowneruOAYNMpwGlM1A3Z3T6jTjtX+FtvlgukhVNrkNoXFy5SmZ5pclic0Z7zfM=
 before_script:
-- R --no-save <<< 'library("devtools"); document()'
+- R --no-save <<< 'devtools::document()'
 after_success:
 - 'if [[ "$TRAVIS_PULL_REQUEST" == "false" && "$TRAVIS_BRANCH" == "master" && "$TRAVIS_R_VERSION_STRING" == "release" && "$TRAVIS_EVENT_TYPE" != "cron" ]] ; then
     R --no-save <<< "devtools::install(); pkgdown::build_site()";
