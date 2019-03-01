@@ -33,6 +33,12 @@ distanceCluster = function(priorities, prop, opt.state) {
   # options
   no.jobs = length(priorities)
   
+  if (nrow(prop.points) != no.jobs){
+    messagef("Error with prios")
+    messagef(priorities)
+    messagef(prop.points)
+    stop("prios != points")
+  }
   # hierarchical clustering
   # number of clusters = number of proposed points
   clu = hclust(dist(prop.points))

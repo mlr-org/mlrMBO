@@ -54,7 +54,7 @@ proposePoints.OptState = function(opt.state){
   if (!is.matrix(res$crit.vals))
     res$crit.vals = matrix(res$crit.vals, ncol = 1L)
 
-  if (control$filter.proposed.points && !(control$multipoint.method == "groupQKP")) {
+  if (control$filter.proposed.points && !(!is.null(control$multipoint.method) && control$multipoint.method == "groupQKP")) {
     res = filterProposedPoints(res, opt.state)
   }
 

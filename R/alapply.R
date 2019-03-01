@@ -1,38 +1,52 @@
 library(parallel)
 
-startJob = function(coreid, sched.info, X, FUN){
+startJob = function(coreid, sched.info, X, FUN, jobstealing){
   if(any(sched.info$ava)){
     if(any(sched.info$ava[,coreid])){
       # choose task that is ready for execution
       jobid <- which(sched.info$ava[,coreid])[1]
-    } else {
+      sched.info$idlecpus[coreid] = FALSE
+    } else if(jobstealing){
       # steal job from other core
       ava = sapply(X = seq_along(sched.info$ava[,1]), FUN = function (i) any(sched.info$ava[i,]))
       jobid = which.max(ava)
-    }
-    sched.info$ava[jobid,] = FALSE
-    sched.info$job.id[coreid] = jobid
-    waiting = which(sched.info$waiting == jobid)
-    if (length(waiting) == 1){
-      # paused task
-      sched.info$jobs[coreid] = sched.info$waiting.jobs[waiting]
-      sched.info$ctime[waiting] = proc.time()[3]
-      sched.info$job.pid[coreid] = sched.info$jobs[[coreid]]$pid
-      system(paste0("kill -CONT ", sched.info$job.pid[coreid]), intern = TRUE)
     }else{
-      # new task
-      sched.info$jobs[coreid] = list(mcparallel(FUN(X[[jobid]]),
+      sched.info$idlecpus[coreid] = TRUE
+      jobid = NA
+    }
+    if(!is.na(jobid)){
+      sched.info$ava[jobid,] = FALSE
+      sched.info$job.id[coreid] = jobid
+      waiting = which(sched.info$waiting == jobid)
+      if (length(waiting) == 1){
+        # paused task
+        sched.info$jobs[coreid] = sched.info$waiting.jobs[waiting]
+        sched.info$ctime[waiting] = proc.time()[3]
+        sched.info$job.pid[coreid] = sched.info$jobs[[coreid]]$pid
+        system(paste0("kill -CONT ", sched.info$job.pid[coreid]), intern = TRUE)
+      }else{
+        # new task
+        sched.info$jobs[coreid] = list(mcparallel(FUN(X[[jobid]]),
                                                 mc.set.seed = TRUE,
                                                 silent = FALSE))
-      sched.info$job.pid[coreid] = sched.info$jobs[[coreid]]$pid
+        sched.info$job.pid[coreid] = sched.info$jobs[[coreid]]$pid
+      }
+    }
+    if(!jobstealing){
+      usableCpus = which(sched.info$idlecpus & apply(sched.info$ava,2,any))
+      if(any(usableCpus)){
+        for (i in usableCpus){
+          sched.info = startJob(i, sched.info, X, FUN, jobstealing)
+        }
+      }
     }
   }
   return(sched.info)
 }
 
 
-alapply = function (X, scheduled.on, wait.at, FUN){
-  messagef("start job Execution")
+alapply = function (X, scheduled.on, wait.at, FUN, jobstealing = TRUE){
+  messagef("start execution of %.f Jobs",length(scheduled.on))
   mccollect(wait = FALSE, timeout = 1)
   sched.info = list()
   sx <- seq_along(X)
@@ -68,6 +82,7 @@ alapply = function (X, scheduled.on, wait.at, FUN){
   sched.info$stime = numeric(length(sched.info$job.id))
   sched.info$ctime = numeric(length(sched.info$job.id))
   sched.info$waiting.jobs = vector("list", length(sched.info$job.id))
+  sched.info$idlecpus = rep(FALSE, length(sched.info$jobs))
   while (!all(fin)) {
     # collect finished jobs
     # tmp = mccollect(sched.info$jobs[!is.na(sched.info$jobs)], wait = FALSE, timeout = 1)
@@ -86,7 +101,7 @@ alapply = function (X, scheduled.on, wait.at, FUN){
         sched.info$jobs[coreid] = NA
         sched.info$job.id[coreid] = NA
         tmp = tmp[-1]
-        sched.info = startJob(coreid, sched.info, X, FUN)
+        sched.info = startJob(coreid, sched.info, X, FUN, jobstealing)
       }else{
         wid = which(sapply(X = sched.info$waiting.jobs, FUN = function (j){ 
           if (!is.null(j)){
@@ -122,7 +137,7 @@ alapply = function (X, scheduled.on, wait.at, FUN){
         sched.info$job.pid[coreid] = NA
         sched.info$jobs[coreid] = NA
         sched.info$job.id[coreid] = NA
-        sched.info = startJob(coreid, sched.info, X, FUN)
+        sched.info = startJob(coreid, sched.info, X, FUN, jobstealing)
       }
     }
   }

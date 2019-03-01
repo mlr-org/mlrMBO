@@ -98,10 +98,29 @@ proposePointsQKPCB = function(opt.state){
   if(is.null(predicted.time.se))
     predicted.time.se = rep(NA_real_, length(predicted.time))
   
-  priorities = -raw.points$multipoint.cb.lambdas - min(-raw.points$multipoint.cb.lambdas) + 0.1
+  if (control$multipoint.method == "cb" && control$schedule.priority == "exploit") {
+    priorities = -raw.points$multipoint.cb.lambdas - min(-raw.points$multipoint.cb.lambdas) + 0.1
+  }else if(control$multipoint.method == "cb" && control$schedule.priority == "explore"){
+    priorities = raw.points$multipoint.cb.lambdas - min(raw.points$multipoint.cb.lambdas) + 0.1
+  }else if(control$multipoint.method == "cb" && control$schedule.priority == "balanced"){
+    priorities = -abs(log(prop$multipoint.cb.lambdas) - log(control$infill.crit.cb.lambda)) - min(-abs(log(prop$multipoint.cb.lambdas) - log(control$infill.crit.cb.lambda))) + 0.1
+  }else if(control$schedule.priority == "infill"){
+    priorities = -raw.points$crit.vals - min(-raw.points$crit.vals) + 0.1
+    priorities = priorities[,1]
+  }else if (control$schedule.priority == "raw"){
+    priorities = -raw.points$crit.components$mean - min(-raw.points$crit.components$mean) + 0.1
+  }else {
+    stopf("Schedule Priority mehtod %s was not appliable!", control$schedule.priority)
+  } 
+    
+    
   t.max = predicted.time[which.max(priorities)] + predicted.time.se[which.max(priorities)]
   
-  if (control$schedule.cluster == "distance"){
+  if (control$schedule.ks == "cluster"){
+    predicted.time[predicted.time > t.max] = t.max * control$schedule.nodes + 1 # TODO more efficient solution
+    priorities = distanceCluster(priorities = priorities, raw.points, opt.state = opt.state)
+    sel.points = greedyKS(priorities, predicted.time,t.max * control$schedule.nodes)
+  } else if (control$schedule.ks ==  "clusterFF"){
     priorities = distanceCluster(priorities = priorities, raw.points, opt.state = opt.state)
     p.order = order(priorities, decreasing = TRUE)
     occupied.time = 0
@@ -112,10 +131,30 @@ proposePointsQKPCB = function(opt.state){
         occupied.time = occupied.time + predicted.time[i]
       }
     }
-  } else {
+  } else if(control$schedule.ks ==  "cancel"){
     predicted.time[predicted.time > t.max] = t.max * control$schedule.nodes + 1 # TODO more efficient solution
-    sel.points = greedyQKP(priorities, predicted.time, raw.points$prop.points,t.max * control$schedule.nodes)
+    P = createProfitMatrix(priorities, raw.points$prop.points, "negU")
+    sel.points = greedyMinKS(priorities, predicted.time,  P,t.max * control$schedule.nodes)
+  } else if(control$schedule.ks == "fixCancel"){
+    predicted.time[predicted.time > t.max] = t.max * control$schedule.nodes + 1 # TODO more efficient solution
+    best = which.max(priorities)
+    pt = predicted.time
+    pt[best] = t.max * control$schedule.nodes + 1
+    sel.points = greedyMinKS(priorities, pt, createProfitMatrix(priorities, raw.points$prop.points, "negU") ,(t.max * (control$schedule.nodes-1)))
+    sel.points = c(sel.points, best)
+  } else if(control$schedule.ks == "fixCluster"){
+    predicted.time[predicted.time > t.max] = t.max * control$schedule.nodes + 1 # TODO more efficient solution
+    priorities = distanceCluster(priorities = priorities, raw.points, opt.state = opt.state)
+    best = which.max(priorities)
+    pt = predicted.time
+    pt[best] = t.max * control$schedule.nodes + 1
+    sel.points = greedyKS(priorities, pt, (t.max * (control$schedule.nodes-1)))
+    sel.points = c(sel.points, best)
+  } else {
+    stop("no valid group Infill")
   }
+  
+  
   res = list()
   res$prop.points = raw.points$prop.points[sel.points,]
   res$propose.time = raw.points$propose.time[sel.points]

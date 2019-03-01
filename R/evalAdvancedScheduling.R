@@ -4,7 +4,9 @@ evalAdvancedScheduling = function(wrapFun, xs, xs.trafo, xs.schedule.info = NULL
     control = getOptProblemControl(getOptStateOptProblem(opt.state))
     schedule.nodes = control$schedule.nodes
     
-    t.max = xs.schedule.info$t.max[1]
+    #t.max = xs.schedule.info$t.max[1]
+    
+    t.max = max(xs.schedule.info$times, sum(xs.schedule.info$times)/schedule.nodes)
     
     # schedule where(on) which job(job) will be executed at which time(at)
     occupied.time = double(length = schedule.nodes)
@@ -20,11 +22,14 @@ evalAdvancedScheduling = function(wrapFun, xs, xs.trafo, xs.schedule.info = NULL
     scheduled.on = vector("list", njobs)
     for (j in seq_len(schedule.nodes)){
       while(i <= njobs){
-        if (t.max - occupied.time[j] >= xs.schedule.info$times[i]) {
+        if (t.max - occupied.time[j] >= xs.schedule.info$times[i] - 1 || j == schedule.nodes) {
           scheduled = rbind(scheduled, list(job = i, on = j, at = occupied.time[j], wait.at = Inf))
           scheduled.on[[i]] = j
           occupied.time[j] = occupied.time[j] + xs.schedule.info$times[i]
           i = i + 1
+          if(t.max - occupied.time[j] <= 1){
+            break()
+          }
         }else{
           time.on.j = t.max - occupied.time[j]
           wait.at = xs.schedule.info$times[i] - time.on.j
@@ -37,6 +42,46 @@ evalAdvancedScheduling = function(wrapFun, xs, xs.trafo, xs.schedule.info = NULL
         }
       }
     }
+    ## Reduce number of cuts
+    # j := core
+    for( j in min(schedule.nodes, njobs):min(2, njobs)){
+      if(occupied.time[j] > 0){
+        remaining.time = t.max - occupied.time[j]
+        job = which(scheduled$on == j & scheduled$wait.at < Inf)
+        rem.job.time = xs.schedule.info$times[job] - scheduled$wait.at[job]
+        if(length(job) == 1 && rem.job.time <= remaining.time){
+          scheduled.on[[job]] = j
+          occupied.time[j-1] = occupied.time[j-1] - rem.job.time
+          scheduled$wait.at[job] = Inf
+        }
+      }else{
+        schedule = sapply(scheduled.on,max)
+        schedule[schedule > j] = 0
+        job = which.max(schedule)
+        cores = scheduled.on[[j]]
+        scheduled.on[[job]] = j
+        scheduled$on[job] = j
+        if(scheduled$wait.at[job] < Inf){
+          occupied.time[cores[1]] = occupied.time[cores[1]] - scheduled$wait.at[job] 
+          occupied.time[cores[2]] = occupied.time[cores[2]] - (xs.schedule.info$times[job] - wait.at)
+          scheduled$wait.at[job] = Inf
+        } else {
+          occupied.time[cores] = occupied.time[cores] - xs.schedule.info$times[job]
+        }
+        occupied.time[j] = occupied.time[j] + xs.schedule.info$times[job]
+      }
+    }
+    
+    ## Test for failures
+    wt = scheduled$wait.at < Inf
+    st = sapply(X = scheduled.on, function(i){
+      length(i) == 1
+    })
+    f = wt & st
+    if (any(f)){
+      stop("failure in static Scheduling")
+    }
+    ####
     ##
     # reorder jobs for better load balancing
     load.balance.order = order(scheduled$at, decreasing = FALSE)
@@ -53,10 +98,13 @@ evalAdvancedScheduling = function(wrapFun, xs, xs.trafo, xs.schedule.info = NULL
       extras[[i]]$scheduled.on = scheduled$on[i]
       extras[[i]]$scheduled.at = scheduled$at[i]  
     }
-    
 
-    funRes = alapply(X = xs.trafo, scheduled.on = scheduled.on, wait.at = scheduled$wait.at, FUN = wrapFun)
-    
+    funRes = alapply(X = xs.trafo, scheduled.on = scheduled.on, wait.at = scheduled$wait.at, FUN = wrapFun, jobstealing = control$schedule.js)
+    #CHECK for exec.time
+    times = sapply(X = funRes, FUN = function(x) attr(x$y,"exec.time"))
+    if(!all(times >= 0)){
+      stop("exec time negative")
+    }
     # fix times for paused tasks
     for (i in seq_along(funRes)) {
       if (!is.null(funRes[[i]]$stime) && funRes[[i]]$stime > 0){
