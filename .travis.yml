@@ -15,6 +15,7 @@ addons:
   apt:
     packages:
       - imagemagick
+      - libmagick++-dev
 env:
   matrix:
   - _R_CHECK_LENGTH_1_CONDITION_=true
