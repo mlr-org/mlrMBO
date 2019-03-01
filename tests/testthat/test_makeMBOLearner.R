@@ -18,9 +18,8 @@ test_that("makeMBOLearner", {
   )
 
   lrn = makeMBOLearner(ctrl, f)
-  lrn2 = makeLearner("regr.km", predict.type = "se",
-    par.vals = list(covtype = "matern3_2", optim.method = "gen", nugget.stability = 10^-8))
-  expect_equal(lrn, lrn2)
+  expect_equal(lrn, makeLearner("regr.km", predict.type = "se",
+    par.vals = list(covtype = "matern3_2", optim.method = "gen", nugget.stability = 10^-8)))
   expect_output(print(mbo(f, control = ctrl, learner = lrn)), "Recommended parameters")
 
   # fully numeric, without se prediction
