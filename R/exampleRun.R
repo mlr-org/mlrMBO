@@ -76,9 +76,9 @@ exampleRun = function(fun, design = NULL, learner = NULL, control,
 
   # if noisy and we have the mean function, use it
   if (is.null(fun.mean)) {
-    evals = evaluate(fun, par.set, n.params, par.types, noisy, noisy.evals, points.per.dim, names.x, name.y, seq_along(control$multifid.lvls))
+    evals = evaluate(fun, par.set, n.params, par.types, noisy, noisy.evals, points.per.dim, names.x, name.y)
   } else {
-    evals = evaluate(fun.mean, par.set, n.params, par.types, noisy = FALSE, noisy.evals = 1, points.per.dim, names.x, name.y, multifid.lvls = seq_along(control$multifid.lvls))
+    evals = evaluate(fun.mean, par.set, n.params, par.types, noisy = FALSE, noisy.evals = 1, points.per.dim, names.x, name.y)
   }
 
   if (is.na(global.opt))
@@ -101,13 +101,6 @@ exampleRun = function(fun, design = NULL, learner = NULL, control,
   y.true = NA
   if (!is.null(fun.mean)) {
     y.true = vnapply(convertRowsToList(getOptPathX(res$opt.path), name.list = TRUE, name.vector = TRUE), fun.mean)
-  }
-
-  if (control$multifid) {
-    n.params = n.params - 1
-    par.set = dropParams(par.set, ".multifid.lvl")
-    par.types = getParamTypes(par.set)
-    names.x = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
   }
 
   makeS3Obj("MBOExampleRun",
@@ -163,11 +156,9 @@ getEvals = function(fun, par.set, noisy, noisy.evals, points.per.dim, names.x, n
   return(evals)
 }
 
-evaluate = function(fun, par.set, n.params, par.types, noisy, noisy.evals, points.per.dim, names.x, name.y, multifid.lvls = numeric(0)) {
+evaluate = function(fun, par.set, n.params, par.types, noisy, noisy.evals, points.per.dim, names.x, name.y) {
   if (!noisy && n.params == 1L && par.types == "discrete")
     stopf("ExampleRun does not make sense with a single deterministic discrete parameter.")
-  if (length(multifid.lvls) && n.params %in% c(2L,3L) && all(par.types %in% c("numeric", "numericvector", "discrete", "integer")))
-    return(getEvals(fun, par.set, noisy, noisy.evals, points.per.dim * length(multifid.lvls), names.x, name.y))
   if (n.params %in% c(1L, 2L) && all(par.types %in% c("numeric", "numericvector", "discrete"))) {
     return(getEvals(fun, par.set, noisy, noisy.evals, points.per.dim, names.x, name.y))
   }

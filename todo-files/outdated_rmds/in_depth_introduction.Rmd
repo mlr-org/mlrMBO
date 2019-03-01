@@ -162,10 +162,6 @@ Define the method used for multi-point proposals, currently 3 different methods 
 * `multicrit`: Use a evolutionary multicriteria optimization. This is a (mu+1) type evolutionary algorithm and runs for `multicrit.maxit` generations. The population size is set to `propose.points`.
 * `cl`: Proposes points by the constant liar strategy, which only makes sense if the confidence bound criterion is used as an infill criterion. In the first step the surrugate model is fitted based on the real data and the best point is calculated accordingly. Then, the function value of the best point is simply guessed by the worst seen function evaluation. This "lie"" is used to update the model in order to propose subsequent point. The procedure is applied until the number of points has reached `propose.points`.
 
-## setMBOControlMultiFid
-
-Add multi-fidelity options to the `MBOControl` control object. This is useful when certain parameters increase the performance as well as the calculation cost. The idea is to combine the optimization of fast fitting low-fidelity models and more accurate but expensive high-fidelity models. The parameter on which the fidelity depends on is specified as `param` and the order of the values to train the learner with in `lvls`. The costs for the different levels can be specified directly or estimated by a model based on the execution time of the currently evaluated points.
-
 ## setMBOControlMultiCrit
 
 This adds multi-criteria optimization specific options to the control object. For details see the tutorial page on [multi-criteria optimization](multicrit.md).

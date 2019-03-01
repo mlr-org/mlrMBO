@@ -34,10 +34,11 @@ makeMBOResult.OptState = function(opt.state) {
   control = getOptProblemControl(opt.problem)
   final.points = getOptStateFinalPoints(opt.state)
   opt.result = getOptStateOptResult(opt.state)
+  opt.path = getOptStateOptPath(opt.state)
 
   #FIXME: There has to be a better way to notice if it's multiobjective
   #also it's possible that with getOptStateFinalPoints(... unify = TRUE) we get final.points$x. But I don't know where we do that.
-  x.df = dropNamed(final.points$x, ".multifid.lvl")
+  x.df = final.points$x
   if (!is.null(x.df) && nrow(x.df) == 1) {
     if (getOptProblemControl(opt.problem)$final.evals > 0) {
       ys = evalFinalPoint(opt.state, x.df)
@@ -48,7 +49,7 @@ makeMBOResult.OptState = function(opt.state) {
       x = dfRowToList(x.df, par.set = getOptStateParSet(opt.state), i = 1),
       y = final.points$y, # strip name
       best.ind = final.points$best.ind,
-      opt.path = getOptStateOptPath(opt.state),
+      opt.path = opt.path,
       resample.results = getOptResultResampleResults(opt.result),
       final.state = getOptStateState(opt.state),
       models = getOptResultStoredModels(opt.result),
@@ -60,7 +61,7 @@ makeMBOResult.OptState = function(opt.state) {
       pareto.front = final.points$pareto.front,
       pareto.set = final.points$pareto.set,
       pareto.inds = final.points$inds,
-      opt.path = getOptStateOptPath(opt.state),
+      opt.path = opt.path,
       final.state = getOptStateState(opt.state),
       models = getOptResultStoredModels(opt.result),
       final.opt.state = opt.state,

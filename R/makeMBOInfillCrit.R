@@ -15,6 +15,7 @@
 #'     \item{par.set [\code{ParamSet}]}{Parameter set.}
 #'     \item{design [\code{data.frame}]}{Design of already visited points.}
 #'     \item{iter [\code{integer(1)}]}{Current iteration.}
+#'     \item{progress [\code{numeric{1}}]}{A value between 0 and 1 indicating the progress of the optimization.}
 #'     \item{attributes [\code{logical{1}}]}{Are there attributes appended to the return
 #'      value that should be added to the \code{OptPath}?}
 #'   }
@@ -51,8 +52,7 @@ makeMBOInfillCrit = function(fun, name, id,
   requires.se = FALSE) {
   assertFunction(
     fun,
-    args = c("points", "models", "control",
-      "par.set", "design", "iter", "attributes"),
+    args = c("points", "models", "control", "par.set", "designs", "iter", "progress", "attributes"),
     ordered = TRUE)
 
   assertString(name)

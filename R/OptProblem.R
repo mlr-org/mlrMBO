@@ -63,8 +63,7 @@ getOptProblemControl = function(opt.problem) {
 getOptProblemParSet = function(opt.problem, original.par.set = FALSE) {
   if (original.par.set) {
     par.set = attr(getOptProblemFun(opt.problem), "original.par.set")
-  }
-  if (!original.par.set || is.null(par.set)) {
+  } else {
     par.set = getParamSet(getOptProblemFun(opt.problem))
   }
   par.set

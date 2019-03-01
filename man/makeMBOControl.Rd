@@ -109,6 +109,7 @@ Possible values are:
 \dQuote{stop}: R exception is generated.
 \dQuote{warn}: The error will be converted to a waring and a random point will be proposed.
 \dQuote{quiet}: Same as “warn” but without the warning.
+This will overwrite the mlr setting \code{on.learner.error} for the surrogate learner.
 Default is: \dQuote{stop}.}
 }
 \value{

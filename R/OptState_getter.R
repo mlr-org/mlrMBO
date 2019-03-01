@@ -24,6 +24,7 @@ getOptStateModels = function(opt.state) {
   models
 }
 
+# predictive: TRUE fixes the drift parameter to the actual time
 getOptStateTasks = function(opt.state, predictive = FALSE) {
   if (is.null(opt.state$tasks) || getOptStateLoop(opt.state) != opt.state$tasks.loop) {
     tasks = makeTasks(opt.state)
@@ -45,6 +46,11 @@ getOptStateTasks = function(opt.state, predictive = FALSE) {
     }
   }
   tasks
+}
+
+getOptStateDesigns = function(opt.state, predictive = FALSE) {
+  tasks = getOptStateTasks(opt.state, predictive = predictive)
+  lapply(tasks, getTaskData)
 }
 
 getOptStateTimeModel = function(opt.state) {
@@ -76,16 +82,7 @@ getOptStateTimeUsed = function(opt.state) {
 }
 
 getOptStateOptPath = function(opt.state) {
-  #opt.problem = getOptStateOptProblem(opt.state)
-  #control = getOptProblemControl(opt.problem)
-  #if (!is.null(control$conceptdrift.window.function)) {
-  #  res = control$conceptdrift.window.function(opt.state$opt.path)
-  #  assertClass(res, "OptPathNg")
-  #  #browser()
-  #  return(res)
-  #} else {
-    opt.state$opt.path
-  #}
+  opt.state$opt.path
 }
 
 getOptStateTimeLastSaved = function(opt.state) {
@@ -131,7 +128,7 @@ getOptStateFinalPoints = function(opt.state, unify = FALSE) {
       if (length(best.ind) > 1) {
         sub.best.ind = which(rank(maximize.mult * getOptPathY(opt.path)[best.ind], ties.method = "random") == 1L)
         best.ind = best.ind[sub.best.ind]
-      } else if (control$fix.first.iter && getOptStateLoop(opt.state) < 2){
+      } else if (isTRUE(control$fix.first.iter) && getOptStateLoop(opt.state) < 2){
         # sometimes the first model does not work reliable
         best.ind = which.min(maximize.mult * pred$data$truth)
       }
@@ -175,11 +172,16 @@ getOptStateState = function(opt.state) {
 
 getOptStateTermination = function(opt.state) {
   terminate = shouldTerminate.OptState(opt.state)
+  setOptStateProgress(opt.state, terminate$progress)
   # update only if termination condition is met
   if (terminate$term) {
     setOptStateState(opt.state, terminate$code)
   }
   terminate
+}
+
+getOptStateProgress = function(opt.state) {
+  opt.state$progress
 }
 
 getOptStateValidStates = function() {

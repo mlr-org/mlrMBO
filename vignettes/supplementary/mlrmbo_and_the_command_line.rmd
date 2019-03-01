@@ -1,0 +1,249 @@
+---
+title: mlrMBO and the command line
+vignette: >
+  %\VignetteIndexEntry{mlrMBO and the Command Line}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE, cache = FALSE, message = FALSE}
+knitr::opts_chunk$set(cache = TRUE, collapse = FALSE)
+knitr::knit_hooks$set(document = function(x){
+  gsub("```\n*```r*\n*", "", x)
+})
+library(mlrMBO)
+library(rgenoud)
+library(jsonlite)
+set.seed(123)
+```
+
+This Vignette demonstrates two ways of interaction through the command line.
+In the first part the algorithm we want to optimize is a program that we call from the command line.
+The second part shows how to call R and mlrMBO from the command line so that we don't have to interact with R at all anymore.
+
+## Optimizing an algorithm via an CLI
+
+First of all we need a bash script that we want to optimize.
+This Vignette is aimed at users of Unix systems (Linux, OSX etc.) but should also be informative for windows users.
+The following code writes a bash script that uses `bc` to calculate $sin(x_1-1) + (x_1^2 + x_2^2)$ and writes the result in a text file.
+This will serve as our target algorithm that we want to optimize.
+
+### The bash script
+
+```{r}
+# write bash script
+lines = '#!/bin/bash
+fun ()
+{
+  x1=$1
+  x2=$2
+  command="(s($x1-1) + ($x1^2 + $x2^2))"
+  result=$(bc -l <<< $command)
+}
+echo "Start calculation."
+fun $1 $2
+echo "The result is $result!" > "result.txt"
+echo "Finish calculation."
+'
+writeLines(lines, "fun.sh")
+# make it executable:
+system("chmod +x fun.sh")
+```
+
+### Running the script from R
+
+The following code is an R function that starts the script, reads the result from the text file and returns it.
+
+```{r runScript}
+library(stringi)
+runScript = function(x) {
+  command = sprintf("./fun.sh %f %f", x[['x1']], x[['x2']])
+  error.code = system(command)
+  if (error.code != 0) {
+    stop("Simulation had error.code != 0!")
+  }
+  result = readLines("result.txt")
+  # the pattern matches 12 as well as 12.34 and .34
+  # the ?: makes the decimals a non-capturing group.
+  result = stri_match_first_regex(result, pattern = "\\d*(?:\\.\\d+)?(?=\\!)")
+  as.numeric(result)
+}
+```
+
+This function uses `stringi` and _regular expressions_ to match the actual result value in the result file.
+Depending on the output different strategies to read the result make sense.
+XML files can usually be accessed with `XML::xmlParse`, `XML::getNodeSet`, `XML::xmlAttrs` etc. using `XPath` queries.
+Sometimes `read.table()` is also sufficient.
+Another way is to use `source` if the result actually can be interpreted as valid R code.
+If, for example, the output is written in a file like this:
+
+```{r, eval=FALSE}
+value1 = 23.45
+value2 = 13.82
+```
+
+We can easily use `source()` like that:
+
+```{r, eval=FALSE}
+EV = new.env()
+eval(expr = {a = 1}, envir = EV)
+as.list(EV)
+source(file = "result.txt", local = EV)
+res = as.list(EV)
+rm(EV)
+```
+
+which will return a list with the entries `$value1` and `$value2`.
+
+### Define bounds, wrap function.
+
+To evaluate the function from within **mlrMBO** it has to be wrapped in **smoof** function.
+The smoof function also contains information about the bounds and scales of the domain of the objective function defined in a _ParameterSet_.
+
+```{r smoof}
+library(mlrMBO)
+# Defining the bounds of the parameters:
+par.set = makeParamSet(
+  makeNumericParam("x1", lower = -3, upper = 3),
+  makeNumericParam("x2", lower = -2.5, upper = 2.5)
+)
+# Wrapping everything in a smoof function:
+fn = makeSingleObjectiveFunction(
+  id = "fun.sh",
+  fn = runScript,
+  par.set = par.set,
+  has.simple.signature = FALSE
+)
+```
+
+We confirm that the function works as intended and evaluate the initial design:
+```{r design}
+des = generateGridDesign(par.set, resolution = 3)
+des$y = apply(des, 1, fn)
+des
+```
+
+### Start the Optimization
+
+The optimization with mlrMBO gets started as usually:
+
+```{r runMBO}
+ctrl = makeMBOControl()
+ctrl = setMBOControlInfill(ctrl, crit = crit.ei)
+ctrl = setMBOControlTermination(ctrl, iters = 10)
+configureMlr(show.info = FALSE, show.learner.output = FALSE)
+run = mbo(fun = fn, control = ctrl)
+# The resulting optimal configuration:
+run$x
+# The best reached value:
+run$y
+```
+
+## Execute the R script from a shell
+
+To start the optimization from a command line we have to write a R-script that also serves as the configuration for mlrMBO.
+
+The following is a complete script based on the examples given above that accepts some basic arguments and writes the output as a JSON file.
+```{r mboscript, eval = FALSE}
+library(mlrMBO)
+library(stringi)
+library(jsonlite)
+
+# read command line args (in a not very safe way)
+# Script can be called like that:
+# Rscript runMBO.R iters=20 time=10 seed=1
+args = commandArgs(TRUE)
+# defaults:
+iters = 50
+time = 30
+seed = 123
+# parse args (and possibly overwrite defaults)
+for (arg in args) {
+  eval(parse(text = arg))
+}
+set.seed(seed)
+
+# write bash script
+lines = '#!/bin/bash
+fun ()
+{
+  x1=$1
+  x2=$2
+  command="(s($x1-1) + ($x1^2 + $x2^2))"
+  result=$(bc -l <<< $command)
+}
+echo "Start calculation."
+fun $1 $2
+echo "The result is $result!" > "result.txt"
+echo "Finish calculation."
+'
+writeLines(lines, "fun.sh")
+system("chmod +x fun.sh")
+
+# runScript function to execute bash script
+runScript = function(x) {
+  # console output file output_1490030005_1.1_2.4.txt
+  output_file = sprintf("output_%i_%.1f_%.1f.txt", as.integer(Sys.time()), x[['x1']], x[['x2']])
+  # redirect output with ./fun.sh 1.1 2.4 > output.txt
+  # alternative: ./fun.sh 1.1 2.4 > /dev/null to drop it
+  command = sprintf("./fun.sh %f %f > %s", x[['x1']], x[['x2']], output_file)
+  error.code = system(command)
+  if (error.code != 0) {
+    stop("Simulation had error.code != 0!")
+  }
+  result = readLines("result.txt")
+  # the pattern matches 12 as well as 12.34 and .34
+  # the ?: makes the decimals a non-capturing group.
+  result = stri_match_first_regex(result, pattern = "\\d*(?:\\.\\d+)?(?=\\!)")
+  as.numeric(result)
+}
+
+# define mlrMBO optimization
+par.set = makeParamSet(
+  makeNumericParam("x1", lower = -3, upper = 3),
+  makeNumericParam("x2", lower = -2.5, upper = 2.5)
+)
+fn = makeSingleObjectiveFunction(
+  id = "fun.sh",
+  fn = runScript,
+  par.set = par.set,
+  has.simple.signature = FALSE
+)
+ctrl = makeMBOControl()
+ctrl = setMBOControlInfill(ctrl, crit = crit.ei)
+ctrl = setMBOControlTermination(ctrl, iters = iters, time.budget = time)
+configureMlr(show.info = FALSE, show.learner.output = FALSE)
+run = mbo(fun = fn, control = ctrl)
+
+# clean up intermediate files:
+file.remove("result.txt")
+output.files = list.files(pattern = "output_\\d+_[0-9_.-]+\\.txt")
+file.remove(output.files)
+
+# save result to json
+write_json(run[c("x","y")], "mbo_res.json")
+```
+
+Assuming we saved the lines above in a file called `runMBO.R`, we can simply run it from the command line as follows:
+
+```{bash, eval = FALSE}
+Rscript runMBO.R
+```
+
+As the script also handles some additional arguments it can also be called with the number of MBO iterations (`iters`), the maximal time budget in seconds (`time`) and a `seed` value for reproducibility.
+
+```{bash, eval = FALSE}
+Rscript runMBO.R iters=20 time=10 seed=3
+```
+
+To build a more advanced command line interface you might want to have a [look](https://www.slideshare.net/EdwindeJonge1/docopt-user2014) [at](https://github.com/docopt/docopt.R) [docopt](https://cran.r-project.org/package=docopt).
+
+
+```{r cleanUp, include=FALSE}
+file.remove("result.txt")
+file.remove("fun.sh")
+file.remove("mbo_res.json")
+file.remove("result.txt")
+output.files = list.files(pattern = "output_\\d+_[0-9_.-]+\\.txt")
+file.remove(output.files)
+```

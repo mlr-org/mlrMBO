@@ -1,0 +1,61 @@
+---
+title: "Adaptive Infill Criteria"
+vignette: >
+  %\VignetteIndexEntry{Infill criteria}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+library(mlrMBO)
+library(rgenoud)
+set.seed(1)
+knitr::opts_chunk$set(cache = TRUE, collapse = FALSE)
+knitr::knit_hooks$set(document = function(x){
+  gsub("```\n*```r*\n*", "", x)
+})
+```
+
+## Purpose
+
+This vignette gives a short example of the usage of the adaptive infill criteria in `mlrMBO`.
+
+## Adaptive Infill Criteria
+
+An adaptive infill criterion can change its behaviour based on the progress of the optimization.
+The progress has to be supplied by the termination criterion.
+All integrated termination criteria support this feature.
+
+## Exemplary Usage of the Adaptive CB
+
+To specify which infill criterion should be used, the `MBOControl` object has to be extended by calling `setMBOControlInfill()`.
+In addition to the criterion you can also set the parameters of the infill criterion optimization.
+The criterion itself is created with `makeMBOInfillCrit*()`.
+The most common infill criteria are predefined like `crit.ei` and `crit.cb2`. See `?MBOInfillCrit` for details.
+
+```{r control}
+ctrl = makeMBOControl()
+ctrl = setMBOControlTermination(ctrl, iters = 10L)
+ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCritAdaCB(cb.lambda.start = 4, cb.lambda.end = 0.1))
+```
+
+This will lead to an CB infill criterion ($CB(x) = \hat{\mu}(x) \pm \lambda * \hat{s}(x)$) that will focus on uncertain regions in the beginning (`cb.lambda.start = 4`) and towards the end will have a stronger focus on areas close to the global minimum of the surrogate (`cb.lambda.end = 0.1`).
+
+```{r fun}
+test.fun = makeSingleObjectiveFunction(
+ fn = function(x) x[1]^2 * sin(3 * x[2]),
+ par.set = makeNumericParamSet(lower = 0, upper = 1, len = 2L)
+)
+```
+
+You can now start the optimization like usual:
+
+```{r example, results = "hide", message = FALSE, warning = FALSE}
+res = mbo(test.fun, control = ctrl)
+```
+
+If we look at the OptPath we can see the different progress values and the resulting different values of lambda.
+
+```{r res}
+tail(as.data.frame(res$opt.path))
+```

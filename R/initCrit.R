@@ -40,6 +40,15 @@ initCrit.InfillCritCB = function(crit, fun, design, learner, control) {
   initCritOptDirection(crit, fun)
 }
 
+#' @export
+initCrit.InfillCritAdaCB = function(crit, fun, design, learner, control) {
+  cb.lambda = crit$params$cb.lambda
+  if (is.null(cb.lambda))
+    cb.lambda = ifelse(isSimpleNumeric(getParamSet(fun)), 1, 2)
+  crit = makeMBOInfillCritAdaCB(2 * cb.lambda, 0.5 * cb.lambda)
+  initCritOptDirection(crit, fun)
+}
+
 # sets the opt.direction to minimize or maximize depending on the object function.
 initCritOptDirection = function(crit, fun) {
   if (crit$opt.direction == "objective") {
