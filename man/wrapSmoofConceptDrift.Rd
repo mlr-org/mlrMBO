@@ -7,11 +7,11 @@
 wrapSmoofConceptDrift(fn, drift.param)
 }
 \arguments{
+\item{fn}{[\code{smoof_function}]\cr
+The smoof function that you want to wrap.}
+
 \item{drift.param}{[\code{character(1)}]\cr
 The parameter that defines the drift.}
-
-\item{fun}{[\code{smoof_function}]\cr
-The smoof function that you want to wrap.}
 }
 \value{
 return_type

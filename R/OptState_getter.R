@@ -40,7 +40,8 @@ getOptStateTasks = function(opt.state, predictive = FALSE) {
       tasks = lapply(tasks, function(z) {
         data = z$env$data
         data[, names(fixed.x)] = fixed.x
-        z = mlr:::changeData(task = z, data = data)
+        changeData = getFromNamespace("changeData", "mlr")
+        z = changeData(task = z, data = data)
         return(z)
       })
     }
@@ -125,10 +126,10 @@ getOptStateFinalPoints = function(opt.state, unify = FALSE) {
       pred = predict(model, task = task)
       best.ind = which(rank(maximize.mult * pred$data$response, ties.method = "min") == 1L)
       # if we have ties the model might give constant predictions so we use the best y from the observations
-      if (length(best.ind) > 1) {
+      if (length(best.ind) > 1 && !isTRUE(control$fix.constant.model)) {
         sub.best.ind = which(rank(maximize.mult * getOptPathY(opt.path)[best.ind], ties.method = "random") == 1L)
         best.ind = best.ind[sub.best.ind]
-      } else if (isTRUE(control$fix.first.iter) && getOptStateLoop(opt.state) < 2){
+      } else if (isTRUE(control$fix.constant.model)) {
         # sometimes the first model does not work reliable
         best.ind = which.min(maximize.mult * pred$data$truth)
       }

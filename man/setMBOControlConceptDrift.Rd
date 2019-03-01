@@ -6,7 +6,7 @@
 \usage{
 setMBOControlConceptDrift(control, drift.function = identity,
   window.function = identity, learn.drift = FALSE,
-  calculate.th.final.point = FALSE, fix.first.iter = FALSE)
+  calculate.th.final.point = FALSE, fix.constant.model = FALSE)
 }
 \arguments{
 \item{control}{[\code{\link{MBOControl}}]\cr
@@ -24,6 +24,9 @@ Should the drift param be included in the surrogate?}
 \item{calculate.th.final.point}{[\code{logical(1)}]\cr
 Should the best predicted y be added to the opt.path after each iteration?
 Note, that this will be always the theoretical best values of the previous dob!}
+
+\item{fix.constant.model}{[\code{logical(1)}]\cr
+If \code{TRUE} and the model gives constant predictions we will propose the x that led to the best y and not ask the model for predictions.}
 }
 \value{
 [\code{\link{MBOControl}}].

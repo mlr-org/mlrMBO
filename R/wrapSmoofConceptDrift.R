@@ -3,7 +3,7 @@
 #' @description
 #' Wrap a smoof function for concept drift.
 #'
-#' @param fun [\code{smoof_function}]\cr
+#' @param fn [\code{smoof_function}]\cr
 #'   The smoof function that you want to wrap.
 #' @param drift.param [\code{character(1)}]\cr
 #'   The parameter that defines the drift.
