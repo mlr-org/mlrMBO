@@ -64,3 +64,8 @@ setOptStateProgress = function(opt.state, progress) {
   opt.state$progress = progress
   invisible()
 }
+
+setOptStateHookStore = function(opt.state, hook.result) {
+  opt.state$hook.store = rbind(opt.state$hook.store, data.table(loop = getOptStateLoop(opt.state), store = list(hook.result)))
+  invisible()
+}

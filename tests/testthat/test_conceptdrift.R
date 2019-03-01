@@ -63,7 +63,7 @@ test_that("conceptdrift with time as covariate", {
 
   res = mbo(fun = w.fn, control = ctrl)
 
-  g = plot(res$final.opt.state)
+  g = plot(res$final.opt.state, scale.panels = TRUE)
   expect_class(g, "ggplot")
 
   op1 = as.data.frame(res$opt.path)

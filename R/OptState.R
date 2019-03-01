@@ -68,6 +68,7 @@ makeOptState = function(opt.problem, loop = 0L, tasks = NULL, models = NULL,
   opt.state$loop.starttime = loop.starttime
   opt.state$time.used = time.used
   opt.state$progress = progress
+  opt.state$hook.store = data.table(loop = numeric(0L), store = list()) # here the evalOptStateHook can save some data
 
   opt.state$random.seed = getRandomSeed()
   opt.state$time.created = time.created
@@ -120,6 +121,15 @@ makeOptStateMboResult = function(opt.state) {
   mbo.result = makeMBOResult.OptState(opt.state)
   setOptResultMboResult(opt.result, mbo.result)
   mbo.result
+}
+
+evalOptStateHook = function(opt.state) {
+  opt.problem = getOptStateOptProblem(opt.state)
+  control = getOptProblemControl(opt.problem)
+  if (!is.null(control$hook)) {
+    res = control$hook(opt.state)
+    setOptStateHookStore(opt.state, res)
+  }
 }
 
 print.OptState = function(x, ...) {

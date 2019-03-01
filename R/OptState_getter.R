@@ -133,7 +133,13 @@ getOptStateFinalPoints = function(opt.state, unify = FALSE) {
         # sometimes the first model does not work reliable
         best.ind = which.min(maximize.mult * pred$data$truth)
       }
-      getBestOp(best.ind)
+      # fake getBestOp here v
+      best.data = getTaskData(task)[best.ind, , drop = FALSE]
+      list(
+        x = best.data[, setdiff(colnames(best.data), control$y.name), drop = FALSE],
+        y = best.data[, control$y.name], # drop intended
+        best.ind = best.ind
+      )
     } else if (control$final.method == "predict") {
       # FIXME: Untested, just an idea!
       control2 = control

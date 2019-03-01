@@ -69,7 +69,7 @@ plot.OptState = function(x, scale.panels = FALSE, ...) {
   }
   if (par.count.numeric == 2) {
     g = ggplot2::ggplot(mdata, ggplot2::aes_string(x = x.ids[1], y = x.ids[2], fill = "value"))
-    g = g + ggplot2::geom_tile()
+    g = g + ggplot2::geom_raster()
     g = g + ggplot2::geom_point(data = design, mapping = ggplot2::aes_string(x = x.ids[1], y = x.ids[2], fill = y.ids[1], shape = "type"))
     g = g + ggplot2::facet_grid(~variable)
     brewer.div = colorRampPalette(RColorBrewer::brewer.pal(11, "Spectral"), interpolate = "spline")
@@ -92,5 +92,35 @@ plot.OptState = function(x, scale.panels = FALSE, ...) {
     }
   }
   g = g + ggplot2::scale_shape_manual(values = c(init = 16, seq = 15))
+  g
+}
+
+# plots the opt.state for a 2d function with one dimension as concept drift param.
+# for learn.drift == TRUE
+plotCDWithFun = function(x) {
+  opt.state = x
+  models = getOptStateModels(opt.state)
+  model = models$models[[1]]
+  opt.problem = getOptStateOptProblem(opt.state)
+  control = getOptProblemControl(opt.problem)
+  par.set = getOptStateParSet(opt.state)
+  points = generateGridDesign(par.set, 100)
+  fun = getOptProblemFun(opt.problem)
+  drift.param = attr(fun, "drift.param")
+  design = getOptStateDesigns(opt.state)[[1]]
+
+  y = apply(points[, getParamIds(par.set, TRUE, TRUE), drop = FALSE] , 1, fun)
+  task = makeRegrTask(target = "y", data = cbind.data.frame(points, y = y))
+
+  infill.res = control$infill.crit$fun(points = points, models = getOptStateModels(opt.state)$models, control = control, par.set = par.set, designs = getOptStateDesigns(opt.state), attributes = TRUE, iter = getOptStateLoop(opt.state))
+
+  crit.components = attr(infill.res, "crit.components")
+  plot.data = data.table::data.table(infill = infill.res, crit.components, points)
+  plot.data$y = y
+
+  mdata = data.table::melt(plot.data, id.vars = getParamIds(getParamSet(fun)))
+  g = ggplot(mdata, aes_string(x = getParamIds(getParamSet(fun)), y = "value"))
+  g = g + geom_line() + facet_grid(variable~., scales = "free")
+  g = g + geom_point(data = cbind(design, variable = "y"), aes_string(y = "y", color = drift.param))
   g
 }

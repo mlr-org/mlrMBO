@@ -51,6 +51,8 @@ finalizeMboLoop = function(opt.state) {
   opt.result = getOptStateOptResult(opt.state)
   setOptResultResampleResults(opt.result, opt.state)
   setOptResultStoredModels(opt.result, opt.state)
+  # final hook
+  evalOptStateHook(opt.state)
   # Indicate, that we are finished by increasing the loop by one
   setOptStateLoop(opt.state)
   # save on disk routine
