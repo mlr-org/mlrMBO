@@ -28,7 +28,8 @@ test_that("mbo works with different learners", {
       ctrl$infill.crit = crit.mr
     }
     des = generateTestDesign(10L, getParamSet(fun))
-    mbo(fun, des, learner = lrn, control = ctrl)
+    res = mbo(fun, des, learner = lrn, control = ctrl)
+    expect_class(res, "MBOResult")
   }
 
   # and now a huge number of runs
