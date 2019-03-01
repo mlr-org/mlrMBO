@@ -9,9 +9,16 @@ OptPathNgCd = R6Class("OptPathNgCd",
       super$initialize(...)
     },
     drift.param = NULL,
-    window.function = NULL
+    window.function = NULL,
+    window.function.active = TRUE
   ),
   active = list(
-    data = function() self$window.function(super$data)
+    data = function() {
+      if (self$window.function.active) {
+        self$window.function(super$data)
+      } else {
+        super$data
+      }
+    }
   )
 )

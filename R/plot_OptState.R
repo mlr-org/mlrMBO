@@ -16,45 +16,26 @@ plot.OptState = function(x, scale.panels = FALSE, ...) {
   opt.state = x
   opt.problem = getOptStateOptProblem(opt.state)
   control = getOptProblemControl(opt.problem)
-  par.set.complete = getOptProblemParSet(opt.problem, original.par.set = TRUE)
   par.set = getOptStateParSet(opt.state)
-  par.dim = getParamNr(par.set.complete, devectorize = TRUE)
+  par.dim = getParamNr(par.set, devectorize = TRUE)
   if (par.dim > 2) {
     stop("Only plotting for 1- and 2-dimensional search spaces is possible.")
   }
-  par.types = getParamTypes(par.set.complete, use.names = TRUE, with.nr = TRUE, df.cols = TRUE, df.discretes.as.factor = TRUE)
+  par.types = getParamTypes(par.set, use.names = TRUE, with.nr = TRUE, df.cols = TRUE, df.discretes.as.factor = TRUE)
   par.is.numeric = par.types %in% c("numeric", "integer")
   par.count.numeric = sum(par.is.numeric)
   par.count.discrete = par.dim - par.count.numeric
   opt.path = getOptStateOptPath(opt.state)
   models = getOptStateModels(opt.state)$models
-  x.ids.complete = getParamIds(par.set.complete, repeated = TRUE, with.nr = TRUE)
+  designs = getOptStateDesigns(opt.state)
   x.ids = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
   y.ids = control$y.name
   infill = control$infill.crit
 
-  if ("OptPathNgCd" %in% class(opt.path)) {
-    old.window.function = opt.path$window.function
-    opt.path$window.function = identity
-    designs = getOptStateDesigns(opt.state, predictive = TRUE)
-    design = designs[[1]]
-    opdf = as.data.frame(opt.path)
-    if (!all(x.ids.complete %in% x.ids)) {
-      design.complete = cbind(design, opdf[, setdiff(x.ids.complete, x.ids), drop = FALSE])
-    } else {
-      design.complete = design
-    }
-    designs = list(design)
-    opt.path$window.function = old.window.function
-  }
-  else {
-    designs = getOptStateDesigns(opt.state, predictive = TRUE)
-    design = designs[[1]]
-  }
-
   # the data we need to plot
-  points = generateGridDesign(par.set.complete, 100, trafo = TRUE)
-  infill.res = infill$fun(points = points[, x.ids, drop = FALSE], models = models, control = control, par.set = par.set, designs = designs, attributes = TRUE, iter = getOptStateLoop(opt.state))
+  points = generateGridDesign(getOptProblemParSet(opt.problem, original.par.set = isTRUE(control$conceptdrift.learn.drift)), 100, trafo = FALSE)
+
+  infill.res = infill$fun(points = points, models = models, control = control, par.set = par.set, designs = designs, attributes = TRUE, iter = getOptStateLoop(opt.state))
 
   crit.components = attr(infill.res, "crit.components")
   if (!is.null(crit.components)) {
@@ -68,16 +49,18 @@ plot.OptState = function(x, scale.panels = FALSE, ...) {
   }
   colnames(plot.data)[1] = control$infill.crit$id
 
+  design = designs[[1]]
+
   # add types to points
   design$type = ifelse(getOptPathDOB(opt.path) == 0, "init", "seq")
 
   # reduce to usefull infill components
-  use.only.columns = c(x.ids.complete, control$infill.crit$id, "mean", "se")
+  use.only.columns = c(x.ids, control$infill.crit$id, "mean", "se")
   use.only.columns = intersect(use.only.columns, colnames(plot.data))
   plot.data = plot.data[, use.only.columns, with = FALSE]
 
   # prepare data for ggplot2
-  mdata = data.table::melt(plot.data, id.vars = x.ids.complete)
+  mdata = data.table::melt(plot.data, id.vars = x.ids)
   mdata$variable = factor(mdata$variable, levels = intersect(use.only.columns, levels(mdata$variable)))
   if (scale.panels && par.dim == 2) {
     predict.range = range(mdata[get("variable")=="mean", "value"])
@@ -85,17 +68,17 @@ plot.OptState = function(x, scale.panels = FALSE, ...) {
     design[[y.ids]] = (design[[y.ids]] + (0 - predict.range[1])) / diff(predict.range)
   }
   if (par.count.numeric == 2) {
-    g = ggplot2::ggplot(mdata, ggplot2::aes_string(x = x.ids.complete[1], y = x.ids.complete[2]))
-    g = g + ggplot2::geom_tile(aes_string(fill = "value"))
-    g = g + ggplot2::geom_point(data = design, mapping = ggplot2::aes_string(x = x.ids.complete[1], y = x.ids.complete[2], shape = "type"))
+    g = ggplot2::ggplot(mdata, ggplot2::aes_string(x = x.ids[1], y = x.ids[2], fill = "value"))
+    g = g + ggplot2::geom_tile()
+    g = g + ggplot2::geom_point(data = design, mapping = ggplot2::aes_string(x = x.ids[1], y = x.ids[2], fill = y.ids[1], shape = "type"))
     g = g + ggplot2::facet_grid(~variable)
     brewer.div = colorRampPalette(RColorBrewer::brewer.pal(11, "Spectral"), interpolate = "spline")
     g = g + ggplot2::scale_fill_gradientn(colours = brewer.div(200))
   } else if (par.count.numeric == 1) {
-    g = ggplot2::ggplot(mdata, ggplot2::aes_string(x = x.ids.complete[par.is.numeric], y = "value"))
+    g = ggplot2::ggplot(mdata, ggplot2::aes_string(x = x.ids[par.is.numeric], y = "value"))
     g = g + ggplot2::geom_line()
-    g = g + ggplot2::geom_vline(data = design, mapping = ggplot2::aes_string(xintercept = x.ids.complete[par.is.numeric]), alpha = 0.5, size = 0.25)
-    g = g + ggplot2::geom_point(data = cbind(design, variable = "mean"), mapping = ggplot2::aes_string(x = x.ids.complete[par.is.numeric], y = y.ids[1], shape = "type", color = "type"))
+    g = g + ggplot2::geom_vline(data = design, mapping = ggplot2::aes_string(xintercept = x.ids[par.is.numeric]), alpha = 0.5, size = 0.25)
+    g = g + ggplot2::geom_point(data = cbind(design, variable = "mean"), mapping = ggplot2::aes_string(x = x.ids[par.is.numeric], y = y.ids[1], shape = "type", color = "type"))
     g = g + ggplot2::scale_color_manual(values = c(init = "red", seq = "green"))
     if (par.count.discrete == 1) {
       formula.txt = paste0(names(par.types[!par.is.numeric]),"~variable")

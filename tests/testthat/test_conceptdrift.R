@@ -42,7 +42,7 @@ test_that("conceptdrift with window", {
 })
 
 test_that("conceptdrift with time as covariate", {
-  fn = makeRosenbrockFunction(5)
+  fn = makeRosenbrockFunction(2)
   w.fn = wrapSmoofConceptDrift(fn = fn, drift.param = "x1")
 
   mbo.iters = 10
@@ -63,8 +63,11 @@ test_that("conceptdrift with time as covariate", {
 
   res = mbo(fun = w.fn, control = ctrl)
 
+  g = plot(res$final.opt.state)
+  expect_class(g, "ggplot")
+
   op1 = as.data.frame(res$opt.path)
-  expect_data_frame(op1, nrows = mbo.iters + 4 * 4)
+  expect_data_frame(op1, nrows = mbo.iters + 4)
   mbo.cd.colnames = c(paste0("final.x.",getParamIds(getParamSet(fn), TRUE, TRUE)), "final.y")
   expect_subset(mbo.cd.colnames, colnames(op1))
   for (cname in mbo.cd.colnames) {
