@@ -225,41 +225,31 @@ Further arguments passed to fitness function.</p></td>
 <span class='no'>des</span> <span class='kw'>=</span> <span class='fu'>generateDesign</span>(<span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>5L</span>, <span class='fu'>getParamSet</span>(<span class='no'>obj.fun</span>), <span class='kw'>fun</span> <span class='kw'>=</span> <span class='kw pkg'>lhs</span><span class='kw ns'>::</span><span class='no'><a href='https://www.rdocumentation.org/packages/lhs/topics/maximinLHS'>maximinLHS</a></span>)
 
 <span class='co'># start mbo</span>
-<span class='no'>res</span> <span class='kw'>=</span> <span class='fu'>mbo</span>(<span class='no'>obj.fun</span>, <span class='kw'>design</span> <span class='kw'>=</span> <span class='no'>des</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='no'>ctrl</span>)
-
+<span class='no'>res</span> <span class='kw'>=</span> <span class='fu'>mbo</span>(<span class='no'>obj.fun</span>, <span class='kw'>design</span> <span class='kw'>=</span> <span class='no'>des</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='no'>ctrl</span>)</div><div class='output co'>#&gt; <span class='message'>Computing y column(s) for design. Not provided.</span></div><div class='output co'>#&gt; <span class='message'>[mbo] 0: x=0.494,0.412 : y = 0.645 : 0.0 secs : initdesign</span></div><div class='output co'>#&gt; <span class='message'>[mbo] 0: x=-0.122,0.0783 : y = 0.093 : 0.0 secs : initdesign</span></div><div class='output co'>#&gt; <span class='message'>[mbo] 0: x=-0.208,-0.325 : y = -0.276 : 0.0 secs : initdesign</span></div><div class='output co'>#&gt; <span class='message'>[mbo] 0: x=0.897,-0.988 : y = -0.0307 : 0.0 secs : initdesign</span></div><div class='output co'>#&gt; <span class='message'>[mbo] 0: x=-0.979,0.69 : y = 1.6 : 0.0 secs : initdesign</span></div><div class='output co'>#&gt; <span class='message'>[mbo] 1: x=1,-0.322 : y = 0.683 : 0.0 secs : infill_cb</span></div><div class='output co'>#&gt; <span class='message'>[mbo] 2: x=-0.181,-0.691 : y = -0.605 : 0.0 secs : infill_cb</span></div><div class='output co'>#&gt; <span class='message'>[mbo] 3: x=0.103,-1 : y = -0.831 : 0.0 secs : infill_cb</span></div><div class='input'>
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/print'>print</a></span>(<span class='no'>res</span>)</div><div class='output co'>#&gt; Recommended parameters:
-#&gt; x=-0.0306,-0.0169
-#&gt; Objective: y = -0.016
+#&gt; x=0.103,-1
+#&gt; Objective: y = -0.831
 #&gt; 
 #&gt; Optimization path
 #&gt; 5 + 3 entries in total, displaying last 10 (or less):
-#&gt;            x1          x2           y dob eol error.message exec.time
-#&gt; 1 -0.96769994 -0.26626679  0.67331156   0  NA          &lt;NA&gt;         0
-#&gt; 2  0.44030435  0.66288338  0.80926007   0  NA          &lt;NA&gt;         0
-#&gt; 3 -0.19704022 -0.01344260  0.02538265   0  NA          &lt;NA&gt;         0
-#&gt; 4 -0.40088904  0.31590690  0.47139064   0  NA          &lt;NA&gt;         0
-#&gt; 5  0.89315279 -0.69099140  0.16042044   0  NA          &lt;NA&gt;         0
-#&gt; 6 -0.03064098 -0.01689882 -0.01595915   1  NA          &lt;NA&gt;         0
-#&gt; 7  0.74929441 -0.04045232  0.52100082   2  NA          &lt;NA&gt;         0
-#&gt; 8 -0.92334595 -0.01841571  0.83415307   3  NA          &lt;NA&gt;         0
-#&gt;            cb error.model train.time  prop.type propose.time        se
-#&gt; 1          NA        &lt;NA&gt;         NA initdesign           NA        NA
-#&gt; 2          NA        &lt;NA&gt;         NA initdesign           NA        NA
-#&gt; 3          NA        &lt;NA&gt;         NA initdesign           NA        NA
-#&gt; 4          NA        &lt;NA&gt;         NA initdesign           NA        NA
-#&gt; 5          NA        &lt;NA&gt;         NA initdesign           NA        NA
-#&gt; 6 -0.07233364        &lt;NA&gt;      0.152  infill_cb        0.180 0.1763127
-#&gt; 7 -0.17097244        &lt;NA&gt;      0.059  infill_cb        0.221 0.1632562
-#&gt; 8 -0.08533772        &lt;NA&gt;      0.071  infill_cb        0.167 0.1050546
-#&gt;           mean lambda
-#&gt; 1           NA     NA
-#&gt; 2           NA     NA
-#&gt; 3           NA     NA
-#&gt; 4           NA     NA
-#&gt; 5           NA     NA
-#&gt; 6  0.103979063      1
-#&gt; 7 -0.007716266      1
-#&gt; 8  0.019716910      1</div><span class='co'># NOT RUN {</span>
+#&gt;           x1          x2           y dob eol error.message exec.time         cb
+#&gt; 1  0.4941278  0.41208499  0.64468297   0  NA          &lt;NA&gt;     0.000         NA
+#&gt; 2 -0.1216173  0.07832955  0.09304025   0  NA          &lt;NA&gt;     0.000         NA
+#&gt; 3 -0.2077841 -0.32457760 -0.27573422   0  NA          &lt;NA&gt;     0.000         NA
+#&gt; 4  0.8966086 -0.98750787 -0.03074897   0  NA          &lt;NA&gt;     0.000         NA
+#&gt; 5 -0.9794215  0.69022501  1.59597716   0  NA          &lt;NA&gt;     0.000         NA
+#&gt; 6  0.9999967 -0.32226298  0.68327963   1  NA          &lt;NA&gt;     0.000 -0.6290274
+#&gt; 7 -0.1807007 -0.69122233 -0.60482669   2  NA          &lt;NA&gt;     0.000 -0.4985452
+#&gt; 8  0.1029667 -0.99996360 -0.83084918   3  NA          &lt;NA&gt;     0.001 -1.0001956
+#&gt;   error.model train.time  prop.type propose.time        se       mean lambda
+#&gt; 1        &lt;NA&gt;         NA initdesign           NA        NA         NA     NA
+#&gt; 2        &lt;NA&gt;         NA initdesign           NA        NA         NA     NA
+#&gt; 3        &lt;NA&gt;         NA initdesign           NA        NA         NA     NA
+#&gt; 4        &lt;NA&gt;         NA initdesign           NA        NA         NA     NA
+#&gt; 5        &lt;NA&gt;         NA initdesign           NA        NA         NA     NA
+#&gt; 6        &lt;NA&gt;      0.112  infill_cb        0.162 0.3197429 -0.3092844      1
+#&gt; 7        &lt;NA&gt;      0.053  infill_cb        0.189 0.3779856 -0.1205596      1
+#&gt; 8        &lt;NA&gt;      0.051  infill_cb        0.155 0.1795866 -0.8206090      1</div><span class='co'># NOT RUN {</span>
 <span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='no'>res</span>)
 <span class='co'># }</span></pre>
   </div>
@@ -282,7 +272,7 @@ Further arguments passed to fitness function.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
 </div>
       </footer>
    </div>
