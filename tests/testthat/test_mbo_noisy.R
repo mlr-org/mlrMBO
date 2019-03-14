@@ -52,5 +52,26 @@ test_that("mbo works with self replicating instances of noisy problems", {
   ctrl = setMBOControlNoisy(ctrl, self.replicating = TRUE)
   or = mbo(fun, control = ctrl)
   expect_true(abs(sum(or$x$x))<5)
+
+  # deals with errors in noisy repls
+  if (FALSE) {
+    ps = makeNumericParamSet("x", 2, -7, 7)
+    fun = smoof::makeSingleObjectiveFunction(
+      fn = function(x) {
+        x = sum(unlist(x))
+        res = x^2 + rnorm(5, 0.01)
+        res = as.list(res)
+        res[[1]] = base::simpleError("Something went wrong!")
+      },
+      par.set = ps,
+      noisy = TRUE
+    )
+    ctrl = makeMBOControl(final.method = "best.predicted", impute.y.fun = function(x, y, opt.path) 0, on.surrogate.error = "warn")
+    ctrl = setMBOControlTermination(ctrl, iters = 5L)
+    ctrl = setMBOControlInfill(ctrl, crit = crit.aei, opt.focussearch.points = 100L)
+    ctrl = setMBOControlNoisy(ctrl, self.replicating = TRUE)
+    or = mbo(fun, control = ctrl)
+    as.data.frame(or$opt.path)
+  }
 })
 
