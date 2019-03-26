@@ -103,3 +103,10 @@ crit.dib1 = makeMBOInfillCritDIB(cb.lambda = 1)
 #' @format NULL
 #' @keywords NULL
 crit.poi = makeMBOInfillCritPOI()
+#' @rdname MBOInfillCrit
+#' @export
+#' @usage NULL
+#' @docType NULL
+#' @format NULL
+#' @keywords NULL
+crit.sei = makeMBOInfillCritSEI()
