@@ -34,7 +34,7 @@ plot.OptState = function(x, scale.panels = FALSE, ...) {
 
   # the data we need to plot
   points = generateGridDesign(par.set, 100, trafo = FALSE)
-  
+
   infill.res = infill$fun(points = points, models = models, control = control, par.set = par.set, designs = designs, attributes = TRUE, iter = getOptStateLoop(opt.state))
 
   crit.components = attr(infill.res, "crit.components")
@@ -69,7 +69,7 @@ plot.OptState = function(x, scale.panels = FALSE, ...) {
   }
   if (par.count.numeric == 2) {
     g = ggplot2::ggplot(mdata, ggplot2::aes_string(x = x.ids[1], y = x.ids[2], fill = "value"))
-    g = g + ggplot2::geom_tile()
+    g = g + ggplot2::geom_raster()
     g = g + ggplot2::geom_point(data = design, mapping = ggplot2::aes_string(x = x.ids[1], y = x.ids[2], fill = y.ids[1], shape = "type"))
     g = g + ggplot2::facet_grid(~variable)
     brewer.div = colorRampPalette(RColorBrewer::brewer.pal(11, "Spectral"), interpolate = "spline")
