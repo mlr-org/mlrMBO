@@ -135,8 +135,9 @@ makeMBOInfillCritSEI = function(se.threshold = 1e-6) {
       d.xcr = dnorm(xcr)
       ei = d * p.xcr + p.se * d.xcr
       vi = p.se^2 * ((xcr^2 + 1) * p.xcr + xcr * d.xcr) - ei^2
+      vi = pmax(0, vi)
       sei = ei / sqrt(vi)
-      res = ifelse(p.se < se.threshold, 0, -sei)
+      res = ifelse(p.se < se.threshold | is.infinite(sei) | is.nan(sei), 0, -sei)
       if (attributes) {
         res = setAttribute(res, "crit.components", data.frame(se = p$se, mean = p$response))
       }
