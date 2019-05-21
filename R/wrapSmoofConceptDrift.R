@@ -42,7 +42,7 @@ wrapSmoofConceptDriftNumeric = function(fn, drift.param) {
   if (isVector(par.set)) {
     ps.length = getParamLengths(par.set)
     if (length(ps.length)>1) {
-      stop("Vector ParamSet with more then one VectorParam are not supported!")
+      stop("Vector ParamSet with more then one (Vector)Param are not supported!")
     }
     par = par.set$pars[[1]]
     if (par$type != "numericvector") {
