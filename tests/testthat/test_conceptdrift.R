@@ -68,11 +68,13 @@ test_that("conceptdrift with time as covariate", {
 
   op1 = as.data.frame(res$opt.path)
   expect_data_frame(op1, nrows = mbo.iters + 4)
-  mbo.cd.colnames = c(paste0("final.x.",getParamIds(getParamSet(fn), TRUE, TRUE)), "final.y")
+  mbo.cd.colnames = c(paste0("final.x.",getParamIds(getParamSet(fn), TRUE, TRUE)), "final.hat.y")
   expect_subset(mbo.cd.colnames, colnames(op1))
   for (cname in mbo.cd.colnames) {
-    expect_numeric(op1[[cname]][-(1:4*4)])
+    expect_numeric(tail(op1[[cname]],-4*4))
   }
+  # suggested final.x.x1 (drift param) should equal actual time!
+  expect_equal(tail(op1[["x1"]],-4*4), tail(op1[["final.x.x1"]],-4*4))
 
   ctrl = makeMBOControl(final.method = "predict")
   ctrl = setMBOControlConceptDrift(
@@ -84,6 +86,7 @@ test_that("conceptdrift with time as covariate", {
 
   res = mbo(fun = w.fn, control = ctrl)
   op1 = as.data.frame(res$opt.path)
+  expect_equal(tail(op1[["x1"]],-4*4), tail(op1[["final.x.x1"]],-4*4))
 })
 
 

@@ -35,16 +35,16 @@ getOptStateTasks = function(opt.state, predictive = FALSE) {
   opt.problem = getOptStateOptProblem(opt.state)
   control = getOptProblemControl(opt.problem)
   if (predictive && !is.null(getOptProblemDriftParam(opt.problem)) && control$conceptdrift.learn.drift) {
+    # FIXME We do not fix t as it seems! Make Test!
     fixed.x = getOptStateFixedLearnableParam(opt.state)
-    if (length(fixed.x > 0)) {
-      tasks = lapply(tasks, function(z) {
-        data = z$env$data
-        data[, names(fixed.x)] = fixed.x
-        changeData = getFromNamespace("changeData", "mlr")
-        z = changeData(task = z, data = data)
-        return(z)
-      })
-    }
+    stopifnot(length(fixed.x) > 0)
+    tasks = lapply(tasks, function(z) {
+      data = z$env$data
+      data[, names(fixed.x)] = fixed.x
+      changeData = getFromNamespace("changeData", "mlr")
+      z = changeData(task = z, data = data)
+      return(z)
+    })
   }
   tasks
 }

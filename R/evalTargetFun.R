@@ -106,8 +106,11 @@ evalTargetFun.OptState = function(opt.state, xs, extras) {
     # add theoretical final point
     if (isTRUE(control$calculate.th.final.point) && getOptStateLoop(opt.state) > 0) {
       th.final = getOptStateFinalPoints(opt.state)
-      th.final = unlist(th.final[c("x","y")])
-      names(th.final) = paste0("final.", names(th.final))
+      th.final.x = unlist(th.final["x"])
+      th.final.y = unlist(th.final["y"])
+      names(th.final.x) = paste0("final.", names(th.final.x))
+      names(th.final.y) = paste0("final.hat.", names(th.final.y))
+      th.final = c(th.final.x, th.final.y)
     } else {
       th.final = list()
     }
