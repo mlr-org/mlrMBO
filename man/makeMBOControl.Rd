@@ -32,7 +32,8 @@ Can be bad if target function is noisy.
 \dQuote{last.proposed}: Return the last point proposed by the model.
 \dQuote{best.predicted}: Use the final model to predict all points ever visited and use the best one.
 This might average-out noisy function values.
-\dQuote{predict}: Use the final model to find best point in search space using only the surrogate at this moment.
+Also known as effective best point.
+\dQuote{predict}: Use the surrogate model to find best point in search space. Can propose unseen points.
 Default is: \dQuote{best.true.y}.}
 
 \item{final.evals}{[\code{integer(1)}]\cr
