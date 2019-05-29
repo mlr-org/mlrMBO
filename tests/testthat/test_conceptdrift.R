@@ -66,6 +66,8 @@ test_that("conceptdrift with time as covariate", {
   g = plot(res$final.opt.state, scale.panels = TRUE)
   expect_class(g, "ggplot")
 
+  # Time as Covariate + predict the current best point
+
   op1 = as.data.frame(res$opt.path)
   expect_data_frame(op1, nrows = mbo.iters + 4)
   mbo.cd.colnames = c(paste0("final.x.",getParamIds(getParamSet(fn), TRUE, TRUE)), "final.hat.y")
@@ -90,3 +92,28 @@ test_that("conceptdrift with time as covariate", {
 })
 
 
+test_that("conceptdrift + mulipoint ensemble works", {
+  fn = makeRosenbrockFunction(2)
+  w.fn = wrapSmoofConceptDrift(fn = fn, drift.param = "x1")
+
+  mbo.iters = 10
+  drift.range = unlist(attr(w.fn, "original.par.set")$pars[[attr(w.fn, "drift.param")]][c("lower", "upper")])
+  drift.range = drift.range + c(0.2, -2)
+  slow.drift = function(dob) {
+    drift.range[1] + (dob/mbo.iters) * diff(drift.range)
+  }
+
+  ctrl = makeMBOControl(final.method = "predict", propose.points = 2)
+  ctrl = setMBOControlConceptDrift(
+    control = ctrl,
+    drift.function = slow.drift,
+    learn.drift = TRUE,
+    calculate.th.final.point = TRUE)
+  ctrl = setMBOControlInfill(ctrl, crit.aei)
+  ctrl = setMBOControlMultiPoint(ctrl, method = "ensemble", ensemble.crits = list(crit.mr, crit.aei))
+  ctrl = setMBOControlTermination(ctrl, iter = mbo.iters)
+  res = mbo(fun = w.fn, control = ctrl)
+  op = as.data.frame(res$opt.path)
+  op[op$dob == 5,]
+  #FIXME: Mean is optimized in the wrong direction?
+})
