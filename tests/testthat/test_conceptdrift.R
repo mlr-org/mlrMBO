@@ -93,12 +93,15 @@ test_that("conceptdrift with time as covariate", {
 
 
 test_that("conceptdrift + mulipoint ensemble works", {
-  fn = makeRosenbrockFunction(2)
-  w.fn = wrapSmoofConceptDrift(fn = fn, drift.param = "x1")
+  par.set = makeNumericParamSet(len = 2L, lower = 0, upper = 1)
+  fn = smoof::makeSingleObjectiveFunction(
+    fn = function(x) 2*(x[1]-0.5)^2 + x[2],
+    par.set = par.set
+  )
+  w.fn = wrapSmoofConceptDrift(fn = fn, drift.param = "x2")
 
   mbo.iters = 10
   drift.range = unlist(attr(w.fn, "original.par.set")$pars[[attr(w.fn, "drift.param")]][c("lower", "upper")])
-  drift.range = drift.range + c(0.2, -2)
   slow.drift = function(dob) {
     drift.range[1] + (dob/mbo.iters) * diff(drift.range)
   }
@@ -108,12 +111,21 @@ test_that("conceptdrift + mulipoint ensemble works", {
     control = ctrl,
     drift.function = slow.drift,
     learn.drift = TRUE,
-    calculate.th.final.point = TRUE)
+    calculate.th.final.point = TRUE) #TRUE actually does the same as crit.mr only that the proposed x are not evaluated
   ctrl = setMBOControlInfill(ctrl, crit.aei)
   ctrl = setMBOControlMultiPoint(ctrl, method = "ensemble", ensemble.crits = list(crit.mr, crit.aei))
   ctrl = setMBOControlTermination(ctrl, iter = mbo.iters)
   res = mbo(fun = w.fn, control = ctrl)
   op = as.data.frame(res$opt.path)
-  op[op$dob == 5,]
-  #FIXME: Mean is optimized in the wrong direction?
+
+  # the th.final point should be the same as the mean inf proposal:
+  expect_equal(op[op$prop.type == "infill_mean", "x1"], op[op$prop.type == "infill_mean", "final.x.x1"], tolerance = 0.0001)
+
+  # the mean proposal should be close to 0.5
+  expect_equal(op[op$prop.type == "infill_mean", "x1"], rep(0.5, 10), tolerance = 0.1)
+
+  # the crit components should make sense
+  expect_numeric(op[op$prop.type == "infill_aei", "se"], any.missing = FALSE)
+
+  expect_gt(res$y, 1) # should be able to detect increase in time axis
 })
