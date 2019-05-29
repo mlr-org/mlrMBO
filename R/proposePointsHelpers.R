@@ -7,7 +7,7 @@ joinProposedPoints = function(props) {
     propose.time = do.call(c, extractSubList(props, "propose.time", simplify = FALSE)),
     prop.type = do.call(c, extractSubList(props, "prop.type", simplify = FALSE)),
     errors.model = do.call(c, extractSubList(props, "errors.model", simplify = FALSE)),
-    crit.components = do.call(rbind, extractSubList(props, "crit.components", simplify = FALSE))
+    crit.components = data.table::rbindlist(extractSubList(props, "crit.components", simplify = FALSE), fill = TRUE)
   )
 }
 
@@ -33,18 +33,19 @@ checkFailedModels = function(models, par.set, npoints, control) {
 
 
 # create control objects with random lamda values for parallel cb multi-point
-# @arg crit: MBOInfillCrit
-# @arg crit.pars: list of length propose.points.
-#   Each list item contains a list with the arguments the infill crit should be initialized
-createSinglePointControls = function(control, crit, crit.pars = NULL) {
-  if (is.null(crit.pars)) {
-    crit.pars = replicate(control$propose.points, list())
-  }
-  assertList(crit.pars, len = control$propose.points)
-  lapply(crit.pars, function(crit.par) {
+# @arg crit: MBOInfillCrits
+createSinglePointControls = function(opt.problem, crits) {
+
+  control = getOptProblemControl(opt.problem)
+  design = getOptProblemDesign(opt.problem)
+  learner = getOptProblemLearner(opt.problem)
+  fun = getOptProblemFun(opt.problem)
+
+  lapply(crits, function(crit) {
     ctrl = control;
+    crit = initCrit(crit, fun, design, learner, control)
     ctrl$propose.points = 1L
-    ctrl$infill.crit = do.call(crit, crit.par)
+    ctrl$infill.crit = crit
     return(ctrl)
   })
 }

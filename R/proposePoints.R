@@ -27,7 +27,8 @@ proposePoints = function(opt.state) {
       res = switch(control$multipoint.method,
         "cb" = proposePointsParallelCB(opt.state),
         "cl" = proposePointsConstantLiar(opt.state),
-        "moimbo" = proposePointsMOIMBO(opt.state)
+        "moimbo" = proposePointsMOIMBO(opt.state),
+        "ensemble" = proposePointsParallelEnsemble(opt.state)
       )
     }
   } else {

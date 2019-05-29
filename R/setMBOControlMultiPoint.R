@@ -22,6 +22,7 @@
 #'   Then, the function value of the best point is simply guessed by the worst seen function evaluation.
 #'   This lie is used to update the model in order to propose the subsequent point.
 #'   The procedure is applied until the number of best points achieves \code{propose.points}.
+#'   \dQuote{ensemble}: Multiple single infill crits \code{ensemble.crits} combined.
 #'   Default is \code{cb}.
 #' @param cl.lie [\code{function}]\cr
 #'   Function used by constant liar method for lying. Default is \code{min}.
@@ -58,6 +59,8 @@
 #' @param moimbo.pm.p [\code{numeric(1)}]\cr
 #'   Probability of 1-point mutation, see \code{\link[emoa]{pm_operator}}.
 #'   Default is 1.
+#'@param ensemble.crits [\code{list()}]\cr
+#'   List of InfillCrits. Length has to be equal to \code{propose.points}!
 #' @return [\code{\link{MBOControl}}].
 #' @family MBOControl
 #' @export
@@ -69,7 +72,8 @@ setMBOControlMultiPoint = function(control,
   moimbo.selection = NULL,
   moimbo.maxit = NULL,
   moimbo.sbx.eta = NULL, moimbo.sbx.p = NULL,
-  moimbo.pm.eta = NULL, moimbo.pm.p = NULL) {
+  moimbo.pm.eta = NULL, moimbo.pm.p = NULL,
+  ensemble.crits = NULL) {
 
   assertClass(control, "MBOControl")
 
@@ -112,6 +116,11 @@ setMBOControlMultiPoint = function(control,
 
   control$multipoint.moimbo.pm.p = coalesce(moimbo.pm.p, control$multipoint.moimbo.pm.p, 1)
   assertNumber(control$multipoint.moimbo.pm.p, na.ok = FALSE, lower = 0, upper = 1)
+
+  if (control$multipoint.method == "ensemble") {
+    assertList(ensemble.crits, types = "MBOInfillCrit", len = control$propose.points)
+    control$multipoint.ensemble.crits = ensemble.crits
+  }
 
   return(control)
 }

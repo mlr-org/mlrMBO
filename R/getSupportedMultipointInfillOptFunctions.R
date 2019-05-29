@@ -6,5 +6,5 @@
 #' @return [\code{character}]
 #' @export
 getSupportedMultipointInfillOptFunctions = function() {
-  c("cl", "cb", "moimbo")
+  c("cl", "cb", "moimbo", "ensemble")
 }
