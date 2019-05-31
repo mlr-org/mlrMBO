@@ -147,7 +147,7 @@ getOptStateFinalPoints = function(opt.state, unify = FALSE) {
       prop = proposePointsByInfillOptimization(opt.state, control = control2)
       list(
         best.ind = NA_integer_,
-        x = prop$prop.points[1,],
+        x = prop$prop.points[1, , drop = FALSE],
         y = prop$crit.vals[1]
       )
     } else {
