@@ -184,9 +184,12 @@ as.data.frame.OptPathNg = function(x, row.names = NULL, optional, include.x = TR
   } else {
     extra = rbindlist(dt$extra, fill = TRUE, idcol = "iii_column")
     dt[, "extra" := NULL]
-    dt[, "iii_column" := seq_len(nrow(dt))]
-    dt = merge(dt, extra, all.x = TRUE)
-    dt[, "iii_column" := NULL]
+    if (ncol(extra) > 1) {
+      # it can happen that extra is empty, then we dont want to merge anything
+      dt[, "iii_column" := seq_len(nrow(dt))]
+      dt = merge(dt, extra, all.x = TRUE)
+      dt[, "iii_column" := NULL]
+    }
   }
   if (include.x == FALSE) {
     dt[, x$x.names := NULL]
