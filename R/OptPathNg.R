@@ -182,9 +182,11 @@ as.data.frame.OptPathNg = function(x, row.names = NULL, optional, include.x = TR
     if (include.rest == FALSE) {
     dt[, c("dob", "eol", "msg", "exec.time", "extra"):=NULL]
   } else {
-    extra = rbindlist(dt$extra, fill = TRUE)
+    extra = rbindlist(dt$extra, fill = TRUE, idcol = "iii_column")
     dt[, "extra" := NULL]
-    dt = cbind(dt, extra)
+    dt[, "iii_column" := seq_len(nrow(dt))]
+    dt = merge(dt, extra, all.x = TRUE)
+    dt[, "iii_column" := NULL]
   }
   if (include.x == FALSE) {
     dt[, x$x.names := NULL]
