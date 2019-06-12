@@ -82,7 +82,12 @@ updateSMBO = function(opt.state, x, y) {
   xs = dfRowsToList(prop$prop.points, getOptProblemParSet(getOptStateOptProblem(opt.state)))
 
   for (i in seq_along(xs)) {
-    addOptPathEl(op = opt.path, x = xs[[i]], y = y[[i]], extra = extras[[i]])
+    if (hasAttributes(y[[i]], "extras")) {
+      user.extras = attr(y[[i]], "extras")
+      y[[i]] = setAttribute(y[[i]], "extras", NULL)
+      extras[[i]] = insert(extras[[i]], user.extras)
+    }
+    addOptPathEl(op = opt.path, x = xs[[i]], y = y[[i]], extra = extras[[i]], dob = opt.state$loop)
   }
   finalizeMboLoop(opt.state)
   invisible(opt.state)
