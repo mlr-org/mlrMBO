@@ -43,16 +43,22 @@ test_that("infill crits", {
 
     if (!is.null(opdf$infill_ei))
       expect_true(!anyMissing(opdf$infill_ei[, c("ei","se","mean")]))
-    if (!is.null(opdf$infill_poi))
-      expect_true(!anyMissing(opdf$infill_poi[, c("poi","se","mean")]))
     if (!is.null(opdf$infill_cb)) {
       expect_true(!anyMissing(opdf$infill_cb[, c("se","mean","lambda")]))
       expect_true(all(opdf$infill_cb$lambda == 2))
     }
-    if (!is.null(opdf$infill_aei))
+    if (!is.null(opdf$infill_aei)) {
       expect_true(!anyMissing(opdf$infill_aei[, c("se","mean","tau")]))
-    if (!is.null(opdf$infill_eqi))
+    }
+    if (!is.null(opdf$infill_eqi)) {
       expect_true(!anyMissing(opdf$infill_eqi[, c("se","mean","tau")]))
+    }
+    if (!is.null(opdf$infill_poi)) {
+      expect_true(!anyMissing(opdf$infill_poi[, c("poi","se","mean")]))
+    }
+    if (!is.null(opdf$infill_sei)) {
+      expect_true(!anyMissing(opdf$infill_poi[, c("sei","se","mean")]))
+    }
     expect_true(nrow(opdf$final_eval) == 10L)
   }
 
