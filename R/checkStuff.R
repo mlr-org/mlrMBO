@@ -111,10 +111,14 @@ checkStuff = function(fun, design, learner, control) {
           ifelse(hasLearnerProperties(learner, "se"), "",
             "\nBut this learner does not support prediction of standard errors!"))
       }
-      if (control$multipoint.method == "cl" && infill.crit.id != "ei")
-        stopf("Multi-point proposal using constant liar needs the infill criterion 'ei' (expected improvement), but you used '%s'!", infill.crit.id)
-      if (control$multipoint.method == "cb" && infill.crit.id != "cb")
+      if (control$multipoint.method == "cl" && infill.crit.id %nin% c("ei", "aei", "cb")) {
+        stopf("Multi-point proposal using constant liar needs the infill criterion 'ei' or 'aei', but you used '%s'!", infill.crit.id)
+      } else if (control$multipoint.method == "cl" && infill.crit.id == c("cb")) {
+        warningf("You are using multi-point proposal with constant liar and infill criterion 'cb'. Are you sure you don't want to use 'cb' as multi-point method?")
+      }
+      if (control$multipoint.method == "cb" && infill.crit.id != "cb") {
         stopf("Multi-point proposal using parallel cb needs the infill criterion 'cb' (confidence bound), but you used '%s'!", infill.crit.id)
+      }
     }
   }
 
