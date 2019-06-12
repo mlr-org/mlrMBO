@@ -47,10 +47,18 @@ test_that("infill crits", {
       expect_true(!anyMissing(opdf$infill_cb[, c("se","mean","lambda")]))
       expect_true(all(opdf$infill_cb$lambda == 2))
     }
-    if (!is.null(opdf$infill_aei))
+    if (!is.null(opdf$infill_aei)) {
       expect_true(!anyMissing(opdf$infill_aei[, c("se","mean","tau")]))
-    if (!is.null(opdf$infill_eqi))
+    }
+    if (!is.null(opdf$infill_eqi)) {
       expect_true(!anyMissing(opdf$infill_eqi[, c("se","mean","tau")]))
+    }
+    if (!is.null(opdf$infill_poi)) {
+      expect_true(!anyMissing(opdf$infill_poi[, c("poi","se","mean")]))
+    }
+    if (!is.null(opdf$infill_sei)) {
+      expect_true(!anyMissing(opdf$infill_poi[, c("sei","se","mean")]))
+    }
     expect_true(nrow(opdf$final_eval) == 10L)
   }
 
@@ -65,7 +73,7 @@ test_that("infill crits", {
   # we have converged and just waste time. we need to detect this somehow, or cope with it
   for (noisy in c(TRUE, FALSE)) {
     for (minimize in c(TRUE, FALSE)) {
-      crits = if (noisy) list(crit.aei, crit.eqi) else list(crit.mr, crit.se, crit.ei, crit.cb2)
+      crits = if (noisy) list(crit.aei, crit.eqi) else list(crit.mr, crit.se, crit.ei, crit.cb2, crit.poi, crit.sei)
       for (lrn in learners) {
         if (inherits(lrn, "regr.km"))
           lrn = setHyperPars(lrn, nugget.estim = noisy)

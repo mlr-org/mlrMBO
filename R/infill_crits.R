@@ -81,7 +81,6 @@ makeMBOInfillCritStandardError = function() {
 #' @rdname infillcrits
 makeMBOInfillCritEI = function(se.threshold = 1e-6) {
   assertNumber(se.threshold, lower = 1e-20)
-  force(se.threshold)
   makeMBOInfillCrit(
     fun = function(points, models, control, par.set, designs, iter, progress, attributes = FALSE) {
       model = models[[1L]]
@@ -93,12 +92,9 @@ makeMBOInfillCritEI = function(se.threshold = 1e-6) {
       p = predict(model, newdata = points)$data
       p.mu = maximize.mult * p$response
       p.se = p$se
-      y.min = min(y)
-      d = y.min - p.mu
+      d = min(y) - p.mu
       xcr = d / p.se
-      xcr.prob = pnorm(xcr)
-      xcr.dens = dnorm(xcr)
-      ei = d * xcr.prob + p.se * xcr.dens
+      ei = d * pnorm(xcr) + p.se * dnorm(xcr)
       res = ifelse(p.se < se.threshold, 0, -ei)
       if (attributes) {
         res = setAttribute(res, "crit.components", data.frame(se = p$se, mean = p$response))
@@ -107,6 +103,78 @@ makeMBOInfillCritEI = function(se.threshold = 1e-6) {
     },
     name = "Expected improvement",
     id = "ei",
+    components = c("se", "mean"),
+    params = list(se.threshold = se.threshold),
+    opt.direction = "maximize",
+    requires.se = TRUE
+  )
+}
+
+#' @export
+#' @rdname infillcrits
+makeMBOInfillCritSEI = function(se.threshold = 1e-6) {
+  # On a New Improvement-Based Acquisition Function for Bayesian Optimization
+  # Noè et.al. 2018
+  # http://arxiv.org/abs/1808.06918
+
+  assertNumber(se.threshold, lower = 1e-20)
+  makeMBOInfillCrit(
+    fun = function(points, models, control, par.set, designs, iter, progress, attributes = FALSE) {
+      model = models[[1L]]
+      design = designs[[1]]
+      maximize.mult = if (control$minimize) 1 else -1
+      assertString(control$y.name)
+      y = maximize.mult * design[, control$y.name]
+      assertNumeric(y, any.missing = FALSE)
+      p = predict(model, newdata = points)$data
+      p.mu = maximize.mult * p$response
+      p.se = p$se #s(x)
+      d = min(y) - p.mu
+      xcr = d / p.se #u(x) in paper
+      p.xcr = pnorm(xcr)
+      d.xcr = dnorm(xcr)
+      ei = d * p.xcr + p.se * d.xcr
+      vi = p.se^2 * ((xcr^2 + 1) * p.xcr + xcr * d.xcr) - ei^2
+      vi = pmax(0, vi)
+      sei = ei / sqrt(vi)
+      res = ifelse(p.se < se.threshold | is.infinite(sei) | is.nan(sei), 0, -sei)
+      if (attributes) {
+        res = setAttribute(res, "crit.components", data.frame(se = p$se, mean = p$response))
+      }
+      return(res)
+    },
+    name = "Scaled expected improvement",
+    id = "sei",
+    components = c("se", "mean"),
+    params = list(se.threshold = se.threshold),
+    opt.direction = "maximize",
+    requires.se = TRUE
+  )
+}
+
+#' @export
+#' @rdname infillcrits
+makeMBOInfillCritPOI = function(se.threshold = 1e-6) {
+  # https://www.cse.wustl.edu/~garnett/cse515t/spring_2015/files/lecture_notes/12.pdf
+  assertNumber(se.threshold, lower = 1e-20)
+  makeMBOInfillCrit(
+    fun = function(points, models, control, par.set, designs, iter, progress, attributes = FALSE) {
+      model = models[[1L]]
+      design = designs[[1]]
+      maximize.mult = if (control$minimize) 1 else -1
+      assertString(control$y.name)
+      y = maximize.mult * design[, control$y.name]
+      assertNumeric(y, any.missing = FALSE)
+      p = predict(model, newdata = points)$data
+      poi = pnorm(min(y) , mean = maximize.mult * p$response, sd = p$se)
+      res = ifelse(p$se < se.threshold, 0, -poi)
+      if (attributes) {
+        res = setAttribute(res, "crit.components", data.frame(se = p$se, mean = p$response))
+      }
+      return(res)
+    },
+    name = "Probability of improvement",
+    id = "poi",
     components = c("se", "mean"),
     params = list(se.threshold = se.threshold),
     opt.direction = "maximize",
