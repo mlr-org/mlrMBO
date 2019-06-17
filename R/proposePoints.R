@@ -20,7 +20,9 @@ proposePoints = function(opt.state) {
   opt.problem = getOptStateOptProblem(opt.state)
   control = getOptProblemControl(opt.problem)
 
-  if (control$n.objectives == 1L) {
+  if (!is.null(control$custom.propose.point)) {
+    res = control$custom.propose.point(opt.state)
+  } else if (control$n.objectives == 1L) {
     if (is.null(control$multipoint.method)) {
       res = proposePointsByInfillOptimization(opt.state)
     } else {
