@@ -8,7 +8,7 @@ setMBOControlMultiPoint(control, method = NULL, cl.lie = NULL,
   moimbo.objective = NULL, moimbo.dist = NULL,
   moimbo.selection = NULL, moimbo.maxit = NULL,
   moimbo.sbx.eta = NULL, moimbo.sbx.p = NULL, moimbo.pm.eta = NULL,
-  moimbo.pm.p = NULL)
+  moimbo.pm.p = NULL, ensemble.crits = NULL)
 }
 \arguments{
 \item{control}{[\code{\link{MBOControl}}]\cr
@@ -34,6 +34,7 @@ according to the regular EI-criterion.
 Then, the function value of the best point is simply guessed by the worst seen function evaluation.
 This lie is used to update the model in order to propose the subsequent point.
 The procedure is applied until the number of best points achieves \code{propose.points}.
+\dQuote{ensemble}: Multiple single infill crits \code{ensemble.crits} combined.
 Default is \code{cb}.}
 
 \item{cl.lie}{[\code{function}]\cr
@@ -78,6 +79,9 @@ Default is 15.}
 \item{moimbo.pm.p}{[\code{numeric(1)}]\cr
 Probability of 1-point mutation, see \code{\link[emoa]{pm_operator}}.
 Default is 1.}
+
+\item{ensemble.crits}{[\code{list()}]\cr
+List of InfillCrits. Length has to be equal to \code{propose.points}!}
 }
 \value{
 [\code{\link{MBOControl}}].

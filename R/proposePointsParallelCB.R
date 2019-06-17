@@ -8,7 +8,7 @@ proposePointsParallelCB = function(opt.state) {
   crits = lapply(lambdas, function(lambda) {
     makeMBOInfillCritCB(cb.lambda = lambda)
   })
-  controls = createSinglePointControls(opt.problem, crit)
+  controls = createSinglePointControls(opt.problem, crits)
 
   props = parallelMap(proposePointsByInfillOptimization, control = controls, level = "mlrMBO.propose.points",
     more.args = list(opt.state = opt.state))
