@@ -52,6 +52,7 @@ plot.OptState = function(x, scale.panels = FALSE, ...) {
   design = designs[[1]]
 
   # add types to points
+  # remove final evals from plot because they do not belong to the model that is printed
   opt.path.df = opt.path.df[opt.path.df$prop.type != "final_eval",]
   design$type = ifelse(opt.path.df$dob == 0, "init", "seq")
 
