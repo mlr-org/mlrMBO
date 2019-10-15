@@ -16,13 +16,15 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
 
-<!-- sticky kit -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+<!-- headroom.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -45,6 +47,7 @@
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
+
 
 
   </head>
@@ -123,7 +126,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/mlr-org/mlrMBO">
-    <span class="fa fa-github fa-lg"></span>
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -134,6 +137,7 @@
 </div><!--/.navbar -->
 
       
+
       </header>
 
 <div class="row">
@@ -151,7 +155,7 @@
     </div>
 
     <pre class="usage"><span class='fu'>mbo</span>(<span class='no'>fun</span>, <span class='kw'>design</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>learner</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>control</span>,
-  <span class='kw'>show.info</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/options'>getOption</a></span>(<span class='st'>"mlrMBO.show.info"</span>, <span class='fl'>TRUE</span>), <span class='kw'>more.args</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>())</pre>
+  <span class='kw'>show.info</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"mlrMBO.show.info"</span>, <span class='fl'>TRUE</span>), <span class='kw'>more.args</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>())</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -160,8 +164,8 @@
       <th>fun</th>
       <td><p>[<code>smoof_function</code>]<br />
 Fitness function to optimize.
-For one dimensional target functions you can obtain a <code>smoof_function</code> by using <code><a href='https://www.rdocumentation.org/packages/smoof/topics/makeSingleObjectiveFunction'>makeSingleObjectiveFunction</a></code>.
-For multi dimensional functions use <code><a href='https://www.rdocumentation.org/packages/smoof/topics/makeMultiObjectiveFunction'>makeMultiObjectiveFunction</a></code>.
+For one dimensional target functions you can obtain a <code>smoof_function</code> by using <code><a href='https://rdrr.io/pkg/smoof/man/makeSingleObjectiveFunction.html'>makeSingleObjectiveFunction</a></code>.
+For multi dimensional functions use <code><a href='https://rdrr.io/pkg/smoof/man/makeMultiObjectiveFunction.html'>makeMultiObjectiveFunction</a></code>.
 It is possible to return even more information which will be stored
 in the optimization path. To achieve this, simply append the attribute &#8220;extras&#8221;
 to the return value of the target function. This has to be a named list of scalar values.
@@ -173,13 +177,13 @@ Each of these values will be stored additionally in the optimization path.</p></
 Initial design as data frame.
 If the y-values are not already present in design, mbo will evaluate the points.
 If the parameters have corresponding trafo functions, the design must not be transformed before it is passed!
-Functions to generate designs are available in <code>ParamHelpers</code>: <code><a href='https://www.rdocumentation.org/packages/ParamHelpers/topics/generateDesign'>generateDesign</a></code>, <code><a href='https://www.rdocumentation.org/packages/ParamHelpers/topics/generateGridDesign'>generateGridDesign</a></code>, <code><a href='https://www.rdocumentation.org/packages/ParamHelpers/topics/generateRandomDesign'>generateRandomDesign</a></code>.
-Default is <code>NULL</code>, which means <code><a href='https://www.rdocumentation.org/packages/ParamHelpers/topics/generateDesign'>generateDesign</a></code> is called and a design of size 4 times number of all parameters is created
-The points are drawn via <code><a href='https://www.rdocumentation.org/packages/lhs/topics/maximinLHS'>maximinLHS</a></code> to maximize the minimal distance between design points.</p></td>
+Functions to generate designs are available in <code>ParamHelpers</code>: <code><a href='https://rdrr.io/pkg/ParamHelpers/man/generateDesign.html'>generateDesign</a></code>, <code><a href='https://rdrr.io/pkg/ParamHelpers/man/generateGridDesign.html'>generateGridDesign</a></code>, <code><a href='https://rdrr.io/pkg/ParamHelpers/man/generateRandomDesign.html'>generateRandomDesign</a></code>.
+Default is <code>NULL</code>, which means <code><a href='https://rdrr.io/pkg/ParamHelpers/man/generateDesign.html'>generateDesign</a></code> is called and a design of size 4 times number of all parameters is created
+The points are drawn via <code><a href='https://rdrr.io/pkg/lhs/man/maximinLHS.html'>maximinLHS</a></code> to maximize the minimal distance between design points.</p></td>
     </tr>
     <tr>
       <th>learner</th>
-      <td><p>[<code><a href='https://www.rdocumentation.org/packages/mlr/topics/makeLearner'>Learner</a></code>]<br />
+      <td><p>[<code><a href='https://rdrr.io/pkg/mlr/man/makeLearner.html'>Learner</a></code>]<br />
 Regression learner from mlr, which is used as a surrogate to model our fitness function.
 If <code>NULL</code> (default), the default learner is determined as described here: <a href='makeMBOLearner.html'>mbo_default_learner</a>.</p></td>
     </tr>
@@ -190,7 +194,7 @@ Control object for mbo.</p></td>
     </tr>
     <tr>
       <th>show.info</th>
-      <td><p>[<code><a href='https://www.rdocumentation.org/packages/base/topics/logical'>logical(1)</a></code>]<br />
+      <td><p>[<code><a href='https://rdrr.io/r/base/logical.html'>logical(1)</a></code>]<br />
 Verbose output on console?
 Default is <code>TRUE</code>.</p></td>
     </tr>
@@ -209,7 +213,7 @@ Further arguments passed to fitness function.</p></td>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># simple 2d objective function</span>
 <span class='no'>obj.fun</span> <span class='kw'>=</span> <span class='fu'>makeSingleObjectiveFunction</span>(
- <span class='kw'>fn</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>x</span>) <span class='no'>x</span>[<span class='fl'>1</span>]^<span class='fl'>2</span> + <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Trig'>sin</a></span>(<span class='no'>x</span>[<span class='fl'>2</span>]),
+ <span class='kw'>fn</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>x</span>) <span class='no'>x</span>[<span class='fl'>1</span>]^<span class='fl'>2</span> + <span class='fu'><a href='https://rdrr.io/r/base/Trig.html'>sin</a></span>(<span class='no'>x</span>[<span class='fl'>2</span>]),
  <span class='kw'>par.set</span> <span class='kw'>=</span> <span class='fu'>makeNumericParamSet</span>(<span class='kw'>id</span> <span class='kw'>=</span> <span class='st'>"x"</span>, <span class='kw'>lower</span> <span class='kw'>=</span> -<span class='fl'>1</span>, <span class='kw'>upper</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>len</span> <span class='kw'>=</span> <span class='fl'>2</span>)
 )
 
@@ -222,36 +226,36 @@ Further arguments passed to fitness function.</p></td>
 <span class='co'># use 500 points in the focussearch (should be sufficient for 2d)</span>
 <span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='setMBOControlInfill.html'>setMBOControlInfill</a></span>(<span class='no'>ctrl</span>, <span class='kw'>opt.focussearch.points</span> <span class='kw'>=</span> <span class='fl'>500</span>)
 <span class='co'># create initial design</span>
-<span class='no'>des</span> <span class='kw'>=</span> <span class='fu'>generateDesign</span>(<span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>5L</span>, <span class='fu'>getParamSet</span>(<span class='no'>obj.fun</span>), <span class='kw'>fun</span> <span class='kw'>=</span> <span class='kw pkg'>lhs</span><span class='kw ns'>::</span><span class='no'><a href='https://www.rdocumentation.org/packages/lhs/topics/maximinLHS'>maximinLHS</a></span>)
+<span class='no'>des</span> <span class='kw'>=</span> <span class='fu'>generateDesign</span>(<span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>5L</span>, <span class='fu'>getParamSet</span>(<span class='no'>obj.fun</span>), <span class='kw'>fun</span> <span class='kw'>=</span> <span class='kw pkg'>lhs</span><span class='kw ns'>::</span><span class='no'><a href='https://rdrr.io/pkg/lhs/man/maximinLHS.html'>maximinLHS</a></span>)
 
 <span class='co'># start mbo</span>
 <span class='no'>res</span> <span class='kw'>=</span> <span class='fu'>mbo</span>(<span class='no'>obj.fun</span>, <span class='kw'>design</span> <span class='kw'>=</span> <span class='no'>des</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='no'>ctrl</span>)</div><div class='output co'>#&gt; <span class='message'>Computing y column(s) for design. Not provided.</span></div><div class='output co'>#&gt; <span class='message'>[mbo] 0: x=0.494,0.412 : y = 0.645 : 0.0 secs : initdesign</span></div><div class='output co'>#&gt; <span class='message'>[mbo] 0: x=-0.122,0.0783 : y = 0.093 : 0.0 secs : initdesign</span></div><div class='output co'>#&gt; <span class='message'>[mbo] 0: x=-0.208,-0.325 : y = -0.276 : 0.0 secs : initdesign</span></div><div class='output co'>#&gt; <span class='message'>[mbo] 0: x=0.897,-0.988 : y = -0.0307 : 0.0 secs : initdesign</span></div><div class='output co'>#&gt; <span class='message'>[mbo] 0: x=-0.979,0.69 : y = 1.6 : 0.0 secs : initdesign</span></div><div class='output co'>#&gt; <span class='message'>[mbo] 1: x=1,-0.322 : y = 0.683 : 0.0 secs : infill_cb</span></div><div class='output co'>#&gt; <span class='message'>[mbo] 2: x=-0.181,-0.691 : y = -0.605 : 0.0 secs : infill_cb</span></div><div class='output co'>#&gt; <span class='message'>[mbo] 3: x=0.103,-1 : y = -0.831 : 0.0 secs : infill_cb</span></div><div class='input'>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/print'>print</a></span>(<span class='no'>res</span>)</div><div class='output co'>#&gt; Recommended parameters:
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>res</span>)</div><div class='output co'>#&gt; Recommended parameters:
 #&gt; x=0.103,-1
 #&gt; Objective: y = -0.831
 #&gt; 
 #&gt; Optimization path
 #&gt; 5 + 3 entries in total, displaying last 10 (or less):
 #&gt;           x1          x2           y dob eol error.message exec.time         cb
-#&gt; 1  0.4941278  0.41208499  0.64468297   0  NA          &lt;NA&gt;         0         NA
-#&gt; 2 -0.1216173  0.07832955  0.09304025   0  NA          &lt;NA&gt;         0         NA
-#&gt; 3 -0.2077841 -0.32457760 -0.27573422   0  NA          &lt;NA&gt;         0         NA
-#&gt; 4  0.8966086 -0.98750787 -0.03074897   0  NA          &lt;NA&gt;         0         NA
-#&gt; 5 -0.9794215  0.69022501  1.59597716   0  NA          &lt;NA&gt;         0         NA
-#&gt; 6  0.9999967 -0.32226298  0.68327963   1  NA          &lt;NA&gt;         0 -0.6290274
-#&gt; 7 -0.1807007 -0.69122233 -0.60482669   2  NA          &lt;NA&gt;         0 -0.4985452
-#&gt; 8  0.1029667 -0.99996360 -0.83084918   3  NA          &lt;NA&gt;         0 -1.0001956
+#&gt; 1  0.4941278  0.41208499  0.64468297   0  NA          &lt;NA&gt;     0.000         NA
+#&gt; 2 -0.1216173  0.07832955  0.09304025   0  NA          &lt;NA&gt;     0.000         NA
+#&gt; 3 -0.2077841 -0.32457760 -0.27573422   0  NA          &lt;NA&gt;     0.000         NA
+#&gt; 4  0.8966086 -0.98750787 -0.03074897   0  NA          &lt;NA&gt;     0.000         NA
+#&gt; 5 -0.9794215  0.69022501  1.59597716   0  NA          &lt;NA&gt;     0.000         NA
+#&gt; 6  0.9999967 -0.32226298  0.68327963   1  NA          &lt;NA&gt;     0.000 -0.6290274
+#&gt; 7 -0.1807007 -0.69122233 -0.60482669   2  NA          &lt;NA&gt;     0.001 -0.4985452
+#&gt; 8  0.1029667 -0.99996360 -0.83084918   3  NA          &lt;NA&gt;     0.000 -1.0001956
 #&gt;   error.model train.time  prop.type propose.time        se       mean lambda
 #&gt; 1        &lt;NA&gt;         NA initdesign           NA        NA         NA     NA
 #&gt; 2        &lt;NA&gt;         NA initdesign           NA        NA         NA     NA
 #&gt; 3        &lt;NA&gt;         NA initdesign           NA        NA         NA     NA
 #&gt; 4        &lt;NA&gt;         NA initdesign           NA        NA         NA     NA
 #&gt; 5        &lt;NA&gt;         NA initdesign           NA        NA         NA     NA
-#&gt; 6        &lt;NA&gt;      0.086  infill_cb        0.179 0.3197429 -0.3092844      1
-#&gt; 7        &lt;NA&gt;      0.047  infill_cb        0.189 0.3779856 -0.1205596      1
-#&gt; 8        &lt;NA&gt;      0.038  infill_cb        0.164 0.1795866 -0.8206090      1</div><span class='co'># NOT RUN {</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/graphics/topics/plot'>plot</a></span>(<span class='no'>res</span>)
-<span class='co'># }</span></pre>
+#&gt; 6        &lt;NA&gt;      0.100  infill_cb        0.199 0.3197429 -0.3092844      1
+#&gt; 7        &lt;NA&gt;      0.053  infill_cb        0.178 0.3779856 -0.1205596      1
+#&gt; 8        &lt;NA&gt;      0.042  infill_cb        0.174 0.1795866 -0.8206090      1</div><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>res</span>)
+}</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -266,19 +270,23 @@ Further arguments passed to fitness function.</p></td>
   </div>
 </div>
 
+
       <footer>
       <div class="copyright">
   <p>Developed by Bernd Bischl, Jakob Richter, Jakob Bossek, Daniel Horn, Michel Lang, Janek Thomas.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
 </div>
+
       </footer>
    </div>
 
   
 
+
   </body>
 </html>
+
 
