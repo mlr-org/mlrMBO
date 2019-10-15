@@ -25,7 +25,7 @@ plot.OptState = function(x, scale.panels = FALSE, ...) {
   par.is.numeric = par.types %in% c("numeric", "integer")
   par.count.numeric = sum(par.is.numeric)
   par.count.discrete = par.dim - par.count.numeric
-  opt.path = getOptStateOptPath(opt.state)
+  opt.path.df = as.data.frame(getOptStateOptPath(opt.state))
   models = getOptStateModels(opt.state)$models
   designs = getOptStateDesigns(opt.state)
   x.ids = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
@@ -52,7 +52,8 @@ plot.OptState = function(x, scale.panels = FALSE, ...) {
   design = designs[[1]]
 
   # add types to points
-  design$type = ifelse(getOptPathDOB(opt.path) == 0, "init", "seq")
+  opt.path.df = opt.path.df[opt.path.df$prop.type != "final_eval",]
+  design$type = ifelse(opt.path.df$dob == 0, "init", "seq")
 
   # reduce to usefull infill components
   use.only.columns = c(x.ids, control$infill.crit$id, "mean", "se")
