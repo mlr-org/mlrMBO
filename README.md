@@ -1,19 +1,20 @@
 # mlrMBO
 
+Model-based optimization with [mlr](https://github.com/mlr-org/mlr/).
+
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/mlrMBO)](https://cran.r-project.org/package=mlrMBO)
 [![Build Status](https://travis-ci.org/mlr-org/mlrMBO.png?branch=master)](https://travis-ci.org/mlr-org/mlrMBO)
 [![Build status](https://ci.appveyor.com/api/projects/status/gvr607kqcl78qjq9/branch/master?svg=true)](https://ci.appveyor.com/project/jakob-r/mlrmbo/branch/master)
 [![Coverage Status](https://img.shields.io/codecov/c/github/mlr-org/mlrMBO/master.svg)](https://codecov.io/github/mlr-org/mlrMBO?branch=master)
 [![Monthly RStudio CRAN Downloads](https://cranlogs.r-pkg.org/badges/mlrMBO)](https://CRAN.R-project.org/package=mlrMBO)
 
-Model-based optimization with [mlr](https://github.com/mlr-org/mlr/).
 
 * [Documentation](https://mlr-org.github.io/mlrMBO/)
 * [Issues, Requests and Bug Tracker](https://github.com/mlr-org/mlrMBO/issues)
 
 # Installation
 
-We reccomend to install the official release version:
+We recommend to install the official release version:
 
 ```r
 install.packages("mlrMBO")
