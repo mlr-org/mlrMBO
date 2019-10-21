@@ -18,3 +18,5 @@
 ^vignettes/.+\.html$
 .github
 .covrignore
+^pkgdown$
+^tic\.R$
