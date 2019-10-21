@@ -1,8 +1,11 @@
 ---
-title: "animate MBO Run"
+title: "Animate MBO Run"
 author: "Jakob Richter"
 date: "16. February 2016"
-output: html_document
+vignette: >
+  %\VignetteIndexEntry{Quick introduction}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 ```{r setup, echo = FALSE}
 library(knitr)
@@ -15,7 +18,8 @@ library(animation)
 ani.options(autobrowse = FALSE, interval = 1)
 
 opts_knit$set(animation.fun = function(x, options, format = "gif") {
-  x = c(knitr:::sans_ext(x), knitr:::file_ext(x))
+  # FIXME knitr::sans_ext is not available anymore
+  # x = c(knitr:::sans_ext(x), knitr:::file_ext(x))
   fig.num = options$fig.num
   format = sub("^[.]", "", format)
   fig.fname = paste0(sub(paste0(fig.num, "$"), "*", x[1]), 
