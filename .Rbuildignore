@@ -20,3 +20,5 @@
 .covrignore
 ^pkgdown$
 ^tic\.R$
+^README_.*$
+^README.Rmd$
