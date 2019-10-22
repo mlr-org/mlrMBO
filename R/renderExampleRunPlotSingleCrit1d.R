@@ -108,7 +108,9 @@ renderExampleRunPlot1d = function(x, iter,
   }
 
   if (isNumeric(par.set, include.int = FALSE)) {
-    gg.fun = data.table::setDF(data.table::melt(evals, id.vars = c(getParamIds(opt.path$par.set), if (se) "se" else NULL)))
+    evals = data.table::setDT(evals)
+    gg.fun = data.table::melt(evals, id.vars = c(getParamIds(opt.path$par.set), if (se) "se" else NULL))
+    gg.fun = data.table::setDF(gg.fun)
 
     if (se) gg.fun$se = gg.fun$se * se.factor
 
