@@ -1,15 +1,10 @@
 
-``` r
-library(knitr)
-opts_knit$set(upload.fun = imgur_upload, base.url = NULL) # upload all images to imgur.com
-opts_chunk$set(fig.width=5, fig.height=5, cache=TRUE)
-```
-
 # mlrMBO
 
 <!-- Please edit README.Rmd !-->
 
-Model-based optimization with [mlr](https://github.com/mlr-org/mlr/).
+Model-based optimization with
+[mlr](https://github.com/mlr-org/mlr/).
 
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/mlrMBO)](https://cran.r-project.org/package=mlrMBO)
 [![Build
@@ -41,7 +36,7 @@ devtools::install_github("mlr-org/mlrMBO")
 
 # Introduction
 
-![](https://i.imgur.com/bN8l2Cl.gif)<!-- -->
+![](https://i.imgur.com/LVFRVVl.gif)<!-- -->
 
 `mlrMBO` is a highly configurable R toolbox for model-based / Bayesian
 optimization of black-box functions.
@@ -49,8 +44,8 @@ optimization of black-box functions.
 Features:
 
   - EGO-type algorithms (Kriging with expected improvement) on purely
-    numerical search spaces, see [Jones et
-    al. (1998)](http://link.springer.com/article/10.1023/A:1008306431147)
+    numerical search spaces, see [Jones et al.
+    (1998)](http://link.springer.com/article/10.1023/A:1008306431147)
   - Mixed search spaces with numerical, integer, categorical and
     subordinate parameters
   - Arbitrary parameter transformation allowing to optimize on, e.g.,
@@ -64,8 +59,8 @@ Features:
 
 For the *surrogate*, `mlrMBO` allows any regression learner from
 [`mlr`](https://github.com/mlr-org/mlr), including: \* Kriging aka.
-Gaussian processes (i.e. `DiceKriging`) \* random Forests
-(i.e. `randomForest`) \* and many more…
+Gaussian processes (i.e. `DiceKriging`) \* random Forests (i.e.
+`randomForest`) \* and many more…
 
 Various *infill criteria* (aka. *acquisition functions*) are available:
 \* Expected improvement (EI) \* Upper/Lower confidence bound (LCB, aka.

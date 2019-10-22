@@ -2,8 +2,9 @@
 output: github_document
 ---
 
-```{r setup}
+```{r setup, include=FALSE}
 library(knitr)
+library(gifski)
 opts_knit$set(upload.fun = imgur_upload, base.url = NULL) # upload all images to imgur.com
 opts_chunk$set(fig.width=5, fig.height=5, cache=TRUE)
 ````
