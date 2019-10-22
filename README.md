@@ -3,14 +3,13 @@
 
 <!-- Please edit README.Rmd !-->
 
-Model-based optimization with
-[mlr](https://github.com/mlr-org/mlr/).
+Model-based optimization with [mlr](https://github.com/mlr-org/mlr/).
 
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/mlrMBO)](https://cran.r-project.org/package=mlrMBO)
-[![Build
-Status](https://travis-ci.org/mlr-org/mlrMBO.png?branch=master)](https://travis-ci.org/mlr-org/mlrMBO)
-[![Build
-status](https://ci.appveyor.com/api/projects/status/gvr607kqcl78qjq9/branch/master?svg=true)](https://ci.appveyor.com/project/jakob-r/mlrmbo/branch/master)
+[![Travis build
+status](https://img.shields.io/travis/mlr-org/mlrMBO/master?logo=travis&style=flat-square&label=macOS)](https://travis-ci.org/mlr-org/mlrMBO)
+[![AppVeyor build
+status](https://img.shields.io/appveyor/ci/mlr-org/mlrMBO?label=Windows&logo=appveyor&style=flat-square)](https://ci.appveyor.com/project/ropensci/mlrMBO)
 [![Coverage
 Status](https://img.shields.io/codecov/c/github/mlr-org/mlrMBO/master.svg)](https://codecov.io/github/mlr-org/mlrMBO?branch=master)
 [![Monthly RStudio CRAN
@@ -31,12 +30,12 @@ install.packages("mlrMBO")
 For experimental use you can install the latest development version:
 
 ``` r
-devtools::install_github("mlr-org/mlrMBO")
+remotes::install_github("mlr-org/mlrMBO")
 ```
 
 # Introduction
 
-![](https://i.imgur.com/LVFRVVl.gif)<!-- -->
+![](https://i.imgur.com/NMpSqnS.gif)<!-- -->
 
 `mlrMBO` is a highly configurable R toolbox for model-based / Bayesian
 optimization of black-box functions.
@@ -44,8 +43,8 @@ optimization of black-box functions.
 Features:
 
   - EGO-type algorithms (Kriging with expected improvement) on purely
-    numerical search spaces, see [Jones et al.
-    (1998)](http://link.springer.com/article/10.1023/A:1008306431147)
+    numerical search spaces, see [Jones et
+    al. (1998)](http://link.springer.com/article/10.1023/A:1008306431147)
   - Mixed search spaces with numerical, integer, categorical and
     subordinate parameters
   - Arbitrary parameter transformation allowing to optimize on, e.g.,
@@ -59,8 +58,8 @@ Features:
 
 For the *surrogate*, `mlrMBO` allows any regression learner from
 [`mlr`](https://github.com/mlr-org/mlr), including: \* Kriging aka.
-Gaussian processes (i.e. `DiceKriging`) \* random Forests (i.e.
-`randomForest`) \* and many more…
+Gaussian processes (i.e. `DiceKriging`) \* random Forests
+(i.e. `randomForest`) \* and many more…
 
 Various *infill criteria* (aka. *acquisition functions*) are available:
 \* Expected improvement (EI) \* Upper/Lower confidence bound (LCB, aka.
