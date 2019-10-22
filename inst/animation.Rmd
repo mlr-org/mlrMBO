@@ -9,39 +9,9 @@ vignette: >
 ---
 ```{r setup, echo = FALSE}
 library(knitr)
-
-# taken from:
-# David Robinson
-# https://github.com/dgrtwo/gganimate/blob/master/README.Rmd 
-
-library(animation)
-ani.options(autobrowse = FALSE, interval = 1)
-
-opts_knit$set(animation.fun = function(x, options, format = "gif") {
-  # FIXME knitr::sans_ext is not available anymore
-  # x = c(knitr:::sans_ext(x), knitr:::file_ext(x))
-  fig.num = options$fig.num
-  format = sub("^[.]", "", format)
-  fig.fname = paste0(sub(paste0(fig.num, "$"), "*", x[1]), 
-                     ".", x[2])
-  mov.fname = paste0(sub(paste0(fig.num, "$"), "", x[1]), ".", 
-                     format)
-  # order correctly
-  figs = Sys.glob(fig.fname)
-  figs = figs[order(as.numeric(stringr::str_match(figs, paste0("(\\d+)\\.", x[2]))[, 2]))]
-  
-  animation::im.convert(figs, output = mov.fname)
-  
-  #remove old pngs
-  unlink(fig.fname)
-  
-  sprintf("![%s](%s)", options$label, paste0(opts_knit$get("base.url"), mov.fname))
-})
-
-opts_chunk$set(cache = TRUE, message = FALSE, warning = FALSE, fig.show = "animate", dpi = 50, dev = "png", dev.args = list(pointsize = 8))
 ```
 
-```{r animation, echo=FALSE, eval=TRUE, results='hide', fig.width=7, fig.height=4}
+```{r animation, message = FALSE, warning = FALSE, echo=FALSE, eval=TRUE, fig.width=7, fig.height=4, animation.hook='gifski'}
 ##### optimizing a simple sin(x) with mbo / EI #####
 
 set.seed(2)
