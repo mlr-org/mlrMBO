@@ -21,7 +21,7 @@ after_script: R -q -e 'tic::after_script()'
 
 # Header
 language: r
-dist: xenial
+dist: bionic
 cache: packages
 latex: true
 
