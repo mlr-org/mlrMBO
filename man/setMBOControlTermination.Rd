@@ -83,6 +83,7 @@ print(res)
 Other MBOControl: \code{\link{makeMBOControl}},
   \code{\link{setMBOControlInfill}},
   \code{\link{setMBOControlMultiObj}},
-  \code{\link{setMBOControlMultiPoint}}
+  \code{\link{setMBOControlMultiPoint}},
+  \code{\link{setMBOControlNoisy}}
 }
 \concept{MBOControl}

@@ -25,36 +25,79 @@ evalTargetFun.OptState = function(opt.state, xs, extras) {
   # short names and so on
   nevals = length(xs)
   ny = control$n.objectives
-  num.format = control$output.num.format
-  num.format.string = paste("%s = ", num.format, sep = "")
-  dobs = ensureVector(asInteger(getOptStateLoop(opt.state)), n = nevals, cl = "integer")
   imputeY = control$impute.y.fun
 
   # trafo X points
   xs.trafo = lapply(xs, trafoValue, par = par.set)
 
   # function to measure of fun call
-    wrapFun = function(x) {
-      st = proc.time()
-      y = do.call(getOptProblemFun(opt.problem), insert(list(x = x), getOptProblemMoreArgs(opt.problem)))
-      user.extras = list()
+  wrapFun = function(x) {
+    st = proc.time()
+    y = do.call(getOptProblemFun(opt.problem), insert(list(x = x), getOptProblemMoreArgs(opt.problem)))
+    user.extras = list()
       # here we extract additional stuff which the user wants to log in the opt path
-      if (hasAttributes(y, "extras")) {
-        user.extras = attr(y, "extras")
-        y = setAttribute(y, "extras", NULL)
-      }
-      st = proc.time() - st
-      list(y = y, time = st[3], user.extras = user.extras)
+    if (hasAttributes(y, "extras")) {
+      user.extras = attr(y, "extras")
+      y = setAttribute(y, "extras", NULL)
     }
+    if (!is.null(control$noisy.instance.param) && !is.na(control$noisy.instance.param) && !control$noisy.self.replicating) {
+      user.extras = c(user.extras, x[control$noisy.instance.param])
+    }
+    st = proc.time() - st
+    list(y = y, time = st[3], user.extras = user.extras)
+  }
 
   # do we have a valid y object?
   isYValid = function(y) {
-    !is.error(y) && testNumeric(y, len = ny, any.missing = FALSE, finite = TRUE)
+    if (!isTRUE(control$noisy.self.replicating)) {
+      len = NULL
+    } else {
+      len = ny
+    }
+    !is.error(y) && testNumeric(y, len = len, any.missing = FALSE, finite = TRUE)
   }
 
   # return error objects if we impute
-  res = parallelMap(wrapFun, xs.trafo, level = "mlrMBO.feval",
-    impute.error = if (is.null(imputeY)) NULL else identity)
+  res = parallelMap(wrapFun, xs.trafo, level = "mlrMBO.feval", impute.error = if (is.null(imputeY)) NULL else identity)
+
+  # handle noisy instances
+  if (isTRUE(control$noisy.self.replicating)) {
+    nevals.each = lengths(extractSubList(res, "y", simplify = FALSE))
+    nevals = sum(nevals.each)
+
+    # replications for opt path stuff
+    repVec = function(x, fun = replicate) {
+      unlist(Map(fun, nevals.each, x, simplify = FALSE), recursive = FALSE)
+    }
+    xs = repVec(xs)
+    xs.trafo = repVec(xs.trafo)
+
+    #set extras to NA that are only important for the first point
+    setNAfun = function(n, xs, ...) {
+      res = replicate(n = n, expr = xs, ...)
+      res[-1] = lapply(res[-1], function(x) {
+        x[c("train.time", "error.model", "propose.time")] = NA
+        x
+      })
+      res
+    }
+    extras = repVec(extras, setNAfun)
+
+    # handle result list
+    res = lapply(res, function(r) {
+      if (is.error(r)) {
+        rep(list(r), control$noisy.instances)
+      } else {
+        lapply(seq_along(r$y), function(i) {
+          list(y = r$y[i], time = r$time / length(r$y), user.extras = c(r$user.extras, setNames(list(i), control$noisy.instance.param)))
+        })
+      }
+    })
+    res = unlist(res, recursive = FALSE)
+  }
+
+  num.format.string = paste("%s = ", control$output.num.format, sep = "")
+  dobs = ensureVector(asInteger(getOptStateLoop(opt.state)), n = nevals, cl = "integer")
 
   # loop evals and to some post-processing
   for (i in seq_len(nevals)) {
@@ -92,7 +135,7 @@ evalTargetFun.OptState = function(opt.state, xs, extras) {
     # showInfo - use the trafo'd value here!
     showInfo(getOptProblemShowInfo(opt.problem), "[mbo] %i: %s : %s : %.1f secs%s : %s",
       dob,
-      paramValueToString(par.set, x.trafo, num.format = num.format),
+      paramValueToString(par.set, x.trafo, num.format = control$output.num.format),
       collapse(sprintf(num.format.string, control$y.name, y2), ", "),
       ytime,
       ifelse(y.valid, "", " (imputed)"),
