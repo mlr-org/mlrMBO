@@ -11,20 +11,20 @@ development:
   version_label: default
   version_tooltip: "Development version"
 
-home:
-  strip_header: true
-
-toc:
-  depth: 3
-
 navbar:
-  left:
-  - text: Quickstart
-    href: articles/mlrMBO.html
-    icon: fa-bolt
-  - text: Topics
-    icon: fa-file-text-o
-    menu:
+  structure:
+    left:  [info, articles, reference, news]
+    right: [github, slack, stackoverflow, rss]
+  components:
+    home: ~
+    info:
+      text: Quickstart
+      href: articles/mlrMBO.html
+      icon: fa-bolt
+    articles:
+      text: Articles
+      icon: fa-file-text-o
+      menu:
       - text: Mixed Space Optimization
         href: articles/supplementary/mixed_space_optimization.html
       - text: Parallelization
@@ -41,9 +41,15 @@ navbar:
         href: articles/supplementary/mlrmbo_and_the_command_line.html
       - text: Adaptive Infill Criteria
         href: articles/supplementary/adaptive_infill_criteria.html
-  - text: Reference
-    icon: fa-book
-    href: reference/index.html
+    slack:
+      icon: fab fa-slack
+      href: https://mlr-org.slack.com
+    stackoverflow:
+      icon: fab fa-stack-overflow
+      href: https://stackoverflow.com/questions/tagged/mlr
+    rss:
+      icon: fa-rss
+      href: https://mlr-org.com/
 
 reference:
   - title: "mlrMBO Control"
