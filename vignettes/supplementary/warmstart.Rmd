@@ -16,8 +16,6 @@ knitr::knit_hooks$set(document = function(x){
 })
 ```
 
-
-
 ## Purpose
 
 This Vignette will give you a short overview on how to warm-start your optimization.
@@ -136,4 +134,4 @@ file.remove("mlrMBO_run.RData") # remove the saved state
 ```
 
 *Note:* It is possible to continue an optimization that was saved to disk and terminated using the same approach as in the previous chapter.
-You can aces the `opt.state` by calling `load("mlrMBO_run.RData")`.
+You can access the `opt.state` by calling `load("mlrMBO_run.RData")`.
