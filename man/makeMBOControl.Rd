@@ -10,7 +10,7 @@ makeMBOControl(n.objectives = 1L, propose.points = 1L,
   impute.y.fun = NULL, trafo.y.fun = NULL,
   suppress.eval.errors = TRUE, save.on.disk.at = integer(0L),
   save.on.disk.at.time = Inf, save.file.path = file.path(getwd(),
-  "mlr_run.RData"), store.model.at = NULL, resample.at = integer(0),
+  "mlrMBO_run.RData"), store.model.at = NULL, resample.at = integer(0),
   resample.desc = makeResampleDesc("CV", iter = 10),
   resample.measures = list(mse), output.num.format = "\%.3g",
   on.surrogate.error = "stop")
