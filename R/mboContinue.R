@@ -10,7 +10,7 @@
 #' @return See \code{\link{mbo}}.
 #' @export
 mboContinue = function(opt.state) {
-  if (checkCharacter(opt.state, len = 1L)) {
+  if (testCharacter(opt.state, len = 1L)) {
     opt.state = loadOptState(opt.state)
   }
   if (!inherits(opt.state, "OptState")) {

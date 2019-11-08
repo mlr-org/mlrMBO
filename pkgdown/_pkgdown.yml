@@ -41,6 +41,8 @@ navbar:
         href: articles/supplementary/mlrmbo_and_the_command_line.html
       - text: Adaptive Infill Criteria
         href: articles/supplementary/adaptive_infill_criteria.html
+      - text: Warm Starting Optimization
+        href: articles/supplementary/warmstart.html
     slack:
       icon: fab fa-slack
       href: https://mlr-org.slack.com
