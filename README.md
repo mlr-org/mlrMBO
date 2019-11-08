@@ -1,10 +1,4 @@
 
-``` r
-library(knitr)
-opts_knit$set(upload.fun = imgur_upload, base.url = NULL) # upload all images to imgur.com
-opts_chunk$set(fig.width=5, fig.height=5, cache=TRUE)
-```
-
 # mlrMBO
 
 <!-- Please edit README.Rmd !-->
@@ -12,10 +6,10 @@ opts_chunk$set(fig.width=5, fig.height=5, cache=TRUE)
 Model-based optimization with [mlr](https://github.com/mlr-org/mlr/).
 
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/mlrMBO)](https://cran.r-project.org/package=mlrMBO)
-[![Build
-Status](https://travis-ci.org/mlr-org/mlrMBO.png?branch=master)](https://travis-ci.org/mlr-org/mlrMBO)
-[![Build
-status](https://ci.appveyor.com/api/projects/status/gvr607kqcl78qjq9/branch/master?svg=true)](https://ci.appveyor.com/project/jakob-r/mlrmbo/branch/master)
+[![Travis build
+status](https://img.shields.io/travis/mlr-org/mlrMBO/master?logo=travis&style=flat-square&label=Linux)](https://travis-ci.org/mlr-org/mlrMBO)
+[![AppVeyor build
+status](https://img.shields.io/appveyor/ci/mlr-org/mlrMBO?label=Windows&logo=appveyor&style=flat-square)](https://ci.appveyor.com/project/mlr-org/mlrMBO)
 [![Coverage
 Status](https://img.shields.io/codecov/c/github/mlr-org/mlrMBO/master.svg)](https://codecov.io/github/mlr-org/mlrMBO?branch=master)
 [![Monthly RStudio CRAN
@@ -36,12 +30,12 @@ install.packages("mlrMBO")
 For experimental use you can install the latest development version:
 
 ``` r
-devtools::install_github("mlr-org/mlrMBO")
+remotes::install_github("mlr-org/mlrMBO")
 ```
 
 # Introduction
 
-![](https://i.imgur.com/bN8l2Cl.gif)<!-- -->
+![](https://i.imgur.com/NMpSqnS.gif)<!-- -->
 
 `mlrMBO` is a highly configurable R toolbox for model-based / Bayesian
 optimization of black-box functions.
