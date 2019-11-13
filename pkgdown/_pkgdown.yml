@@ -13,11 +13,12 @@ development:
 
 navbar:
   structure:
-    left:  [info, articles, reference, news]
+    left:  [quickstart, articles, reference, news]
     right: [github, slack, stackoverflow, rss]
   components:
     home: ~
-    info:
+    intro: ~
+    quickstart:
       text: Quickstart
       href: articles/mlrMBO.html
       icon: fa-bolt
