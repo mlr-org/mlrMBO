@@ -7,7 +7,7 @@ library(knitr)
 library(gifski)
 opts_knit$set(upload.fun = imgur_upload, base.url = NULL) # upload all images to imgur.com
 opts_chunk$set(fig.width=5, fig.height=5, cache=TRUE)
-````
+```
 
 # mlrMBO
 
@@ -81,11 +81,13 @@ Features:
 * Parallelization on many parallel back-ends and clusters through [batchtools](https://github.com/mllg/batchtools) and [parallelMap](https://github.com/berndbischl/parallelMap)
 
 For the *surrogate*, `mlrMBO` allows any regression learner from [`mlr`](https://github.com/mlr-org/mlr), including:
+
 * Kriging aka. Gaussian processes (i.e. `DiceKriging`)
 * random Forests (i.e. `randomForest`)
 * and many more...
 
 Various *infill criteria* (aka. _acquisition functions_) are available:
+
 * Expected improvement (EI)
 * Upper/Lower confidence bound (LCB, aka. statistical lower or upper bound)
 * Augmented expected improvement (AEI)
@@ -97,7 +99,7 @@ Objective functions are created with package [smoof](https://github.com/jakobbos
 Parameter spaces and initial designs are created with package [ParamHelpers](https://github.com/berndbischl/ParamHelpers).
 
 
-# mlrMBO - How to Cite and Citing Publications
+# How to Cite
 
 Please cite our [arxiv paper](https://arxiv.org/abs/1703.03373) (Preprint).
 You can get citation info via `citation("mlrMBO")` or copy the following BibTex entry:
