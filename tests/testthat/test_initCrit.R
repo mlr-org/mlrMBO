@@ -1,5 +1,5 @@
 test_that("infill crit initialization", {
-
+  skip_on_covr() #because the crit.cb*$fun field is modified by covr and therefore expect_equal will fail
   fn = makeSphereFunction(2) # 2d continous space
 
   crit.cb1_val = setValue(crit.cb1, "opt.direction", "minimize")
