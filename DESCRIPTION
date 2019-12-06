@@ -61,5 +61,5 @@ LazyData: yes
 Encoding: UTF-8
 ByteCompile: yes
 Version: 1.1.4
-RoxygenNote: 7.0.1
+RoxygenNote: 7.0.2
 VignetteBuilder: knitr

@@ -89,7 +89,12 @@ test_that("infill crits", {
 
   for (noisy in c(TRUE, FALSE)) {
     for (minimize in c(TRUE, FALSE)) {
-      crits = if (noisy) list(crit.aei, crit.eqi) else list(crit.mr, crit.se, crit.ei, crit.cb2)
+      # we dont use the objects from zzz.R since they are not counted for covrage :(
+      crits = if (noisy) {
+        list(makeMBOInfillCritAEI(), makeMBOInfillCritEQI())
+      } else {
+        list(makeMBOInfillCritMeanResponse(), makeMBOInfillCritStandardError(),  makeMBOInfillCritEI(), makeMBOInfillCritCB(cb.lambda = 2))
+      }
       for (lrn in learners) {
         if (inherits(lrn, "regr.km"))
           lrn = setHyperPars(lrn, nugget.estim = noisy)
