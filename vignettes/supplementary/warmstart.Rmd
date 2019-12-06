@@ -98,12 +98,11 @@ But first, for this example we have to construct a function that fails.
 This function will throw an error the 12th time it is called.
 
 ```{r build_fail}
-assign(".counter", 0L, envir = .GlobalEnv)
+counter = 0
 f = makeSingleObjectiveFunction(
   fn = function(x) {
-    .counter = get(".counter", envir = .GlobalEnv)
-    assign(".counter", .counter + 1L, envir = .GlobalEnv)
-    if (.counter == 12L)
+    counter <<- counter + 1
+    if (counter == 12L)
       stop("fail")
     sum(x^2)
   },
@@ -115,7 +114,7 @@ To be able to continue a failed optimization run we have to set `save.on.disk.at
 The first defines a time frame that has to pass until the current state is saved to disk again (e.g. all 30 seconds).
 The second defines a vector of iterations, when to save the current state to disk (e.g. `c(10,20,30)`).
 Additionally you can set the location where the state is saved with `save.file.path`.
-It defaults to `getwd()/mbo_run.RData`.
+It defaults to `getwd()/mlrMBO_run.RData`.
 
 ```{r fail_settings, error=TRUE}
 ctrl = makeMBOControl(save.on.disk.at = c(2,4))
@@ -128,7 +127,7 @@ As expected the process failed.
 Luckily we can use the saved `opt.state` to continue the optimization.
 
 ```{r continue_fail}
-assign(".counter", 13L, envir = .GlobalEnv) # set counter to not trigger the error
+counter = 13 # set counter to not trigger the error
 or = mboContinue("mlrMBO_run.RData")
 file.remove("mlrMBO_run.RData") # remove the saved state
 ```
