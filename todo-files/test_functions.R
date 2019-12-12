@@ -1,7 +1,6 @@
 # in the following we assume:
 # - the signature of all testfunction is (lv, x)
 # - x is a real value (dim = 1)
-# - lv is the multifid param, from [0, 1] here
 # - we pre-specify the levels as a finite subset from [0, 1] later, to define the discrete level points
 
 ##### NORMAL UNIVARIATE TESTFUNCTIONS #####
@@ -100,19 +99,6 @@ plotTestfunFamily = function(f, lvs, x1, x2) {
   pl = ggplot(data = data, mapping = aes_string(x = "x", y = "y", col = "lv"))
   pl = pl + geom_line()
   return(pl)
-}
-
-##### CONVERT TEST FUNCTION TO MBO OBJECTIVE FUNCTION #####
-# we need to ensure that the signature is now f(x), where x is a list, which contains the lvl param
-makeMBOMultiFidFunction = function(f, lvls) {
-  force(f)
-  force(lvls)
-  function(x) {
-    #put all other x to one vector
-    lv = lvls[x$.multifid.lvl]
-    x = unlist(dropNamed(x, ".multifid.lvl"))
-    f(lv = lv, x = x)
-  }
 }
 
 ##### EXAMPLE CALLS #####

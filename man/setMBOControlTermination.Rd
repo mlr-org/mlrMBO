@@ -4,9 +4,16 @@
 \alias{setMBOControlTermination}
 \title{Set termination options.}
 \usage{
-setMBOControlTermination(control, iters = NULL, time.budget = NULL,
-  exec.time.budget = NULL, target.fun.value = NULL, max.evals = NULL,
-  more.termination.conds = list(), use.for.adaptive.infill = NULL)
+setMBOControlTermination(
+  control,
+  iters = NULL,
+  time.budget = NULL,
+  exec.time.budget = NULL,
+  target.fun.value = NULL,
+  max.evals = NULL,
+  more.termination.conds = list(),
+  use.for.adaptive.infill = NULL
+)
 }
 \arguments{
 \item{control}{[\code{\link{MBOControl}}]\cr
@@ -80,9 +87,10 @@ res = mbo(fn, control = ctrl)
 print(res)
 }
 \seealso{
-Other MBOControl: \code{\link{makeMBOControl}},
-  \code{\link{setMBOControlInfill}},
-  \code{\link{setMBOControlMultiObj}},
-  \code{\link{setMBOControlMultiPoint}},
-  \code{\link{setMBOControlNoisy}}
+Other MBOControl: 
+\code{\link{makeMBOControl}()},
+\code{\link{setMBOControlInfill}()},
+\code{\link{setMBOControlMultiObj}()},
+\code{\link{setMBOControlMultiPoint}()}
 }
+\concept{MBOControl}

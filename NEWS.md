@@ -1,6 +1,7 @@
 # mlrMBO 1.1.3
 
 * Bugfix: `plot(opt.state)` now also works for Param Sets with transformations.
+* Bugfix: Infill optimization with CMAES now supports restarts.
 
 # mlrMBO 1.1.2
 

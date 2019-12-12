@@ -6,11 +6,9 @@
 \alias{plot.MBOMultiObjResult}
 \title{MBO Result Plotting}
 \usage{
-\method{plot}{MBOSingleObjResult}(x, iters = NULL, pause = interactive(),
-  ...)
+\method{plot}{MBOSingleObjResult}(x, iters = NULL, pause = interactive(), ...)
 
-\method{plot}{MBOMultiObjResult}(x, iters = NULL, pause = interactive(),
-  ...)
+\method{plot}{MBOMultiObjResult}(x, iters = NULL, pause = interactive(), ...)
 }
 \arguments{
 \item{x}{[\code{MBOResult}]\cr

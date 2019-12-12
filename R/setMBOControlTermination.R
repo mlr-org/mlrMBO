@@ -72,6 +72,7 @@ setMBOControlTermination = function(control,
   iters = NULL, time.budget = NULL, exec.time.budget = NULL, target.fun.value = NULL, max.evals = NULL, more.termination.conds = list(), use.for.adaptive.infill = NULL,
   identification.time.budget = NULL, identification.max.evals = NULL) {
 
+  assertClass(control, "MBOControl")
   assertList(more.termination.conds)
   assertCharacter(use.for.adaptive.infill, null.ok = TRUE)
 

@@ -15,14 +15,6 @@ filterProposedPoints = function(prop, opt.state) {
   # prepare stuff
   n = nrow(prop$prop.points)
   design = getOptPathX(opt.path)
-  if (control$multifid) {
-    # we expect n == 1 for multifid!
-    .multifid.lvl = prop$prop.points$.multifid.lvl
-    prop$prop.points = dropNamed(prop$prop.points, ".multifid.lvl")
-    par.set = dropParams(par.set, ".multifid.lvl")
-    design = design[design$.multifid.lvl == .multifid.lvl,]
-    design = dropNamed(design, ".multifid.lvl")
-  }
   calcMaxMetric = function(x, y) max(abs(x - y))
   to.delete = rep(FALSE, n)
 
@@ -45,10 +37,6 @@ filterProposedPoints = function(prop, opt.state) {
     # FIXME: we might want to do something smarter here. how about augmenting the current design?
     prop$prop.points[to.delete, ] = generateRandomDesign(n.replace, par.set)
     prop$prop.type[to.delete] = "random_filter"
-  }
-
-  if (control$multifid) {
-    prop$prop.points = cbind(prop$prop.points, .multifid.lvl)
   }
 
   return(prop)

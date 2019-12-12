@@ -18,3 +18,8 @@
 ^vignettes/.+\.html$
 .github
 .covrignore
+^pkgdown$
+^tic\.R$
+^README_.*$
+^README.Rmd$
+^animation.gif$
