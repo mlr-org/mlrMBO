@@ -97,7 +97,6 @@ proposePointsMOIMBO = function(opt.state, ...) {
       # Create new individual (mu + 1)
       parents = sample(seq_len(mu), 2)
       # get two kids from CX, sel. 1 randomly, mutate
-      browser()
       X_t = t(X[parents, , drop = FALSE])
       storage.mode(X_t) = "numeric" #we have problems if X_t is integer matrix
       child = crossover(X_t)
