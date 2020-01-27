@@ -5,7 +5,7 @@ test_that("multi-objective dib works", {
   learner = makeLearner("regr.km", nugget.estim = TRUE, predict.type = "se")
   ctrl = makeMBOControl(n.objectives = 2L)
   ctrl = setMBOControlTermination(ctrl, iters = 5L)
-  ctrl = setMBOControlInfill(ctrl, crit = crit.dib1,
+  ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCritDIB(cb.lambda = 1),
     opt.focussearch.points = 10L, opt.focussearch.maxit = 5L)
   ctrl = setMBOControlMultiObj(ctrl, method = "dib")
   or = mbo(testfmco1, testdesmco1, learner = learner, control = ctrl)
@@ -25,7 +25,7 @@ test_that("multi-objective dib works", {
   expect_matrix(or$pareto.front, mode = "numeric", any.missing = FALSE)
 
   ctrl = setMBOControlMultiObj(ctrl, method = "dib", dib.indicator = "eps")
-  ctrl = setMBOControlInfill(ctrl, crit = crit.dib1, opt.focussearch.points = 10)
+  ctrl = setMBOControlInfill(ctrl, crit = makeMBOInfillCritDIB(cb.lambda = 1), opt.focussearch.points = 10)
   or = mbo(testfmco1, testdesmco1, learner = learner, control = ctrl)
   expect_matrix(or$pareto.front, mode = "numeric", any.missing = FALSE)
 })

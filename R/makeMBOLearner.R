@@ -27,8 +27,7 @@
 #' \item{A random regression forest \dQuote{regr.randomForest} with 500 trees is created.}
 #' \item{The standard error of a prediction (if required by the infill criterion) is estimated
 #'   by computing the jackknife-after-bootstrap.
-#'   This is the \code{se.method = "jackknife"} option of the \code{\link[mlr]{regr.randomForest}},
-#'   see this page for further info and alternatives.
+#'   This is the \code{se.method = "jackknife"} option of the \dQuote{regr.randomForest} Learner.
 #'   }
 #' }
 #'

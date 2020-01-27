@@ -171,7 +171,10 @@ minimizes that.
 \seealso{
 Other MBOControl: 
 \code{\link{makeMBOControl}()},
+<<<<<<< HEAD
 \code{\link{setMBOControlConceptDrift}()},
+=======
+>>>>>>> master
 \code{\link{setMBOControlMultiObj}()},
 \code{\link{setMBOControlMultiPoint}()},
 \code{\link{setMBOControlTermination}()}

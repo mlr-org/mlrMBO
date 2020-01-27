@@ -25,7 +25,7 @@ plot.OptState = function(x, scale.panels = FALSE, ...) {
   par.is.numeric = par.types %in% c("numeric", "integer")
   par.count.numeric = sum(par.is.numeric)
   par.count.discrete = par.dim - par.count.numeric
-  opt.path = getOptStateOptPath(opt.state)
+  opt.path.df = as.data.frame(getOptStateOptPath(opt.state))
   models = getOptStateModels(opt.state)$models
   designs = getOptStateDesigns(opt.state)
   x.ids = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
@@ -33,7 +33,11 @@ plot.OptState = function(x, scale.panels = FALSE, ...) {
   infill = control$infill.crit
 
   # the data we need to plot
+<<<<<<< HEAD
   points = generateGridDesign(getOptProblemParSet(opt.problem, original.par.set = isTRUE(control$conceptdrift.learn.drift)), 100, trafo = FALSE)
+=======
+  points = generateGridDesign(par.set, 100, trafo = FALSE)
+>>>>>>> master
 
   infill.res = infill$fun(points = points, models = models, control = control, par.set = par.set, designs = designs, attributes = TRUE, iter = getOptStateLoop(opt.state))
 
@@ -52,7 +56,9 @@ plot.OptState = function(x, scale.panels = FALSE, ...) {
   design = designs[[1]]
 
   # add types to points
-  design$type = ifelse(getOptPathDOB(opt.path) == 0, "init", "seq")
+  # remove final evals from plot because they do not belong to the model that is printed
+  opt.path.df = opt.path.df[opt.path.df$prop.type != "final_eval",]
+  design$type = ifelse(opt.path.df$dob == 0, "init", "seq")
 
   # reduce to usefull infill components
   use.only.columns = c(x.ids, control$infill.crit$id, "mean", "se")

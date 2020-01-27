@@ -1,0 +1,136 @@
+---
+title: "Warm Starting Optimization"
+vignette: >
+  %\VignetteIndexEntry{Warm Starting Optimization}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE, cache = FALSE}
+library(mlrMBO)
+library(rgenoud)
+set.seed(123)
+knitr::opts_chunk$set(cache = FALSE, collapse = FALSE, warning = FALSE)
+knitr::knit_hooks$set(document = function(x){
+  gsub("```\n*```r*\n*", "", x)
+})
+```
+
+## Purpose
+
+This Vignette will give you a short overview on how to warm-start your optimization.
+It will consider three kinds of warm starting.
+First, you can warm-start your optimization on any pre-evaluated design.
+Second, you can continue optimizing a terminated optimization.
+Third, you can continue any failed optimization if you took the right precautions.
+
+### Prerequisites
+
+First, we will construct our problem that will be used for the following examples
+
+```{r load_package}
+library(mlrMBO)
+obj.fun = makeSixHumpCamelFunction()
+ggplot2::autoplot(obj.fun, render.levels = TRUE, show.optimum = TRUE)
+```
+
+### Warm Start on a Design
+
+First we create the pre-evaluated design.
+
+```{r design}
+design = generateGridDesign(getParamSet(obj.fun), resolution = 3)
+design$y = apply(design, 1, obj.fun)
+design
+```
+
+Now we define out MBO Settings.
+
+```{r design_mbo}
+ctrl = makeMBOControl()
+ctrl = setMBOControlInfill(ctrl, crit.ei)
+ctrl = setMBOControlTermination(ctrl, iters = 4)
+```
+
+To warm start the Bayesian optimization we simply call `mbo()` and pass the pre-evaluated design.
+
+```{r design_start}
+res = mbo(obj.fun, design = design, control = ctrl)
+plot(res$final.opt.state, scale.panels = TRUE)
+```
+
+### Continue a Terminated Optimization
+
+Now, we will continue our above optimization.
+Here we have two options.
+First, we can convert the `opt.path` from the result to a `data.frame`, which will then serve as the pre-evaluated design.
+This pre-evaluated design can be passed to `mbo()` just as in the previous example.
+
+```{r res_to_design}
+op = as.data.frame(res$opt.path)
+design = op[, c("x1", "x2", "y")]
+res2 = mbo(obj.fun, design = design, control = ctrl)
+plot(res2$final.opt.state, scale.panels = TRUE)
+```
+
+Second, we can use `mboContinue()` on the `final.opt.state`.
+In this case we have to change the state of the `opt.state` object from `"term.iter"` to `"iter"` so MBO does not assume the optimization is already terminated.
+Furthermore we have to redefine the termination criterion to 8 because we want run 4 further iterations from the 4 we already did in the beginning.
+
+```{r mbocontinue_optstate}
+opt.state = res$final.opt.state
+opt.state$opt.problem$control = setMBOControlTermination(opt.state$opt.problem$control, iters = 8)
+opt.state$state = "iter"
+res3 = mboContinue(res$final.opt.state)
+plot(res3$final.opt.state, scale.panels = TRUE)
+```
+
+The first approach has the advantage that it is more transparent.
+Also you have to pass an `MBOControl` object which gives you an easy ability to refine your MBO settings for the further iterations.
+The second approach is a bit more *hacky* but has the advantage that you do not have to construct the design from the `opt.path`.
+
+### Continue a Failed Optimization
+
+If you run long MBO optimization tasks it is especially frustrating if some part crashes and your optimization progress is gone.
+Luckily MBO has the capabilities to continue failed optimization runs if you configure the `MBOControl` object right.
+
+But first, for this example we have to construct a function that fails.
+This function will throw an error the 12th time it is called.
+
+```{r build_fail}
+counter = 0
+f = makeSingleObjectiveFunction(
+  fn = function(x) {
+    counter <<- counter + 1
+    if (counter == 12L)
+      stop("fail")
+    sum(x^2)
+  },
+  par.set = makeNumericParamSet(len = 2L, lower = -2, upper = 1)
+)
+```
+
+To be able to continue a failed optimization run we have to set `save.on.disk.at.time` or `save.on.disk.at`.
+The first defines a time frame that has to pass until the current state is saved to disk again (e.g. all 30 seconds).
+The second defines a vector of iterations, when to save the current state to disk (e.g. `c(10,20,30)`).
+Additionally you can set the location where the state is saved with `save.file.path`.
+It defaults to `getwd()/mlrMBO_run.RData`.
+
+```{r fail_settings, error=TRUE}
+ctrl = makeMBOControl(save.on.disk.at = c(2,4))
+ctrl = setMBOControlInfill(ctrl, crit.ei)
+ctrl = setMBOControlTermination(ctrl, iters = 8L)
+or = mbo(f, control = ctrl)
+```
+
+As expected the process failed.
+Luckily we can use the saved `opt.state` to continue the optimization.
+
+```{r continue_fail}
+counter = 13 # set counter to not trigger the error
+or = mboContinue("mlrMBO_run.RData")
+file.remove("mlrMBO_run.RData") # remove the saved state
+```
+
+*Note:* It is possible to continue an optimization that was saved to disk and terminated using the same approach as in the previous chapter.
+You can access the `opt.state` by calling `load("mlrMBO_run.RData")`.
