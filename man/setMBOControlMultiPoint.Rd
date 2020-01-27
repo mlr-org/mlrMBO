@@ -15,12 +15,8 @@ setMBOControlMultiPoint(
   moimbo.sbx.eta = NULL,
   moimbo.sbx.p = NULL,
   moimbo.pm.eta = NULL,
-<<<<<<< HEAD
   moimbo.pm.p = NULL,
   ensemble.crits = NULL
-=======
-  moimbo.pm.p = NULL
->>>>>>> master
 )
 }
 \arguments{
@@ -105,10 +101,7 @@ Extends an MBO control object with options for multipoint proposal.
 \seealso{
 Other MBOControl: 
 \code{\link{makeMBOControl}()},
-<<<<<<< HEAD
 \code{\link{setMBOControlConceptDrift}()},
-=======
->>>>>>> master
 \code{\link{setMBOControlInfill}()},
 \code{\link{setMBOControlMultiObj}()},
 \code{\link{setMBOControlTermination}()}

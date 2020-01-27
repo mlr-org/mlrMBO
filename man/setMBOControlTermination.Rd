@@ -89,10 +89,7 @@ print(res)
 \seealso{
 Other MBOControl: 
 \code{\link{makeMBOControl}()},
-<<<<<<< HEAD
 \code{\link{setMBOControlConceptDrift}()},
-=======
->>>>>>> master
 \code{\link{setMBOControlInfill}()},
 \code{\link{setMBOControlMultiObj}()},
 \code{\link{setMBOControlMultiPoint}()}
