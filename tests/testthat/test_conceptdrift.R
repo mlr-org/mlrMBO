@@ -119,7 +119,7 @@ test_that("conceptdrift + mulipoint ensemble works", {
   op = as.data.frame(res$opt.path)
 
   # the th.final point should be the same as the mean inf proposal:
-  expect_equal(op[op$prop.type == "infill_mean", "x1"], op[op$prop.type == "infill_mean", "final.x.x1"], tolerance = 0.0001)
+  expect_equal(op[op$prop.type == "infill_mean", "x1"], op[op$prop.type == "infill_mean", "final.x.x1"], tolerance = 0.001)
 
   # the mean proposal should be close to 0.5
   expect_equal(op[op$prop.type == "infill_mean", "x1"], rep(0.5, 10), tolerance = 0.1)
