@@ -97,7 +97,9 @@ proposePointsMOIMBO = function(opt.state, ...) {
       # Create new individual (mu + 1)
       parents = sample(seq_len(mu), 2)
       # get two kids from CX, sel. 1 randomly, mutate
-      child = crossover(t(X[parents, , drop = FALSE]))
+      X_t = t(X[parents, , drop = FALSE])
+      storage.mode(X_t) = "numeric" #we have problems if X_t is integer matrix
+      child = crossover(X_t)
       child1 = child[,sample(c(1, 2), 1)]
       child1 = mutate(child1)
       # Add new individual:

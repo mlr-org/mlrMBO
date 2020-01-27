@@ -32,8 +32,6 @@ NULL
 #' \item{crit.eqi}{Expected quantile improvement}
 #' \item{crit.dib1}{Direct indicator-based with lambda=1}
 #' }
-#'
-#' @rdname MBOInfillCrit
 #' @export
 #' @usage NULL
 #' @docType NULL
