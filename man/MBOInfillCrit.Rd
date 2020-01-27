@@ -14,8 +14,15 @@
 \alias{crit.dib1}
 \title{Create an infill criterion.}
 \usage{
-makeMBOInfillCrit(fun, name, id, opt.direction = "minimize",
-  components = character(0L), params = list(), requires.se = FALSE)
+makeMBOInfillCrit(
+  fun,
+  name,
+  id,
+  opt.direction = "minimize",
+  components = character(0L),
+  params = list(),
+  requires.se = FALSE
+)
 }
 \arguments{
 \item{fun}{[\code{function(points, models, control, par.set, design, iter)}]\cr

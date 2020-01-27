@@ -4,11 +4,20 @@
 \alias{setMBOControlMultiPoint}
 \title{Set multipoint proposal options.}
 \usage{
-setMBOControlMultiPoint(control, method = NULL, cl.lie = NULL,
-  moimbo.objective = NULL, moimbo.dist = NULL,
-  moimbo.selection = NULL, moimbo.maxit = NULL,
-  moimbo.sbx.eta = NULL, moimbo.sbx.p = NULL, moimbo.pm.eta = NULL,
-  moimbo.pm.p = NULL, ensemble.crits = NULL)
+setMBOControlMultiPoint(
+  control,
+  method = NULL,
+  cl.lie = NULL,
+  moimbo.objective = NULL,
+  moimbo.dist = NULL,
+  moimbo.selection = NULL,
+  moimbo.maxit = NULL,
+  moimbo.sbx.eta = NULL,
+  moimbo.sbx.p = NULL,
+  moimbo.pm.eta = NULL,
+  moimbo.pm.p = NULL,
+  ensemble.crits = NULL
+)
 }
 \arguments{
 \item{control}{[\code{\link{MBOControl}}]\cr
@@ -90,10 +99,11 @@ List of InfillCrits. Length has to be equal to \code{propose.points}!}
 Extends an MBO control object with options for multipoint proposal.
 }
 \seealso{
-Other MBOControl: \code{\link{makeMBOControl}},
-  \code{\link{setMBOControlConceptDrift}},
-  \code{\link{setMBOControlInfill}},
-  \code{\link{setMBOControlMultiObj}},
-  \code{\link{setMBOControlTermination}}
+Other MBOControl: 
+\code{\link{makeMBOControl}()},
+\code{\link{setMBOControlConceptDrift}()},
+\code{\link{setMBOControlInfill}()},
+\code{\link{setMBOControlMultiObj}()},
+\code{\link{setMBOControlTermination}()}
 }
 \concept{MBOControl}

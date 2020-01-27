@@ -178,10 +178,12 @@ makeMBOInfillCritAEI = function(aei.use.nugget = FALSE, se.threshold = 1e-6) {
       xcr.dens = dnorm(xcr)
 
       # noise estimation
-      pure.noise.var = if (aei.use.nugget)
+      if (aei.use.nugget) {
         pure.noise.var = getLearnerModel(model, more.unwrap = TRUE)@covariance@nugget
-      else
-        estimateResidualVariance(model, data = design, target = control$y.name)
+        assertNumber(pure.noise.var, lower = 0, )
+      } else {
+        pure.noise.var = estimateResidualVariance(model, data = design, target = control$y.name)
+      }
 
       tau = sqrt(pure.noise.var)
       res = (-1) * ifelse(p.se < se.threshold, 0,

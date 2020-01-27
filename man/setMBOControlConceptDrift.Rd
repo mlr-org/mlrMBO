@@ -4,9 +4,14 @@
 \alias{setMBOControlConceptDrift}
 \title{Set concept drift options.}
 \usage{
-setMBOControlConceptDrift(control, drift.function = identity,
-  window.function = identity, learn.drift = FALSE,
-  calculate.th.final.point = FALSE, fix.constant.model = FALSE)
+setMBOControlConceptDrift(
+  control,
+  drift.function = identity,
+  window.function = identity,
+  learn.drift = FALSE,
+  calculate.th.final.point = FALSE,
+  fix.constant.model = FALSE
+)
 }
 \arguments{
 \item{control}{[\code{\link{MBOControl}}]\cr
@@ -35,10 +40,11 @@ If \code{TRUE} and the model gives constant predictions we will propose the x th
 Extends an MBO control object with options for concept drift in the objective function.
 }
 \seealso{
-Other MBOControl: \code{\link{makeMBOControl}},
-  \code{\link{setMBOControlInfill}},
-  \code{\link{setMBOControlMultiObj}},
-  \code{\link{setMBOControlMultiPoint}},
-  \code{\link{setMBOControlTermination}}
+Other MBOControl: 
+\code{\link{makeMBOControl}()},
+\code{\link{setMBOControlInfill}()},
+\code{\link{setMBOControlMultiObj}()},
+\code{\link{setMBOControlMultiPoint}()},
+\code{\link{setMBOControlTermination}()}
 }
 \concept{MBOControl}
