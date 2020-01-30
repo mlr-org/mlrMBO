@@ -66,3 +66,10 @@ dropNamed = function(x, drop = character(0L)) {
     BBmisc::dropNamed(x, drop)
   }
 }
+
+getLeafLearner = function(learner) {
+  if (inherits(learner, "BaseWrapper")) {
+    return(getLeafLearner(learner$next.learner))
+  }
+  return(learner)
+}
