@@ -69,7 +69,7 @@ updateSMBO = function(opt.state, x, y) {
   assertNumeric(y[[1]], len = control$n.objectives)
 
 
-  infill.values = control$infill.crit$fun(points = x, models = getOptStateModels(opt.state)[[1]], control = control, designs = getOptStateDesigns(opt.state), attributes = TRUE, iter = getOptStateLoop(opt.state))
+  infill.values = control$infill.crit$fun(points = x, models = getOptStateModels(opt.state)[[1]], control = control, designs = getOptStateDesigns(opt.state), attributes = TRUE, iter = getOptStateLoop(opt.state), progress = getOptStateProgress(opt.state))
 
   prop = makeProposal(
     control = control,
@@ -82,7 +82,12 @@ updateSMBO = function(opt.state, x, y) {
   xs = dfRowsToList(prop$prop.points, getOptProblemParSet(getOptStateOptProblem(opt.state)))
 
   for (i in seq_along(xs)) {
-    addOptPathEl(op = opt.path, x = xs[[i]], y = y[[i]], extra = extras[[i]])
+    if (hasAttributes(y[[i]], "extras")) {
+      user.extras = attr(y[[i]], "extras")
+      y[[i]] = setAttribute(y[[i]], "extras", NULL)
+      extras[[i]] = insert(extras[[i]], user.extras)
+    }
+    addOptPathEl(op = opt.path, x = xs[[i]], y = y[[i]], extra = extras[[i]], dob = opt.state$loop)
   }
   finalizeMboLoop(opt.state)
   invisible(opt.state)

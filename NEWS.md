@@ -1,3 +1,8 @@
+# mlrMBO 1.1.3
+
+* Bugfix: `plot(opt.state)` now also works for Param Sets with transformations.
+* Bugfix: Infill optimization with CMAES now supports restarts.
+
 # mlrMBO 1.1.2
 
 * Adaptive infill criterions. Infill criterions now have to support an `progress` argument. Termination criterions now can supply a `progress` return value.

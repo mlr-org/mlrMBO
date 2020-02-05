@@ -205,6 +205,7 @@ void avl_free_nodes(avl_tree_t *avltree) {
         if(freeitem)
             freeitem(node->item);
         free(node);
+        node = NULL;
     }
     avl_clear_tree(avltree);
 }
@@ -218,6 +219,7 @@ void avl_free_nodes(avl_tree_t *avltree) {
 void avl_free_tree(avl_tree_t *avltree) {
     avl_free_nodes(avltree);
     free(avltree);
+    avltree = NULL;
 }
 
 static void avl_clear_node(avl_node_t *newnode) {
@@ -326,6 +328,7 @@ avl_node_t *avl_insert(avl_tree_t *avltree, void *item) {
         if(avl_insert_node(avltree, newnode))
             return newnode;
         free(newnode);
+        newnode = NULL;
         errno = EEXIST;
     }
     return NULL;
@@ -399,6 +402,7 @@ void *avl_delete_node(avl_tree_t *avltree, avl_node_t *avlnode) {
         if(avltree->freeitem)
             avltree->freeitem(item);
         free(avlnode);
+        avlnode = NULL;
     }
     return item;
 }

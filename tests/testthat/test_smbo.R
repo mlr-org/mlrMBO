@@ -15,10 +15,12 @@ test_that("human in the loop smbo works", {
 
   x = data.frame(x1 = 0, x2 = 0)
   y = fun(x = x)
+  attr(y, "extras") = list(.test = 1) #check that extras do not get lost
   updateSMBO(opt.state, x = x, y = y)
 
   x = data.frame(x1 = -1, x2 = 1)
   y = fun(x = x)
+  attr(y, "extras") = list(.test = 2) #check that extras do not get lost
   updateSMBO(opt.state, x = x, y = y)
 
   plot(opt.state)
@@ -30,6 +32,9 @@ test_that("human in the loop smbo works", {
   expect_numeric(df$x1)
   expect_numeric(df$x2)
   expect_set_equal(names(or$x), names(testp.fsphere.2d$pars))
+
+  #check that extras stay
+  expect_equal(getOptPathCol(or$opt.path, ".test", dob = 1:2), list(1,2))
 })
 
 test_that("human in the loop smbo works for multi objective", {

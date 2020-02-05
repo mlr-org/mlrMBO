@@ -1,6 +1,4 @@
 trainModels = function(learner, tasks, control) {
-  # if (control$multifid)
-  #   learner = makeMultiFidWrapper(learner, control)
 
   models = vector("list", length(tasks))
   secs = 0

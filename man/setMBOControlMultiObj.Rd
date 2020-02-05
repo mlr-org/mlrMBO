@@ -4,11 +4,20 @@
 \alias{setMBOControlMultiObj}
 \title{Set multi-objective options.}
 \usage{
-setMBOControlMultiObj(control, method = NULL, ref.point.method = NULL,
-  ref.point.offset = NULL, ref.point.val = NULL, parego.s = NULL,
-  parego.rho = NULL, parego.use.margin.points = NULL,
-  parego.sample.more.weights = NULL, parego.normalize = NULL,
-  dib.indicator = NULL, mspot.select.crit = NULL)
+setMBOControlMultiObj(
+  control,
+  method = NULL,
+  ref.point.method = NULL,
+  ref.point.offset = NULL,
+  ref.point.val = NULL,
+  parego.s = NULL,
+  parego.rho = NULL,
+  parego.use.margin.points = NULL,
+  parego.sample.more.weights = NULL,
+  parego.normalize = NULL,
+  dib.indicator = NULL,
+  mspot.select.crit = NULL
+)
 }
 \arguments{
 \item{control}{[\code{\link{MBOControl}}]\cr
@@ -116,8 +125,10 @@ Evolutionary Computation (CEC 2005), Edinburgh, UK, Corne, D.;
 et.al. (eds.), IEEE, 2005, ISBN 0-7803-9363-5, pp. 2138-2145
 }
 \seealso{
-Other MBOControl: \code{\link{makeMBOControl}},
-  \code{\link{setMBOControlInfill}},
-  \code{\link{setMBOControlMultiPoint}},
-  \code{\link{setMBOControlTermination}}
+Other MBOControl: 
+\code{\link{makeMBOControl}()},
+\code{\link{setMBOControlInfill}()},
+\code{\link{setMBOControlMultiPoint}()},
+\code{\link{setMBOControlTermination}()}
 }
+\concept{MBOControl}

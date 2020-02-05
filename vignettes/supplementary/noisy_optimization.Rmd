@@ -25,7 +25,7 @@ You can also try to reduce noise by using parallel evaluations of the same setti
 ## Infill criteria for noisy optimization
 
 Like always let's start with the function we want to optimize, but this time it will be noisy.
-Note that Kriging requires heteroscedasticity but slight dependencies of the variance on the $\boldsymbol{x}$ can be acceptable like in the following example:
+Note that Kriging requires homoscedasticity but slight dependencies of the variance on the $\boldsymbol{x}$ can be acceptable like in the following example:
 
 ```{r objective_function}
 library(mlrMBO)
@@ -55,7 +55,7 @@ The final acquisition function is then similar to the _Expected Improvement_ exc
 $$\operatorname{AEI}(\boldsymbol{x}) = \left( y^{\ast}_{\min} - \hat{\mu}(\boldsymbol{x}) \right) \Phi \left( \frac{y^{\ast}_{\min} - \hat{\mu}(\boldsymbol{x}))}{\hat{s}(\boldsymbol{x})} \right) + \hat{s}(\boldsymbol{x}) \phi \left( \frac{y^{\ast}_{\min} - \hat{\mu}(\boldsymbol{x})}{\hat{s}(\boldsymbol{x})} \right) \cdot \left(1 - \frac{\sigma_{\epsilon}}{\sqrt{\sigma_{\epsilon}^2 + \hat{s}^2(\boldsymbol{x})}} \right)$$
 * `eqi`: The **Expected Quantile Improvement** similarly to the _Augmented Expected Improvement_ does not use an actual observed $y$ value as reference but the posterior distribution to calculate the $\beta$ quantile $q$ at already evaluated points $\boldsymbol{x}$.
 The value $\beta$ can be supplied by the user calling  i.e. `makeMBOInfillCritEQI(eqi.beta = 0.9)`.
-$$\operatorname{EQI}(\boldsymbol{x}) = \left(q_{\min} - q(\boldsymbol{x}) \right) \Phi \left( \frac{q_{\min} - q(\boldsymbol{x})}{s_{q(\boldsymbol{x})}} \right) + s_{q(\boldsymbol{x})} \phi \left( q_{\min} - q(\boldsymbol{x}){s_{q(\boldsymbol{x})}} \right)$$
+$$\operatorname{EQI}(\boldsymbol{x}) &= \left(q_{\min} - q(\boldsymbol{x}) \right) \Phi \left( \frac{q_{\min} - q(\boldsymbol{x})}{s_{q(\boldsymbol{x})}} \right) + s_{q(\boldsymbol{x})} \phi \left( \frac{ q_{\min} - q(\boldsymbol{x})}{s_{q(\boldsymbol{x})}} \right)$$
 
 ### Example: Expected Quantile Improvement
 

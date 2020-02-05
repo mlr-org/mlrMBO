@@ -22,7 +22,7 @@ infillOptMultiObjNSGA2 = function(infill.crit, models, control, par.set, opt.pat
     lower.bounds = getLower(par.set), upper.bounds = getUpper(par.set), vectorized = TRUE,
     popsize = control$infill.opt.nsga2.popsize, generations = control$infill.opt.nsga2.generations,
     cprob = control$infill.opt.nsga2.cprob, cdist = control$infill.opt.nsga2.cdist,
-    mprob = control$infill.opt.nsga2.mprob, mdist = control$infill.opt.nsga2.mdist, ...)
+    mprob = control$infill.opt.nsga2.mprob, mdist = control$infill.opt.nsga2.mdist)
   points = as.data.frame(res$par)
   colnames(points) = rep.pids
 

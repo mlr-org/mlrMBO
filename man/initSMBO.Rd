@@ -4,9 +4,15 @@
 \alias{initSMBO}
 \title{Initialize a manual sequential MBO run.}
 \usage{
-initSMBO(par.set, design, learner = NULL, control, minimize = rep(TRUE,
-  control$n.objectives), noisy = FALSE,
-  show.info = getOption("mlrMBO.show.info", TRUE))
+initSMBO(
+  par.set,
+  design,
+  learner = NULL,
+  control,
+  minimize = rep(TRUE, control$n.objectives),
+  noisy = FALSE,
+  show.info = getOption("mlrMBO.show.info", TRUE)
+)
 }
 \arguments{
 \item{par.set}{[\code{\link[ParamHelpers]{ParamSet}}]\cr

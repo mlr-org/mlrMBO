@@ -1,5 +1,28 @@
 context("infill crits")
 
+test_that("constructors work", {
+  # mainly just added to increase coverage, having this in zzz.R is not counted :(
+  crit.ei = makeMBOInfillCritEI()
+  expect_class(crit.ei, "InfillCritEI")
+  crit.mr = makeMBOInfillCritMeanResponse()
+  expect_class(crit.mr, "InfillCritMEAN")
+  crit.se = makeMBOInfillCritStandardError()
+  expect_class(crit.se, "InfillCritSE")
+  crit.cb = makeMBOInfillCritCB()
+  expect_class(crit.cb, "InfillCritCB")
+  expect_null(crit.cb$params$cb.lambda)
+  crit.cb1 = makeMBOInfillCritCB(cb.lambda = 1)
+  expect_class(crit.cb1, "InfillCritCB")
+  expect_equal(crit.cb1$params$cb.lambda, 1)
+  crit.aei = makeMBOInfillCritAEI()
+  expect_class(crit.aei, "InfillCritAEI")
+  crit.eqi = makeMBOInfillCritEQI()
+  expect_class(crit.eqi, "InfillCritEQI")
+  crit.dib1 = makeMBOInfillCritDIB(cb.lambda = 1)
+  expect_class(crit.dib1, "InfillCritDIB")
+  expect_equal(crit.dib1$params$cb.lambda, 1)
+})
+
 test_that("infill crits", {
   ninit = 20L
   niters = 3L
@@ -63,9 +86,15 @@ test_that("infill crits", {
   # at some point we will always eval the same point.
   # kriging will then produce numerical errors, but the real problem is that
   # we have converged and just waste time. we need to detect this somehow, or cope with it
+
   for (noisy in c(TRUE, FALSE)) {
     for (minimize in c(TRUE, FALSE)) {
-      crits = if (noisy) list(crit.aei, crit.eqi) else list(crit.mr, crit.se, crit.ei, crit.cb2)
+      # we dont use the objects from zzz.R since they are not counted for covrage :(
+      crits = if (noisy) {
+        list(makeMBOInfillCritAEI(), makeMBOInfillCritEQI())
+      } else {
+        list(makeMBOInfillCritMeanResponse(), makeMBOInfillCritStandardError(),  makeMBOInfillCritEI(), makeMBOInfillCritCB(cb.lambda = 2))
+      }
       for (lrn in learners) {
         if (inherits(lrn, "regr.km"))
           lrn = setHyperPars(lrn, nugget.estim = noisy)

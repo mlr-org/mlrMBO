@@ -4,10 +4,22 @@
 \alias{plotExampleRun}
 \title{Renders plots for exampleRun objects and displays them.}
 \usage{
-plotExampleRun(object, iters, pause = interactive(), densregion = TRUE,
-  se.factor = 1, single.prop.point.plots = FALSE, xlim = NULL,
-  ylim = NULL, point.size = 3, line.size = 1, trafo = NULL,
-  colors = c("red", "blue", "green"), gg.objects = list(), ...)
+plotExampleRun(
+  object,
+  iters,
+  pause = interactive(),
+  densregion = TRUE,
+  se.factor = 1,
+  single.prop.point.plots = FALSE,
+  xlim = NULL,
+  ylim = NULL,
+  point.size = 3,
+  line.size = 1,
+  trafo = NULL,
+  colors = c("red", "blue", "green"),
+  gg.objects = list(),
+  ...
+)
 }
 \arguments{
 \item{object}{[\code{function}]\cr

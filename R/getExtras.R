@@ -32,9 +32,6 @@ getExtras = function(n, prop, train.time, control) {
     if (allow.crit.components) {
       prop$crit.components = getMBOInfillCritDummyComponents(infill.crit)
     }
-    # if (control$multifid) {
-    #   prop$crit.components = cbind.data.frame(prop$crit.components, getMBOInfillCritDummyComponents((makeMBOInfillCritMultiFid()))
-    # }
   }
   exs = vector("list", n)
   errs = prop$errors.model

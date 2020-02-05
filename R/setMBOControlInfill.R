@@ -86,15 +86,15 @@
 #'   For \code{opt = "ea"}:
 #'   Probability of 1-point crossover, see \code{\link[emoa]{sbx_operator}}.
 #'   Default is 0.5.
-#' @param opt.ea.lambda [\code{numeric{1}}]\cr
+#' @param opt.ea.lambda [\code{integer{1}}]\cr
 #'   For \code{opt.ea = "ea"}.
 #'   Number of children generated in each generation.
 #'   Default is 1.
-#' @param opt.nsga2.popsize [\code{numeric{1}}]\cr
+#' @param opt.nsga2.popsize [\code{integer{1}}]\cr
 #'   For \code{opt.multiobj.method = "nsga2"}.
 #'   Population size of nsga2.
 #'   Default is 100.
-#' @param opt.nsga2.generations [\code{numeric{1}}]\cr
+#' @param opt.nsga2.generations [\code{integer{1}}]\cr
 #'   For \code{opt.multiobj.method = "nsga2"}.
 #'   Number of populations for of nsga2.
 #'   Default is 50.
@@ -147,7 +147,7 @@ setMBOControlInfill = function(control,
   control$infill.opt = coalesce(opt, control$infill.opt, "focussearch")
   assertChoice(control$infill.opt, choices = getSupportedInfillOptFunctions())
 
-  control$infill.opt.restarts = coalesce(opt.restarts, control$infill.opt.restarts, 1L)
+  control$infill.opt.restarts = coalesce(opt.restarts, control$infill.opt.restarts, 3L)
   control$infill.opt.restarts = asCount(control$infill.opt.restarts)
   assertCount(control$infill.opt.restarts, na.ok = FALSE)
 

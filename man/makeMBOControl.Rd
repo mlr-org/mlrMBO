@@ -5,15 +5,25 @@
 \alias{MBOControl}
 \title{Set MBO options.}
 \usage{
-makeMBOControl(n.objectives = 1L, propose.points = 1L,
-  final.method = "best.true.y", final.evals = 0L, y.name = "y",
-  impute.y.fun = NULL, trafo.y.fun = NULL, suppress.eval.errors = TRUE,
-  save.on.disk.at = integer(0L), save.on.disk.at.time = Inf,
-  save.file.path = file.path(getwd(), "mlr_run.RData"),
-  store.model.at = NULL, resample.at = integer(0),
+makeMBOControl(
+  n.objectives = 1L,
+  propose.points = 1L,
+  final.method = "best.true.y",
+  final.evals = 0L,
+  y.name = "y",
+  impute.y.fun = NULL,
+  trafo.y.fun = NULL,
+  suppress.eval.errors = TRUE,
+  save.on.disk.at = integer(0L),
+  save.on.disk.at.time = Inf,
+  save.file.path = file.path(getwd(), "mlrMBO_run.RData"),
+  store.model.at = NULL,
+  resample.at = integer(0),
   resample.desc = makeResampleDesc("CV", iter = 10),
-  resample.measures = list(mse), output.num.format = "\%.3g",
-  on.surrogate.error = "stop")
+  resample.measures = list(mse),
+  output.num.format = "\%.3g",
+  on.surrogate.error = "stop"
+)
 }
 \arguments{
 \item{n.objectives}{[\code{integer(1)}]\cr
@@ -108,6 +118,7 @@ Possible values are:
 \dQuote{stop}: R exception is generated.
 \dQuote{warn}: The error will be converted to a waring and a random point will be proposed.
 \dQuote{quiet}: Same as “warn” but without the warning.
+This will overwrite the mlr setting \code{on.learner.error} for the surrogate learner.
 Default is: \dQuote{stop}.}
 }
 \value{
@@ -117,8 +128,10 @@ Default is: \dQuote{stop}.}
 Creates a control object for MBO optimization.
 }
 \seealso{
-Other MBOControl: \code{\link{setMBOControlInfill}},
-  \code{\link{setMBOControlMultiObj}},
-  \code{\link{setMBOControlMultiPoint}},
-  \code{\link{setMBOControlTermination}}
+Other MBOControl: 
+\code{\link{setMBOControlInfill}()},
+\code{\link{setMBOControlMultiObj}()},
+\code{\link{setMBOControlMultiPoint}()},
+\code{\link{setMBOControlTermination}()}
 }
+\concept{MBOControl}

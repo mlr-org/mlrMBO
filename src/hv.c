@@ -130,6 +130,7 @@ static dlnode_t * setup_cdllist(double *data, int d, int n) {
     }
 
     free(scratch);
+    scratch = NULL;
 
     for (i = 1; i <= n; i++)
         avl_init_node(head[i].tnode, head[i].x);
@@ -141,12 +142,12 @@ static dlnode_t * setup_cdllist(double *data, int d, int n) {
 }
 
 static void free_cdllist(dlnode_t * head) {
-    free(head->tnode); /* Frees _all_ nodes. */
-    free(head->next);
-    free(head->prev);
-    free(head->area);
-    free(head->vol);
-    free(head);
+    free(head->tnode); head->tnode = NULL;
+    free(head->next); head->next = NULL;
+    free(head->prev); head->prev = NULL;
+    free(head->area); head->area = NULL;
+    free(head->vol); head->vol = NULL;
+    free(head); head = NULL;
 }
 
 static void delete (dlnode_t *nodep, int dim, double * bound) {

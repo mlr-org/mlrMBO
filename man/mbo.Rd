@@ -4,8 +4,14 @@
 \alias{mbo}
 \title{Optimizes a function with sequential model based optimization.}
 \usage{
-mbo(fun, design = NULL, learner = NULL, control,
-  show.info = getOption("mlrMBO.show.info", TRUE), more.args = list())
+mbo(
+  fun,
+  design = NULL,
+  learner = NULL,
+  control,
+  show.info = getOption("mlrMBO.show.info", TRUE),
+  more.args = list()
+)
 }
 \arguments{
 \item{fun}{[\code{smoof_function}]\cr

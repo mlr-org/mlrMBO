@@ -25,7 +25,7 @@ plot.OptState = function(x, scale.panels = FALSE, ...) {
   par.is.numeric = par.types %in% c("numeric", "integer")
   par.count.numeric = sum(par.is.numeric)
   par.count.discrete = par.dim - par.count.numeric
-  opt.path = getOptStateOptPath(opt.state)
+  opt.path.df = as.data.frame(getOptStateOptPath(opt.state))
   models = getOptStateModels(opt.state)$models
   designs = getOptStateDesigns(opt.state)
   x.ids = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
@@ -33,7 +33,8 @@ plot.OptState = function(x, scale.panels = FALSE, ...) {
   infill = control$infill.crit
 
   # the data we need to plot
-  points = generateGridDesign(par.set, 100, trafo = TRUE)
+  points = generateGridDesign(par.set, 100, trafo = FALSE)
+
   infill.res = infill$fun(points = points, models = models, control = control, par.set = par.set, designs = designs, attributes = TRUE, iter = getOptStateLoop(opt.state))
 
   crit.components = attr(infill.res, "crit.components")
@@ -51,7 +52,9 @@ plot.OptState = function(x, scale.panels = FALSE, ...) {
   design = designs[[1]]
 
   # add types to points
-  design$type = ifelse(getOptPathDOB(opt.path) == 0, "init", "seq")
+  # remove final evals from plot because they do not belong to the model that is printed
+  opt.path.df = opt.path.df[opt.path.df$prop.type != "final_eval",]
+  design$type = ifelse(opt.path.df$dob == 0, "init", "seq")
 
   # reduce to usefull infill components
   use.only.columns = c(x.ids, control$infill.crit$id, "mean", "se")
@@ -68,7 +71,7 @@ plot.OptState = function(x, scale.panels = FALSE, ...) {
   }
   if (par.count.numeric == 2) {
     g = ggplot2::ggplot(mdata, ggplot2::aes_string(x = x.ids[1], y = x.ids[2], fill = "value"))
-    g = g + ggplot2::geom_tile()
+    g = g + ggplot2::geom_raster()
     g = g + ggplot2::geom_point(data = design, mapping = ggplot2::aes_string(x = x.ids[1], y = x.ids[2], fill = y.ids[1], shape = "type"))
     g = g + ggplot2::facet_grid(~variable)
     brewer.div = colorRampPalette(RColorBrewer::brewer.pal(11, "Spectral"), interpolate = "spline")

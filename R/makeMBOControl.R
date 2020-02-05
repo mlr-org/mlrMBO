@@ -79,6 +79,7 @@
 #'   \dQuote{stop}: R exception is generated.
 #'   \dQuote{warn}: The error will be converted to a waring and a random point will be proposed.
 #'   \dQuote{quiet}: Same as “warn” but without the warning.
+#'   This will overwrite the mlr setting \code{on.learner.error} for the surrogate learner.
 #'   Default is: \dQuote{stop}.
 #'
 #' @return [\code{\link{MBOControl}}].
@@ -94,7 +95,7 @@ makeMBOControl = function(n.objectives = 1L,
   suppress.eval.errors = TRUE,
   save.on.disk.at = integer(0L),
   save.on.disk.at.time = Inf,
-  save.file.path = file.path(getwd(), "mlr_run.RData"),
+  save.file.path = file.path(getwd(), "mlrMBO_run.RData"),
   store.model.at = NULL,
   resample.at = integer(0),
   resample.desc = makeResampleDesc("CV", iter = 10),
@@ -151,8 +152,7 @@ makeMBOControl = function(n.objectives = 1L,
     resample.at = resample.at,
     resample.measures = resample.measures,
     output.num.format = output.num.format,
-    on.surrogate.error = on.surrogate.error,
-    multifid = FALSE
+    on.surrogate.error = on.surrogate.error
   )
 
   # set defaults for infill methods and other stuff
