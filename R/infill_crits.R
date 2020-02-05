@@ -319,11 +319,11 @@ makeMBOInfillCritAdaCB = function(cb.lambda.start = NULL, cb.lambda.end = NULL) 
   force(cb.lambda.end)
   crit = makeMBOInfillCritCB()
   orig.fun = crit$fun
-  crit$fun = function(points, models, control, par.set, design, iter, progress, attributes = FALSE) {
+  crit$fun = function(points, models, control, par.set, designs, iter, progress, attributes = FALSE) {
     assertNumber(progress)
     cb.lambda = (1-progress) * cb.lambda.start + progress * cb.lambda.end
     assign("cb.lambda", cb.lambda, envir = environment(orig.fun))
-    orig.fun(points, models, control, par.set, design, iter, progress, attributes)
+    orig.fun(points, models, control, par.set, designs, iter, progress, attributes)
   }
   crit$name = "Adaptive Confidence bound"
   crit$id = "adacb"

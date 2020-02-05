@@ -1,0 +1,114 @@
+url: https://mlrMBO.mlr-org.com
+
+template:
+  package: mlr3pkgdowntemplate
+  params:
+    bootswatch: journal
+  default_assets: false
+
+development:
+  destination: dev
+  version_label: default
+  version_tooltip: "Development version"
+
+navbar:
+  structure:
+    left:  [quickstart, articles, reference, news]
+    right: [github, slack, stackoverflow, rss]
+  components:
+    home: ~
+    intro: ~
+    quickstart:
+      text: Quickstart
+      href: articles/mlrMBO.html
+      icon: fa-bolt
+    articles:
+      text: Articles
+      icon: fa-file-text-o
+      menu:
+      - text: Mixed Space Optimization
+        href: articles/supplementary/mixed_space_optimization.html
+      - text: Parallelization
+        href: articles/supplementary/parallelization.html
+      - text: Noisy Optimization
+        href: articles/supplementary/noisy_optimization.html
+      - text: Infill Criteria
+        href: articles/supplementary/infill_criteria.html
+      - text: Machine learning with mlrMBO
+        href: articles/supplementary/machine_learning_with_mlrmbo.html
+      - text: Human-in-the-loop MBO
+        href: articles/supplementary/human_in_the_loop_MBO.html
+      - text: mlrMBO and the Command Line
+        href: articles/supplementary/mlrmbo_and_the_command_line.html
+      - text: Adaptive Infill Criteria
+        href: articles/supplementary/adaptive_infill_criteria.html
+      - text: Warm Starting Optimization
+        href: articles/supplementary/warmstart.html
+    slack:
+      icon: fab fa-slack
+      href: https://mlr-org.slack.com
+    stackoverflow:
+      icon: fab fa-stack-overflow
+      href: https://stackoverflow.com/questions/tagged/mlr
+    rss:
+      icon: fa-rss
+      href: https://mlr-org.com/
+
+reference:
+  - title: "mlrMBO Control"
+    desc: "Functions for setting and manipulating the mlrMBO Control Object."
+    contents:
+      - makeMBOControl
+      - starts_with("setMBOControl")
+  - title: "Start MBO"
+    desc: "How to start and continue MBO runs."
+    contents:
+      - mbo
+      - mboContinue
+      - mboFinalize
+      - mbo_parallel
+      - mlrMBO_examples
+  - title: "Human in the loop MBO"
+    desc: "Controlling sequential manual MBO"
+    contents:
+      - initSMBO
+      - proposePoints
+      - updateSMBO
+      - finalizeSMBO
+      - plot.OptState
+  - title: "Infill Criteria"
+    desc: "Infill Criteria and Functions to generate and interact with Infill Criteria."
+    contents:
+      - setMBOControlInfill
+      - infillcrits
+      - starts_with("crit.")
+      - starts_with("makeMBOInfill")
+      - getMBOInfillCrit
+      - MBOInfillCrit
+      - initCrit
+  - title: "MBO Results"
+    desc: "Understanding the results."
+    contents:
+      - MBOMultiObjResult
+      - MBOSingleObjResult
+      - mbo_OptPath
+      - plotMBOResult
+  - title: "Example Runs"
+    desc: "Visualize MBO runs using Example Runs."
+    contents:
+      - starts_with("exampleRun")
+      - plotExampleRun
+      - renderExampleRunPlot
+  - title: "Other"
+    contents:
+      - error_handling
+      - getGlobalOpt
+      - getSupportedInfillOptFunctions
+      - getSupportedMultipointInfillOptFunctions
+      - makeMBOLearner
+      - makeMBOTrafoFunction
+      - OptProblem
+      - OptResult
+      - OptState
+      - print.MBOControl
+      - trafos
