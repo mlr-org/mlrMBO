@@ -43,7 +43,7 @@
 #'   \dQuote{first}: Non-dominated sorting + first objective of \code{moimbo.objective} as criterion.
 #'   \dQuote{last}: Non-dominated sorting + last objective of \code{moimbo.objective} as criterion.
 #'   Default is \code{hypervolume}.
-#' @param moimbo.maxit [\code{character(1)}]\cr
+#' @param moimbo.maxit [\code{integer(1)}]\cr
 #'   Number of generations for multi-objective EA.
 #'   Default is 100.
 #' @param moimbo.sbx.eta [\code{numeric(1)}]\cr
