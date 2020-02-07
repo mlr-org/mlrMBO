@@ -128,17 +128,17 @@ For \code{opt = "ea"}:
 Probability of 1-point mutation, see \code{\link[emoa]{pm_operator}}.
 Default is 0.5.}
 
-\item{opt.ea.lambda}{[\code{numeric{1}}]\cr
+\item{opt.ea.lambda}{[\code{integer{1}}]\cr
 For \code{opt.ea = "ea"}.
 Number of children generated in each generation.
 Default is 1.}
 
-\item{opt.nsga2.popsize}{[\code{numeric{1}}]\cr
+\item{opt.nsga2.popsize}{[\code{integer{1}}]\cr
 For \code{opt.multiobj.method = "nsga2"}.
 Population size of nsga2.
 Default is 100.}
 
-\item{opt.nsga2.generations}{[\code{numeric{1}}]\cr
+\item{opt.nsga2.generations}{[\code{integer{1}}]\cr
 For \code{opt.multiobj.method = "nsga2"}.
 Number of populations for of nsga2.
 Default is 50.}

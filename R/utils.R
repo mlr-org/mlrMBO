@@ -55,3 +55,10 @@ getHyperParsString2 = function(learner, show.missing.values = TRUE) {
   s = mapply(paramValueToString, pars, hps, MoreArgs = list(show.missing.values = show.missing.values))
   paste(ns, s, sep = "=", collapse = ",")
 }
+
+getLeafLearner = function(learner) {
+  if (inherits(learner, "BaseWrapper")) {
+    return(getLeafLearner(learner$next.learner))
+  }
+  return(learner)
+}
