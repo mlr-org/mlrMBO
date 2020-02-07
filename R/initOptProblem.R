@@ -5,13 +5,17 @@ initOptProblem = function(fun, design, learner, control, show.info, more.args) {
 
   assertDataFrame(design, null.ok = TRUE)
   if (!is.null(design)) {
-    assertSubset(getParamIds(par.set, repeated = TRUE, with.nr = TRUE), names(design))  
+    assertSubset(getParamIds(par.set, repeated = TRUE, with.nr = TRUE), names(design))
   }
-  
+
 
   learner = checkLearner(learner, control, fun)
 
-  assertClass(control, "MBOControl")
+  if (is.null(control)) {
+    control = makeMBOControl()
+  } else {
+    assertClass(control, "MBOControl")
+  }
 
   n.params = sum(getParamLengths(par.set))
   control$noisy = isNoisy(fun)

@@ -52,7 +52,7 @@
 #' \dontrun{
 #' plot(res)
 #' }
-mbo = function(fun, design = NULL, learner = NULL, control,
+mbo = function(fun, design = NULL, learner = NULL, control = NULL,
   show.info = getOption("mlrMBO.show.info", TRUE), more.args = list()) {
 
   # assertions are done here:
