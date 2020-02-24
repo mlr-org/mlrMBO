@@ -34,7 +34,7 @@ plot.OptState = function(x, scale.panels = FALSE, ...) {
   # the data we need to plot
   points = generateGridDesign(par.set, 100, trafo = FALSE)
   # calculate true numeric dimension
-  par.count.numeric.effective = max(apply(points[, x.ids.num], 1, function(x) sum(!is.na(x))))
+  par.count.numeric.effective = max(apply(points[, x.ids.num, drop = FALSE], 1, function(x) sum(!is.na(x))))
   if (par.count.numeric.effective > 2) {
     stop("Cannot plot for more than two numerical dimensions.")
   }
@@ -129,6 +129,7 @@ plot.OptState = function(x, scale.panels = FALSE, ...) {
     g = g + ggplot2::geom_raster()
     g = g + ggplot2::geom_point(data = design_effective, mapping = ggplot2::aes_string(x = ".axis.x", y = ".axis.y", fill = y.ids[1], shape = "type"))
     g = g + ggplot2::scale_fill_gradientn(colours = getColorPalette())
+    g = g + ggplot2::labs(x = x.ids.num[1], y = x.ids.num[2])
   } else if (".axis.x" %in% colnames(mdata)) {
     g = ggplot2::ggplot(mdata, ggplot2::aes_string(x = ".axis.x", y = "value"))
     g = g + ggplot2::geom_line()
