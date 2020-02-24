@@ -115,9 +115,8 @@ addApproxMBO = function(pl, points, col.names, isdom, colour, lty) {
 
 
 fillBackgroundWithInfillCrit = function(pl, data, x.name, crit.name) {
-  brewer.palette = colorRampPalette(RColorBrewer::brewer.pal(11, "Spectral"), interpolate = "spline")
   pl = pl + ggplot2::geom_raster(data = data, ggplot2::aes_string(x = x.name[1L], y = x.name[2L], fill = crit.name))
-  pl = pl + ggplot2::scale_fill_gradientn(colours = brewer.palette(200))
+  pl = pl + ggplot2::scale_fill_gradientn(colours = getColorPalette())
   return(pl)
 }
 

@@ -167,8 +167,7 @@ ps = makeNumericParamSet("x", len = 2, lower =  -5, upper = 5)
 obj.fun.single = makeSingleObjectiveFunction(name = "noisy", fn = fn, noisy = TRUE, par.set = ps)
 
 # unified color scale for better comparison later
-brewer.div = colorRampPalette(RColorBrewer::brewer.pal(11, "Spectral"), interpolate = "spline")
-general.scale = scale_fill_gradientn(limits = c(-10, 110), colors = brewer.div(200))
+general.scale = scale_fill_gradientn(limits = c(-10, 110), colors = RColorBrewer::brewer.pal(11, "Spectral"))
 
 # noisy output
 autoplot(obj.fun.single, render.levels = TRUE) + general.scale

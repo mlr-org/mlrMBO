@@ -76,4 +76,22 @@ test_that("human in the loop smbo works for mixed spaces", {
   expect_numeric(df$num1)
   expect_factor(df$disc1)
   expect_set_equal(names(or$x), names(par.set$pars))
+
+  par.set = testp.hierarchical
+  fun = testf.hierarchical
+  design = testd.hierarchical
+  design$y = sapply(convertRowsToList(design, name.list = TRUE, name.vector = TRUE), fun)
+  control = makeMBOControl()
+  opt.state = initSMBO(par.set = par.set, design = design, control = control, minimize = shouldBeMinimized(fun), noisy = isNoisy(fun))
+  plot(opt.state)
+  prop = proposePoints(opt.state)
+  y = fun(x = prop$prop.points)
+  updateSMBO(opt.state, prop$prop.points, y)
+  or = finalizeSMBO(opt.state)
+  expect_equal(getOptPathLength(or$opt.path), 11L)
+  df = as.data.frame(or$opt.path)
+  expect_numeric(df$numA)
+  expect_factor(df$disc1)
+  expect_set_equal(names(or$x), names(par.set$pars))
+
 })

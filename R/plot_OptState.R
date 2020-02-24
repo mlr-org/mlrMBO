@@ -18,9 +18,6 @@ plot.OptState = function(x, scale.panels = FALSE, ...) {
   control = getOptProblemControl(opt.problem)
   par.set = getOptProblemParSet(opt.problem)
   par.dim = getParamNr(par.set, devectorize = TRUE)
-  if (par.dim > 2) {
-    stop("Only plotting for 1- and 2-dimensional search spaces is possible.")
-  }
   par.types = getParamTypes(par.set, use.names = TRUE, with.nr = TRUE, df.cols = TRUE, df.discretes.as.factor = TRUE)
   par.is.numeric = par.types %in% c("numeric", "integer")
   par.count.numeric = sum(par.is.numeric)
@@ -30,10 +27,51 @@ plot.OptState = function(x, scale.panels = FALSE, ...) {
   designs = getOptStateDesigns(opt.state)
   x.ids = getParamIds(par.set, repeated = TRUE, with.nr = TRUE)
   y.ids = control$y.name
+  x.ids.num = names(par.types[par.is.numeric])
+  x.ids.cat = names(par.types[!par.is.numeric])
   infill = control$infill.crit
 
   # the data we need to plot
   points = generateGridDesign(par.set, 100, trafo = FALSE)
+  # calculate true numeric dimension
+  par.count.numeric.effective = max(apply(points[, x.ids.num], 1, function(x) sum(!is.na(x))))
+  if (par.count.numeric.effective > 2) {
+    stop("Cannot plot for more than two numerical dimensions.")
+  }
+
+  #data: data.frame with multiple x-columns
+  #result: data.frame with 1 or 2 effective dimensions
+  #cases: 1 num - do nothing
+  #       2 num - do nothing
+  #       1 num, 1cat - do nothing
+  #       1 num, 2+cat - paste all cats to 1 cat
+  #       2 num, 1cat - do nothing
+  #       2 num, 2+cat - paste all cats to 1 cat
+  project_x_effective = function(data) {
+    data = copy(data)
+    setDT(data)
+
+    # if we have categorical vars, combine them to just one single one with multiple levels
+    if (length(x.ids.cat) > 0) {
+      data[, (x.ids.cat) := lapply(x.ids.cat, function(xid) sprintf("%s=%s", xid, .SD[[xid]])), .SDcols = x.ids.cat]
+      data[, ".facet.y" := do.call(paste, c(data[, x.ids.cat, with = FALSE], sep = ", "))]
+      data[, (x.ids.cat) := NULL]
+    }
+    if (par.count.numeric == par.count.numeric.effective) {
+      data.table::setnames(data, x.ids.num, c(".axis.x", ".axis.y")[seq_along(x.ids.num)])
+    } else if (par.count.numeric > par.count.numeric.effective) {
+      if (par.count.numeric.effective == 1) {
+        data[, ".num.par.active" := ifelse(is.na(get(x.ids.num[1])), x.ids.num[2], x.ids.num[1])]
+        data[, ".axis.x" := .SD[[get(".num.par.active")]], by = ".num.par.active"]
+        data[, ".facet.y" := paste0(get(".facet.y"), ", x=", get(".num.par.active")), by = ".num.par.active"]
+        data[, c(x.ids.num, ".num.par.active") := NULL]
+      } else {
+        stop ("Plot not supported for more than 1 effective numerical dimension yet.")
+      }
+    }
+    return(data)
+  }
+
 
   infill.res = infill$fun(points = points, models = models, control = control, par.set = par.set, designs = designs, attributes = TRUE, iter = getOptStateLoop(opt.state))
 
@@ -62,37 +100,45 @@ plot.OptState = function(x, scale.panels = FALSE, ...) {
   plot.data = plot.data[, use.only.columns, with = FALSE]
 
   # prepare data for ggplot2
-  mdata = data.table::melt(plot.data, id.vars = x.ids)
+  design_effective = project_x_effective(design)
+  plot.data = project_x_effective(plot.data)
+  possible.id.vars = c(".facet.y", ".axis.x", ".axis.y")
+  mdata = data.table::melt(plot.data, id.vars = intersect(colnames(plot.data), possible.id.vars))
   mdata$variable = factor(mdata$variable, levels = intersect(use.only.columns, levels(mdata$variable)))
   if (scale.panels && par.dim == 2) {
     predict.range = range(mdata[get("variable")=="mean", "value"])
     mdata[, ':='("value", normalize(x = get("value"), method = "range")), by = "variable"]
     design[[y.ids]] = (design[[y.ids]] + (0 - predict.range[1])) / diff(predict.range)
   }
-  if (par.count.numeric == 2) {
-    g = ggplot2::ggplot(mdata, ggplot2::aes_string(x = x.ids[1], y = x.ids[2], fill = "value"))
-    g = g + ggplot2::geom_raster()
-    g = g + ggplot2::geom_point(data = design, mapping = ggplot2::aes_string(x = x.ids[1], y = x.ids[2], fill = y.ids[1], shape = "type"))
-    g = g + ggplot2::facet_grid(~variable)
-    brewer.div = colorRampPalette(RColorBrewer::brewer.pal(11, "Spectral"), interpolate = "spline")
-    g = g + ggplot2::scale_fill_gradientn(colours = brewer.div(200))
-  } else if (par.count.numeric == 1) {
-    g = ggplot2::ggplot(mdata, ggplot2::aes_string(x = x.ids[par.is.numeric], y = "value"))
-    g = g + ggplot2::geom_line()
-    g = g + ggplot2::geom_vline(data = design, mapping = ggplot2::aes_string(xintercept = x.ids[par.is.numeric]), alpha = 0.5, size = 0.25)
-    g = g + ggplot2::geom_point(data = cbind(design, variable = "mean"), mapping = ggplot2::aes_string(x = x.ids[par.is.numeric], y = y.ids[1], shape = "type", color = "type"))
-    g = g + ggplot2::scale_color_manual(values = c(init = "red", seq = "green"))
-    if (par.count.discrete == 1) {
-      formula.txt = paste0(names(par.types[!par.is.numeric]),"~variable")
+
+  if (".facet.y" %in% colnames(mdata)) {
+    if (scale.panels) {
+      g_facet = ggplot2::facet_grid(as.formula(".facet.y ~ variable"), scales = "free")
     } else {
-      formula.txt = "~variable"
+      g_facet = ggplot2::facet_grid(as.formula(".facet.y ~ variable"))
     }
-    if (scale.panels && par.dim == 1) {
-      g = g + ggplot2::facet_wrap(as.formula(formula.txt), nrow = 1, scales = "free_y")
+  } else {
+    if (scale.panels) {
+      g_facet = ggplot2::facet_wrap(as.formula("~ variable"), scales = "free", nrow = 1)
     } else {
-      g = g + ggplot2::facet_grid(as.formula(formula.txt))
+      g_facet = ggplot2::facet_grid(as.formula("~ variable"))
     }
   }
+  if (all(c(".axis.x", ".axis.y") %in% colnames(mdata))) {
+    g = ggplot2::ggplot(mdata, ggplot2::aes_string(x = ".axis.x", y = ".axis.y", fill = "value"))
+    g = g + ggplot2::geom_raster()
+    g = g + ggplot2::geom_point(data = design_effective, mapping = ggplot2::aes_string(x = ".axis.x", y = ".axis.y", fill = y.ids[1], shape = "type"))
+    g = g + ggplot2::scale_fill_gradientn(colours = getColorPalette())
+  } else if (".axis.x" %in% colnames(mdata)) {
+    g = ggplot2::ggplot(mdata, ggplot2::aes_string(x = ".axis.x", y = "value"))
+    g = g + ggplot2::geom_line()
+    g = g + ggplot2::geom_vline(data = design_effective, mapping = ggplot2::aes_string(xintercept = ".axis.x"), alpha = 0.5, size = 0.25)
+    g = g + ggplot2::geom_point(data = cbind(design_effective, variable = "mean"), mapping = ggplot2::aes_string(x = ".axis.x", y = y.ids[1], shape = "type", color = "type"))
+    g = g + ggplot2::scale_color_manual(values = c(init = "red", seq = "green"))
+    g = g + ggplot2::labs(x = if(length(x.ids.num)>1) "x" else x.ids.num)
+  }
+  g = g + g_facet
   g = g + ggplot2::scale_shape_manual(values = c(init = 16, seq = 15))
   g
 }
+

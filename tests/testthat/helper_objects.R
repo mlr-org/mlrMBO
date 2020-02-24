@@ -65,3 +65,21 @@ testf.mixed = makeSingleObjectiveFunction(
   has.simple.signature = FALSE
 )
 testd.mixed = generateTestDesign(10L, testp.mixed)
+
+# hierarchical space test function
+testp.hierarchical = makeParamSet(
+  makeDiscreteParam("disc1", values = c("a", "b")),
+  makeNumericParam("numA", lower = 0, upper = 1, requires = quote(disc1 == "a")),
+  makeNumericParam("numB", lower = 5, upper = 10, requires = quote(disc1 == "b"))
+)
+testf.hierarchical = makeSingleObjectiveFunction(
+  fn = function(x) {
+    if (x$disc1 == "a")
+      x$numA * 2 - 1
+    else
+      1 - x$numB
+  },
+  par.set = testp.mixed,
+  has.simple.signature = FALSE
+)
+testd.hierarchical = generateTestDesign(10L, testp.hierarchical)
