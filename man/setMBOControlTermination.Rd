@@ -22,12 +22,12 @@ Control object for mbo.}
 \item{iters}{[\code{integer(1)}]\cr
 Number of sequential optimization steps.}
 
-\item{time.budget}{[\code{integer(1)} | NULL]\cr
+\item{time.budget}{[\code{numeric(1)} | NULL]\cr
 Running time budget in seconds. Note that the actual mbo run can take more time since
 the condition is checked after each iteration.
 The default \code{NULL} means: There is no time budget.}
 
-\item{exec.time.budget}{[\code{integer(1)} | NULL]\cr
+\item{exec.time.budget}{[\code{numeric(1)} | NULL]\cr
 Execution time (time spent executing the function passed to \code{mbo})
 budget in seconds. Note that the actual mbo run can take more time since
 the condition is checked after each iteration.

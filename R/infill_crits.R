@@ -178,10 +178,11 @@ makeMBOInfillCritAEI = function(aei.use.nugget = FALSE, se.threshold = 1e-6) {
       xcr.dens = dnorm(xcr)
 
       # noise estimation
-      pure.noise.var = if (aei.use.nugget)
-        pure.noise.var = model$learner.model@covariance@nugget
-      else
-        estimateResidualVariance(model, data = design, target = control$y.name)
+      if (aei.use.nugget) {
+        pure.noise.var = getLearnerModel(model, more.unwrap = TRUE)@covariance@nugget
+      } else {
+        pure.noise.var = estimateResidualVariance(model, data = design, target = control$y.name)
+      }
 
       tau = sqrt(pure.noise.var)
       res = (-1) * ifelse(p.se < se.threshold, 0,
@@ -319,11 +320,11 @@ makeMBOInfillCritAdaCB = function(cb.lambda.start = NULL, cb.lambda.end = NULL) 
   force(cb.lambda.end)
   crit = makeMBOInfillCritCB()
   orig.fun = crit$fun
-  crit$fun = function(points, models, control, par.set, design, iter, progress, attributes = FALSE) {
+  crit$fun = function(points, models, control, par.set, designs, iter, progress, attributes = FALSE) {
     assertNumber(progress)
     cb.lambda = (1-progress) * cb.lambda.start + progress * cb.lambda.end
     assign("cb.lambda", cb.lambda, envir = environment(orig.fun))
-    orig.fun(points, models, control, par.set, design, iter, progress, attributes)
+    orig.fun(points, models, control, par.set, designs, iter, progress, attributes)
   }
   crit$name = "Adaptive Confidence bound"
   crit$id = "adacb"

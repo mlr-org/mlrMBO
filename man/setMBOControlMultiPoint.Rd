@@ -67,7 +67,7 @@ Possible values are:
 \dQuote{last}: Non-dominated sorting + last objective of \code{moimbo.objective} as criterion.
 Default is \code{hypervolume}.}
 
-\item{moimbo.maxit}{[\code{character(1)}]\cr
+\item{moimbo.maxit}{[\code{integer(1)}]\cr
 Number of generations for multi-objective EA.
 Default is 100.}
 

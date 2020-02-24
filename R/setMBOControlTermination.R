@@ -6,11 +6,11 @@
 #' @template arg_control
 #' @param iters [\code{integer(1)}]\cr
 #'   Number of sequential optimization steps.
-#' @param time.budget [\code{integer(1)} | NULL]\cr
+#' @param time.budget [\code{numeric(1)} | NULL]\cr
 #'   Running time budget in seconds. Note that the actual mbo run can take more time since
 #'   the condition is checked after each iteration.
 #'   The default \code{NULL} means: There is no time budget.
-#' @param exec.time.budget [\code{integer(1)} | NULL]\cr
+#' @param exec.time.budget [\code{numeric(1)} | NULL]\cr
 #'   Execution time (time spent executing the function passed to \code{mbo})
 #'   budget in seconds. Note that the actual mbo run can take more time since
 #'   the condition is checked after each iteration.

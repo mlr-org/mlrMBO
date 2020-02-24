@@ -8,7 +8,7 @@ mbo(
   fun,
   design = NULL,
   learner = NULL,
-  control,
+  control = NULL,
   show.info = getOption("mlrMBO.show.info", TRUE),
   more.args = list()
 )
