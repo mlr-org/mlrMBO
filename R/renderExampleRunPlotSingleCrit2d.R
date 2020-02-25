@@ -102,12 +102,9 @@ renderExampleRunPlot2d = function(x, iter,
       data[, name.z] = trafo(data[, name.z])
     }
 
-    # set up nice colour palette
-    brewer.palette = colorRampPalette(RColorBrewer::brewer.pal(11, "Spectral"), interpolate = "spline")
-
     pl = ggplot2::ggplot(data = data, ggplot2::aes_string(x = name.x1, y = name.x2))
     pl = pl + ggplot2::geom_raster(ggplot2::aes_string(fill = name.z))
-    pl = pl + ggplot2::scale_fill_gradientn(colours = brewer.palette(200))
+    pl = pl + ggplot2::scale_fill_gradientn(colours = getColorPalette())
 
     # sometimes contour lines cannot be plotted for EI
     if (name.z != "ei") {

@@ -56,6 +56,12 @@ getHyperParsString2 = function(learner, show.missing.values = TRUE) {
   paste(ns, s, sep = "=", collapse = ",")
 }
 
+
+getColorPalette = function() {
+  # RColorBrewer::brewer.pal(11, "Spectral")
+  c("#9E0142", "#D53D4F", "#F46D43", "#FDAE61", "#FEE08B", "#FFFFBF", "#E6F598", "#ABDDA4", "#66C2A5", "#3288BD", "#5E4FA2")
+}
+
 getLeafLearner = function(learner) {
   if (inherits(learner, "BaseWrapper")) {
     return(getLeafLearner(learner$next.learner))
