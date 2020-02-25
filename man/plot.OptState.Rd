@@ -4,7 +4,7 @@
 \alias{plot.OptState}
 \title{Generate ggplot2 Object}
 \usage{
-\method{plot}{OptState}(x, scale.panels = FALSE, ...)
+\method{plot}{OptState}(x, scale.panels = FALSE, points.per.dim = 100, ...)
 }
 \arguments{
 \item{x}{[\code{OptState}]\cr
@@ -12,6 +12,11 @@ The OptState.}
 
 \item{scale.panels}{[\code{logical(1)}]\cr
 If \code{TRUE} the values in each panel will be scaled to [0,1].}
+
+\item{points.per.dim}{[\code{integer}]\cr
+Number of (regular spaced) points at which to
+evaluate the surrogate per dimension.
+Default is 100.}
 
 \item{...}{[any] \cr
 Not used.}

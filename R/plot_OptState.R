@@ -6,11 +6,15 @@
 #'   The OptState.
 #' @param scale.panels [\code{logical(1)}]\cr
 #'   If \code{TRUE} the values in each panel will be scaled to [0,1].
+#' @param points.per.dim [\code{integer}]\cr
+#'   Number of (regular spaced) points at which to
+#'   evaluate the surrogate per dimension.
+#'   Default is 100.
 #' @param ... [any] \cr
 #'   Not used.
 #'
 #' @export
-plot.OptState = function(x, scale.panels = FALSE, ...) {
+plot.OptState = function(x, scale.panels = FALSE, points.per.dim = 100, ...) {
 
   # all the variables we need
   opt.state = x
@@ -32,7 +36,7 @@ plot.OptState = function(x, scale.panels = FALSE, ...) {
   infill = control$infill.crit
 
   # the data we need to plot
-  points = generateGridDesign(par.set, 100, trafo = FALSE)
+  points = generateGridDesign(par.set, points.per.dim, trafo = FALSE)
   # calculate true numeric dimension
   par.count.numeric.effective = max(apply(points[, x.ids.num, drop = FALSE], 1, function(x) sum(!is.na(x))))
   if (par.count.numeric.effective > 2) {
@@ -86,6 +90,12 @@ plot.OptState = function(x, scale.panels = FALSE, ...) {
     plot.data$infill = -1 * plot.data$infill
   }
   colnames(plot.data)[1] = control$infill.crit$id
+
+  #if mean response is missing we will calculate it manually
+  if ("mean" %nin% colnames(plot.data)) {
+    plot.data$mean = crit.mr$fun(points = points, models = models, control = control, par.set = par.set, designs = designs, attributes = TRUE, iter = getOptStateLoop(opt.state))
+    crit.components = c(crit.components, "mean")
+  }
 
   design = designs[[1]]
 
