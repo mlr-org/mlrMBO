@@ -1,3 +1,11 @@
+# mlrMBO 1.1.4
+
+* `plot.OptState()` now supports multiple categorical variables.
+* `crit.aei` works with wrapped learners.
+* Documentation fixes
+* `mbo()` can be called without control object.
+* Bugix: MOIMBO works with integers
+
 # mlrMBO 1.1.3
 
 * Bugfix: `plot(opt.state)` now also works for Param Sets with transformations.
