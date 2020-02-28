@@ -66,7 +66,8 @@ renderExampleRunPlot1d = function(x, iter,
     type = vcapply(getOptPathDOB(opt.path), getType, iter = iter)
     res = cbind.data.frame(
       design,
-      type = type
+      type = type,
+      stringsAsFactors = TRUE
     )
     res[res$type %nin% "future",]
   }
