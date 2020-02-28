@@ -70,7 +70,7 @@ exampleRunMultiObj= function(fun, design = NULL, learner, control, points.per.di
   requirePackages("mco", why = "exampleRunMultiObj")
   args = insert(args, nsga2.args)
   nsga2.res = do.call(mco::nsga2, args)
-  nsga2.paretoset = setColNames(as.data.frame(nsga2.res$par[nsga2.res$pareto.optimal, , drop = FALSE, stringsAsFactors = TRUE]), names.x)
+  nsga2.paretoset = setColNames(as.data.frame(nsga2.res$par[nsga2.res$pareto.optimal, , drop = FALSE], stringsAsFactors = TRUE), names.x)
   nsga2.paretofront = nsga2.res$value[nsga2.res$pareto.optimal, ]
 
   # Use trafo.fun for nsga2 result:
