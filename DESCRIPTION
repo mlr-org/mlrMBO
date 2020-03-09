@@ -1,5 +1,6 @@
 Package: mlrMBO
 Title: Bayesian Optimization and Model-Based Optimization of Expensive Black-Box Functions
+Version: 1.1.4-9000
 Description: Flexible and comprehensive R toolbox for model-based optimization
     ('MBO'), also known as Bayesian optimization. It implements the Efficient
     Global Optimization Algorithm and is designed for both single- and multi-
@@ -59,6 +60,5 @@ Suggests:
 LazyData: yes
 Encoding: UTF-8
 ByteCompile: yes
-Version: 1.1.4
 RoxygenNote: 7.0.2
 VignetteBuilder: knitr
