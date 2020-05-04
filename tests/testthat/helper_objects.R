@@ -29,10 +29,18 @@ testdesmco1 = generateTestDesign(10L, getParamSet(testfmco1))
 
 testfmco2 = makeMultiObjectiveFunction(
   fn = function(x) c(1, -1) * x^2,
+  minimize = c(TRUE, FALSE),
   n.objectives = 2L,
   par.set = makeNumericParamSet(len = 2L, lower = -2, upper = 1)
 )
 testdesmco2 = generateTestDesign(10L, getParamSet(testfmco2))
+
+testfmco3 = makeMultiObjectiveFunction(
+  fn = function(x) c(1, 0.5) * x^2,
+  n.objectives = 2L,
+  par.set = makeNumericParamSet(len = 1L, lower = -2, upper = 1)
+)
+testdesmco3 = generateTestDesign(10L, getParamSet(testfmco3))
 
 # slow test function
 testf.fsphere.1d.slow = makeSingleObjectiveFunction(
