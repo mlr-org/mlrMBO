@@ -44,9 +44,9 @@ navbar:
         href: articles/supplementary/adaptive_infill_criteria.html
       - text: Warm Starting Optimization
         href: articles/supplementary/warmstart.html
-    slack:
-      icon: fab fa-slack
-      href: https://mlr-org.slack.com
+    mattermost:
+      icon: fa fa-comments
+      href: https://lmmisld-lmu-stats-slds.srv.mwn.de/mlr_invite/
     stackoverflow:
       icon: fab fa-stack-overflow
       href: https://stackoverflow.com/questions/tagged/mlr
