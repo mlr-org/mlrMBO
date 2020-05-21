@@ -1,10 +1,15 @@
 
 # mlrMBO
 
-<!-- Please edit README.Rmd !-->
+Package website: [release](https://mlrmbo.mlr-org.com/) |
+[dev](https://mlr3mbo.mlr-org.com/dev)
 
 Model-based optimization with [mlr](https://github.com/mlr-org/mlr/).
 
+<!-- badges: start -->
+
+[![R CMD Check via
+{tic}](https://github.com/mlr-org/mlrMBO/workflows/R%20CMD%20Check%20via%20%7Btic%7D/badge.svg?branch=master)](https://github.com/mlr-org/mlrMBO/actions)
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/mlrMBO)](https://cran.r-project.org/package=mlrMBO)
 [![Travis build
 status](https://img.shields.io/travis/mlr-org/mlrMBO/master?logo=travis&style=flat-square&label=Linux)](https://travis-ci.org/mlr-org/mlrMBO)
@@ -14,6 +19,7 @@ status](https://img.shields.io/appveyor/ci/mlr-org/mlrMBO?label=Windows&logo=app
 Status](https://img.shields.io/codecov/c/github/mlr-org/mlrMBO/master.svg)](https://codecov.io/github/mlr-org/mlrMBO?branch=master)
 [![Monthly RStudio CRAN
 Downloads](https://cranlogs.r-pkg.org/badges/mlrMBO)](https://CRAN.R-project.org/package=mlrMBO)
+<!-- badges: end -->
 
   - [Documentation](https://mlr-org.github.io/mlrMBO/)
   - [Issues, Requests and Bug
@@ -35,7 +41,7 @@ remotes::install_github("mlr-org/mlrMBO")
 
 # Introduction
 
-![](https://i.imgur.com/NMpSqnS.gif)<!-- -->
+![](https://i.imgur.com/LVFRVVl.gif)<!-- -->
 
 `mlrMBO` is a highly configurable R toolbox for model-based / Bayesian
 optimization of black-box functions.
@@ -57,15 +63,20 @@ Features:
     [parallelMap](https://github.com/berndbischl/parallelMap)
 
 For the *surrogate*, `mlrMBO` allows any regression learner from
-[`mlr`](https://github.com/mlr-org/mlr), including: \* Kriging aka.
-Gaussian processes (i.e. `DiceKriging`) \* random Forests
-(i.e. `randomForest`) \* and many more…
+[`mlr`](https://github.com/mlr-org/mlr), including:
+
+  - Kriging aka. Gaussian processes (i.e. `DiceKriging`)
+  - random Forests (i.e. `randomForest`)
+  - and many more…
 
 Various *infill criteria* (aka. *acquisition functions*) are available:
-\* Expected improvement (EI) \* Upper/Lower confidence bound (LCB, aka.
-statistical lower or upper bound) \* Augmented expected improvement
-(AEI) \* Expected quantile improvement (EQI) \* API for custom infill
-criteria
+
+  - Expected improvement (EI)
+  - Upper/Lower confidence bound (LCB, aka. statistical lower or upper
+    bound)
+  - Augmented expected improvement (AEI)
+  - Expected quantile improvement (EQI)
+  - API for custom infill criteria
 
 Objective functions are created with package
 [smoof](https://github.com/jakobbossek/smoof), which also offers many
@@ -74,7 +85,7 @@ test functions for example runs or benchmarks.
 Parameter spaces and initial designs are created with package
 [ParamHelpers](https://github.com/berndbischl/ParamHelpers).
 
-# mlrMBO - How to Cite and Citing Publications
+# How to Cite
 
 Please cite our [arxiv paper](https://arxiv.org/abs/1703.03373)
 (Preprint). You can get citation info via `citation("mlrMBO")` or copy

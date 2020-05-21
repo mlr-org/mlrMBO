@@ -7,9 +7,9 @@ template:
   default_assets: false
 
 development:
-  destination: dev
+  destination: auto
   version_label: default
-  version_tooltip: "Development version"
+  version_tooltip: "Version"
 
 navbar:
   structure:

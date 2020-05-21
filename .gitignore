@@ -15,3 +15,4 @@ vignettes/*.html
 vignettes/*.R
 *_cache
 .Rproj.user
+docs/
