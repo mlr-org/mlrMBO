@@ -23,3 +23,5 @@
 ^README_.*$
 ^README.Rmd$
 ^animation.gif$
+^\.ccache$
+^\.github$
