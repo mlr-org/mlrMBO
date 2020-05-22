@@ -19,8 +19,8 @@ test_that("test checks for initial design and new design", {
   expect_true(any(checked))
   expect_true(any(!checked))
 
-  design = data.frame(x = c("a", "b"))
-  new.design = data.frame(x = c("a", "c", "b", "d", "a", NA))
+  design = data.frame(x = c("a", "b"), stringsAsFactors = TRUE)
+  new.design = data.frame(x = c("a", "c", "b", "d", "a", NA), stringsAsFactors = TRUE)
   expect_equal(checkPredictionData(new.design, design),
     c(TRUE, FALSE, TRUE, FALSE, TRUE, FALSE))
 })

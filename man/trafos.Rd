@@ -5,7 +5,9 @@
 \alias{trafoLog}
 \alias{trafoSqrt}
 \title{Transformation methods.}
-\format{None}
+\format{
+None
+}
 \usage{
 trafoLog(base = 10, handle.violations = "warn")
 
