@@ -40,7 +40,6 @@ Suggests:
     cmaesr (>= 1.0.3),
     ggplot2,
     DiceKriging,
-    DiceOptim,
     earth,
     emoa,
     GGally,
