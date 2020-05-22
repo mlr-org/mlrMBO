@@ -71,7 +71,7 @@ makeOptState = function(opt.problem, loop = 0L, tasks = NULL, models = NULL,
 
   opt.state$random.seed = getRandomSeed()
   opt.state$time.created = time.created
-  class(opt.state) = append(class(opt.state), "OptState")
+  class(opt.state) = append("OptState", class(opt.state))
   opt.state
 }
 
@@ -122,6 +122,7 @@ makeOptStateMboResult = function(opt.state) {
   mbo.result
 }
 
+#' @export
 print.OptState = function(x, ...) {
   catf("OptSate")
   catf("Actual state: %s", getOptStateState(x))

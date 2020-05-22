@@ -40,7 +40,6 @@ Suggests:
     cmaesr (>= 1.0.3),
     ggplot2,
     DiceKriging,
-    DiceOptim,
     earth,
     emoa,
     GGally,
@@ -52,6 +51,7 @@ Suggests:
     nnet,
     party,
     randomForest,
+    reshape2,
     rmarkdown,
     rgenoud,
     rpart,
@@ -60,5 +60,5 @@ Suggests:
 LazyData: yes
 Encoding: UTF-8
 ByteCompile: yes
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.0
 VignetteBuilder: knitr

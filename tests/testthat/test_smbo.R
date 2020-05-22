@@ -8,6 +8,7 @@ test_that("human in the loop smbo works", {
   ctrl = makeMBOControl()
 
   opt.state = initSMBO(par.set = ps, design = des, control = ctrl)
+  expect_output(print(opt.state), "init")
   prop = proposePoints(opt.state)
   expect_list(prop)
   expect_data_frame(prop$prop.points)
