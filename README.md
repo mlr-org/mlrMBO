@@ -8,8 +8,7 @@ Model-based optimization with [mlr](https://github.com/mlr-org/mlr/).
 
 <!-- badges: start -->
 
-[![R CMD Check via
-{tic}](https://github.com/mlr-org/mlrMBO/workflows/R%20CMD%20Check%20via%20%7Btic%7D/badge.svg?branch=master)](https://github.com/mlr-org/mlrMBO/actions)
+[![tic](https://github.com/mlr-org/mlrMBO/workflows/tic/badge.svg?branch=master)](https://github.com/mlr-org/mlrMBO/actions)
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/mlrMBO)](https://cran.r-project.org/package=mlrMBO)
 [![Travis build
 status](https://img.shields.io/travis/mlr-org/mlrMBO/master?logo=travis&style=flat-square&label=Linux)](https://travis-ci.org/mlr-org/mlrMBO)
