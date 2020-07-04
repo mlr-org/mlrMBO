@@ -19,6 +19,10 @@
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
+
 <!-- Bootstrap -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/journal/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
@@ -63,7 +67,7 @@
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -78,7 +82,7 @@
 
       <div class="navbar-brand-container">
         <a href="https://mlr-org.com"><img src="https://raw.githubusercontent.com/mlr-org/mlr3/master/man/figures/logo.png" id="hexlogo" alt="mlr-org" /></a>
-        <a class="navbar-brand" href="../index.html">mlrMBO <small>v1.1.4</small></a>
+        <a class="navbar-brand" href="../index.html">mlrMBO <small>v1.1.4-9000</small></a>
       </div>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
@@ -134,15 +138,15 @@
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-        <li>
-  <a href="https://github.com/mlr-org/mlrMBO">
-    <span class="fab fa fab fa-github fa-lg"></span>
+<li>
+  <a href="https://lmmisld-lmu-stats-slds.srv.mwn.de/mlr_invite/">
+    <span class="fa fa fa fa-comments"></span>
      
   </a>
 </li>
-<li>
-  <a href="https://mlr-org.slack.com">
-    <span class="fab fa fab fa-slack"></span>
+        <li>
+  <a href="https://github.com/mlr-org/mlrMBO/">
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -273,29 +277,25 @@ Further arguments passed to fitness function.</p></td>
 #&gt; 3 -0.2077841 -0.32457760 -0.27573422   0  NA          &lt;NA&gt;     0.000         NA
 #&gt; 4  0.8966086 -0.98750787 -0.03074897   0  NA          &lt;NA&gt;     0.000         NA
 #&gt; 5 -0.9794215  0.69022501  1.59597716   0  NA          &lt;NA&gt;     0.000         NA
-#&gt; 6  0.9999967 -0.32226298  0.68327963   1  NA          &lt;NA&gt;     0.000 -0.6290274
+#&gt; 6  0.9999967 -0.32226298  0.68327963   1  NA          &lt;NA&gt;     0.001 -0.6290274
 #&gt; 7 -0.1807007 -0.69122233 -0.60482669   2  NA          &lt;NA&gt;     0.000 -0.4985452
-#&gt; 8  0.1029667 -0.99996360 -0.83084918   3  NA          &lt;NA&gt;     0.001 -1.0001956
+#&gt; 8  0.1029667 -0.99996360 -0.83084918   3  NA          &lt;NA&gt;     0.000 -1.0001956
 #&gt;   error.model train.time  prop.type propose.time        se       mean lambda
 #&gt; 1        &lt;NA&gt;         NA initdesign           NA        NA         NA     NA
 #&gt; 2        &lt;NA&gt;         NA initdesign           NA        NA         NA     NA
 #&gt; 3        &lt;NA&gt;         NA initdesign           NA        NA         NA     NA
 #&gt; 4        &lt;NA&gt;         NA initdesign           NA        NA         NA     NA
 #&gt; 5        &lt;NA&gt;         NA initdesign           NA        NA         NA     NA
-#&gt; 6        &lt;NA&gt;      0.073  infill_cb        0.127 0.3197429 -0.3092844      1
-#&gt; 7        &lt;NA&gt;      0.051  infill_cb        0.122 0.3779856 -0.1205596      1
-#&gt; 8        &lt;NA&gt;      0.032  infill_cb        0.128 0.1795866 -0.8206090      1</div><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>res</span>)
+#&gt; 6        &lt;NA&gt;      0.113  infill_cb        0.168 0.3197429 -0.3092844      1
+#&gt; 7        &lt;NA&gt;      0.060  infill_cb        0.174 0.3779856 -0.1205596      1
+#&gt; 8        &lt;NA&gt;      0.067  infill_cb        0.168 0.1795866 -0.8206090      1</div><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+<span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(<span class='no'>res</span>)
 }</div></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#value">Value</a></li>
-      <li><a href="#examples">Examples</a></li>
-    </ul>
-
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 
@@ -306,7 +306,7 @@ Further arguments passed to fitness function.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

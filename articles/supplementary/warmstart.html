@@ -12,20 +12,21 @@
 <link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../../apple-touch-icon-120x120.png">
 <link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../../apple-touch-icon-76x76.png">
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../../apple-touch-icon-60x60.png">
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/journal/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../../bootstrap-toc.css">
+<script src="../../bootstrap-toc.js"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/journal/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.1/css/all.min.css" integrity="sha256-PbSmjxuVAzJ6FPvNYsrXygfGhNJYyZ2GktDbkMBqQZg=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.1/css/v4-shims.min.css" integrity="sha256-A6jcAdwFD48VMjlI3GDxUd+eCQa7/KWy6G9oe/ovaPA=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../../pkgdown.css" rel="stylesheet">
 <link href="../../extra.css" rel="stylesheet">
 <script src="../../pkgdown.js"></script><meta property="og:title" content="Warm Starting Optimization">
-<meta property="og:description" content="">
+<meta property="og:description" content="mlrMBO">
 <meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
-<body>
+<body data-spy="scroll" data-target="#toc">
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -39,7 +40,7 @@
 
       <div class="navbar-brand-container">
         <a href="https://mlr-org.com"><img src="https://raw.githubusercontent.com/mlr-org/mlr3/master/man/figures/logo.png" id="hexlogo" alt="mlr-org"></a>
-        <a class="navbar-brand" href="../../index.html">mlrMBO <small>v1.1.4</small></a>
+        <a class="navbar-brand" href="../../index.html">mlrMBO <small>v1.1.4-9000</small></a>
       </div>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
@@ -95,15 +96,15 @@
 <li>
   <a href="../../news/index.html">Changelog</a>
 </li>
-        <li>
-  <a href="https://github.com/mlr-org/mlrMBO">
-    <span class="fab fa fab fa-github fa-lg"></span>
+<li>
+  <a href="https://lmmisld-lmu-stats-slds.srv.mwn.de/mlr_invite/">
+    <span class="fa fa fa fa-comments"></span>
      
   </a>
 </li>
-<li>
-  <a href="https://mlr-org.slack.com">
-    <span class="fab fa fab fa-slack"></span>
+        <li>
+  <a href="https://github.com/mlr-org/mlrMBO/">
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -129,10 +130,10 @@
 
       
 
-      </header><div class="row">
+      </header><script src="warmstart_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1>Warm Starting Optimization</h1>
+      <h1 data-toc-skip>Warm Starting Optimization</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/mlr-org/mlrMBO/blob/master/vignettes/supplementary/warmstart.Rmd"><code>vignettes/supplementary/warmstart.Rmd</code></a></small>
@@ -150,64 +151,64 @@
 <h3 class="hasAnchor">
 <a href="#prerequisites" class="anchor"></a>Prerequisites</h3>
 <p>First, we will construct our problem that will be used for the following examples</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(mlrMBO)</a>
-<a class="sourceLine" id="cb1-2" data-line-number="2">obj.fun =<span class="st"> </span><span class="kw">makeSixHumpCamelFunction</span>()</a>
-<a class="sourceLine" id="cb1-3" data-line-number="3">ggplot2<span class="op">::</span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span>(obj.fun, <span class="dt">render.levels =</span> <span class="ot">TRUE</span>, <span class="dt">show.optimum =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">mlrMBO</span>)
+<span class="no">obj.fun</span> <span class="kw">=</span> <span class="fu">makeSixHumpCamelFunction</span>()
+<span class="kw pkg">ggplot2</span><span class="kw ns">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span>(<span class="no">obj.fun</span>, <span class="kw">render.levels</span> <span class="kw">=</span> <span class="fl">TRUE</span>, <span class="kw">show.optimum</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></body></html></div>
 <p><img src="warmstart_files/figure-html/load_package-1.png" width="700"></p>
 </div>
 <div id="warm-start-on-a-design" class="section level3">
 <h3 class="hasAnchor">
 <a href="#warm-start-on-a-design" class="anchor"></a>Warm Start on a Design</h3>
 <p>First we create the pre-evaluated design.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">design =<span class="st"> </span><span class="kw">generateGridDesign</span>(<span class="kw">getParamSet</span>(obj.fun), <span class="dt">resolution =</span> <span class="dv">3</span>)</a>
-<a class="sourceLine" id="cb2-2" data-line-number="2">design<span class="op">$</span>y =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/apply.html">apply</a></span>(design, <span class="dv">1</span>, obj.fun)</a>
-<a class="sourceLine" id="cb2-3" data-line-number="3">design</a>
-<a class="sourceLine" id="cb2-4" data-line-number="4">##   x1 x2     y</a>
-<a class="sourceLine" id="cb2-5" data-line-number="5">## 1 -3 -2 162.9</a>
-<a class="sourceLine" id="cb2-6" data-line-number="6">## 2  0 -2  48.0</a>
-<a class="sourceLine" id="cb2-7" data-line-number="7">## 3  3 -2 150.9</a>
-<a class="sourceLine" id="cb2-8" data-line-number="8">## 4 -3  0 108.9</a>
-<a class="sourceLine" id="cb2-9" data-line-number="9">## 5  0  0   0.0</a>
-<a class="sourceLine" id="cb2-10" data-line-number="10">## 6  3  0 108.9</a>
-<a class="sourceLine" id="cb2-11" data-line-number="11">## 7 -3  2 150.9</a>
-<a class="sourceLine" id="cb2-12" data-line-number="12">## 8  0  2  48.0</a>
-<a class="sourceLine" id="cb2-13" data-line-number="13">## 9  3  2 162.9</a></code></pre></div>
+<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">design</span> <span class="kw">=</span> <span class="fu">generateGridDesign</span>(<span class="fu">getParamSet</span>(<span class="no">obj.fun</span>), <span class="kw">resolution</span> <span class="kw">=</span> <span class="fl">3</span>)
+<span class="no">design</span>$<span class="no">y</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span>(<span class="no">design</span>, <span class="fl">1</span>, <span class="no">obj.fun</span>)
+<span class="no">design</span>
+<span class="co">##   x1 x2     y</span>
+<span class="co">## 1 -3 -2 162.9</span>
+<span class="co">## 2  0 -2  48.0</span>
+<span class="co">## 3  3 -2 150.9</span>
+<span class="co">## 4 -3  0 108.9</span>
+<span class="co">## 5  0  0   0.0</span>
+<span class="co">## 6  3  0 108.9</span>
+<span class="co">## 7 -3  2 150.9</span>
+<span class="co">## 8  0  2  48.0</span>
+<span class="co">## 9  3  2 162.9</span></pre></body></html></div>
 <p>Now we define out MBO Settings.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span>()</a>
-<a class="sourceLine" id="cb3-2" data-line-number="2">ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/setMBOControlInfill.html">setMBOControlInfill</a></span>(ctrl, crit.ei)</a>
-<a class="sourceLine" id="cb3-3" data-line-number="3">ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span>(ctrl, <span class="dt">iters =</span> <span class="dv">4</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="no">ctrl</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span>()
+<span class="no">ctrl</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/setMBOControlInfill.html">setMBOControlInfill</a></span>(<span class="no">ctrl</span>, <span class="no">crit.ei</span>)
+<span class="no">ctrl</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span>(<span class="no">ctrl</span>, <span class="kw">iters</span> <span class="kw">=</span> <span class="fl">4</span>)</pre></body></html></div>
 <p>To warm start the Bayesian optimization we simply call <code><a href="../../reference/mbo.html">mbo()</a></code> and pass the pre-evaluated design.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">res =<span class="st"> </span><span class="kw"><a href="../../reference/mbo.html">mbo</a></span>(obj.fun, <span class="dt">design =</span> design, <span class="dt">control =</span> ctrl)</a>
-<a class="sourceLine" id="cb4-2" data-line-number="2">## [mbo] 1: x=-0.545,0.0432 : y = 0.98 : 0.0 secs : infill_ei</a>
-<a class="sourceLine" id="cb4-3" data-line-number="3">## [mbo] 2: x=-0.258,-0.288 : y = 0.0265 : 0.0 secs : infill_ei</a>
-<a class="sourceLine" id="cb4-4" data-line-number="4">## [mbo] 3: x=-0.245,0.0395 : y = 0.217 : 0.0 secs : infill_ei</a>
-<a class="sourceLine" id="cb4-5" data-line-number="5">## [mbo] 4: x=-0.0719,0.56 : y = -0.88 : 0.0 secs : infill_ei</a>
-<a class="sourceLine" id="cb4-6" data-line-number="6"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(res<span class="op">$</span>final.opt.state, <span class="dt">scale.panels =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">res</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/mbo.html">mbo</a></span>(<span class="no">obj.fun</span>, <span class="kw">design</span> <span class="kw">=</span> <span class="no">design</span>, <span class="kw">control</span> <span class="kw">=</span> <span class="no">ctrl</span>)
+<span class="co">## [mbo] 1: x=-0.545,0.0432 : y = 0.98 : 0.0 secs : infill_ei</span>
+<span class="co">## [mbo] 2: x=-0.258,-0.288 : y = 0.0265 : 0.0 secs : infill_ei</span>
+<span class="co">## [mbo] 3: x=-0.245,0.0395 : y = 0.217 : 0.0 secs : infill_ei</span>
+<span class="co">## [mbo] 4: x=-0.0719,0.56 : y = -0.88 : 0.0 secs : infill_ei</span>
+<span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">res</span>$<span class="no">final.opt.state</span>, <span class="kw">scale.panels</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></body></html></div>
 <p><img src="warmstart_files/figure-html/design_start-1.png" width="700"></p>
 </div>
 <div id="continue-a-terminated-optimization" class="section level3">
 <h3 class="hasAnchor">
 <a href="#continue-a-terminated-optimization" class="anchor"></a>Continue a Terminated Optimization</h3>
 <p>Now, we will continue our above optimization. Here we have two options. First, we can convert the <code>opt.path</code> from the result to a <code>data.frame</code>, which will then serve as the pre-evaluated design. This pre-evaluated design can be passed to <code><a href="../../reference/mbo.html">mbo()</a></code> just as in the previous example.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">op =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span>(res<span class="op">$</span>opt.path)</a>
-<a class="sourceLine" id="cb5-2" data-line-number="2">design =<span class="st"> </span>op[, <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"x1"</span>, <span class="st">"x2"</span>, <span class="st">"y"</span>)]</a>
-<a class="sourceLine" id="cb5-3" data-line-number="3">res2 =<span class="st"> </span><span class="kw"><a href="../../reference/mbo.html">mbo</a></span>(obj.fun, <span class="dt">design =</span> design, <span class="dt">control =</span> ctrl)</a>
-<a class="sourceLine" id="cb5-4" data-line-number="4">## [mbo] 1: x=0.413,0.419 : y = 0.217 : 0.0 secs : infill_ei</a>
-<a class="sourceLine" id="cb5-5" data-line-number="5">## [mbo] 2: x=0.0628,0.387 : y = -0.47 : 0.0 secs : infill_ei</a>
-<a class="sourceLine" id="cb5-6" data-line-number="6">## [mbo] 3: x=-0.397,0.534 : y = -0.447 : 0.0 secs : infill_ei</a>
-<a class="sourceLine" id="cb5-7" data-line-number="7">## [mbo] 4: x=0.204,0.597 : y = -0.632 : 0.0 secs : infill_ei</a>
-<a class="sourceLine" id="cb5-8" data-line-number="8"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(res2<span class="op">$</span>final.opt.state, <span class="dt">scale.panels =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">op</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span>(<span class="no">res</span>$<span class="no">opt.path</span>)
+<span class="no">design</span> <span class="kw">=</span> <span class="no">op</span>[, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"x1"</span>, <span class="st">"x2"</span>, <span class="st">"y"</span>)]
+<span class="no">res2</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/mbo.html">mbo</a></span>(<span class="no">obj.fun</span>, <span class="kw">design</span> <span class="kw">=</span> <span class="no">design</span>, <span class="kw">control</span> <span class="kw">=</span> <span class="no">ctrl</span>)
+<span class="co">## [mbo] 1: x=0.413,0.419 : y = 0.217 : 0.0 secs : infill_ei</span>
+<span class="co">## [mbo] 2: x=0.0628,0.387 : y = -0.47 : 0.0 secs : infill_ei</span>
+<span class="co">## [mbo] 3: x=-0.397,0.534 : y = -0.447 : 0.0 secs : infill_ei</span>
+<span class="co">## [mbo] 4: x=0.204,0.597 : y = -0.632 : 0.0 secs : infill_ei</span>
+<span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">res2</span>$<span class="no">final.opt.state</span>, <span class="kw">scale.panels</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></body></html></div>
 <p><img src="warmstart_files/figure-html/res_to_design-1.png" width="700"></p>
 <p>Second, we can use <code><a href="../../reference/mboContinue.html">mboContinue()</a></code> on the <code>final.opt.state</code>. In this case we have to change the state of the <code>opt.state</code> object from <code>"term.iter"</code> to <code>"iter"</code> so MBO does not assume the optimization is already terminated. Furthermore we have to redefine the termination criterion to 8 because we want run 4 further iterations from the 4 we already did in the beginning.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">opt.state =<span class="st"> </span>res<span class="op">$</span>final.opt.state</a>
-<a class="sourceLine" id="cb6-2" data-line-number="2">opt.state<span class="op">$</span>opt.problem<span class="op">$</span>control =<span class="st"> </span><span class="kw"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span>(opt.state<span class="op">$</span>opt.problem<span class="op">$</span>control, <span class="dt">iters =</span> <span class="dv">8</span>)</a>
-<a class="sourceLine" id="cb6-3" data-line-number="3">opt.state<span class="op">$</span>state =<span class="st"> "iter"</span></a>
-<a class="sourceLine" id="cb6-4" data-line-number="4">res3 =<span class="st"> </span><span class="kw"><a href="../../reference/mboContinue.html">mboContinue</a></span>(res<span class="op">$</span>final.opt.state)</a>
-<a class="sourceLine" id="cb6-5" data-line-number="5">## [mbo] 5: x=-0.0742,0.38 : y = -0.501 : 0.0 secs : infill_ei</a>
-<a class="sourceLine" id="cb6-6" data-line-number="6">## [mbo] 6: x=0.453,0.525 : y = 0.176 : 0.0 secs : infill_ei</a>
-<a class="sourceLine" id="cb6-7" data-line-number="7">## [mbo] 7: x=0.197,0.523 : y = -0.541 : 0.0 secs : infill_ei</a>
-<a class="sourceLine" id="cb6-8" data-line-number="8">## [mbo] 8: x=-0.392,0.537 : y = -0.464 : 0.0 secs : infill_ei</a>
-<a class="sourceLine" id="cb6-9" data-line-number="9"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(res3<span class="op">$</span>final.opt.state, <span class="dt">scale.panels =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">opt.state</span> <span class="kw">=</span> <span class="no">res</span>$<span class="no">final.opt.state</span>
+<span class="no">opt.state</span>$<span class="no">opt.problem</span>$<span class="no">control</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span>(<span class="no">opt.state</span>$<span class="no">opt.problem</span>$<span class="no">control</span>, <span class="kw">iters</span> <span class="kw">=</span> <span class="fl">8</span>)
+<span class="no">opt.state</span>$<span class="no">state</span> <span class="kw">=</span> <span class="st">"iter"</span>
+<span class="no">res3</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/mboContinue.html">mboContinue</a></span>(<span class="no">res</span>$<span class="no">final.opt.state</span>)
+<span class="co">## [mbo] 5: x=-0.0742,0.38 : y = -0.501 : 0.0 secs : infill_ei</span>
+<span class="co">## [mbo] 6: x=0.453,0.525 : y = 0.176 : 0.0 secs : infill_ei</span>
+<span class="co">## [mbo] 7: x=0.197,0.523 : y = -0.541 : 0.0 secs : infill_ei</span>
+<span class="co">## [mbo] 8: x=-0.392,0.537 : y = -0.464 : 0.0 secs : infill_ei</span>
+<span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">res3</span>$<span class="no">final.opt.state</span>, <span class="kw">scale.panels</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></body></html></div>
 <p><img src="warmstart_files/figure-html/mbocontinue_optstate-1.png" width="700"></p>
 <p>The first approach has the advantage that it is more transparent. Also you have to pass an <code>MBOControl</code> object which gives you an easy ability to refine your MBO settings for the further iterations. The second approach is a bit more <em>hacky</em> but has the advantage that you do not have to construct the design from the <code>opt.path</code>.</p>
 </div>
@@ -216,61 +217,56 @@
 <a href="#continue-a-failed-optimization" class="anchor"></a>Continue a Failed Optimization</h3>
 <p>If you run long MBO optimization tasks it is especially frustrating if some part crashes and your optimization progress is gone. Luckily MBO has the capabilities to continue failed optimization runs if you configure the <code>MBOControl</code> object right.</p>
 <p>But first, for this example we have to construct a function that fails. This function will throw an error the 12th time it is called.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">counter =<span class="st"> </span><span class="dv">0</span></a>
-<a class="sourceLine" id="cb7-2" data-line-number="2">f =<span class="st"> </span><span class="kw">makeSingleObjectiveFunction</span>(</a>
-<a class="sourceLine" id="cb7-3" data-line-number="3">  <span class="dt">fn =</span> <span class="cf">function</span>(x) {</a>
-<a class="sourceLine" id="cb7-4" data-line-number="4">    counter &lt;&lt;-<span class="st"> </span>counter <span class="op">+</span><span class="st"> </span><span class="dv">1</span></a>
-<a class="sourceLine" id="cb7-5" data-line-number="5">    <span class="cf">if</span> (counter <span class="op">==</span><span class="st"> </span>12L)</a>
-<a class="sourceLine" id="cb7-6" data-line-number="6">      <span class="kw"><a href="https://rdrr.io/r/base/stop.html">stop</a></span>(<span class="st">"fail"</span>)</a>
-<a class="sourceLine" id="cb7-7" data-line-number="7">    <span class="kw"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(x<span class="op">^</span><span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb7-8" data-line-number="8">  },</a>
-<a class="sourceLine" id="cb7-9" data-line-number="9">  <span class="dt">par.set =</span> <span class="kw">makeNumericParamSet</span>(<span class="dt">len =</span> 2L, <span class="dt">lower =</span> <span class="dv">-2</span>, <span class="dt">upper =</span> <span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb7-10" data-line-number="10">)</a></code></pre></div>
-<p>To be able to continue a failed optimization run we have to set <code>save.on.disk.at.time</code> or <code>save.on.disk.at</code>. The first defines a time frame that has to pass until the current state is saved to disk again (e.g. all 30 seconds). The second defines a vector of iterations, when to save the current state to disk (e.g. <code><a href="https://rdrr.io/r/base/c.html">c(10,20,30)</a></code>). Additionally you can set the location where the state is saved with <code>save.file.path</code>. It defaults to <code>getwd()/mlrMBO_run.RData</code>.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1">ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span>(<span class="dt">save.on.disk.at =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">2</span>,<span class="dv">4</span>))</a>
-<a class="sourceLine" id="cb8-2" data-line-number="2">ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/setMBOControlInfill.html">setMBOControlInfill</a></span>(ctrl, crit.ei)</a>
-<a class="sourceLine" id="cb8-3" data-line-number="3">ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span>(ctrl, <span class="dt">iters =</span> 8L)</a>
-<a class="sourceLine" id="cb8-4" data-line-number="4">or =<span class="st"> </span><span class="kw"><a href="../../reference/mbo.html">mbo</a></span>(f, <span class="dt">control =</span> ctrl)</a>
-<a class="sourceLine" id="cb8-5" data-line-number="5">## Computing y column(s) for design. Not provided.</a>
-<a class="sourceLine" id="cb8-6" data-line-number="6">## [mbo] 0: x=-0.587,-0.903 : y = 1.16 : 0.0 secs : initdesign</a>
-<a class="sourceLine" id="cb8-7" data-line-number="7">## [mbo] 0: x=0.303,-0.37 : y = 0.229 : 0.0 secs : initdesign</a>
-<a class="sourceLine" id="cb8-8" data-line-number="8">## [mbo] 0: x=-1.08,0.621 : y = 1.55 : 0.0 secs : initdesign</a>
-<a class="sourceLine" id="cb8-9" data-line-number="9">## [mbo] 0: x=-1.74,0.151 : y = 3.03 : 0.0 secs : initdesign</a>
-<a class="sourceLine" id="cb8-10" data-line-number="10">## [mbo] 0: x=0.17,-1.45 : y = 2.14 : 0.0 secs : initdesign</a>
-<a class="sourceLine" id="cb8-11" data-line-number="11">## [mbo] 0: x=0.732,-0.79 : y = 1.16 : 0.0 secs : initdesign</a>
-<a class="sourceLine" id="cb8-12" data-line-number="12">## [mbo] 0: x=-1.59,-1.76 : y = 5.64 : 0.0 secs : initdesign</a>
-<a class="sourceLine" id="cb8-13" data-line-number="13">## [mbo] 0: x=-0.298,0.928 : y = 0.949 : 0.0 secs : initdesign</a>
-<a class="sourceLine" id="cb8-14" data-line-number="14">## [mbo] 1: x=-0.134,-0.108 : y = 0.0295 : 0.0 secs : infill_ei</a>
-<a class="sourceLine" id="cb8-15" data-line-number="15">## Saved the current state after iteration 2 in the file /home/travis/build/mlr-org/mlrMBO/vignettes/supplementary/mlrMBO_run.RData.</a>
-<a class="sourceLine" id="cb8-16" data-line-number="16">## [mbo] 2: x=0.12,0.131 : y = 0.0315 : 0.0 secs : infill_ei</a>
-<a class="sourceLine" id="cb8-17" data-line-number="17">## [mbo] 3: x=0.0353,-0.0343 : y = 0.00242 : 0.0 secs : infill_ei</a>
-<a class="sourceLine" id="cb8-18" data-line-number="18">## Saved the current state after iteration 4 in the file /home/travis/build/mlr-org/mlrMBO/vignettes/supplementary/mlrMBO_run.RData.</a>
-<a class="sourceLine" id="cb8-19" data-line-number="19">## Error in fn(unlist(x), ...): fail</a></code></pre></div>
+<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="no">counter</span> <span class="kw">=</span> <span class="fl">0</span>
+<span class="no">f</span> <span class="kw">=</span> <span class="fu">makeSingleObjectiveFunction</span>(
+  <span class="kw">fn</span> <span class="kw">=</span> <span class="kw">function</span>(<span class="no">x</span>) {
+    <span class="no">counter</span> <span class="kw">&lt;&lt;-</span> <span class="no">counter</span> + <span class="fl">1</span>
+    <span class="kw">if</span> (<span class="no">counter</span> <span class="kw">==</span> <span class="fl">12L</span>)
+      <span class="fu"><a href="https://rdrr.io/r/base/stop.html">stop</a></span>(<span class="st">"fail"</span>)
+    <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(<span class="no">x</span>^<span class="fl">2</span>)
+  },
+  <span class="kw">par.set</span> <span class="kw">=</span> <span class="fu">makeNumericParamSet</span>(<span class="kw">len</span> <span class="kw">=</span> <span class="fl">2L</span>, <span class="kw">lower</span> <span class="kw">=</span> -<span class="fl">2</span>, <span class="kw">upper</span> <span class="kw">=</span> <span class="fl">1</span>)
+)</pre></body></html></div>
+<p>To be able to continue a failed optimization run we have to set <code>save.on.disk.at.time</code> or <code>save.on.disk.at</code>. The first defines a time frame that has to pass until the current state is saved to disk again (e.g. all 30 seconds). The second defines a vector of iterations, when to save the current state to disk (e.g. <code><a href="https://rdrr.io/r/base/c.html">c(10,20,30)</a></code>). Additionally you can set the location where the state is saved with <code>save.file.path</code>. It defaults to <code>getwd()/mlrMBO_run.RData</code>.</p>
+<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="no">ctrl</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span>(<span class="kw">save.on.disk.at</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">2</span>,<span class="fl">4</span>))
+<span class="no">ctrl</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/setMBOControlInfill.html">setMBOControlInfill</a></span>(<span class="no">ctrl</span>, <span class="no">crit.ei</span>)
+<span class="no">ctrl</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span>(<span class="no">ctrl</span>, <span class="kw">iters</span> <span class="kw">=</span> <span class="fl">8L</span>)
+<span class="no">or</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/mbo.html">mbo</a></span>(<span class="no">f</span>, <span class="kw">control</span> <span class="kw">=</span> <span class="no">ctrl</span>)
+<span class="co">## Computing y column(s) for design. Not provided.</span>
+<span class="co">## [mbo] 0: x=-0.587,-0.903 : y = 1.16 : 0.0 secs : initdesign</span>
+<span class="co">## [mbo] 0: x=0.303,-0.37 : y = 0.229 : 0.0 secs : initdesign</span>
+<span class="co">## [mbo] 0: x=-1.08,0.621 : y = 1.55 : 0.0 secs : initdesign</span>
+<span class="co">## [mbo] 0: x=-1.74,0.151 : y = 3.03 : 0.0 secs : initdesign</span>
+<span class="co">## [mbo] 0: x=0.17,-1.45 : y = 2.14 : 0.0 secs : initdesign</span>
+<span class="co">## [mbo] 0: x=0.732,-0.79 : y = 1.16 : 0.0 secs : initdesign</span>
+<span class="co">## [mbo] 0: x=-1.59,-1.76 : y = 5.64 : 0.0 secs : initdesign</span>
+<span class="co">## [mbo] 0: x=-0.298,0.928 : y = 0.949 : 0.0 secs : initdesign</span>
+<span class="co">## [mbo] 1: x=-0.134,-0.108 : y = 0.0295 : 0.0 secs : infill_ei</span>
+<span class="co">## Saved the current state after iteration 2 in the file /Users/runner/runners/2.263.0/work/mlrMBO/mlrMBO/vignettes/supplementary/mlrMBO_run.RData.</span>
+<span class="co">## [mbo] 2: x=0.12,0.131 : y = 0.0315 : 0.0 secs : infill_ei</span>
+<span class="co">## [mbo] 3: x=0.0353,-0.0343 : y = 0.00242 : 0.0 secs : infill_ei</span>
+<span class="co">## Saved the current state after iteration 4 in the file /Users/runner/runners/2.263.0/work/mlrMBO/mlrMBO/vignettes/supplementary/mlrMBO_run.RData.</span>
+<span class="co">## Error in fn(unlist(x), ...): fail</span></pre></body></html></div>
 <p>As expected the process failed. Luckily we can use the saved <code>opt.state</code> to continue the optimization.</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">counter =<span class="st"> </span><span class="dv">13</span> <span class="co"># set counter to not trigger the error</span></a>
-<a class="sourceLine" id="cb9-2" data-line-number="2">or =<span class="st"> </span><span class="kw"><a href="../../reference/mboContinue.html">mboContinue</a></span>(<span class="st">"mlrMBO_run.RData"</span>)</a>
-<a class="sourceLine" id="cb9-3" data-line-number="3">## [mbo] 4: x=-0.0394,0.0483 : y = 0.00389 : 0.0 secs : infill_ei</a>
-<a class="sourceLine" id="cb9-4" data-line-number="4">## [mbo] 5: x=-0.339,0.0209 : y = 0.115 : 0.0 secs : infill_ei</a>
-<a class="sourceLine" id="cb9-5" data-line-number="5">## [mbo] 6: x=0.00141,-0.168 : y = 0.0283 : 0.0 secs : infill_ei</a>
-<a class="sourceLine" id="cb9-6" data-line-number="6">## [mbo] 7: x=-0.00765,-0.... : y = 6.45e-05 : 0.0 secs : infill_ei</a>
-<a class="sourceLine" id="cb9-7" data-line-number="7">## [mbo] 8: x=0.0729,0.0184 : y = 0.00566 : 0.0 secs : infill_ei</a>
-<a class="sourceLine" id="cb9-8" data-line-number="8"><span class="kw"><a href="https://rdrr.io/r/base/files.html">file.remove</a></span>(<span class="st">"mlrMBO_run.RData"</span>) <span class="co"># remove the saved state</span></a>
-<a class="sourceLine" id="cb9-9" data-line-number="9">## [1] TRUE</a></code></pre></div>
+<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="no">counter</span> <span class="kw">=</span> <span class="fl">13</span> <span class="co"># set counter to not trigger the error</span>
+<span class="no">or</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/mboContinue.html">mboContinue</a></span>(<span class="st">"mlrMBO_run.RData"</span>)
+<span class="co">## [mbo] 4: x=-0.0394,0.0483 : y = 0.00389 : 0.0 secs : infill_ei</span>
+<span class="co">## [mbo] 5: x=-0.339,0.0209 : y = 0.115 : 0.0 secs : infill_ei</span>
+<span class="co">## [mbo] 6: x=0.00141,-0.168 : y = 0.0283 : 0.0 secs : infill_ei</span>
+<span class="co">## [mbo] 7: x=-0.00765,-0.... : y = 6.45e-05 : 0.0 secs : infill_ei</span>
+<span class="co">## [mbo] 8: x=0.0729,0.0184 : y = 0.00566 : 0.0 secs : infill_ei</span>
+<span class="fu"><a href="https://rdrr.io/r/base/files.html">file.remove</a></span>(<span class="st">"mlrMBO_run.RData"</span>) <span class="co"># remove the saved state</span>
+<span class="co">## [1] TRUE</span></pre></body></html></div>
 <p><em>Note:</em> It is possible to continue an optimization that was saved to disk and terminated using the same approach as in the previous chapter. You can access the <code>opt.state</code> by calling <code><a href="https://rdrr.io/r/base/load.html">load("mlrMBO_run.RData")</a></code>.</p>
 </div>
 </div>
   </div>
 
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
-        <div id="tocnav">
-      <h2 class="hasAnchor">
-<a href="#tocnav" class="anchor"></a>Contents</h2>
-      <ul class="nav nav-pills nav-stacked">
-<li><a href="#purpose">Purpose</a></li>
-      </ul>
+        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
+    </nav>
 </div>
-      </div>
 
 </div>
 
@@ -281,7 +277,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

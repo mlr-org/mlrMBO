@@ -19,6 +19,10 @@
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
+
 <!-- Bootstrap -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/journal/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
@@ -66,7 +70,7 @@ the package allows for the creation of custom infill criteria." />
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -81,7 +85,7 @@ the package allows for the creation of custom infill criteria." />
 
       <div class="navbar-brand-container">
         <a href="https://mlr-org.com"><img src="https://raw.githubusercontent.com/mlr-org/mlr3/master/man/figures/logo.png" id="hexlogo" alt="mlr-org" /></a>
-        <a class="navbar-brand" href="../index.html">mlrMBO <small>v1.1.4</small></a>
+        <a class="navbar-brand" href="../index.html">mlrMBO <small>v1.1.4-9000</small></a>
       </div>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
@@ -137,15 +141,15 @@ the package allows for the creation of custom infill criteria." />
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-        <li>
-  <a href="https://github.com/mlr-org/mlrMBO">
-    <span class="fab fa fab fa-github fa-lg"></span>
+<li>
+  <a href="https://lmmisld-lmu-stats-slds.srv.mwn.de/mlr_invite/">
+    <span class="fa fa fa fa-comments"></span>
      
   </a>
 </li>
-<li>
-  <a href="https://mlr-org.slack.com">
-    <span class="fab fa fab fa-slack"></span>
+        <li>
+  <a href="https://github.com/mlr-org/mlrMBO/">
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -203,7 +207,7 @@ the package allows for the creation of custom infill criteria.</p>
       <th>fun</th>
       <td><p>[<code>function(points, models, control, par.set, design, iter)</code>]<br />
  A function which expects the following parameters in exactly this order
- and return a numeric vector of criteria values at the points:</p><dl class='dl-horizontal'>
+ and return a numeric vector of criteria values at the points:</p><dl'>
    <dt>points [<code>data.frame</code>]</dt><dd><p>n points where to evaluate.</p></dd>
    <dt>models [<code><a href='https://mlr.mlr-org.com/reference/makeWrappedModel.html'>WrappedModel</a></code> | <code>list</code>]</dt><dd><p>Model(s) fitted on design.</p></dd>
    <dt>control [<code>MBOControl</code>]</dt><dd><p>Control object.</p></dd>
@@ -266,7 +270,7 @@ Default is <code>FALSE</code>.</p></td>
 
     
 
-<dl class='dl-horizontal'>
+<dl'>
 <dt>crit.ei</dt><dd><p>Expected Improvement</p></dd>
 <dt>crit.mr</dt><dd><p>Mean response</p></dd>
 <dt>crit.se</dt><dd><p>Standard error</p></dd>
@@ -281,14 +285,10 @@ Default is <code>FALSE</code>.</p></td>
 
 
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#value">Value</a></li>
-      <li><a href="#predefined-standard-infill-criteria">Predefined standard infill criteria</a></li>
-    </ul>
-
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 
@@ -299,7 +299,7 @@ Default is <code>FALSE</code>.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

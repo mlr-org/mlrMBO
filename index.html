@@ -12,7 +12,8 @@
 <link rel="apple-touch-icon" type="image/png" sizes="120x120" href="apple-touch-icon-120x120.png">
 <link rel="apple-touch-icon" type="image/png" sizes="76x76" href="apple-touch-icon-76x76.png">
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="apple-touch-icon-60x60.png">
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/journal/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="bootstrap-toc.css">
+<script src="bootstrap-toc.js"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/journal/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.1/css/all.min.css" integrity="sha256-PbSmjxuVAzJ6FPvNYsrXygfGhNJYyZ2GktDbkMBqQZg=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.1/css/v4-shims.min.css" integrity="sha256-A6jcAdwFD48VMjlI3GDxUd+eCQa7/KWy6G9oe/ovaPA=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
@@ -37,7 +38,7 @@
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
-<body>
+<body data-spy="scroll" data-target="#toc">
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -51,7 +52,7 @@
 
       <div class="navbar-brand-container">
         <a href="https://mlr-org.com"><img src="https://raw.githubusercontent.com/mlr-org/mlr3/master/man/figures/logo.png" id="hexlogo" alt="mlr-org"></a>
-        <a class="navbar-brand" href="index.html">mlrMBO <small>v1.1.4</small></a>
+        <a class="navbar-brand" href="index.html">mlrMBO <small>v1.1.4-9000</small></a>
       </div>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
@@ -107,15 +108,15 @@
 <li>
   <a href="news/index.html">Changelog</a>
 </li>
-        <li>
-  <a href="https://github.com/mlr-org/mlrMBO">
-    <span class="fab fa fab fa-github fa-lg"></span>
+<li>
+  <a href="https://lmmisld-lmu-stats-slds.srv.mwn.de/mlr_invite/">
+    <span class="fa fa fa fa-comments"></span>
      
   </a>
 </li>
-<li>
-  <a href="https://mlr-org.slack.com">
-    <span class="fab fa fab fa-slack"></span>
+        <li>
+  <a href="https://github.com/mlr-org/mlrMBO/">
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -147,9 +148,10 @@
 <div id="mlrmbo" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#mlrmbo" class="anchor"></a>mlrMBO</h1></div>
-<!-- Please edit README.Rmd !-->
+<p>Package website: <a href="https://mlrmbo.mlr-org.com/">release</a> | <a href="https://mlr3mbo.mlr-org.com/dev">dev</a></p>
 <p>Model-based optimization with <a href="https://github.com/mlr-org/mlr/">mlr</a>.</p>
-<p><a href="https://cran.r-project.org/package=mlrMBO"><img src="http://www.r-pkg.org/badges/version/mlrMBO" alt="CRAN_Status_Badge"></a> <a href="https://travis-ci.org/mlr-org/mlrMBO"><img src="https://img.shields.io/travis/mlr-org/mlrMBO/master?logo=travis&amp;style=flat-square&amp;label=Linux" alt="Travis build status"></a> <a href="https://ci.appveyor.com/project/mlr-org/mlrMBO"><img src="https://img.shields.io/appveyor/ci/mlr-org/mlrMBO?label=Windows&amp;logo=appveyor&amp;style=flat-square" alt="AppVeyor build status"></a> <a href="https://codecov.io/github/mlr-org/mlrMBO?branch=master"><img src="https://img.shields.io/codecov/c/github/mlr-org/mlrMBO/master.svg" alt="Coverage Status"></a> <a href="https://CRAN.R-project.org/package=mlrMBO"><img src="https://cranlogs.r-pkg.org/badges/mlrMBO" alt="Monthly RStudio CRAN Downloads"></a></p>
+<!-- badges: start -->
+<p><a href="https://github.com/mlr-org/mlrMBO/actions"><img src="https://github.com/mlr-org/mlrMBO/workflows/tic/badge.svg?branch=master" alt="tic"></a> <a href="https://cran.r-project.org/package=mlrMBO"><img src="http://www.r-pkg.org/badges/version/mlrMBO" alt="CRAN_Status_Badge"></a> <a href="https://travis-ci.org/mlr-org/mlrMBO"><img src="https://img.shields.io/travis/mlr-org/mlrMBO/master?logo=travis&amp;style=flat-square&amp;label=Linux" alt="Travis build status"></a> <a href="https://ci.appveyor.com/project/mlr-org/mlrMBO"><img src="https://img.shields.io/appveyor/ci/mlr-org/mlrMBO?label=Windows&amp;logo=appveyor&amp;style=flat-square" alt="AppVeyor build status"></a> <a href="https://codecov.io/github/mlr-org/mlrMBO?branch=master"><img src="https://img.shields.io/codecov/c/github/mlr-org/mlrMBO/master.svg" alt="Coverage Status"></a> <a href="https://CRAN.R-project.org/package=mlrMBO"><img src="https://cranlogs.r-pkg.org/badges/mlrMBO" alt="Monthly RStudio CRAN Downloads"></a> <!-- badges: end --></p>
 <ul>
 <li><a href="https://mlr-org.github.io/mlrMBO/">Documentation</a></li>
 <li><a href="https://github.com/mlr-org/mlrMBO/issues">Issues, Requests and Bug Tracker</a></li>
@@ -159,14 +161,14 @@
 <h1 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h1>
 <p>We recommend to install the official release version:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"mlrMBO"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"mlrMBO"</span>)</pre></div>
 <p>For experimental use you can install the latest development version:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">remotes<span class="op">::</span><span class="kw"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span>(<span class="st">"mlr-org/mlrMBO"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="r"><span class="kw pkg">remotes</span><span class="kw ns">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span>(<span class="st">"mlr-org/mlrMBO"</span>)</pre></div>
 </div>
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
-<p><img src="https://i.imgur.com/NMpSqnS.gif"><!-- --></p>
+<p><img src="https://i.imgur.com/LVFRVVl.gif"><!-- --></p>
 <p><code>mlrMBO</code> is a highly configurable R toolbox for model-based / Bayesian optimization of black-box functions.</p>
 <p>Features:</p>
 <ul>
@@ -180,26 +182,38 @@
 <li>Parallelization on many parallel back-ends and clusters through <a href="https://github.com/mllg/batchtools">batchtools</a> and <a href="https://github.com/berndbischl/parallelMap">parallelMap</a>
 </li>
 </ul>
-<p>For the <em>surrogate</em>, <code>mlrMBO</code> allows any regression learner from <a href="https://github.com/mlr-org/mlr"><code>mlr</code></a>, including: * Kriging aka. Gaussian processes (i.e. <code>DiceKriging</code>) * random Forests (i.e. <code>randomForest</code>) * and many more…</p>
-<p>Various <em>infill criteria</em> (aka. <em>acquisition functions</em>) are available: * Expected improvement (EI) * Upper/Lower confidence bound (LCB, aka. statistical lower or upper bound) * Augmented expected improvement (AEI) * Expected quantile improvement (EQI) * API for custom infill criteria</p>
+<p>For the <em>surrogate</em>, <code>mlrMBO</code> allows any regression learner from <a href="https://github.com/mlr-org/mlr"><code>mlr</code></a>, including:</p>
+<ul>
+<li>Kriging aka. Gaussian processes (i.e. <code>DiceKriging</code>)</li>
+<li>random Forests (i.e. <code>randomForest</code>)</li>
+<li>and many more…</li>
+</ul>
+<p>Various <em>infill criteria</em> (aka. <em>acquisition functions</em>) are available:</p>
+<ul>
+<li>Expected improvement (EI)</li>
+<li>Upper/Lower confidence bound (LCB, aka. statistical lower or upper bound)</li>
+<li>Augmented expected improvement (AEI)</li>
+<li>Expected quantile improvement (EQI)</li>
+<li>API for custom infill criteria</li>
+</ul>
 <p>Objective functions are created with package <a href="https://github.com/jakobbossek/smoof">smoof</a>, which also offers many test functions for example runs or benchmarks.</p>
 <p>Parameter spaces and initial designs are created with package <a href="https://github.com/berndbischl/ParamHelpers">ParamHelpers</a>.</p>
 </div>
-<div id="mlrmbo---how-to-cite-and-citing-publications" class="section level1">
+<div id="how-to-cite" class="section level1">
 <h1 class="hasAnchor">
-<a href="#mlrmbo---how-to-cite-and-citing-publications" class="anchor"></a>mlrMBO - How to Cite and Citing Publications</h1>
+<a href="#how-to-cite" class="anchor"></a>How to Cite</h1>
 <p>Please cite our <a href="https://arxiv.org/abs/1703.03373">arxiv paper</a> (Preprint). You can get citation info via <code><a href="https://rdrr.io/r/utils/citation.html">citation("mlrMBO")</a></code> or copy the following BibTex entry:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode bibtex"><code class="sourceCode bibtex"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="va">@article</span>{<span class="ot">mlrMBO</span>,</a>
-<a class="sourceLine" id="cb3-2" data-line-number="2">  <span class="dt">title</span> = {{{mlrMBO}}: {{A Modular Framework}} for {{Model}}-{{Based Optimization}} of {{Expensive Black}}-{{Box Functions}}},</a>
-<a class="sourceLine" id="cb3-3" data-line-number="3">  <span class="dt">url</span> = {http://arxiv.org/abs/1703.03373},</a>
-<a class="sourceLine" id="cb3-4" data-line-number="4">  <span class="dt">shorttitle</span> = {{{mlrMBO}}},</a>
-<a class="sourceLine" id="cb3-5" data-line-number="5">  <span class="dt">archivePrefix</span> = {arXiv},</a>
-<a class="sourceLine" id="cb3-6" data-line-number="6">  <span class="dt">eprinttype</span> = {arxiv},</a>
-<a class="sourceLine" id="cb3-7" data-line-number="7">  <span class="dt">eprint</span> = {1703.03373},</a>
-<a class="sourceLine" id="cb3-8" data-line-number="8">  <span class="dt">primaryClass</span> = {stat},</a>
-<a class="sourceLine" id="cb3-9" data-line-number="9">  <span class="dt">author</span> = {Bischl, Bernd and Richter, Jakob and Bossek, Jakob and Horn, Daniel and Thomas, Janek and Lang, Michel},</a>
-<a class="sourceLine" id="cb3-10" data-line-number="10">  <span class="dt">date</span> = {2017-03-09},</a>
-<a class="sourceLine" id="cb3-11" data-line-number="11">}</a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bibtex"><code class="sourceCode bibtex"><span id="cb3-1"><a href="#cb3-1"></a><span class="va">@article</span>{<span class="ot">mlrMBO</span>,</span>
+<span id="cb3-2"><a href="#cb3-2"></a>  <span class="dt">title</span> = {{{mlrMBO}}: {{A Modular Framework}} for {{Model}}-{{Based Optimization}} of {{Expensive Black}}-{{Box Functions}}},</span>
+<span id="cb3-3"><a href="#cb3-3"></a>  <span class="dt">url</span> = {http://arxiv.org/abs/1703.03373},</span>
+<span id="cb3-4"><a href="#cb3-4"></a>  <span class="dt">shorttitle</span> = {{{mlrMBO}}},</span>
+<span id="cb3-5"><a href="#cb3-5"></a>  <span class="dt">archivePrefix</span> = {arXiv},</span>
+<span id="cb3-6"><a href="#cb3-6"></a>  <span class="dt">eprinttype</span> = {arxiv},</span>
+<span id="cb3-7"><a href="#cb3-7"></a>  <span class="dt">eprint</span> = {1703.03373},</span>
+<span id="cb3-8"><a href="#cb3-8"></a>  <span class="dt">primaryClass</span> = {stat},</span>
+<span id="cb3-9"><a href="#cb3-9"></a>  <span class="dt">author</span> = {Bischl, Bernd and Richter, Jakob and Bossek, Jakob and Horn, Daniel and Thomas, Janek and Lang, Michel},</span>
+<span id="cb3-10"><a href="#cb3-10"></a>  <span class="dt">date</span> = {2017-03-09},</span>
+<span id="cb3-11"><a href="#cb3-11"></a>}</span></code></pre></div>
 <p>Some parts of the package were created as part of other publications. If you use these parts, please cite the relevant work appropriately:</p>
 <ul>
 <li>Multi-point proposals, including the new multi-objective infill criteria: <a href="https://doi.org/10.1007/978-3-319-09584-4_17">MOI-MBO: Multiobjective Infill for Parallel Model-Based Optimization</a>
@@ -213,13 +227,13 @@
 
   </div>
 
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
 <h2>Links</h2>
 <ul class="list-unstyled">
 <li>Download from CRAN at <br><a href="https://cloud.r-project.org/package=mlrMBO">https://​cloud.r-project.org/​package=mlrMBO</a>
 </li>
-<li>Browse source code at <br><a href="https://github.com/mlr-org/mlrMBO">https://​github.com/​mlr-org/​mlrMBO</a>
+<li>Browse source code at <br><a href="https://github.com/mlr-org/mlrMBO/">https://​github.com/​mlr-org/​mlrMBO/​</a>
 </li>
 <li>Report a bug at <br><a href="https://github.com/mlr-org/mlrMBO/issues">https://​github.com/​mlr-org/​mlrMBO/​issues</a>
 </li>
@@ -242,12 +256,12 @@
 <div class="developers">
 <h2>Developers</h2>
 <ul class="list-unstyled">
-<li>Bernd Bischl <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0001-6002-6980" target="orcid.widget"><img src="https://members.orcid.org/sites/default/files/vector_iD_icon.svg" class="orcid" alt="ORCID"></a> </li>
-<li>Jakob Richter <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0003-4481-5554" target="orcid.widget"><img src="https://members.orcid.org/sites/default/files/vector_iD_icon.svg" class="orcid" alt="ORCID"></a> </li>
-<li>Jakob Bossek <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0002-4121-4668" target="orcid.widget"><img src="https://members.orcid.org/sites/default/files/vector_iD_icon.svg" class="orcid" alt="ORCID"></a> </li>
+<li>Bernd Bischl <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0001-6002-6980" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li>Jakob Richter <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0003-4481-5554" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li>Jakob Bossek <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0002-4121-4668" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
 <li>Daniel Horn <br><small class="roles"> Author </small>  </li>
-<li>Michel Lang <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0001-9754-0393" target="orcid.widget"><img src="https://members.orcid.org/sites/default/files/vector_iD_icon.svg" class="orcid" alt="ORCID"></a> </li>
-<li>Janek Thomas <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0003-4511-6245" target="orcid.widget"><img src="https://members.orcid.org/sites/default/files/vector_iD_icon.svg" class="orcid" alt="ORCID"></a> </li>
+<li>Michel Lang <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0001-9754-0393" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li>Janek Thomas <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0003-4511-6245" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
 </ul>
 </div>
 
@@ -260,7 +274,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

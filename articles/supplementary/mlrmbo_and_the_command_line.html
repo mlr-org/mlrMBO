@@ -12,20 +12,21 @@
 <link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../../apple-touch-icon-120x120.png">
 <link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../../apple-touch-icon-76x76.png">
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../../apple-touch-icon-60x60.png">
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/journal/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../../bootstrap-toc.css">
+<script src="../../bootstrap-toc.js"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/journal/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.1/css/all.min.css" integrity="sha256-PbSmjxuVAzJ6FPvNYsrXygfGhNJYyZ2GktDbkMBqQZg=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.1/css/v4-shims.min.css" integrity="sha256-A6jcAdwFD48VMjlI3GDxUd+eCQa7/KWy6G9oe/ovaPA=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../../pkgdown.css" rel="stylesheet">
 <link href="../../extra.css" rel="stylesheet">
 <script src="../../pkgdown.js"></script><meta property="og:title" content="mlrMBO and the command line">
-<meta property="og:description" content="">
+<meta property="og:description" content="mlrMBO">
 <meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
-<body>
+<body data-spy="scroll" data-target="#toc">
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -39,7 +40,7 @@
 
       <div class="navbar-brand-container">
         <a href="https://mlr-org.com"><img src="https://raw.githubusercontent.com/mlr-org/mlr3/master/man/figures/logo.png" id="hexlogo" alt="mlr-org"></a>
-        <a class="navbar-brand" href="../../index.html">mlrMBO <small>v1.1.4</small></a>
+        <a class="navbar-brand" href="../../index.html">mlrMBO <small>v1.1.4-9000</small></a>
       </div>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
@@ -95,15 +96,15 @@
 <li>
   <a href="../../news/index.html">Changelog</a>
 </li>
-        <li>
-  <a href="https://github.com/mlr-org/mlrMBO">
-    <span class="fab fa fab fa-github fa-lg"></span>
+<li>
+  <a href="https://lmmisld-lmu-stats-slds.srv.mwn.de/mlr_invite/">
+    <span class="fa fa fa fa-comments"></span>
      
   </a>
 </li>
-<li>
-  <a href="https://mlr-org.slack.com">
-    <span class="fab fa fab fa-slack"></span>
+        <li>
+  <a href="https://github.com/mlr-org/mlrMBO/">
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -129,10 +130,10 @@
 
       
 
-      </header><div class="row">
+      </header><script src="mlrmbo_and_the_command_line_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1>mlrMBO and the command line</h1>
+      <h1 data-toc-skip>mlrMBO and the command line</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/mlr-org/mlrMBO/blob/master/vignettes/supplementary/mlrmbo_and_the_command_line.rmd"><code>vignettes/supplementary/mlrmbo_and_the_command_line.rmd</code></a></small>
@@ -150,123 +151,123 @@
 <div id="the-bash-script" class="section level3">
 <h3 class="hasAnchor">
 <a href="#the-bash-script" class="anchor"></a>The bash script</h3>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="co"># write bash script</span></a>
-<a class="sourceLine" id="cb1-2" data-line-number="2">lines =<span class="st"> '#!/bin/bash</span></a>
-<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="st">fun ()</span></a>
-<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="st">{</span></a>
-<a class="sourceLine" id="cb1-5" data-line-number="5"><span class="st">  x1=$1</span></a>
-<a class="sourceLine" id="cb1-6" data-line-number="6"><span class="st">  x2=$2</span></a>
-<a class="sourceLine" id="cb1-7" data-line-number="7"><span class="st">  command="(s($x1-1) + ($x1^2 + $x2^2))"</span></a>
-<a class="sourceLine" id="cb1-8" data-line-number="8"><span class="st">  result=$(bc -l &lt;&lt;&lt; $command)</span></a>
-<a class="sourceLine" id="cb1-9" data-line-number="9"><span class="st">}</span></a>
-<a class="sourceLine" id="cb1-10" data-line-number="10"><span class="st">echo "Start calculation."</span></a>
-<a class="sourceLine" id="cb1-11" data-line-number="11"><span class="st">fun $1 $2</span></a>
-<a class="sourceLine" id="cb1-12" data-line-number="12"><span class="st">echo "The result is $result!" &gt; "result.txt"</span></a>
-<a class="sourceLine" id="cb1-13" data-line-number="13"><span class="st">echo "Finish calculation."</span></a>
-<a class="sourceLine" id="cb1-14" data-line-number="14"><span class="st">'</span></a>
-<a class="sourceLine" id="cb1-15" data-line-number="15"><span class="kw"><a href="https://rdrr.io/r/base/writeLines.html">writeLines</a></span>(lines, <span class="st">"fun.sh"</span>)</a>
-<a class="sourceLine" id="cb1-16" data-line-number="16"><span class="co"># make it executable:</span></a>
-<a class="sourceLine" id="cb1-17" data-line-number="17"><span class="kw"><a href="https://rdrr.io/r/base/system.html">system</a></span>(<span class="st">"chmod +x fun.sh"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="co"># write bash script</span>
+<span class="no">lines</span> <span class="kw">=</span> <span class="st">'#!/bin/bash
+fun ()
+{
+  x1=$1
+  x2=$2
+  command="(s($x1-1) + ($x1^2 + $x2^2))"
+  result=$(bc -l &lt;&lt;&lt; $command)
+}
+echo "Start calculation."
+fun $1 $2
+echo "The result is $result!" &gt; "result.txt"
+echo "Finish calculation."
+'</span>
+<span class="fu"><a href="https://rdrr.io/r/base/writeLines.html">writeLines</a></span>(<span class="no">lines</span>, <span class="st">"fun.sh"</span>)
+<span class="co"># make it executable:</span>
+<span class="fu"><a href="https://rdrr.io/r/base/system.html">system</a></span>(<span class="st">"chmod +x fun.sh"</span>)</pre></body></html></div>
 </div>
 <div id="running-the-script-from-r" class="section level3">
 <h3 class="hasAnchor">
 <a href="#running-the-script-from-r" class="anchor"></a>Running the script from R</h3>
 <p>The following code is an R function that starts the script, reads the result from the text file and returns it.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(stringi)</a>
-<a class="sourceLine" id="cb2-2" data-line-number="2">runScript =<span class="st"> </span><span class="cf">function</span>(x) {</a>
-<a class="sourceLine" id="cb2-3" data-line-number="3">  command =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span>(<span class="st">"./fun.sh %f %f"</span>, x[[<span class="st">'x1'</span>]], x[[<span class="st">'x2'</span>]])</a>
-<a class="sourceLine" id="cb2-4" data-line-number="4">  error.code =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/system.html">system</a></span>(command)</a>
-<a class="sourceLine" id="cb2-5" data-line-number="5">  <span class="cf">if</span> (error.code <span class="op">!=</span><span class="st"> </span><span class="dv">0</span>) {</a>
-<a class="sourceLine" id="cb2-6" data-line-number="6">    <span class="kw"><a href="https://rdrr.io/r/base/stop.html">stop</a></span>(<span class="st">"Simulation had error.code != 0!"</span>)</a>
-<a class="sourceLine" id="cb2-7" data-line-number="7">  }</a>
-<a class="sourceLine" id="cb2-8" data-line-number="8">  result =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/readLines.html">readLines</a></span>(<span class="st">"result.txt"</span>)</a>
-<a class="sourceLine" id="cb2-9" data-line-number="9">  <span class="co"># the pattern matches 12 as well as 12.34 and .34</span></a>
-<a class="sourceLine" id="cb2-10" data-line-number="10">  <span class="co"># the ?: makes the decimals a non-capturing group.</span></a>
-<a class="sourceLine" id="cb2-11" data-line-number="11">  result =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/stringi/man/stri_match.html">stri_match_first_regex</a></span>(result, <span class="dt">pattern =</span> <span class="st">"</span><span class="ch">\\</span><span class="st">d*(?:</span><span class="ch">\\</span><span class="st">.</span><span class="ch">\\</span><span class="st">d+)?(?=</span><span class="ch">\\</span><span class="st">!)"</span>)</a>
-<a class="sourceLine" id="cb2-12" data-line-number="12">  <span class="kw"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(result)</a>
-<a class="sourceLine" id="cb2-13" data-line-number="13">}</a></code></pre></div>
+<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">stringi</span>)
+<span class="no">runScript</span> <span class="kw">=</span> <span class="kw">function</span>(<span class="no">x</span>) {
+  <span class="no">command</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span>(<span class="st">"./fun.sh %f %f"</span>, <span class="no">x</span><span class="kw">[[</span><span class="st">'x1'</span>]], <span class="no">x</span><span class="kw">[[</span><span class="st">'x2'</span>]])
+  <span class="no">error.code</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.html">system</a></span>(<span class="no">command</span>)
+  <span class="kw">if</span> (<span class="no">error.code</span> <span class="kw">!=</span> <span class="fl">0</span>) {
+    <span class="fu"><a href="https://rdrr.io/r/base/stop.html">stop</a></span>(<span class="st">"Simulation had error.code != 0!"</span>)
+  }
+  <span class="no">result</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/readLines.html">readLines</a></span>(<span class="st">"result.txt"</span>)
+  <span class="co"># the pattern matches 12 as well as 12.34 and .34</span>
+  <span class="co"># the ?: makes the decimals a non-capturing group.</span>
+  <span class="no">result</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/pkg/stringi/man/stri_match.html">stri_match_first_regex</a></span>(<span class="no">result</span>, <span class="kw">pattern</span> <span class="kw">=</span> <span class="st">"\\d*(?:\\.\\d+)?(?=\\!)"</span>)
+  <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(<span class="no">result</span>)
+}</pre></body></html></div>
 <p>This function uses <code>stringi</code> and <em>regular expressions</em> to match the actual result value in the result file. Depending on the output different strategies to read the result make sense. XML files can usually be accessed with <code><a href="https://rdrr.io/pkg/XML/man/xmlTreeParse.html">XML::xmlParse</a></code>, <code><a href="https://rdrr.io/pkg/XML/man/getNodeSet.html">XML::getNodeSet</a></code>, <code><a href="https://rdrr.io/pkg/XML/man/xmlAttrs.html">XML::xmlAttrs</a></code> etc. using <code>XPath</code> queries. Sometimes <code><a href="https://rdrr.io/r/utils/read.table.html">read.table()</a></code> is also sufficient. Another way is to use <code>source</code> if the result actually can be interpreted as valid R code. If, for example, the output is written in a file like this:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">value1 =<span class="st"> </span><span class="fl">23.45</span></a>
-<a class="sourceLine" id="cb3-2" data-line-number="2">value2 =<span class="st"> </span><span class="fl">13.82</span></a></code></pre></div>
+<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="no">value1</span> <span class="kw">=</span> <span class="fl">23.45</span>
+<span class="no">value2</span> <span class="kw">=</span> <span class="fl">13.82</span></pre></body></html></div>
 <p>We can easily use <code><a href="https://rdrr.io/r/base/source.html">source()</a></code> like that:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">EV =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/environment.html">new.env</a></span>()</a>
-<a class="sourceLine" id="cb4-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/eval.html">eval</a></span>(<span class="dt">expr =</span> {a =<span class="st"> </span><span class="dv">1</span>}, <span class="dt">envir =</span> EV)</a>
-<a class="sourceLine" id="cb4-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/r/base/list.html">as.list</a></span>(EV)</a>
-<a class="sourceLine" id="cb4-4" data-line-number="4"><span class="kw"><a href="https://rdrr.io/r/base/source.html">source</a></span>(<span class="dt">file =</span> <span class="st">"result.txt"</span>, <span class="dt">local =</span> EV)</a>
-<a class="sourceLine" id="cb4-5" data-line-number="5">res =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/list.html">as.list</a></span>(EV)</a>
-<a class="sourceLine" id="cb4-6" data-line-number="6"><span class="kw"><a href="https://rdrr.io/r/base/rm.html">rm</a></span>(EV)</a></code></pre></div>
+<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">EV</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/environment.html">new.env</a></span>()
+<span class="fu"><a href="https://rdrr.io/r/base/eval.html">eval</a></span>(<span class="kw">expr</span> <span class="kw">=</span> {<span class="no">a</span> <span class="kw">=</span> <span class="fl">1</span>}, <span class="kw">envir</span> <span class="kw">=</span> <span class="no">EV</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/list.html">as.list</a></span>(<span class="no">EV</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/source.html">source</a></span>(<span class="kw">file</span> <span class="kw">=</span> <span class="st">"result.txt"</span>, <span class="kw">local</span> <span class="kw">=</span> <span class="no">EV</span>)
+<span class="no">res</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">as.list</a></span>(<span class="no">EV</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/rm.html">rm</a></span>(<span class="no">EV</span>)</pre></body></html></div>
 <p>which will return a list with the entries <code>$value1</code> and <code>$value2</code>.</p>
 </div>
 <div id="define-bounds-wrap-function-" class="section level3">
 <h3 class="hasAnchor">
 <a href="#define-bounds-wrap-function-" class="anchor"></a>Define bounds, wrap function.</h3>
 <p>To evaluate the function from within <strong>mlrMBO</strong> it has to be wrapped in <strong>smoof</strong> function. The smoof function also contains information about the bounds and scales of the domain of the objective function defined in a <em>ParameterSet</em>.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(mlrMBO)</a>
-<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="co"># Defining the bounds of the parameters:</span></a>
-<a class="sourceLine" id="cb5-3" data-line-number="3">par.set =<span class="st"> </span><span class="kw">makeParamSet</span>(</a>
-<a class="sourceLine" id="cb5-4" data-line-number="4">  <span class="kw">makeNumericParam</span>(<span class="st">"x1"</span>, <span class="dt">lower =</span> <span class="dv">-3</span>, <span class="dt">upper =</span> <span class="dv">3</span>),</a>
-<a class="sourceLine" id="cb5-5" data-line-number="5">  <span class="kw">makeNumericParam</span>(<span class="st">"x2"</span>, <span class="dt">lower =</span> <span class="fl">-2.5</span>, <span class="dt">upper =</span> <span class="fl">2.5</span>)</a>
-<a class="sourceLine" id="cb5-6" data-line-number="6">)</a>
-<a class="sourceLine" id="cb5-7" data-line-number="7"><span class="co"># Wrapping everything in a smoof function:</span></a>
-<a class="sourceLine" id="cb5-8" data-line-number="8">fn =<span class="st"> </span><span class="kw">makeSingleObjectiveFunction</span>(</a>
-<a class="sourceLine" id="cb5-9" data-line-number="9">  <span class="dt">id =</span> <span class="st">"fun.sh"</span>,</a>
-<a class="sourceLine" id="cb5-10" data-line-number="10">  <span class="dt">fn =</span> runScript,</a>
-<a class="sourceLine" id="cb5-11" data-line-number="11">  <span class="dt">par.set =</span> par.set,</a>
-<a class="sourceLine" id="cb5-12" data-line-number="12">  <span class="dt">has.simple.signature =</span> <span class="ot">FALSE</span></a>
-<a class="sourceLine" id="cb5-13" data-line-number="13">)</a></code></pre></div>
+<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">mlrMBO</span>)
+<span class="co"># Defining the bounds of the parameters:</span>
+<span class="no">par.set</span> <span class="kw">=</span> <span class="fu">makeParamSet</span>(
+  <span class="fu">makeNumericParam</span>(<span class="st">"x1"</span>, <span class="kw">lower</span> <span class="kw">=</span> -<span class="fl">3</span>, <span class="kw">upper</span> <span class="kw">=</span> <span class="fl">3</span>),
+  <span class="fu">makeNumericParam</span>(<span class="st">"x2"</span>, <span class="kw">lower</span> <span class="kw">=</span> -<span class="fl">2.5</span>, <span class="kw">upper</span> <span class="kw">=</span> <span class="fl">2.5</span>)
+)
+<span class="co"># Wrapping everything in a smoof function:</span>
+<span class="no">fn</span> <span class="kw">=</span> <span class="fu">makeSingleObjectiveFunction</span>(
+  <span class="kw">id</span> <span class="kw">=</span> <span class="st">"fun.sh"</span>,
+  <span class="kw">fn</span> <span class="kw">=</span> <span class="no">runScript</span>,
+  <span class="kw">par.set</span> <span class="kw">=</span> <span class="no">par.set</span>,
+  <span class="kw">has.simple.signature</span> <span class="kw">=</span> <span class="fl">FALSE</span>
+)</pre></body></html></div>
 <p>We confirm that the function works as intended and evaluate the initial design:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">des =<span class="st"> </span><span class="kw">generateGridDesign</span>(par.set, <span class="dt">resolution =</span> <span class="dv">3</span>)</a>
-<a class="sourceLine" id="cb6-2" data-line-number="2">des<span class="op">$</span>y =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/apply.html">apply</a></span>(des, <span class="dv">1</span>, fn)</a>
-<a class="sourceLine" id="cb6-3" data-line-number="3">des</a>
-<a class="sourceLine" id="cb6-4" data-line-number="4">##   x1   x2         y</a>
-<a class="sourceLine" id="cb6-5" data-line-number="5">## 1 -3 -2.5 16.006802</a>
-<a class="sourceLine" id="cb6-6" data-line-number="6">## 2  0 -2.5  5.408529</a>
-<a class="sourceLine" id="cb6-7" data-line-number="7">## 3  3 -2.5 16.159297</a>
-<a class="sourceLine" id="cb6-8" data-line-number="8">## 4 -3  0.0  9.756802</a>
-<a class="sourceLine" id="cb6-9" data-line-number="9">## 5  0  0.0  0.841471</a>
-<a class="sourceLine" id="cb6-10" data-line-number="10">## 6  3  0.0  9.909297</a>
-<a class="sourceLine" id="cb6-11" data-line-number="11">## 7 -3  2.5 16.006802</a>
-<a class="sourceLine" id="cb6-12" data-line-number="12">## 8  0  2.5  5.408529</a>
-<a class="sourceLine" id="cb6-13" data-line-number="13">## 9  3  2.5 16.159297</a></code></pre></div>
+<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">des</span> <span class="kw">=</span> <span class="fu">generateGridDesign</span>(<span class="no">par.set</span>, <span class="kw">resolution</span> <span class="kw">=</span> <span class="fl">3</span>)
+<span class="no">des</span>$<span class="no">y</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span>(<span class="no">des</span>, <span class="fl">1</span>, <span class="no">fn</span>)
+<span class="no">des</span>
+<span class="co">##   x1   x2         y</span>
+<span class="co">## 1 -3 -2.5 16.006802</span>
+<span class="co">## 2  0 -2.5  5.408529</span>
+<span class="co">## 3  3 -2.5 16.159297</span>
+<span class="co">## 4 -3  0.0  9.756802</span>
+<span class="co">## 5  0  0.0  0.841471</span>
+<span class="co">## 6  3  0.0  9.909297</span>
+<span class="co">## 7 -3  2.5 16.006802</span>
+<span class="co">## 8  0  2.5  5.408529</span>
+<span class="co">## 9  3  2.5 16.159297</span></pre></body></html></div>
 </div>
 <div id="start-the-optimization" class="section level3">
 <h3 class="hasAnchor">
 <a href="#start-the-optimization" class="anchor"></a>Start the Optimization</h3>
 <p>The optimization with mlrMBO gets started as usually:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span>()</a>
-<a class="sourceLine" id="cb7-2" data-line-number="2">ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/setMBOControlInfill.html">setMBOControlInfill</a></span>(ctrl, <span class="dt">crit =</span> crit.ei)</a>
-<a class="sourceLine" id="cb7-3" data-line-number="3">ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span>(ctrl, <span class="dt">iters =</span> <span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb7-4" data-line-number="4"><span class="kw">configureMlr</span>(<span class="dt">show.info =</span> <span class="ot">FALSE</span>, <span class="dt">show.learner.output =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb7-5" data-line-number="5">run =<span class="st"> </span><span class="kw"><a href="../../reference/mbo.html">mbo</a></span>(<span class="dt">fun =</span> fn, <span class="dt">control =</span> ctrl)</a>
-<a class="sourceLine" id="cb7-6" data-line-number="6">## Computing y column(s) for design. Not provided.</a>
-<a class="sourceLine" id="cb7-7" data-line-number="7">## [mbo] 0: x1=-1.58; x2=-1.37 : y = 3.83 : 0.0 secs : initdesign</a>
-<a class="sourceLine" id="cb7-8" data-line-number="8">## [mbo] 0: x1=-0.469; x2=0.508 : y = 0.517 : 0.0 secs : initdesign</a>
-<a class="sourceLine" id="cb7-9" data-line-number="9">## [mbo] 0: x1=1.25; x2=2.37 : y = 7.43 : 0.0 secs : initdesign</a>
-<a class="sourceLine" id="cb7-10" data-line-number="10">## [mbo] 0: x1=-2.93; x2=-0.35 : y = 9.41 : 0.0 secs : initdesign</a>
-<a class="sourceLine" id="cb7-11" data-line-number="11">## [mbo] 0: x1=0.288; x2=-0.778 : y = 0.0356 : 0.0 secs : initdesign</a>
-<a class="sourceLine" id="cb7-12" data-line-number="12">## [mbo] 0: x1=2.46; x2=1.02 : y = 8.06 : 0.0 secs : initdesign</a>
-<a class="sourceLine" id="cb7-13" data-line-number="13">## [mbo] 0: x1=2.11; x2=-2.06 : y = 9.58 : 0.0 secs : initdesign</a>
-<a class="sourceLine" id="cb7-14" data-line-number="14">## [mbo] 0: x1=-1.16; x2=1.25 : y = 2.09 : 0.0 secs : initdesign</a>
-<a class="sourceLine" id="cb7-15" data-line-number="15">## [mbo] 1: x1=-0.0313; x2=-2.04 : y = 3.3 : 0.0 secs : infill_ei</a>
-<a class="sourceLine" id="cb7-16" data-line-number="16">## [mbo] 2: x1=0.104; x2=-0.113 : y = 0.757 : 0.0 secs : infill_ei</a>
-<a class="sourceLine" id="cb7-17" data-line-number="17">## [mbo] 3: x1=0.35; x2=0.734 : y = 0.0556 : 0.0 secs : infill_ei</a>
-<a class="sourceLine" id="cb7-18" data-line-number="18">## [mbo] 4: x1=-0.603; x2=2.5 : y = 5.61 : 0.0 secs : infill_ei</a>
-<a class="sourceLine" id="cb7-19" data-line-number="19">## [mbo] 5: x1=-0.0466; x2=0.862 : y = 0.12 : 0.0 secs : infill_ei</a>
-<a class="sourceLine" id="cb7-20" data-line-number="20">## [mbo] 6: x1=-0.204; x2=-0.878 : y = 0.121 : 0.0 secs : infill_ei</a>
-<a class="sourceLine" id="cb7-21" data-line-number="21">## [mbo] 7: x1=0.179; x2=-0.974 : y = 0.25 : 0.0 secs : infill_ei</a>
-<a class="sourceLine" id="cb7-22" data-line-number="22">## [mbo] 8: x1=0.036; x2=-0.721 : y = 0.301 : 0.0 secs : infill_ei</a>
-<a class="sourceLine" id="cb7-23" data-line-number="23">## [mbo] 9: x1=0.511; x2=-0.825 : y = 0.473 : 0.0 secs : infill_ei</a>
-<a class="sourceLine" id="cb7-24" data-line-number="24">## [mbo] 10: x1=0.266; x2=0.948 : y = 0.299 : 0.0 secs : infill_ei</a>
-<a class="sourceLine" id="cb7-25" data-line-number="25"><span class="co"># The resulting optimal configuration:</span></a>
-<a class="sourceLine" id="cb7-26" data-line-number="26">run<span class="op">$</span>x</a>
-<a class="sourceLine" id="cb7-27" data-line-number="27">## $x1</a>
-<a class="sourceLine" id="cb7-28" data-line-number="28">## [1] 0.2879772</a>
-<a class="sourceLine" id="cb7-29" data-line-number="29">## </a>
-<a class="sourceLine" id="cb7-30" data-line-number="30">## $x2</a>
-<a class="sourceLine" id="cb7-31" data-line-number="31">## [1] -0.778453</a>
-<a class="sourceLine" id="cb7-32" data-line-number="32"><span class="co"># The best reached value:</span></a>
-<a class="sourceLine" id="cb7-33" data-line-number="33">run<span class="op">$</span>y</a>
-<a class="sourceLine" id="cb7-34" data-line-number="34">## [1] 0.03555322</a></code></pre></div>
+<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="no">ctrl</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span>()
+<span class="no">ctrl</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/setMBOControlInfill.html">setMBOControlInfill</a></span>(<span class="no">ctrl</span>, <span class="kw">crit</span> <span class="kw">=</span> <span class="no">crit.ei</span>)
+<span class="no">ctrl</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span>(<span class="no">ctrl</span>, <span class="kw">iters</span> <span class="kw">=</span> <span class="fl">10</span>)
+<span class="fu">configureMlr</span>(<span class="kw">show.info</span> <span class="kw">=</span> <span class="fl">FALSE</span>, <span class="kw">show.learner.output</span> <span class="kw">=</span> <span class="fl">FALSE</span>)
+<span class="no">run</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/mbo.html">mbo</a></span>(<span class="kw">fun</span> <span class="kw">=</span> <span class="no">fn</span>, <span class="kw">control</span> <span class="kw">=</span> <span class="no">ctrl</span>)
+<span class="co">## Computing y column(s) for design. Not provided.</span>
+<span class="co">## [mbo] 0: x1=-1.58; x2=-1.37 : y = 3.83 : 0.0 secs : initdesign</span>
+<span class="co">## [mbo] 0: x1=-0.469; x2=0.508 : y = 0.517 : 0.0 secs : initdesign</span>
+<span class="co">## [mbo] 0: x1=1.25; x2=2.37 : y = 7.43 : 0.0 secs : initdesign</span>
+<span class="co">## [mbo] 0: x1=-2.93; x2=-0.35 : y = 9.41 : 0.0 secs : initdesign</span>
+<span class="co">## [mbo] 0: x1=0.288; x2=-0.778 : y = 0.0356 : 0.0 secs : initdesign</span>
+<span class="co">## [mbo] 0: x1=2.46; x2=1.02 : y = 8.06 : 0.0 secs : initdesign</span>
+<span class="co">## [mbo] 0: x1=2.11; x2=-2.06 : y = 9.58 : 0.0 secs : initdesign</span>
+<span class="co">## [mbo] 0: x1=-1.16; x2=1.25 : y = 2.09 : 0.0 secs : initdesign</span>
+<span class="co">## [mbo] 1: x1=-0.0313; x2=-2.04 : y = 3.3 : 0.0 secs : infill_ei</span>
+<span class="co">## [mbo] 2: x1=0.104; x2=-0.113 : y = 0.757 : 0.0 secs : infill_ei</span>
+<span class="co">## [mbo] 3: x1=0.35; x2=0.734 : y = 0.0556 : 0.0 secs : infill_ei</span>
+<span class="co">## [mbo] 4: x1=-0.603; x2=2.5 : y = 5.61 : 0.0 secs : infill_ei</span>
+<span class="co">## [mbo] 5: x1=-0.0466; x2=0.862 : y = 0.12 : 0.0 secs : infill_ei</span>
+<span class="co">## [mbo] 6: x1=-0.204; x2=-0.878 : y = 0.121 : 0.0 secs : infill_ei</span>
+<span class="co">## [mbo] 7: x1=0.179; x2=-0.974 : y = 0.25 : 0.0 secs : infill_ei</span>
+<span class="co">## [mbo] 8: x1=0.036; x2=-0.721 : y = 0.301 : 0.0 secs : infill_ei</span>
+<span class="co">## [mbo] 9: x1=0.511; x2=-0.825 : y = 0.473 : 0.0 secs : infill_ei</span>
+<span class="co">## [mbo] 10: x1=0.266; x2=0.948 : y = 0.299 : 0.0 secs : infill_ei</span>
+<span class="co"># The resulting optimal configuration:</span>
+<span class="no">run</span>$<span class="no">x</span>
+<span class="co">## $x1</span>
+<span class="co">## [1] 0.2879772</span>
+<span class="co">## </span>
+<span class="co">## $x2</span>
+<span class="co">## [1] -0.778453</span>
+<span class="co"># The best reached value:</span>
+<span class="no">run</span>$<span class="no">y</span>
+<span class="co">## [1] 0.03555322</span></pre></body></html></div>
 </div>
 </div>
 <div id="execute-the-r-script-from-a-shell" class="section level2">
@@ -274,102 +275,96 @@
 <a href="#execute-the-r-script-from-a-shell" class="anchor"></a>Execute the R script from a shell</h2>
 <p>To start the optimization from a command line we have to write a R-script that also serves as the configuration for mlrMBO.</p>
 <p>The following is a complete script based on the examples given above that accepts some basic arguments and writes the output as a JSON file.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(mlrMBO)</a>
-<a class="sourceLine" id="cb8-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(stringi)</a>
-<a class="sourceLine" id="cb8-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(jsonlite)</a>
-<a class="sourceLine" id="cb8-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb8-5" data-line-number="5"><span class="co"># read command line args (in a not very safe way)</span></a>
-<a class="sourceLine" id="cb8-6" data-line-number="6"><span class="co"># Script can be called like that:</span></a>
-<a class="sourceLine" id="cb8-7" data-line-number="7"><span class="co"># Rscript runMBO.R iters=20 time=10 seed=1</span></a>
-<a class="sourceLine" id="cb8-8" data-line-number="8">args =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/commandArgs.html">commandArgs</a></span>(<span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb8-9" data-line-number="9"><span class="co"># defaults:</span></a>
-<a class="sourceLine" id="cb8-10" data-line-number="10">iters =<span class="st"> </span><span class="dv">50</span></a>
-<a class="sourceLine" id="cb8-11" data-line-number="11">time =<span class="st"> </span><span class="dv">30</span></a>
-<a class="sourceLine" id="cb8-12" data-line-number="12">seed =<span class="st"> </span><span class="dv">123</span></a>
-<a class="sourceLine" id="cb8-13" data-line-number="13"><span class="co"># parse args (and possibly overwrite defaults)</span></a>
-<a class="sourceLine" id="cb8-14" data-line-number="14"><span class="cf">for</span> (arg <span class="cf">in</span> args) {</a>
-<a class="sourceLine" id="cb8-15" data-line-number="15">  <span class="kw"><a href="https://rdrr.io/r/base/eval.html">eval</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/parse.html">parse</a></span>(<span class="dt">text =</span> arg))</a>
-<a class="sourceLine" id="cb8-16" data-line-number="16">}</a>
-<a class="sourceLine" id="cb8-17" data-line-number="17"><span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(seed)</a>
-<a class="sourceLine" id="cb8-18" data-line-number="18"></a>
-<a class="sourceLine" id="cb8-19" data-line-number="19"><span class="co"># write bash script</span></a>
-<a class="sourceLine" id="cb8-20" data-line-number="20">lines =<span class="st"> '#!/bin/bash</span></a>
-<a class="sourceLine" id="cb8-21" data-line-number="21"><span class="st">fun ()</span></a>
-<a class="sourceLine" id="cb8-22" data-line-number="22"><span class="st">{</span></a>
-<a class="sourceLine" id="cb8-23" data-line-number="23"><span class="st">  x1=$1</span></a>
-<a class="sourceLine" id="cb8-24" data-line-number="24"><span class="st">  x2=$2</span></a>
-<a class="sourceLine" id="cb8-25" data-line-number="25"><span class="st">  command="(s($x1-1) + ($x1^2 + $x2^2))"</span></a>
-<a class="sourceLine" id="cb8-26" data-line-number="26"><span class="st">  result=$(bc -l &lt;&lt;&lt; $command)</span></a>
-<a class="sourceLine" id="cb8-27" data-line-number="27"><span class="st">}</span></a>
-<a class="sourceLine" id="cb8-28" data-line-number="28"><span class="st">echo "Start calculation."</span></a>
-<a class="sourceLine" id="cb8-29" data-line-number="29"><span class="st">fun $1 $2</span></a>
-<a class="sourceLine" id="cb8-30" data-line-number="30"><span class="st">echo "The result is $result!" &gt; "result.txt"</span></a>
-<a class="sourceLine" id="cb8-31" data-line-number="31"><span class="st">echo "Finish calculation."</span></a>
-<a class="sourceLine" id="cb8-32" data-line-number="32"><span class="st">'</span></a>
-<a class="sourceLine" id="cb8-33" data-line-number="33"><span class="kw"><a href="https://rdrr.io/r/base/writeLines.html">writeLines</a></span>(lines, <span class="st">"fun.sh"</span>)</a>
-<a class="sourceLine" id="cb8-34" data-line-number="34"><span class="kw"><a href="https://rdrr.io/r/base/system.html">system</a></span>(<span class="st">"chmod +x fun.sh"</span>)</a>
-<a class="sourceLine" id="cb8-35" data-line-number="35"></a>
-<a class="sourceLine" id="cb8-36" data-line-number="36"><span class="co"># runScript function to execute bash script</span></a>
-<a class="sourceLine" id="cb8-37" data-line-number="37">runScript =<span class="st"> </span><span class="cf">function</span>(x) {</a>
-<a class="sourceLine" id="cb8-38" data-line-number="38">  <span class="co"># console output file output_1490030005_1.1_2.4.txt</span></a>
-<a class="sourceLine" id="cb8-39" data-line-number="39">  output_file =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span>(<span class="st">"output_%i_%.1f_%.1f.txt"</span>, <span class="kw"><a href="https://rdrr.io/r/base/integer.html">as.integer</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/Sys.time.html">Sys.time</a></span>()), x[[<span class="st">'x1'</span>]], x[[<span class="st">'x2'</span>]])</a>
-<a class="sourceLine" id="cb8-40" data-line-number="40">  <span class="co"># redirect output with ./fun.sh 1.1 2.4 &gt; output.txt</span></a>
-<a class="sourceLine" id="cb8-41" data-line-number="41">  <span class="co"># alternative: ./fun.sh 1.1 2.4 &gt; /dev/null to drop it</span></a>
-<a class="sourceLine" id="cb8-42" data-line-number="42">  command =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span>(<span class="st">"./fun.sh %f %f &gt; %s"</span>, x[[<span class="st">'x1'</span>]], x[[<span class="st">'x2'</span>]], output_file)</a>
-<a class="sourceLine" id="cb8-43" data-line-number="43">  error.code =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/system.html">system</a></span>(command)</a>
-<a class="sourceLine" id="cb8-44" data-line-number="44">  <span class="cf">if</span> (error.code <span class="op">!=</span><span class="st"> </span><span class="dv">0</span>) {</a>
-<a class="sourceLine" id="cb8-45" data-line-number="45">    <span class="kw"><a href="https://rdrr.io/r/base/stop.html">stop</a></span>(<span class="st">"Simulation had error.code != 0!"</span>)</a>
-<a class="sourceLine" id="cb8-46" data-line-number="46">  }</a>
-<a class="sourceLine" id="cb8-47" data-line-number="47">  result =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/readLines.html">readLines</a></span>(<span class="st">"result.txt"</span>)</a>
-<a class="sourceLine" id="cb8-48" data-line-number="48">  <span class="co"># the pattern matches 12 as well as 12.34 and .34</span></a>
-<a class="sourceLine" id="cb8-49" data-line-number="49">  <span class="co"># the ?: makes the decimals a non-capturing group.</span></a>
-<a class="sourceLine" id="cb8-50" data-line-number="50">  result =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/stringi/man/stri_match.html">stri_match_first_regex</a></span>(result, <span class="dt">pattern =</span> <span class="st">"</span><span class="ch">\\</span><span class="st">d*(?:</span><span class="ch">\\</span><span class="st">.</span><span class="ch">\\</span><span class="st">d+)?(?=</span><span class="ch">\\</span><span class="st">!)"</span>)</a>
-<a class="sourceLine" id="cb8-51" data-line-number="51">  <span class="kw"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(result)</a>
-<a class="sourceLine" id="cb8-52" data-line-number="52">}</a>
-<a class="sourceLine" id="cb8-53" data-line-number="53"></a>
-<a class="sourceLine" id="cb8-54" data-line-number="54"><span class="co"># define mlrMBO optimization</span></a>
-<a class="sourceLine" id="cb8-55" data-line-number="55">par.set =<span class="st"> </span><span class="kw">makeParamSet</span>(</a>
-<a class="sourceLine" id="cb8-56" data-line-number="56">  <span class="kw">makeNumericParam</span>(<span class="st">"x1"</span>, <span class="dt">lower =</span> <span class="dv">-3</span>, <span class="dt">upper =</span> <span class="dv">3</span>),</a>
-<a class="sourceLine" id="cb8-57" data-line-number="57">  <span class="kw">makeNumericParam</span>(<span class="st">"x2"</span>, <span class="dt">lower =</span> <span class="fl">-2.5</span>, <span class="dt">upper =</span> <span class="fl">2.5</span>)</a>
-<a class="sourceLine" id="cb8-58" data-line-number="58">)</a>
-<a class="sourceLine" id="cb8-59" data-line-number="59">fn =<span class="st"> </span><span class="kw">makeSingleObjectiveFunction</span>(</a>
-<a class="sourceLine" id="cb8-60" data-line-number="60">  <span class="dt">id =</span> <span class="st">"fun.sh"</span>,</a>
-<a class="sourceLine" id="cb8-61" data-line-number="61">  <span class="dt">fn =</span> runScript,</a>
-<a class="sourceLine" id="cb8-62" data-line-number="62">  <span class="dt">par.set =</span> par.set,</a>
-<a class="sourceLine" id="cb8-63" data-line-number="63">  <span class="dt">has.simple.signature =</span> <span class="ot">FALSE</span></a>
-<a class="sourceLine" id="cb8-64" data-line-number="64">)</a>
-<a class="sourceLine" id="cb8-65" data-line-number="65">ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span>()</a>
-<a class="sourceLine" id="cb8-66" data-line-number="66">ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/setMBOControlInfill.html">setMBOControlInfill</a></span>(ctrl, <span class="dt">crit =</span> crit.ei)</a>
-<a class="sourceLine" id="cb8-67" data-line-number="67">ctrl =<span class="st"> </span><span class="kw"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span>(ctrl, <span class="dt">iters =</span> iters, <span class="dt">time.budget =</span> time)</a>
-<a class="sourceLine" id="cb8-68" data-line-number="68"><span class="kw">configureMlr</span>(<span class="dt">show.info =</span> <span class="ot">FALSE</span>, <span class="dt">show.learner.output =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb8-69" data-line-number="69">run =<span class="st"> </span><span class="kw"><a href="../../reference/mbo.html">mbo</a></span>(<span class="dt">fun =</span> fn, <span class="dt">control =</span> ctrl)</a>
-<a class="sourceLine" id="cb8-70" data-line-number="70"></a>
-<a class="sourceLine" id="cb8-71" data-line-number="71"><span class="co"># clean up intermediate files:</span></a>
-<a class="sourceLine" id="cb8-72" data-line-number="72"><span class="kw"><a href="https://rdrr.io/r/base/files.html">file.remove</a></span>(<span class="st">"result.txt"</span>)</a>
-<a class="sourceLine" id="cb8-73" data-line-number="73">output.files =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span>(<span class="dt">pattern =</span> <span class="st">"output_</span><span class="ch">\\</span><span class="st">d+_[0-9_.-]+</span><span class="ch">\\</span><span class="st">.txt"</span>)</a>
-<a class="sourceLine" id="cb8-74" data-line-number="74"><span class="kw"><a href="https://rdrr.io/r/base/files.html">file.remove</a></span>(output.files)</a>
-<a class="sourceLine" id="cb8-75" data-line-number="75"></a>
-<a class="sourceLine" id="cb8-76" data-line-number="76"><span class="co"># save result to json</span></a>
-<a class="sourceLine" id="cb8-77" data-line-number="77"><span class="kw"><a href="https://jeroen.cran.dev/jsonlite/reference/read_json.html">write_json</a></span>(run[<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"x"</span>,<span class="st">"y"</span>)], <span class="st">"mbo_res.json"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">mlrMBO</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">stringi</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">jsonlite</span>)
+
+<span class="co"># read command line args (in a not very safe way)</span>
+<span class="co"># Script can be called like that:</span>
+<span class="co"># Rscript runMBO.R iters=20 time=10 seed=1</span>
+<span class="no">args</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/commandArgs.html">commandArgs</a></span>(<span class="fl">TRUE</span>)
+<span class="co"># defaults:</span>
+<span class="no">iters</span> <span class="kw">=</span> <span class="fl">50</span>
+<span class="no">time</span> <span class="kw">=</span> <span class="fl">30</span>
+<span class="no">seed</span> <span class="kw">=</span> <span class="fl">123</span>
+<span class="co"># parse args (and possibly overwrite defaults)</span>
+<span class="kw">for</span> (<span class="no">arg</span> <span class="kw">in</span> <span class="no">args</span>) {
+  <span class="fu"><a href="https://rdrr.io/r/base/eval.html">eval</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/parse.html">parse</a></span>(<span class="kw">text</span> <span class="kw">=</span> <span class="no">arg</span>))
+}
+<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="no">seed</span>)
+
+<span class="co"># write bash script</span>
+<span class="no">lines</span> <span class="kw">=</span> <span class="st">'#!/bin/bash
+fun ()
+{
+  x1=$1
+  x2=$2
+  command="(s($x1-1) + ($x1^2 + $x2^2))"
+  result=$(bc -l &lt;&lt;&lt; $command)
+}
+echo "Start calculation."
+fun $1 $2
+echo "The result is $result!" &gt; "result.txt"
+echo "Finish calculation."
+'</span>
+<span class="fu"><a href="https://rdrr.io/r/base/writeLines.html">writeLines</a></span>(<span class="no">lines</span>, <span class="st">"fun.sh"</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/system.html">system</a></span>(<span class="st">"chmod +x fun.sh"</span>)
+
+<span class="co"># runScript function to execute bash script</span>
+<span class="no">runScript</span> <span class="kw">=</span> <span class="kw">function</span>(<span class="no">x</span>) {
+  <span class="co"># console output file output_1490030005_1.1_2.4.txt</span>
+  <span class="no">output_file</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span>(<span class="st">"output_%i_%.1f_%.1f.txt"</span>, <span class="fu"><a href="https://rdrr.io/r/base/integer.html">as.integer</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html">Sys.time</a></span>()), <span class="no">x</span><span class="kw">[[</span><span class="st">'x1'</span>]], <span class="no">x</span><span class="kw">[[</span><span class="st">'x2'</span>]])
+  <span class="co"># redirect output with ./fun.sh 1.1 2.4 &gt; output.txt</span>
+  <span class="co"># alternative: ./fun.sh 1.1 2.4 &gt; /dev/null to drop it</span>
+  <span class="no">command</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span>(<span class="st">"./fun.sh %f %f &gt; %s"</span>, <span class="no">x</span><span class="kw">[[</span><span class="st">'x1'</span>]], <span class="no">x</span><span class="kw">[[</span><span class="st">'x2'</span>]], <span class="no">output_file</span>)
+  <span class="no">error.code</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.html">system</a></span>(<span class="no">command</span>)
+  <span class="kw">if</span> (<span class="no">error.code</span> <span class="kw">!=</span> <span class="fl">0</span>) {
+    <span class="fu"><a href="https://rdrr.io/r/base/stop.html">stop</a></span>(<span class="st">"Simulation had error.code != 0!"</span>)
+  }
+  <span class="no">result</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/readLines.html">readLines</a></span>(<span class="st">"result.txt"</span>)
+  <span class="co"># the pattern matches 12 as well as 12.34 and .34</span>
+  <span class="co"># the ?: makes the decimals a non-capturing group.</span>
+  <span class="no">result</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/pkg/stringi/man/stri_match.html">stri_match_first_regex</a></span>(<span class="no">result</span>, <span class="kw">pattern</span> <span class="kw">=</span> <span class="st">"\\d*(?:\\.\\d+)?(?=\\!)"</span>)
+  <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(<span class="no">result</span>)
+}
+
+<span class="co"># define mlrMBO optimization</span>
+<span class="no">par.set</span> <span class="kw">=</span> <span class="fu">makeParamSet</span>(
+  <span class="fu">makeNumericParam</span>(<span class="st">"x1"</span>, <span class="kw">lower</span> <span class="kw">=</span> -<span class="fl">3</span>, <span class="kw">upper</span> <span class="kw">=</span> <span class="fl">3</span>),
+  <span class="fu">makeNumericParam</span>(<span class="st">"x2"</span>, <span class="kw">lower</span> <span class="kw">=</span> -<span class="fl">2.5</span>, <span class="kw">upper</span> <span class="kw">=</span> <span class="fl">2.5</span>)
+)
+<span class="no">fn</span> <span class="kw">=</span> <span class="fu">makeSingleObjectiveFunction</span>(
+  <span class="kw">id</span> <span class="kw">=</span> <span class="st">"fun.sh"</span>,
+  <span class="kw">fn</span> <span class="kw">=</span> <span class="no">runScript</span>,
+  <span class="kw">par.set</span> <span class="kw">=</span> <span class="no">par.set</span>,
+  <span class="kw">has.simple.signature</span> <span class="kw">=</span> <span class="fl">FALSE</span>
+)
+<span class="no">ctrl</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span>()
+<span class="no">ctrl</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/setMBOControlInfill.html">setMBOControlInfill</a></span>(<span class="no">ctrl</span>, <span class="kw">crit</span> <span class="kw">=</span> <span class="no">crit.ei</span>)
+<span class="no">ctrl</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span>(<span class="no">ctrl</span>, <span class="kw">iters</span> <span class="kw">=</span> <span class="no">iters</span>, <span class="kw">time.budget</span> <span class="kw">=</span> <span class="no">time</span>)
+<span class="fu">configureMlr</span>(<span class="kw">show.info</span> <span class="kw">=</span> <span class="fl">FALSE</span>, <span class="kw">show.learner.output</span> <span class="kw">=</span> <span class="fl">FALSE</span>)
+<span class="no">run</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/mbo.html">mbo</a></span>(<span class="kw">fun</span> <span class="kw">=</span> <span class="no">fn</span>, <span class="kw">control</span> <span class="kw">=</span> <span class="no">ctrl</span>)
+
+<span class="co"># clean up intermediate files:</span>
+<span class="fu"><a href="https://rdrr.io/r/base/files.html">file.remove</a></span>(<span class="st">"result.txt"</span>)
+<span class="no">output.files</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span>(<span class="kw">pattern</span> <span class="kw">=</span> <span class="st">"output_\\d+_[0-9_.-]+\\.txt"</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/files.html">file.remove</a></span>(<span class="no">output.files</span>)
+
+<span class="co"># save result to json</span>
+<span class="fu"><a href="https://jeroen.cran.dev/jsonlite/reference/read_json.html">write_json</a></span>(<span class="no">run</span>[<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"x"</span>,<span class="st">"y"</span>)], <span class="st">"mbo_res.json"</span>)</pre></body></html></div>
 <p>Assuming we saved the lines above in a file called <code>runMBO.R</code>, we can simply run it from the command line as follows:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="ex">Rscript</span> runMBO.R</a></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1"></a><span class="ex">Rscript</span> runMBO.R</span></code></pre></div>
 <p>As the script also handles some additional arguments it can also be called with the number of MBO iterations (<code>iters</code>), the maximal time budget in seconds (<code>time</code>) and a <code>seed</code> value for reproducibility.</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="ex">Rscript</span> runMBO.R iters=20 time=10 seed=3</a></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1"></a><span class="ex">Rscript</span> runMBO.R iters=20 time=10 seed=3</span></code></pre></div>
 <p>To build a more advanced command line interface you might want to have a <a href="https://www.slideshare.net/EdwindeJonge1/docopt-user2014">look</a> <a href="https://github.com/docopt/docopt.R">at</a> <a href="https://cran.r-project.org/package=docopt">docopt</a>.</p>
 </div>
   </div>
 
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
-        <div id="tocnav">
-      <h2 class="hasAnchor">
-<a href="#tocnav" class="anchor"></a>Contents</h2>
-      <ul class="nav nav-pills nav-stacked">
-<li><a href="#optimizing-an-algorithm-via-an-cli">Optimizing an algorithm via an CLI</a></li>
-      <li><a href="#execute-the-r-script-from-a-shell">Execute the R script from a shell</a></li>
-      </ul>
+        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
+    </nav>
 </div>
-      </div>
 
 </div>
 
@@ -380,7 +375,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

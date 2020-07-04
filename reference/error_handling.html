@@ -19,6 +19,10 @@
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
+
 <!-- Bootstrap -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/journal/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
@@ -125,7 +129,7 @@ the state is stored. It is overwritten (= extended) in each saving iteration." /
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -140,7 +144,7 @@ the state is stored. It is overwritten (= extended) in each saving iteration." /
 
       <div class="navbar-brand-container">
         <a href="https://mlr-org.com"><img src="https://raw.githubusercontent.com/mlr-org/mlr3/master/man/figures/logo.png" id="hexlogo" alt="mlr-org" /></a>
-        <a class="navbar-brand" href="../index.html">mlrMBO <small>v1.1.4</small></a>
+        <a class="navbar-brand" href="../index.html">mlrMBO <small>v1.1.4-9000</small></a>
       </div>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
@@ -196,15 +200,15 @@ the state is stored. It is overwritten (= extended) in each saving iteration." /
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-        <li>
-  <a href="https://github.com/mlr-org/mlrMBO">
-    <span class="fab fa fab fa-github fa-lg"></span>
+<li>
+  <a href="https://lmmisld-lmu-stats-slds.srv.mwn.de/mlr_invite/">
+    <span class="fa fa fa fa-comments"></span>
      
   </a>
 </li>
-<li>
-  <a href="https://mlr-org.slack.com">
-    <span class="fab fa fab fa-slack"></span>
+        <li>
+  <a href="https://github.com/mlr-org/mlrMBO/">
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -259,7 +263,7 @@ process. mlrMBO tries to handle most of them as smart as possible.</p>
 Issues 1-4 all have in common that the optimizer does not obtain a useful
 objective value. 3-4 are problematic, because we completely lose control of the R process.
 We are currently only able to handle them, if you are parallelizing your optimization
-via <code><a href='https://rdrr.io/pkg/parallelMap/man/parallelMap.html'>parallelMap</a></code> and use the BatchJobs mode.
+via <code><a href='https://parallelmap.mlr-org.com/reference/parallelMap.html'>parallelMap</a></code> and use the BatchJobs mode.
 In this case, you can specify a walltime (handles 3) and the function evaluation is performed
 in a separate R process (handles 4). A later path might be to allow function evaluation in
 a separate process in general, with a capping time. If you really need this now, you can always
@@ -308,11 +312,10 @@ the state is stored. It is overwritten (= extended) in each saving iteration.</p
 
 
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-    </ul>
-
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 
@@ -323,7 +326,7 @@ the state is stored. It is overwritten (= extended) in each saving iteration.</p
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

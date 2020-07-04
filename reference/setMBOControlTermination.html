@@ -19,6 +19,10 @@
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
+
 <!-- Bootstrap -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/journal/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
@@ -63,7 +67,7 @@
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -78,7 +82,7 @@
 
       <div class="navbar-brand-container">
         <a href="https://mlr-org.com"><img src="https://raw.githubusercontent.com/mlr-org/mlr3/master/man/figures/logo.png" id="hexlogo" alt="mlr-org" /></a>
-        <a class="navbar-brand" href="../index.html">mlrMBO <small>v1.1.4</small></a>
+        <a class="navbar-brand" href="../index.html">mlrMBO <small>v1.1.4-9000</small></a>
       </div>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
@@ -134,15 +138,15 @@
 <li>
   <a href="../news/index.html">Changelog</a>
 </li>
-        <li>
-  <a href="https://github.com/mlr-org/mlrMBO">
-    <span class="fab fa fab fa-github fa-lg"></span>
+<li>
+  <a href="https://lmmisld-lmu-stats-slds.srv.mwn.de/mlr_invite/">
+    <span class="fa fa fa fa-comments"></span>
      
   </a>
 </li>
-<li>
-  <a href="https://mlr-org.slack.com">
-    <span class="fab fa fab fa-slack"></span>
+        <li>
+  <a href="https://github.com/mlr-org/mlrMBO/">
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -237,7 +241,7 @@ The default <code>NULL</code> means: The total number of evaluations won't be ta
       <td><p>[<code>list</code>]<br />
 Optional list of termination conditions. Each condition needs to be a function
 of a single argument <code>opt.state</code> of type <code><a href='OptState.html'>OptState</a></code> and should
-return a list with the following elements:</p><dl class='dl-horizontal'>
+return a list with the following elements:</p><dl'>
   <dt>term [<code><a href='https://rdrr.io/r/base/logical.html'>logical(1)</a></code>]</dt><dd><p>Logical value indicating whether the
   termination condition is met.</p></dd>
   <dt>message [<code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code>]</dt><dd><p>Termination message. At the moment we just allow <code>term.custom</code>.</p></dd>
@@ -291,33 +295,28 @@ If you want to to use it together with a criterion you supplied in <code>more.te
 #&gt; Optimization path
 #&gt; 4 + 4 entries in total, displaying last 10 (or less):
 #&gt;            x           y dob eol error.message exec.time         cb error.model
-#&gt; 1 -3.6953594 13.65568112   0  NA          &lt;NA&gt;         0         NA        &lt;NA&gt;
-#&gt; 2  2.0814326  4.33236157   0  NA          &lt;NA&gt;         0         NA        &lt;NA&gt;
-#&gt; 3 -2.4934847  6.21746596   0  NA          &lt;NA&gt;         0         NA        &lt;NA&gt;
-#&gt; 4  2.6296002  6.91479717   0  NA          &lt;NA&gt;         0         NA        &lt;NA&gt;
-#&gt; 5  1.8167531  3.30059200   1  NA          &lt;NA&gt;         0  2.9284423        &lt;NA&gt;
-#&gt; 6  0.9548314  0.91170306   2  NA          &lt;NA&gt;         0  1.1170946        &lt;NA&gt;
-#&gt; 7 -0.3845713  0.14789507   3  NA          &lt;NA&gt;         0 -1.7860681        &lt;NA&gt;
-#&gt; 8  0.1436811  0.02064425   4  NA          &lt;NA&gt;         0 -0.4403414        &lt;NA&gt;
+#&gt; 1 -3.6953594 13.65568112   0  NA          &lt;NA&gt;     0.000         NA        &lt;NA&gt;
+#&gt; 2  2.0814326  4.33236157   0  NA          &lt;NA&gt;     0.000         NA        &lt;NA&gt;
+#&gt; 3 -2.4934847  6.21746596   0  NA          &lt;NA&gt;     0.000         NA        &lt;NA&gt;
+#&gt; 4  2.6296002  6.91479717   0  NA          &lt;NA&gt;     0.000         NA        &lt;NA&gt;
+#&gt; 5  1.8167531  3.30059200   1  NA          &lt;NA&gt;     0.001  2.9284423        &lt;NA&gt;
+#&gt; 6  0.9548314  0.91170306   2  NA          &lt;NA&gt;     0.000  1.1170946        &lt;NA&gt;
+#&gt; 7 -0.3845713  0.14789507   3  NA          &lt;NA&gt;     0.000 -1.7860681        &lt;NA&gt;
+#&gt; 8  0.1436811  0.02064425   4  NA          &lt;NA&gt;     0.000 -0.4403414        &lt;NA&gt;
 #&gt;   train.time  prop.type propose.time        se       mean lambda
 #&gt; 1         NA initdesign           NA        NA         NA     NA
 #&gt; 2         NA initdesign           NA        NA         NA     NA
 #&gt; 3         NA initdesign           NA        NA         NA     NA
 #&gt; 4         NA initdesign           NA        NA         NA     NA
-#&gt; 5      0.022  infill_cb        0.133 2.4141499 5.34259219      1
-#&gt; 6      0.021  infill_cb        0.177 2.9398519 4.05694646      1
-#&gt; 7      0.041  infill_cb        0.142 2.0162487 0.23018064      1
-#&gt; 8      0.031  infill_cb        0.149 0.4823983 0.04205684      1</div></pre>
+#&gt; 5      0.034  infill_cb        0.204 2.4141499 5.34259219      1
+#&gt; 6      0.038  infill_cb        0.179 2.9398519 4.05694646      1
+#&gt; 7      0.058  infill_cb        0.187 2.0162487 0.23018064      1
+#&gt; 8      0.043  infill_cb        0.252 0.4823983 0.04205684      1</div></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#value">Value</a></li>
-      <li><a href="#see-also">See also</a></li>
-      <li><a href="#examples">Examples</a></li>
-    </ul>
-
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 
@@ -328,7 +327,7 @@ If you want to to use it together with a criterion you supplied in <code>more.te
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>
