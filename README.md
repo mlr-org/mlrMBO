@@ -10,8 +10,6 @@ Model-based optimization with [mlr](https://github.com/mlr-org/mlr/).
 
 [![tic](https://github.com/mlr-org/mlrMBO/workflows/tic/badge.svg?branch=master)](https://github.com/mlr-org/mlrMBO/actions)
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/mlrMBO)](https://cran.r-project.org/package=mlrMBO)
-[![Travis build
-status](https://img.shields.io/travis/mlr-org/mlrMBO/master?logo=travis&style=flat-square&label=Linux)](https://travis-ci.org/mlr-org/mlrMBO)
 [![Coverage
 Status](https://img.shields.io/codecov/c/github/mlr-org/mlrMBO/master.svg)](https://codecov.io/github/mlr-org/mlrMBO?branch=master)
 [![Monthly RStudio CRAN
