@@ -42,6 +42,8 @@ jobs:
       SDKROOT: /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk
       # use GITHUB_TOKEN from GitHub to workaround rate limits in {remotes}
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      # [Custom env var] fake virtual display for rgl package
+      DISPLAY: ":99"
 
     steps:
       - uses: actions/checkout@v2.3.1
