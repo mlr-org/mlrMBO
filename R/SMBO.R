@@ -28,6 +28,10 @@ initSMBO = function(par.set, design, learner = NULL, control, minimize = rep(TRU
     dummy.fun = makeMultiObjectiveFunction(name = "human in the loop", fn = function(...) NA, par.set = par.set, n.objectives = control$n.objectives, minimize = control$minimize, noisy = control$noisy)
   }
 
+  if (control$final.evals > 0) {
+    stop("Number of 'final.evals' has to be zero for SMBO.")
+  }
+
   # assertions are done here:
   opt.problem = initOptProblem(fun = dummy.fun, design = design, learner = learner, control = control, show.info = show.info, more.args = list())
   opt.state = makeOptState(opt.problem)

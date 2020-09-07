@@ -18,6 +18,7 @@
 #' @param cb.lambda [\code{numeric(1)} | \code{NULL}]\cr
 #'   Lambda parameter for confidence bound infill criterion.
 #'   Default is \code{NULL}, which means 1 in case of a fully numeric parameter set and 2 otherwise.
+#'   Any non-negative real valued numbers are valid.
 #FIXME: removed cb.inflate.se for now (see issue #309)
 # @param cb.inflate.se [\code{logical(1)}]\cr
 #   Try to inflate or deflate the estimated standard error to get to the same scale as the mean?
@@ -38,6 +39,7 @@
 #' @param eqi.beta [\code{numeric(1)}]\cr
 #'   Beta parameter for expected quantile improvement criterion.
 #'   Default is 0.75.
+#'   Valid values are between 0.5 and 1.
 #' @param sms.eps [\code{numeric(1)} | \code{NULL}]\cr
 #'   Epsilon for epsilon-dominance for \code{dib.indicator = "sms"}.
 #'   Default is \code{NULL}, in this case it is adaptively set.
