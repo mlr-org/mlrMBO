@@ -351,7 +351,7 @@ echo "Finish calculation."
 <span class="fu"><a href="https://rdrr.io/r/base/files.html">file.remove</a></span>(<span class="no">output.files</span>)
 
 <span class="co"># save result to json</span>
-<span class="fu"><a href="https://jeroen.cran.dev/jsonlite/reference/read_json.html">write_json</a></span>(<span class="no">run</span>[<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"x"</span>,<span class="st">"y"</span>)], <span class="st">"mbo_res.json"</span>)</pre></body></html></div>
+<span class="fu"><a href="https://rdrr.io/pkg/jsonlite/man/read_json.html">write_json</a></span>(<span class="no">run</span>[<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"x"</span>,<span class="st">"y"</span>)], <span class="st">"mbo_res.json"</span>)</pre></body></html></div>
 <p>Assuming we saved the lines above in a file called <code>runMBO.R</code>, we can simply run it from the command line as follows:</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1"></a><span class="ex">Rscript</span> runMBO.R</span></code></pre></div>
 <p>As the script also handles some additional arguments it can also be called with the number of MBO iterations (<code>iters</code>), the maximal time budget in seconds (<code>time</code>) and a <code>seed</code> value for reproducibility.</p>
