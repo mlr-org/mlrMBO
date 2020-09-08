@@ -185,18 +185,18 @@
     </div>
 
     <pre class="usage"><span class='fu'>setMBOControlMultiObj</span>(
-  <span class='no'>control</span>,
-  <span class='kw'>method</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>ref.point.method</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>ref.point.offset</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>ref.point.val</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>parego.s</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>parego.rho</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>parego.use.margin.points</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>parego.sample.more.weights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>parego.normalize</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>dib.indicator</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>mspot.select.crit</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
+  <span class='kw'>control</span>,
+  method = <span class='kw'>NULL</span>,
+  ref.point.method = <span class='kw'>NULL</span>,
+  ref.point.offset = <span class='kw'>NULL</span>,
+  ref.point.val = <span class='kw'>NULL</span>,
+  parego.s = <span class='kw'>NULL</span>,
+  parego.rho = <span class='kw'>NULL</span>,
+  parego.use.margin.points = <span class='kw'>NULL</span>,
+  parego.sample.more.weights = <span class='kw'>NULL</span>,
+  parego.normalize = <span class='kw'>NULL</span>,
+  dib.indicator = <span class='kw'>NULL</span>,
+  mspot.select.crit = <span class='kw'>NULL</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -284,7 +284,7 @@ Default is &#8220;sms&#8221;.</p></td>
     </tr>
     <tr>
       <th>mspot.select.crit</th>
-      <td><p>[<code><a href='MBOInfillCrit.html'>MBOInfillCrit</a></code>]<br />
+      <td><p>[<code><a href='makeMBOInfillCrit.html'>MBOInfillCrit</a></code>]<br />
 Which infill.crit to use in the candidate selection. After the NSGA2
 proposed a set of candidates, &#8220;propose.points&#8221; are selected via
 the hypervolume contribution of this infill.crit.
@@ -348,7 +348,7 @@ et.al. (eds.), IEEE, 2005, ISBN 0-7803-9363-5, pp. 2138-2145</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.</p>
 </div>
 
       </footer>

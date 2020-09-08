@@ -193,176 +193,176 @@
 <span class='co'>### optimizing a simple sin(x) with mbo / EI</span>
 <span class='co'>###</span>
 <span class='co'>#####################################################</span>
-<span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>ggplot2</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>mlrMBO</span>)
-<span class='fu'>configureMlr</span>(<span class='kw'>show.learner.output</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='co'>if</span> (<span class='fl'>FALSE</span>) {
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='http://ggplot2.tidyverse.org'>ggplot2</a></span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://github.com/mlr-org/mlrMBO'>mlrMBO</a></span>)
+<span class='fu'>configureMlr</span>(show.learner.output = <span class='fl'>FALSE</span>)
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>1</span>)
 
-<span class='no'>obj.fun</span> <span class='kw'>=</span> <span class='fu'>makeSingleObjectiveFunction</span>(
-  <span class='kw'>name</span> <span class='kw'>=</span> <span class='st'>"Sine"</span>,
-  <span class='kw'>fn</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>x</span>) <span class='fu'><a href='https://rdrr.io/r/base/Trig.html'>sin</a></span>(<span class='no'>x</span>),
-  <span class='kw'>par.set</span> <span class='kw'>=</span> <span class='fu'>makeNumericParamSet</span>(<span class='kw'>lower</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='kw'>upper</span> <span class='kw'>=</span> <span class='fl'>13</span>, <span class='kw'>len</span> <span class='kw'>=</span> <span class='fl'>1</span>),
-  <span class='kw'>global.opt.value</span> <span class='kw'>=</span> -<span class='fl'>1</span>
+<span class='kw'>obj.fun</span> <span class='op'>=</span> <span class='fu'>makeSingleObjectiveFunction</span>(
+  name = <span class='st'>"Sine"</span>,
+  fn = <span class='fu'>function</span>(<span class='kw'>x</span>) <span class='fu'><a href='https://rdrr.io/r/base/Trig.html'>sin</a></span>(<span class='kw'>x</span>),
+  par.set = <span class='fu'>makeNumericParamSet</span>(lower = <span class='fl'>3</span>, upper = <span class='fl'>13</span>, len = <span class='fl'>1</span>),
+  global.opt.value = <span class='op'>-</span><span class='fl'>1</span>
 )
 
-<span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='makeMBOControl.html'>makeMBOControl</a></span>(<span class='kw'>propose.points</span> <span class='kw'>=</span> <span class='fl'>1</span>)
-<span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='setMBOControlTermination.html'>setMBOControlTermination</a></span>(<span class='no'>ctrl</span>, <span class='kw'>iters</span> <span class='kw'>=</span> <span class='fl'>10L</span>)
-<span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='setMBOControlInfill.html'>setMBOControlInfill</a></span>(<span class='no'>ctrl</span>, <span class='kw'>crit</span> <span class='kw'>=</span> <span class='fu'><a href='infillcrits.html'>makeMBOInfillCritEI</a></span>(),
-  <span class='kw'>opt</span> <span class='kw'>=</span> <span class='st'>"focussearch"</span>, <span class='kw'>opt.focussearch.points</span> <span class='kw'>=</span> <span class='fl'>500L</span>)
+<span class='kw'>ctrl</span> <span class='op'>=</span> <span class='fu'><a href='makeMBOControl.html'>makeMBOControl</a></span>(propose.points = <span class='fl'>1</span>)
+<span class='kw'>ctrl</span> <span class='op'>=</span> <span class='fu'><a href='setMBOControlTermination.html'>setMBOControlTermination</a></span>(<span class='kw'>ctrl</span>, iters = <span class='fl'>10L</span>)
+<span class='kw'>ctrl</span> <span class='op'>=</span> <span class='fu'><a href='setMBOControlInfill.html'>setMBOControlInfill</a></span>(<span class='kw'>ctrl</span>, crit = <span class='fu'><a href='infillcrits.html'>makeMBOInfillCritEI</a></span>(), 
+  opt = <span class='st'>"focussearch"</span>, opt.focussearch.points = <span class='fl'>500L</span>)
 
-<span class='no'>lrn</span> <span class='kw'>=</span> <span class='fu'><a href='makeMBOLearner.html'>makeMBOLearner</a></span>(<span class='no'>ctrl</span>, <span class='no'>obj.fun</span>)
+<span class='kw'>lrn</span> <span class='op'>=</span> <span class='fu'><a href='makeMBOLearner.html'>makeMBOLearner</a></span>(<span class='kw'>ctrl</span>, <span class='kw'>obj.fun</span>)
 
-<span class='no'>design</span> <span class='kw'>=</span> <span class='fu'>generateDesign</span>(<span class='fl'>6L</span>, <span class='fu'>getParamSet</span>(<span class='no'>obj.fun</span>), <span class='kw'>fun</span> <span class='kw'>=</span> <span class='kw pkg'>lhs</span><span class='kw ns'>::</span><span class='no'><a href='https://rdrr.io/pkg/lhs/man/maximinLHS.html'>maximinLHS</a></span>)
+<span class='kw'>design</span> <span class='op'>=</span> <span class='fu'>generateDesign</span>(<span class='fl'>6L</span>, <span class='fu'>getParamSet</span>(<span class='kw'>obj.fun</span>), fun = <span class='kw'>lhs</span>::<span class='kw'><a href='https://rdrr.io/pkg/lhs/man/maximinLHS.html'>maximinLHS</a></span>)
 
-<span class='no'>run</span> <span class='kw'>=</span> <span class='fu'><a href='exampleRun.html'>exampleRun</a></span>(<span class='no'>obj.fun</span>, <span class='kw'>design</span> <span class='kw'>=</span> <span class='no'>design</span>, <span class='kw'>learner</span> <span class='kw'>=</span> <span class='no'>lrn</span>,
-  <span class='kw'>control</span> <span class='kw'>=</span> <span class='no'>ctrl</span>, <span class='kw'>points.per.dim</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>show.info</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='kw'>run</span> <span class='op'>=</span> <span class='fu'><a href='exampleRun.html'>exampleRun</a></span>(<span class='kw'>obj.fun</span>, design = <span class='kw'>design</span>, learner = <span class='kw'>lrn</span>,
+  control = <span class='kw'>ctrl</span>, points.per.dim = <span class='fl'>100</span>, show.info = <span class='fl'>TRUE</span>)
 
-<span class='fu'><a href='plotExampleRun.html'>plotExampleRun</a></span>(<span class='no'>run</span>, <span class='kw'>densregion</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>gg.objects</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_bw</a></span>()))
+<span class='fu'><a href='plotExampleRun.html'>plotExampleRun</a></span>(<span class='kw'>run</span>, densregion = <span class='fl'>TRUE</span>, gg.objects = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_bw</a></span>()))
 }
 <span class='co'>#####################################################</span>
 <span class='co'>###</span>
 <span class='co'>### optimizing branin in 2D with mbo / EI #####</span>
 <span class='co'>###</span>
 <span class='co'>#####################################################</span>
-<span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>mlrMBO</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>ggplot2</span>)
+<span class='co'>if</span> (<span class='fl'>FALSE</span>) {
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://github.com/mlr-org/mlrMBO'>mlrMBO</a></span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='http://ggplot2.tidyverse.org'>ggplot2</a></span>)
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>1</span>)
-<span class='fu'>configureMlr</span>(<span class='kw'>show.learner.output</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='fu'>configureMlr</span>(show.learner.output = <span class='fl'>FALSE</span>)
 
-<span class='no'>obj.fun</span> <span class='kw'>=</span> <span class='fu'>makeBraninFunction</span>()
+<span class='kw'>obj.fun</span> <span class='op'>=</span> <span class='fu'>makeBraninFunction</span>()
 
-<span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='makeMBOControl.html'>makeMBOControl</a></span>(<span class='kw'>propose.points</span> <span class='kw'>=</span> <span class='fl'>1L</span>)
-<span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='setMBOControlTermination.html'>setMBOControlTermination</a></span>(<span class='no'>ctrl</span>, <span class='kw'>iters</span> <span class='kw'>=</span> <span class='fl'>10L</span>)
-<span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='setMBOControlInfill.html'>setMBOControlInfill</a></span>(<span class='no'>ctrl</span>, <span class='kw'>crit</span> <span class='kw'>=</span> <span class='fu'><a href='infillcrits.html'>makeMBOInfillCritEI</a></span>(),
-  <span class='kw'>opt</span> <span class='kw'>=</span> <span class='st'>"focussearch"</span>, <span class='kw'>opt.focussearch.points</span> <span class='kw'>=</span> <span class='fl'>2000L</span>)
+<span class='kw'>ctrl</span> <span class='op'>=</span> <span class='fu'><a href='makeMBOControl.html'>makeMBOControl</a></span>(propose.points = <span class='fl'>1L</span>)
+<span class='kw'>ctrl</span> <span class='op'>=</span> <span class='fu'><a href='setMBOControlTermination.html'>setMBOControlTermination</a></span>(<span class='kw'>ctrl</span>, iters = <span class='fl'>10L</span>)
+<span class='kw'>ctrl</span> <span class='op'>=</span> <span class='fu'><a href='setMBOControlInfill.html'>setMBOControlInfill</a></span>(<span class='kw'>ctrl</span>, crit = <span class='fu'><a href='infillcrits.html'>makeMBOInfillCritEI</a></span>(), 
+  opt = <span class='st'>"focussearch"</span>, opt.focussearch.points = <span class='fl'>2000L</span>)
 
-<span class='no'>lrn</span> <span class='kw'>=</span> <span class='fu'><a href='makeMBOLearner.html'>makeMBOLearner</a></span>(<span class='no'>ctrl</span>, <span class='no'>obj.fun</span>)
-<span class='no'>design</span> <span class='kw'>=</span> <span class='fu'>generateDesign</span>(<span class='fl'>10L</span>, <span class='fu'>getParamSet</span>(<span class='no'>obj.fun</span>), <span class='kw'>fun</span> <span class='kw'>=</span> <span class='kw pkg'>lhs</span><span class='kw ns'>::</span><span class='no'><a href='https://rdrr.io/pkg/lhs/man/maximinLHS.html'>maximinLHS</a></span>)
+<span class='kw'>lrn</span> <span class='op'>=</span> <span class='fu'><a href='makeMBOLearner.html'>makeMBOLearner</a></span>(<span class='kw'>ctrl</span>, <span class='kw'>obj.fun</span>)
+<span class='kw'>design</span> <span class='op'>=</span> <span class='fu'>generateDesign</span>(<span class='fl'>10L</span>, <span class='fu'>getParamSet</span>(<span class='kw'>obj.fun</span>), fun = <span class='kw'>lhs</span>::<span class='kw'><a href='https://rdrr.io/pkg/lhs/man/maximinLHS.html'>maximinLHS</a></span>)
 
-<span class='no'>run</span> <span class='kw'>=</span> <span class='fu'><a href='exampleRun.html'>exampleRun</a></span>(<span class='no'>obj.fun</span>, <span class='kw'>design</span> <span class='kw'>=</span> <span class='no'>design</span>, <span class='kw'>learner</span> <span class='kw'>=</span> <span class='no'>lrn</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='no'>ctrl</span>,
-        <span class='kw'>points.per.dim</span> <span class='kw'>=</span> <span class='fl'>50L</span>, <span class='kw'>show.info</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='kw'>run</span> <span class='op'>=</span> <span class='fu'><a href='exampleRun.html'>exampleRun</a></span>(<span class='kw'>obj.fun</span>, design = <span class='kw'>design</span>, learner = <span class='kw'>lrn</span>, control = <span class='kw'>ctrl</span>,
+  points.per.dim = <span class='fl'>50L</span>, show.info = <span class='fl'>TRUE</span>)
 
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>run</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='kw'>run</span>)
 
-<span class='fu'><a href='plotExampleRun.html'>plotExampleRun</a></span>(<span class='no'>run</span>, <span class='kw'>gg.objects</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_bw</a></span>()))
+<span class='fu'><a href='plotExampleRun.html'>plotExampleRun</a></span>(<span class='kw'>run</span>, gg.objects = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_bw</a></span>()))
 }
 <span class='co'>#####################################################</span>
 <span class='co'>###</span>
 <span class='co'>### optimizing a simple sin(x) with multipoint proposal</span>
 <span class='co'>###</span>
 <span class='co'>#####################################################</span>
-<span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>mlrMBO</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>ggplot2</span>)
+<span class='co'>if</span> (<span class='fl'>FALSE</span>) {
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://github.com/mlr-org/mlrMBO'>mlrMBO</a></span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='http://ggplot2.tidyverse.org'>ggplot2</a></span>)
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>1</span>)
-<span class='fu'>configureMlr</span>(<span class='kw'>show.learner.output</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='fu'>configureMlr</span>(show.learner.output = <span class='fl'>FALSE</span>)
 
-<span class='no'>obj.fun</span> <span class='kw'>=</span> <span class='fu'>makeSingleObjectiveFunction</span>(
-  <span class='kw'>name</span> <span class='kw'>=</span> <span class='st'>"Sine"</span>,
-  <span class='kw'>fn</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>x</span>) <span class='fu'><a href='https://rdrr.io/r/base/Trig.html'>sin</a></span>(<span class='no'>x</span>),
-  <span class='kw'>par.set</span> <span class='kw'>=</span> <span class='fu'>makeNumericParamSet</span>(<span class='kw'>lower</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='kw'>upper</span> <span class='kw'>=</span> <span class='fl'>13</span>, <span class='kw'>len</span> <span class='kw'>=</span> <span class='fl'>1L</span>),
-  <span class='kw'>global.opt.value</span> <span class='kw'>=</span> -<span class='fl'>1</span>
+<span class='kw'>obj.fun</span> <span class='op'>=</span> <span class='fu'>makeSingleObjectiveFunction</span>(
+  name = <span class='st'>"Sine"</span>,
+  fn = <span class='fu'>function</span>(<span class='kw'>x</span>) <span class='fu'><a href='https://rdrr.io/r/base/Trig.html'>sin</a></span>(<span class='kw'>x</span>),
+  par.set = <span class='fu'>makeNumericParamSet</span>(lower = <span class='fl'>3</span>, upper = <span class='fl'>13</span>, len = <span class='fl'>1L</span>),
+  global.opt.value = <span class='op'>-</span><span class='fl'>1</span>
 )
 
-<span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='makeMBOControl.html'>makeMBOControl</a></span>(<span class='kw'>propose.points</span> <span class='kw'>=</span> <span class='fl'>2L</span>)
-<span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='setMBOControlTermination.html'>setMBOControlTermination</a></span>(<span class='no'>ctrl</span>, <span class='kw'>iters</span> <span class='kw'>=</span> <span class='fl'>10L</span>)
-<span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='setMBOControlInfill.html'>setMBOControlInfill</a></span>(<span class='no'>ctrl</span>, <span class='kw'>crit</span> <span class='kw'>=</span> <span class='fu'><a href='infillcrits.html'>makeMBOInfillCritMeanResponse</a></span>())
-<span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='setMBOControlMultiPoint.html'>setMBOControlMultiPoint</a></span>(
-        <span class='no'>ctrl</span>,
-  <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"moimbo"</span>,
-  <span class='kw'>moimbo.objective</span> <span class='kw'>=</span> <span class='st'>"ei.dist"</span>,
-  <span class='kw'>moimbo.dist</span> <span class='kw'>=</span> <span class='st'>"nearest.neighbor"</span>,
-  <span class='kw'>moimbo.maxit</span> <span class='kw'>=</span> <span class='fl'>200L</span>
+<span class='kw'>ctrl</span> <span class='op'>=</span> <span class='fu'><a href='makeMBOControl.html'>makeMBOControl</a></span>(propose.points = <span class='fl'>2L</span>)
+<span class='kw'>ctrl</span> <span class='op'>=</span> <span class='fu'><a href='setMBOControlTermination.html'>setMBOControlTermination</a></span>(<span class='kw'>ctrl</span>, iters = <span class='fl'>10L</span>)
+<span class='kw'>ctrl</span> <span class='op'>=</span> <span class='fu'><a href='setMBOControlInfill.html'>setMBOControlInfill</a></span>(<span class='kw'>ctrl</span>, crit = <span class='fu'><a href='infillcrits.html'>makeMBOInfillCritMeanResponse</a></span>())
+<span class='kw'>ctrl</span> <span class='op'>=</span> <span class='fu'><a href='setMBOControlMultiPoint.html'>setMBOControlMultiPoint</a></span>(
+  <span class='kw'>ctrl</span>,
+  method = <span class='st'>"moimbo"</span>,
+  moimbo.objective = <span class='st'>"ei.dist"</span>,
+  moimbo.dist = <span class='st'>"nearest.neighbor"</span>,
+  moimbo.maxit = <span class='fl'>200L</span>
 )
 
-<span class='no'>lrn</span> <span class='kw'>=</span> <span class='fu'><a href='makeMBOLearner.html'>makeMBOLearner</a></span>(<span class='no'>ctrl</span>, <span class='no'>obj.fun</span>)
+<span class='kw'>lrn</span> <span class='op'>=</span> <span class='fu'><a href='makeMBOLearner.html'>makeMBOLearner</a></span>(<span class='kw'>ctrl</span>, <span class='kw'>obj.fun</span>)
 
-<span class='no'>design</span> <span class='kw'>=</span> <span class='fu'>generateDesign</span>(<span class='fl'>4L</span>, <span class='fu'>getParamSet</span>(<span class='no'>obj.fun</span>), <span class='kw'>fun</span> <span class='kw'>=</span> <span class='kw pkg'>lhs</span><span class='kw ns'>::</span><span class='no'><a href='https://rdrr.io/pkg/lhs/man/maximinLHS.html'>maximinLHS</a></span>)
+<span class='kw'>design</span> <span class='op'>=</span> <span class='fu'>generateDesign</span>(<span class='fl'>4L</span>, <span class='fu'>getParamSet</span>(<span class='kw'>obj.fun</span>), fun = <span class='kw'>lhs</span>::<span class='kw'><a href='https://rdrr.io/pkg/lhs/man/maximinLHS.html'>maximinLHS</a></span>)
 
-<span class='no'>run</span> <span class='kw'>=</span> <span class='fu'><a href='exampleRun.html'>exampleRun</a></span>(<span class='no'>obj.fun</span>, <span class='kw'>design</span> <span class='kw'>=</span> <span class='no'>design</span>, <span class='kw'>learner</span> <span class='kw'>=</span> <span class='no'>lrn</span>,
-  <span class='kw'>control</span> <span class='kw'>=</span> <span class='no'>ctrl</span>, <span class='kw'>points.per.dim</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>show.info</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='kw'>run</span> <span class='op'>=</span> <span class='fu'><a href='exampleRun.html'>exampleRun</a></span>(<span class='kw'>obj.fun</span>, design = <span class='kw'>design</span>, learner = <span class='kw'>lrn</span>,
+  control = <span class='kw'>ctrl</span>, points.per.dim = <span class='fl'>100</span>, show.info = <span class='fl'>TRUE</span>)
 
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>run</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='kw'>run</span>)
 
-<span class='fu'><a href='plotExampleRun.html'>plotExampleRun</a></span>(<span class='no'>run</span>, <span class='kw'>densregion</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>gg.objects</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_bw</a></span>()))
+<span class='fu'><a href='plotExampleRun.html'>plotExampleRun</a></span>(<span class='kw'>run</span>, densregion = <span class='fl'>TRUE</span>, gg.objects = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_bw</a></span>()))
 }
 <span class='co'>#####################################################</span>
 <span class='co'>###</span>
 <span class='co'>### optimizing branin in 2D with multipoint proposal #####</span>
 <span class='co'>###</span>
 <span class='co'>#####################################################</span>
-<span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>mlrMBO</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>ggplot2</span>)
+<span class='co'>if</span> (<span class='fl'>FALSE</span>) {
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://github.com/mlr-org/mlrMBO'>mlrMBO</a></span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='http://ggplot2.tidyverse.org'>ggplot2</a></span>)
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>2</span>)
-<span class='fu'>configureMlr</span>(<span class='kw'>show.learner.output</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='fu'>configureMlr</span>(show.learner.output = <span class='fl'>FALSE</span>)
 
-<span class='no'>obj.fun</span> <span class='kw'>=</span> <span class='fu'>makeBraninFunction</span>()
+<span class='kw'>obj.fun</span> <span class='op'>=</span> <span class='fu'>makeBraninFunction</span>()
 
-<span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='makeMBOControl.html'>makeMBOControl</a></span>(<span class='kw'>propose.points</span> <span class='kw'>=</span> <span class='fl'>5L</span>)
-<span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='setMBOControlInfill.html'>setMBOControlInfill</a></span>(<span class='no'>ctrl</span>, <span class='kw'>crit</span> <span class='kw'>=</span> <span class='fu'><a href='infillcrits.html'>makeMBOInfillCritMeanResponse</a></span>())
-<span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='setMBOControlTermination.html'>setMBOControlTermination</a></span>(<span class='no'>ctrl</span>, <span class='kw'>iters</span> <span class='kw'>=</span> <span class='fl'>10L</span>)
-<span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='setMBOControlMultiPoint.html'>setMBOControlMultiPoint</a></span>(<span class='no'>ctrl</span>,
-  <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"moimbo"</span>,
-  <span class='kw'>moimbo.objective</span> <span class='kw'>=</span> <span class='st'>"ei.dist"</span>,
-  <span class='kw'>moimbo.dist</span> <span class='kw'>=</span> <span class='st'>"nearest.neighbor"</span>,
-  <span class='kw'>moimbo.maxit</span> <span class='kw'>=</span> <span class='fl'>200L</span>
+<span class='kw'>ctrl</span> <span class='op'>=</span> <span class='fu'><a href='makeMBOControl.html'>makeMBOControl</a></span>(propose.points = <span class='fl'>5L</span>)
+<span class='kw'>ctrl</span> <span class='op'>=</span> <span class='fu'><a href='setMBOControlInfill.html'>setMBOControlInfill</a></span>(<span class='kw'>ctrl</span>, crit = <span class='fu'><a href='infillcrits.html'>makeMBOInfillCritMeanResponse</a></span>())
+<span class='kw'>ctrl</span> <span class='op'>=</span> <span class='fu'><a href='setMBOControlTermination.html'>setMBOControlTermination</a></span>(<span class='kw'>ctrl</span>, iters = <span class='fl'>10L</span>)
+<span class='kw'>ctrl</span> <span class='op'>=</span> <span class='fu'><a href='setMBOControlMultiPoint.html'>setMBOControlMultiPoint</a></span>(<span class='kw'>ctrl</span>,
+  method = <span class='st'>"moimbo"</span>,
+  moimbo.objective = <span class='st'>"ei.dist"</span>,
+  moimbo.dist = <span class='st'>"nearest.neighbor"</span>,
+  moimbo.maxit = <span class='fl'>200L</span>
 )
 
-<span class='no'>lrn</span> <span class='kw'>=</span> <span class='fu'>makeLearner</span>(<span class='st'>"regr.km"</span>, <span class='kw'>predict.type</span> <span class='kw'>=</span> <span class='st'>"se"</span>)
-<span class='no'>design</span> <span class='kw'>=</span> <span class='fu'>generateDesign</span>(<span class='fl'>10L</span>, <span class='fu'>getParamSet</span>(<span class='no'>obj.fun</span>), <span class='kw'>fun</span> <span class='kw'>=</span> <span class='kw pkg'>lhs</span><span class='kw ns'>::</span><span class='no'><a href='https://rdrr.io/pkg/lhs/man/maximinLHS.html'>maximinLHS</a></span>)
+<span class='kw'>lrn</span> <span class='op'>=</span> <span class='fu'>makeLearner</span>(<span class='st'>"regr.km"</span>, predict.type = <span class='st'>"se"</span>)
+<span class='kw'>design</span> <span class='op'>=</span> <span class='fu'>generateDesign</span>(<span class='fl'>10L</span>, <span class='fu'>getParamSet</span>(<span class='kw'>obj.fun</span>), fun = <span class='kw'>lhs</span>::<span class='kw'><a href='https://rdrr.io/pkg/lhs/man/maximinLHS.html'>maximinLHS</a></span>)
 
-<span class='no'>run</span> <span class='kw'>=</span> <span class='fu'><a href='exampleRun.html'>exampleRun</a></span>(<span class='no'>obj.fun</span>, <span class='kw'>design</span> <span class='kw'>=</span> <span class='no'>design</span>, <span class='kw'>learner</span> <span class='kw'>=</span> <span class='no'>lrn</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='no'>ctrl</span>,
-        <span class='kw'>points.per.dim</span> <span class='kw'>=</span> <span class='fl'>50L</span>, <span class='kw'>show.info</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='kw'>run</span> <span class='op'>=</span> <span class='fu'><a href='exampleRun.html'>exampleRun</a></span>(<span class='kw'>obj.fun</span>, design = <span class='kw'>design</span>, learner = <span class='kw'>lrn</span>, control = <span class='kw'>ctrl</span>,
+  points.per.dim = <span class='fl'>50L</span>, show.info = <span class='fl'>TRUE</span>)
 
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>run</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='kw'>run</span>)
 
-<span class='fu'><a href='plotExampleRun.html'>plotExampleRun</a></span>(<span class='no'>run</span>, <span class='kw'>gg.objects</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_bw</a></span>()))
+<span class='fu'><a href='plotExampleRun.html'>plotExampleRun</a></span>(<span class='kw'>run</span>, gg.objects = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_bw</a></span>()))
 }
 <span class='co'>#####################################################</span>
 <span class='co'>###</span>
 <span class='co'>### optimizing a simple noisy sin(x) with mbo / EI</span>
 <span class='co'>###</span>
 <span class='co'>#####################################################</span>
-<span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>mlrMBO</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>ggplot2</span>)
+<span class='co'>if</span> (<span class='fl'>FALSE</span>) {
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://github.com/mlr-org/mlrMBO'>mlrMBO</a></span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='http://ggplot2.tidyverse.org'>ggplot2</a></span>)
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>1</span>)
-<span class='fu'>configureMlr</span>(<span class='kw'>show.learner.output</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='fu'>configureMlr</span>(show.learner.output = <span class='fl'>FALSE</span>)
 
 <span class='co'># function with noise</span>
-<span class='no'>obj.fun</span> <span class='kw'>=</span> <span class='fu'>makeSingleObjectiveFunction</span>(
-  <span class='kw'>name</span> <span class='kw'>=</span> <span class='st'>"Some noisy function"</span>,
-  <span class='kw'>fn</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>x</span>) <span class='fu'><a href='https://rdrr.io/r/base/Trig.html'>sin</a></span>(<span class='no'>x</span>) + <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>0.1</span>),
-  <span class='kw'>par.set</span> <span class='kw'>=</span> <span class='fu'>makeNumericParamSet</span>(<span class='kw'>lower</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='kw'>upper</span> <span class='kw'>=</span> <span class='fl'>13</span>, <span class='kw'>len</span> <span class='kw'>=</span> <span class='fl'>1L</span>),
-  <span class='kw'>noisy</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>global.opt.value</span> <span class='kw'>=</span> -<span class='fl'>1</span>,
-  <span class='kw'>fn.mean</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>x</span>) <span class='fu'><a href='https://rdrr.io/r/base/Trig.html'>sin</a></span>(<span class='no'>x</span>)
+<span class='kw'>obj.fun</span> <span class='op'>=</span> <span class='fu'>makeSingleObjectiveFunction</span>(
+  name = <span class='st'>"Some noisy function"</span>,
+  fn = <span class='fu'>function</span>(<span class='kw'>x</span>) <span class='fu'><a href='https://rdrr.io/r/base/Trig.html'>sin</a></span>(<span class='kw'>x</span>) <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>0.1</span>),
+  par.set = <span class='fu'>makeNumericParamSet</span>(lower = <span class='fl'>3</span>, upper = <span class='fl'>13</span>, len = <span class='fl'>1L</span>),
+  noisy = <span class='fl'>TRUE</span>,
+  global.opt.value = <span class='op'>-</span><span class='fl'>1</span>,
+  fn.mean = <span class='fu'>function</span>(<span class='kw'>x</span>) <span class='fu'><a href='https://rdrr.io/r/base/Trig.html'>sin</a></span>(<span class='kw'>x</span>)
 )
 
-<span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='makeMBOControl.html'>makeMBOControl</a></span>(
-  <span class='kw'>propose.points</span> <span class='kw'>=</span> <span class='fl'>1L</span>,
-  <span class='kw'>final.method</span> <span class='kw'>=</span> <span class='st'>"best.predicted"</span>,
-  <span class='kw'>final.evals</span> <span class='kw'>=</span> <span class='fl'>10L</span>
+<span class='kw'>ctrl</span> <span class='op'>=</span> <span class='fu'><a href='makeMBOControl.html'>makeMBOControl</a></span>(
+  propose.points = <span class='fl'>1L</span>,
+  final.method = <span class='st'>"best.predicted"</span>,
+  final.evals = <span class='fl'>10L</span>
 )
-<span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='setMBOControlTermination.html'>setMBOControlTermination</a></span>(<span class='no'>ctrl</span>, <span class='kw'>iters</span> <span class='kw'>=</span> <span class='fl'>5L</span>)
+<span class='kw'>ctrl</span> <span class='op'>=</span> <span class='fu'><a href='setMBOControlTermination.html'>setMBOControlTermination</a></span>(<span class='kw'>ctrl</span>, iters = <span class='fl'>5L</span>)
 
-<span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='setMBOControlInfill.html'>setMBOControlInfill</a></span>(<span class='no'>ctrl</span>, <span class='kw'>crit</span> <span class='kw'>=</span> <span class='fu'><a href='infillcrits.html'>makeMBOInfillCritEI</a></span>(),
- <span class='kw'>opt</span> <span class='kw'>=</span> <span class='st'>"focussearch"</span>, <span class='kw'>opt.focussearch.points</span> <span class='kw'>=</span> <span class='fl'>500L</span>)
+<span class='kw'>ctrl</span> <span class='op'>=</span> <span class='fu'><a href='setMBOControlInfill.html'>setMBOControlInfill</a></span>(<span class='kw'>ctrl</span>, crit = <span class='fu'><a href='infillcrits.html'>makeMBOInfillCritEI</a></span>(),
+ opt = <span class='st'>"focussearch"</span>, opt.focussearch.points = <span class='fl'>500L</span>)
 
-<span class='no'>lrn</span> <span class='kw'>=</span> <span class='fu'><a href='makeMBOLearner.html'>makeMBOLearner</a></span>(<span class='no'>ctrl</span>, <span class='no'>obj.fun</span>)
+<span class='kw'>lrn</span> <span class='op'>=</span> <span class='fu'><a href='makeMBOLearner.html'>makeMBOLearner</a></span>(<span class='kw'>ctrl</span>, <span class='kw'>obj.fun</span>)
 
-<span class='no'>design</span> <span class='kw'>=</span> <span class='fu'>generateDesign</span>(<span class='fl'>6L</span>, <span class='fu'>getParamSet</span>(<span class='no'>obj.fun</span>), <span class='kw'>fun</span> <span class='kw'>=</span> <span class='kw pkg'>lhs</span><span class='kw ns'>::</span><span class='no'><a href='https://rdrr.io/pkg/lhs/man/maximinLHS.html'>maximinLHS</a></span>)
+<span class='kw'>design</span> <span class='op'>=</span> <span class='fu'>generateDesign</span>(<span class='fl'>6L</span>, <span class='fu'>getParamSet</span>(<span class='kw'>obj.fun</span>), fun = <span class='kw'>lhs</span>::<span class='kw'><a href='https://rdrr.io/pkg/lhs/man/maximinLHS.html'>maximinLHS</a></span>)
 
-<span class='no'>run</span> <span class='kw'>=</span> <span class='fu'><a href='exampleRun.html'>exampleRun</a></span>(<span class='no'>obj.fun</span>, <span class='kw'>design</span> <span class='kw'>=</span> <span class='no'>design</span>, <span class='kw'>learner</span> <span class='kw'>=</span> <span class='no'>lrn</span>,
-  <span class='kw'>control</span> <span class='kw'>=</span> <span class='no'>ctrl</span>, <span class='kw'>points.per.dim</span> <span class='kw'>=</span> <span class='fl'>200L</span>, <span class='kw'>noisy.evals</span> <span class='kw'>=</span> <span class='fl'>50L</span>,
-  <span class='kw'>show.info</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='kw'>run</span> <span class='op'>=</span> <span class='fu'><a href='exampleRun.html'>exampleRun</a></span>(<span class='kw'>obj.fun</span>, design = <span class='kw'>design</span>, learner = <span class='kw'>lrn</span>,
+  control = <span class='kw'>ctrl</span>, points.per.dim = <span class='fl'>200L</span>, noisy.evals = <span class='fl'>50L</span>,
+  show.info = <span class='fl'>TRUE</span>)
 
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>run</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='kw'>run</span>)
 
-<span class='fu'><a href='plotExampleRun.html'>plotExampleRun</a></span>(<span class='no'>run</span>, <span class='kw'>densregion</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>gg.objects</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_bw</a></span>()))
+<span class='fu'><a href='plotExampleRun.html'>plotExampleRun</a></span>(<span class='kw'>run</span>, densregion = <span class='fl'>TRUE</span>, gg.objects = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_bw</a></span>()))
 }
 <span class='co'>#####################################################</span>
 <span class='co'>###</span>
@@ -370,145 +370,146 @@
 <span class='co'>### noisy outout with random forest</span>
 <span class='co'>###</span>
 <span class='co'>#####################################################</span>
-<span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>mlrMBO</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>ggplot2</span>)
+<span class='co'>if</span> (<span class='fl'>FALSE</span>) {
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://github.com/mlr-org/mlrMBO'>mlrMBO</a></span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='http://ggplot2.tidyverse.org'>ggplot2</a></span>)
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>1</span>)
-<span class='fu'>configureMlr</span>(<span class='kw'>show.learner.output</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='fu'>configureMlr</span>(show.learner.output = <span class='fl'>FALSE</span>)
 
-<span class='no'>obj.fun</span> <span class='kw'>=</span> <span class='fu'>makeSingleObjectiveFunction</span>(
-  <span class='kw'>name</span> <span class='kw'>=</span> <span class='st'>"Mixed decision space function"</span>,
-  <span class='kw'>fn</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>x</span>) {
-    <span class='kw'>if</span> (<span class='no'>x</span>$<span class='no'>foo</span> <span class='kw'>==</span> <span class='st'>"a"</span>) {
-      <span class='fu'><a href='https://rdrr.io/r/base/function.html'>return</a></span>(<span class='fl'>5</span> + <span class='no'>x</span>$<span class='no'>bar</span>^<span class='fl'>2</span> + <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>1</span>))
-    } <span class='kw'>else</span> <span class='kw'>if</span> (<span class='no'>x</span>$<span class='no'>foo</span> <span class='kw'>==</span> <span class='st'>"b"</span>) {
-      <span class='fu'><a href='https://rdrr.io/r/base/function.html'>return</a></span>(<span class='fl'>4</span> + <span class='no'>x</span>$<span class='no'>bar</span>^<span class='fl'>2</span> + <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>1</span>, <span class='kw'>sd</span> <span class='kw'>=</span> <span class='fl'>0.5</span>))
-    } <span class='kw'>else</span> {
-      <span class='fu'><a href='https://rdrr.io/r/base/function.html'>return</a></span>(<span class='fl'>3</span> + <span class='no'>x</span>$<span class='no'>bar</span>^<span class='fl'>2</span> + <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>1</span>, <span class='kw'>sd</span> <span class='kw'>=</span> <span class='fl'>1</span>))
+<span class='kw'>obj.fun</span> <span class='op'>=</span> <span class='fu'>makeSingleObjectiveFunction</span>(
+  name = <span class='st'>"Mixed decision space function"</span>,
+  fn = <span class='fu'>function</span>(<span class='kw'>x</span>) {
+    <span class='co'>if</span> (<span class='kw'>x</span><span class='op'>$</span><span class='kw'>foo</span> <span class='op'>==</span> <span class='st'>"a"</span>) {
+      <span class='fu'><a href='https://rdrr.io/r/base/function.html'>return</a></span>(<span class='fl'>5</span> <span class='op'>+</span> <span class='kw'>x</span><span class='op'>$</span><span class='kw'>bar</span><span class='op'>^</span><span class='fl'>2</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>1</span>))
+    } <span class='co'>else</span> <span class='co'>if</span> (<span class='kw'>x</span><span class='op'>$</span><span class='kw'>foo</span> <span class='op'>==</span> <span class='st'>"b"</span>) {
+      <span class='fu'><a href='https://rdrr.io/r/base/function.html'>return</a></span>(<span class='fl'>4</span> <span class='op'>+</span> <span class='kw'>x</span><span class='op'>$</span><span class='kw'>bar</span><span class='op'>^</span><span class='fl'>2</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>1</span>, sd = <span class='fl'>0.5</span>))
+    } <span class='co'>else</span> {
+      <span class='fu'><a href='https://rdrr.io/r/base/function.html'>return</a></span>(<span class='fl'>3</span> <span class='op'>+</span> <span class='kw'>x</span><span class='op'>$</span><span class='kw'>bar</span><span class='op'>^</span><span class='fl'>2</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>1</span>, sd = <span class='fl'>1</span>))
     }
   },
-  <span class='kw'>par.set</span> <span class='kw'>=</span> <span class='fu'>makeParamSet</span>(
-    <span class='fu'>makeDiscreteParam</span>(<span class='st'>"foo"</span>, <span class='kw'>values</span> <span class='kw'>=</span> <span class='no'>letters</span>[<span class='fl'>1</span>:<span class='fl'>3</span>]),
-    <span class='fu'>makeNumericParam</span>(<span class='st'>"bar"</span>, <span class='kw'>lower</span> <span class='kw'>=</span> -<span class='fl'>5</span>, <span class='kw'>upper</span> <span class='kw'>=</span> <span class='fl'>5</span>)
+  par.set = <span class='fu'>makeParamSet</span>(
+    <span class='fu'>makeDiscreteParam</span>(<span class='st'>"foo"</span>, values = <span class='kw'>letters</span>[<span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span>]),
+    <span class='fu'>makeNumericParam</span>(<span class='st'>"bar"</span>, lower = <span class='op'>-</span><span class='fl'>5</span>, upper = <span class='fl'>5</span>)
   ),
-  <span class='kw'>has.simple.signature</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='co'># function expects a named list of parameter values</span>
-  <span class='kw'>noisy</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
+  has.simple.signature = <span class='fl'>FALSE</span>, <span class='co'># function expects a named list of parameter values</span>
+  noisy = <span class='fl'>TRUE</span>
 )
 
-<span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='makeMBOControl.html'>makeMBOControl</a></span>()
-<span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='setMBOControlTermination.html'>setMBOControlTermination</a></span>(<span class='no'>ctrl</span>, <span class='kw'>iters</span> <span class='kw'>=</span> <span class='fl'>10L</span>)
+<span class='kw'>ctrl</span> <span class='op'>=</span> <span class='fu'><a href='makeMBOControl.html'>makeMBOControl</a></span>()
+<span class='kw'>ctrl</span> <span class='op'>=</span> <span class='fu'><a href='setMBOControlTermination.html'>setMBOControlTermination</a></span>(<span class='kw'>ctrl</span>, iters = <span class='fl'>10L</span>)
 
 <span class='co'># we can basically do an exhaustive search in 3 values</span>
-<span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='setMBOControlInfill.html'>setMBOControlInfill</a></span>(<span class='no'>ctrl</span>, <span class='kw'>crit</span> <span class='kw'>=</span> <span class='fu'><a href='infillcrits.html'>makeMBOInfillCritEI</a></span>(),
-  <span class='kw'>opt.restarts</span> <span class='kw'>=</span> <span class='fl'>1L</span>, <span class='kw'>opt.focussearch.points</span> <span class='kw'>=</span> <span class='fl'>3L</span>, <span class='kw'>opt.focussearch.maxit</span> <span class='kw'>=</span> <span class='fl'>1L</span>)
+<span class='kw'>ctrl</span> <span class='op'>=</span> <span class='fu'><a href='setMBOControlInfill.html'>setMBOControlInfill</a></span>(<span class='kw'>ctrl</span>, crit = <span class='fu'><a href='infillcrits.html'>makeMBOInfillCritEI</a></span>(),
+  opt.restarts = <span class='fl'>1L</span>, opt.focussearch.points = <span class='fl'>3L</span>, opt.focussearch.maxit = <span class='fl'>1L</span>)
 
-<span class='no'>design</span> <span class='kw'>=</span> <span class='fu'>generateDesign</span>(<span class='fl'>20L</span>, <span class='fu'>getParamSet</span>(<span class='no'>obj.fun</span>), <span class='kw'>fun</span> <span class='kw'>=</span> <span class='kw pkg'>lhs</span><span class='kw ns'>::</span><span class='no'><a href='https://rdrr.io/pkg/lhs/man/maximinLHS.html'>maximinLHS</a></span>)
+<span class='kw'>design</span> <span class='op'>=</span> <span class='fu'>generateDesign</span>(<span class='fl'>20L</span>, <span class='fu'>getParamSet</span>(<span class='kw'>obj.fun</span>), fun = <span class='kw'>lhs</span>::<span class='kw'><a href='https://rdrr.io/pkg/lhs/man/maximinLHS.html'>maximinLHS</a></span>)
 
-<span class='no'>lrn</span> <span class='kw'>=</span> <span class='fu'><a href='makeMBOLearner.html'>makeMBOLearner</a></span>(<span class='no'>ctrl</span>, <span class='no'>obj.fun</span>)
+<span class='kw'>lrn</span> <span class='op'>=</span> <span class='fu'><a href='makeMBOLearner.html'>makeMBOLearner</a></span>(<span class='kw'>ctrl</span>, <span class='kw'>obj.fun</span>)
 
-<span class='no'>run</span> <span class='kw'>=</span> <span class='fu'><a href='exampleRun.html'>exampleRun</a></span>(<span class='no'>obj.fun</span>, <span class='kw'>design</span> <span class='kw'>=</span> <span class='no'>design</span>, <span class='kw'>learner</span> <span class='kw'>=</span> <span class='no'>lrn</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='no'>ctrl</span>,
-        <span class='kw'>points.per.dim</span> <span class='kw'>=</span> <span class='fl'>50L</span>, <span class='kw'>show.info</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='kw'>run</span> <span class='op'>=</span> <span class='fu'><a href='exampleRun.html'>exampleRun</a></span>(<span class='kw'>obj.fun</span>, design = <span class='kw'>design</span>, learner = <span class='kw'>lrn</span>, control = <span class='kw'>ctrl</span>,
+  points.per.dim = <span class='fl'>50L</span>, show.info = <span class='fl'>TRUE</span>)
 
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>run</span>)
-<span class='fu'><a href='plotExampleRun.html'>plotExampleRun</a></span>(<span class='no'>run</span>, <span class='kw'>densregion</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>gg.objects</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_bw</a></span>()))
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='kw'>run</span>)
+<span class='fu'><a href='plotExampleRun.html'>plotExampleRun</a></span>(<span class='kw'>run</span>, densregion = <span class='fl'>TRUE</span>, gg.objects = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_bw</a></span>()))
 }
 <span class='co'>#####################################################</span>
 <span class='co'>###</span>
 <span class='co'>### optimizing mixed space function</span>
 <span class='co'>###</span>
 <span class='co'>#####################################################</span>
-<span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>mlrMBO</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>ggplot2</span>)
+<span class='co'>if</span> (<span class='fl'>FALSE</span>) {
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://github.com/mlr-org/mlrMBO'>mlrMBO</a></span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='http://ggplot2.tidyverse.org'>ggplot2</a></span>)
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>1</span>)
-<span class='fu'>configureMlr</span>(<span class='kw'>show.learner.output</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='fu'>configureMlr</span>(show.learner.output = <span class='fl'>FALSE</span>)
 
-<span class='no'>obj.fun</span> <span class='kw'>=</span> <span class='fu'>makeSingleObjectiveFunction</span>(
-  <span class='kw'>name</span> <span class='kw'>=</span> <span class='st'>"Mixed functions"</span>,
-  <span class='kw'>fn</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>x</span>) {
-    <span class='kw'>if</span> (<span class='no'>x</span>$<span class='no'>cat</span> <span class='kw'>==</span> <span class='st'>"a"</span>)
-      <span class='no'>x</span>$<span class='no'>num</span>^<span class='fl'>2</span>
-    <span class='kw'>else</span>
-      <span class='no'>x</span>$<span class='no'>num</span>^<span class='fl'>2</span> + <span class='fl'>3</span>
+<span class='kw'>obj.fun</span> <span class='op'>=</span> <span class='fu'>makeSingleObjectiveFunction</span>(
+  name = <span class='st'>"Mixed functions"</span>,
+  fn = <span class='fu'>function</span>(<span class='kw'>x</span>) {
+    <span class='co'>if</span> (<span class='kw'>x</span><span class='op'>$</span><span class='kw'>cat</span> <span class='op'>==</span> <span class='st'>"a"</span>)
+      <span class='kw'>x</span><span class='op'>$</span><span class='kw'>num</span><span class='op'>^</span><span class='fl'>2</span>
+    <span class='co'>else</span>
+      <span class='kw'>x</span><span class='op'>$</span><span class='kw'>num</span><span class='op'>^</span><span class='fl'>2</span> <span class='op'>+</span> <span class='fl'>3</span>
   },
-  <span class='kw'>par.set</span> <span class='kw'>=</span> <span class='fu'>makeParamSet</span>(
-    <span class='fu'>makeDiscreteParam</span>(<span class='st'>"cat"</span>, <span class='kw'>values</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"a"</span>, <span class='st'>"b"</span>)),
-    <span class='fu'>makeNumericParam</span>(<span class='st'>"num"</span>, <span class='kw'>lower</span> <span class='kw'>=</span> -<span class='fl'>5</span>, <span class='kw'>upper</span> <span class='kw'>=</span> <span class='fl'>5</span>)
+  par.set = <span class='fu'>makeParamSet</span>(
+    <span class='fu'>makeDiscreteParam</span>(<span class='st'>"cat"</span>, values = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"a"</span>, <span class='st'>"b"</span>)),
+    <span class='fu'>makeNumericParam</span>(<span class='st'>"num"</span>, lower = <span class='op'>-</span><span class='fl'>5</span>, upper = <span class='fl'>5</span>)
   ),
-  <span class='kw'>has.simple.signature</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>global.opt.value</span> <span class='kw'>=</span> -<span class='fl'>1</span>
+  has.simple.signature = <span class='fl'>FALSE</span>,
+  global.opt.value = <span class='op'>-</span><span class='fl'>1</span>
 )
 
-<span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='makeMBOControl.html'>makeMBOControl</a></span>(<span class='kw'>propose.points</span> <span class='kw'>=</span> <span class='fl'>1L</span>)
-<span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='setMBOControlTermination.html'>setMBOControlTermination</a></span>(<span class='no'>ctrl</span>, <span class='kw'>iters</span> <span class='kw'>=</span> <span class='fl'>10L</span>)
-<span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='setMBOControlInfill.html'>setMBOControlInfill</a></span>(<span class='no'>ctrl</span>, <span class='kw'>crit</span> <span class='kw'>=</span> <span class='fu'><a href='infillcrits.html'>makeMBOInfillCritEI</a></span>(),
-  <span class='kw'>opt</span> <span class='kw'>=</span> <span class='st'>"focussearch"</span>, <span class='kw'>opt.focussearch.points</span> <span class='kw'>=</span> <span class='fl'>500L</span>)
+<span class='kw'>ctrl</span> <span class='op'>=</span> <span class='fu'><a href='makeMBOControl.html'>makeMBOControl</a></span>(propose.points = <span class='fl'>1L</span>)
+<span class='kw'>ctrl</span> <span class='op'>=</span> <span class='fu'><a href='setMBOControlTermination.html'>setMBOControlTermination</a></span>(<span class='kw'>ctrl</span>, iters = <span class='fl'>10L</span>)
+<span class='kw'>ctrl</span> <span class='op'>=</span> <span class='fu'><a href='setMBOControlInfill.html'>setMBOControlInfill</a></span>(<span class='kw'>ctrl</span>, crit = <span class='fu'><a href='infillcrits.html'>makeMBOInfillCritEI</a></span>(), 
+  opt = <span class='st'>"focussearch"</span>, opt.focussearch.points = <span class='fl'>500L</span>)
 
-<span class='no'>lrn</span> <span class='kw'>=</span> <span class='fu'><a href='makeMBOLearner.html'>makeMBOLearner</a></span>(<span class='no'>ctrl</span>, <span class='no'>obj.fun</span>)
+<span class='kw'>lrn</span> <span class='op'>=</span> <span class='fu'><a href='makeMBOLearner.html'>makeMBOLearner</a></span>(<span class='kw'>ctrl</span>, <span class='kw'>obj.fun</span>)
 
-<span class='no'>design</span> <span class='kw'>=</span> <span class='fu'>generateDesign</span>(<span class='fl'>4L</span>, <span class='fu'>getParamSet</span>(<span class='no'>obj.fun</span>), <span class='kw'>fun</span> <span class='kw'>=</span> <span class='kw pkg'>lhs</span><span class='kw ns'>::</span><span class='no'><a href='https://rdrr.io/pkg/lhs/man/maximinLHS.html'>maximinLHS</a></span>)
+<span class='kw'>design</span> <span class='op'>=</span> <span class='fu'>generateDesign</span>(<span class='fl'>4L</span>, <span class='fu'>getParamSet</span>(<span class='kw'>obj.fun</span>), fun = <span class='kw'>lhs</span>::<span class='kw'><a href='https://rdrr.io/pkg/lhs/man/maximinLHS.html'>maximinLHS</a></span>)
 
-<span class='no'>run</span> <span class='kw'>=</span> <span class='fu'><a href='exampleRun.html'>exampleRun</a></span>(<span class='no'>obj.fun</span>, <span class='kw'>design</span> <span class='kw'>=</span> <span class='no'>design</span>, <span class='kw'>learner</span> <span class='kw'>=</span> <span class='no'>lrn</span>,
-  <span class='kw'>control</span> <span class='kw'>=</span> <span class='no'>ctrl</span>, <span class='kw'>points.per.dim</span> <span class='kw'>=</span> <span class='fl'>100L</span>, <span class='kw'>show.info</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='kw'>run</span> <span class='op'>=</span> <span class='fu'><a href='exampleRun.html'>exampleRun</a></span>(<span class='kw'>obj.fun</span>, design = <span class='kw'>design</span>, learner = <span class='kw'>lrn</span>,
+  control = <span class='kw'>ctrl</span>, points.per.dim = <span class='fl'>100L</span>, show.info = <span class='fl'>TRUE</span>)
 
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>run</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='kw'>run</span>)
 
-<span class='fu'><a href='plotExampleRun.html'>plotExampleRun</a></span>(<span class='no'>run</span>, <span class='kw'>densregion</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>gg.objects</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_bw</a></span>()))
+<span class='fu'><a href='plotExampleRun.html'>plotExampleRun</a></span>(<span class='kw'>run</span>, densregion = <span class='fl'>TRUE</span>, gg.objects = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_bw</a></span>()))
 }
 <span class='co'>#####################################################</span>
 <span class='co'>###</span>
 <span class='co'>### optimizing multi-objective function</span>
 <span class='co'>###</span>
 <span class='co'>#####################################################</span>
-<span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>mlrMBO</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>ggplot2</span>)
+<span class='co'>if</span> (<span class='fl'>FALSE</span>) {
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://github.com/mlr-org/mlrMBO'>mlrMBO</a></span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='http://ggplot2.tidyverse.org'>ggplot2</a></span>)
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>1</span>)
-<span class='fu'>configureMlr</span>(<span class='kw'>show.learner.output</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='fu'>configureMlr</span>(show.learner.output = <span class='fl'>FALSE</span>)
 
-<span class='no'>obj.fun</span> <span class='kw'>=</span> <span class='fu'>makeZDT1Function</span>(<span class='kw'>dimensions</span> <span class='kw'>=</span> <span class='fl'>2L</span>)
+<span class='kw'>obj.fun</span> <span class='op'>=</span> <span class='fu'>makeZDT1Function</span>(dimensions = <span class='fl'>2L</span>)
 
-<span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='makeMBOControl.html'>makeMBOControl</a></span>(<span class='kw'>n.objectives</span> <span class='kw'>=</span> <span class='fl'>2L</span>, <span class='kw'>propose.points</span> <span class='kw'>=</span> <span class='fl'>2L</span>, <span class='kw'>save.on.disk.at</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/integer.html'>integer</a></span>(<span class='fl'>0L</span>))
-<span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='setMBOControlTermination.html'>setMBOControlTermination</a></span>(<span class='no'>ctrl</span>, <span class='kw'>iters</span> <span class='kw'>=</span> <span class='fl'>5L</span>)
-<span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='setMBOControlInfill.html'>setMBOControlInfill</a></span>(<span class='no'>ctrl</span>, <span class='kw'>crit</span> <span class='kw'>=</span> <span class='fu'><a href='infillcrits.html'>makeMBOInfillCritDIB</a></span>(),
-  <span class='kw'>opt.focussearch.points</span> <span class='kw'>=</span> <span class='fl'>10000L</span>)
-<span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='setMBOControlMultiObj.html'>setMBOControlMultiObj</a></span>(<span class='no'>ctrl</span>, <span class='kw'>parego.s</span> <span class='kw'>=</span> <span class='fl'>100</span>)
-<span class='no'>learner</span> <span class='kw'>=</span> <span class='fu'><a href='makeMBOLearner.html'>makeMBOLearner</a></span>(<span class='no'>ctrl</span>, <span class='no'>obj.fun</span>)
+<span class='kw'>ctrl</span> <span class='op'>=</span> <span class='fu'><a href='makeMBOControl.html'>makeMBOControl</a></span>(n.objectives = <span class='fl'>2L</span>, propose.points = <span class='fl'>2L</span>, save.on.disk.at = <span class='fu'><a href='https://rdrr.io/r/base/integer.html'>integer</a></span>(<span class='fl'>0L</span>))
+<span class='kw'>ctrl</span> <span class='op'>=</span> <span class='fu'><a href='setMBOControlTermination.html'>setMBOControlTermination</a></span>(<span class='kw'>ctrl</span>, iters = <span class='fl'>5L</span>)
+<span class='kw'>ctrl</span> <span class='op'>=</span> <span class='fu'><a href='setMBOControlInfill.html'>setMBOControlInfill</a></span>(<span class='kw'>ctrl</span>, crit = <span class='fu'><a href='infillcrits.html'>makeMBOInfillCritDIB</a></span>(),
+  opt.focussearch.points = <span class='fl'>10000L</span>)
+<span class='kw'>ctrl</span> <span class='op'>=</span> <span class='fu'><a href='setMBOControlMultiObj.html'>setMBOControlMultiObj</a></span>(<span class='kw'>ctrl</span>, parego.s = <span class='fl'>100</span>)
+<span class='kw'>learner</span> <span class='op'>=</span> <span class='fu'><a href='makeMBOLearner.html'>makeMBOLearner</a></span>(<span class='kw'>ctrl</span>, <span class='kw'>obj.fun</span>)
 
-<span class='no'>design</span> <span class='kw'>=</span> <span class='fu'>generateDesign</span>(<span class='fl'>5L</span>, <span class='fu'>getParamSet</span>(<span class='no'>obj.fun</span>), <span class='kw'>fun</span> <span class='kw'>=</span> <span class='kw pkg'>lhs</span><span class='kw ns'>::</span><span class='no'><a href='https://rdrr.io/pkg/lhs/man/maximinLHS.html'>maximinLHS</a></span>)
+<span class='kw'>design</span> <span class='op'>=</span> <span class='fu'>generateDesign</span>(<span class='fl'>5L</span>, <span class='fu'>getParamSet</span>(<span class='kw'>obj.fun</span>), fun = <span class='kw'>lhs</span>::<span class='kw'><a href='https://rdrr.io/pkg/lhs/man/maximinLHS.html'>maximinLHS</a></span>)
 
-<span class='no'>run</span> <span class='kw'>=</span> <span class='fu'><a href='exampleRunMultiObj.html'>exampleRunMultiObj</a></span>(<span class='no'>obj.fun</span>, <span class='kw'>design</span> <span class='kw'>=</span> <span class='no'>design</span>, <span class='kw'>learner</span> <span class='kw'>=</span> <span class='no'>learner</span>, <span class='no'>ctrl</span>, <span class='kw'>points.per.dim</span> <span class='kw'>=</span> <span class='fl'>50L</span>,
-  <span class='kw'>show.info</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>nsga2.args</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>())
+<span class='kw'>run</span> <span class='op'>=</span> <span class='fu'><a href='exampleRunMultiObj.html'>exampleRunMultiObj</a></span>(<span class='kw'>obj.fun</span>, design = <span class='kw'>design</span>, learner = <span class='kw'>learner</span>, <span class='kw'>ctrl</span>, points.per.dim = <span class='fl'>50L</span>,
+  show.info = <span class='fl'>TRUE</span>, nsga2.args = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>())
 
-<span class='fu'><a href='plotExampleRun.html'>plotExampleRun</a></span>(<span class='no'>run</span>, <span class='kw'>gg.objects</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_bw</a></span>()))
+<span class='fu'><a href='plotExampleRun.html'>plotExampleRun</a></span>(<span class='kw'>run</span>, gg.objects = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_bw</a></span>()))
 }
 <span class='co'>#####################################################</span>
 <span class='co'>###</span>
 <span class='co'>### optimizing multi objective function and plots</span>
 <span class='co'>###</span>
 <span class='co'>#####################################################</span>
-<span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>mlrMBO</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>ggplot2</span>)
+<span class='co'>if</span> (<span class='fl'>FALSE</span>) {
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='https://github.com/mlr-org/mlrMBO'>mlrMBO</a></span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='http://ggplot2.tidyverse.org'>ggplot2</a></span>)
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>1</span>)
-<span class='fu'>configureMlr</span>(<span class='kw'>show.learner.output</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='fu'>configureMlr</span>(show.learner.output = <span class='fl'>FALSE</span>)
 
-<span class='no'>obj.fun</span> <span class='kw'>=</span> <span class='fu'>makeDTLZ1Function</span>(<span class='kw'>dimensions</span> <span class='kw'>=</span> <span class='fl'>5L</span>, <span class='kw'>n.objectives</span> <span class='kw'>=</span> <span class='fl'>2L</span>)
+<span class='kw'>obj.fun</span> <span class='op'>=</span> <span class='fu'>makeDTLZ1Function</span>(dimensions = <span class='fl'>5L</span>, n.objectives = <span class='fl'>2L</span>)
 
-<span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='makeMBOControl.html'>makeMBOControl</a></span>(<span class='kw'>n.objectives</span> <span class='kw'>=</span> <span class='fl'>2L</span>,
-  <span class='kw'>propose.points</span> <span class='kw'>=</span> <span class='fl'>2L</span>)
-<span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='setMBOControlTermination.html'>setMBOControlTermination</a></span>(<span class='no'>ctrl</span>, <span class='kw'>iters</span> <span class='kw'>=</span> <span class='fl'>10L</span>)
-<span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='setMBOControlInfill.html'>setMBOControlInfill</a></span>(<span class='no'>ctrl</span>, <span class='kw'>crit</span> <span class='kw'>=</span> <span class='fu'><a href='infillcrits.html'>makeMBOInfillCritEI</a></span>(), <span class='kw'>opt.focussearch.points</span> <span class='kw'>=</span> <span class='fl'>1000L</span>,
-  <span class='kw'>opt.focussearch.maxit</span> <span class='kw'>=</span> <span class='fl'>3L</span>)
-<span class='no'>ctrl</span> <span class='kw'>=</span> <span class='fu'><a href='setMBOControlMultiObj.html'>setMBOControlMultiObj</a></span>(<span class='no'>ctrl</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"parego"</span>)
-<span class='no'>lrn</span> <span class='kw'>=</span> <span class='fu'><a href='makeMBOLearner.html'>makeMBOLearner</a></span>(<span class='no'>ctrl</span>, <span class='no'>obj.fun</span>)
+<span class='kw'>ctrl</span> <span class='op'>=</span> <span class='fu'><a href='makeMBOControl.html'>makeMBOControl</a></span>(n.objectives = <span class='fl'>2L</span>,
+  propose.points = <span class='fl'>2L</span>)
+<span class='kw'>ctrl</span> <span class='op'>=</span> <span class='fu'><a href='setMBOControlTermination.html'>setMBOControlTermination</a></span>(<span class='kw'>ctrl</span>, iters = <span class='fl'>10L</span>)
+<span class='kw'>ctrl</span> <span class='op'>=</span> <span class='fu'><a href='setMBOControlInfill.html'>setMBOControlInfill</a></span>(<span class='kw'>ctrl</span>, crit = <span class='fu'><a href='infillcrits.html'>makeMBOInfillCritEI</a></span>(), opt.focussearch.points = <span class='fl'>1000L</span>,
+  opt.focussearch.maxit = <span class='fl'>3L</span>)
+<span class='kw'>ctrl</span> <span class='op'>=</span> <span class='fu'><a href='setMBOControlMultiObj.html'>setMBOControlMultiObj</a></span>(<span class='kw'>ctrl</span>, method = <span class='st'>"parego"</span>)
+<span class='kw'>lrn</span> <span class='op'>=</span> <span class='fu'><a href='makeMBOLearner.html'>makeMBOLearner</a></span>(<span class='kw'>ctrl</span>, <span class='kw'>obj.fun</span>)
 
-<span class='no'>design</span> <span class='kw'>=</span> <span class='fu'>generateDesign</span>(<span class='fl'>8L</span>, <span class='fu'>getParamSet</span>(<span class='no'>obj.fun</span>), <span class='kw'>fun</span> <span class='kw'>=</span> <span class='kw pkg'>lhs</span><span class='kw ns'>::</span><span class='no'><a href='https://rdrr.io/pkg/lhs/man/maximinLHS.html'>maximinLHS</a></span>)
+<span class='kw'>design</span> <span class='op'>=</span> <span class='fu'>generateDesign</span>(<span class='fl'>8L</span>, <span class='fu'>getParamSet</span>(<span class='kw'>obj.fun</span>), fun = <span class='kw'>lhs</span>::<span class='kw'><a href='https://rdrr.io/pkg/lhs/man/maximinLHS.html'>maximinLHS</a></span>)
 
-<span class='no'>res</span> <span class='kw'>=</span> <span class='fu'><a href='mbo.html'>mbo</a></span>(<span class='no'>obj.fun</span>, <span class='kw'>design</span> <span class='kw'>=</span> <span class='no'>design</span>, <span class='kw'>learner</span> <span class='kw'>=</span> <span class='no'>lrn</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='no'>ctrl</span>, <span class='kw'>show.info</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='kw'>res</span> <span class='op'>=</span> <span class='fu'><a href='mbo.html'>mbo</a></span>(<span class='kw'>obj.fun</span>, design = <span class='kw'>design</span>, learner = <span class='kw'>lrn</span>, control = <span class='kw'>ctrl</span>, show.info = <span class='fl'>TRUE</span>)
 
-<span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(<span class='no'>res</span>)
-}</div></pre>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span>(<span class='kw'>res</span>)
+}
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -524,7 +525,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.</p>
 </div>
 
       </footer>

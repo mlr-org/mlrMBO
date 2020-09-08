@@ -185,24 +185,24 @@ may be generated with the makeMBOInfillCrit function." />
     <div class="ref-description">
     <p><span class="pkg">mlrMBO</span> contains most of the most popular infill criteria, e.g., expected
 improvement, (lower) confidence bound etc. Moreover, custom infill criteria
-may be generated with the <code><a href='MBOInfillCrit.html'>makeMBOInfillCrit</a></code> function.</p>
+may be generated with the <code><a href='makeMBOInfillCrit.html'>makeMBOInfillCrit</a></code> function.</p>
     </div>
 
     <pre class="usage"><span class='fu'>makeMBOInfillCritMeanResponse</span>()
 
 <span class='fu'>makeMBOInfillCritStandardError</span>()
 
-<span class='fu'>makeMBOInfillCritEI</span>(<span class='kw'>se.threshold</span> <span class='kw'>=</span> <span class='fl'>1e-06</span>)
+<span class='fu'>makeMBOInfillCritEI</span>(se.threshold = <span class='fl'>1e-06</span>)
 
-<span class='fu'>makeMBOInfillCritCB</span>(<span class='kw'>cb.lambda</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
+<span class='fu'>makeMBOInfillCritCB</span>(cb.lambda = <span class='kw'>NULL</span>)
 
-<span class='fu'>makeMBOInfillCritAEI</span>(<span class='kw'>aei.use.nugget</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>se.threshold</span> <span class='kw'>=</span> <span class='fl'>1e-06</span>)
+<span class='fu'>makeMBOInfillCritAEI</span>(aei.use.nugget = <span class='fl'>FALSE</span>, se.threshold = <span class='fl'>1e-06</span>)
 
-<span class='fu'>makeMBOInfillCritEQI</span>(<span class='kw'>eqi.beta</span> <span class='kw'>=</span> <span class='fl'>0.75</span>, <span class='kw'>se.threshold</span> <span class='kw'>=</span> <span class='fl'>1e-06</span>)
+<span class='fu'>makeMBOInfillCritEQI</span>(eqi.beta = <span class='fl'>0.75</span>, se.threshold = <span class='fl'>1e-06</span>)
 
-<span class='fu'>makeMBOInfillCritDIB</span>(<span class='kw'>cb.lambda</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>sms.eps</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
+<span class='fu'>makeMBOInfillCritDIB</span>(cb.lambda = <span class='fl'>1</span>, sms.eps = <span class='kw'>NULL</span>)
 
-<span class='fu'>makeMBOInfillCritAdaCB</span>(<span class='kw'>cb.lambda.start</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>cb.lambda.end</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+<span class='fu'>makeMBOInfillCritAdaCB</span>(cb.lambda.start = <span class='kw'>NULL</span>, cb.lambda.end = <span class='kw'>NULL</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -264,7 +264,7 @@ function of the standard normal distribution, \(\pi_CB\) is the probability
 of improvement value and \(n\) is the number of objectives of the considered problem.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='MBOInfillCrit.html'>makeMBOInfillCrit</a></code></p></div>
+    <div class='dont-index'><p><code><a href='makeMBOInfillCrit.html'>makeMBOInfillCrit</a></code></p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -281,7 +281,7 @@ of improvement value and \(n\) is the number of objectives of the considered pro
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.</p>
 </div>
 
       </footer>

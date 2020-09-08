@@ -158,38 +158,45 @@
 <h2 class="hasAnchor">
 <a href="#preparations" class="anchor"></a>Preparations</h2>
 <p>First, we load the required packages. Next, we configure <code>mlr</code> to suppress the learner output to improve output readability. Additionally, we define a global variable giving the number of tuning iterations. Note that this number is set (very) low to reduce runtime.</p>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">mlrMBO</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">mlr</span>)
+<div class="sourceCode" id="cb1"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://github.com/mlr-org/mlrMBO">mlrMBO</a></span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://mlr.mlr-org.com">mlr</a></span>)
 
-<span class="fu"><a href="https://mlr.mlr-org.com/reference/configureMlr.html">configureMlr</a></span>(<span class="kw">on.learner.warning</span> <span class="kw">=</span> <span class="st">"quiet"</span>, <span class="kw">show.learner.output</span> <span class="kw">=</span> <span class="fl">FALSE</span>)
+<span class="fu"><a href="https://mlr.mlr-org.com/reference/configureMlr.html">configureMlr</a></span>(on.learner.warning = <span class="st">"quiet"</span>, show.learner.output = <span class="fl">FALSE</span>)
 
-<span class="no">iters</span> <span class="kw">=</span> <span class="fl">5</span></pre></body></html></div>
+<span class="kw">iters</span> <span class="op">=</span> <span class="fl">5</span>
+</pre></div>
 </div>
 <div id="custom-objective-function-to-evaluate-performance" class="section level2">
 <h2 class="hasAnchor">
 <a href="#custom-objective-function-to-evaluate-performance" class="anchor"></a>1 Custom objective function to evaluate performance</h2>
 <p>As an example, we tune the <code>cost</code> and the <code>gamma</code> parameter of a rbf-SVM on the <a href="https://en.wikipedia.org/wiki/Iris_flower_data_set">Iris data</a>. First, we define the parameter set. Note that the transformations added in the <code>trafo</code> argument mean, that we tune the parameters on a logarithmic scale.</p>
-<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">par.set</span> <span class="kw">=</span> <span class="fu">makeParamSet</span>(
-  <span class="fu">makeNumericParam</span>(<span class="st">"cost"</span>, -<span class="fl">15</span>, <span class="fl">15</span>, <span class="kw">trafo</span> <span class="kw">=</span> <span class="kw">function</span>(<span class="no">x</span>) <span class="fl">2</span>^<span class="no">x</span>),
-  <span class="fu">makeNumericParam</span>(<span class="st">"gamma"</span>, -<span class="fl">15</span>, <span class="fl">15</span>, <span class="kw">trafo</span> <span class="kw">=</span> <span class="kw">function</span>(<span class="no">x</span>) <span class="fl">2</span>^<span class="no">x</span>)
-)</pre></body></html></div>
+<div class="sourceCode" id="cb2"><pre class="downlit">
+<span class="kw">par.set</span> <span class="op">=</span> <span class="fu">makeParamSet</span>(
+  <span class="fu">makeNumericParam</span>(<span class="st">"cost"</span>, <span class="op">-</span><span class="fl">15</span>, <span class="fl">15</span>, trafo = <span class="fu">function</span>(<span class="kw">x</span>) <span class="fl">2</span><span class="op">^</span><span class="kw">x</span>),
+  <span class="fu">makeNumericParam</span>(<span class="st">"gamma"</span>, <span class="op">-</span><span class="fl">15</span>, <span class="fl">15</span>, trafo = <span class="fu">function</span>(<span class="kw">x</span>) <span class="fl">2</span><span class="op">^</span><span class="kw">x</span>)
+)
+</pre></div>
 <p>Next, we define the objective function. First, we define a learner and set its hyperparameters by using <code>makeLearner</code>. To evaluate its performance we use the <code>resample</code> function which automatically takes care of fitting the model and evaluating it on a test set. In this example, resampling is done using 3-fold cross-validation, by passing the <code>ResampleDesc</code> object <code>cv3</code>, that comes predefined with <code>mlr</code>, as an argument to <code>resample</code>. The measure to be optimized can be specified (e.g by passing <code>measures = ber</code>, for the <em>balanced error rate</em>), however <code>mlr</code> has a default for each task type. For classification the <code>mmce</code>(Mean misclassification rate) is the default. Like <a href="mixed_space_optimization.html" title="Mixed Space Optimization">in this example</a>, we set <code>minimize = TRUE</code> and <code>has.simple.signature = FALSE</code>. Note that the <code>iris.task</code> is provided automatically when loading <code>mlr</code>.</p>
-<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="no">svm</span> <span class="kw">=</span> <span class="fu">makeSingleObjectiveFunction</span>(<span class="kw">name</span> <span class="kw">=</span> <span class="st">"svm.tuning"</span>,
-  <span class="kw">fn</span> <span class="kw">=</span> <span class="kw">function</span>(<span class="no">x</span>) {
-    <span class="no">lrn</span> <span class="kw">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/makeLearner.html">makeLearner</a></span>(<span class="st">"classif.svm"</span>, <span class="kw">par.vals</span> <span class="kw">=</span> <span class="no">x</span>)
-    <span class="fu"><a href="https://mlr.mlr-org.com/reference/resample.html">resample</a></span>(<span class="no">lrn</span>, <span class="no">iris.task</span>, <span class="no">cv3</span>, <span class="kw">show.info</span> <span class="kw">=</span> <span class="fl">FALSE</span>)$<span class="no">aggr</span>
+<div class="sourceCode" id="cb3"><pre class="downlit">
+<span class="kw">svm</span> <span class="op">=</span> <span class="fu">makeSingleObjectiveFunction</span>(name = <span class="st">"svm.tuning"</span>,
+  fn = <span class="fu">function</span>(<span class="kw">x</span>) {
+    <span class="kw">lrn</span> <span class="op">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/makeLearner.html">makeLearner</a></span>(<span class="st">"classif.svm"</span>, par.vals = <span class="kw">x</span>)
+    <span class="fu"><a href="https://mlr.mlr-org.com/reference/resample.html">resample</a></span>(<span class="kw">lrn</span>, <span class="kw">iris.task</span>, <span class="kw">cv3</span>, show.info = <span class="fl">FALSE</span>)<span class="op">$</span><span class="kw">aggr</span>
   },
-  <span class="kw">par.set</span> <span class="kw">=</span> <span class="no">par.set</span>,
-  <span class="kw">noisy</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
-  <span class="kw">has.simple.signature</span> <span class="kw">=</span> <span class="fl">FALSE</span>,
-  <span class="kw">minimize</span> <span class="kw">=</span> <span class="fl">TRUE</span>
-)</pre></body></html></div>
+  par.set = <span class="kw">par.set</span>,
+  noisy = <span class="fl">TRUE</span>,
+  has.simple.signature = <span class="fl">FALSE</span>,
+  minimize = <span class="fl">TRUE</span>
+)
+</pre></div>
 <p>Now we create a default <code>MBOControl</code> object and tune the rbf-SVM.</p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">ctrl</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span>()
-<span class="no">ctrl</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span>(<span class="no">ctrl</span>, <span class="kw">iters</span> <span class="kw">=</span> <span class="no">iters</span>)
+<div class="sourceCode" id="cb4"><pre class="downlit">
+<span class="kw">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span>()
+<span class="kw">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span>(<span class="kw">ctrl</span>, iters = <span class="kw">iters</span>)
 
-<span class="no">res</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/mbo.html">mbo</a></span>(<span class="no">svm</span>, <span class="kw">control</span> <span class="kw">=</span> <span class="no">ctrl</span>, <span class="kw">show.info</span> <span class="kw">=</span> <span class="fl">FALSE</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="no">res</span>)
+<span class="kw">res</span> <span class="op">=</span> <span class="fu"><a href="../../reference/mbo.html">mbo</a></span>(<span class="kw">svm</span>, control = <span class="kw">ctrl</span>, show.info = <span class="fl">FALSE</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="kw">res</span>)
 <span class="co">## Recommended parameters:</span>
 <span class="co">## cost=10.6; gamma=-12.1</span>
 <span class="co">## Objective: y = 0.027</span>
@@ -197,97 +204,105 @@
 <span class="co">## Optimization path</span>
 <span class="co">## 8 + 5 entries in total, displaying last 10 (or less):</span>
 <span class="co">##          cost      gamma          y dob eol error.message exec.time          cb</span>
-<span class="co">## 4  -14.644348  -2.100631 0.73333333   0  NA          &lt;NA&gt;     0.152          NA</span>
-<span class="co">## 5    1.439886  -4.670718 0.04666667   0  NA          &lt;NA&gt;     0.207          NA</span>
-<span class="co">## 6   12.278939   6.109579 0.53333333   0  NA          &lt;NA&gt;     0.150          NA</span>
-<span class="co">## 7   10.554900 -12.336816 0.03333333   0  NA          &lt;NA&gt;     0.156          NA</span>
-<span class="co">## 8   -5.818064   7.502343 0.70666667   0  NA          &lt;NA&gt;     0.154          NA</span>
-<span class="co">## 9   10.555933 -12.055114 0.02666667   1  NA          &lt;NA&gt;     0.153  0.02015471</span>
-<span class="co">## 10   5.433675  -8.946188 0.04000000   2  NA          &lt;NA&gt;     0.144 -0.17442706</span>
-<span class="co">## 11   9.331960  -5.809406 0.06666667   3  NA          &lt;NA&gt;     0.146 -0.09793003</span>
-<span class="co">## 12  13.587864  -9.940151 0.04666667   4  NA          &lt;NA&gt;     0.144 -0.04694097</span>
-<span class="co">## 13   2.421178 -10.266161 0.19333333   5  NA          &lt;NA&gt;     0.146 -0.02600454</span>
+<span class="co">## 4  -14.644348  -2.100631 0.73333333   0  NA          &lt;NA&gt;     0.146          NA</span>
+<span class="co">## 5    1.439886  -4.670718 0.04666667   0  NA          &lt;NA&gt;     0.143          NA</span>
+<span class="co">## 6   12.278939   6.109579 0.53333333   0  NA          &lt;NA&gt;     0.148          NA</span>
+<span class="co">## 7   10.554900 -12.336816 0.03333333   0  NA          &lt;NA&gt;     0.150          NA</span>
+<span class="co">## 8   -5.818064   7.502343 0.70666667   0  NA          &lt;NA&gt;     0.142          NA</span>
+<span class="co">## 9   10.555933 -12.055114 0.02666667   1  NA          &lt;NA&gt;     0.149  0.02015471</span>
+<span class="co">## 10   5.433675  -8.946188 0.04000000   2  NA          &lt;NA&gt;     0.143 -0.17442706</span>
+<span class="co">## 11   9.331960  -5.809406 0.06666667   3  NA          &lt;NA&gt;     0.143 -0.09793003</span>
+<span class="co">## 12  13.587864  -9.940151 0.04666667   4  NA          &lt;NA&gt;     0.148 -0.04694097</span>
+<span class="co">## 13   2.421178 -10.266161 0.19333333   5  NA          &lt;NA&gt;     0.147 -0.02600454</span>
 <span class="co">##    error.model train.time  prop.type propose.time         se        mean lambda</span>
 <span class="co">## 4         &lt;NA&gt;         NA initdesign           NA         NA          NA     NA</span>
 <span class="co">## 5         &lt;NA&gt;         NA initdesign           NA         NA          NA     NA</span>
 <span class="co">## 6         &lt;NA&gt;         NA initdesign           NA         NA          NA     NA</span>
 <span class="co">## 7         &lt;NA&gt;         NA initdesign           NA         NA          NA     NA</span>
 <span class="co">## 8         &lt;NA&gt;         NA initdesign           NA         NA          NA     NA</span>
-<span class="co">## 9         &lt;NA&gt;      0.068  infill_cb        0.452 0.23258301  0.25273772      1</span>
-<span class="co">## 10        &lt;NA&gt;      0.089  infill_cb        0.345 0.11501017 -0.05941690      1</span>
-<span class="co">## 11        &lt;NA&gt;      0.108  infill_cb        0.301 0.11095124  0.01302121      1</span>
-<span class="co">## 12        &lt;NA&gt;      0.083  infill_cb        0.300 0.11216645  0.06522548      1</span>
-<span class="co">## 13        &lt;NA&gt;      0.110  infill_cb        0.310 0.07340803  0.04740349      1</span>
-<span class="no">res</span>$<span class="no">x</span>
+<span class="co">## 9         &lt;NA&gt;      0.064  infill_cb        0.306 0.23258301  0.25273772      1</span>
+<span class="co">## 10        &lt;NA&gt;      0.076  infill_cb        0.305 0.11501017 -0.05941690      1</span>
+<span class="co">## 11        &lt;NA&gt;      0.107  infill_cb        0.310 0.11095124  0.01302121      1</span>
+<span class="co">## 12        &lt;NA&gt;      0.081  infill_cb        0.304 0.11216645  0.06522548      1</span>
+<span class="co">## 13        &lt;NA&gt;      0.109  infill_cb        0.308 0.07340803  0.04740349      1</span>
+<span class="kw">res</span><span class="op">$</span><span class="kw">x</span>
 <span class="co">## $cost</span>
 <span class="co">## [1] 10.55593</span>
 <span class="co">## </span>
 <span class="co">## $gamma</span>
 <span class="co">## [1] -12.05511</span>
-<span class="no">res</span>$<span class="no">y</span>
+<span class="kw">res</span><span class="op">$</span><span class="kw">y</span>
 <span class="co">## [1] 0.02666667</span>
-<span class="no">op</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span>(<span class="no">res</span>$<span class="no">opt.path</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/cumsum.html">cummin</a></span>(<span class="no">op</span>$<span class="no">y</span>), <span class="kw">type</span> <span class="kw">=</span> <span class="st">"l"</span>, <span class="kw">ylab</span> <span class="kw">=</span> <span class="st">"mmce"</span>, <span class="kw">xlab</span> <span class="kw">=</span> <span class="st">"iteration"</span>)</pre></body></html></div>
+<span class="kw">op</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span>(<span class="kw">res</span><span class="op">$</span><span class="kw">opt.path</span>)
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/cumsum.html">cummin</a></span>(<span class="kw">op</span><span class="op">$</span><span class="kw">y</span>), type = <span class="st">"l"</span>, ylab = <span class="st">"mmce"</span>, xlab = <span class="st">"iteration"</span>)
+</pre></div>
 <p><img src="machine_learning_with_mlrmbo_files/figure-html/unnamed-chunk-1-1.png" width="700"></p>
 </div>
 <div id="using-mlrs-tuning-interface" class="section level2">
 <h2 class="hasAnchor">
 <a href="#using-mlrs-tuning-interface" class="anchor"></a>2 Using <code>mlr</code>’s tuning interface</h2>
 <p>Instead of defining an objective function where the learner’s performance is evaluated, we can make use of model-based optimization directly from <code>mlr</code>. We just create a <code>TuneControl</code> object, passing the <code>MBOControl</code> object to it. Then we call <a href="/mlr-tutorial/devel/html/tune/index.html"><code>tuneParams</code></a> to tune the hyperparameters.</p>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">ctrl</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span>()
-<span class="no">ctrl</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span>(<span class="no">ctrl</span>, <span class="kw">iters</span> <span class="kw">=</span> <span class="no">iters</span>)
-<span class="no">tune.ctrl</span> <span class="kw">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/makeTuneControlMBO.html">makeTuneControlMBO</a></span>(<span class="kw">mbo.control</span> <span class="kw">=</span> <span class="no">ctrl</span>)
-<span class="no">res</span> <span class="kw">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/tuneParams.html">tuneParams</a></span>(<span class="fu"><a href="https://mlr.mlr-org.com/reference/makeLearner.html">makeLearner</a></span>(<span class="st">"classif.svm"</span>), <span class="no">iris.task</span>, <span class="no">cv3</span>, <span class="kw">par.set</span> <span class="kw">=</span> <span class="no">par.set</span>, <span class="kw">control</span> <span class="kw">=</span> <span class="no">tune.ctrl</span>,
-  <span class="kw">show.info</span> <span class="kw">=</span> <span class="fl">FALSE</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="no">res</span>)
+<div class="sourceCode" id="cb5"><pre class="downlit">
+<span class="kw">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span>()
+<span class="kw">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span>(<span class="kw">ctrl</span>, iters = <span class="kw">iters</span>)
+<span class="kw">tune.ctrl</span> <span class="op">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/makeTuneControlMBO.html">makeTuneControlMBO</a></span>(mbo.control = <span class="kw">ctrl</span>)
+<span class="kw">res</span> <span class="op">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/tuneParams.html">tuneParams</a></span>(<span class="fu"><a href="https://mlr.mlr-org.com/reference/makeLearner.html">makeLearner</a></span>(<span class="st">"classif.svm"</span>), <span class="kw">iris.task</span>, <span class="kw">cv3</span>, par.set = <span class="kw">par.set</span>, control = <span class="kw">tune.ctrl</span>,
+  show.info = <span class="fl">FALSE</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="kw">res</span>)
 <span class="co">## Tune result:</span>
 <span class="co">## Op. pars: cost=13.4; gamma=0.0829</span>
 <span class="co">## mmce.test.mean=0.0200000</span>
-<span class="no">res</span>$<span class="no">x</span>
+<span class="kw">res</span><span class="op">$</span><span class="kw">x</span>
 <span class="co">## $cost</span>
 <span class="co">## [1] 13.40125</span>
 <span class="co">## </span>
 <span class="co">## $gamma</span>
 <span class="co">## [1] 0.08289002</span>
-<span class="no">res</span>$<span class="no">y</span>
+<span class="kw">res</span><span class="op">$</span><span class="kw">y</span>
 <span class="co">## mmce.test.mean </span>
 <span class="co">##           0.02</span>
-<span class="no">op.y</span> <span class="kw">=</span> <span class="fu">getOptPathY</span>(<span class="no">res</span>$<span class="no">opt.path</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/cumsum.html">cummin</a></span>(<span class="no">op.y</span>), <span class="kw">type</span> <span class="kw">=</span> <span class="st">"l"</span>, <span class="kw">ylab</span> <span class="kw">=</span> <span class="st">"mmce"</span>, <span class="kw">xlab</span> <span class="kw">=</span> <span class="st">"iteration"</span>)</pre></body></html></div>
+<span class="kw">op.y</span> <span class="op">=</span> <span class="fu">getOptPathY</span>(<span class="kw">res</span><span class="op">$</span><span class="kw">opt.path</span>)
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/cumsum.html">cummin</a></span>(<span class="kw">op.y</span>), type = <span class="st">"l"</span>, ylab = <span class="st">"mmce"</span>, xlab = <span class="st">"iteration"</span>)
+</pre></div>
 <p><img src="machine_learning_with_mlrmbo_files/figure-html/mlr_tuning-1.png" width="700"></p>
 </div>
 <div id="hierarchical-mixed-space-optimization" class="section level2">
 <h2 class="hasAnchor">
 <a href="#hierarchical-mixed-space-optimization" class="anchor"></a>Hierarchical mixed space optimization</h2>
 <p>In many cases, the hyperparameter space is not just numerical but mixed and often even hierarchical. This can easily be done out-of-the-box and needs no adaption to our previous example. (Recall that a suitable surrogate model is chosen automatically, as explained <a href="../mlrMBO.html#surrogate-model">here</a>.) To demonstrate this, we tune the <code>cost</code> and the <code>kernel</code> parameter of a SVM. When <code>kernel</code> takes the <code>radial</code> value, <code>gamma</code> needs to be specified. For a <code>polynomial</code> kernel, the <code>degree</code> needs to be specified.</p>
-<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">par.set</span> <span class="kw">=</span> <span class="fu">makeParamSet</span>(
-  <span class="fu">makeDiscreteParam</span>(<span class="st">"kernel"</span>, <span class="kw">values</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"radial"</span>, <span class="st">"polynomial"</span>, <span class="st">"linear"</span>)),
-  <span class="fu">makeNumericParam</span>(<span class="st">"cost"</span>, -<span class="fl">15</span>, <span class="fl">15</span>, <span class="kw">trafo</span> <span class="kw">=</span> <span class="kw">function</span>(<span class="no">x</span>) <span class="fl">2</span>^<span class="no">x</span>),
-  <span class="fu">makeNumericParam</span>(<span class="st">"gamma"</span>, -<span class="fl">15</span>, <span class="fl">15</span>, <span class="kw">trafo</span> <span class="kw">=</span> <span class="kw">function</span>(<span class="no">x</span>) <span class="fl">2</span>^<span class="no">x</span>, <span class="kw">requires</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html">quote</a></span>(<span class="no">kernel</span> <span class="kw">==</span> <span class="st">"radial"</span>)),
-  <span class="fu">makeIntegerParam</span>(<span class="st">"degree"</span>, <span class="kw">lower</span> <span class="kw">=</span> <span class="fl">1</span>, <span class="kw">upper</span> <span class="kw">=</span> <span class="fl">4</span>, <span class="kw">requires</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html">quote</a></span>(<span class="no">kernel</span> <span class="kw">==</span> <span class="st">"polynomial"</span>))
-)</pre></body></html></div>
+<div class="sourceCode" id="cb6"><pre class="downlit">
+<span class="kw">par.set</span> <span class="op">=</span> <span class="fu">makeParamSet</span>(
+  <span class="fu">makeDiscreteParam</span>(<span class="st">"kernel"</span>, values = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"radial"</span>, <span class="st">"polynomial"</span>, <span class="st">"linear"</span>)),
+  <span class="fu">makeNumericParam</span>(<span class="st">"cost"</span>, <span class="op">-</span><span class="fl">15</span>, <span class="fl">15</span>, trafo = <span class="fu">function</span>(<span class="kw">x</span>) <span class="fl">2</span><span class="op">^</span><span class="kw">x</span>),
+  <span class="fu">makeNumericParam</span>(<span class="st">"gamma"</span>, <span class="op">-</span><span class="fl">15</span>, <span class="fl">15</span>, trafo = <span class="fu">function</span>(<span class="kw">x</span>) <span class="fl">2</span><span class="op">^</span><span class="kw">x</span>, requires = <span class="fu"><a href="https://rdrr.io/r/base/substitute.html">quote</a></span>(<span class="kw">kernel</span> <span class="op">==</span> <span class="st">"radial"</span>)),
+  <span class="fu">makeIntegerParam</span>(<span class="st">"degree"</span>, lower = <span class="fl">1</span>, upper = <span class="fl">4</span>, requires = <span class="fu"><a href="https://rdrr.io/r/base/substitute.html">quote</a></span>(<span class="kw">kernel</span> <span class="op">==</span> <span class="st">"polynomial"</span>))
+)
+</pre></div>
 <p>Now we can just repeat the setup from the previous example and tune the hyperparameters.</p>
-<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="no">ctrl</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span>()
-<span class="no">ctrl</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span>(<span class="no">ctrl</span>, <span class="kw">iters</span> <span class="kw">=</span> <span class="no">iters</span>)
-<span class="no">tune.ctrl</span> <span class="kw">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/makeTuneControlMBO.html">makeTuneControlMBO</a></span>(<span class="kw">mbo.control</span> <span class="kw">=</span> <span class="no">ctrl</span>)
-<span class="no">res</span> <span class="kw">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/tuneParams.html">tuneParams</a></span>(<span class="fu"><a href="https://mlr.mlr-org.com/reference/makeLearner.html">makeLearner</a></span>(<span class="st">"classif.svm"</span>), <span class="no">iris.task</span>, <span class="no">cv3</span>, <span class="kw">par.set</span> <span class="kw">=</span> <span class="no">par.set</span>, <span class="kw">control</span> <span class="kw">=</span> <span class="no">tune.ctrl</span>,
-  <span class="kw">show.info</span> <span class="kw">=</span> <span class="fl">FALSE</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb7"><pre class="downlit">
+<span class="kw">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span>()
+<span class="kw">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span>(<span class="kw">ctrl</span>, iters = <span class="kw">iters</span>)
+<span class="kw">tune.ctrl</span> <span class="op">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/makeTuneControlMBO.html">makeTuneControlMBO</a></span>(mbo.control = <span class="kw">ctrl</span>)
+<span class="kw">res</span> <span class="op">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/tuneParams.html">tuneParams</a></span>(<span class="fu"><a href="https://mlr.mlr-org.com/reference/makeLearner.html">makeLearner</a></span>(<span class="st">"classif.svm"</span>), <span class="kw">iris.task</span>, <span class="kw">cv3</span>, par.set = <span class="kw">par.set</span>, control = <span class="kw">tune.ctrl</span>,
+  show.info = <span class="fl">FALSE</span>)
+</pre></div>
 </div>
 <div id="parallelization-and-multi-point-proposals" class="section level2">
 <h2 class="hasAnchor">
 <a href="#parallelization-and-multi-point-proposals" class="anchor"></a>Parallelization and multi-point proposals</h2>
 <p>We can easily add multi-point proposals and parallelize it using the <code>parallelMap</code> package. (Note that the chosen <em>multicore</em> back-end for parallelization does not work on windows machines. Please refer to the <a href="parallelization.html">parallelization section</a> for details on parallelization and multi point proposals.) In each iteration, we propose as many points as CPUs used for parallelization. As infill criterion we use Expected Improvement.</p>
-<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">parallelMap</span>)
-<span class="no">ncpus</span> <span class="kw">=</span> <span class="fl">2L</span>
+<div class="sourceCode" id="cb8"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://parallelmap.mlr-org.com">parallelMap</a></span>)
+<span class="kw">ncpus</span> <span class="op">=</span> <span class="fl">2L</span>
 
-<span class="no">ctrl</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span>(<span class="kw">propose.points</span> <span class="kw">=</span> <span class="no">ncpus</span>)
-<span class="no">ctrl</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span>(<span class="no">ctrl</span>, <span class="kw">iters</span> <span class="kw">=</span> <span class="no">iters</span>)
-<span class="no">ctrl</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/setMBOControlInfill.html">setMBOControlInfill</a></span>(<span class="no">ctrl</span>, <span class="kw">crit</span> <span class="kw">=</span> <span class="no">crit.ei</span>)
-<span class="no">ctrl</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/setMBOControlMultiPoint.html">setMBOControlMultiPoint</a></span>(<span class="no">ctrl</span>, <span class="kw">method</span> <span class="kw">=</span> <span class="st">"cl"</span>, <span class="kw">cl.lie</span> <span class="kw">=</span> <span class="no">min</span>)
-<span class="no">tune.ctrl</span> <span class="kw">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/makeTuneControlMBO.html">makeTuneControlMBO</a></span>(<span class="kw">mbo.control</span> <span class="kw">=</span> <span class="no">ctrl</span>)
-<span class="fu"><a href="https://parallelmap.mlr-org.com/reference/parallelStart.html">parallelStartMulticore</a></span>(<span class="kw">cpus</span> <span class="kw">=</span> <span class="no">ncpus</span>)
+<span class="kw">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span>(propose.points = <span class="kw">ncpus</span>)
+<span class="kw">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span>(<span class="kw">ctrl</span>, iters = <span class="kw">iters</span>)
+<span class="kw">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlInfill.html">setMBOControlInfill</a></span>(<span class="kw">ctrl</span>, crit = <span class="kw">crit.ei</span>)
+<span class="kw">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlMultiPoint.html">setMBOControlMultiPoint</a></span>(<span class="kw">ctrl</span>, method = <span class="st">"cl"</span>, cl.lie = <span class="kw">min</span>)
+<span class="kw">tune.ctrl</span> <span class="op">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/makeTuneControlMBO.html">makeTuneControlMBO</a></span>(mbo.control = <span class="kw">ctrl</span>)
+<span class="fu"><a href="https://parallelmap.mlr-org.com/reference/parallelStart.html">parallelStartMulticore</a></span>(cpus = <span class="kw">ncpus</span>)
 <span class="co">## Starting parallelization in mode=multicore with cpus=2.</span>
-<span class="no">res</span> <span class="kw">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/tuneParams.html">tuneParams</a></span>(<span class="fu"><a href="https://mlr.mlr-org.com/reference/makeLearner.html">makeLearner</a></span>(<span class="st">"classif.svm"</span>), <span class="no">iris.task</span>, <span class="no">cv3</span>, <span class="kw">par.set</span> <span class="kw">=</span> <span class="no">par.set</span>, <span class="kw">control</span> <span class="kw">=</span> <span class="no">tune.ctrl</span>, <span class="kw">show.info</span> <span class="kw">=</span> <span class="fl">FALSE</span>)
+<span class="kw">res</span> <span class="op">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/tuneParams.html">tuneParams</a></span>(<span class="fu"><a href="https://mlr.mlr-org.com/reference/makeLearner.html">makeLearner</a></span>(<span class="st">"classif.svm"</span>), <span class="kw">iris.task</span>, <span class="kw">cv3</span>, par.set = <span class="kw">par.set</span>, control = <span class="kw">tune.ctrl</span>, show.info = <span class="fl">FALSE</span>)
 <span class="co">## Mapping in parallel: mode = multicore; level = mlrMBO.feval; cpus = 2; elements = 16.</span>
 <span class="co">## Mapping in parallel: mode = multicore; level = mlrMBO.feval; cpus = 2; elements = 2.</span>
 <span class="co">## Mapping in parallel: mode = multicore; level = mlrMBO.feval; cpus = 2; elements = 2.</span>
@@ -295,38 +310,42 @@
 <span class="co">## Mapping in parallel: mode = multicore; level = mlrMBO.feval; cpus = 2; elements = 2.</span>
 <span class="co">## Mapping in parallel: mode = multicore; level = mlrMBO.feval; cpus = 2; elements = 2.</span>
 <span class="fu"><a href="https://parallelmap.mlr-org.com/reference/parallelStop.html">parallelStop</a></span>()
-<span class="co">## Stopped parallelization. All cleaned up.</span></pre></body></html></div>
+<span class="co">## Stopped parallelization. All cleaned up.</span>
+</pre></div>
 </div>
 <div id="usecase-pipeline-configuration" class="section level2">
 <h2 class="hasAnchor">
 <a href="#usecase-pipeline-configuration" class="anchor"></a>Usecase: Pipeline configuration</h2>
 <p>It is also possible to tune a whole machine learning pipeline, i.e. preprocessing and model configuration. The example pipeline is: * Feature filtering based on an ANOVA test or covariance, such that between 50% and 100% of the features remain. * Select either a SVM or a naive Bayes classifier. * Tune parameters of the selected classifier.</p>
 <p>First, we define the parameter space:</p>
-<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="no">par.set</span> <span class="kw">=</span> <span class="fu">makeParamSet</span>(
-  <span class="fu">makeDiscreteParam</span>(<span class="st">"fw.method"</span>, <span class="kw">values</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"anova.test"</span>, <span class="st">"variance"</span>)),
-  <span class="fu">makeNumericParam</span>(<span class="st">"fw.perc"</span>, <span class="kw">lower</span> <span class="kw">=</span> <span class="fl">0.1</span>, <span class="kw">upper</span> <span class="kw">=</span> <span class="fl">1</span>),
-  <span class="fu">makeDiscreteParam</span>(<span class="st">"selected.learner"</span>, <span class="kw">values</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"classif.svm"</span>, <span class="st">"classif.naiveBayes"</span>)),
-  <span class="fu">makeNumericParam</span>(<span class="st">"classif.svm.cost"</span>, -<span class="fl">15</span>, <span class="fl">15</span>, <span class="kw">trafo</span> <span class="kw">=</span> <span class="kw">function</span>(<span class="no">x</span>) <span class="fl">2</span>^<span class="no">x</span>,
-    <span class="kw">require</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html">quote</a></span>(<span class="no">selected.learner</span> <span class="kw">==</span> <span class="st">"classif.svm"</span>)),
-  <span class="fu">makeNumericParam</span>(<span class="st">"classif.svm.gamma"</span>, -<span class="fl">15</span>, <span class="fl">15</span>, <span class="kw">trafo</span> <span class="kw">=</span> <span class="kw">function</span>(<span class="no">x</span>) <span class="fl">2</span>^<span class="no">x</span>,
-    <span class="kw">requires</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html">quote</a></span>(<span class="no">classif.svm.kernel</span> <span class="kw">==</span> <span class="st">"radial"</span> <span class="kw">&amp;</span> <span class="no">selected.learner</span> <span class="kw">==</span> <span class="st">"classif.svm"</span>)),
-  <span class="fu">makeIntegerParam</span>(<span class="st">"classif.svm.degree"</span>, <span class="kw">lower</span> <span class="kw">=</span> <span class="fl">1</span>, <span class="kw">upper</span> <span class="kw">=</span> <span class="fl">4</span>,
-    <span class="kw">requires</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html">quote</a></span>(<span class="no">classif.svm.kernel</span> <span class="kw">==</span> <span class="st">"polynomial"</span> <span class="kw">&amp;</span> <span class="no">selected.learner</span> <span class="kw">==</span> <span class="st">"classif.svm"</span>)),
-  <span class="fu">makeDiscreteParam</span>(<span class="st">"classif.svm.kernel"</span>, <span class="kw">values</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"radial"</span>, <span class="st">"polynomial"</span>, <span class="st">"linear"</span>),
-    <span class="kw">require</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html">quote</a></span>(<span class="no">selected.learner</span> <span class="kw">==</span> <span class="st">"classif.svm"</span>))
-)</pre></body></html></div>
+<div class="sourceCode" id="cb9"><pre class="downlit">
+<span class="kw">par.set</span> <span class="op">=</span> <span class="fu">makeParamSet</span>(
+  <span class="fu">makeDiscreteParam</span>(<span class="st">"fw.method"</span>, values = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"anova.test"</span>, <span class="st">"variance"</span>)),
+  <span class="fu">makeNumericParam</span>(<span class="st">"fw.perc"</span>, lower = <span class="fl">0.1</span>, upper = <span class="fl">1</span>),
+  <span class="fu">makeDiscreteParam</span>(<span class="st">"selected.learner"</span>, values = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"classif.svm"</span>, <span class="st">"classif.naiveBayes"</span>)),
+  <span class="fu">makeNumericParam</span>(<span class="st">"classif.svm.cost"</span>, <span class="op">-</span><span class="fl">15</span>, <span class="fl">15</span>, trafo = <span class="fu">function</span>(<span class="kw">x</span>) <span class="fl">2</span><span class="op">^</span><span class="kw">x</span>,
+    require = <span class="fu"><a href="https://rdrr.io/r/base/substitute.html">quote</a></span>(<span class="kw">selected.learner</span> <span class="op">==</span> <span class="st">"classif.svm"</span>)),
+  <span class="fu">makeNumericParam</span>(<span class="st">"classif.svm.gamma"</span>, <span class="op">-</span><span class="fl">15</span>, <span class="fl">15</span>, trafo = <span class="fu">function</span>(<span class="kw">x</span>) <span class="fl">2</span><span class="op">^</span><span class="kw">x</span>,
+    requires = <span class="fu"><a href="https://rdrr.io/r/base/substitute.html">quote</a></span>(<span class="kw">classif.svm.kernel</span> <span class="op">==</span> <span class="st">"radial"</span> <span class="op">&amp;</span> <span class="kw">selected.learner</span> <span class="op">==</span> <span class="st">"classif.svm"</span>)),
+  <span class="fu">makeIntegerParam</span>(<span class="st">"classif.svm.degree"</span>, lower = <span class="fl">1</span>, upper = <span class="fl">4</span>,
+    requires = <span class="fu"><a href="https://rdrr.io/r/base/substitute.html">quote</a></span>(<span class="kw">classif.svm.kernel</span> <span class="op">==</span> <span class="st">"polynomial"</span> <span class="op">&amp;</span> <span class="kw">selected.learner</span> <span class="op">==</span> <span class="st">"classif.svm"</span>)),
+  <span class="fu">makeDiscreteParam</span>(<span class="st">"classif.svm.kernel"</span>, values = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"radial"</span>, <span class="st">"polynomial"</span>, <span class="st">"linear"</span>),
+    require = <span class="fu"><a href="https://rdrr.io/r/base/substitute.html">quote</a></span>(<span class="kw">selected.learner</span> <span class="op">==</span> <span class="st">"classif.svm"</span>))
+)
+</pre></div>
 <p>Next, we create the control objects and a suitable learner, combining <code><a href="https://mlr.mlr-org.com/reference/makeFilterWrapper.html">makeFilterWrapper()</a></code> with <code><a href="https://mlr.mlr-org.com/reference/makeModelMultiplexer.html">makeModelMultiplexer()</a></code>. (Please refer to the <a href="/mlr-tutorial/devel/html/advanced_tune/index.html#tuning-across-whole-model-spaces-with-modelmultiplexer">advanced tuning chapter of the mlr tutorial</a> for details.) Afterwards, we can run <code><a href="https://mlr.mlr-org.com/reference/tuneParams.html">tuneParams()</a></code> and check the results.</p>
-<div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="no">ctrl</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span>()
-<span class="no">ctrl</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span>(<span class="no">ctrl</span>, <span class="kw">iters</span> <span class="kw">=</span> <span class="no">iters</span>)
-<span class="no">lrn</span> <span class="kw">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/makeFilterWrapper.html">makeFilterWrapper</a></span>(<span class="fu"><a href="https://mlr.mlr-org.com/reference/makeModelMultiplexer.html">makeModelMultiplexer</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="st">"classif.svm"</span>, <span class="st">"classif.naiveBayes"</span>)), <span class="kw">fw.method</span> <span class="kw">=</span> <span class="st">"variance"</span>)
-<span class="no">tune.ctrl</span> <span class="kw">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/makeTuneControlMBO.html">makeTuneControlMBO</a></span>(<span class="kw">mbo.control</span> <span class="kw">=</span> <span class="no">ctrl</span>)
+<div class="sourceCode" id="cb10"><pre class="downlit">
+<span class="kw">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span>()
+<span class="kw">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span>(<span class="kw">ctrl</span>, iters = <span class="kw">iters</span>)
+<span class="kw">lrn</span> <span class="op">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/makeFilterWrapper.html">makeFilterWrapper</a></span>(<span class="fu"><a href="https://mlr.mlr-org.com/reference/makeModelMultiplexer.html">makeModelMultiplexer</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="st">"classif.svm"</span>, <span class="st">"classif.naiveBayes"</span>)), fw.method = <span class="st">"variance"</span>)
+<span class="kw">tune.ctrl</span> <span class="op">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/makeTuneControlMBO.html">makeTuneControlMBO</a></span>(mbo.control = <span class="kw">ctrl</span>)
 
-<span class="no">res</span> <span class="kw">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/tuneParams.html">tuneParams</a></span>(<span class="no">lrn</span>, <span class="no">iris.task</span>, <span class="no">cv3</span>, <span class="kw">par.set</span> <span class="kw">=</span> <span class="no">par.set</span>, <span class="kw">control</span> <span class="kw">=</span> <span class="no">tune.ctrl</span>, <span class="kw">show.info</span> <span class="kw">=</span> <span class="fl">FALSE</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="no">res</span>)
+<span class="kw">res</span> <span class="op">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/tuneParams.html">tuneParams</a></span>(<span class="kw">lrn</span>, <span class="kw">iris.task</span>, <span class="kw">cv3</span>, par.set = <span class="kw">par.set</span>, control = <span class="kw">tune.ctrl</span>, show.info = <span class="fl">FALSE</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="kw">res</span>)
 <span class="co">## Tune result:</span>
 <span class="co">## Op. pars: fw.method=anova.test; fw.perc=0.905; selected.learner=classif.svm; classif.svm.cost=0.501; classif.svm.kernel=linear</span>
 <span class="co">## mmce.test.mean=0.0266667</span>
-<span class="no">res</span>$<span class="no">x</span>
+<span class="kw">res</span><span class="op">$</span><span class="kw">x</span>
 <span class="co">## $fw.method</span>
 <span class="co">## [1] "anova.test"</span>
 <span class="co">## </span>
@@ -341,11 +360,12 @@
 <span class="co">## </span>
 <span class="co">## $classif.svm.kernel</span>
 <span class="co">## [1] "linear"</span>
-<span class="no">res</span>$<span class="no">y</span>
+<span class="kw">res</span><span class="op">$</span><span class="kw">y</span>
 <span class="co">## mmce.test.mean </span>
 <span class="co">##     0.02666667</span>
-<span class="no">op</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span>(<span class="no">res</span>$<span class="no">opt.path</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/cumsum.html">cummin</a></span>(<span class="no">op</span>$<span class="no">mmce.test.mean</span>), <span class="kw">type</span> <span class="kw">=</span> <span class="st">"l"</span>, <span class="kw">ylab</span> <span class="kw">=</span> <span class="st">"mmce"</span>, <span class="kw">xlab</span> <span class="kw">=</span> <span class="st">"iteration"</span>)</pre></body></html></div>
+<span class="kw">op</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span>(<span class="kw">res</span><span class="op">$</span><span class="kw">opt.path</span>)
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/cumsum.html">cummin</a></span>(<span class="kw">op</span><span class="op">$</span><span class="kw">mmce.test.mean</span>), type = <span class="st">"l"</span>, ylab = <span class="st">"mmce"</span>, xlab = <span class="st">"iteration"</span>)
+</pre></div>
 <p><img src="machine_learning_with_mlrmbo_files/figure-html/pipeline_tuning-1.png" width="700"></p>
 </div>
   </div>
@@ -365,7 +385,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.</p>
 </div>
 
       </footer>

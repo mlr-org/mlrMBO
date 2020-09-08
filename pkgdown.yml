@@ -1,18 +1,8 @@
 pandoc: 2.7.3
-pkgdown: 1.5.1
+pkgdown: 1.6.0
 pkgdown_sha: ~
-articles:
-  mlrMBO: mlrMBO.html
-  adaptive_infill_criteria: supplementary/adaptive_infill_criteria.html
-  human_in_the_loop_MBO: supplementary/human_in_the_loop_MBO.html
-  infill_criteria: supplementary/infill_criteria.html
-  machine_learning_with_mlrmbo: supplementary/machine_learning_with_mlrmbo.html
-  mixed_space_optimization: supplementary/mixed_space_optimization.html
-  mlrmbo_and_the_command_line: supplementary/mlrmbo_and_the_command_line.html
-  noisy_optimization: supplementary/noisy_optimization.html
-  parallelization: supplementary/parallelization.html
-  warmstart: supplementary/warmstart.html
-last_built: 2020-09-07T11:15Z
+articles: []
+last_built: 2020-09-08T04:39Z
 urls:
   reference: https://mlrMBO.mlr-org.com/reference
   article: https://mlrMBO.mlr-org.com/articles

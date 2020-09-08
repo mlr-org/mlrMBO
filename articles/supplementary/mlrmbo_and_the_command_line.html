@@ -151,8 +151,9 @@
 <div id="the-bash-script" class="section level3">
 <h3 class="hasAnchor">
 <a href="#the-bash-script" class="anchor"></a>The bash script</h3>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="co"># write bash script</span>
-<span class="no">lines</span> <span class="kw">=</span> <span class="st">'#!/bin/bash
+<div class="sourceCode" id="cb1"><pre class="downlit">
+<span class="co"># write bash script</span>
+<span class="kw">lines</span> <span class="op">=</span> <span class="st">'#!/bin/bash
 fun ()
 {
   x1=$1
@@ -165,60 +166,70 @@ fun $1 $2
 echo "The result is $result!" &gt; "result.txt"
 echo "Finish calculation."
 '</span>
-<span class="fu"><a href="https://rdrr.io/r/base/writeLines.html">writeLines</a></span>(<span class="no">lines</span>, <span class="st">"fun.sh"</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/writeLines.html">writeLines</a></span>(<span class="kw">lines</span>, <span class="st">"fun.sh"</span>)
 <span class="co"># make it executable:</span>
-<span class="fu"><a href="https://rdrr.io/r/base/system.html">system</a></span>(<span class="st">"chmod +x fun.sh"</span>)</pre></body></html></div>
+<span class="fu"><a href="https://rdrr.io/r/base/system.html">system</a></span>(<span class="st">"chmod +x fun.sh"</span>)
+</pre></div>
 </div>
 <div id="running-the-script-from-r" class="section level3">
 <h3 class="hasAnchor">
 <a href="#running-the-script-from-r" class="anchor"></a>Running the script from R</h3>
 <p>The following code is an R function that starts the script, reads the result from the text file and returns it.</p>
-<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">stringi</span>)
-<span class="no">runScript</span> <span class="kw">=</span> <span class="kw">function</span>(<span class="no">x</span>) {
-  <span class="no">command</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span>(<span class="st">"./fun.sh %f %f"</span>, <span class="no">x</span><span class="kw">[[</span><span class="st">'x1'</span>]], <span class="no">x</span><span class="kw">[[</span><span class="st">'x2'</span>]])
-  <span class="no">error.code</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.html">system</a></span>(<span class="no">command</span>)
-  <span class="kw">if</span> (<span class="no">error.code</span> <span class="kw">!=</span> <span class="fl">0</span>) {
+<div class="sourceCode" id="cb2"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="http://www.gagolewski.com/software/stringi">stringi</a></span>)
+<span class="kw">runScript</span> <span class="op">=</span> <span class="fu">function</span>(<span class="kw">x</span>) {
+  <span class="kw">command</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span>(<span class="st">"./fun.sh %f %f"</span>, <span class="kw">x</span>[[<span class="st">'x1'</span>]], <span class="kw">x</span>[[<span class="st">'x2'</span>]])
+  <span class="kw">error.code</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.html">system</a></span>(<span class="kw">command</span>)
+  <span class="co">if</span> (<span class="kw">error.code</span> != <span class="fl">0</span>) {
     <span class="fu"><a href="https://rdrr.io/r/base/stop.html">stop</a></span>(<span class="st">"Simulation had error.code != 0!"</span>)
   }
-  <span class="no">result</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/readLines.html">readLines</a></span>(<span class="st">"result.txt"</span>)
+  <span class="kw">result</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/readLines.html">readLines</a></span>(<span class="st">"result.txt"</span>)
   <span class="co"># the pattern matches 12 as well as 12.34 and .34</span>
   <span class="co"># the ?: makes the decimals a non-capturing group.</span>
-  <span class="no">result</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/pkg/stringi/man/stri_match.html">stri_match_first_regex</a></span>(<span class="no">result</span>, <span class="kw">pattern</span> <span class="kw">=</span> <span class="st">"\\d*(?:\\.\\d+)?(?=\\!)"</span>)
-  <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(<span class="no">result</span>)
-}</pre></body></html></div>
+  <span class="kw">result</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/stringi/man/stri_match.html">stri_match_first_regex</a></span>(<span class="kw">result</span>, pattern = <span class="st">"\\d*(?:\\.\\d+)?(?=\\!)"</span>)
+  <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(<span class="kw">result</span>)
+}
+</pre></div>
 <p>This function uses <code>stringi</code> and <em>regular expressions</em> to match the actual result value in the result file. Depending on the output different strategies to read the result make sense. XML files can usually be accessed with <code><a href="https://rdrr.io/pkg/XML/man/xmlTreeParse.html">XML::xmlParse</a></code>, <code><a href="https://rdrr.io/pkg/XML/man/getNodeSet.html">XML::getNodeSet</a></code>, <code><a href="https://rdrr.io/pkg/XML/man/xmlAttrs.html">XML::xmlAttrs</a></code> etc. using <code>XPath</code> queries. Sometimes <code><a href="https://rdrr.io/r/utils/read.table.html">read.table()</a></code> is also sufficient. Another way is to use <code>source</code> if the result actually can be interpreted as valid R code. If, for example, the output is written in a file like this:</p>
-<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="no">value1</span> <span class="kw">=</span> <span class="fl">23.45</span>
-<span class="no">value2</span> <span class="kw">=</span> <span class="fl">13.82</span></pre></body></html></div>
+<div class="sourceCode" id="cb3"><pre class="downlit">
+<span class="kw">value1</span> <span class="op">=</span> <span class="fl">23.45</span>
+<span class="kw">value2</span> <span class="op">=</span> <span class="fl">13.82</span>
+</pre></div>
 <p>We can easily use <code><a href="https://rdrr.io/r/base/source.html">source()</a></code> like that:</p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">EV</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/environment.html">new.env</a></span>()
-<span class="fu"><a href="https://rdrr.io/r/base/eval.html">eval</a></span>(<span class="kw">expr</span> <span class="kw">=</span> {<span class="no">a</span> <span class="kw">=</span> <span class="fl">1</span>}, <span class="kw">envir</span> <span class="kw">=</span> <span class="no">EV</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/list.html">as.list</a></span>(<span class="no">EV</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/source.html">source</a></span>(<span class="kw">file</span> <span class="kw">=</span> <span class="st">"result.txt"</span>, <span class="kw">local</span> <span class="kw">=</span> <span class="no">EV</span>)
-<span class="no">res</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">as.list</a></span>(<span class="no">EV</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/rm.html">rm</a></span>(<span class="no">EV</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb4"><pre class="downlit">
+<span class="kw">EV</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/environment.html">new.env</a></span>()
+<span class="fu"><a href="https://rdrr.io/r/base/eval.html">eval</a></span>(expr = {<span class="kw">a</span> <span class="op">=</span> <span class="fl">1</span>}, envir = <span class="kw">EV</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/list.html">as.list</a></span>(<span class="kw">EV</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/source.html">source</a></span>(file = <span class="st">"result.txt"</span>, local = <span class="kw">EV</span>)
+<span class="kw">res</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">as.list</a></span>(<span class="kw">EV</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/rm.html">rm</a></span>(<span class="kw">EV</span>)
+</pre></div>
 <p>which will return a list with the entries <code>$value1</code> and <code>$value2</code>.</p>
 </div>
 <div id="define-bounds-wrap-function-" class="section level3">
 <h3 class="hasAnchor">
 <a href="#define-bounds-wrap-function-" class="anchor"></a>Define bounds, wrap function.</h3>
 <p>To evaluate the function from within <strong>mlrMBO</strong> it has to be wrapped in <strong>smoof</strong> function. The smoof function also contains information about the bounds and scales of the domain of the objective function defined in a <em>ParameterSet</em>.</p>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">mlrMBO</span>)
+<div class="sourceCode" id="cb5"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://github.com/mlr-org/mlrMBO">mlrMBO</a></span>)
 <span class="co"># Defining the bounds of the parameters:</span>
-<span class="no">par.set</span> <span class="kw">=</span> <span class="fu">makeParamSet</span>(
-  <span class="fu">makeNumericParam</span>(<span class="st">"x1"</span>, <span class="kw">lower</span> <span class="kw">=</span> -<span class="fl">3</span>, <span class="kw">upper</span> <span class="kw">=</span> <span class="fl">3</span>),
-  <span class="fu">makeNumericParam</span>(<span class="st">"x2"</span>, <span class="kw">lower</span> <span class="kw">=</span> -<span class="fl">2.5</span>, <span class="kw">upper</span> <span class="kw">=</span> <span class="fl">2.5</span>)
+<span class="kw">par.set</span> <span class="op">=</span> <span class="fu">makeParamSet</span>(
+  <span class="fu">makeNumericParam</span>(<span class="st">"x1"</span>, lower = <span class="op">-</span><span class="fl">3</span>, upper = <span class="fl">3</span>),
+  <span class="fu">makeNumericParam</span>(<span class="st">"x2"</span>, lower = <span class="op">-</span><span class="fl">2.5</span>, upper = <span class="fl">2.5</span>)
 )
 <span class="co"># Wrapping everything in a smoof function:</span>
-<span class="no">fn</span> <span class="kw">=</span> <span class="fu">makeSingleObjectiveFunction</span>(
-  <span class="kw">id</span> <span class="kw">=</span> <span class="st">"fun.sh"</span>,
-  <span class="kw">fn</span> <span class="kw">=</span> <span class="no">runScript</span>,
-  <span class="kw">par.set</span> <span class="kw">=</span> <span class="no">par.set</span>,
-  <span class="kw">has.simple.signature</span> <span class="kw">=</span> <span class="fl">FALSE</span>
-)</pre></body></html></div>
+<span class="kw">fn</span> <span class="op">=</span> <span class="fu">makeSingleObjectiveFunction</span>(
+  id = <span class="st">"fun.sh"</span>,
+  fn = <span class="kw">runScript</span>,
+  par.set = <span class="kw">par.set</span>,
+  has.simple.signature = <span class="fl">FALSE</span>
+)
+</pre></div>
 <p>We confirm that the function works as intended and evaluate the initial design:</p>
-<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">des</span> <span class="kw">=</span> <span class="fu">generateGridDesign</span>(<span class="no">par.set</span>, <span class="kw">resolution</span> <span class="kw">=</span> <span class="fl">3</span>)
-<span class="no">des</span>$<span class="no">y</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span>(<span class="no">des</span>, <span class="fl">1</span>, <span class="no">fn</span>)
-<span class="no">des</span>
+<div class="sourceCode" id="cb6"><pre class="downlit">
+<span class="kw">des</span> <span class="op">=</span> <span class="fu">generateGridDesign</span>(<span class="kw">par.set</span>, resolution = <span class="fl">3</span>)
+<span class="kw">des</span><span class="op">$</span><span class="kw">y</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span>(<span class="kw">des</span>, <span class="fl">1</span>, <span class="kw">fn</span>)
+<span class="kw">des</span>
 <span class="co">##   x1   x2         y</span>
 <span class="co">## 1 -3 -2.5 16.006802</span>
 <span class="co">## 2  0 -2.5  5.408529</span>
@@ -228,17 +239,19 @@ echo "Finish calculation."
 <span class="co">## 6  3  0.0  9.909297</span>
 <span class="co">## 7 -3  2.5 16.006802</span>
 <span class="co">## 8  0  2.5  5.408529</span>
-<span class="co">## 9  3  2.5 16.159297</span></pre></body></html></div>
+<span class="co">## 9  3  2.5 16.159297</span>
+</pre></div>
 </div>
 <div id="start-the-optimization" class="section level3">
 <h3 class="hasAnchor">
 <a href="#start-the-optimization" class="anchor"></a>Start the Optimization</h3>
 <p>The optimization with mlrMBO gets started as usually:</p>
-<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="no">ctrl</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span>()
-<span class="no">ctrl</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/setMBOControlInfill.html">setMBOControlInfill</a></span>(<span class="no">ctrl</span>, <span class="kw">crit</span> <span class="kw">=</span> <span class="no">crit.ei</span>)
-<span class="no">ctrl</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span>(<span class="no">ctrl</span>, <span class="kw">iters</span> <span class="kw">=</span> <span class="fl">10</span>)
-<span class="fu">configureMlr</span>(<span class="kw">show.info</span> <span class="kw">=</span> <span class="fl">FALSE</span>, <span class="kw">show.learner.output</span> <span class="kw">=</span> <span class="fl">FALSE</span>)
-<span class="no">run</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/mbo.html">mbo</a></span>(<span class="kw">fun</span> <span class="kw">=</span> <span class="no">fn</span>, <span class="kw">control</span> <span class="kw">=</span> <span class="no">ctrl</span>)
+<div class="sourceCode" id="cb7"><pre class="downlit">
+<span class="kw">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span>()
+<span class="kw">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlInfill.html">setMBOControlInfill</a></span>(<span class="kw">ctrl</span>, crit = <span class="kw">crit.ei</span>)
+<span class="kw">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span>(<span class="kw">ctrl</span>, iters = <span class="fl">10</span>)
+<span class="fu"><a href="https://mlr.mlr-org.com/reference/configureMlr.html">configureMlr</a></span>(show.info = <span class="fl">FALSE</span>, show.learner.output = <span class="fl">FALSE</span>)
+<span class="kw">run</span> <span class="op">=</span> <span class="fu"><a href="../../reference/mbo.html">mbo</a></span>(fun = <span class="kw">fn</span>, control = <span class="kw">ctrl</span>)
 <span class="co">## Computing y column(s) for design. Not provided.</span>
 <span class="co">## [mbo] 0: x1=-1.58; x2=-1.37 : y = 3.83 : 0.0 secs : initdesign</span>
 <span class="co">## [mbo] 0: x1=-0.469; x2=0.508 : y = 0.517 : 0.0 secs : initdesign</span>
@@ -259,15 +272,16 @@ echo "Finish calculation."
 <span class="co">## [mbo] 9: x1=0.511; x2=-0.825 : y = 0.473 : 0.0 secs : infill_ei</span>
 <span class="co">## [mbo] 10: x1=0.266; x2=0.948 : y = 0.299 : 0.0 secs : infill_ei</span>
 <span class="co"># The resulting optimal configuration:</span>
-<span class="no">run</span>$<span class="no">x</span>
+<span class="kw">run</span><span class="op">$</span><span class="kw">x</span>
 <span class="co">## $x1</span>
 <span class="co">## [1] 0.2879772</span>
 <span class="co">## </span>
 <span class="co">## $x2</span>
 <span class="co">## [1] -0.778453</span>
 <span class="co"># The best reached value:</span>
-<span class="no">run</span>$<span class="no">y</span>
-<span class="co">## [1] 0.03555322</span></pre></body></html></div>
+<span class="kw">run</span><span class="op">$</span><span class="kw">y</span>
+<span class="co">## [1] 0.03555322</span>
+</pre></div>
 </div>
 </div>
 <div id="execute-the-r-script-from-a-shell" class="section level2">
@@ -275,26 +289,27 @@ echo "Finish calculation."
 <a href="#execute-the-r-script-from-a-shell" class="anchor"></a>Execute the R script from a shell</h2>
 <p>To start the optimization from a command line we have to write a R-script that also serves as the configuration for mlrMBO.</p>
 <p>The following is a complete script based on the examples given above that accepts some basic arguments and writes the output as a JSON file.</p>
-<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">mlrMBO</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">stringi</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">jsonlite</span>)
+<div class="sourceCode" id="cb8"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://github.com/mlr-org/mlrMBO">mlrMBO</a></span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="http://www.gagolewski.com/software/stringi">stringi</a></span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://arxiv.org/abs/1403.2805">jsonlite</a></span>)
 
 <span class="co"># read command line args (in a not very safe way)</span>
 <span class="co"># Script can be called like that:</span>
 <span class="co"># Rscript runMBO.R iters=20 time=10 seed=1</span>
-<span class="no">args</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/commandArgs.html">commandArgs</a></span>(<span class="fl">TRUE</span>)
+<span class="kw">args</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/commandArgs.html">commandArgs</a></span>(<span class="fl">TRUE</span>)
 <span class="co"># defaults:</span>
-<span class="no">iters</span> <span class="kw">=</span> <span class="fl">50</span>
-<span class="no">time</span> <span class="kw">=</span> <span class="fl">30</span>
-<span class="no">seed</span> <span class="kw">=</span> <span class="fl">123</span>
+<span class="kw">iters</span> <span class="op">=</span> <span class="fl">50</span>
+<span class="kw">time</span> <span class="op">=</span> <span class="fl">30</span>
+<span class="kw">seed</span> <span class="op">=</span> <span class="fl">123</span>
 <span class="co"># parse args (and possibly overwrite defaults)</span>
-<span class="kw">for</span> (<span class="no">arg</span> <span class="kw">in</span> <span class="no">args</span>) {
-  <span class="fu"><a href="https://rdrr.io/r/base/eval.html">eval</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/parse.html">parse</a></span>(<span class="kw">text</span> <span class="kw">=</span> <span class="no">arg</span>))
+<span class="co">for</span> (<span class="kw">arg</span> <span class="co">in</span> <span class="kw">args</span>) {
+  <span class="fu"><a href="https://rdrr.io/r/base/eval.html">eval</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/parse.html">parse</a></span>(text = <span class="kw">arg</span>))
 }
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="no">seed</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="kw">seed</span>)
 
 <span class="co"># write bash script</span>
-<span class="no">lines</span> <span class="kw">=</span> <span class="st">'#!/bin/bash
+<span class="kw">lines</span> <span class="op">=</span> <span class="st">'#!/bin/bash
 fun ()
 {
   x1=$1
@@ -307,51 +322,52 @@ fun $1 $2
 echo "The result is $result!" &gt; "result.txt"
 echo "Finish calculation."
 '</span>
-<span class="fu"><a href="https://rdrr.io/r/base/writeLines.html">writeLines</a></span>(<span class="no">lines</span>, <span class="st">"fun.sh"</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/writeLines.html">writeLines</a></span>(<span class="kw">lines</span>, <span class="st">"fun.sh"</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/system.html">system</a></span>(<span class="st">"chmod +x fun.sh"</span>)
 
 <span class="co"># runScript function to execute bash script</span>
-<span class="no">runScript</span> <span class="kw">=</span> <span class="kw">function</span>(<span class="no">x</span>) {
+<span class="kw">runScript</span> <span class="op">=</span> <span class="fu">function</span>(<span class="kw">x</span>) {
   <span class="co"># console output file output_1490030005_1.1_2.4.txt</span>
-  <span class="no">output_file</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span>(<span class="st">"output_%i_%.1f_%.1f.txt"</span>, <span class="fu"><a href="https://rdrr.io/r/base/integer.html">as.integer</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html">Sys.time</a></span>()), <span class="no">x</span><span class="kw">[[</span><span class="st">'x1'</span>]], <span class="no">x</span><span class="kw">[[</span><span class="st">'x2'</span>]])
+  <span class="kw">output_file</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span>(<span class="st">"output_%i_%.1f_%.1f.txt"</span>, <span class="fu"><a href="https://rdrr.io/r/base/integer.html">as.integer</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html">Sys.time</a></span>()), <span class="kw">x</span>[[<span class="st">'x1'</span>]], <span class="kw">x</span>[[<span class="st">'x2'</span>]])
   <span class="co"># redirect output with ./fun.sh 1.1 2.4 &gt; output.txt</span>
   <span class="co"># alternative: ./fun.sh 1.1 2.4 &gt; /dev/null to drop it</span>
-  <span class="no">command</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span>(<span class="st">"./fun.sh %f %f &gt; %s"</span>, <span class="no">x</span><span class="kw">[[</span><span class="st">'x1'</span>]], <span class="no">x</span><span class="kw">[[</span><span class="st">'x2'</span>]], <span class="no">output_file</span>)
-  <span class="no">error.code</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.html">system</a></span>(<span class="no">command</span>)
-  <span class="kw">if</span> (<span class="no">error.code</span> <span class="kw">!=</span> <span class="fl">0</span>) {
+  <span class="kw">command</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span>(<span class="st">"./fun.sh %f %f &gt; %s"</span>, <span class="kw">x</span>[[<span class="st">'x1'</span>]], <span class="kw">x</span>[[<span class="st">'x2'</span>]], <span class="kw">output_file</span>)
+  <span class="kw">error.code</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.html">system</a></span>(<span class="kw">command</span>)
+  <span class="co">if</span> (<span class="kw">error.code</span> != <span class="fl">0</span>) {
     <span class="fu"><a href="https://rdrr.io/r/base/stop.html">stop</a></span>(<span class="st">"Simulation had error.code != 0!"</span>)
   }
-  <span class="no">result</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/readLines.html">readLines</a></span>(<span class="st">"result.txt"</span>)
+  <span class="kw">result</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/readLines.html">readLines</a></span>(<span class="st">"result.txt"</span>)
   <span class="co"># the pattern matches 12 as well as 12.34 and .34</span>
   <span class="co"># the ?: makes the decimals a non-capturing group.</span>
-  <span class="no">result</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/pkg/stringi/man/stri_match.html">stri_match_first_regex</a></span>(<span class="no">result</span>, <span class="kw">pattern</span> <span class="kw">=</span> <span class="st">"\\d*(?:\\.\\d+)?(?=\\!)"</span>)
-  <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(<span class="no">result</span>)
+  <span class="kw">result</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/stringi/man/stri_match.html">stri_match_first_regex</a></span>(<span class="kw">result</span>, pattern = <span class="st">"\\d*(?:\\.\\d+)?(?=\\!)"</span>)
+  <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span>(<span class="kw">result</span>)
 }
 
 <span class="co"># define mlrMBO optimization</span>
-<span class="no">par.set</span> <span class="kw">=</span> <span class="fu">makeParamSet</span>(
-  <span class="fu">makeNumericParam</span>(<span class="st">"x1"</span>, <span class="kw">lower</span> <span class="kw">=</span> -<span class="fl">3</span>, <span class="kw">upper</span> <span class="kw">=</span> <span class="fl">3</span>),
-  <span class="fu">makeNumericParam</span>(<span class="st">"x2"</span>, <span class="kw">lower</span> <span class="kw">=</span> -<span class="fl">2.5</span>, <span class="kw">upper</span> <span class="kw">=</span> <span class="fl">2.5</span>)
+<span class="kw">par.set</span> <span class="op">=</span> <span class="fu">makeParamSet</span>(
+  <span class="fu">makeNumericParam</span>(<span class="st">"x1"</span>, lower = <span class="op">-</span><span class="fl">3</span>, upper = <span class="fl">3</span>),
+  <span class="fu">makeNumericParam</span>(<span class="st">"x2"</span>, lower = <span class="op">-</span><span class="fl">2.5</span>, upper = <span class="fl">2.5</span>)
 )
-<span class="no">fn</span> <span class="kw">=</span> <span class="fu">makeSingleObjectiveFunction</span>(
-  <span class="kw">id</span> <span class="kw">=</span> <span class="st">"fun.sh"</span>,
-  <span class="kw">fn</span> <span class="kw">=</span> <span class="no">runScript</span>,
-  <span class="kw">par.set</span> <span class="kw">=</span> <span class="no">par.set</span>,
-  <span class="kw">has.simple.signature</span> <span class="kw">=</span> <span class="fl">FALSE</span>
+<span class="kw">fn</span> <span class="op">=</span> <span class="fu">makeSingleObjectiveFunction</span>(
+  id = <span class="st">"fun.sh"</span>,
+  fn = <span class="kw">runScript</span>,
+  par.set = <span class="kw">par.set</span>,
+  has.simple.signature = <span class="fl">FALSE</span>
 )
-<span class="no">ctrl</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span>()
-<span class="no">ctrl</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/setMBOControlInfill.html">setMBOControlInfill</a></span>(<span class="no">ctrl</span>, <span class="kw">crit</span> <span class="kw">=</span> <span class="no">crit.ei</span>)
-<span class="no">ctrl</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span>(<span class="no">ctrl</span>, <span class="kw">iters</span> <span class="kw">=</span> <span class="no">iters</span>, <span class="kw">time.budget</span> <span class="kw">=</span> <span class="no">time</span>)
-<span class="fu">configureMlr</span>(<span class="kw">show.info</span> <span class="kw">=</span> <span class="fl">FALSE</span>, <span class="kw">show.learner.output</span> <span class="kw">=</span> <span class="fl">FALSE</span>)
-<span class="no">run</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/mbo.html">mbo</a></span>(<span class="kw">fun</span> <span class="kw">=</span> <span class="no">fn</span>, <span class="kw">control</span> <span class="kw">=</span> <span class="no">ctrl</span>)
+<span class="kw">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span>()
+<span class="kw">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlInfill.html">setMBOControlInfill</a></span>(<span class="kw">ctrl</span>, crit = <span class="kw">crit.ei</span>)
+<span class="kw">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span>(<span class="kw">ctrl</span>, iters = <span class="kw">iters</span>, time.budget = <span class="kw">time</span>)
+<span class="fu"><a href="https://mlr.mlr-org.com/reference/configureMlr.html">configureMlr</a></span>(show.info = <span class="fl">FALSE</span>, show.learner.output = <span class="fl">FALSE</span>)
+<span class="kw">run</span> <span class="op">=</span> <span class="fu"><a href="../../reference/mbo.html">mbo</a></span>(fun = <span class="kw">fn</span>, control = <span class="kw">ctrl</span>)
 
 <span class="co"># clean up intermediate files:</span>
 <span class="fu"><a href="https://rdrr.io/r/base/files.html">file.remove</a></span>(<span class="st">"result.txt"</span>)
-<span class="no">output.files</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span>(<span class="kw">pattern</span> <span class="kw">=</span> <span class="st">"output_\\d+_[0-9_.-]+\\.txt"</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/files.html">file.remove</a></span>(<span class="no">output.files</span>)
+<span class="kw">output.files</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span>(pattern = <span class="st">"output_\\d+_[0-9_.-]+\\.txt"</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/files.html">file.remove</a></span>(<span class="kw">output.files</span>)
 
 <span class="co"># save result to json</span>
-<span class="fu"><a href="https://rdrr.io/pkg/jsonlite/man/read_json.html">write_json</a></span>(<span class="no">run</span>[<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"x"</span>,<span class="st">"y"</span>)], <span class="st">"mbo_res.json"</span>)</pre></body></html></div>
+<span class="fu"><a href="https://rdrr.io/pkg/jsonlite/man/read_json.html">write_json</a></span>(<span class="kw">run</span>[<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"x"</span>,<span class="st">"y"</span>)], <span class="st">"mbo_res.json"</span>)
+</pre></div>
 <p>Assuming we saved the lines above in a file called <code>runMBO.R</code>, we can simply run it from the command line as follows:</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1"></a><span class="ex">Rscript</span> runMBO.R</span></code></pre></div>
 <p>As the script also handles some additional arguments it can also be called with the number of MBO iterations (<code>iters</code>), the maximal time budget in seconds (<code>time</code>) and a <code>seed</code> value for reproducibility.</p>
@@ -375,7 +391,7 @@ echo "Finish calculation."
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.</p>
 </div>
 
       </footer>

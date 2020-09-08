@@ -200,12 +200,12 @@ of scalar values to the return value of the objective function." />
 
     <div class="ref-description">
     <p>In mlrMBO the <code><a href='https://paramhelpers.mlr-org.com/reference/OptPath.html'>OptPath</a></code> contains extra information next to the information documented in <code><a href='https://paramhelpers.mlr-org.com/reference/OptPath.html'>OptPath</a></code>.</p>
-<p>The extras are:</p><dl'>
+<p>The extras are:</p><dl>
 <dt>train.time</dt><dd><p>Time to train the model(s) that produced the points. Only the first slot of the vector is used (if we have multiple points), rest are NA.</p></dd>
 <dt>propose.time</dt><dd><p>Time needed to propose the point. If we have individual timings from the proposal mechanism, we have one different value per point here. If all were generated in one go, we only have one timing, we store it in the slot for the first point, rest are NA.</p></dd>
 <dt>errors.model</dt><dd><p>Possible Error Messages. If point-producing model(s) crashed they are replicated for all n points, if only one error message was passed we store it for the first point, rest are NA.</p></dd>
 <dt>prop.type</dt><dd><p>Type of point proposal. Possible values are
-  <dl'>
+  <dl>
   <dt>initdesign</dt><dd><p>Points actually not proposed, but in the initial design.</p></dd>
   <dt>infill\_x</dt><dd><p>Here x is a placeholder for the selected infill criterion, e.g., infill\_ei for expected improvement.</p></dd>
   <dt>random\_interleave</dt><dd><p>Uniformly sampled points added additionally to the proposed points.</p></dd>
@@ -238,7 +238,7 @@ of scalar values to the return value of the objective function.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.</p>
 </div>
 
       </footer>

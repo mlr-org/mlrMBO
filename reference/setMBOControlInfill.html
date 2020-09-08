@@ -191,29 +191,29 @@ minimizes that.</p>
     </div>
 
     <pre class="usage"><span class='fu'>setMBOControlInfill</span>(
-  <span class='no'>control</span>,
-  <span class='kw'>crit</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>interleave.random.points</span> <span class='kw'>=</span> <span class='fl'>0L</span>,
-  <span class='kw'>filter.proposed.points</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>filter.proposed.points.tol</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>opt</span> <span class='kw'>=</span> <span class='st'>"focussearch"</span>,
-  <span class='kw'>opt.restarts</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>opt.focussearch.maxit</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>opt.focussearch.points</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>opt.cmaes.control</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>opt.ea.maxit</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>opt.ea.mu</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>opt.ea.sbx.eta</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>opt.ea.sbx.p</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>opt.ea.pm.eta</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>opt.ea.pm.p</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>opt.ea.lambda</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>opt.nsga2.popsize</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>opt.nsga2.generations</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>opt.nsga2.cprob</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>opt.nsga2.cdist</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>opt.nsga2.mprob</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>opt.nsga2.mdist</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
+  <span class='kw'>control</span>,
+  crit = <span class='kw'>NULL</span>,
+  interleave.random.points = <span class='fl'>0L</span>,
+  filter.proposed.points = <span class='kw'>NULL</span>,
+  filter.proposed.points.tol = <span class='kw'>NULL</span>,
+  opt = <span class='st'>"focussearch"</span>,
+  opt.restarts = <span class='kw'>NULL</span>,
+  opt.focussearch.maxit = <span class='kw'>NULL</span>,
+  opt.focussearch.points = <span class='kw'>NULL</span>,
+  opt.cmaes.control = <span class='kw'>NULL</span>,
+  opt.ea.maxit = <span class='kw'>NULL</span>,
+  opt.ea.mu = <span class='kw'>NULL</span>,
+  opt.ea.sbx.eta = <span class='kw'>NULL</span>,
+  opt.ea.sbx.p = <span class='kw'>NULL</span>,
+  opt.ea.pm.eta = <span class='kw'>NULL</span>,
+  opt.ea.pm.p = <span class='kw'>NULL</span>,
+  opt.ea.lambda = <span class='kw'>NULL</span>,
+  opt.nsga2.popsize = <span class='kw'>NULL</span>,
+  opt.nsga2.generations = <span class='kw'>NULL</span>,
+  opt.nsga2.cprob = <span class='kw'>NULL</span>,
+  opt.nsga2.cdist = <span class='kw'>NULL</span>,
+  opt.nsga2.mprob = <span class='kw'>NULL</span>,
+  opt.nsga2.mdist = <span class='kw'>NULL</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -226,9 +226,9 @@ Control object for mbo.</p></td>
     </tr>
     <tr>
       <th>crit</th>
-      <td><p>[<code><a href='MBOInfillCrit.html'>MBOInfillCrit</a></code>]<br />
+      <td><p>[<code><a href='makeMBOInfillCrit.html'>MBOInfillCrit</a></code>]<br />
 How should infill points be rated. See <code><a href='infillcrits.html'>infillcrits</a></code> for an overview
-of available infill criteria or implement a custom one via <code><a href='MBOInfillCrit.html'>makeMBOInfillCrit</a></code>.#
+of available infill criteria or implement a custom one via <code><a href='makeMBOInfillCrit.html'>makeMBOInfillCrit</a></code>.#
 Default is &#8220;(lower) confidence bound&#8221; (see <code><a href='infillcrits.html'>makeMBOInfillCritCB</a></code>).</p></td>
     </tr>
     <tr>
@@ -421,7 +421,7 @@ nsga2 param. Default is 10.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.</p>
 </div>
 
       </footer>

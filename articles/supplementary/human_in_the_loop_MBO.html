@@ -152,13 +152,16 @@
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
 <p>Before we start the optimization you need to define the search space:</p>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="no">ps</span> <span class="kw">=</span> <span class="fu">makeParamSet</span>(
-  <span class="fu">makeNumericParam</span>(<span class="st">"q"</span>, <span class="kw">lower</span> <span class="kw">=</span> -<span class="fl">1</span>, <span class="kw">upper</span> <span class="kw">=</span> <span class="fl">2</span>),
-  <span class="fu">makeIntegerParam</span>(<span class="st">"v"</span>, <span class="kw">lower</span> <span class="kw">=</span> -<span class="fl">2</span>, <span class="kw">upper</span> <span class="kw">=</span> <span class="fl">3</span>)
-)</pre></body></html></div>
+<div class="sourceCode" id="cb1"><pre class="downlit">
+<span class="kw">ps</span> <span class="op">=</span> <span class="fu">makeParamSet</span>(
+  <span class="fu">makeNumericParam</span>(<span class="st">"q"</span>, lower = <span class="op">-</span><span class="fl">1</span>, upper = <span class="fl">2</span>),
+  <span class="fu">makeIntegerParam</span>(<span class="st">"v"</span>, lower = <span class="op">-</span><span class="fl">2</span>, upper = <span class="fl">3</span>)
+)
+</pre></div>
 <p>Furthermore we need an initial design that includes the results of the evaluated function</p>
-<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">des</span> <span class="kw">=</span> <span class="fu">generateDesign</span>(<span class="kw">n</span> <span class="kw">=</span> <span class="fl">7</span>, <span class="kw">par.set</span> <span class="kw">=</span> <span class="no">ps</span>)
-<span class="no">des</span>
+<div class="sourceCode" id="cb2"><pre class="downlit">
+<span class="kw">des</span> <span class="op">=</span> <span class="fu">generateDesign</span>(n = <span class="fl">7</span>, par.set = <span class="kw">ps</span>)
+<span class="kw">des</span>
 <span class="co">##              q  v</span>
 <span class="co">## 1  1.186967721  2</span>
 <span class="co">## 2 -0.894533828 -1</span>
@@ -166,26 +169,36 @@
 <span class="co">## 4  1.952659707  3</span>
 <span class="co">## 5 -0.296925651  3</span>
 <span class="co">## 6  0.566731057 -2</span>
-<span class="co">## 7  0.947456868  1</span></pre></body></html></div>
+<span class="co">## 7  0.947456868  1</span>
+</pre></div>
 <p>After evaluating the objective function manually we can add the results</p>
-<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="no">des</span>$<span class="no">y</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1.20</span>, <span class="fl">0.97</span>, <span class="fl">0.91</span>, <span class="fl">3.15</span>, <span class="fl">0.58</span>, <span class="fl">1.12</span>, <span class="fl">0.50</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb3"><pre class="downlit">
+<span class="kw">des</span><span class="op">$</span><span class="kw">y</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1.20</span>, <span class="fl">0.97</span>, <span class="fl">0.91</span>, <span class="fl">3.15</span>, <span class="fl">0.58</span>, <span class="fl">1.12</span>, <span class="fl">0.50</span>)
+</pre></div>
 <p>Now we define our <strong>mlrMBO</strong>-Control object. For this example we stick to the defaults except that we set the infill-criterion to the <strong>Expected Improvement</strong></p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">ctrl</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span>()
-<span class="no">ctrl</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/setMBOControlInfill.html">setMBOControlInfill</a></span>(<span class="no">ctrl</span>, <span class="kw">crit</span> <span class="kw">=</span> <span class="no">crit.ei</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb4"><pre class="downlit">
+<span class="kw">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span>()
+<span class="kw">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlInfill.html">setMBOControlInfill</a></span>(<span class="kw">ctrl</span>, crit = <span class="kw">crit.ei</span>)
+</pre></div>
 <p>These information are enough to get us started and initialize the sequential MBO.</p>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">opt.state</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/initSMBO.html">initSMBO</a></span>(<span class="kw">par.set</span> <span class="kw">=</span> <span class="no">ps</span>, <span class="kw">design</span> <span class="kw">=</span> <span class="no">des</span>, <span class="kw">control</span> <span class="kw">=</span> <span class="no">ctrl</span>, <span class="kw">minimize</span> <span class="kw">=</span> <span class="fl">TRUE</span>, <span class="kw">noisy</span> <span class="kw">=</span> <span class="fl">FALSE</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb5"><pre class="downlit">
+<span class="kw">opt.state</span> <span class="op">=</span> <span class="fu"><a href="../../reference/initSMBO.html">initSMBO</a></span>(par.set = <span class="kw">ps</span>, design = <span class="kw">des</span>, control = <span class="kw">ctrl</span>, minimize = <span class="fl">TRUE</span>, noisy = <span class="fl">FALSE</span>)
+</pre></div>
 <p>At each state the <code>opt.state</code> object can be plotted to visualize the predictions of the surrogate model</p>
-<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">opt.state</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb6"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span>(<span class="kw">opt.state</span>)
+</pre></div>
 <p><img src="human_in_the_loop_MBO_files/figure-html/plotOptState1-1.png" width="700"></p>
 <p>The first panel shows the value of the infill criterion. The higher the value the more this area is desirable to be explored to find the optimum. In the following panels the mean prediction of the surrogate and the uncertainty estimation is plotted.</p>
 <p>Let’s see which point MBO suggests we should evaluate in the next step:</p>
-<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="fu"><a href="../../reference/proposePoints.html">proposePoints</a></span>(<span class="no">opt.state</span>)
+<div class="sourceCode" id="cb7"><pre class="downlit">
+<span class="fu"><a href="../../reference/proposePoints.html">proposePoints</a></span>(<span class="kw">opt.state</span>)
 <span class="co">## $prop.points</span>
 <span class="co">##            q v</span>
 <span class="co">## 893 0.409088 2</span>
 <span class="co">## </span>
 <span class="co">## $propose.time</span>
-<span class="co">## [1] 0.324</span>
+<span class="co">## [1] 0.287</span>
 <span class="co">## </span>
 <span class="co">## $prop.type</span>
 <span class="co">## [1] "infill_ei"</span>
@@ -202,21 +215,29 @@
 <span class="co">## [1] NA</span>
 <span class="co">## </span>
 <span class="co">## attr(,"class")</span>
-<span class="co">## [1] "Proposal" "list"</span></pre></body></html></div>
+<span class="co">## [1] "Proposal" "list"</span>
+</pre></div>
 <p>We don’t have to stick to the suggestion and evaluate another point:</p>
-<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="no">x</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="kw">q</span> <span class="kw">=</span> <span class="fl">1.7</span>, <span class="kw">v</span> <span class="kw">=</span> <span class="fl">1</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb8"><pre class="downlit">
+<span class="kw">x</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(q = <span class="fl">1.7</span>, v = <span class="fl">1</span>)
+</pre></div>
 <p>After we evaluated the objective function manually we get a return value of <code>2.19</code>. We take both values to update MBO:</p>
-<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="fu"><a href="../../reference/updateSMBO.html">updateSMBO</a></span>(<span class="no">opt.state</span>, <span class="kw">x</span> <span class="kw">=</span> <span class="no">x</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="fl">2.19</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb9"><pre class="downlit">
+<span class="fu"><a href="../../reference/updateSMBO.html">updateSMBO</a></span>(<span class="kw">opt.state</span>, x = <span class="kw">x</span>, y = <span class="fl">2.19</span>)
+</pre></div>
 <p>Now we can plot the state again and ask for a proposal:</p>
-<div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">opt.state</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb10"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span>(<span class="kw">opt.state</span>)
+</pre></div>
 <p><img src="human_in_the_loop_MBO_files/figure-html/plotOptState2-1.png" width="700"></p>
-<div class="sourceCode" id="cb11"><html><body><pre class="r">(<span class="no">prop</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/proposePoints.html">proposePoints</a></span>(<span class="no">opt.state</span>))
+<div class="sourceCode" id="cb11"><pre class="downlit">
+(<span class="kw">prop</span> <span class="op">=</span> <span class="fu"><a href="../../reference/proposePoints.html">proposePoints</a></span>(<span class="kw">opt.state</span>))
 <span class="co">## $prop.points</span>
 <span class="co">##             q v</span>
 <span class="co">## 785 0.4751879 1</span>
 <span class="co">## </span>
 <span class="co">## $propose.time</span>
-<span class="co">## [1] 0.288</span>
+<span class="co">## [1] 0.284</span>
 <span class="co">## </span>
 <span class="co">## $prop.type</span>
 <span class="co">## [1] "infill_ei"</span>
@@ -233,37 +254,43 @@
 <span class="co">## [1] NA</span>
 <span class="co">## </span>
 <span class="co">## attr(,"class")</span>
-<span class="co">## [1] "Proposal" "list"</span></pre></body></html></div>
+<span class="co">## [1] "Proposal" "list"</span>
+</pre></div>
 <p>This time we evaluated the exact proposed points and get a value of <code>0.13</code>.</p>
-<div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="fu"><a href="../../reference/updateSMBO.html">updateSMBO</a></span>(<span class="no">opt.state</span>, <span class="kw">x</span> <span class="kw">=</span> <span class="no">prop</span>$<span class="no">prop.points</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="fl">0.13</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb12"><pre class="downlit">
+<span class="fu"><a href="../../reference/updateSMBO.html">updateSMBO</a></span>(<span class="kw">opt.state</span>, x = <span class="kw">prop</span><span class="op">$</span><span class="kw">prop.points</span>, y = <span class="fl">0.13</span>)
+</pre></div>
 <p>Let’s assume we want to stop here. To get to the usual MBO result you can call:</p>
-<div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="no">res</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/finalizeSMBO.html">finalizeSMBO</a></span>(<span class="no">opt.state</span>)
-<span class="no">res</span>$<span class="no">x</span>
+<div class="sourceCode" id="cb13"><pre class="downlit">
+<span class="kw">res</span> <span class="op">=</span> <span class="fu"><a href="../../reference/finalizeSMBO.html">finalizeSMBO</a></span>(<span class="kw">opt.state</span>)
+<span class="kw">res</span><span class="op">$</span><span class="kw">x</span>
 <span class="co">## $q</span>
 <span class="co">## [1] 0.4751879</span>
 <span class="co">## </span>
 <span class="co">## $v</span>
 <span class="co">## [1] 1</span>
-<span class="no">res</span>$<span class="no">y</span>
-<span class="co">## [1] 0.13</span></pre></body></html></div>
+<span class="kw">res</span><span class="op">$</span><span class="kw">y</span>
+<span class="co">## [1] 0.13</span>
+</pre></div>
 <div id="semi-automatic-mbo" class="section level3">
 <h3 class="hasAnchor">
 <a href="#semi-automatic-mbo" class="anchor"></a>Semi Automatic MBO</h3>
 <p>You can combine the human-in-the-loop MBO with a simple loop to let MBO run for a while and just interfere once in a while.</p>
-<div class="sourceCode" id="cb14"><html><body><pre class="r"><span class="no">f</span> <span class="kw">=</span> <span class="kw">function</span>(<span class="no">q</span>, <span class="no">v</span>) <span class="fl">1</span> + <span class="fu"><a href="https://rdrr.io/r/base/Trig.html">sin</a></span>(<span class="no">q</span>*<span class="fl">5</span>) + <span class="fl">0.1</span> * (<span class="no">q</span>^<span class="fl">2</span> + <span class="no">v</span>^<span class="fl">2</span>)
-<span class="kw">for</span> (<span class="no">i</span> <span class="kw">in</span> <span class="fl">1</span>:<span class="fl">10</span>) {
-  <span class="no">prop</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/proposePoints.html">proposePoints</a></span>(<span class="no">opt.state</span>)
-  <span class="no">x</span> <span class="kw">=</span> <span class="fu">dfRowsToList</span>(<span class="kw">df</span> <span class="kw">=</span> <span class="no">prop</span>$<span class="no">prop.points</span>, <span class="kw">par.set</span> <span class="kw">=</span> <span class="no">ps</span>)
-  <span class="no">y</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span>(<span class="no">f</span>, <span class="no">x</span><span class="kw">[[</span><span class="fl">1</span>]])
-  <span class="fu"><a href="../../reference/updateSMBO.html">updateSMBO</a></span>(<span class="no">opt.state</span>, <span class="kw">x</span> <span class="kw">=</span> <span class="no">prop</span>$<span class="no">prop.points</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">y</span>)
+<div class="sourceCode" id="cb14"><pre class="downlit">
+<span class="kw">f</span> <span class="op">=</span> <span class="fu">function</span>(<span class="kw">q</span>, <span class="kw">v</span>) <span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html">sin</a></span>(<span class="kw">q</span><span class="op">*</span><span class="fl">5</span>) <span class="op">+</span> <span class="fl">0.1</span> <span class="op">*</span> (<span class="kw">q</span><span class="op">^</span><span class="fl">2</span> <span class="op">+</span> <span class="kw">v</span><span class="op">^</span><span class="fl">2</span>)
+<span class="co">for</span> (<span class="kw">i</span> <span class="co">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>) {
+  <span class="kw">prop</span> <span class="op">=</span> <span class="fu"><a href="../../reference/proposePoints.html">proposePoints</a></span>(<span class="kw">opt.state</span>)
+  <span class="kw">x</span> <span class="op">=</span> <span class="fu">dfRowsToList</span>(df = <span class="kw">prop</span><span class="op">$</span><span class="kw">prop.points</span>, par.set = <span class="kw">ps</span>)
+  <span class="kw">y</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span>(<span class="kw">f</span>, <span class="kw">x</span>[[<span class="fl">1</span>]])
+  <span class="fu"><a href="../../reference/updateSMBO.html">updateSMBO</a></span>(<span class="kw">opt.state</span>, x = <span class="kw">prop</span><span class="op">$</span><span class="kw">prop.points</span>, y = <span class="kw">y</span>)
 }
-<span class="fu"><a href="../../reference/proposePoints.html">proposePoints</a></span>(<span class="no">opt.state</span>)
+<span class="fu"><a href="../../reference/proposePoints.html">proposePoints</a></span>(<span class="kw">opt.state</span>)
 <span class="co">## $prop.points</span>
 <span class="co">##             q  v</span>
 <span class="co">## 561 0.9091981 -1</span>
 <span class="co">## </span>
 <span class="co">## $propose.time</span>
-<span class="co">## [1] 0.314</span>
+<span class="co">## [1] 0.317</span>
 <span class="co">## </span>
 <span class="co">## $prop.type</span>
 <span class="co">## [1] "infill_ei"</span>
@@ -280,15 +307,17 @@
 <span class="co">## [1] NA</span>
 <span class="co">## </span>
 <span class="co">## attr(,"class")</span>
-<span class="co">## [1] "Proposal" "list"</span></pre></body></html></div>
+<span class="co">## [1] "Proposal" "list"</span>
+</pre></div>
 </div>
 </div>
 <div id="continue-a-normal-mbo-run" class="section level2">
 <h2 class="hasAnchor">
 <a href="#continue-a-normal-mbo-run" class="anchor"></a>Continue a normal MBO Run</h2>
 <p>You can also continue a normal call of <code><a href="../../reference/mbo.html">mbo()</a></code> using this manual interface:</p>
-<div class="sourceCode" id="cb15"><html><body><pre class="r"><span class="no">fun</span> <span class="kw">=</span> <span class="fu">makeAlpine02Function</span>(<span class="fl">1</span>)
-<span class="no">res</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/mbo.html">mbo</a></span>(<span class="kw">fun</span> <span class="kw">=</span> <span class="no">fun</span>, <span class="kw">control</span> <span class="kw">=</span> <span class="no">ctrl</span>)
+<div class="sourceCode" id="cb15"><pre class="downlit">
+<span class="kw">fun</span> <span class="op">=</span> <span class="fu">makeAlpine02Function</span>(<span class="fl">1</span>)
+<span class="kw">res</span> <span class="op">=</span> <span class="fu"><a href="../../reference/mbo.html">mbo</a></span>(fun = <span class="kw">fun</span>, control = <span class="kw">ctrl</span>)
 <span class="co">## Computing y column(s) for design. Not provided.</span>
 <span class="co">## [mbo] 0: x=4.71 : y = -2.17 : 0.0 secs : initdesign</span>
 <span class="co">## [mbo] 0: x=7.79 : y = 2.79 : 0.0 secs : initdesign</span>
@@ -304,16 +333,18 @@
 <span class="co">## [mbo] 8: x=7.87 : y = 2.8 : 0.0 secs : infill_ei</span>
 <span class="co">## [mbo] 9: x=7.92 : y = 2.81 : 0.0 secs : infill_ei</span>
 <span class="co">## [mbo] 10: x=7.91 : y = 2.81 : 0.0 secs : infill_ei</span>
-<span class="no">opt.state</span> <span class="kw">=</span> <span class="no">res</span>$<span class="no">final.opt.state</span>
-<span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">opt.state</span>, <span class="kw">scale.panels</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></body></html></div>
+<span class="kw">opt.state</span> <span class="op">=</span> <span class="kw">res</span><span class="op">$</span><span class="kw">final.opt.state</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span>(<span class="kw">opt.state</span>, scale.panels = <span class="fl">TRUE</span>)
+</pre></div>
 <p><img src="human_in_the_loop_MBO_files/figure-html/continue%20mbo-1.png" width="700"></p>
-<div class="sourceCode" id="cb16"><html><body><pre class="r">(<span class="no">prop</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/proposePoints.html">proposePoints</a></span>(<span class="no">opt.state</span>))
+<div class="sourceCode" id="cb16"><pre class="downlit">
+(<span class="kw">prop</span> <span class="op">=</span> <span class="fu"><a href="../../reference/proposePoints.html">proposePoints</a></span>(<span class="kw">opt.state</span>))
 <span class="co">## $prop.points</span>
 <span class="co">##           x</span>
 <span class="co">## 854 7.93318</span>
 <span class="co">## </span>
 <span class="co">## $propose.time</span>
-<span class="co">## [1] 0.238</span>
+<span class="co">## [1] 0.239</span>
 <span class="co">## </span>
 <span class="co">## $prop.type</span>
 <span class="co">## [1] "infill_ei"</span>
@@ -331,19 +362,21 @@
 <span class="co">## </span>
 <span class="co">## attr(,"class")</span>
 <span class="co">## [1] "Proposal" "list"</span>
-<span class="no">y</span> <span class="kw">=</span> <span class="fu">fun</span>(<span class="no">prop</span>$<span class="no">prop.points</span>)
-<span class="fu"><a href="../../reference/updateSMBO.html">updateSMBO</a></span>(<span class="no">opt.state</span>, <span class="kw">x</span> <span class="kw">=</span> <span class="no">prop</span>$<span class="no">prop.points</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">y</span>)
-<span class="co"># ...</span></pre></body></html></div>
+<span class="kw">y</span> <span class="op">=</span> <span class="fu">fun</span>(<span class="kw">prop</span><span class="op">$</span><span class="kw">prop.points</span>)
+<span class="fu"><a href="../../reference/updateSMBO.html">updateSMBO</a></span>(<span class="kw">opt.state</span>, x = <span class="kw">prop</span><span class="op">$</span><span class="kw">prop.points</span>, y = <span class="kw">y</span>)
+<span class="co"># ...</span>
+</pre></div>
 </div>
 <div id="proposal-of-multiple-points" class="section level2">
 <h2 class="hasAnchor">
 <a href="#proposal-of-multiple-points" class="anchor"></a>Proposal of multiple points</h2>
 <p>Using Multi-Point MBO you can also obtain multiple suggestions at each call of <code><a href="../../reference/proposePoints.html">proposePoints()</a></code>.</p>
-<div class="sourceCode" id="cb17"><html><body><pre class="r"><span class="no">ctrl</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span>(<span class="kw">propose.points</span> <span class="kw">=</span> <span class="fl">4</span>)
-<span class="no">ctrl</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/setMBOControlInfill.html">setMBOControlInfill</a></span>(<span class="no">ctrl</span>, <span class="kw">crit</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/infillcrits.html">makeMBOInfillCritEI</a></span>())
-<span class="no">ctrl</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/setMBOControlMultiPoint.html">setMBOControlMultiPoint</a></span>(<span class="no">ctrl</span>, <span class="kw">method</span> <span class="kw">=</span> <span class="st">"cl"</span>)
-<span class="no">opt.state</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/initSMBO.html">initSMBO</a></span>(<span class="kw">par.set</span> <span class="kw">=</span> <span class="no">ps</span>, <span class="kw">design</span> <span class="kw">=</span> <span class="no">des</span>, <span class="kw">control</span> <span class="kw">=</span> <span class="no">ctrl</span>, <span class="kw">minimize</span> <span class="kw">=</span> <span class="fl">TRUE</span>, <span class="kw">noisy</span> <span class="kw">=</span> <span class="fl">FALSE</span>)
-(<span class="no">prop</span> <span class="kw">=</span> <span class="fu"><a href="../../reference/proposePoints.html">proposePoints</a></span>(<span class="no">opt.state</span>))
+<div class="sourceCode" id="cb17"><pre class="downlit">
+<span class="kw">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span>(propose.points = <span class="fl">4</span>)
+<span class="kw">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlInfill.html">setMBOControlInfill</a></span>(<span class="kw">ctrl</span>, crit = <span class="fu"><a href="../../reference/infillcrits.html">makeMBOInfillCritEI</a></span>())
+<span class="kw">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlMultiPoint.html">setMBOControlMultiPoint</a></span>(<span class="kw">ctrl</span>, method = <span class="st">"cl"</span>)
+<span class="kw">opt.state</span> <span class="op">=</span> <span class="fu"><a href="../../reference/initSMBO.html">initSMBO</a></span>(par.set = <span class="kw">ps</span>, design = <span class="kw">des</span>, control = <span class="kw">ctrl</span>, minimize = <span class="fl">TRUE</span>, noisy = <span class="fl">FALSE</span>)
+(<span class="kw">prop</span> <span class="op">=</span> <span class="fu"><a href="../../reference/proposePoints.html">proposePoints</a></span>(<span class="kw">opt.state</span>))
 <span class="co">## $prop.points</span>
 <span class="co">##               q v</span>
 <span class="co">## 953  0.40893348 2</span>
@@ -352,7 +385,7 @@
 <span class="co">## 794  0.08087523 2</span>
 <span class="co">## </span>
 <span class="co">## $propose.time</span>
-<span class="co">## [1] 0.272 0.285 0.288 0.292</span>
+<span class="co">## [1] 0.282 0.281 0.278 0.281</span>
 <span class="co">## </span>
 <span class="co">## $prop.type</span>
 <span class="co">## [1] "infill_ei" "infill_ei" "infill_ei" "infill_ei"</span>
@@ -375,10 +408,13 @@
 <span class="co">## [1] NA NA NA NA</span>
 <span class="co">## </span>
 <span class="co">## attr(,"class")</span>
-<span class="co">## [1] "Proposal" "list"</span></pre></body></html></div>
+<span class="co">## [1] "Proposal" "list"</span>
+</pre></div>
 <p>It’s also okay to just evaluate a subset of these points.</p>
-<div class="sourceCode" id="cb18"><html><body><pre class="r"><span class="fu"><a href="../../reference/updateSMBO.html">updateSMBO</a></span>(<span class="no">opt.state</span>, <span class="kw">x</span> <span class="kw">=</span> <span class="no">prop</span>$<span class="no">prop.points</span>[<span class="fl">1</span>:<span class="fl">2</span>,], <span class="kw">y</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="fl">2.28</span>, <span class="fl">1.67</span>))
-<span class="co"># ...</span></pre></body></html></div>
+<div class="sourceCode" id="cb18"><pre class="downlit">
+<span class="fu"><a href="../../reference/updateSMBO.html">updateSMBO</a></span>(<span class="kw">opt.state</span>, x = <span class="kw">prop</span><span class="op">$</span><span class="kw">prop.points</span>[<span class="fl">1</span><span class="op">:</span><span class="fl">2</span>,], y = <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="fl">2.28</span>, <span class="fl">1.67</span>))
+<span class="co"># ...</span>
+</pre></div>
 </div>
   </div>
 
@@ -397,7 +433,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.</p>
 </div>
 
       </footer>
