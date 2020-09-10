@@ -176,7 +176,7 @@ echo "Finish calculation."
 <a href="#running-the-script-from-r" class="anchor"></a>Running the script from R</h3>
 <p>The following code is an R function that starts the script, reads the result from the text file and returns it.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="http://www.gagolewski.com/software/stringi">stringi</a></span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://stringi.gagolewski.com">stringi</a></span>)
 <span class="kw">runScript</span> <span class="op">=</span> <span class="fu">function</span>(<span class="kw">x</span>) {
   <span class="kw">command</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span>(<span class="st">"./fun.sh %f %f"</span>, <span class="kw">x</span>[[<span class="st">'x1'</span>]], <span class="kw">x</span>[[<span class="st">'x2'</span>]])
   <span class="kw">error.code</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.html">system</a></span>(<span class="kw">command</span>)
@@ -291,7 +291,7 @@ echo "Finish calculation."
 <p>The following is a complete script based on the examples given above that accepts some basic arguments and writes the output as a JSON file.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit">
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://github.com/mlr-org/mlrMBO">mlrMBO</a></span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="http://www.gagolewski.com/software/stringi">stringi</a></span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://stringi.gagolewski.com">stringi</a></span>)
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://arxiv.org/abs/1403.2805">jsonlite</a></span>)
 
 <span class="co"># read command line args (in a not very safe way)</span>
