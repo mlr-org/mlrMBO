@@ -184,14 +184,14 @@
     <p>See <a href='mbo_parallel.html'>mbo_parallel</a> for all parallelization options.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>mbo</span>(
-  <span class='kw'>fun</span>,
-  design = <span class='kw'>NULL</span>,
-  learner = <span class='kw'>NULL</span>,
-  control = <span class='kw'>NULL</span>,
-  show.info = <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"mlrMBO.show.info"</span>, <span class='fl'>TRUE</span>),
-  more.args = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>()
-)</pre>
+    <pre class="usage"><span class='fu'>mbo</span><span class='op'>(</span>
+  <span class='va'>fun</span>,
+  design <span class='op'>=</span> <span class='cn'>NULL</span>,
+  learner <span class='op'>=</span> <span class='cn'>NULL</span>,
+  control <span class='op'>=</span> <span class='cn'>NULL</span>,
+  show.info <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span><span class='op'>(</span><span class='st'>"mlrMBO.show.info"</span>, <span class='cn'>TRUE</span><span class='op'>)</span>,
+  more.args <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -247,26 +247,26 @@ Further arguments passed to fitness function.</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># simple 2d objective function</span>
-<span class='kw'>obj.fun</span> <span class='op'>=</span> <span class='fu'>makeSingleObjectiveFunction</span>(
- fn = <span class='fu'>function</span>(<span class='kw'>x</span>) <span class='kw'>x</span>[<span class='fl'>1</span>]<span class='op'>^</span><span class='fl'>2</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/Trig.html'>sin</a></span>(<span class='kw'>x</span>[<span class='fl'>2</span>]),
- par.set = <span class='fu'>makeNumericParamSet</span>(id = <span class='st'>"x"</span>, lower = <span class='op'>-</span><span class='fl'>1</span>, upper = <span class='fl'>1</span>, len = <span class='fl'>2</span>)
-)
+<span class='va'>obj.fun</span> <span class='op'>=</span> <span class='fu'>makeSingleObjectiveFunction</span><span class='op'>(</span>
+ fn <span class='op'>=</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span> <span class='va'>x</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>^</span><span class='fl'>2</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/Trig.html'>sin</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>[</span><span class='fl'>2</span><span class='op'>]</span><span class='op'>)</span>,
+ par.set <span class='op'>=</span> <span class='fu'>makeNumericParamSet</span><span class='op'>(</span>id <span class='op'>=</span> <span class='st'>"x"</span>, lower <span class='op'>=</span> <span class='op'>-</span><span class='fl'>1</span>, upper <span class='op'>=</span> <span class='fl'>1</span>, len <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
+<span class='op'>)</span>
 
 <span class='co'># create base control object</span>
-<span class='kw'>ctrl</span> <span class='op'>=</span> <span class='fu'><a href='makeMBOControl.html'>makeMBOControl</a></span>()
+<span class='va'>ctrl</span> <span class='op'>=</span> <span class='fu'><a href='makeMBOControl.html'>makeMBOControl</a></span><span class='op'>(</span><span class='op'>)</span>
 
 <span class='co'># do three MBO iterations</span>
-<span class='kw'>ctrl</span> <span class='op'>=</span> <span class='fu'><a href='setMBOControlTermination.html'>setMBOControlTermination</a></span>(<span class='kw'>ctrl</span>, iters = <span class='fl'>3L</span>)
+<span class='va'>ctrl</span> <span class='op'>=</span> <span class='fu'><a href='setMBOControlTermination.html'>setMBOControlTermination</a></span><span class='op'>(</span><span class='va'>ctrl</span>, iters <span class='op'>=</span> <span class='fl'>3L</span><span class='op'>)</span>
 
 <span class='co'># use 500 points in the focussearch (should be sufficient for 2d)</span>
-<span class='kw'>ctrl</span> <span class='op'>=</span> <span class='fu'><a href='setMBOControlInfill.html'>setMBOControlInfill</a></span>(<span class='kw'>ctrl</span>, opt.focussearch.points = <span class='fl'>500</span>)
+<span class='va'>ctrl</span> <span class='op'>=</span> <span class='fu'><a href='setMBOControlInfill.html'>setMBOControlInfill</a></span><span class='op'>(</span><span class='va'>ctrl</span>, opt.focussearch.points <span class='op'>=</span> <span class='fl'>500</span><span class='op'>)</span>
 <span class='co'># create initial design</span>
-<span class='kw'>des</span> <span class='op'>=</span> <span class='fu'>generateDesign</span>(n = <span class='fl'>5L</span>, <span class='fu'>getParamSet</span>(<span class='kw'>obj.fun</span>), fun = <span class='kw'>lhs</span>::<span class='kw'><a href='https://rdrr.io/pkg/lhs/man/maximinLHS.html'>maximinLHS</a></span>)
+<span class='va'>des</span> <span class='op'>=</span> <span class='fu'>generateDesign</span><span class='op'>(</span>n <span class='op'>=</span> <span class='fl'>5L</span>, <span class='fu'>getParamSet</span><span class='op'>(</span><span class='va'>obj.fun</span><span class='op'>)</span>, fun <span class='op'>=</span> <span class='fu'>lhs</span><span class='fu'>::</span><span class='va'><a href='https://rdrr.io/pkg/lhs/man/maximinLHS.html'>maximinLHS</a></span><span class='op'>)</span>
 
 <span class='co'># start mbo</span>
-<span class='kw'>res</span> <span class='op'>=</span> <span class='fu'>mbo</span>(<span class='kw'>obj.fun</span>, design = <span class='kw'>des</span>, control = <span class='kw'>ctrl</span>)
+<span class='va'>res</span> <span class='op'>=</span> <span class='fu'>mbo</span><span class='op'>(</span><span class='va'>obj.fun</span>, design <span class='op'>=</span> <span class='va'>des</span>, control <span class='op'>=</span> <span class='va'>ctrl</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='message'>Computing y column(s) for design. Not provided.</span></div><div class='output co'>#&gt; <span class='message'>[mbo] 0: x=0.494,0.412 : y = 0.645 : 0.0 secs : initdesign</span></div><div class='output co'>#&gt; <span class='message'>[mbo] 0: x=-0.122,0.0783 : y = 0.093 : 0.0 secs : initdesign</span></div><div class='output co'>#&gt; <span class='message'>[mbo] 0: x=-0.208,-0.325 : y = -0.276 : 0.0 secs : initdesign</span></div><div class='output co'>#&gt; <span class='message'>[mbo] 0: x=0.897,-0.988 : y = -0.0307 : 0.0 secs : initdesign</span></div><div class='output co'>#&gt; <span class='message'>[mbo] 0: x=-0.979,0.69 : y = 1.6 : 0.0 secs : initdesign</span></div><div class='output co'>#&gt; <span class='message'>[mbo] 1: x=1,-0.322 : y = 0.683 : 0.0 secs : infill_cb</span></div><div class='output co'>#&gt; <span class='message'>[mbo] 2: x=-0.181,-0.691 : y = -0.605 : 0.0 secs : infill_cb</span></div><div class='output co'>#&gt; <span class='message'>[mbo] 3: x=0.103,-1 : y = -0.831 : 0.0 secs : infill_cb</span></div><div class='input'>
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='kw'>res</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>res</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; Recommended parameters:
 #&gt; x=0.103,-1
 #&gt; Objective: y = -0.831
@@ -275,9 +275,9 @@ Further arguments passed to fitness function.</p></td>
 #&gt; 5 + 3 entries in total, displaying last 10 (or less):
 #&gt;           x1          x2           y dob eol error.message exec.time         cb
 #&gt; 1  0.4941278  0.41208499  0.64468297   0  NA          &lt;NA&gt;     0.000         NA
-#&gt; 2 -0.1216173  0.07832955  0.09304025   0  NA          &lt;NA&gt;     0.001         NA
+#&gt; 2 -0.1216173  0.07832955  0.09304025   0  NA          &lt;NA&gt;     0.000         NA
 #&gt; 3 -0.2077841 -0.32457760 -0.27573422   0  NA          &lt;NA&gt;     0.000         NA
-#&gt; 4  0.8966086 -0.98750787 -0.03074897   0  NA          &lt;NA&gt;     0.000         NA
+#&gt; 4  0.8966086 -0.98750787 -0.03074897   0  NA          &lt;NA&gt;     0.001         NA
 #&gt; 5 -0.9794215  0.69022501  1.59597716   0  NA          &lt;NA&gt;     0.000         NA
 #&gt; 6  0.9999967 -0.32226298  0.68327963   1  NA          &lt;NA&gt;     0.000 -0.6290274
 #&gt; 7 -0.1807007 -0.69122233 -0.60482669   2  NA          &lt;NA&gt;     0.000 -0.4985452
@@ -288,11 +288,11 @@ Further arguments passed to fitness function.</p></td>
 #&gt; 3        &lt;NA&gt;         NA initdesign           NA        NA         NA     NA
 #&gt; 4        &lt;NA&gt;         NA initdesign           NA        NA         NA     NA
 #&gt; 5        &lt;NA&gt;         NA initdesign           NA        NA         NA     NA
-#&gt; 6        &lt;NA&gt;      0.127  infill_cb        0.200 0.3197429 -0.3092844      1
-#&gt; 7        &lt;NA&gt;      0.070  infill_cb        0.203 0.3779856 -0.1205596      1
-#&gt; 8        &lt;NA&gt;      0.079  infill_cb        0.199 0.1795866 -0.8206090      1</div><div class='input'><span class='co'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span>(<span class='kw'>res</span>)
-}
+#&gt; 6        &lt;NA&gt;      0.123  infill_cb        0.203 0.3197429 -0.3092844      1
+#&gt; 7        &lt;NA&gt;      0.073  infill_cb        0.209 0.3779856 -0.1205596      1
+#&gt; 8        &lt;NA&gt;      0.085  infill_cb        0.208 0.1795866 -0.8206090      1</div><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>res</span><span class='op'>)</span>
+<span class='op'>}</span>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -184,25 +184,25 @@
     <p>Creates a control object for MBO optimization.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>makeMBOControl</span>(
-  n.objectives = <span class='fl'>1L</span>,
-  propose.points = <span class='fl'>1L</span>,
-  final.method = <span class='st'>"best.true.y"</span>,
-  final.evals = <span class='fl'>0L</span>,
-  y.name = <span class='st'>"y"</span>,
-  impute.y.fun = <span class='kw'>NULL</span>,
-  trafo.y.fun = <span class='kw'>NULL</span>,
-  suppress.eval.errors = <span class='fl'>TRUE</span>,
-  save.on.disk.at = <span class='fu'><a href='https://rdrr.io/r/base/integer.html'>integer</a></span>(<span class='fl'>0L</span>),
-  save.on.disk.at.time = <span class='fl'>Inf</span>,
-  save.file.path = <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/getwd.html'>getwd</a></span>(), <span class='st'>"mlrMBO_run.RData"</span>),
-  store.model.at = <span class='kw'>NULL</span>,
-  resample.at = <span class='fu'><a href='https://rdrr.io/r/base/integer.html'>integer</a></span>(<span class='fl'>0</span>),
-  resample.desc = <span class='fu'>makeResampleDesc</span>(<span class='st'>"CV"</span>, iter = <span class='fl'>10</span>),
-  resample.measures = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>mse</span>),
-  output.num.format = <span class='st'>"%.3g"</span>,
-  on.surrogate.error = <span class='st'>"stop"</span>
-)</pre>
+    <pre class="usage"><span class='fu'>makeMBOControl</span><span class='op'>(</span>
+  n.objectives <span class='op'>=</span> <span class='fl'>1L</span>,
+  propose.points <span class='op'>=</span> <span class='fl'>1L</span>,
+  final.method <span class='op'>=</span> <span class='st'>"best.true.y"</span>,
+  final.evals <span class='op'>=</span> <span class='fl'>0L</span>,
+  y.name <span class='op'>=</span> <span class='st'>"y"</span>,
+  impute.y.fun <span class='op'>=</span> <span class='cn'>NULL</span>,
+  trafo.y.fun <span class='op'>=</span> <span class='cn'>NULL</span>,
+  suppress.eval.errors <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  save.on.disk.at <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/integer.html'>integer</a></span><span class='op'>(</span><span class='fl'>0L</span><span class='op'>)</span>,
+  save.on.disk.at.time <span class='op'>=</span> <span class='cn'>Inf</span>,
+  save.file.path <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/getwd.html'>getwd</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='st'>"mlrMBO_run.RData"</span><span class='op'>)</span>,
+  store.model.at <span class='op'>=</span> <span class='cn'>NULL</span>,
+  resample.at <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/integer.html'>integer</a></span><span class='op'>(</span><span class='fl'>0</span><span class='op'>)</span>,
+  resample.desc <span class='op'>=</span> <span class='fu'>makeResampleDesc</span><span class='op'>(</span><span class='st'>"CV"</span>, iter <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span>,
+  resample.measures <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>mse</span><span class='op'>)</span>,
+  output.num.format <span class='op'>=</span> <span class='st'>"%.3g"</span>,
+  on.surrogate.error <span class='op'>=</span> <span class='st'>"stop"</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">

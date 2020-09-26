@@ -158,22 +158,19 @@
 <a href="#parallelization-through-multi-point-proposals" class="anchor"></a>Parallelization through multi point proposals</h2>
 <p>Like always let’s start with the function we want to optimize:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://github.com/mlr-org/mlrMBO">mlrMBO</a></span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="http://ggplot2.tidyverse.org">ggplot2</a></span>)
-<span class="kw">obj.fun</span> <span class="op">=</span> <span class="fu">makeBraninFunction</span>()
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/mlr-org/mlrMBO">mlrMBO</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span>
+<span class="va">obj.fun</span> <span class="op">=</span> <span class="fu">makeBraninFunction</span><span class="op">(</span><span class="op">)</span>
 <span class="co"># visualize the function</span>
-<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span>(<span class="kw">obj.fun</span>, render.levels = <span class="fl">TRUE</span>, show.optimum = <span class="fl">TRUE</span>)
-</pre></div>
+<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span><span class="va">obj.fun</span>, render.levels <span class="op">=</span> <span class="cn">TRUE</span>, show.optimum <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></pre></div>
 <p><img src="parallelization_files/figure-html/objective_function-1.png" width="700"></p>
 <p>In our example we will have <em>two CPUs</em> that we want to utilize for the evaluation of the black-box function.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://github.com/mlr-org/mlrMBO">mlrMBO</a></span>)
-<span class="kw">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span>(propose.points = <span class="fl">2</span>)
-</pre></div>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/mlr-org/mlrMBO">mlrMBO</a></span><span class="op">)</span>
+<span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span><span class="op">(</span>propose.points <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></pre></div>
 <p>There are multiple methods available to propose multiple points. Each has it’s advantages and disadvantages. The choice is mostly bound to your choice of the infill criterion, so we will decide for that first. As we have a real valued parameter space of our objective function, the <strong>expected improvement</strong> is usually the best choice</p>
 <div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="kw">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlInfill.html">setMBOControlInfill</a></span>(<span class="kw">ctrl</span>, crit = <span class="kw">crit.ei</span>)
-</pre></div>
+<span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlInfill.html">setMBOControlInfill</a></span><span class="op">(</span><span class="va">ctrl</span>, crit <span class="op">=</span> <span class="va">crit.ei</span><span class="op">)</span></pre></div>
 <div id="multi-point-proposal-methods" class="section level3">
 <h3 class="hasAnchor">
 <a href="#multi-point-proposal-methods" class="anchor"></a>Multi point proposal methods</h3>
@@ -184,29 +181,25 @@
 <a href="#constant-liar" class="anchor"></a>Constant Liar</h3>
 <p>After having said that, and as we already decided for the <strong>expected improvement</strong> because we want to use Kriging for the surrogate as we have a purely numeric parameter space we decide for the <strong>constant liar</strong> as a multi point proposal method. So we have to define:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="kw">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlMultiPoint.html">setMBOControlMultiPoint</a></span>(<span class="kw">ctrl</span>, method = <span class="st">"cl"</span>, cl.lie = <span class="kw">min</span>)
-</pre></div>
+<span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlMultiPoint.html">setMBOControlMultiPoint</a></span><span class="op">(</span><span class="va">ctrl</span>, method <span class="op">=</span> <span class="st">"cl"</span>, cl.lie <span class="op">=</span> <span class="va">min</span><span class="op">)</span></pre></div>
 <p>For parallelization the termination criterion offers two useful options. We can limit the number of total evaluations of the objective function as well as we can limit the number of MBO iterations. Assuming our initial design is of size 8 and we allow 6 iterations we will get 20 evaluations of the objective function as we decided to have two evaluations per iteration by setting <code>propose.points = 2</code>. so for our example the following two settings will lead to the same result:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="kw">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span>(<span class="kw">ctrl</span>, iters = <span class="fl">6</span>)
-<span class="kw">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span>(<span class="kw">ctrl</span>, max.evals = <span class="fl">20</span>) <span class="co"># for the choosen settings will result in the same number of evaluations.</span>
-</pre></div>
+<span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span><span class="op">(</span><span class="va">ctrl</span>, iters <span class="op">=</span> <span class="fl">6</span><span class="op">)</span>
+<span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span><span class="op">(</span><span class="va">ctrl</span>, max.evals <span class="op">=</span> <span class="fl">20</span><span class="op">)</span> <span class="co"># for the choosen settings will result in the same number of evaluations.</span></pre></div>
 <p>For simplification we will let MBO automatically decide for the regression method and the initial design. As the parameter space is purely numeric MBO will use Kriging, which is exactly what we want.</p>
 <p>All we have to do now to initialize the parallel execution of the objective function is to call <code><a href="https://parallelmap.mlr-org.com/reference/parallelStart.html">parallelStartMulticore()</a></code> from the <code>parallelMap</code> package.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit">
 <span class="co"># Kriging can create a lot of console output, which we want tu surpress here:</span>
-<span class="fu"><a href="https://mlr.mlr-org.com/reference/configureMlr.html">configureMlr</a></span>(on.learner.warning = <span class="st">"quiet"</span>, show.learner.output = <span class="fl">FALSE</span>)
+<span class="fu"><a href="https://mlr.mlr-org.com/reference/configureMlr.html">configureMlr</a></span><span class="op">(</span>on.learner.warning <span class="op">=</span> <span class="st">"quiet"</span>, show.learner.output <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://parallelmap.mlr-org.com">parallelMap</a></span>)
-<span class="fu"><a href="https://parallelmap.mlr-org.com/reference/parallelStart.html">parallelStartMulticore</a></span>(cpus = <span class="fl">2</span>, show.info = <span class="fl">TRUE</span>)
-<span class="kw">res</span> <span class="op">=</span> <span class="fu"><a href="../../reference/mbo.html">mbo</a></span>(<span class="kw">obj.fun</span>, control = <span class="kw">ctrl</span>, show.info = <span class="fl">FALSE</span>)
-<span class="fu"><a href="https://parallelmap.mlr-org.com/reference/parallelStop.html">parallelStop</a></span>()
-</pre></div>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://parallelmap.mlr-org.com">parallelMap</a></span><span class="op">)</span>
+<span class="fu"><a href="https://parallelmap.mlr-org.com/reference/parallelStart.html">parallelStartMulticore</a></span><span class="op">(</span>cpus <span class="op">=</span> <span class="fl">2</span>, show.info <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="va">res</span> <span class="op">=</span> <span class="fu"><a href="../../reference/mbo.html">mbo</a></span><span class="op">(</span><span class="va">obj.fun</span>, control <span class="op">=</span> <span class="va">ctrl</span>, show.info <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="fu"><a href="https://parallelmap.mlr-org.com/reference/parallelStop.html">parallelStop</a></span><span class="op">(</span><span class="op">)</span></pre></div>
 <p>As you can see from the console output of <code>parallelMap</code> the initial design will also be evaluated in parallel.</p>
 <p>In the end a small plot that uses the <code>opt.path</code> which is stored in the result of the MBO Optimization process to visualize which points were proposed in which iteration. The zeros are the points from the initial design, 1 for the first iteration and so on.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit">
-<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span>(<span class="kw">obj.fun</span>, render.levels = <span class="fl">TRUE</span>, show.optimum = <span class="fl">TRUE</span>) <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html">geom_text</a></span>(data = <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span>(<span class="kw">res</span><span class="op">$</span><span class="kw">opt.path</span>), mapping = <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(label = <span class="kw">dob</span>), color = <span class="st">"white"</span>)
-</pre></div>
+<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span><span class="va">obj.fun</span>, render.levels <span class="op">=</span> <span class="cn">TRUE</span>, show.optimum <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html">geom_text</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">opt.path</span><span class="op">)</span>, mapping <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>label <span class="op">=</span> <span class="va">dob</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span></pre></div>
 <p><img src="parallelization_files/figure-html/cl_res-1.png" width="700"></p>
 </div>
 <div id="confidence-bound" class="section level3">
@@ -214,22 +207,20 @@
 <a href="#confidence-bound" class="anchor"></a>Confidence Bound</h3>
 <p>If we decided to use the <strong>confidence bound</strong> as an infill criterion, because e.g. the parameter space contains discrete values and we decided for the random forest as an infill criterion, then we suggest to use the <strong>random lambda</strong> method to generate multiple proposals per iteration. Note that this time we rely on MBO to automatically use the random forest for the surrogate as the objective function contains the discrete variable <code>x1</code>. Also we now specify the number of initial design points manually according to the number of levels of the discrete variable.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit">
-<span class="kw">obj.fun</span> <span class="op">=</span> <span class="fu">makeSwiler2014Function</span>()
-<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span>(<span class="kw">obj.fun</span>, render.levels = <span class="fl">TRUE</span>)
-</pre></div>
+<span class="va">obj.fun</span> <span class="op">=</span> <span class="fu">makeSwiler2014Function</span><span class="op">(</span><span class="op">)</span>
+<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span><span class="va">obj.fun</span>, render.levels <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></pre></div>
 <p><img src="parallelization_files/figure-html/obj.fun.dis-1.png" width="700"></p>
 <div class="sourceCode" id="cb9"><pre class="downlit">
-<span class="kw">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span>(propose.points = <span class="fl">2</span>)
-<span class="kw">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlInfill.html">setMBOControlInfill</a></span>(<span class="kw">ctrl</span>, crit = <span class="kw">crit.cb</span>)
-<span class="kw">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlMultiPoint.html">setMBOControlMultiPoint</a></span>(<span class="kw">ctrl</span>, method = <span class="st">"cb"</span>)
-<span class="kw">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span>(<span class="kw">ctrl</span>, iters = <span class="fl">5</span>)
-<span class="kw">design</span> <span class="op">=</span> <span class="fu">generateDesign</span>(n = <span class="fl">5</span><span class="op">*</span><span class="fl">8</span>, par.set = <span class="fu"><a href="https://mlr.mlr-org.com/reference/getParamSet.html">getParamSet</a></span>(<span class="kw">obj.fun</span>))
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://parallelmap.mlr-org.com">parallelMap</a></span>)
-<span class="fu"><a href="https://parallelmap.mlr-org.com/reference/parallelStart.html">parallelStartMulticore</a></span>(cpus = <span class="fl">2</span>, show.info = <span class="fl">FALSE</span>)
-<span class="kw">res</span> <span class="op">=</span> <span class="fu"><a href="../../reference/mbo.html">mbo</a></span>(<span class="kw">obj.fun</span>, control = <span class="kw">ctrl</span>, design = <span class="kw">design</span>, show.info = <span class="fl">FALSE</span>)
-<span class="fu"><a href="https://parallelmap.mlr-org.com/reference/parallelStop.html">parallelStop</a></span>()
-<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span>(<span class="kw">obj.fun</span>, render.levels = <span class="fl">TRUE</span>) <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html">geom_text</a></span>(data = <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span>(<span class="kw">res</span><span class="op">$</span><span class="kw">opt.path</span>), mapping = <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(label = <span class="kw">dob</span>), color = <span class="st">"white"</span>)
-</pre></div>
+<span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span><span class="op">(</span>propose.points <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
+<span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlInfill.html">setMBOControlInfill</a></span><span class="op">(</span><span class="va">ctrl</span>, crit <span class="op">=</span> <span class="va">crit.cb</span><span class="op">)</span>
+<span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlMultiPoint.html">setMBOControlMultiPoint</a></span><span class="op">(</span><span class="va">ctrl</span>, method <span class="op">=</span> <span class="st">"cb"</span><span class="op">)</span>
+<span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span><span class="op">(</span><span class="va">ctrl</span>, iters <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>
+<span class="va">design</span> <span class="op">=</span> <span class="fu">generateDesign</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">5</span><span class="op">*</span><span class="fl">8</span>, par.set <span class="op">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/getParamSet.html">getParamSet</a></span><span class="op">(</span><span class="va">obj.fun</span><span class="op">)</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://parallelmap.mlr-org.com">parallelMap</a></span><span class="op">)</span>
+<span class="fu"><a href="https://parallelmap.mlr-org.com/reference/parallelStart.html">parallelStartMulticore</a></span><span class="op">(</span>cpus <span class="op">=</span> <span class="fl">2</span>, show.info <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="va">res</span> <span class="op">=</span> <span class="fu"><a href="../../reference/mbo.html">mbo</a></span><span class="op">(</span><span class="va">obj.fun</span>, control <span class="op">=</span> <span class="va">ctrl</span>, design <span class="op">=</span> <span class="va">design</span>, show.info <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="fu"><a href="https://parallelmap.mlr-org.com/reference/parallelStop.html">parallelStop</a></span><span class="op">(</span><span class="op">)</span>
+<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span><span class="va">obj.fun</span>, render.levels <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html">geom_text</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">opt.path</span><span class="op">)</span>, mapping <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>label <span class="op">=</span> <span class="va">dob</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span></pre></div>
 <p><img src="parallelization_files/figure-html/obj.fun.dis-2.png" width="700"></p>
 </div>
 </div>
@@ -244,54 +235,51 @@
 <p>Let’s start with the normal approach:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit">
 <span class="co"># noisy objective function</span>
-<span class="kw">fn</span> <span class="op">=</span> <span class="fu">function</span>(<span class="kw">x</span>) {
-  <span class="fu"><a href="https://rdrr.io/r/base/Trig.html">sin</a></span>(<span class="kw">x</span>[<span class="fl">1</span>]) <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html">cos</a></span>(<span class="kw">x</span>[<span class="fl">2</span>]) <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(<span class="kw">x</span><span class="op">^</span><span class="fl">2</span>) <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="fl">1</span>, sd = <span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/prod.html">prod</a></span>(<span class="kw">x</span>)))
-}
+<span class="va">fn</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/Trig.html">sin</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html">cos</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">x</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">1</span>, sd <span class="op">=</span> <span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/prod.html">prod</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+<span class="op">}</span>
 
 <span class="co"># very noisy normal smoof function</span>
-<span class="kw">ps</span> <span class="op">=</span> <span class="fu">makeNumericParamSet</span>(<span class="st">"x"</span>, len = <span class="fl">2</span>, lower =  <span class="op">-</span><span class="fl">5</span>, upper = <span class="fl">5</span>)
-<span class="kw">obj.fun.single</span> <span class="op">=</span> <span class="fu">makeSingleObjectiveFunction</span>(name = <span class="st">"noisy"</span>, fn = <span class="kw">fn</span>, noisy = <span class="fl">TRUE</span>, par.set = <span class="kw">ps</span>)
+<span class="va">ps</span> <span class="op">=</span> <span class="fu">makeNumericParamSet</span><span class="op">(</span><span class="st">"x"</span>, len <span class="op">=</span> <span class="fl">2</span>, lower <span class="op">=</span>  <span class="op">-</span><span class="fl">5</span>, upper <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>
+<span class="va">obj.fun.single</span> <span class="op">=</span> <span class="fu">makeSingleObjectiveFunction</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"noisy"</span>, fn <span class="op">=</span> <span class="va">fn</span>, noisy <span class="op">=</span> <span class="cn">TRUE</span>, par.set <span class="op">=</span> <span class="va">ps</span><span class="op">)</span>
 
 <span class="co"># unified color scale for better comparison later</span>
-<span class="kw">general.scale</span> <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html">scale_fill_gradientn</a></span>(limits = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="op">-</span><span class="fl">10</span>, <span class="fl">110</span>), colors = <span class="kw">RColorBrewer</span>::<span class="fu"><a href="https://rdrr.io/pkg/RColorBrewer/man/ColorBrewer.html">brewer.pal</a></span>(<span class="fl">11</span>, <span class="st">"Spectral"</span>))
+<span class="va">general.scale</span> <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html">scale_fill_gradientn</a></span><span class="op">(</span>limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">10</span>, <span class="fl">110</span><span class="op">)</span>, colors <span class="op">=</span> <span class="fu">RColorBrewer</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/RColorBrewer/man/ColorBrewer.html">brewer.pal</a></span><span class="op">(</span><span class="fl">11</span>, <span class="st">"Spectral"</span><span class="op">)</span><span class="op">)</span>
 
 <span class="co"># noisy output</span>
-<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span>(<span class="kw">obj.fun.single</span>, render.levels = <span class="fl">TRUE</span>) <span class="op">+</span> <span class="kw">general.scale</span>
+<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span><span class="va">obj.fun.single</span>, render.levels <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span> <span class="va">general.scale</span>
 <span class="co">## Scale for 'fill' is already present. Adding another scale for 'fill', which</span>
-<span class="co">## will replace the existing scale.</span>
-</pre></div>
+<span class="co">## will replace the existing scale.</span></pre></div>
 <p><img src="parallelization_files/figure-html/custom_noisy_obj-1.png" width="700"></p>
 <p>Now let’s create an objective function that uses parallelization internally by using the function <code><a href="https://parallelmap.mlr-org.com/reference/parallelMap.html">parallelMap()</a></code> of the equally named package.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit">
-<span class="fu"><a href="https://parallelmap.mlr-org.com/reference/parallelRegisterLevels.html">parallelRegisterLevels</a></span>(levels = <span class="st">"objective"</span>)
-<span class="kw">obj.fun.parallel</span> <span class="op">=</span> <span class="fu">makeSingleObjectiveFunction</span>(
-  name = <span class="st">"noisy_example"</span>,
-  fn = <span class="fu">function</span>(<span class="kw">x</span>) {
-    <span class="kw">rep.x</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span>(<span class="fl">4</span>, <span class="kw">x</span>, simplify = <span class="fl">FALSE</span>)
-    <span class="kw">res</span> <span class="op">=</span> <span class="fu"><a href="https://parallelmap.mlr-org.com/reference/parallelMap.html">parallelMap</a></span>(<span class="kw">fn</span>, <span class="kw">rep.x</span>, simplify = <span class="fl">TRUE</span>, level = <span class="st">"custom.objective"</span>)
-    <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span>(<span class="kw">res</span>)
-  },
-  noisy = <span class="fl">TRUE</span>,
-  par.set = <span class="fu">makeNumericParamSet</span>(id = <span class="st">"x"</span>, len = <span class="fl">2</span>, lower = <span class="op">-</span><span class="fl">5</span>, upper = <span class="fl">5</span>),
-  vectorized = <span class="fl">FALSE</span>,
-  has.simple.signature = <span class="fl">TRUE</span>
-)
-<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span>(<span class="kw">obj.fun.parallel</span>, render.levels = <span class="fl">TRUE</span>) <span class="op">+</span> <span class="kw">general.scale</span>
+<span class="fu"><a href="https://parallelmap.mlr-org.com/reference/parallelRegisterLevels.html">parallelRegisterLevels</a></span><span class="op">(</span>levels <span class="op">=</span> <span class="st">"objective"</span><span class="op">)</span>
+<span class="va">obj.fun.parallel</span> <span class="op">=</span> <span class="fu">makeSingleObjectiveFunction</span><span class="op">(</span>
+  name <span class="op">=</span> <span class="st">"noisy_example"</span>,
+  fn <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span>
+    <span class="va">rep.x</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span><span class="op">(</span><span class="fl">4</span>, <span class="va">x</span>, simplify <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+    <span class="va">res</span> <span class="op">=</span> <span class="fu"><a href="https://parallelmap.mlr-org.com/reference/parallelMap.html">parallelMap</a></span><span class="op">(</span><span class="va">fn</span>, <span class="va">rep.x</span>, simplify <span class="op">=</span> <span class="cn">TRUE</span>, level <span class="op">=</span> <span class="st">"custom.objective"</span><span class="op">)</span>
+    <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span>
+  <span class="op">}</span>,
+  noisy <span class="op">=</span> <span class="cn">TRUE</span>,
+  par.set <span class="op">=</span> <span class="fu">makeNumericParamSet</span><span class="op">(</span>id <span class="op">=</span> <span class="st">"x"</span>, len <span class="op">=</span> <span class="fl">2</span>, lower <span class="op">=</span> <span class="op">-</span><span class="fl">5</span>, upper <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>,
+  vectorized <span class="op">=</span> <span class="cn">FALSE</span>,
+  has.simple.signature <span class="op">=</span> <span class="cn">TRUE</span>
+<span class="op">)</span>
+<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span><span class="va">obj.fun.parallel</span>, render.levels <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span> <span class="va">general.scale</span>
 <span class="co">## Scale for 'fill' is already present. Adding another scale for 'fill', which</span>
-<span class="co">## will replace the existing scale.</span>
-</pre></div>
+<span class="co">## will replace the existing scale.</span></pre></div>
 <p><img src="parallelization_files/figure-html/custom_noisy_parallel-1.png" width="700"></p>
 <p>As we can easily see the replicated and averaged evaluation of the target function apparently smoothed the output. This will improve optimization directly. However the objective function is still noisy and we have to adapt the settings a little. Details are given in the Vignette about noisy optimization.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://mlr.mlr-org.com">mlr</a></span>)
-<span class="kw">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span>(final.method = <span class="st">"best.predicted"</span>)
-<span class="kw">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span>(<span class="kw">ctrl</span>, iters = <span class="fl">5L</span>)
-<span class="kw">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlInfill.html">setMBOControlInfill</a></span>(<span class="kw">ctrl</span>, crit = <span class="kw">crit.aei</span>)
-<span class="fu"><a href="https://parallelmap.mlr-org.com/reference/parallelStart.html">parallelStartMulticore</a></span>(cpus = <span class="fl">2L</span>, show.info = <span class="fl">TRUE</span>, level = <span class="st">"custom.objective"</span>)
-<span class="kw">res.parallel</span> <span class="op">=</span> <span class="fu"><a href="../../reference/mbo.html">mbo</a></span>(<span class="kw">obj.fun.parallel</span>, control = <span class="kw">ctrl</span>, show.info = <span class="fl">FALSE</span>)
-<span class="fu"><a href="https://parallelmap.mlr-org.com/reference/parallelStop.html">parallelStop</a></span>()
-<span class="kw">res.parallel</span>
-</pre></div>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://mlr.mlr-org.com">mlr</a></span><span class="op">)</span>
+<span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span><span class="op">(</span>final.method <span class="op">=</span> <span class="st">"best.predicted"</span><span class="op">)</span>
+<span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span><span class="op">(</span><span class="va">ctrl</span>, iters <span class="op">=</span> <span class="fl">5L</span><span class="op">)</span>
+<span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlInfill.html">setMBOControlInfill</a></span><span class="op">(</span><span class="va">ctrl</span>, crit <span class="op">=</span> <span class="va">crit.aei</span><span class="op">)</span>
+<span class="fu"><a href="https://parallelmap.mlr-org.com/reference/parallelStart.html">parallelStartMulticore</a></span><span class="op">(</span>cpus <span class="op">=</span> <span class="fl">2L</span>, show.info <span class="op">=</span> <span class="cn">TRUE</span>, level <span class="op">=</span> <span class="st">"custom.objective"</span><span class="op">)</span>
+<span class="va">res.parallel</span> <span class="op">=</span> <span class="fu"><a href="../../reference/mbo.html">mbo</a></span><span class="op">(</span><span class="va">obj.fun.parallel</span>, control <span class="op">=</span> <span class="va">ctrl</span>, show.info <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="fu"><a href="https://parallelmap.mlr-org.com/reference/parallelStop.html">parallelStop</a></span><span class="op">(</span><span class="op">)</span>
+<span class="va">res.parallel</span></pre></div>
 <p>As you can see in the output of <code>parallelMap</code> we now parallelize the level <code>custom.objective</code> and not as previously <code>mlrMBO.feval</code>. If you forget to register your own level <code>parallelMap</code> will parallelize the first call of <code>parallelMap</code> and that would be the call we do internally to evaluate the proposed points.</p>
 </div>
 </div>

@@ -164,8 +164,7 @@
 <a href="#prerequisites" class="anchor"></a>Prerequisites</h2>
 <p>Installing <code>mlrMBO</code> will also install and load the dependencies <code>mlr</code>, <code>ParamHelpers</code>, and <code>smoof</code>. For this tutorial, you also need the additional packages <code>DiceKriging</code> and <code>randomForest</code>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://github.com/mlr-org/mlrMBO">mlrMBO</a></span>)
-</pre></div>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/mlr-org/mlrMBO">mlrMBO</a></span><span class="op">)</span></pre></div>
 </div>
 <div id="general-mbo-workflow" class="section level2">
 <h2 class="hasAnchor">
@@ -183,9 +182,9 @@
 <a href="#objective-function" class="anchor"></a>Objective Function</h3>
 <p>Instead of manually defining the objective, we use the <a href="https://cran.r-project.org/package=smoof"><em>smoof</em></a> package which offers many toy and benchmark functions for optimization.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="kw">obj.fun</span> <span class="op">=</span> <span class="fu">makeCosineMixtureFunction</span>(<span class="fl">1</span>)
-<span class="kw">obj.fun</span> <span class="op">=</span> <span class="fu">convertToMinimization</span>(<span class="kw">obj.fun</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="kw">obj.fun</span>)
+<span class="va">obj.fun</span> <span class="op">=</span> <span class="fu">makeCosineMixtureFunction</span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>
+<span class="va">obj.fun</span> <span class="op">=</span> <span class="fu">convertToMinimization</span><span class="op">(</span><span class="va">obj.fun</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">obj.fun</span><span class="op">)</span>
 <span class="co">## Single-objective function</span>
 <span class="co">## Name: Cosine Mixture Function</span>
 <span class="co">## Description: no description</span>
@@ -199,21 +198,20 @@
 <span class="co">## Global optimum objective value of -0.1000 at</span>
 <span class="co">##   x</span>
 <span class="co">## 1 0</span>
-<span class="kw">ggplot2</span>::<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span>(<span class="kw">obj.fun</span>)
-</pre></div>
+<span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span><span class="va">obj.fun</span><span class="op">)</span></pre></div>
 <p><img src="mlrMBO_files/figure-html/cosine_fun-1.png" width="700"></p>
 <p>You are not limited to these test functions but can define arbitrary objective functions with <em>smoof</em>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="fu">makeSingleObjectiveFunction</span>(
-  name = <span class="st">"my_sphere"</span>,
-  fn = <span class="fu">function</span>(<span class="kw">x</span>) {
-    <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(<span class="kw">x</span><span class="op">*</span><span class="kw">x</span>) <span class="op">+</span> <span class="fl">7</span>
-  },
-  par.set = <span class="fu">makeParamSet</span>(
-    <span class="fu">makeNumericVectorParam</span>(<span class="st">"x"</span>, len = <span class="fl">2L</span>, lower = <span class="op">-</span><span class="fl">5</span>, upper = <span class="fl">5</span>)
-  ),
-  minimize = <span class="fl">TRUE</span>
-)
+<span class="fu">makeSingleObjectiveFunction</span><span class="op">(</span>
+  name <span class="op">=</span> <span class="st">"my_sphere"</span>,
+  fn <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span>
+    <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">x</span><span class="op">*</span><span class="va">x</span><span class="op">)</span> <span class="op">+</span> <span class="fl">7</span>
+  <span class="op">}</span>,
+  par.set <span class="op">=</span> <span class="fu">makeParamSet</span><span class="op">(</span>
+    <span class="fu">makeNumericVectorParam</span><span class="op">(</span><span class="st">"x"</span>, len <span class="op">=</span> <span class="fl">2L</span>, lower <span class="op">=</span> <span class="op">-</span><span class="fl">5</span>, upper <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>
+  <span class="op">)</span>,
+  minimize <span class="op">=</span> <span class="cn">TRUE</span>
+<span class="op">)</span>
 <span class="co">## Single-objective function</span>
 <span class="co">## Name: my_sphere</span>
 <span class="co">## Description: no description</span>
@@ -223,8 +221,7 @@
 <span class="co">## Constraints: TRUE</span>
 <span class="co">## Number of parameters: 2</span>
 <span class="co">##            Type len Def  Constr Req Tunable Trafo</span>
-<span class="co">## x numericvector   2   - -5 to 5   -    TRUE     -</span>
-</pre></div>
+<span class="co">## x numericvector   2   - -5 to 5   -    TRUE     -</span></pre></div>
 <p>Check <code><a href="https://rdrr.io/pkg/smoof/man/makeSingleObjectiveFunction.html">?smoof::makeSingleObjectiveFunction</a></code> for further details.</p>
 </div>
 <div id="initial-design" class="section level3">
@@ -232,12 +229,10 @@
 <a href="#initial-design" class="anchor"></a>Initial Design</h3>
 <p>Before MBO can really start, it needs a set of already evaluated points - the <em>inital design</em>, as we have to initially learn our first machine learning regression model to propose new points for evaluation. If no design is given (i.e. <code>design = NULL</code>), <code><a href="../reference/mbo.html">mbo()</a></code> will use a <em>Maximin Latin Hypercube</em> <code><a href="https://rdrr.io/pkg/lhs/man/maximinLHS.html">lhs::maximinLHS()</a></code> design with <code>n = 4 * getNumberOfParameters(obj.fun)</code> points. If the design does not include function outcomes <code><a href="../reference/mbo.html">mbo()</a></code> will evaluate the design first before starting with the MBO algorithm. In this example we generate our own design.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="kw">des</span> <span class="op">=</span> <span class="fu">generateDesign</span>(n = <span class="fl">5</span>, par.set = <span class="fu">getParamSet</span>(<span class="kw">obj.fun</span>), fun = <span class="kw">lhs</span>::<span class="kw"><a href="https://rdrr.io/pkg/lhs/man/randomLHS.html">randomLHS</a></span>)
-</pre></div>
+<span class="va">des</span> <span class="op">=</span> <span class="fu">generateDesign</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">5</span>, par.set <span class="op">=</span> <span class="fu">getParamSet</span><span class="op">(</span><span class="va">obj.fun</span><span class="op">)</span>, fun <span class="op">=</span> <span class="fu">lhs</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/lhs/man/randomLHS.html">randomLHS</a></span><span class="op">)</span></pre></div>
 <p>We will also precalculate the results:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="kw">des</span><span class="op">$</span><span class="kw">y</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span>(<span class="kw">des</span>, <span class="fl">1</span>, <span class="kw">obj.fun</span>)
-</pre></div>
+<span class="va">des</span><span class="op">$</span><span class="va">y</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span><span class="op">(</span><span class="va">des</span>, <span class="fl">1</span>, <span class="va">obj.fun</span><span class="op">)</span></pre></div>
 <p><em>Note:</em> <em>mlrMBO</em> uses <code>y</code> as a default name for the outcome of the objective function. This can be changed in the control object.</p>
 </div>
 <div id="surrogate-model" class="section level3">
@@ -245,8 +240,7 @@
 <a href="#surrogate-model" class="anchor"></a>Surrogate Model</h3>
 <p>We decide to use Kriging as our surrogate model because it has proven to be quite effective for numerical domains. The surrogate must be specified as a mlr regression learner:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit">
-<span class="kw">surr.km</span> <span class="op">=</span> <span class="fu">makeLearner</span>(<span class="st">"regr.km"</span>, predict.type = <span class="st">"se"</span>, covtype = <span class="st">"matern3_2"</span>, control = <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(trace = <span class="fl">FALSE</span>))
-</pre></div>
+<span class="va">surr.km</span> <span class="op">=</span> <span class="fu">makeLearner</span><span class="op">(</span><span class="st">"regr.km"</span>, predict.type <span class="op">=</span> <span class="st">"se"</span>, covtype <span class="op">=</span> <span class="st">"matern3_2"</span>, control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>trace <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></pre></div>
 <p><em>Note:</em> If no surrogate learner is defined, <code><a href="../reference/mbo.html">mbo()</a></code> automatically uses Kriging for a numerical domain, otherwise <em>random forest regression</em>.</p>
 </div>
 <div id="mbocontrol" class="section level3">
@@ -265,17 +259,16 @@
 <code><a href="../reference/setMBOControlMultiObj.html">setMBOControlMultiObj()</a></code>: Needed, in case you want to optimize a multi-objective target function.</li>
 </ul>
 <div class="sourceCode" id="cb7"><pre class="downlit">
-<span class="kw">control</span> <span class="op">=</span> <span class="fu"><a href="../reference/makeMBOControl.html">makeMBOControl</a></span>()
-<span class="kw">control</span> <span class="op">=</span> <span class="fu"><a href="../reference/setMBOControlTermination.html">setMBOControlTermination</a></span>(<span class="kw">control</span>, iters = <span class="fl">10</span>)
-<span class="kw">control</span> <span class="op">=</span> <span class="fu"><a href="../reference/setMBOControlInfill.html">setMBOControlInfill</a></span>(<span class="kw">control</span>, crit = <span class="fu"><a href="../reference/infillcrits.html">makeMBOInfillCritEI</a></span>())
-</pre></div>
+<span class="va">control</span> <span class="op">=</span> <span class="fu"><a href="../reference/makeMBOControl.html">makeMBOControl</a></span><span class="op">(</span><span class="op">)</span>
+<span class="va">control</span> <span class="op">=</span> <span class="fu"><a href="../reference/setMBOControlTermination.html">setMBOControlTermination</a></span><span class="op">(</span><span class="va">control</span>, iters <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
+<span class="va">control</span> <span class="op">=</span> <span class="fu"><a href="../reference/setMBOControlInfill.html">setMBOControlInfill</a></span><span class="op">(</span><span class="va">control</span>, crit <span class="op">=</span> <span class="fu"><a href="../reference/infillcrits.html">makeMBOInfillCritEI</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></pre></div>
 </div>
 <div id="start-the-optimization" class="section level3">
 <h3 class="hasAnchor">
 <a href="#start-the-optimization" class="anchor"></a>Start the optimization</h3>
 <p>Finally, we start the optimization process and print the result object. It contains the best best found solution and its corresponding objective value.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit">
-<span class="kw">run</span> <span class="op">=</span> <span class="fu"><a href="../reference/mbo.html">mbo</a></span>(<span class="kw">obj.fun</span>, design = <span class="kw">des</span>, learner = <span class="kw">surr.km</span>, control = <span class="kw">control</span>, show.info = <span class="fl">TRUE</span>)
+<span class="va">run</span> <span class="op">=</span> <span class="fu"><a href="../reference/mbo.html">mbo</a></span><span class="op">(</span><span class="va">obj.fun</span>, design <span class="op">=</span> <span class="va">des</span>, learner <span class="op">=</span> <span class="va">surr.km</span>, control <span class="op">=</span> <span class="va">control</span>, show.info <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="co">## [mbo] 1: x=0.142 : y = 0.0821 : 0.0 secs : infill_ei</span>
 <span class="co">## [mbo] 2: x=-0.0588 : y = -0.0568 : 0.0 secs : infill_ei</span>
 <span class="co">## [mbo] 3: x=-0.00787 : y = -0.0992 : 0.0 secs : infill_ei</span>
@@ -286,7 +279,7 @@
 <span class="co">## [mbo] 8: x=-0.501 : y = 0.253 : 0.0 secs : infill_ei</span>
 <span class="co">## [mbo] 9: x=0.0328 : y = -0.086 : 0.0 secs : infill_ei</span>
 <span class="co">## [mbo] 10: x=0.000168 : y = -0.1 : 0.0 secs : infill_ei</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="kw">run</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">run</span><span class="op">)</span>
 <span class="co">## Recommended parameters:</span>
 <span class="co">## x=0.000168</span>
 <span class="co">## Objective: y = -0.100</span>
@@ -294,28 +287,27 @@
 <span class="co">## Optimization path</span>
 <span class="co">## 5 + 10 entries in total, displaying last 10 (or less):</span>
 <span class="co">##                x           y dob eol error.message exec.time            ei</span>
-<span class="co">## 6   0.1424200502  0.08209419   1  NA          &lt;NA&gt;     0.000 -3.210524e-02</span>
-<span class="co">## 7  -0.0588246736 -0.05680169   2  NA          &lt;NA&gt;     0.000 -2.895199e-02</span>
-<span class="co">## 8  -0.0078732127 -0.09917425   3  NA          &lt;NA&gt;     0.000 -4.124451e-03</span>
-<span class="co">## 9   0.0009141747 -0.09998885   4  NA          &lt;NA&gt;     0.000 -1.466116e-03</span>
-<span class="co">## 10 -0.0024097515 -0.09992256   5  NA          &lt;NA&gt;     0.000 -1.604071e-04</span>
-<span class="co">## 11  0.0042120161 -0.09976347   6  NA          &lt;NA&gt;     0.000 -7.865440e-05</span>
-<span class="co">## 12 -0.0004870891 -0.09999684   7  NA          &lt;NA&gt;     0.000 -3.759330e-05</span>
-<span class="co">## 13 -0.5011545567  0.25296936   8  NA          &lt;NA&gt;     0.000 -1.285448e-05</span>
-<span class="co">## 14  0.0327576367 -0.08597808   9  NA          &lt;NA&gt;     0.001 -1.576915e-05</span>
-<span class="co">## 15  0.0001680801 -0.09999962  10  NA          &lt;NA&gt;     0.000 -1.056027e-05</span>
+<span class="co">## 6   0.1424200502  0.08209419   1  NA          &lt;NA&gt;         0 -3.210524e-02</span>
+<span class="co">## 7  -0.0588246736 -0.05680169   2  NA          &lt;NA&gt;         0 -2.895199e-02</span>
+<span class="co">## 8  -0.0078732127 -0.09917425   3  NA          &lt;NA&gt;         0 -4.124451e-03</span>
+<span class="co">## 9   0.0009141747 -0.09998885   4  NA          &lt;NA&gt;         0 -1.466116e-03</span>
+<span class="co">## 10 -0.0024097515 -0.09992256   5  NA          &lt;NA&gt;         0 -1.604071e-04</span>
+<span class="co">## 11  0.0042120161 -0.09976347   6  NA          &lt;NA&gt;         0 -7.865440e-05</span>
+<span class="co">## 12 -0.0004870891 -0.09999684   7  NA          &lt;NA&gt;         0 -3.759330e-05</span>
+<span class="co">## 13 -0.5011545567  0.25296936   8  NA          &lt;NA&gt;         0 -1.285448e-05</span>
+<span class="co">## 14  0.0327576367 -0.08597808   9  NA          &lt;NA&gt;         0 -1.576915e-05</span>
+<span class="co">## 15  0.0001680801 -0.09999962  10  NA          &lt;NA&gt;         0 -1.056027e-05</span>
 <span class="co">##    error.model train.time prop.type propose.time           se        mean</span>
-<span class="co">## 6         &lt;NA&gt;      0.043 infill_ei        0.251 6.915038e-02 -0.10692782</span>
-<span class="co">## 7         &lt;NA&gt;      0.027 infill_ei        0.261 7.141779e-02 -0.09923456</span>
-<span class="co">## 8         &lt;NA&gt;      0.026 infill_ei        0.215 1.174788e-02 -0.09714734</span>
-<span class="co">## 9         &lt;NA&gt;      0.026 infill_ei        0.216 1.928583e-03 -0.10030883</span>
-<span class="co">## 10        &lt;NA&gt;      0.031 infill_ei        0.214 4.588194e-04 -0.09994165</span>
-<span class="co">## 11        &lt;NA&gt;      0.025 infill_ei        0.221 4.002964e-04 -0.09978701</span>
-<span class="co">## 12        &lt;NA&gt;      0.024 infill_ei        0.216 8.531091e-05 -0.09999575</span>
-<span class="co">## 13        &lt;NA&gt;      0.027 infill_ei        0.241 1.710841e-01  0.48794187</span>
-<span class="co">## 14        &lt;NA&gt;      0.025 infill_ei        0.222 6.453564e-03 -0.08427947</span>
-<span class="co">## 15        &lt;NA&gt;      0.024 infill_ei        0.226 2.269187e-05 -0.09999971</span>
-</pre></div>
+<span class="co">## 6         &lt;NA&gt;      0.044 infill_ei        0.262 6.915038e-02 -0.10692782</span>
+<span class="co">## 7         &lt;NA&gt;      0.027 infill_ei        0.251 7.141779e-02 -0.09923456</span>
+<span class="co">## 8         &lt;NA&gt;      0.026 infill_ei        0.226 1.174788e-02 -0.09714734</span>
+<span class="co">## 9         &lt;NA&gt;      0.029 infill_ei        0.228 1.928583e-03 -0.10030883</span>
+<span class="co">## 10        &lt;NA&gt;      0.031 infill_ei        0.216 4.588194e-04 -0.09994165</span>
+<span class="co">## 11        &lt;NA&gt;      0.025 infill_ei        0.233 4.002964e-04 -0.09978701</span>
+<span class="co">## 12        &lt;NA&gt;      0.026 infill_ei        0.223 8.531091e-05 -0.09999575</span>
+<span class="co">## 13        &lt;NA&gt;      0.027 infill_ei        0.242 1.710841e-01  0.48794187</span>
+<span class="co">## 14        &lt;NA&gt;      0.026 infill_ei        0.233 6.453564e-03 -0.08427947</span>
+<span class="co">## 15        &lt;NA&gt;      0.025 infill_ei        0.236 2.269187e-05 -0.09999971</span></pre></div>
 </div>
 </div>
 <div id="visualization" class="section level2">
@@ -323,10 +315,9 @@
 <a href="#visualization" class="anchor"></a>Visualization</h2>
 <p>For more insights into the MBO process, we can also start the previous optimization with the function <code><a href="../reference/exampleRun.html">exampleRun()</a></code> instead of <code><a href="../reference/mbo.html">mbo()</a></code>. This augments the results of <code><a href="../reference/mbo.html">mbo()</a></code> with additional information for plotting. Here, we plot the optimization state at iterations 1, 2, and 10.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit">
-<span class="kw">run</span> <span class="op">=</span> <span class="fu"><a href="../reference/exampleRun.html">exampleRun</a></span>(<span class="kw">obj.fun</span>, learner = <span class="kw">surr.km</span>, control = <span class="kw">control</span>, show.info = <span class="fl">FALSE</span>)
-</pre></div>
+<span class="va">run</span> <span class="op">=</span> <span class="fu"><a href="../reference/exampleRun.html">exampleRun</a></span><span class="op">(</span><span class="va">obj.fun</span>, learner <span class="op">=</span> <span class="va">surr.km</span>, control <span class="op">=</span> <span class="va">control</span>, show.info <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></pre></div>
 <div class="sourceCode" id="cb10"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="kw">run</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">run</span><span class="op">)</span>
 <span class="co">## MBOExampleRun</span>
 <span class="co">## Number of parameters        : 1</span>
 <span class="co">## Parameter names             : x</span>
@@ -351,9 +342,8 @@
 <span class="co">## Recommended parameters:</span>
 <span class="co">## x=-0.000483</span>
 <span class="co">## Objective: y = -1.000e-01</span>
-<span class="fu"><a href="../reference/plotExampleRun.html">plotExampleRun</a></span>(<span class="kw">run</span>, iters = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1L</span>, <span class="fl">2L</span>, <span class="fl">10L</span>), pause = <span class="fl">FALSE</span>)
-<span class="co">## Loading required package: ggplot2</span>
-</pre></div>
+<span class="fu"><a href="../reference/plotExampleRun.html">plotExampleRun</a></span><span class="op">(</span><span class="va">run</span>, iters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1L</span>, <span class="fl">2L</span>, <span class="fl">10L</span><span class="op">)</span>, pause <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="co">## Loading required package: ggplot2</span></pre></div>
 <p><img src="mlrMBO_files/figure-html/cosine_plot_examplerun-1.png" width="700"><img src="mlrMBO_files/figure-html/cosine_plot_examplerun-2.png" width="700"><img src="mlrMBO_files/figure-html/cosine_plot_examplerun-3.png" width="700"></p>
 </div>
 </div>

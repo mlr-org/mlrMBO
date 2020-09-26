@@ -184,16 +184,16 @@
     <p>Extends an MBO control object with infill criteria and infill optimizer options.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>setMBOControlTermination</span>(
-  <span class='kw'>control</span>,
-  iters = <span class='kw'>NULL</span>,
-  time.budget = <span class='kw'>NULL</span>,
-  exec.time.budget = <span class='kw'>NULL</span>,
-  target.fun.value = <span class='kw'>NULL</span>,
-  max.evals = <span class='kw'>NULL</span>,
-  more.termination.conds = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
-  use.for.adaptive.infill = <span class='kw'>NULL</span>
-)</pre>
+    <pre class="usage"><span class='fu'>setMBOControlTermination</span><span class='op'>(</span>
+  <span class='va'>control</span>,
+  iters <span class='op'>=</span> <span class='cn'>NULL</span>,
+  time.budget <span class='op'>=</span> <span class='cn'>NULL</span>,
+  exec.time.budget <span class='op'>=</span> <span class='cn'>NULL</span>,
+  target.fun.value <span class='op'>=</span> <span class='cn'>NULL</span>,
+  max.evals <span class='op'>=</span> <span class='cn'>NULL</span>,
+  more.termination.conds <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>,
+  use.for.adaptive.infill <span class='op'>=</span> <span class='cn'>NULL</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -270,26 +270,26 @@ If you want to to use it together with a criterion you supplied in <code>more.te
 <code><a href='setMBOControlMultiPoint.html'>setMBOControlMultiPoint</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>fn</span> <span class='op'>=</span> <span class='kw'>smoof</span>::<span class='fu'><a href='https://rdrr.io/pkg/smoof/man/makeSphereFunction.html'>makeSphereFunction</a></span>(<span class='fl'>1L</span>)
-<span class='kw'>ctrl</span> <span class='op'>=</span> <span class='fu'><a href='makeMBOControl.html'>makeMBOControl</a></span>()
+    <pre class="examples"><div class='input'><span class='va'>fn</span> <span class='op'>=</span> <span class='fu'>smoof</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/smoof/man/makeSphereFunction.html'>makeSphereFunction</a></span><span class='op'>(</span><span class='fl'>1L</span><span class='op'>)</span>
+<span class='va'>ctrl</span> <span class='op'>=</span> <span class='fu'><a href='makeMBOControl.html'>makeMBOControl</a></span><span class='op'>(</span><span class='op'>)</span>
 
 <span class='co'># custom termination condition (stop if target function value reached)</span>
 <span class='co'># We neglect the optimization direction (min/max) in this example.</span>
-<span class='kw'>yTargetValueTerminator</span> <span class='op'>=</span> <span class='fu'>function</span>(<span class='kw'>y.val</span>) {
-  <span class='fu'><a href='https://rdrr.io/r/base/force.html'>force</a></span>(<span class='kw'>y.val</span>)
-  <span class='fu'>function</span>(<span class='kw'>opt.state</span>) {
-    <span class='kw'>opt.path</span> <span class='op'>=</span> <span class='kw'>opt.state</span><span class='op'>$</span><span class='kw'>opt.path</span>
-    <span class='kw'>current.best</span> <span class='op'>=</span> <span class='fu'>getOptPathEl</span>(<span class='kw'>opt.path</span>, <span class='fu'>getOptPathBestIndex</span>((<span class='kw'>opt.path</span>)))<span class='op'>$</span><span class='kw'>y</span>
-    <span class='kw'>term</span> <span class='op'>=</span> (<span class='kw'>current.best</span> <span class='op'>&lt;=</span> <span class='kw'>y.val</span>)
-    <span class='kw'>message</span> <span class='op'>=</span> <span class='co'>if</span> (<span class='op'>!</span><span class='kw'>term</span>) <span class='fl'>NA_character_</span> <span class='co'>else</span> <span class='fu'><a href='https://rdrr.io/r/base/sprintf.html'>sprintf</a></span>(<span class='st'>"Target function value %f reached."</span>, <span class='kw'>y.val</span>)
-    <span class='fu'><a href='https://rdrr.io/r/base/function.html'>return</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(term = <span class='kw'>term</span>, message = <span class='kw'>message</span>))
-  }
-}
+<span class='va'>yTargetValueTerminator</span> <span class='op'>=</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>y.val</span><span class='op'>)</span> <span class='op'>{</span>
+  <span class='fu'><a href='https://rdrr.io/r/base/force.html'>force</a></span><span class='op'>(</span><span class='va'>y.val</span><span class='op'>)</span>
+  <span class='kw'>function</span><span class='op'>(</span><span class='va'>opt.state</span><span class='op'>)</span> <span class='op'>{</span>
+    <span class='va'>opt.path</span> <span class='op'>=</span> <span class='va'>opt.state</span><span class='op'>$</span><span class='va'>opt.path</span>
+    <span class='va'>current.best</span> <span class='op'>=</span> <span class='fu'>getOptPathEl</span><span class='op'>(</span><span class='va'>opt.path</span>, <span class='fu'>getOptPathBestIndex</span><span class='op'>(</span><span class='op'>(</span><span class='va'>opt.path</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>$</span><span class='va'>y</span>
+    <span class='va'>term</span> <span class='op'>=</span> <span class='op'>(</span><span class='va'>current.best</span> <span class='op'>&lt;=</span> <span class='va'>y.val</span><span class='op'>)</span>
+    <span class='va'>message</span> <span class='op'>=</span> <span class='kw'>if</span> <span class='op'>(</span><span class='op'>!</span><span class='va'>term</span><span class='op'>)</span> <span class='cn'>NA_character_</span> <span class='kw'>else</span> <span class='fu'><a href='https://rdrr.io/r/base/sprintf.html'>sprintf</a></span><span class='op'>(</span><span class='st'>"Target function value %f reached."</span>, <span class='va'>y.val</span><span class='op'>)</span>
+    <span class='kw'><a href='https://rdrr.io/r/base/function.html'>return</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>term <span class='op'>=</span> <span class='va'>term</span>, message <span class='op'>=</span> <span class='va'>message</span><span class='op'>)</span><span class='op'>)</span>
+  <span class='op'>}</span>
+<span class='op'>}</span>
 
 <span class='co'># assign custom termination condition</span>
-<span class='kw'>ctrl</span> <span class='op'>=</span> <span class='fu'>setMBOControlTermination</span>(<span class='kw'>ctrl</span>, more.termination.conds = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='fu'>yTargetValueTerminator</span>(<span class='fl'>0.05</span>)))
-<span class='kw'>res</span> <span class='op'>=</span> <span class='fu'><a href='mbo.html'>mbo</a></span>(<span class='kw'>fn</span>, control = <span class='kw'>ctrl</span>)
-</div><div class='output co'>#&gt; <span class='message'>Computing y column(s) for design. Not provided.</span></div><div class='output co'>#&gt; <span class='message'>[mbo] 0: x=-3.7 : y = 13.7 : 0.0 secs : initdesign</span></div><div class='output co'>#&gt; <span class='message'>[mbo] 0: x=2.08 : y = 4.33 : 0.0 secs : initdesign</span></div><div class='output co'>#&gt; <span class='message'>[mbo] 0: x=-2.49 : y = 6.22 : 0.0 secs : initdesign</span></div><div class='output co'>#&gt; <span class='message'>[mbo] 0: x=2.63 : y = 6.91 : 0.0 secs : initdesign</span></div><div class='output co'>#&gt; <span class='message'>[mbo] 1: x=1.82 : y = 3.3 : 0.0 secs : infill_cb</span></div><div class='output co'>#&gt; <span class='message'>[mbo] 2: x=0.955 : y = 0.912 : 0.0 secs : infill_cb</span></div><div class='output co'>#&gt; <span class='message'>[mbo] 3: x=-0.385 : y = 0.148 : 0.0 secs : infill_cb</span></div><div class='output co'>#&gt; <span class='message'>[mbo] 4: x=0.144 : y = 0.0206 : 0.0 secs : infill_cb</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='kw'>res</span>)
+<span class='va'>ctrl</span> <span class='op'>=</span> <span class='fu'>setMBOControlTermination</span><span class='op'>(</span><span class='va'>ctrl</span>, more.termination.conds <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'>yTargetValueTerminator</span><span class='op'>(</span><span class='fl'>0.05</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>res</span> <span class='op'>=</span> <span class='fu'><a href='mbo.html'>mbo</a></span><span class='op'>(</span><span class='va'>fn</span>, control <span class='op'>=</span> <span class='va'>ctrl</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Computing y column(s) for design. Not provided.</span></div><div class='output co'>#&gt; <span class='message'>[mbo] 0: x=-3.7 : y = 13.7 : 0.0 secs : initdesign</span></div><div class='output co'>#&gt; <span class='message'>[mbo] 0: x=2.08 : y = 4.33 : 0.0 secs : initdesign</span></div><div class='output co'>#&gt; <span class='message'>[mbo] 0: x=-2.49 : y = 6.22 : 0.0 secs : initdesign</span></div><div class='output co'>#&gt; <span class='message'>[mbo] 0: x=2.63 : y = 6.91 : 0.0 secs : initdesign</span></div><div class='output co'>#&gt; <span class='message'>[mbo] 1: x=1.82 : y = 3.3 : 0.0 secs : infill_cb</span></div><div class='output co'>#&gt; <span class='message'>[mbo] 2: x=0.955 : y = 0.912 : 0.0 secs : infill_cb</span></div><div class='output co'>#&gt; <span class='message'>[mbo] 3: x=-0.385 : y = 0.148 : 0.0 secs : infill_cb</span></div><div class='output co'>#&gt; <span class='message'>[mbo] 4: x=0.144 : y = 0.0206 : 0.0 secs : infill_cb</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>res</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; Recommended parameters:
 #&gt; x=0.144
 #&gt; Objective: y = 0.021
@@ -301,8 +301,8 @@ If you want to to use it together with a criterion you supplied in <code>more.te
 #&gt; 2  2.0814326  4.33236157   0  NA          &lt;NA&gt;     0.000         NA        &lt;NA&gt;
 #&gt; 3 -2.4934847  6.21746596   0  NA          &lt;NA&gt;     0.000         NA        &lt;NA&gt;
 #&gt; 4  2.6296002  6.91479717   0  NA          &lt;NA&gt;     0.000         NA        &lt;NA&gt;
-#&gt; 5  1.8167531  3.30059200   1  NA          &lt;NA&gt;     0.000  2.9284423        &lt;NA&gt;
-#&gt; 6  0.9548314  0.91170306   2  NA          &lt;NA&gt;     0.001  1.1170946        &lt;NA&gt;
+#&gt; 5  1.8167531  3.30059200   1  NA          &lt;NA&gt;     0.001  2.9284423        &lt;NA&gt;
+#&gt; 6  0.9548314  0.91170306   2  NA          &lt;NA&gt;     0.000  1.1170946        &lt;NA&gt;
 #&gt; 7 -0.3845713  0.14789507   3  NA          &lt;NA&gt;     0.000 -1.7860681        &lt;NA&gt;
 #&gt; 8  0.1436811  0.02064425   4  NA          &lt;NA&gt;     0.000 -0.4403414        &lt;NA&gt;
 #&gt;   train.time  prop.type propose.time        se       mean lambda
@@ -310,10 +310,10 @@ If you want to to use it together with a criterion you supplied in <code>more.te
 #&gt; 2         NA initdesign           NA        NA         NA     NA
 #&gt; 3         NA initdesign           NA        NA         NA     NA
 #&gt; 4         NA initdesign           NA        NA         NA     NA
-#&gt; 5      0.039  infill_cb        0.214 2.4141499 5.34259219      1
-#&gt; 6      0.039  infill_cb        0.212 2.9398519 4.05694646      1
-#&gt; 7      0.079  infill_cb        0.215 2.0162487 0.23018064      1
-#&gt; 8      0.054  infill_cb        0.224 0.4823983 0.04205684      1</div></pre>
+#&gt; 5      0.046  infill_cb        0.239 2.4141499 5.34259219      1
+#&gt; 6      0.050  infill_cb        0.253 2.9398519 4.05694646      1
+#&gt; 7      0.086  infill_cb        0.257 2.0162487 0.23018064      1
+#&gt; 8      0.062  infill_cb        0.265 0.4823983 0.04205684      1</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

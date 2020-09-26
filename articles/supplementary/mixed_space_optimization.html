@@ -156,30 +156,29 @@
 <a href="#objective-function" class="anchor"></a>Objective Function</h3>
 <p>We construct an exemplary objective function using <code>smoof::makeSingleObjetiveFunction()</code>. The <code>par.set</code> argument has to be a <code>ParamSet</code> object from the <strong>ParamHelpers</strong> package, which provides information about the parameters of the objective function and their constraints for optimization. The objective function will be 3-dimensional with the inputs <code>j</code> and <code>method</code>. <code>j</code> is in the interval <span class="math inline">\([0,2\pi]\)</span> The Parameter <code>method</code> is categorical and can be either <code>"a"</code> or <code>"b"</code>. In this case we want to minimize the function, so we have to set <code>minimize = TRUE</code>. As the parameters are of different types (e.g. numeric and categorical), the function expects a list instead of a vector as its argument, which is specified by <code>has.simple.signature = FALSE</code>. For further information about he <strong>smoof</strong> package we refer to the <a href="https://github.com/jakobbossek/smoof">github page</a>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://github.com/mlr-org/mlrMBO">mlrMBO</a></span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="http://ggplot2.tidyverse.org">ggplot2</a></span>)
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/mlr-org/mlrMBO">mlrMBO</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span>
 
-<span class="kw">fun</span> <span class="op">=</span> <span class="fu">function</span>(<span class="kw">x</span>) {
-  <span class="kw">j</span> <span class="op">=</span> <span class="kw">x</span><span class="op">$</span><span class="kw">j</span>
-  <span class="kw">method</span> <span class="op">=</span> <span class="kw">x</span><span class="op">$</span><span class="kw">method</span>
-  <span class="kw">perf</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span>(<span class="kw">method</span> <span class="op">==</span> <span class="st">"a"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Trig.html">sin</a></span>(<span class="kw">j</span>), <span class="fu"><a href="https://rdrr.io/r/base/Trig.html">cos</a></span>(<span class="kw">j</span>))
-  <span class="fu"><a href="https://rdrr.io/r/base/function.html">return</a></span>(<span class="kw">perf</span>)
-}
+<span class="va">fun</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span>
+  <span class="va">j</span> <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">j</span>
+  <span class="va">method</span> <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">method</span>
+  <span class="va">perf</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">method</span> <span class="op">==</span> <span class="st">"a"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Trig.html">sin</a></span><span class="op">(</span><span class="va">j</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/Trig.html">cos</a></span><span class="op">(</span><span class="va">j</span><span class="op">)</span><span class="op">)</span>
+  <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="va">perf</span><span class="op">)</span>
+<span class="op">}</span>
 
-<span class="kw">objfun2</span> <span class="op">=</span> <span class="fu">makeSingleObjectiveFunction</span>(
-  name = <span class="st">"mixed_example"</span>,
-  fn = <span class="kw">fun</span>,
-  par.set = <span class="fu">makeParamSet</span>(
-    <span class="fu">makeNumericParam</span>(<span class="st">"j"</span>, lower = <span class="fl">0</span>,upper = <span class="fl">2</span> <span class="op">*</span> <span class="kw">pi</span>),
-    <span class="fu">makeDiscreteParam</span>(<span class="st">"method"</span>, values = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"a"</span>, <span class="st">"b"</span>))
-  ),
-  has.simple.signature = <span class="fl">FALSE</span>,
-  minimize = <span class="fl">TRUE</span>
-)
+<span class="va">objfun2</span> <span class="op">=</span> <span class="fu">makeSingleObjectiveFunction</span><span class="op">(</span>
+  name <span class="op">=</span> <span class="st">"mixed_example"</span>,
+  fn <span class="op">=</span> <span class="va">fun</span>,
+  par.set <span class="op">=</span> <span class="fu">makeParamSet</span><span class="op">(</span>
+    <span class="fu">makeNumericParam</span><span class="op">(</span><span class="st">"j"</span>, lower <span class="op">=</span> <span class="fl">0</span>,upper <span class="op">=</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">pi</span><span class="op">)</span>,
+    <span class="fu">makeDiscreteParam</span><span class="op">(</span><span class="st">"method"</span>, values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="st">"b"</span><span class="op">)</span><span class="op">)</span>
+  <span class="op">)</span>,
+  has.simple.signature <span class="op">=</span> <span class="cn">FALSE</span>,
+  minimize <span class="op">=</span> <span class="cn">TRUE</span>
+<span class="op">)</span>
 
 <span class="co"># visualize the function</span>
-<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span>(<span class="kw">objfun2</span>)
-</pre></div>
+<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span><span class="va">objfun2</span><span class="op">)</span></pre></div>
 <p><img src="mixed_space_optimization_files/figure-html/objective_function-1.png" width="700"></p>
 </div>
 <div id="sorrogate-learner" class="section level3">
@@ -187,40 +186,36 @@
 <a href="#sorrogate-learner" class="anchor"></a>Sorrogate Learner</h3>
 <p>For this kind of parameter space a regression method for the surrogate is necessary that supports <em>factors</em>. To list all <em>mlr</em> learners that support factors and uncertainty estimation you can run <code><a href="https://mlr.mlr-org.com/reference/listLearners.html">listLearners("regr", properties = c("factors", "se"))</a></code>. A popular choice for these scenarios is the <em>Random Forest</em>.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="kw">surr.rf</span> <span class="op">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/makeLearner.html">makeLearner</a></span>(<span class="st">"regr.randomForest"</span>, predict.type = <span class="st">"se"</span>)
-</pre></div>
+<span class="va">surr.rf</span> <span class="op">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/makeLearner.html">makeLearner</a></span><span class="op">(</span><span class="st">"regr.randomForest"</span>, predict.type <span class="op">=</span> <span class="st">"se"</span><span class="op">)</span></pre></div>
 </div>
 <div id="infill-criterion" class="section level3">
 <h3 class="hasAnchor">
 <a href="#infill-criterion" class="anchor"></a>Infill Criterion</h3>
 <p>Although technically possible the <em>Expected Imrovement</em> that we used for the numerical parameter space and the <em>Kriging</em> surrogate, the <em>Confidence Bound</em> (<code><a href="../../reference/infillcrits.html">makeMBOInfillCritCB()</a></code>) or also called statistical upper/lower bound is recommended for <em>Random Forest</em> regression. The reason is, that the <em>Expected Improvement</em> is founded on the Gaussian posterior distribution given by the Kriging estimator, which is not given by the Random Forest regression. For <em>minimization</em> the <em>lower</em> Confidence Bound is given by <span class="math inline">\(UCB(x) = \hat{\mu}(x) - \lambda \cdot \hat{s}(x)\)</span>. We set <span class="math inline">\(\lambda = 5\)</span>. For the infill criteria optimization we set <code>opt.focussearch.points = 500</code>, to increase the speed of the tutorial.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="kw">control2</span> <span class="op">=</span> <span class="fu"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span>()
-<span class="kw">control2</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlInfill.html">setMBOControlInfill</a></span>(
-  control = <span class="kw">control2</span>,
-  crit = <span class="fu"><a href="../../reference/infillcrits.html">makeMBOInfillCritCB</a></span>(cb.lambda = <span class="fl">5</span>),
-  opt.focussearch.points = <span class="fl">500</span>
-)
-</pre></div>
+<span class="va">control2</span> <span class="op">=</span> <span class="fu"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span><span class="op">(</span><span class="op">)</span>
+<span class="va">control2</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlInfill.html">setMBOControlInfill</a></span><span class="op">(</span>
+  control <span class="op">=</span> <span class="va">control2</span>,
+  crit <span class="op">=</span> <span class="fu"><a href="../../reference/infillcrits.html">makeMBOInfillCritCB</a></span><span class="op">(</span>cb.lambda <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>,
+  opt.focussearch.points <span class="op">=</span> <span class="fl">500</span>
+<span class="op">)</span></pre></div>
 </div>
 <div id="termination" class="section level3">
 <h3 class="hasAnchor">
 <a href="#termination" class="anchor"></a>Termination</h3>
 <p>We want to stop after 10 MBO iterations, meaning 10 function evaluations in this example (not including the initial design):</p>
 <div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="kw">control2</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span>(
-  control = <span class="kw">control2</span>,
-  iters = <span class="fl">10</span>
-)
-</pre></div>
+<span class="va">control2</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span><span class="op">(</span>
+  control <span class="op">=</span> <span class="va">control2</span>,
+  iters <span class="op">=</span> <span class="fl">10</span>
+<span class="op">)</span></pre></div>
 </div>
 <div id="initial-design" class="section level3">
 <h3 class="hasAnchor">
 <a href="#initial-design" class="anchor"></a>Initial Design</h3>
 <p>The initial design is set to size of 8:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="kw">design2</span> <span class="op">=</span> <span class="fu">generateDesign</span>(n = <span class="fl">8</span>, par.set = <span class="fu"><a href="https://mlr.mlr-org.com/reference/getParamSet.html">getParamSet</a></span>(<span class="kw">objfun2</span>))
-</pre></div>
+<span class="va">design2</span> <span class="op">=</span> <span class="fu">generateDesign</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">8</span>, par.set <span class="op">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/getParamSet.html">getParamSet</a></span><span class="op">(</span><span class="va">objfun2</span><span class="op">)</span><span class="op">)</span></pre></div>
 <p>Note that the initial design has to be big enough to cover all discrete values and ideally all combinations of discrete values including integers. If we had 2 discrete variables one with 5 and one with 3 discrete values the initial design should be at least of size 15. Usually <code>generateDesign()</code> takes care that the points are spread uniformly.</p>
 </div>
 <div id="optimization" class="section level3">
@@ -229,8 +224,8 @@
 <p>Finally, we start the optimization with <code><a href="../../reference/mbo.html">mbo()</a></code> with suppressed learner output from <em>mlr</em> and we print the result object to obtain the input that lead to the best objective:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit">
 <span class="co"># Surpresses output of learners</span>
-<span class="kw">mlr</span>::<span class="fu"><a href="https://mlr.mlr-org.com/reference/configureMlr.html">configureMlr</a></span>(show.info = <span class="fl">FALSE</span>, show.learner.output = <span class="fl">FALSE</span>, on.learner.warning = <span class="st">"quiet"</span>)
-<span class="kw">run2</span> <span class="op">=</span> <span class="fu"><a href="../../reference/mbo.html">mbo</a></span>(<span class="kw">objfun2</span>, design = <span class="kw">design2</span>, learner = <span class="kw">surr.rf</span>, control = <span class="kw">control2</span>, show.info = <span class="fl">TRUE</span>)
+<span class="fu">mlr</span><span class="fu">::</span><span class="fu"><a href="https://mlr.mlr-org.com/reference/configureMlr.html">configureMlr</a></span><span class="op">(</span>show.info <span class="op">=</span> <span class="cn">FALSE</span>, show.learner.output <span class="op">=</span> <span class="cn">FALSE</span>, on.learner.warning <span class="op">=</span> <span class="st">"quiet"</span><span class="op">)</span>
+<span class="va">run2</span> <span class="op">=</span> <span class="fu"><a href="../../reference/mbo.html">mbo</a></span><span class="op">(</span><span class="va">objfun2</span>, design <span class="op">=</span> <span class="va">design2</span>, learner <span class="op">=</span> <span class="va">surr.rf</span>, control <span class="op">=</span> <span class="va">control2</span>, show.info <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="co">## Computing y column(s) for design. Not provided.</span>
 <span class="co">## [mbo] 0: j=4.12; method=b : y = -0.558 : 0.0 secs : initdesign</span>
 <span class="co">## [mbo] 0: j=0.258; method=a : y = 0.255 : 0.0 secs : initdesign</span>
@@ -249,20 +244,18 @@
 <span class="co">## [mbo] 7: j=5.71; method=a : y = -0.541 : 0.0 secs : infill_cb</span>
 <span class="co">## [mbo] 8: j=5.72; method=a : y = -0.534 : 0.0 secs : infill_cb</span>
 <span class="co">## [mbo] 9: j=5.72; method=a : y = -0.531 : 0.0 secs : infill_cb</span>
-<span class="co">## [mbo] 10: j=5.74; method=a : y = -0.52 : 0.0 secs : infill_cb</span>
-</pre></div>
+<span class="co">## [mbo] 10: j=5.74; method=a : y = -0.52 : 0.0 secs : infill_cb</span></pre></div>
 <p>The console output gives a live overview of all all evaluated points.</p>
 <p>Let’s look at the parts of the result that tell us the optimal reached value and its corresponding setting:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit">
-<span class="kw">run2</span><span class="op">$</span><span class="kw">y</span>
+<span class="va">run2</span><span class="op">$</span><span class="va">y</span>
 <span class="co">## [1] -0.9365681</span>
-<span class="kw">run2</span><span class="op">$</span><span class="kw">x</span>
+<span class="va">run2</span><span class="op">$</span><span class="va">x</span>
 <span class="co">## $j</span>
 <span class="co">## [1] 2.783503</span>
 <span class="co">## </span>
 <span class="co">## $method</span>
-<span class="co">## [1] "b"</span>
-</pre></div>
+<span class="co">## [1] "b"</span></pre></div>
 </div>
 </div>
 <div id="visualization" class="section level2">
@@ -271,13 +264,11 @@
 <p>Visualization is only possible for 2-dimensional objective functions, of which one is the categorical dimension. Exactly like in our exemplary function.</p>
 <p>Again, to obtain all the data that is necessary to generate the plot we have to call the optimization through <code><a href="../../reference/exampleRun.html">exampleRun()</a></code>:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit">
-<span class="kw">ex.run2</span> <span class="op">=</span> <span class="fu"><a href="../../reference/exampleRun.html">exampleRun</a></span>(<span class="kw">objfun2</span>, design = <span class="kw">design2</span>, learner = <span class="kw">surr.rf</span>, control = <span class="kw">control2</span>, show.info = <span class="fl">FALSE</span>)
-</pre></div>
+<span class="va">ex.run2</span> <span class="op">=</span> <span class="fu"><a href="../../reference/exampleRun.html">exampleRun</a></span><span class="op">(</span><span class="va">objfun2</span>, design <span class="op">=</span> <span class="va">design2</span>, learner <span class="op">=</span> <span class="va">surr.rf</span>, control <span class="op">=</span> <span class="va">control2</span>, show.info <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></pre></div>
 <p>And let’s visualize the results:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit">
-<span class="fu"><a href="../../reference/plotExampleRun.html">plotExampleRun</a></span>(<span class="kw">ex.run2</span>, iters = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1L</span>, <span class="fl">2L</span>, <span class="fl">10L</span>), pause = <span class="fl">FALSE</span>)
-<span class="co">## Loading required package: gridExtra</span>
-</pre></div>
+<span class="fu"><a href="../../reference/plotExampleRun.html">plotExampleRun</a></span><span class="op">(</span><span class="va">ex.run2</span>, iters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1L</span>, <span class="fl">2L</span>, <span class="fl">10L</span><span class="op">)</span>, pause <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="co">## Loading required package: gridExtra</span></pre></div>
 <p><img src="mixed_space_optimization_files/figure-html/plot_example_run_2d-1.png" width="700"><img src="mixed_space_optimization_files/figure-html/plot_example_run_2d-2.png" width="700"><img src="mixed_space_optimization_files/figure-html/plot_example_run_2d-3.png" width="700"></p>
 </div>
 <div id="improved-example-for-dependent-parameters" class="section level2">
@@ -285,45 +276,40 @@
 <a href="#improved-example-for-dependent-parameters" class="anchor"></a>Improved Example for Dependent Parameters</h2>
 <p>Looking back at our example we notice that the behavior of the function for <span class="math inline">\(j\)</span> totally changes depending on the chosen <em>method</em>. If such dependency is known beforehand it totally makes sense to let the surrogate know that <span class="math inline">\(j\)</span> should be treated differently depending on the chosen <em>method</em>. This is done by introducing a new variable for each <em>method</em>.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit">
-<span class="kw">wrap.fun</span> <span class="op">=</span> <span class="fu">function</span>(<span class="kw">x</span>) {
-  <span class="kw">x</span><span class="op">$</span><span class="kw">j</span> <span class="op">=</span> <span class="co">if</span> (<span class="kw">x</span><span class="op">$</span><span class="kw">method</span> <span class="op">==</span> <span class="st">"a"</span>) <span class="kw">x</span><span class="op">$</span><span class="kw">ja</span> <span class="co">else</span> <span class="kw">x</span><span class="op">$</span><span class="kw">jb</span>
-  <span class="kw">x</span> <span class="op">=</span> <span class="kw">x</span>[<span class="fu"><a href="https://rdrr.io/r/base/sets.html">setdiff</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="kw">x</span>), <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"ja"</span>, <span class="st">"jb"</span>))]
-  <span class="fu">fun</span>(<span class="kw">x</span>)
-}
-</pre></div>
+<span class="va">wrap.fun</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span>
+  <span class="va">x</span><span class="op">$</span><span class="va">j</span> <span class="op">=</span> <span class="kw">if</span> <span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">method</span> <span class="op">==</span> <span class="st">"a"</span><span class="op">)</span> <span class="va">x</span><span class="op">$</span><span class="va">ja</span> <span class="kw">else</span> <span class="va">x</span><span class="op">$</span><span class="va">jb</span>
+  <span class="va">x</span> <span class="op">=</span> <span class="va">x</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/sets.html">setdiff</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"ja"</span>, <span class="st">"jb"</span><span class="op">)</span><span class="op">)</span><span class="op">]</span>
+  <span class="fu">fun</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
+<span class="op">}</span></pre></div>
 <p>We have to also change the parameter space accordingly:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit">
-<span class="kw">ps.wrap</span> <span class="op">=</span> <span class="fu">makeParamSet</span>(
-  <span class="fu">makeDiscreteParam</span>(<span class="st">"method"</span>, values = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"a"</span>, <span class="st">"b"</span>)),
-  <span class="fu">makeNumericParam</span>(<span class="st">"ja"</span>, lower = <span class="fl">0</span>,upper = <span class="fl">2</span> <span class="op">*</span> <span class="kw">pi</span>, requires = <span class="fu"><a href="https://rdrr.io/r/base/substitute.html">quote</a></span>(<span class="kw">method</span> <span class="op">==</span> <span class="st">"a"</span>)),
-  <span class="fu">makeNumericParam</span>(<span class="st">"jb"</span>, lower = <span class="fl">0</span>,upper = <span class="fl">2</span> <span class="op">*</span> <span class="kw">pi</span>, requires = <span class="fu"><a href="https://rdrr.io/r/base/substitute.html">quote</a></span>(<span class="kw">method</span> <span class="op">==</span> <span class="st">"b"</span>))
-  )
-</pre></div>
+<span class="va">ps.wrap</span> <span class="op">=</span> <span class="fu">makeParamSet</span><span class="op">(</span>
+  <span class="fu">makeDiscreteParam</span><span class="op">(</span><span class="st">"method"</span>, values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="st">"b"</span><span class="op">)</span><span class="op">)</span>,
+  <span class="fu">makeNumericParam</span><span class="op">(</span><span class="st">"ja"</span>, lower <span class="op">=</span> <span class="fl">0</span>,upper <span class="op">=</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">pi</span>, requires <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html">quote</a></span><span class="op">(</span><span class="va">method</span> <span class="op">==</span> <span class="st">"a"</span><span class="op">)</span><span class="op">)</span>,
+  <span class="fu">makeNumericParam</span><span class="op">(</span><span class="st">"jb"</span>, lower <span class="op">=</span> <span class="fl">0</span>,upper <span class="op">=</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">pi</span>, requires <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html">quote</a></span><span class="op">(</span><span class="va">method</span> <span class="op">==</span> <span class="st">"b"</span><span class="op">)</span><span class="op">)</span>
+  <span class="op">)</span></pre></div>
 <p>Let’s wrap this up in a new objective function using <code>smoof</code>:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit">
-<span class="kw">objfun3</span> <span class="op">=</span> <span class="fu">makeSingleObjectiveFunction</span>(
-  name = <span class="st">"mixed_example: Dependent J"</span>,
-  fn = <span class="kw">wrap.fun</span>,
-  par.set = <span class="kw">ps.wrap</span>,
-  has.simple.signature = <span class="fl">FALSE</span>,
-  minimize = <span class="fl">TRUE</span>
-)
-</pre></div>
+<span class="va">objfun3</span> <span class="op">=</span> <span class="fu">makeSingleObjectiveFunction</span><span class="op">(</span>
+  name <span class="op">=</span> <span class="st">"mixed_example: Dependent J"</span>,
+  fn <span class="op">=</span> <span class="va">wrap.fun</span>,
+  par.set <span class="op">=</span> <span class="va">ps.wrap</span>,
+  has.simple.signature <span class="op">=</span> <span class="cn">FALSE</span>,
+  minimize <span class="op">=</span> <span class="cn">TRUE</span>
+<span class="op">)</span></pre></div>
 <p>As we have dependent parameters now there will be missing values in the design for the surrogate. This means e.g. that when we use <code>method=a</code> the parameter <code>jb</code> will be <code>NA</code>. Hence, our learner for the surrogate has to be able to deal with missing values. The random forest is not natively able to do that but works perfect using the <em>separate-class method</em> <a href="http://people.stern.nyu.edu/jsimonof/jmlr10.pdf">Ding et. al. An investigation of missing data methods for classification trees applied to binary response data.</a>. When no learner is supplied, mlrMBO takes care of that automatically, by using a <em>random forest</em> wrapped in an <em>impute wrapper</em>.</p>
 <p>You can do it manually like this:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit">
-<span class="kw">lrn</span> <span class="op">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/makeLearner.html">makeLearner</a></span>(<span class="st">"regr.randomForest"</span>, predict.type = <span class="st">"se"</span>, ntree = <span class="fl">200</span>)
-<span class="kw">lrn</span> <span class="op">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/makeImputeWrapper.html">makeImputeWrapper</a></span>(<span class="kw">lrn</span>, classes = <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(numeric = <span class="fu"><a href="https://mlr.mlr-org.com/reference/imputations.html">imputeMax</a></span>(<span class="fl">2</span>), factor = <span class="fu"><a href="https://mlr.mlr-org.com/reference/imputations.html">imputeConstant</a></span>(<span class="st">"__miss__"</span>)))
-</pre></div>
+<span class="va">lrn</span> <span class="op">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/makeLearner.html">makeLearner</a></span><span class="op">(</span><span class="st">"regr.randomForest"</span>, predict.type <span class="op">=</span> <span class="st">"se"</span>, ntree <span class="op">=</span> <span class="fl">200</span><span class="op">)</span>
+<span class="va">lrn</span> <span class="op">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/makeImputeWrapper.html">makeImputeWrapper</a></span><span class="op">(</span><span class="va">lrn</span>, classes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>numeric <span class="op">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/imputations.html">imputeMax</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span>, factor <span class="op">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/imputations.html">imputeConstant</a></span><span class="op">(</span><span class="st">"__miss__"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></pre></div>
 <p>Or you call <code>makeMBOLearner</code> which is exactly what happens when no learner is supplied to <code><a href="../../reference/mbo.html">mbo()</a></code> with the advantage that now you can change the parameters manually before calling <code><a href="../../reference/mbo.html">mbo()</a></code>.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit">
-<span class="kw">lrn</span> <span class="op">=</span> <span class="fu"><a href="../../reference/makeMBOLearner.html">makeMBOLearner</a></span>(control = <span class="kw">control2</span>, fun = <span class="kw">objfun3</span>, ntree = <span class="fl">200</span>)
-</pre></div>
+<span class="va">lrn</span> <span class="op">=</span> <span class="fu"><a href="../../reference/makeMBOLearner.html">makeMBOLearner</a></span><span class="op">(</span>control <span class="op">=</span> <span class="va">control2</span>, fun <span class="op">=</span> <span class="va">objfun3</span>, ntree <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></pre></div>
 <p>And now let’s directly run the optimization without further changing the control object from above.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit">
-<span class="kw">design3</span> <span class="op">=</span> <span class="fu">generateDesign</span>(n = <span class="fl">8</span>, par.set = <span class="fu"><a href="https://mlr.mlr-org.com/reference/getParamSet.html">getParamSet</a></span>(<span class="kw">objfun3</span>))
-<span class="kw">run3</span> <span class="op">=</span> <span class="fu"><a href="../../reference/mbo.html">mbo</a></span>(<span class="kw">objfun3</span>, learner = <span class="kw">lrn</span>, design = <span class="kw">design3</span>, control = <span class="kw">control2</span>, show.info = <span class="fl">FALSE</span>)
-<span class="kw">run3</span><span class="op">$</span><span class="kw">x</span>
+<span class="va">design3</span> <span class="op">=</span> <span class="fu">generateDesign</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">8</span>, par.set <span class="op">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/getParamSet.html">getParamSet</a></span><span class="op">(</span><span class="va">objfun3</span><span class="op">)</span><span class="op">)</span>
+<span class="va">run3</span> <span class="op">=</span> <span class="fu"><a href="../../reference/mbo.html">mbo</a></span><span class="op">(</span><span class="va">objfun3</span>, learner <span class="op">=</span> <span class="va">lrn</span>, design <span class="op">=</span> <span class="va">design3</span>, control <span class="op">=</span> <span class="va">control2</span>, show.info <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="va">run3</span><span class="op">$</span><span class="va">x</span>
 <span class="co">## $method</span>
 <span class="co">## [1] "a"</span>
 <span class="co">## </span>
@@ -332,21 +318,19 @@
 <span class="co">## </span>
 <span class="co">## $jb</span>
 <span class="co">## [1] NA</span>
-<span class="kw">run3</span><span class="op">$</span><span class="kw">y</span>
-<span class="co">## [1] -0.9999733</span>
-</pre></div>
+<span class="va">run3</span><span class="op">$</span><span class="va">y</span>
+<span class="co">## [1] -0.9999733</span></pre></div>
 <p>Unfortunately our problem is now categorical and 3-dimensional to the eyes of <code>mlrMBO</code> so there is no implemented method to visualize the optimization. However we can analyze the residuals to see which surrogate was more accurate:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit">
-<span class="kw">op2</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span>(<span class="kw">run2</span><span class="op">$</span><span class="kw">opt.path</span>)
-<span class="kw">op3</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span>(<span class="kw">run3</span><span class="op">$</span><span class="kw">opt.path</span>)
+<span class="va">op2</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">run2</span><span class="op">$</span><span class="va">opt.path</span><span class="op">)</span>
+<span class="va">op3</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">run3</span><span class="op">$</span><span class="va">opt.path</span><span class="op">)</span>
 
 <span class="co"># residual variance of the surrogate model for the first example</span>
-<span class="fu"><a href="https://rdrr.io/r/stats/cor.html">var</a></span>(<span class="kw">op2</span><span class="op">$</span><span class="kw">mean</span> <span class="op">-</span> <span class="kw">op2</span><span class="op">$</span><span class="kw">y</span>, na.rm = <span class="fl">TRUE</span>)
+<span class="fu"><a href="https://rdrr.io/r/stats/cor.html">var</a></span><span class="op">(</span><span class="va">op2</span><span class="op">$</span><span class="va">mean</span> <span class="op">-</span> <span class="va">op2</span><span class="op">$</span><span class="va">y</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="co">## [1] 0.1116086</span>
 <span class="co"># residual variance of the advanced surrogate model with independetly treat ed jaand jb</span>
-<span class="fu"><a href="https://rdrr.io/r/stats/cor.html">var</a></span>(<span class="kw">op3</span><span class="op">$</span><span class="kw">mean</span> <span class="op">-</span> <span class="kw">op3</span><span class="op">$</span><span class="kw">y</span>, na.rm = <span class="fl">TRUE</span>)
-<span class="co">## [1] 0.3793071</span>
-</pre></div>
+<span class="fu"><a href="https://rdrr.io/r/stats/cor.html">var</a></span><span class="op">(</span><span class="va">op3</span><span class="op">$</span><span class="va">mean</span> <span class="op">-</span> <span class="va">op3</span><span class="op">$</span><span class="va">y</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="co">## [1] 0.3793071</span></pre></div>
 <p>As you can see our new approach could improve the fit of the surrogate.</p>
 </div>
 <div id="remarks" class="section level2">

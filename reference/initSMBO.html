@@ -184,15 +184,15 @@
     <p>When you want to run a human-in-the-loop MBO run you need to initialize it first.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>initSMBO</span>(
-  <span class='kw'>par.set</span>,
-  <span class='kw'>design</span>,
-  learner = <span class='kw'>NULL</span>,
-  <span class='kw'>control</span>,
-  minimize = <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>TRUE</span>, <span class='kw'>control</span><span class='op'>$</span><span class='kw'>n.objectives</span>),
-  noisy = <span class='fl'>FALSE</span>,
-  show.info = <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"mlrMBO.show.info"</span>, <span class='fl'>TRUE</span>)
-)</pre>
+    <pre class="usage"><span class='fu'>initSMBO</span><span class='op'>(</span>
+  <span class='va'>par.set</span>,
+  <span class='va'>design</span>,
+  learner <span class='op'>=</span> <span class='cn'>NULL</span>,
+  <span class='va'>control</span>,
+  minimize <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='cn'>TRUE</span>, <span class='va'>control</span><span class='op'>$</span><span class='va'>n.objectives</span><span class='op'>)</span>,
+  noisy <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  show.info <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span><span class='op'>(</span><span class='st'>"mlrMBO.show.info"</span>, <span class='cn'>TRUE</span><span class='op'>)</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
