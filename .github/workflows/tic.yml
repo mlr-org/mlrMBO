@@ -1,5 +1,6 @@
-## tic GitHub Actions template: linux-macos-windows-deploy
+## tic GitHub Actions template: custom-deploy
 ## revision date: 2020-08-06
+# [Custom header]
 on:
   workflow_dispatch:
   push:
@@ -21,13 +22,29 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          # use a different tic template type if you do not want to build on all listed platforms
-          - { os: windows-latest, r: "release" }
-          - { os: macOS-latest, r: "release", pkgdown: "true", latex: "true" }
+          ### Custom configs (specify your own runners here)
+          # [Custom matrix env var]
+          - { os: ubuntu-latest, r: "release" , pkgdown: "true", latex: "true", codecov: "true"}
+          # [Custom matrix env var]
           - { os: ubuntu-latest, r: "devel" }
-          - { os: ubuntu-latest, r: "release" }
+          # [Custom matrix env var]
+          - { os: macOS-latest, r: "release" }
+          # [Custom matrix env var]
+          - { os: windows-latest, r: "release" }
+          # [Custom matrix env var]
+          # - { os: windows-latest, r: "release" }
+          # [Custom matrix env var]
+          # - { os: macOS-latest, r: "release", pkgdown: "true", latex: "true" }
+          # [Custom matrix env var]
+          # - { os: ubuntu-latest, r: "release" }
+          # [Custom matrix env var]
+          # - { os: ubuntu-latest, r: "devel" }
 
     env:
+      # [Custom env var] fake virtual display for rgl package
+      CODECOV:  ${{ matrix.config.codecov }}
+      # [Custom env var] fake virtual display for rgl package
+      DISPLAY: ":99"
       # otherwise remotes::fun() errors cause the build to fail. Example: Unavailability of binaries
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
       CRAN: ${{ matrix.config.cran }}
@@ -42,8 +59,6 @@ jobs:
       SDKROOT: /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk
       # use GITHUB_TOKEN from GitHub to workaround rate limits in {remotes}
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-      # [Custom env var] fake virtual display for rgl package
-      DISPLAY: ":99"
 
     steps:
       - uses: actions/checkout@v2.3.1
