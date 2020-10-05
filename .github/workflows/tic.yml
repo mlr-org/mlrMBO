@@ -103,6 +103,11 @@ jobs:
         if: runner.os == 'Linux'
         run: sudo apt install libcurl4-openssl-dev
 
+      - name: "[Custom block] [Linux] Linux system libs setup"
+        if: runner.os == 'Linux'
+        run: |
+          sudo R CMD javareconf
+
       - name: "[Custom block] [macOS] macOS system libs setup"
         if: runner.os == 'macOS'
         run: |
