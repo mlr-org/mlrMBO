@@ -1,4 +1,4 @@
-do_package_checks(error_on = "warning", codedocv = FALSE)
+do_package_checks(error_on = "warning", codecov = FALSE)
 
 if (ci_has_env("BUILD_PKGDOWN")) {
   get_stage("install") %>%
