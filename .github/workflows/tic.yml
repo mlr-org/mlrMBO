@@ -44,7 +44,7 @@ jobs:
       # [Custom env var] fake virtual display for rgl package
       CODECOV:  ${{ matrix.config.codecov }}
       # [Custom env var] fake virtual display for rgl package
-      DISPLAY: ":99"
+      #DISPLAY: ":99"
       # otherwise remotes::fun() errors cause the build to fail. Example: Unavailability of binaries
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
       CRAN: ${{ matrix.config.cran }}
