@@ -111,7 +111,7 @@ setMBOControlMultiObj = function(control,
   propose.points = control$propose.points
   if (n.objectives == 1L)
     stop("You are setting multi-objective options, but have only 1 objective!")
-  requirePackages(c("mco", "emoa"), why = "multi-objective optimization")
+  requirePackages(c("emoa"), why = "multi-objective optimization")
 
   control$multiobj.method = coalesce(method, control$multiobj.method, "dib")
   assertChoice(control$multiobj.method, choices = c("parego", "mspot", "dib"))

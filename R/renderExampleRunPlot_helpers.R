@@ -50,22 +50,22 @@ getIDX = function(opt.path, i) {
 }
 
 
-# Get Dataset for Plotting 2D XSpace
-getPlotData = function(data, idx, idx.nsga2.paretofront, name) {
-  idx.all = c(idx$init, idx$seq, idx$proposed, idx.nsga2.paretofront)
-  df = data.frame(
-    data[idx.all, 1L],
-    data[idx.all, 2L],
-    as.factor(c(
-      rep("init", length(idx$init)),
-      rep("seq", length(idx$seq)),
-      rep("prop", length(idx$proposed)),
-      rep("front", length(idx.nsga2.paretofront))
-    ))
-  )
-  names(df) = c(name, "type")
-  return(df)
-}
+# # Get Dataset for Plotting 2D XSpace
+# getPlotData = function(data, idx, idx.nsga2.paretofront, name) {
+#   idx.all = c(idx$init, idx$seq, idx$proposed, idx.nsga2.paretofront)
+#   df = data.frame(
+#     data[idx.all, 1L],
+#     data[idx.all, 2L],
+#     as.factor(c(
+#       rep("init", length(idx$init)),
+#       rep("seq", length(idx$seq)),
+#       rep("prop", length(idx$proposed)),
+#       rep("front", length(idx.nsga2.paretofront))
+#     ))
+#   )
+#   names(df) = c(name, "type")
+#   return(df)
+# }
 
 
 # get Dataset for fill background with infill.crit
