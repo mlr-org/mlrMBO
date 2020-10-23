@@ -29,7 +29,7 @@ Supported are, among other things:
 - Multi-criteria optimization
 
 This vignette gives a brief overview of the features of `mlrMBO`.
-A more detailed documentation can be found on: <http://mlr-org.github.io/mlrMBO/>.
+A more detailed documentation can be found on: <https://mlrmbo.mlr-org.com/>.
 
 # Quickstart
 

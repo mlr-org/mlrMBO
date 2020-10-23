@@ -9,14 +9,14 @@ Model-based optimization with [mlr](https://github.com/mlr-org/mlr/).
 <!-- badges: start -->
 
 [![tic](https://github.com/mlr-org/mlrMBO/workflows/tic/badge.svg?branch=master)](https://github.com/mlr-org/mlrMBO/actions)
-[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/mlrMBO)](https://cran.r-project.org/package=mlrMBO)
+[![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/mlrMBO)](https://cran.r-project.org/package=mlrMBO)
 [![Coverage
 Status](https://img.shields.io/codecov/c/github/mlr-org/mlrMBO/master.svg)](https://codecov.io/github/mlr-org/mlrMBO?branch=master)
 [![Monthly RStudio CRAN
 Downloads](https://cranlogs.r-pkg.org/badges/mlrMBO)](https://CRAN.R-project.org/package=mlrMBO)
 <!-- badges: end -->
 
-  - [Documentation](https://mlr-org.github.io/mlrMBO/)
+  - [Documentation](https://mlrmbo.mlr-org.com/)
   - [Issues, Requests and Bug
     Tracker](https://github.com/mlr-org/mlrMBO/issues)
 
@@ -45,7 +45,7 @@ Features:
 
   - EGO-type algorithms (Kriging with expected improvement) on purely
     numerical search spaces, see [Jones et
-    al. (1998)](http://link.springer.com/article/10.1023/A:1008306431147)
+    al. (1998)](https://link.springer.com/article/10.1023/A:1008306431147)
   - Mixed search spaces with numerical, integer, categorical and
     subordinate parameters
   - Arbitrary parameter transformation allowing to optimize on, e.g.,
@@ -89,7 +89,7 @@ the following BibTex entry:
 ``` bibtex
 @article{mlrMBO,
   title = {{{mlrMBO}}: {{A Modular Framework}} for {{Model}}-{{Based Optimization}} of {{Expensive Black}}-{{Box Functions}}},
-  url = {http://arxiv.org/abs/1703.03373},
+  url = {https://arxiv.org/abs/1703.03373},
   shorttitle = {{{mlrMBO}}},
   archivePrefix = {arXiv},
   eprinttype = {arxiv},

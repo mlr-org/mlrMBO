@@ -78,7 +78,7 @@ Each lambda value leads to a slightly different infill criteria function with di
 * `multicrit`: Use a evolutionary multicriteria optimization.
 This is a (mu+1) type evolutionary algorithm and runs for `multicrit.maxit` generations.
 The population size is set to `propose.points`.
-For a detailed description of the algorithm check the paper [MOI-MBO: Multiobjective Infill for Parallel Model-Based Optimization](http://link.springer.com/chapter/10.1007/978-3-319-09584-4_17).
+For a detailed description of the algorithm check the paper [MOI-MBO: Multiobjective Infill for Parallel Model-Based Optimization](https://link.springer.com/chapter/10.1007/978-3-319-09584-4_17).
 
 ### Constant Liar
 
