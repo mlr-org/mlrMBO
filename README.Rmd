@@ -11,7 +11,7 @@ opts_chunk$set(fig.width=5, fig.height=5, cache=TRUE)
 
 # mlrMBO
 
-Package website: [release](https://mlrmbo.mlr-org.com/) | [dev](https://mlr3mbo.mlr-org.com/dev)
+Package website: [mlrmbo.mlr-org.com](https://mlrmbo.mlr-org.com/)
 
 Model-based optimization with [mlr](https://github.com/mlr-org/mlr/).
 
@@ -78,7 +78,7 @@ Features:
 * Optimization of noisy objective functions
 * Multi-Criteria optimization with approximated Pareto fronts
 * Parallelization through multi-point batch proposals
-* Parallelization on many parallel back-ends and clusters through [batchtools](https://github.com/mllg/batchtools) and [parallelMap](https://github.com/berndbischl/parallelMap)
+* Parallelization on many parallel back-ends and clusters through [batchtools](https://github.com/mllg/batchtools) and [parallelMap](https://github.com/mlr-org/parallelMap)
 
 For the *surrogate*, `mlrMBO` allows any regression learner from [`mlr`](https://github.com/mlr-org/mlr), including:
 
@@ -96,7 +96,7 @@ Various *infill criteria* (aka. _acquisition functions_) are available:
 
 Objective functions are created with package [smoof](https://github.com/jakobbossek/smoof), which also offers many test functions for example runs or benchmarks.
 
-Parameter spaces and initial designs are created with package [ParamHelpers](https://github.com/berndbischl/ParamHelpers).
+Parameter spaces and initial designs are created with package [ParamHelpers](https://github.com/mlr-org/ParamHelpers).
 
 
 # How to Cite

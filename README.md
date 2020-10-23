@@ -1,8 +1,7 @@
 
 # mlrMBO
 
-Package website: [release](https://mlrmbo.mlr-org.com/) |
-[dev](https://mlr3mbo.mlr-org.com/dev)
+Package website: [mlrmbo.mlr-org.com](https://mlrmbo.mlr-org.com/)
 
 Model-based optimization with [mlr](https://github.com/mlr-org/mlr/).
 
@@ -55,7 +54,7 @@ Features:
   - Parallelization through multi-point batch proposals
   - Parallelization on many parallel back-ends and clusters through
     [batchtools](https://github.com/mllg/batchtools) and
-    [parallelMap](https://github.com/berndbischl/parallelMap)
+    [parallelMap](https://github.com/mlr-org/parallelMap)
 
 For the *surrogate*, `mlrMBO` allows any regression learner from
 [`mlr`](https://github.com/mlr-org/mlr), including:
@@ -78,7 +77,7 @@ Objective functions are created with package
 test functions for example runs or benchmarks.
 
 Parameter spaces and initial designs are created with package
-[ParamHelpers](https://github.com/berndbischl/ParamHelpers).
+[ParamHelpers](https://github.com/mlr-org/ParamHelpers).
 
 # How to Cite
 
