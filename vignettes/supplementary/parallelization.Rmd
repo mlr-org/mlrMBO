@@ -28,7 +28,7 @@ This Vignette will give you a short introduction how **mlrMBO** can be configure
 
 The parallelization of multiple evaluations of the target function is realized internally with the R package `parallelMap`.
 This package offers simple parallelization with various different back-ends.
-For details on the usage see the [parallelMap github page](https://github.com/berndbischl/parallelMap#readme), which offers a nice tutorial and describes all possible back-ends thoroughly.
+For details on the usage see the [parallelMap github page](https://github.com/mlr-org/parallelMap#readme), which offers a nice tutorial and describes all possible back-ends thoroughly.
 In this example we use a *multicore* back-end, which is also the most common use-case.
 Note, that the multicore parallelization does _not_ work on windows machines.
 
