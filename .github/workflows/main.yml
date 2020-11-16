@@ -1,5 +1,5 @@
 ## tic GitHub Actions template: linux-macos-windows-deploy
-## revision date: 2020-08-06
+## revision date: 2020-11-14
 on:
   workflow_dispatch:
   push:
@@ -28,6 +28,8 @@ jobs:
           - { os: ubuntu-latest, r: "release" }
 
     env:
+      # [Custom env var] fake virtual display for rgl package
+      DISPLAY: ":99"
       # otherwise remotes::fun() errors cause the build to fail. Example: Unavailability of binaries
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
       CRAN: ${{ matrix.config.cran }}
@@ -42,11 +44,9 @@ jobs:
       SDKROOT: /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk
       # use GITHUB_TOKEN from GitHub to workaround rate limits in {remotes}
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-      # [Custom env var] fake virtual display for rgl package
-      DISPLAY: ":99"
 
     steps:
-      - uses: actions/checkout@v2.3.1
+      - uses: actions/checkout@v2.3.4
 
       - uses: r-lib/actions/setup-r@master
         with:
@@ -72,7 +72,7 @@ jobs:
 
       - name: "[Cache] Cache R packages"
         if: runner.os != 'Windows'
-        uses: pat-s/always-upload-cache@v2.1.0
+        uses: pat-s/always-upload-cache@v2.1.3
         with:
           path: ${{ env.R_LIBS_USER }}
           key: ${{ runner.os }}-r-${{ matrix.config.r }}-${{steps.date.outputs.date}}
@@ -92,6 +92,14 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           brew cask install xquartz
+
+      - name: "[Stage] [macOS] Install system libs for pkgdown"
+        if: runner.os == 'macOS' && matrix.config.pkgdown != ''
+        run: brew install harfbuzz fribidi
+
+      - name: "[Stage] [Linux] Install system libs for pkgdown"
+        if: runner.os == 'Linux' && matrix.config.pkgdown != ''
+        run: sudo apt install libharfbuzz-dev libfribidi-dev
 
       - name: "[Stage] Install"
         if: matrix.config.os != 'macOS-latest' || matrix.config.r != 'devel'
@@ -113,7 +121,7 @@ jobs:
 
       - name: "[Stage] Upload R CMD check artifacts"
         if: failure()
-        uses: actions/upload-artifact@v2.1.1
+        uses: actions/upload-artifact@v2.2.1
         with:
           name: ${{ runner.os }}-r${{ matrix.config.r }}-results
           path: check
