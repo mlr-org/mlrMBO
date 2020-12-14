@@ -115,10 +115,11 @@ plot.OptState = function(x, scale.panels = FALSE, points.per.dim = 100, ...) {
   possible.id.vars = c(".facet.y", ".axis.x", ".axis.y")
   mdata = data.table::melt(plot.data, id.vars = intersect(colnames(plot.data), possible.id.vars))
   mdata$variable = factor(mdata$variable, levels = intersect(use.only.columns, levels(mdata$variable)))
+  mdata$value = as.numeric(mdata$value)
   if (scale.panels && par.dim == 2) {
     predict.range = range(mdata[get("variable")=="mean", "value"])
     mdata[, ':='("value", normalize(x = get("value"), method = "range")), by = "variable"]
-    design[[y.ids]] = (design[[y.ids]] + (0 - predict.range[1])) / diff(predict.range)
+    design_effective[[y.ids]] = (design[[y.ids]] + (0 - predict.range[1])) / diff(predict.range)
   }
 
   if (".facet.y" %in% colnames(mdata)) {
