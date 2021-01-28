@@ -101,7 +101,8 @@ plot.OptState = function(x, scale.panels = FALSE, points.per.dim = 100, ...) {
 
   # add types to points
   # remove final evals from plot because they do not belong to the model that is printed
-  opt.path.df = opt.path.df[opt.path.df$prop.type != "final_eval",]
+  opt.path.df = opt.path.df[is.na(opt.path.df$prop.type) | opt.path.df$prop.type != "final_eval",]
+  design$type = ifelse(opt.path.df$dob == 0, "init", "seq")
   design$type = ifelse(opt.path.df$dob == 0, "init", "seq")
 
   # reduce to usefull infill components
