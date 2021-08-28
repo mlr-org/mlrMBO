@@ -17,6 +17,9 @@ test_that("plot single-objective", {
 })
 
 test_that("plot multi-objective", {
+  # occassionally errors on windows
+  skip_on_os("windows")
+
   f = smoof::makeZDT1Function(2L)
   learner = makeLearner("regr.km", predict.type = "se")
   des = generateTestDesign(8L, getParamSet(f))
