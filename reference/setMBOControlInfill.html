@@ -233,7 +233,7 @@ Default is &#8220;(lower) confidence bound&#8221; (see <code><a href='infillcrit
     </tr>
     <tr>
       <th>interleave.random.points</th>
-      <td><p>[<code><a href='https://rdrr.io/r/base/integer.html'>integer(1)</a></code>]<br />
+      <td><p>[<code>integer(1)</code>]<br />
 Add <code>interleave.random.points</code> uniformly sampled points additionally to the
 regular proposed points in each step.
 If <code>crit="random"</code> this value will be neglected.
@@ -241,7 +241,7 @@ Default is 0.</p></td>
     </tr>
     <tr>
       <th>filter.proposed.points</th>
-      <td><p>[<code><a href='https://rdrr.io/r/base/logical.html'>logical(1)</a></code>]<br />
+      <td><p>[<code>logical(1)</code>]<br />
 Design points located too close to each other can lead to
 numerical problems when using e.g. kriging as a surrogate model.
 This may solve the 'leading minor of order ...' error during model fit.
@@ -255,14 +255,14 @@ Default is <code>FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>filter.proposed.points.tol</th>
-      <td><p>[<code><a href='https://rdrr.io/r/base/numeric.html'>numeric(1)</a></code>]<br />
+      <td><p>[<code>numeric(1)</code>]<br />
 Tolerance value filtering of proposed points. We currently use a maximum metric
 to calculate the distance between points.
 Default is 0.0001.</p></td>
     </tr>
     <tr>
       <th>opt</th>
-      <td><p>[<code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code>]<br />
+      <td><p>[<code>character(1)</code>]<br />
 How should SINGLE points be proposed by using the surrogate model. Possible values are:
 &#8220;focussearch&#8221;: In several iteration steps the parameter space is
 focused on an especial promising region according to infill criterion.
@@ -276,7 +276,7 @@ Alternatively, you may pass a function name as string.</p></td>
     </tr>
     <tr>
       <th>opt.restarts</th>
-      <td><p>[<code><a href='https://rdrr.io/r/base/integer.html'>integer(1)</a></code>]<br />
+      <td><p>[<code>integer(1)</code>]<br />
 Number of independent restarts for optimizer of infill criterion.
 If <code>opt == "cmaes"</code> the first start point for the optimizer is always the
 currently best point in the design of already visited points. Subsequent starting
@@ -287,14 +287,14 @@ Default is 3.</p></td>
     </tr>
     <tr>
       <th>opt.focussearch.maxit</th>
-      <td><p>[<code><a href='https://rdrr.io/r/base/integer.html'>integer(1)</a></code>]<br />
+      <td><p>[<code>integer(1)</code>]<br />
 For <code>opt = "focussearch"</code>:
 Number of iteration to shrink local focus.
 Default is 5.</p></td>
     </tr>
     <tr>
       <th>opt.focussearch.points</th>
-      <td><p>[<code><a href='https://rdrr.io/r/base/integer.html'>integer(1)</a></code>]<br />
+      <td><p>[<code>integer(1)</code>]<br />
 For <code>opt = "focussearch"</code>:
 Number of points in each iteration of the focus search optimizer.
 Default is 1000.</p></td>
@@ -308,42 +308,42 @@ For the default see the help page of the underlying optimizer <code><a href='htt
     </tr>
     <tr>
       <th>opt.ea.maxit</th>
-      <td><p>[<code><a href='https://rdrr.io/r/base/integer.html'>integer(1)</a></code>]<br />
+      <td><p>[<code>integer(1)</code>]<br />
 For <code>opt = "ea"</code>:
 Number of iterations / generations of EA.
 Default is 500.</p></td>
     </tr>
     <tr>
       <th>opt.ea.mu</th>
-      <td><p>[<code><a href='https://rdrr.io/r/base/integer.html'>integer(1)</a></code>]<br />
+      <td><p>[<code>integer(1)</code>]<br />
 For <code>opt = "ea"</code>:
 Population size of EA.
 The default is 10 times the number of parameters of the function to optimize.</p></td>
     </tr>
     <tr>
       <th>opt.ea.sbx.eta</th>
-      <td><p>[<code><a href='https://rdrr.io/r/base/numeric.html'>numeric(1)</a></code>]<br />
+      <td><p>[<code>numeric(1)</code>]<br />
 For <code>opt = "ea"</code>:
 Distance parameter of crossover distribution , see <code><a href='https://rdrr.io/pkg/emoa/man/sbx_operator.html'>sbx_operator</a></code>.
 Default is 15.</p></td>
     </tr>
     <tr>
       <th>opt.ea.sbx.p</th>
-      <td><p>[<code><a href='https://rdrr.io/r/base/numeric.html'>numeric(1)</a></code>]<br />
+      <td><p>[<code>numeric(1)</code>]<br />
 For <code>opt = "ea"</code>:
 Probability of 1-point crossover, see <code><a href='https://rdrr.io/pkg/emoa/man/sbx_operator.html'>sbx_operator</a></code>.
 Default is 0.5.</p></td>
     </tr>
     <tr>
       <th>opt.ea.pm.eta</th>
-      <td><p>[<code><a href='https://rdrr.io/r/base/numeric.html'>numeric(1)</a></code>]<br />
+      <td><p>[<code>numeric(1)</code>]<br />
 For <code>opt = "ea"</code>:
 Distance parameter of mutation distribution, see <code><a href='https://rdrr.io/pkg/emoa/man/pm_operator.html'>pm_operator</a></code>.
 Default is 15.</p></td>
     </tr>
     <tr>
       <th>opt.ea.pm.p</th>
-      <td><p>[<code><a href='https://rdrr.io/r/base/numeric.html'>numeric(1)</a></code>]<br />
+      <td><p>[<code>numeric(1)</code>]<br />
 For <code>opt = "ea"</code>:
 Probability of 1-point mutation, see <code><a href='https://rdrr.io/pkg/emoa/man/pm_operator.html'>pm_operator</a></code>.
 Default is 0.5.</p></td>

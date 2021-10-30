@@ -209,20 +209,20 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>n.objectives</th>
-      <td><p>[<code><a href='https://rdrr.io/r/base/integer.html'>integer(1)</a></code>]<br />
+      <td><p>[<code>integer(1)</code>]<br />
 How many objectives are to be optimized? <code>n.objectives = 1</code> implies normal single
 criteria optimization, <code>n.objectives &gt; 1</code> implies multi-objective optimization.
 Default is 1.</p></td>
     </tr>
     <tr>
       <th>propose.points</th>
-      <td><p>[<code><a href='https://rdrr.io/r/base/integer.html'>integer(1)</a></code>]<br />
+      <td><p>[<code>integer(1)</code>]<br />
 Number of proposed / really evaluated points each iteration.
 Default is 1.</p></td>
     </tr>
     <tr>
       <th>final.method</th>
-      <td><p>[<code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code>]<br />
+      <td><p>[<code>character(1)</code>]<br />
 How should the final point be proposed. Possible values are:
 &#8220;best.true.y&#8221;: Return best point ever visited according to true value of target function.
 Can be bad if target function is noisy.
@@ -233,7 +233,7 @@ Default is: &#8220;best.true.y&#8221;.</p></td>
     </tr>
     <tr>
       <th>final.evals</th>
-      <td><p>[<code><a href='https://rdrr.io/r/base/integer.html'>integer(1)</a></code>]<br />
+      <td><p>[<code>integer(1)</code>]<br />
 How many target function evals should be done at final point to reduce noise?
 Default is 0.</p></td>
     </tr>
@@ -266,7 +266,7 @@ MBO transformation function to do so.</p></td>
     </tr>
     <tr>
       <th>suppress.eval.errors</th>
-      <td><p>[<code><a href='https://rdrr.io/r/base/logical.html'>logical(1)</a></code>]<br />
+      <td><p>[<code>logical(1)</code>]<br />
 Should reporting of error messages during target function evaluations be suppressed?
 Only used if <code>impute.errors</code> is <code>TRUE</code>.
 Default is <code>TRUE</code>.</p></td>
@@ -278,7 +278,7 @@ Sequential optimization iteration when the actual state should be saved
 on disk. Iteration 0 denotes the initial design. If the optimization
 stops with an crucial error, it can be restarted with this file via the
 function <code><a href='mboContinue.html'>mboContinue</a></code>.
-Default is <code><a href='https://rdrr.io/r/base/integer.html'>integer(0L)</a></code>, i. e., not to save.</p></td>
+Default is <code>integer(0L)</code>, i. e., not to save.</p></td>
     </tr>
     <tr>
       <th>save.on.disk.at.time</th>
@@ -288,7 +288,7 @@ Default is <code>Inf</code>, i. e., not to save ever.</p></td>
     </tr>
     <tr>
       <th>save.file.path</th>
-      <td><p>[<code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code>] <br />
+      <td><p>[<code>character(1)</code>] <br />
 If <code>save.on.disk.at</code> is used, this is the name of the file where the data
 will be saved.
 Default &#8220;mbo_run.RData&#8221; in your current working directory.</p></td>
@@ -322,12 +322,12 @@ Default is <code><a href='https://mlr.mlr-org.com/reference/measures.html'>mse</
     </tr>
     <tr>
       <th>output.num.format</th>
-      <td><p>[<code><a href='https://rdrr.io/r/base/logical.html'>logical(1)</a></code>]<br />
+      <td><p>[<code>logical(1)</code>]<br />
 Format string for the precision of the numeric output of mbo.</p></td>
     </tr>
     <tr>
       <th>on.surrogate.error</th>
-      <td><p>[<code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code>]<br />
+      <td><p>[<code>character(1)</code>]<br />
 What should happen when the surrogate learner can not train the model.
 Possible values are:
 &#8220;stop&#8221;: R exception is generated.

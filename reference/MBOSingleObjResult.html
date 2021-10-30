@@ -206,10 +206,10 @@ control [MBOControl] Control object used in optimization
     
 <ul>
 <li><p>x [<code>list</code>]Named list of proposed optimal parameters.</p></li>
-<li><p>y [<code><a href='https://rdrr.io/r/base/numeric.html'>numeric(1)</a></code>]Value of objective function at <code>x</code>,
+<li><p>y [<code>numeric(1)</code>]Value of objective function at <code>x</code>,
     either from evals during optimization or from requested final evaluations,
     if those were greater than 0.</p></li>
-<li><p>best.ind [<code><a href='https://rdrr.io/r/base/numeric.html'>numeric(1)</a></code>]Index of <code>x</code> in the opt.path.</p></li>
+<li><p>best.ind [<code>numeric(1)</code>]Index of <code>x</code> in the opt.path.</p></li>
 <li><p>opt.path [<code><a href='https://paramhelpers.mlr-org.com/reference/OptPath.html'>OptPath</a></code>]Optimization path.
     Includes all evaluated points and additional information as documented in <a href='mbo_OptPath.html'>mbo_OptPath</a>.
     You can convert it via <code>as.data.frame</code>.</p></li>

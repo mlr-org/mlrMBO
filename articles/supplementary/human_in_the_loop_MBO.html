@@ -153,13 +153,13 @@
 <a href="#introduction" class="anchor"></a>Introduction</h2>
 <p>Before we start the optimization you need to define the search space:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ps</span> <span class="op">=</span> <span class="fu">makeParamSet</span><span class="op">(</span>
-  <span class="fu">makeNumericParam</span><span class="op">(</span><span class="st">"q"</span>, lower <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>, upper <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,
-  <span class="fu">makeIntegerParam</span><span class="op">(</span><span class="st">"v"</span>, lower <span class="op">=</span> <span class="op">-</span><span class="fl">2</span>, upper <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">ps</span> <span class="op">=</span> <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/makeParamSet.html">makeParamSet</a></span><span class="op">(</span>
+  <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/Param.html">makeNumericParam</a></span><span class="op">(</span><span class="st">"q"</span>, lower <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>, upper <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,
+  <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/Param.html">makeIntegerParam</a></span><span class="op">(</span><span class="st">"v"</span>, lower <span class="op">=</span> <span class="op">-</span><span class="fl">2</span>, upper <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
 <span class="op">)</span></code></pre></div>
 <p>Furthermore we need an initial design that includes the results of the evaluated function</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">des</span> <span class="op">=</span> <span class="fu">generateDesign</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">7</span>, par.set <span class="op">=</span> <span class="va">ps</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">des</span> <span class="op">=</span> <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/generateDesign.html">generateDesign</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">7</span>, par.set <span class="op">=</span> <span class="va">ps</span><span class="op">)</span>
 <span class="va">des</span>
 <span class="co">##              q  v</span>
 <span class="co">## 1  1.186967721  2</span>
@@ -192,7 +192,7 @@
 <span class="co">## 893 0.409088 2</span>
 <span class="co">## </span>
 <span class="co">## $propose.time</span>
-<span class="co">## [1] 0.276</span>
+<span class="co">## [1] 0.273</span>
 <span class="co">## </span>
 <span class="co">## $prop.type</span>
 <span class="co">## [1] "infill_ei"</span>
@@ -227,7 +227,7 @@
 <span class="co">## 785 0.4751879 1</span>
 <span class="co">## </span>
 <span class="co">## $propose.time</span>
-<span class="co">## [1] 0.291</span>
+<span class="co">## [1] 0.278</span>
 <span class="co">## </span>
 <span class="co">## $prop.type</span>
 <span class="co">## [1] "infill_ei"</span>
@@ -267,7 +267,7 @@
 <code class="sourceCode R"><span class="va">f</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">q</span>, <span class="va">v</span><span class="op">)</span> <span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html">sin</a></span><span class="op">(</span><span class="va">q</span><span class="op">*</span><span class="fl">5</span><span class="op">)</span> <span class="op">+</span> <span class="fl">0.1</span> <span class="op">*</span> <span class="op">(</span><span class="va">q</span><span class="op">^</span><span class="fl">2</span> <span class="op">+</span> <span class="va">v</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>
 <span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span> <span class="op">{</span>
   <span class="va">prop</span> <span class="op">=</span> <span class="fu"><a href="../../reference/proposePoints.html">proposePoints</a></span><span class="op">(</span><span class="va">opt.state</span><span class="op">)</span>
-  <span class="va">x</span> <span class="op">=</span> <span class="fu">dfRowsToList</span><span class="op">(</span>df <span class="op">=</span> <span class="va">prop</span><span class="op">$</span><span class="va">prop.points</span>, par.set <span class="op">=</span> <span class="va">ps</span><span class="op">)</span>
+  <span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/dfRowsToList.html">dfRowsToList</a></span><span class="op">(</span>df <span class="op">=</span> <span class="va">prop</span><span class="op">$</span><span class="va">prop.points</span>, par.set <span class="op">=</span> <span class="va">ps</span><span class="op">)</span>
   <span class="va">y</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span><span class="op">(</span><span class="va">f</span>, <span class="va">x</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>
   <span class="fu"><a href="../../reference/updateSMBO.html">updateSMBO</a></span><span class="op">(</span><span class="va">opt.state</span>, x <span class="op">=</span> <span class="va">prop</span><span class="op">$</span><span class="va">prop.points</span>, y <span class="op">=</span> <span class="va">y</span><span class="op">)</span>
 <span class="op">}</span>
@@ -277,7 +277,7 @@
 <span class="co">## 561 0.9091981 -1</span>
 <span class="co">## </span>
 <span class="co">## $propose.time</span>
-<span class="co">## [1] 0.335</span>
+<span class="co">## [1] 0.301</span>
 <span class="co">## </span>
 <span class="co">## $prop.type</span>
 <span class="co">## [1] "infill_ei"</span>
@@ -302,7 +302,7 @@
 <a href="#continue-a-normal-mbo-run" class="anchor"></a>Continue a normal MBO Run</h2>
 <p>You can also continue a normal call of <code><a href="../../reference/mbo.html">mbo()</a></code> using this manual interface:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">fun</span> <span class="op">=</span> <span class="fu">makeAlpine02Function</span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">fun</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/smoof/man/makeAlpine02Function.html">makeAlpine02Function</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>
 <span class="va">res</span> <span class="op">=</span> <span class="fu"><a href="../../reference/mbo.html">mbo</a></span><span class="op">(</span>fun <span class="op">=</span> <span class="va">fun</span>, control <span class="op">=</span> <span class="va">ctrl</span><span class="op">)</span>
 <span class="co">## Computing y column(s) for design. Not provided.</span>
 <span class="co">## [mbo] 0: x=4.71 : y = -2.17 : 0.0 secs : initdesign</span>
@@ -329,7 +329,7 @@
 <span class="co">## 854 7.93318</span>
 <span class="co">## </span>
 <span class="co">## $propose.time</span>
-<span class="co">## [1] 0.43</span>
+<span class="co">## [1] 0.241</span>
 <span class="co">## </span>
 <span class="co">## $prop.type</span>
 <span class="co">## [1] "infill_ei"</span>
@@ -369,7 +369,7 @@
 <span class="co">## 794  0.08087523 2</span>
 <span class="co">## </span>
 <span class="co">## $propose.time</span>
-<span class="co">## [1] 0.271 0.279 0.291 0.287</span>
+<span class="co">## [1] 0.280 0.280 0.452 0.276</span>
 <span class="co">## </span>
 <span class="co">## $prop.type</span>
 <span class="co">## [1] "infill_ei" "infill_ei" "infill_ei" "infill_ei"</span>

@@ -163,9 +163,9 @@
 <span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlInfill.html">setMBOControlInfill</a></span><span class="op">(</span><span class="va">ctrl</span>, crit <span class="op">=</span> <span class="fu"><a href="../../reference/infillcrits.html">makeMBOInfillCritAdaCB</a></span><span class="op">(</span>cb.lambda.start <span class="op">=</span> <span class="fl">4</span>, cb.lambda.end <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>This will lead to an CB infill criterion (<span class="math inline">\(CB(x) = \hat{\mu}(x) \pm \lambda * \hat{s}(x)\)</span>) that will focus on uncertain regions in the beginning (<code>cb.lambda.start = 4</code>) and towards the end will have a stronger focus on areas close to the global minimum of the surrogate (<code>cb.lambda.end = 0.1</code>).</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">test.fun</span> <span class="op">=</span> <span class="fu">makeSingleObjectiveFunction</span><span class="op">(</span>
+<code class="sourceCode R"><span class="va">test.fun</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/smoof/man/makeSingleObjectiveFunction.html">makeSingleObjectiveFunction</a></span><span class="op">(</span>
  fn <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">^</span><span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html">sin</a></span><span class="op">(</span><span class="fl">3</span> <span class="op">*</span> <span class="va">x</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span>,
- par.set <span class="op">=</span> <span class="fu">makeNumericParamSet</span><span class="op">(</span>lower <span class="op">=</span> <span class="fl">0</span>, upper <span class="op">=</span> <span class="fl">1</span>, len <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span>
+ par.set <span class="op">=</span> <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/makeParamSet.html">makeNumericParamSet</a></span><span class="op">(</span>lower <span class="op">=</span> <span class="fl">0</span>, upper <span class="op">=</span> <span class="fl">1</span>, len <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span>
 <span class="op">)</span></code></pre></div>
 <p>You can now start the optimization like usual:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
@@ -181,12 +181,12 @@
 <span class="co">## 17 7.734453e-02 2.116604e-05 3.798570e-07   9  NA          &lt;NA&gt;         0</span>
 <span class="co">## 18 4.974571e-05 8.838412e-01 1.164778e-09  10  NA          &lt;NA&gt;         0</span>
 <span class="co">##          adacb error.model train.time    prop.type propose.time         se</span>
-<span class="co">## 13 -0.07941553        &lt;NA&gt;      0.070 infill_adacb        0.313 0.05191567</span>
-<span class="co">## 14 -0.05742526        &lt;NA&gt;      0.073 infill_adacb        0.283 0.03896669</span>
-<span class="co">## 15 -0.03561136        &lt;NA&gt;      0.058 infill_adacb        0.294 0.05122894</span>
-<span class="co">## 16 -0.02551353        &lt;NA&gt;      0.060 infill_adacb        0.292 0.02848993</span>
-<span class="co">## 17 -0.01810171        &lt;NA&gt;      0.060 infill_adacb        0.285 0.02735144</span>
-<span class="co">## 18 -0.01358218        &lt;NA&gt;      0.082 infill_adacb        0.304 0.01770508</span>
+<span class="co">## 13 -0.07941553        &lt;NA&gt;      0.056 infill_adacb        0.268 0.05191567</span>
+<span class="co">## 14 -0.05742526        &lt;NA&gt;      0.071 infill_adacb        0.269 0.03896669</span>
+<span class="co">## 15 -0.03561136        &lt;NA&gt;      0.056 infill_adacb        0.280 0.05122894</span>
+<span class="co">## 16 -0.02551353        &lt;NA&gt;      0.055 infill_adacb        0.274 0.02848993</span>
+<span class="co">## 17 -0.01810171        &lt;NA&gt;      0.058 infill_adacb        0.277 0.02735144</span>
+<span class="co">## 18 -0.01358218        &lt;NA&gt;      0.080 infill_adacb        0.297 0.01770508</span>
 <span class="co">##             mean lambda</span>
 <span class="co">## 13 -0.0145209435   1.25</span>
 <span class="co">## 14 -0.0145618935   1.10</span>

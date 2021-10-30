@@ -240,19 +240,19 @@ Default is all iterations.</p></td>
     </tr>
     <tr>
       <th>pause</th>
-      <td><p>[<code><a href='https://rdrr.io/r/base/logical.html'>logical(1)</a></code>]<br />
+      <td><p>[<code>logical(1)</code>]<br />
 Should the process be paused after each iteration?
 Default is <code><a href='https://rdrr.io/r/base/interactive.html'>interactive()</a></code>.</p></td>
     </tr>
     <tr>
       <th>densregion</th>
-      <td><p>[<code><a href='https://rdrr.io/r/base/logical.html'>logical(1)</a></code>]<br />
+      <td><p>[<code>logical(1)</code>]<br />
 Should the background be shaded? Default is <code>TRUE</code>.
 Only used if learner supports computation of standard error.</p></td>
     </tr>
     <tr>
       <th>se.factor</th>
-      <td><p>[<code><a href='https://rdrr.io/r/base/numeric.html'>numeric(1)</a></code>]<br />
+      <td><p>[<code>numeric(1)</code>]<br />
 If the model provides local standard error estimation,
 in addition to the mean response <code>yhat(x) +- se.factor * se(x)</code>
 is plotted above and below.
@@ -260,20 +260,20 @@ Default is 1.</p></td>
     </tr>
     <tr>
       <th>single.prop.point.plots</th>
-      <td><p>[<code><a href='https://rdrr.io/r/base/logical.html'>logical(1)</a></code>]<br />
+      <td><p>[<code>logical(1)</code>]<br />
 Parameter for MOI-MBO Multi-point proposal: Should every proposed point
 be displayed in a single plot - or one plot per Iteration? Default is FALSE
 indicating single plots per proposed points.</p></td>
     </tr>
     <tr>
       <th>xlim</th>
-      <td><p>[<code><a href='https://rdrr.io/r/base/numeric.html'>numeric(2)</a></code>]<br />
+      <td><p>[<code>numeric(2)</code>]<br />
 For 1D: <code>xlim</code> parameter for first and second plot.
 Default is range of x-values evaluated in run object <code>x</code>.</p></td>
     </tr>
     <tr>
       <th>ylim</th>
-      <td><p>[<code><a href='https://rdrr.io/r/base/numeric.html'>numeric(2)</a></code>]<br />
+      <td><p>[<code>numeric(2)</code>]<br />
 For 1D: <code>ylim</code> parameter for first plot, for the second plot <code>ylim</code> is always set
 automatically, depending on the range of the evaluated infill criterion.
 Default for the first plot is a heuristic to have the true function
@@ -282,12 +282,12 @@ change the <code>ylim</code> setting between plot iterations.</p></td>
     </tr>
     <tr>
       <th>point.size</th>
-      <td><p>[<code><a href='https://rdrr.io/r/base/numeric.html'>numeric(1)</a></code>]<br />
+      <td><p>[<code>numeric(1)</code>]<br />
 Point size for plotted points. Default is 3.</p></td>
     </tr>
     <tr>
       <th>line.size</th>
-      <td><p>[<code><a href='https://rdrr.io/r/base/numeric.html'>numeric(1)</a></code>]<br />
+      <td><p>[<code>numeric(1)</code>]<br />
 Line width of the graphs of plotted functions.</p></td>
     </tr>
     <tr>
@@ -304,7 +304,7 @@ If a single function is provided, this function is used for all plots.</p></td>
     </tr>
     <tr>
       <th>colors</th>
-      <td><p>[<code><a href='https://rdrr.io/r/base/character.html'>character(3)</a></code>]
+      <td><p>[<code>character(3)</code>]
 Specify colors for point in the plots. Must be a vector of length 3,
 each element a color for the type design, prop and seq respectively.
 Default is red for the initial design, blue for already proposed points

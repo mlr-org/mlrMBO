@@ -209,41 +209,41 @@ may be generated with the <code><a href='makeMBOInfillCrit.html'>makeMBOInfillCr
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>se.threshold</th>
-      <td><p>[<code><a href='https://rdrr.io/r/base/numeric.html'>numeric(1)</a></code>]<br />
+      <td><p>[<code>numeric(1)</code>]<br />
 In order to avoid numerical problems the standard error estimation is assumed to
 be exactly zero, if it is below <code>se.threshold</code>.
 Default is 1e-6.</p></td>
     </tr>
     <tr>
       <th>cb.lambda</th>
-      <td><p>[<code><a href='https://rdrr.io/r/base/numeric.html'>numeric(1)</a></code> | <code>NULL</code>]<br />
+      <td><p>[<code>numeric(1)</code> | <code>NULL</code>]<br />
 Lambda parameter for confidence bound infill criterion.
 Default is <code>NULL</code>, which means 1 in case of a fully numeric parameter set and 2 otherwise.
 Any non-negative real valued numbers are valid.</p></td>
     </tr>
     <tr>
       <th>aei.use.nugget</th>
-      <td><p>[<code><a href='https://rdrr.io/r/base/logical.html'>logical(1)</a></code>]<br />
+      <td><p>[<code>logical(1)</code>]<br />
 Should the nugget effect be used for the pure variance estimation for augmented
 expected improvement?
 Default is <code>FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>eqi.beta</th>
-      <td><p>[<code><a href='https://rdrr.io/r/base/numeric.html'>numeric(1)</a></code>]<br />
+      <td><p>[<code>numeric(1)</code>]<br />
 Beta parameter for expected quantile improvement criterion.
 Default is 0.75.
 Valid values are between 0.5 and 1.</p></td>
     </tr>
     <tr>
       <th>sms.eps</th>
-      <td><p>[<code><a href='https://rdrr.io/r/base/numeric.html'>numeric(1)</a></code> | <code>NULL</code>]<br />
+      <td><p>[<code>numeric(1)</code> | <code>NULL</code>]<br />
 Epsilon for epsilon-dominance for <code>dib.indicator = "sms"</code>.
 Default is <code>NULL</code>, in this case it is adaptively set.</p></td>
     </tr>
     <tr>
       <th>cb.lambda.start</th>
-      <td><p>[<code><a href='https://rdrr.io/r/base/numeric.html'>numeric(1)</a></code> | <code>NULL</code>]<br />
+      <td><p>[<code>numeric(1)</code> | <code>NULL</code>]<br />
 The value of <code>cb.lambda</code> at the beginning of the optimization.
 The <code>makeMBOInfillCritAdaCB</code> crit takes the progress of the optimization determined by the termination criterion to linearly move from <code>cb.lambda.start</code> to <code>cb.lambda.end</code>.
 The initial desgin does not account for the progress of the optimization.
@@ -251,7 +251,7 @@ Eexcept for <code>makeMBOTerminationMaxExecBudget</code>) if you dont pass a pre
     </tr>
     <tr>
       <th>cb.lambda.end</th>
-      <td><p>[<code><a href='https://rdrr.io/r/base/numeric.html'>numeric(1)</a></code> | <code>NULL</code>]<br />
+      <td><p>[<code>numeric(1)</code> | <code>NULL</code>]<br />
 The value of <code>cb.lambda</code> at the end of the optimization.</p></td>
     </tr>
     </table>

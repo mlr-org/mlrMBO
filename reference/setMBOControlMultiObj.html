@@ -209,7 +209,7 @@ Control object for mbo.</p></td>
     </tr>
     <tr>
       <th>method</th>
-      <td><p>[<code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code>]<br />
+      <td><p>[<code>character(1)</code>]<br />
 Which multi-objective method should be used?
 &#8220;parego&#8221;: The ParEGO algorithm.
 &#8220;dib&#8221;: Direct indicator-based method. Subsumes SMS-EGO and epsilon-EGO.
@@ -220,7 +220,7 @@ Default is &#8220;dib&#8221;.</p></td>
     </tr>
     <tr>
       <th>ref.point.method</th>
-      <td><p>[<code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code>] <br />
+      <td><p>[<code>character(1)</code>] <br />
 Method for the determination of the reference point used for S-metric.
 Currently used for &#8220;mspot&#8221; and &#8220;dib&#8221; with indicator &#8220;sms&#8221;.
 Possible Values are:
@@ -231,7 +231,7 @@ Default is &#8220;all&#8221;.</p></td>
     </tr>
     <tr>
       <th>ref.point.offset</th>
-      <td><p>[<code><a href='https://rdrr.io/r/base/numeric.html'>numeric(1)</a></code>]<br />
+      <td><p>[<code>numeric(1)</code>]<br />
 See <code>ref.point.method</code>, default is 1.</p></td>
     </tr>
     <tr>
@@ -242,7 +242,7 @@ Used if <code>ref.point.method = "const"</code>. Has to be specified in this cas
     </tr>
     <tr>
       <th>parego.s</th>
-      <td><p>[<code><a href='https://rdrr.io/r/base/integer.html'>integer(1)</a></code>]<br />
+      <td><p>[<code>integer(1)</code>]<br />
 Parameter of parego - controls the number of weighting vectors. The default
 depends on <code>n.objectives</code> and leads to ca. 100000 different possible
 weight vectors. The defaults for (2, 3, 4, 5, 6) dimensions are (100000,
@@ -250,7 +250,7 @@ weight vectors. The defaults for (2, 3, 4, 5, 6) dimensions are (100000,
     </tr>
     <tr>
       <th>parego.rho</th>
-      <td><p>[<code><a href='https://rdrr.io/r/base/numeric.html'>numeric(1)</a></code>]<br />
+      <td><p>[<code>numeric(1)</code>]<br />
 Parameter of parego - factor for Tchebycheff function. Default 0.05 as
 suggested in parego paper.</p></td>
     </tr>
@@ -265,7 +265,7 @@ Default is not to do this.</p></td>
     </tr>
     <tr>
       <th>parego.sample.more.weights</th>
-      <td><p>[<code><a href='https://rdrr.io/r/base/integer.html'>integer(1)</a></code>]<br />
+      <td><p>[<code>integer(1)</code>]<br />
 In each iteration <code>parego.sample.more.weights</code> * <code>propose.points</code>
 are sampled and the weights with maximum distance to each other are chosen.
 Default is 1, if only 1 point is proposed each iteration, otherwise 5.</p></td>
@@ -278,7 +278,7 @@ or just the paretofront (<code>front</code>).</p></td>
     </tr>
     <tr>
       <th>dib.indicator</th>
-      <td><p>[<code><a href='https://rdrr.io/r/base/character.html'>character(1)</a></code>]<br />
+      <td><p>[<code>character(1)</code>]<br />
 Either &#8220;sms&#8221; (SMS-EGO like algorithm) or &#8220;eps&#8221; (epsilon-EGO like algorithm).
 Default is &#8220;sms&#8221;.</p></td>
     </tr>

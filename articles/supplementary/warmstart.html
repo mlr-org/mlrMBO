@@ -153,7 +153,7 @@
 <p>First, we will construct our problem that will be used for the following examples</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/mlr-org/mlrMBO">mlrMBO</a></span><span class="op">)</span>
-<span class="va">obj.fun</span> <span class="op">=</span> <span class="fu">makeSixHumpCamelFunction</span><span class="op">(</span><span class="op">)</span>
+<span class="va">obj.fun</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/smoof/man/makeSixHumpCamelFunction.html">makeSixHumpCamelFunction</a></span><span class="op">(</span><span class="op">)</span>
 <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span><span class="va">obj.fun</span>, render.levels <span class="op">=</span> <span class="cn">TRUE</span>, show.optimum <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p><img src="warmstart_files/figure-html/load_package-1.png" width="700"></p>
 </div>
@@ -162,7 +162,7 @@
 <a href="#warm-start-on-a-design" class="anchor"></a>Warm Start on a Design</h3>
 <p>First we create the pre-evaluated design.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">design</span> <span class="op">=</span> <span class="fu">generateGridDesign</span><span class="op">(</span><span class="fu"><a href="https://mlr.mlr-org.com/reference/getParamSet.html">getParamSet</a></span><span class="op">(</span><span class="va">obj.fun</span><span class="op">)</span>, resolution <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">design</span> <span class="op">=</span> <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/generateGridDesign.html">generateGridDesign</a></span><span class="op">(</span><span class="fu"><a href="https://mlr.mlr-org.com/reference/getParamSet.html">getParamSet</a></span><span class="op">(</span><span class="va">obj.fun</span><span class="op">)</span>, resolution <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
 <span class="va">design</span><span class="op">$</span><span class="va">y</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span><span class="op">(</span><span class="va">design</span>, <span class="fl">1</span>, <span class="va">obj.fun</span><span class="op">)</span>
 <span class="va">design</span>
 <span class="co">##   x1 x2     y</span>
@@ -225,16 +225,16 @@
 <p>But first, for this example we have to construct a function that fails. This function will throw an error the 12th time it is called.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">counter</span> <span class="op">=</span> <span class="fl">0</span>
-<span class="va">f</span> <span class="op">=</span> <span class="fu">makeSingleObjectiveFunction</span><span class="op">(</span>
+<span class="va">f</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/smoof/man/makeSingleObjectiveFunction.html">makeSingleObjectiveFunction</a></span><span class="op">(</span>
   fn <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span>
     <span class="va">counter</span> <span class="op">&lt;&lt;-</span> <span class="va">counter</span> <span class="op">+</span> <span class="fl">1</span>
     <span class="kw">if</span> <span class="op">(</span><span class="va">counter</span> <span class="op">==</span> <span class="fl">12L</span><span class="op">)</span>
       <span class="kw"><a href="https://rdrr.io/r/base/stop.html">stop</a></span><span class="op">(</span><span class="st">"fail"</span><span class="op">)</span>
     <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">x</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>
   <span class="op">}</span>,
-  par.set <span class="op">=</span> <span class="fu">makeNumericParamSet</span><span class="op">(</span>len <span class="op">=</span> <span class="fl">2L</span>, lower <span class="op">=</span> <span class="op">-</span><span class="fl">2</span>, upper <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
+  par.set <span class="op">=</span> <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/makeParamSet.html">makeNumericParamSet</a></span><span class="op">(</span>len <span class="op">=</span> <span class="fl">2L</span>, lower <span class="op">=</span> <span class="op">-</span><span class="fl">2</span>, upper <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
 <span class="op">)</span></code></pre></div>
-<p>To be able to continue a failed optimization run we have to set <code>save.on.disk.at.time</code> or <code>save.on.disk.at</code>. The first defines a time frame that has to pass until the current state is saved to disk again (e.g. all 30 seconds). The second defines a vector of iterations, when to save the current state to disk (e.g. <code><a href="https://rdrr.io/r/base/c.html">c(10,20,30)</a></code>). Additionally you can set the location where the state is saved with <code>save.file.path</code>. It defaults to <code>getwd()/mlrMBO_run.RData</code>.</p>
+<p>To be able to continue a failed optimization run we have to set <code>save.on.disk.at.time</code> or <code>save.on.disk.at</code>. The first defines a time frame that has to pass until the current state is saved to disk again (e.g. all 30 seconds). The second defines a vector of iterations, when to save the current state to disk (e.g. <code>c(10,20,30)</code>). Additionally you can set the location where the state is saved with <code>save.file.path</code>. It defaults to <code>getwd()/mlrMBO_run.RData</code>.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span><span class="op">(</span>save.on.disk.at <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">4</span><span class="op">)</span><span class="op">)</span>
 <span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlInfill.html">setMBOControlInfill</a></span><span class="op">(</span><span class="va">ctrl</span>, <span class="va">crit.ei</span><span class="op">)</span>
@@ -266,7 +266,7 @@
 <span class="co">## [mbo] 8: x=0.0729,0.0184 : y = 0.00566 : 0.0 secs : infill_ei</span>
 <span class="fu"><a href="https://rdrr.io/r/base/files.html">file.remove</a></span><span class="op">(</span><span class="st">"mlrMBO_run.RData"</span><span class="op">)</span> <span class="co"># remove the saved state</span>
 <span class="co">## [1] TRUE</span></code></pre></div>
-<p><em>Note:</em> It is possible to continue an optimization that was saved to disk and terminated using the same approach as in the previous chapter. You can access the <code>opt.state</code> by calling <code><a href="https://rdrr.io/r/base/load.html">load("mlrMBO_run.RData")</a></code>.</p>
+<p><em>Note:</em> It is possible to continue an optimization that was saved to disk and terminated using the same approach as in the previous chapter. You can access the <code>opt.state</code> by calling <code>load("mlrMBO_run.RData")</code>.</p>
 </div>
 </div>
   </div>
