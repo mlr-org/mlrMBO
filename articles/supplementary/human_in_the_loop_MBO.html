@@ -27,6 +27,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -39,7 +41,7 @@
       </button>
 
       <div class="navbar-brand-container">
-        <a href="https://mlr-org.com"><img src="https://raw.githubusercontent.com/mlr-org/mlr3/master/man/figures/logo.png" id="hexlogo" alt="mlr-org"></a>
+        <a href="https://mlr-org.com" class="external-link"><img src="https://raw.githubusercontent.com/mlr-org/mlr3/master/reference/figures/logo.png" id="hexlogo" alt="mlr-org"></a>
         <a class="navbar-brand" href="../../index.html">mlrMBO <small>v1.1.5-9000</small></a>
       </div>
     </div>
@@ -96,26 +98,20 @@
 <li>
   <a href="../../news/index.html">Changelog</a>
 </li>
-<li>
-  <a href="https://lmmisld-lmu-stats-slds.srv.mwn.de/mlr_invite/">
-    <span class="fa fa-comments"></span>
-     
-  </a>
-</li>
         <li>
-  <a href="https://github.com/mlr-org/mlrMBO/">
+  <a href="https://github.com/mlr-org/mlrMBO/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
 <li>
-  <a href="https://stackoverflow.com/questions/tagged/mlr">
+  <a href="https://stackoverflow.com/questions/tagged/mlr" class="external-link">
     <span class="fab fa-stack-overflow"></span>
      
   </a>
 </li>
 <li>
-  <a href="https://mlr-org.com/">
+  <a href="https://mlr-org.com/" class="external-link">
     <span class="fa fa-rss"></span>
      
   </a>
@@ -136,30 +132,30 @@
       <h1 data-toc-skip>Human-in-the-loop MBO</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/mlr-org/mlrMBO/blob/master/vignettes/supplementary/human_in_the_loop_MBO.Rmd"><code>vignettes/supplementary/human_in_the_loop_MBO.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/mlr-org/mlrMBO/blob/HEAD/vignettes/supplementary/human_in_the_loop_MBO.Rmd" class="external-link"><code>vignettes/supplementary/human_in_the_loop_MBO.Rmd</code></a></small>
       <div class="hidden name"><code>human_in_the_loop_MBO.Rmd</code></div>
 
     </div>
 
     
     
-<div id="purpose" class="section level2">
-<h2 class="hasAnchor">
-<a href="#purpose" class="anchor"></a>Purpose</h2>
+<div class="section level2">
+<h2 id="purpose">Purpose<a class="anchor" aria-label="anchor" href="#purpose"></a>
+</h2>
 <p>This Vignette shows you how to use <strong>mlrMBO</strong> for a guided optimization. In this setting <strong>mlrMBO</strong> proposes a candidate configuration and you can then decide for yourself whether you want to evaluate it or another value. You have to evaluate the objective function manually. The value and the result have to be feed back to <strong>mlrMBO</strong>. Afterwards you can request the next candidate and so on.</p>
 </div>
-<div id="introduction" class="section level2">
-<h2 class="hasAnchor">
-<a href="#introduction" class="anchor"></a>Introduction</h2>
+<div class="section level2">
+<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+</h2>
 <p>Before we start the optimization you need to define the search space:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ps</span> <span class="op">=</span> <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/makeParamSet.html">makeParamSet</a></span><span class="op">(</span>
-  <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/Param.html">makeNumericParam</a></span><span class="op">(</span><span class="st">"q"</span>, lower <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>, upper <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,
-  <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/Param.html">makeIntegerParam</a></span><span class="op">(</span><span class="st">"v"</span>, lower <span class="op">=</span> <span class="op">-</span><span class="fl">2</span>, upper <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">ps</span> <span class="op">=</span> <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/makeParamSet.html" class="external-link">makeParamSet</a></span><span class="op">(</span>
+  <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/Param.html" class="external-link">makeNumericParam</a></span><span class="op">(</span><span class="st">"q"</span>, lower <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>, upper <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,
+  <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/Param.html" class="external-link">makeIntegerParam</a></span><span class="op">(</span><span class="st">"v"</span>, lower <span class="op">=</span> <span class="op">-</span><span class="fl">2</span>, upper <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
 <span class="op">)</span></code></pre></div>
 <p>Furthermore we need an initial design that includes the results of the evaluated function</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">des</span> <span class="op">=</span> <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/generateDesign.html">generateDesign</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">7</span>, par.set <span class="op">=</span> <span class="va">ps</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">des</span> <span class="op">=</span> <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/generateDesign.html" class="external-link">generateDesign</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">7</span>, par.set <span class="op">=</span> <span class="va">ps</span><span class="op">)</span>
 <span class="va">des</span>
 <span class="co">##              q  v</span>
 <span class="co">## 1  1.186967721  2</span>
@@ -171,7 +167,7 @@
 <span class="co">## 7  0.947456868  1</span></code></pre></div>
 <p>After evaluating the objective function manually we can add the results</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">des</span><span class="op">$</span><span class="va">y</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1.20</span>, <span class="fl">0.97</span>, <span class="fl">0.91</span>, <span class="fl">3.15</span>, <span class="fl">0.58</span>, <span class="fl">1.12</span>, <span class="fl">0.50</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">des</span><span class="op">$</span><span class="va">y</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.20</span>, <span class="fl">0.97</span>, <span class="fl">0.91</span>, <span class="fl">3.15</span>, <span class="fl">0.58</span>, <span class="fl">1.12</span>, <span class="fl">0.50</span><span class="op">)</span></code></pre></div>
 <p>Now we define our <strong>mlrMBO</strong>-Control object. For this example we stick to the defaults except that we set the infill-criterion to the <strong>Expected Improvement</strong></p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span><span class="op">(</span><span class="op">)</span>
@@ -181,7 +177,7 @@
 <code class="sourceCode R"><span class="va">opt.state</span> <span class="op">=</span> <span class="fu"><a href="../../reference/initSMBO.html">initSMBO</a></span><span class="op">(</span>par.set <span class="op">=</span> <span class="va">ps</span>, design <span class="op">=</span> <span class="va">des</span>, control <span class="op">=</span> <span class="va">ctrl</span>, minimize <span class="op">=</span> <span class="cn">TRUE</span>, noisy <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
 <p>At each state the <code>opt.state</code> object can be plotted to visualize the predictions of the surrogate model</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">opt.state</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">opt.state</span><span class="op">)</span></code></pre></div>
 <p><img src="human_in_the_loop_MBO_files/figure-html/plotOptState1-1.png" width="700"></p>
 <p>The first panel shows the value of the infill criterion. The higher the value the more this area is desirable to be explored to find the optimum. In the following panels the mean prediction of the surrogate and the uncertainty estimation is plotted.</p>
 <p>Let’s see which point MBO suggests we should evaluate in the next step:</p>
@@ -192,7 +188,7 @@
 <span class="co">## 893 0.409088 2</span>
 <span class="co">## </span>
 <span class="co">## $propose.time</span>
-<span class="co">## [1] 0.388</span>
+<span class="co">## [1] 0.401</span>
 <span class="co">## </span>
 <span class="co">## $prop.type</span>
 <span class="co">## [1] "infill_ei"</span>
@@ -212,13 +208,13 @@
 <span class="co">## [1] "Proposal" "list"</span></code></pre></div>
 <p>We don’t have to stick to the suggestion and evaluate another point:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>q <span class="op">=</span> <span class="fl">1.7</span>, v <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>q <span class="op">=</span> <span class="fl">1.7</span>, v <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></code></pre></div>
 <p>After we evaluated the objective function manually we get a return value of <code>2.19</code>. We take both values to update MBO:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/updateSMBO.html">updateSMBO</a></span><span class="op">(</span><span class="va">opt.state</span>, x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="fl">2.19</span><span class="op">)</span></code></pre></div>
 <p>Now we can plot the state again and ask for a proposal:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">opt.state</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">opt.state</span><span class="op">)</span></code></pre></div>
 <p><img src="human_in_the_loop_MBO_files/figure-html/plotOptState2-1.png" width="700"></p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="op">(</span><span class="va">prop</span> <span class="op">=</span> <span class="fu"><a href="../../reference/proposePoints.html">proposePoints</a></span><span class="op">(</span><span class="va">opt.state</span><span class="op">)</span><span class="op">)</span>
@@ -227,7 +223,7 @@
 <span class="co">## 785 0.4751879 1</span>
 <span class="co">## </span>
 <span class="co">## $propose.time</span>
-<span class="co">## [1] 0.319</span>
+<span class="co">## [1] 0.356</span>
 <span class="co">## </span>
 <span class="co">## $prop.type</span>
 <span class="co">## [1] "infill_ei"</span>
@@ -259,16 +255,16 @@
 <span class="co">## [1] 1</span>
 <span class="va">res</span><span class="op">$</span><span class="va">y</span>
 <span class="co">## [1] 0.13</span></code></pre></div>
-<div id="semi-automatic-mbo" class="section level3">
-<h3 class="hasAnchor">
-<a href="#semi-automatic-mbo" class="anchor"></a>Semi Automatic MBO</h3>
+<div class="section level3">
+<h3 id="semi-automatic-mbo">Semi Automatic MBO<a class="anchor" aria-label="anchor" href="#semi-automatic-mbo"></a>
+</h3>
 <p>You can combine the human-in-the-loop MBO with a simple loop to let MBO run for a while and just interfere once in a while.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">f</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">q</span>, <span class="va">v</span><span class="op">)</span> <span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html">sin</a></span><span class="op">(</span><span class="va">q</span><span class="op">*</span><span class="fl">5</span><span class="op">)</span> <span class="op">+</span> <span class="fl">0.1</span> <span class="op">*</span> <span class="op">(</span><span class="va">q</span><span class="op">^</span><span class="fl">2</span> <span class="op">+</span> <span class="va">v</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">f</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">q</span>, <span class="va">v</span><span class="op">)</span> <span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html" class="external-link">sin</a></span><span class="op">(</span><span class="va">q</span><span class="op">*</span><span class="fl">5</span><span class="op">)</span> <span class="op">+</span> <span class="fl">0.1</span> <span class="op">*</span> <span class="op">(</span><span class="va">q</span><span class="op">^</span><span class="fl">2</span> <span class="op">+</span> <span class="va">v</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>
 <span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span> <span class="op">{</span>
   <span class="va">prop</span> <span class="op">=</span> <span class="fu"><a href="../../reference/proposePoints.html">proposePoints</a></span><span class="op">(</span><span class="va">opt.state</span><span class="op">)</span>
-  <span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/dfRowsToList.html">dfRowsToList</a></span><span class="op">(</span>df <span class="op">=</span> <span class="va">prop</span><span class="op">$</span><span class="va">prop.points</span>, par.set <span class="op">=</span> <span class="va">ps</span><span class="op">)</span>
-  <span class="va">y</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span><span class="op">(</span><span class="va">f</span>, <span class="va">x</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>
+  <span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/dfRowsToList.html" class="external-link">dfRowsToList</a></span><span class="op">(</span>df <span class="op">=</span> <span class="va">prop</span><span class="op">$</span><span class="va">prop.points</span>, par.set <span class="op">=</span> <span class="va">ps</span><span class="op">)</span>
+  <span class="va">y</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">f</span>, <span class="va">x</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>
   <span class="fu"><a href="../../reference/updateSMBO.html">updateSMBO</a></span><span class="op">(</span><span class="va">opt.state</span>, x <span class="op">=</span> <span class="va">prop</span><span class="op">$</span><span class="va">prop.points</span>, y <span class="op">=</span> <span class="va">y</span><span class="op">)</span>
 <span class="op">}</span>
 <span class="fu"><a href="../../reference/proposePoints.html">proposePoints</a></span><span class="op">(</span><span class="va">opt.state</span><span class="op">)</span>
@@ -277,7 +273,7 @@
 <span class="co">## 561 0.9091981 -1</span>
 <span class="co">## </span>
 <span class="co">## $propose.time</span>
-<span class="co">## [1] 0.352</span>
+<span class="co">## [1] 0.364</span>
 <span class="co">## </span>
 <span class="co">## $prop.type</span>
 <span class="co">## [1] "infill_ei"</span>
@@ -297,12 +293,12 @@
 <span class="co">## [1] "Proposal" "list"</span></code></pre></div>
 </div>
 </div>
-<div id="continue-a-normal-mbo-run" class="section level2">
-<h2 class="hasAnchor">
-<a href="#continue-a-normal-mbo-run" class="anchor"></a>Continue a normal MBO Run</h2>
+<div class="section level2">
+<h2 id="continue-a-normal-mbo-run">Continue a normal MBO Run<a class="anchor" aria-label="anchor" href="#continue-a-normal-mbo-run"></a>
+</h2>
 <p>You can also continue a normal call of <code><a href="../../reference/mbo.html">mbo()</a></code> using this manual interface:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">fun</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/smoof/man/makeAlpine02Function.html">makeAlpine02Function</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">fun</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/smoof/man/makeAlpine02Function.html" class="external-link">makeAlpine02Function</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>
 <span class="va">res</span> <span class="op">=</span> <span class="fu"><a href="../../reference/mbo.html">mbo</a></span><span class="op">(</span>fun <span class="op">=</span> <span class="va">fun</span>, control <span class="op">=</span> <span class="va">ctrl</span><span class="op">)</span>
 <span class="co">## Computing y column(s) for design. Not provided.</span>
 <span class="co">## [mbo] 0: x=4.71 : y = -2.17 : 0.0 secs : initdesign</span>
@@ -320,7 +316,7 @@
 <span class="co">## [mbo] 9: x=7.92 : y = 2.81 : 0.0 secs : infill_ei</span>
 <span class="co">## [mbo] 10: x=7.91 : y = 2.81 : 0.0 secs : infill_ei</span>
 <span class="va">opt.state</span> <span class="op">=</span> <span class="va">res</span><span class="op">$</span><span class="va">final.opt.state</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">opt.state</span>, scale.panels <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">opt.state</span>, scale.panels <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p><img src="human_in_the_loop_MBO_files/figure-html/continue%20mbo-1.png" width="700"></p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="op">(</span><span class="va">prop</span> <span class="op">=</span> <span class="fu"><a href="../../reference/proposePoints.html">proposePoints</a></span><span class="op">(</span><span class="va">opt.state</span><span class="op">)</span><span class="op">)</span>
@@ -329,7 +325,7 @@
 <span class="co">## 854 7.93318</span>
 <span class="co">## </span>
 <span class="co">## $propose.time</span>
-<span class="co">## [1] 0.311</span>
+<span class="co">## [1] 0.271</span>
 <span class="co">## </span>
 <span class="co">## $prop.type</span>
 <span class="co">## [1] "infill_ei"</span>
@@ -351,9 +347,9 @@
 <span class="fu"><a href="../../reference/updateSMBO.html">updateSMBO</a></span><span class="op">(</span><span class="va">opt.state</span>, x <span class="op">=</span> <span class="va">prop</span><span class="op">$</span><span class="va">prop.points</span>, y <span class="op">=</span> <span class="va">y</span><span class="op">)</span>
 <span class="co"># ...</span></code></pre></div>
 </div>
-<div id="proposal-of-multiple-points" class="section level2">
-<h2 class="hasAnchor">
-<a href="#proposal-of-multiple-points" class="anchor"></a>Proposal of multiple points</h2>
+<div class="section level2">
+<h2 id="proposal-of-multiple-points">Proposal of multiple points<a class="anchor" aria-label="anchor" href="#proposal-of-multiple-points"></a>
+</h2>
 <p>Using Multi-Point MBO you can also obtain multiple suggestions at each call of <code><a href="../../reference/proposePoints.html">proposePoints()</a></code>.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span><span class="op">(</span>propose.points <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>
@@ -369,7 +365,7 @@
 <span class="co">## 794  0.08087523 2</span>
 <span class="co">## </span>
 <span class="co">## $propose.time</span>
-<span class="co">## [1] 0.314 0.311 0.323 0.320</span>
+<span class="co">## [1] 0.320 0.325 0.315 0.360</span>
 <span class="co">## </span>
 <span class="co">## $prop.type</span>
 <span class="co">## [1] "infill_ei" "infill_ei" "infill_ei" "infill_ei"</span>
@@ -395,7 +391,7 @@
 <span class="co">## [1] "Proposal" "list"</span></code></pre></div>
 <p>It’s also okay to just evaluate a subset of these points.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../../reference/updateSMBO.html">updateSMBO</a></span><span class="op">(</span><span class="va">opt.state</span>, x <span class="op">=</span> <span class="va">prop</span><span class="op">$</span><span class="va">prop.points</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>,<span class="op">]</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fl">2.28</span>, <span class="fl">1.67</span><span class="op">)</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="../../reference/updateSMBO.html">updateSMBO</a></span><span class="op">(</span><span class="va">opt.state</span>, x <span class="op">=</span> <span class="va">prop</span><span class="op">$</span><span class="va">prop.points</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>,<span class="op">]</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">2.28</span>, <span class="fl">1.67</span><span class="op">)</span><span class="op">)</span>
 <span class="co"># ...</span></code></pre></div>
 </div>
   </div>
@@ -411,11 +407,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Bernd Bischl, Jakob Richter, Jakob Bossek, Daniel Horn, Michel Lang, Janek Thomas.</p>
+  <p></p>
+<p>Developed by Bernd Bischl, Jakob Richter, Jakob Bossek, Daniel Horn, Michel Lang, Janek Thomas.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.0.</p>
 </div>
 
       </footer>
@@ -423,6 +421,8 @@
 
   
 
+
+  
 
   </body>
 </html>

@@ -1,7 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://mlrMBO.mlr-org.com/404.html</loc>
+  </url>
+  <url>
+    <loc>https://mlrMBO.mlr-org.com/LICENSE-text.html</loc>
+  </url>
+  <url>
+    <loc>https://mlrMBO.mlr-org.com/articles/index.html</loc>
+  </url>
+  <url>
+    <loc>https://mlrMBO.mlr-org.com/articles/mlrMBO.html</loc>
+  </url>
+  <url>
+    <loc>https://mlrMBO.mlr-org.com/articles/supplementary/adaptive_infill_criteria.html</loc>
+  </url>
+  <url>
+    <loc>https://mlrMBO.mlr-org.com/articles/supplementary/human_in_the_loop_MBO.html</loc>
+  </url>
+  <url>
+    <loc>https://mlrMBO.mlr-org.com/articles/supplementary/infill_criteria.html</loc>
+  </url>
+  <url>
+    <loc>https://mlrMBO.mlr-org.com/articles/supplementary/machine_learning_with_mlrmbo.html</loc>
+  </url>
+  <url>
+    <loc>https://mlrMBO.mlr-org.com/articles/supplementary/mixed_space_optimization.html</loc>
+  </url>
+  <url>
+    <loc>https://mlrMBO.mlr-org.com/articles/supplementary/mlrmbo_and_the_command_line.html</loc>
+  </url>
+  <url>
+    <loc>https://mlrMBO.mlr-org.com/articles/supplementary/noisy_optimization.html</loc>
+  </url>
+  <url>
+    <loc>https://mlrMBO.mlr-org.com/articles/supplementary/parallelization.html</loc>
+  </url>
+  <url>
+    <loc>https://mlrMBO.mlr-org.com/articles/supplementary/warmstart.html</loc>
+  </url>
+  <url>
+    <loc>https://mlrMBO.mlr-org.com/authors.html</loc>
+  </url>
+  <url>
     <loc>https://mlrMBO.mlr-org.com/index.html</loc>
+  </url>
+  <url>
+    <loc>https://mlrMBO.mlr-org.com/news/index.html</loc>
   </url>
   <url>
     <loc>https://mlrMBO.mlr-org.com/reference/MBOInfillCrit.html</loc>
@@ -44,6 +89,9 @@
   </url>
   <url>
     <loc>https://mlrMBO.mlr-org.com/reference/getSupportedMultipointInfillOptFunctions.html</loc>
+  </url>
+  <url>
+    <loc>https://mlrMBO.mlr-org.com/reference/index.html</loc>
   </url>
   <url>
     <loc>https://mlrMBO.mlr-org.com/reference/infillcrits.html</loc>
@@ -116,35 +164,5 @@
   </url>
   <url>
     <loc>https://mlrMBO.mlr-org.com/reference/updateSMBO.html</loc>
-  </url>
-  <url>
-    <loc>https://mlrMBO.mlr-org.com/articles/mlrMBO.html</loc>
-  </url>
-  <url>
-    <loc>https://mlrMBO.mlr-org.com/articles/supplementary/adaptive_infill_criteria.html</loc>
-  </url>
-  <url>
-    <loc>https://mlrMBO.mlr-org.com/articles/supplementary/human_in_the_loop_MBO.html</loc>
-  </url>
-  <url>
-    <loc>https://mlrMBO.mlr-org.com/articles/supplementary/infill_criteria.html</loc>
-  </url>
-  <url>
-    <loc>https://mlrMBO.mlr-org.com/articles/supplementary/machine_learning_with_mlrmbo.html</loc>
-  </url>
-  <url>
-    <loc>https://mlrMBO.mlr-org.com/articles/supplementary/mixed_space_optimization.html</loc>
-  </url>
-  <url>
-    <loc>https://mlrMBO.mlr-org.com/articles/supplementary/mlrmbo_and_the_command_line.html</loc>
-  </url>
-  <url>
-    <loc>https://mlrMBO.mlr-org.com/articles/supplementary/noisy_optimization.html</loc>
-  </url>
-  <url>
-    <loc>https://mlrMBO.mlr-org.com/articles/supplementary/parallelization.html</loc>
-  </url>
-  <url>
-    <loc>https://mlrMBO.mlr-org.com/articles/supplementary/warmstart.html</loc>
   </url>
 </urlset>

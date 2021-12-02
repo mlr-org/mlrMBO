@@ -27,6 +27,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -39,7 +41,7 @@
       </button>
 
       <div class="navbar-brand-container">
-        <a href="https://mlr-org.com"><img src="https://raw.githubusercontent.com/mlr-org/mlr3/master/man/figures/logo.png" id="hexlogo" alt="mlr-org"></a>
+        <a href="https://mlr-org.com" class="external-link"><img src="https://raw.githubusercontent.com/mlr-org/mlr3/master/reference/figures/logo.png" id="hexlogo" alt="mlr-org"></a>
         <a class="navbar-brand" href="../../index.html">mlrMBO <small>v1.1.5-9000</small></a>
       </div>
     </div>
@@ -96,26 +98,20 @@
 <li>
   <a href="../../news/index.html">Changelog</a>
 </li>
-<li>
-  <a href="https://lmmisld-lmu-stats-slds.srv.mwn.de/mlr_invite/">
-    <span class="fa fa-comments"></span>
-     
-  </a>
-</li>
         <li>
-  <a href="https://github.com/mlr-org/mlrMBO/">
+  <a href="https://github.com/mlr-org/mlrMBO/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
 <li>
-  <a href="https://stackoverflow.com/questions/tagged/mlr">
+  <a href="https://stackoverflow.com/questions/tagged/mlr" class="external-link">
     <span class="fab fa-stack-overflow"></span>
      
   </a>
 </li>
 <li>
-  <a href="https://mlr-org.com/">
+  <a href="https://mlr-org.com/" class="external-link">
     <span class="fa fa-rss"></span>
      
   </a>
@@ -136,43 +132,43 @@
       <h1 data-toc-skip>Adaptive Infill Criteria</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/mlr-org/mlrMBO/blob/master/vignettes/supplementary/adaptive_infill_criteria.Rmd"><code>vignettes/supplementary/adaptive_infill_criteria.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/mlr-org/mlrMBO/blob/HEAD/vignettes/supplementary/adaptive_infill_criteria.Rmd" class="external-link"><code>vignettes/supplementary/adaptive_infill_criteria.Rmd</code></a></small>
       <div class="hidden name"><code>adaptive_infill_criteria.Rmd</code></div>
 
     </div>
 
     
     
-<div id="purpose" class="section level2">
-<h2 class="hasAnchor">
-<a href="#purpose" class="anchor"></a>Purpose</h2>
+<div class="section level2">
+<h2 id="purpose">Purpose<a class="anchor" aria-label="anchor" href="#purpose"></a>
+</h2>
 <p>This vignette gives a short example of the usage of the adaptive infill criteria in <code>mlrMBO</code>.</p>
 </div>
-<div id="adaptive-infill-criteria" class="section level2">
-<h2 class="hasAnchor">
-<a href="#adaptive-infill-criteria" class="anchor"></a>Adaptive Infill Criteria</h2>
+<div class="section level2">
+<h2 id="adaptive-infill-criteria">Adaptive Infill Criteria<a class="anchor" aria-label="anchor" href="#adaptive-infill-criteria"></a>
+</h2>
 <p>An adaptive infill criterion can change its behaviour based on the progress of the optimization. The progress has to be supplied by the termination criterion. All integrated termination criteria support this feature.</p>
 </div>
-<div id="exemplary-usage-of-the-adaptive-cb" class="section level2">
-<h2 class="hasAnchor">
-<a href="#exemplary-usage-of-the-adaptive-cb" class="anchor"></a>Exemplary Usage of the Adaptive CB</h2>
-<p>To specify which infill criterion should be used, the <code>MBOControl</code> object has to be extended by calling <code><a href="../../reference/setMBOControlInfill.html">setMBOControlInfill()</a></code>. In addition to the criterion you can also set the parameters of the infill criterion optimization. The criterion itself is created with <code>makeMBOInfillCrit*()</code>. The most common infill criteria are predefined like <code>crit.ei</code> and <code>crit.cb2</code>. See <code><a href="../../reference/makeMBOInfillCrit.html">?MBOInfillCrit</a></code> for details.</p>
+<div class="section level2">
+<h2 id="exemplary-usage-of-the-adaptive-cb">Exemplary Usage of the Adaptive CB<a class="anchor" aria-label="anchor" href="#exemplary-usage-of-the-adaptive-cb"></a>
+</h2>
+<p>To specify which infill criterion should be used, the <code>MBOControl</code> object has to be extended by calling <code><a href="../../reference/setMBOControlInfill.html">setMBOControlInfill()</a></code>. In addition to the criterion you can also set the parameters of the infill criterion optimization. The criterion itself is created with <code>makeMBOInfillCrit*()</code>. The most common infill criteria are predefined like <code>crit.ei</code> and <code>crit.cb2</code>. See <code><a href="../../reference/MBOInfillCrit.html">?MBOInfillCrit</a></code> for details.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span><span class="op">(</span><span class="op">)</span>
 <span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span><span class="op">(</span><span class="va">ctrl</span>, iters <span class="op">=</span> <span class="fl">10L</span><span class="op">)</span>
 <span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlInfill.html">setMBOControlInfill</a></span><span class="op">(</span><span class="va">ctrl</span>, crit <span class="op">=</span> <span class="fu"><a href="../../reference/infillcrits.html">makeMBOInfillCritAdaCB</a></span><span class="op">(</span>cb.lambda.start <span class="op">=</span> <span class="fl">4</span>, cb.lambda.end <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>This will lead to an CB infill criterion (<span class="math inline">\(CB(x) = \hat{\mu}(x) \pm \lambda * \hat{s}(x)\)</span>) that will focus on uncertain regions in the beginning (<code>cb.lambda.start = 4</code>) and towards the end will have a stronger focus on areas close to the global minimum of the surrogate (<code>cb.lambda.end = 0.1</code>).</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">test.fun</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/smoof/man/makeSingleObjectiveFunction.html">makeSingleObjectiveFunction</a></span><span class="op">(</span>
- fn <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">^</span><span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html">sin</a></span><span class="op">(</span><span class="fl">3</span> <span class="op">*</span> <span class="va">x</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span>,
- par.set <span class="op">=</span> <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/makeParamSet.html">makeNumericParamSet</a></span><span class="op">(</span>lower <span class="op">=</span> <span class="fl">0</span>, upper <span class="op">=</span> <span class="fl">1</span>, len <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">test.fun</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/smoof/man/makeSingleObjectiveFunction.html" class="external-link">makeSingleObjectiveFunction</a></span><span class="op">(</span>
+ fn <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">^</span><span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html" class="external-link">sin</a></span><span class="op">(</span><span class="fl">3</span> <span class="op">*</span> <span class="va">x</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span>,
+ par.set <span class="op">=</span> <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/makeParamSet.html" class="external-link">makeNumericParamSet</a></span><span class="op">(</span>lower <span class="op">=</span> <span class="fl">0</span>, upper <span class="op">=</span> <span class="fl">1</span>, len <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span>
 <span class="op">)</span></code></pre></div>
 <p>You can now start the optimization like usual:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">res</span> <span class="op">=</span> <span class="fu"><a href="../../reference/mbo.html">mbo</a></span><span class="op">(</span><span class="va">test.fun</span>, control <span class="op">=</span> <span class="va">ctrl</span><span class="op">)</span></code></pre></div>
 <p>If we look at the OptPath we can see the different progress values and the resulting different values of lambda.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">tail</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">opt.path</span><span class="op">)</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">opt.path</span><span class="op">)</span><span class="op">)</span>
 <span class="co">##              x1           x2            y dob eol error.message exec.time</span>
 <span class="co">## 13 1.709222e-01 3.315767e-05 2.906045e-06   5  NA          &lt;NA&gt;         0</span>
 <span class="co">## 14 1.295025e-01 8.443279e-01 9.588378e-03   6  NA          &lt;NA&gt;         0</span>
@@ -181,12 +177,12 @@
 <span class="co">## 17 7.734453e-02 2.116604e-05 3.798570e-07   9  NA          &lt;NA&gt;         0</span>
 <span class="co">## 18 4.974571e-05 8.838412e-01 1.164778e-09  10  NA          &lt;NA&gt;         0</span>
 <span class="co">##          adacb error.model train.time    prop.type propose.time         se</span>
-<span class="co">## 13 -0.07941553        &lt;NA&gt;      0.085 infill_adacb        0.351 0.05191567</span>
-<span class="co">## 14 -0.05742526        &lt;NA&gt;      0.081 infill_adacb        0.332 0.03896669</span>
-<span class="co">## 15 -0.03561136        &lt;NA&gt;      0.080 infill_adacb        0.312 0.05122894</span>
-<span class="co">## 16 -0.02551353        &lt;NA&gt;      0.061 infill_adacb        0.312 0.02848993</span>
-<span class="co">## 17 -0.01810171        &lt;NA&gt;      0.066 infill_adacb        0.320 0.02735144</span>
-<span class="co">## 18 -0.01358218        &lt;NA&gt;      0.097 infill_adacb        0.373 0.01770508</span>
+<span class="co">## 13 -0.07941553        &lt;NA&gt;      0.075 infill_adacb        0.304 0.05191567</span>
+<span class="co">## 14 -0.05742526        &lt;NA&gt;      0.075 infill_adacb        0.284 0.03896669</span>
+<span class="co">## 15 -0.03561136        &lt;NA&gt;      0.058 infill_adacb        0.319 0.05122894</span>
+<span class="co">## 16 -0.02551353        &lt;NA&gt;      0.063 infill_adacb        0.328 0.02848993</span>
+<span class="co">## 17 -0.01810171        &lt;NA&gt;      0.073 infill_adacb        0.335 0.02735144</span>
+<span class="co">## 18 -0.01358218        &lt;NA&gt;      0.084 infill_adacb        0.307 0.01770508</span>
 <span class="co">##             mean lambda</span>
 <span class="co">## 13 -0.0145209435   1.25</span>
 <span class="co">## 14 -0.0145618935   1.10</span>
@@ -208,11 +204,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Bernd Bischl, Jakob Richter, Jakob Bossek, Daniel Horn, Michel Lang, Janek Thomas.</p>
+  <p></p>
+<p>Developed by Bernd Bischl, Jakob Richter, Jakob Bossek, Daniel Horn, Michel Lang, Janek Thomas.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.0.</p>
 </div>
 
       </footer>
@@ -220,6 +218,8 @@
 
   
 
+
+  
 
   </body>
 </html>
