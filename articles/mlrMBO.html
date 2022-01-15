@@ -139,9 +139,9 @@
 
     
     
-<div class="section level1">
-<h1 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
-</h1>
+<div class="section level2">
+<h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
+</h2>
 <p>The main goal of <code>mlrMBO</code> is to optimize <em>expensive black-box functions</em> by <em>model-based optimization</em> (aka Bayesian optimization) and to provide a unified interface for different optimization tasks and algorithmic MBO variants. Supported are, among other things:</p>
 <ul>
 <li>Efficient global optimization (EGO) of problems with numerical domain and Kriging as surrogate</li>
@@ -152,19 +152,19 @@
 </ul>
 <p>This vignette gives a brief overview of the features of <code>mlrMBO</code>. A more detailed documentation can be found on: <a href="https://mlrmbo.mlr-org.com/" class="external-link uri">https://mlrmbo.mlr-org.com/</a>.</p>
 </div>
-<div class="section level1">
-<h1 id="quickstart">Quickstart<a class="anchor" aria-label="anchor" href="#quickstart"></a>
-</h1>
 <div class="section level2">
-<h2 id="prerequisites">Prerequisites<a class="anchor" aria-label="anchor" href="#prerequisites"></a>
+<h2 id="quickstart">Quickstart<a class="anchor" aria-label="anchor" href="#quickstart"></a>
 </h2>
+<div class="section level3">
+<h3 id="prerequisites">Prerequisites<a class="anchor" aria-label="anchor" href="#prerequisites"></a>
+</h3>
 <p>Installing <code>mlrMBO</code> will also install and load the dependencies <code>mlr</code>, <code>ParamHelpers</code>, and <code>smoof</code>. For this tutorial, you also need the additional packages <code>DiceKriging</code> and <code>randomForest</code>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/mlr-org/mlrMBO" class="external-link">mlrMBO</a></span><span class="op">)</span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="general-mbo-workflow">General MBO workflow<a class="anchor" aria-label="anchor" href="#general-mbo-workflow"></a>
-</h2>
+<div class="section level3">
+<h3 id="general-mbo-workflow">General MBO workflow<a class="anchor" aria-label="anchor" href="#general-mbo-workflow"></a>
+</h3>
 <ol style="list-style-type: decimal">
 <li>Define <strong>objective function</strong> and its parameters using the package <code>smoof</code>.</li>
 <li>Generate <strong>initial design</strong> (optional).</li>
@@ -173,9 +173,9 @@
 <li>Start the optimization with <code><a href="../reference/mbo.html">mbo()</a></code>.</li>
 </ol>
 <p>As a simple example we minimize a cosine-like function with an initial design of 5 points and 10 sequential MBO iterations. Thus, the optimizer is allowed 15 evaluations of the objective function in total to approximate the optimum.</p>
-<div class="section level3">
-<h3 id="objective-function">Objective Function<a class="anchor" aria-label="anchor" href="#objective-function"></a>
-</h3>
+<div class="section level4">
+<h4 id="objective-function">Objective Function<a class="anchor" aria-label="anchor" href="#objective-function"></a>
+</h4>
 <p>Instead of manually defining the objective, we use the <a href="https://cran.r-project.org/package=smoof" class="external-link"><em>smoof</em></a> package which offers many toy and benchmark functions for optimization.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">obj.fun</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/smoof/man/makeCosineMixtureFunction.html" class="external-link">makeCosineMixtureFunction</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>
@@ -220,9 +220,9 @@
 <span class="co">## x numericvector   2   - -5 to 5   -    TRUE     -</span></code></pre></div>
 <p>Check <code><a href="https://rdrr.io/pkg/smoof/man/makeSingleObjectiveFunction.html" class="external-link">?smoof::makeSingleObjectiveFunction</a></code> for further details.</p>
 </div>
-<div class="section level3">
-<h3 id="initial-design">Initial Design<a class="anchor" aria-label="anchor" href="#initial-design"></a>
-</h3>
+<div class="section level4">
+<h4 id="initial-design">Initial Design<a class="anchor" aria-label="anchor" href="#initial-design"></a>
+</h4>
 <p>Before MBO can really start, it needs a set of already evaluated points - the <em>inital design</em>, as we have to initially learn our first machine learning regression model to propose new points for evaluation. If no design is given (i.e. <code>design = NULL</code>), <code><a href="../reference/mbo.html">mbo()</a></code> will use a <em>Maximin Latin Hypercube</em> <code><a href="https://rdrr.io/pkg/lhs/man/maximinLHS.html" class="external-link">lhs::maximinLHS()</a></code> design with <code>n = 4 * getNumberOfParameters(obj.fun)</code> points. If the design does not include function outcomes <code><a href="../reference/mbo.html">mbo()</a></code> will evaluate the design first before starting with the MBO algorithm. In this example we generate our own design.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">des</span> <span class="op">=</span> <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/generateDesign.html" class="external-link">generateDesign</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">5</span>, par.set <span class="op">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/getParamSet.html" class="external-link">getParamSet</a></span><span class="op">(</span><span class="va">obj.fun</span><span class="op">)</span>, fun <span class="op">=</span> <span class="fu">lhs</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/lhs/man/randomLHS.html" class="external-link">randomLHS</a></span><span class="op">)</span></code></pre></div>
@@ -231,17 +231,17 @@
 <code class="sourceCode R"><span class="va">des</span><span class="op">$</span><span class="va">y</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">des</span>, <span class="fl">1</span>, <span class="va">obj.fun</span><span class="op">)</span></code></pre></div>
 <p><em>Note:</em> <em>mlrMBO</em> uses <code>y</code> as a default name for the outcome of the objective function. This can be changed in the control object.</p>
 </div>
-<div class="section level3">
-<h3 id="surrogate-model">Surrogate Model<a class="anchor" aria-label="anchor" href="#surrogate-model"></a>
-</h3>
+<div class="section level4">
+<h4 id="surrogate-model">Surrogate Model<a class="anchor" aria-label="anchor" href="#surrogate-model"></a>
+</h4>
 <p>We decide to use Kriging as our surrogate model because it has proven to be quite effective for numerical domains. The surrogate must be specified as a mlr regression learner:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">surr.km</span> <span class="op">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/makeLearner.html" class="external-link">makeLearner</a></span><span class="op">(</span><span class="st">"regr.km"</span>, predict.type <span class="op">=</span> <span class="st">"se"</span>, covtype <span class="op">=</span> <span class="st">"matern3_2"</span>, control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>trace <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><em>Note:</em> If no surrogate learner is defined, <code><a href="../reference/mbo.html">mbo()</a></code> automatically uses Kriging for a numerical domain, otherwise <em>random forest regression</em>.</p>
 </div>
-<div class="section level3">
-<h3 id="mbocontrol">MBOControl<a class="anchor" aria-label="anchor" href="#mbocontrol"></a>
-</h3>
+<div class="section level4">
+<h4 id="mbocontrol">MBOControl<a class="anchor" aria-label="anchor" href="#mbocontrol"></a>
+</h4>
 <p>The <code>MBOControl</code> object allows customization of the optimization run and algorithmic behavior of MBO. It is created with <code><a href="../reference/makeMBOControl.html">makeMBOControl()</a></code>, and can be modified with further setter-functions.</p>
 <p>For further customization there are the following functions:</p>
 <ul>
@@ -259,9 +259,9 @@
 <span class="va">control</span> <span class="op">=</span> <span class="fu"><a href="../reference/setMBOControlTermination.html">setMBOControlTermination</a></span><span class="op">(</span><span class="va">control</span>, iters <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
 <span class="va">control</span> <span class="op">=</span> <span class="fu"><a href="../reference/setMBOControlInfill.html">setMBOControlInfill</a></span><span class="op">(</span><span class="va">control</span>, crit <span class="op">=</span> <span class="fu"><a href="../reference/infillcrits.html">makeMBOInfillCritEI</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="start-the-optimization">Start the optimization<a class="anchor" aria-label="anchor" href="#start-the-optimization"></a>
-</h3>
+<div class="section level4">
+<h4 id="start-the-optimization">Start the optimization<a class="anchor" aria-label="anchor" href="#start-the-optimization"></a>
+</h4>
 <p>Finally, we start the optimization process and print the result object. It contains the best best found solution and its corresponding objective value.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">run</span> <span class="op">=</span> <span class="fu"><a href="../reference/mbo.html">mbo</a></span><span class="op">(</span><span class="va">obj.fun</span>, design <span class="op">=</span> <span class="va">des</span>, learner <span class="op">=</span> <span class="va">surr.km</span>, control <span class="op">=</span> <span class="va">control</span>, show.info <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
@@ -283,32 +283,32 @@
 <span class="co">## Optimization path</span>
 <span class="co">## 5 + 10 entries in total, displaying last 10 (or less):</span>
 <span class="co">##                x           y dob eol error.message exec.time            ei</span>
-<span class="co">## 6   0.1424200502  0.08209419   1  NA          &lt;NA&gt;     0.001 -3.210524e-02</span>
+<span class="co">## 6   0.1424200502  0.08209419   1  NA          &lt;NA&gt;     0.000 -3.210524e-02</span>
 <span class="co">## 7  -0.0588246736 -0.05680169   2  NA          &lt;NA&gt;     0.000 -2.895199e-02</span>
-<span class="co">## 8  -0.0078732127 -0.09917425   3  NA          &lt;NA&gt;     0.001 -4.124451e-03</span>
+<span class="co">## 8  -0.0078732127 -0.09917425   3  NA          &lt;NA&gt;     0.000 -4.124451e-03</span>
 <span class="co">## 9   0.0009141747 -0.09998885   4  NA          &lt;NA&gt;     0.000 -1.466116e-03</span>
-<span class="co">## 10 -0.0024097515 -0.09992256   5  NA          &lt;NA&gt;     0.000 -1.604071e-04</span>
+<span class="co">## 10 -0.0024097515 -0.09992256   5  NA          &lt;NA&gt;     0.001 -1.604071e-04</span>
 <span class="co">## 11  0.0042120161 -0.09976347   6  NA          &lt;NA&gt;     0.000 -7.865440e-05</span>
 <span class="co">## 12 -0.0004870891 -0.09999684   7  NA          &lt;NA&gt;     0.000 -3.759330e-05</span>
 <span class="co">## 13 -0.5011545567  0.25296936   8  NA          &lt;NA&gt;     0.000 -1.285448e-05</span>
 <span class="co">## 14  0.0327576367 -0.08597808   9  NA          &lt;NA&gt;     0.000 -1.576915e-05</span>
-<span class="co">## 15  0.0001680801 -0.09999962  10  NA          &lt;NA&gt;     0.000 -1.056027e-05</span>
+<span class="co">## 15  0.0001680801 -0.09999962  10  NA          &lt;NA&gt;     0.001 -1.056027e-05</span>
 <span class="co">##    error.model train.time prop.type propose.time           se        mean</span>
-<span class="co">## 6         &lt;NA&gt;      0.032 infill_ei        0.255 6.915038e-02 -0.10692782</span>
-<span class="co">## 7         &lt;NA&gt;      0.030 infill_ei        0.318 7.141779e-02 -0.09923456</span>
-<span class="co">## 8         &lt;NA&gt;      0.022 infill_ei        0.208 1.174788e-02 -0.09714734</span>
-<span class="co">## 9         &lt;NA&gt;      0.024 infill_ei        0.222 1.928583e-03 -0.10030883</span>
-<span class="co">## 10        &lt;NA&gt;      0.022 infill_ei        0.214 4.588194e-04 -0.09994165</span>
-<span class="co">## 11        &lt;NA&gt;      0.022 infill_ei        0.218 4.002964e-04 -0.09978701</span>
-<span class="co">## 12        &lt;NA&gt;      0.022 infill_ei        0.222 8.531091e-05 -0.09999575</span>
-<span class="co">## 13        &lt;NA&gt;      0.024 infill_ei        0.216 1.710841e-01  0.48794187</span>
-<span class="co">## 14        &lt;NA&gt;      0.022 infill_ei        0.224 6.453564e-03 -0.08427947</span>
-<span class="co">## 15        &lt;NA&gt;      0.022 infill_ei        0.245 2.269187e-05 -0.09999971</span></code></pre></div>
+<span class="co">## 6         &lt;NA&gt;      0.034 infill_ei        0.279 6.915038e-02 -0.10692782</span>
+<span class="co">## 7         &lt;NA&gt;      0.033 infill_ei        0.354 7.141779e-02 -0.09923456</span>
+<span class="co">## 8         &lt;NA&gt;      0.024 infill_ei        0.237 1.174788e-02 -0.09714734</span>
+<span class="co">## 9         &lt;NA&gt;      0.026 infill_ei        0.255 1.928583e-03 -0.10030883</span>
+<span class="co">## 10        &lt;NA&gt;      0.024 infill_ei        0.245 4.588194e-04 -0.09994165</span>
+<span class="co">## 11        &lt;NA&gt;      0.027 infill_ei        0.278 4.002964e-04 -0.09978701</span>
+<span class="co">## 12        &lt;NA&gt;      0.027 infill_ei        0.272 8.531091e-05 -0.09999575</span>
+<span class="co">## 13        &lt;NA&gt;      0.026 infill_ei        0.246 1.710841e-01  0.48794187</span>
+<span class="co">## 14        &lt;NA&gt;      0.025 infill_ei        0.281 6.453564e-03 -0.08427947</span>
+<span class="co">## 15        &lt;NA&gt;      0.025 infill_ei        0.256 2.269187e-05 -0.09999971</span></code></pre></div>
 </div>
 </div>
-<div class="section level2">
-<h2 id="visualization">Visualization<a class="anchor" aria-label="anchor" href="#visualization"></a>
-</h2>
+<div class="section level3">
+<h3 id="visualization">Visualization<a class="anchor" aria-label="anchor" href="#visualization"></a>
+</h3>
 <p>For more insights into the MBO process, we can also start the previous optimization with the function <code><a href="../reference/exampleRun.html">exampleRun()</a></code> instead of <code><a href="../reference/mbo.html">mbo()</a></code>. This augments the results of <code><a href="../reference/mbo.html">mbo()</a></code> with additional information for plotting. Here, we plot the optimization state at iterations 1, 2, and 10.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">run</span> <span class="op">=</span> <span class="fu"><a href="../reference/exampleRun.html">exampleRun</a></span><span class="op">(</span><span class="va">obj.fun</span>, learner <span class="op">=</span> <span class="va">surr.km</span>, control <span class="op">=</span> <span class="va">control</span>, show.info <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
@@ -362,7 +362,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
 </div>
 
       </footer>
