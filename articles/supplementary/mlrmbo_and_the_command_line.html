@@ -126,7 +126,7 @@
 
       
 
-      </header><script src="mlrmbo_and_the_command_line_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>mlrMBO and the command line</h1>
@@ -357,9 +357,9 @@ echo "Finish calculation."
 <span class="co"># save result to json</span>
 <span class="fu"><a href="https://rdrr.io/pkg/jsonlite/man/read_json.html" class="external-link">write_json</a></span><span class="op">(</span><span class="va">run</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"x"</span>,<span class="st">"y"</span><span class="op">)</span><span class="op">]</span>, <span class="st">"mbo_res.json"</span><span class="op">)</span></code></pre></div>
 <p>Assuming we saved the lines above in a file called <code>runMBO.R</code>, we can simply run it from the command line as follows:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1"></a><span class="ex">Rscript</span> runMBO.R</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> runMBO.R</span></code></pre></div>
 <p>As the script also handles some additional arguments it can also be called with the number of MBO iterations (<code>iters</code>), the maximal time budget in seconds (<code>time</code>) and a <code>seed</code> value for reproducibility.</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1"></a><span class="ex">Rscript</span> runMBO.R iters=20 time=10 seed=3</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> runMBO.R iters=20 time=10 seed=3</span></code></pre></div>
 <p>To build a more advanced command line interface you might want to have a <a href="https://www.slideshare.net/EdwindeJonge1/docopt-user2014" class="external-link">look</a> <a href="https://github.com/docopt/docopt.R" class="external-link">at</a> <a href="https://cran.r-project.org/package=docopt" class="external-link">docopt</a>.</p>
 </div>
   </div>
