@@ -179,49 +179,40 @@ Further arguments passed to fitness function.</p></dd>
 <span class="r-in"><span class="co"># start mbo</span></span>
 <span class="r-in"><span class="va">res</span> <span class="op">=</span> <span class="fu">mbo</span><span class="op">(</span><span class="va">obj.fun</span>, design <span class="op">=</span> <span class="va">des</span>, control <span class="op">=</span> <span class="va">ctrl</span><span class="op">)</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Computing y column(s) for design. Not provided.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [mbo] 0: x=0.813,-0.635 : y = 0.068 : 0.0 secs : initdesign</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [mbo] 0: x=0.104,-0.368 : y = -0.349 : 0.0 secs : initdesign</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [mbo] 0: x=-0.486,0.727 : y = 0.901 : 0.0 secs : initdesign</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [mbo] 0: x=0.246,0.247 : y = 0.305 : 0.0 secs : initdesign</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [mbo] 0: x=-0.681,-0.0739 : y = 0.39 : 0.0 secs : initdesign</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [mbo] 1: x=-0.026,-0.36 : y = -0.351 : 0.0 secs : infill_cb</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [mbo] 2: x=-0.7,-0.419 : y = 0.0829 : 0.0 secs : infill_cb</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [mbo] 3: x=-0.0132,-0.616 : y = -0.578 : 0.0 secs : infill_cb</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [mbo] 0: x=0.332,0.404 : y = 0.503 : 0.0 secs : initdesign</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [mbo] 0: x=-0.285,0.112 : y = 0.193 : 0.0 secs : initdesign</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [mbo] 0: x=0.647,-0.765 : y = -0.274 : 0.0 secs : initdesign</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [mbo] 0: x=-0.765,0.855 : y = 1.34 : 0.0 secs : initdesign</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [mbo] 0: x=0.107,-0.324 : y = -0.307 : 0.0 secs : initdesign</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [mbo] 1: x=1,-0.38 : y = 0.629 : 0.0 secs : infill_cb</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [mbo] 2: x=-0.0109,-1 : y = -0.841 : 0.0 secs : infill_cb</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [mbo] 3: x=0.157,-1 : y = -0.817 : 0.0 secs : infill_cb</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Recommended parameters:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> x=-0.0132,-0.616</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Objective: y = -0.578</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> x=-0.0109,-1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Objective: y = -0.841</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Optimization path</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 5 + 3 entries in total, displaying last 10 (or less):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>            x1          x2           y dob eol error.message exec.time</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  0.81291005 -0.63453754  0.06801761   0  NA          &lt;NA&gt;     0.000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  0.10424065 -0.36776161 -0.34866150   0  NA          &lt;NA&gt;     0.001</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 -0.48636357  0.72737194  0.90145850   0  NA          &lt;NA&gt;     0.000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  0.24574562  0.24687356  0.30476441   0  NA          &lt;NA&gt;     0.000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5 -0.68103481 -0.07387639  0.38999920   0  NA          &lt;NA&gt;     0.000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6 -0.02595103 -0.35956044 -0.35118936   1  NA          &lt;NA&gt;     0.000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7 -0.70006212 -0.41933587  0.08293302   2  NA          &lt;NA&gt;     0.000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8 -0.01317083 -0.61604568 -0.57763882   3  NA          &lt;NA&gt;     0.001</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           cb error.model train.time  prop.type propose.time        se</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1         NA        &lt;NA&gt;         NA initdesign           NA        NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2         NA        &lt;NA&gt;         NA initdesign           NA        NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3         NA        &lt;NA&gt;         NA initdesign           NA        NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4         NA        &lt;NA&gt;         NA initdesign           NA        NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5         NA        &lt;NA&gt;         NA initdesign           NA        NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6 -0.4729559        &lt;NA&gt;      0.088  infill_cb        0.394 0.2276422</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7 -0.4626914        &lt;NA&gt;      0.073  infill_cb        0.272 0.1876264</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8 -0.4682307        &lt;NA&gt;      0.072  infill_cb        0.237 0.1602830</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         mean lambda</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1         NA     NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2         NA     NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3         NA     NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4         NA     NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5         NA     NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6 -0.2453137      1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7 -0.2750651      1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8 -0.3079477      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            x1         x2          y dob eol error.message exec.time         cb</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  0.33196210  0.4041055  0.5033953   0  NA          &lt;NA&gt;         0         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 -0.28521150  0.1122304  0.1933405   0  NA          &lt;NA&gt;         0         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  0.64688084 -0.7650811 -0.2741407   0  NA          &lt;NA&gt;         0         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 -0.76450679  0.8554482  1.3393356   0  NA          &lt;NA&gt;         0         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  0.10675680 -0.3244088 -0.3073514   0  NA          &lt;NA&gt;         0         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  0.99988339 -0.3796441  0.6291768   1  NA          &lt;NA&gt;         0 -0.5245293</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7 -0.01090512 -0.9998270 -0.8412586   2  NA          &lt;NA&gt;         0 -0.9616099</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  0.15722450 -0.9999358 -0.8167167   3  NA          &lt;NA&gt;         0 -0.8907036</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   error.model train.time  prop.type propose.time         se       mean lambda</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1        &lt;NA&gt;         NA initdesign           NA         NA         NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2        &lt;NA&gt;         NA initdesign           NA         NA         NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3        &lt;NA&gt;         NA initdesign           NA         NA         NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4        &lt;NA&gt;         NA initdesign           NA         NA         NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5        &lt;NA&gt;         NA initdesign           NA         NA         NA     NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6        &lt;NA&gt;      0.235  infill_cb        0.477 0.24497838 -0.2795510      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7        &lt;NA&gt;      0.107  infill_cb        0.319 0.42011263 -0.5414972      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8        &lt;NA&gt;      0.069  infill_cb        0.345 0.06726162 -0.8234420      1</span>
 <span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
 <span class="r-in"><span class="op">}</span></span>
