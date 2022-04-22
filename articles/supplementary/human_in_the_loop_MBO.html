@@ -188,18 +188,18 @@
 <span class="co">## 893 0.409088 2</span>
 <span class="co">## </span>
 <span class="co">## $propose.time</span>
-<span class="co">## [1] 0.321</span>
+<span class="co">## [1] 0.349</span>
 <span class="co">## </span>
 <span class="co">## $prop.type</span>
 <span class="co">## [1] "infill_ei"</span>
 <span class="co">## </span>
 <span class="co">## $crit.vals</span>
 <span class="co">##            [,1]</span>
-<span class="co">## [1,] -0.2091309</span>
+<span class="co">## [1,] -0.2091306</span>
 <span class="co">## </span>
 <span class="co">## $crit.components</span>
 <span class="co">##          se      mean</span>
-<span class="co">## 1 0.5018957 0.4824381</span>
+<span class="co">## 1 0.5018968 0.4824396</span>
 <span class="co">## </span>
 <span class="co">## $errors.model</span>
 <span class="co">## [1] NA</span>
@@ -223,14 +223,14 @@
 <span class="co">## 785 0.4751879 1</span>
 <span class="co">## </span>
 <span class="co">## $propose.time</span>
-<span class="co">## [1] 0.327</span>
+<span class="co">## [1] 0.524</span>
 <span class="co">## </span>
 <span class="co">## $prop.type</span>
 <span class="co">## [1] "infill_ei"</span>
 <span class="co">## </span>
 <span class="co">## $crit.vals</span>
-<span class="co">##            [,1]</span>
-<span class="co">## [1,] -0.2040839</span>
+<span class="co">##           [,1]</span>
+<span class="co">## [1,] -0.204084</span>
 <span class="co">## </span>
 <span class="co">## $crit.components</span>
 <span class="co">##          se      mean</span>
@@ -269,22 +269,22 @@
 <span class="op">}</span>
 <span class="fu"><a href="../../reference/proposePoints.html">proposePoints</a></span><span class="op">(</span><span class="va">opt.state</span><span class="op">)</span>
 <span class="co">## $prop.points</span>
-<span class="co">##             q  v</span>
-<span class="co">## 561 0.9091981 -1</span>
+<span class="co">##              q v</span>
+<span class="co">## 342 -0.8537791 2</span>
 <span class="co">## </span>
 <span class="co">## $propose.time</span>
-<span class="co">## [1] 0.354</span>
+<span class="co">## [1] 0.414</span>
 <span class="co">## </span>
 <span class="co">## $prop.type</span>
 <span class="co">## [1] "infill_ei"</span>
 <span class="co">## </span>
 <span class="co">## $crit.vals</span>
 <span class="co">##             [,1]</span>
-<span class="co">## [1,] -0.01464107</span>
+<span class="co">## [1,] -0.02686873</span>
 <span class="co">## </span>
 <span class="co">## $crit.components</span>
-<span class="co">##         se     mean</span>
-<span class="co">## 1 0.838553 1.571432</span>
+<span class="co">##          se     mean</span>
+<span class="co">## 1 0.8737739 1.386219</span>
 <span class="co">## </span>
 <span class="co">## $errors.model</span>
 <span class="co">## [1] NA</span>
@@ -301,20 +301,20 @@
 <code class="sourceCode R"><span class="va">fun</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/smoof/man/makeAlpine02Function.html" class="external-link">makeAlpine02Function</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>
 <span class="va">res</span> <span class="op">=</span> <span class="fu"><a href="../../reference/mbo.html">mbo</a></span><span class="op">(</span>fun <span class="op">=</span> <span class="va">fun</span>, control <span class="op">=</span> <span class="va">ctrl</span><span class="op">)</span>
 <span class="co">## Computing y column(s) for design. Not provided.</span>
-<span class="co">## [mbo] 0: x=4.71 : y = -2.17 : 0.0 secs : initdesign</span>
-<span class="co">## [mbo] 0: x=7.79 : y = 2.79 : 0.0 secs : initdesign</span>
-<span class="co">## [mbo] 0: x=6.77 : y = 1.22 : 0.0 secs : initdesign</span>
-<span class="co">## [mbo] 0: x=2.46 : y = 0.99 : 0.0 secs : initdesign</span>
-<span class="co">## [mbo] 1: x=8.32 : y = 2.58 : 0.0 secs : infill_ei</span>
-<span class="co">## [mbo] 2: x=10 : y = -1.72 : 0.0 secs : infill_ei</span>
-<span class="co">## [mbo] 3: x=8.02 : y = 2.79 : 0.0 secs : infill_ei</span>
-<span class="co">## [mbo] 4: x=0.435 : y = 0.278 : 0.0 secs : infill_ei</span>
-<span class="co">## [mbo] 5: x=7.9 : y = 2.81 : 0.0 secs : infill_ei</span>
-<span class="co">## [mbo] 6: x=7.53 : y = 2.6 : 0.0 secs : infill_ei</span>
-<span class="co">## [mbo] 7: x=7.95 : y = 2.81 : 0.0 secs : infill_ei</span>
-<span class="co">## [mbo] 8: x=7.87 : y = 2.8 : 0.0 secs : infill_ei</span>
-<span class="co">## [mbo] 9: x=7.92 : y = 2.81 : 0.0 secs : infill_ei</span>
-<span class="co">## [mbo] 10: x=7.91 : y = 2.81 : 0.0 secs : infill_ei</span>
+<span class="co">## [mbo] 0: x=5.04 : y = -2.13 : 0.0 secs : initdesign</span>
+<span class="co">## [mbo] 0: x=0.275 : y = 0.142 : 0.0 secs : initdesign</span>
+<span class="co">## [mbo] 0: x=3.94 : y = -1.43 : 0.0 secs : initdesign</span>
+<span class="co">## [mbo] 0: x=8.55 : y = 2.25 : 0.0 secs : initdesign</span>
+<span class="co">## [mbo] 1: x=9.29 : y = 0.396 : 0.0 secs : infill_ei</span>
+<span class="co">## [mbo] 2: x=6.18 : y = -0.265 : 0.0 secs : infill_ei</span>
+<span class="co">## [mbo] 3: x=1.27 : y = 1.08 : 0.0 secs : infill_ei</span>
+<span class="co">## [mbo] 4: x=8.18 : y = 2.71 : 0.0 secs : infill_ei</span>
+<span class="co">## [mbo] 5: x=7.79 : y = 2.78 : 0.0 secs : infill_ei</span>
+<span class="co">## [mbo] 6: x=7.94 : y = 2.81 : 0.0 secs : infill_ei</span>
+<span class="co">## [mbo] 7: x=7.48 : y = 2.55 : 0.0 secs : infill_ei</span>
+<span class="co">## [mbo] 8: x=7.89 : y = 2.81 : 0.0 secs : infill_ei</span>
+<span class="co">## [mbo] 9: x=8.01 : y = 2.8 : 0.0 secs : infill_ei</span>
+<span class="co">## [mbo] 10: x=7.92 : y = 2.81 : 0.0 secs : infill_ei</span>
 <span class="va">opt.state</span> <span class="op">=</span> <span class="va">res</span><span class="op">$</span><span class="va">final.opt.state</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">opt.state</span>, scale.panels <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p><img src="human_in_the_loop_MBO_files/figure-html/continue%20mbo-1.png" width="700"></p>
@@ -322,21 +322,21 @@
 <code class="sourceCode R"><span class="op">(</span><span class="va">prop</span> <span class="op">=</span> <span class="fu"><a href="../../reference/proposePoints.html">proposePoints</a></span><span class="op">(</span><span class="va">opt.state</span><span class="op">)</span><span class="op">)</span>
 <span class="co">## $prop.points</span>
 <span class="co">##           x</span>
-<span class="co">## 854 7.93318</span>
+<span class="co">## 629 7.92685</span>
 <span class="co">## </span>
 <span class="co">## $propose.time</span>
-<span class="co">## [1] 0.32</span>
+<span class="co">## [1] 0.331</span>
 <span class="co">## </span>
 <span class="co">## $prop.type</span>
 <span class="co">## [1] "infill_ei"</span>
 <span class="co">## </span>
 <span class="co">## $crit.vals</span>
 <span class="co">##               [,1]</span>
-<span class="co">## [1,] -0.0001274342</span>
+<span class="co">## [1,] -0.0003182764</span>
 <span class="co">## </span>
 <span class="co">## $crit.components</span>
 <span class="co">##             se     mean</span>
-<span class="co">## 1 0.0006771413 2.807764</span>
+<span class="co">## 1 0.0009568099 2.807992</span>
 <span class="co">## </span>
 <span class="co">## $errors.model</span>
 <span class="co">## [1] NA</span>
@@ -359,30 +359,30 @@
 <span class="op">(</span><span class="va">prop</span> <span class="op">=</span> <span class="fu"><a href="../../reference/proposePoints.html">proposePoints</a></span><span class="op">(</span><span class="va">opt.state</span><span class="op">)</span><span class="op">)</span>
 <span class="co">## $prop.points</span>
 <span class="co">##               q v</span>
-<span class="co">## 953  0.40893348 2</span>
-<span class="co">## 519 -0.33497801 1</span>
-<span class="co">## 314  0.67636063 1</span>
-<span class="co">## 794  0.08087523 2</span>
+<span class="co">## 147  0.40900640 2</span>
+<span class="co">## 820 -0.33498703 1</span>
+<span class="co">## 940  0.67646944 1</span>
+<span class="co">## 807  0.08099484 2</span>
 <span class="co">## </span>
 <span class="co">## $propose.time</span>
-<span class="co">## [1] 0.307 0.313 0.312 0.311</span>
+<span class="co">## [1] 0.417 0.505 0.386 0.397</span>
 <span class="co">## </span>
 <span class="co">## $prop.type</span>
 <span class="co">## [1] "infill_ei" "infill_ei" "infill_ei" "infill_ei"</span>
 <span class="co">## </span>
 <span class="co">## $crit.vals</span>
 <span class="co">##             [,1]</span>
-<span class="co">## [1,] -0.20913027</span>
-<span class="co">## [2,] -0.20284920</span>
-<span class="co">## [3,] -0.14291373</span>
-<span class="co">## [4,] -0.06647469</span>
+<span class="co">## [1,] -0.20913080</span>
+<span class="co">## [2,] -0.20286446</span>
+<span class="co">## [3,] -0.14291008</span>
+<span class="co">## [4,] -0.06649065</span>
 <span class="co">## </span>
 <span class="co">## $crit.components</span>
 <span class="co">##          se      mean</span>
-<span class="co">## 1 0.5019054 0.4824469</span>
-<span class="co">## 2 0.3274540 0.3745226</span>
-<span class="co">## 3 0.1159215 0.3639492</span>
-<span class="co">## 4 0.1672672 0.5005112</span>
+<span class="co">## 1 0.5018993 0.4824412</span>
+<span class="co">## 2 0.3274625 0.3745040</span>
+<span class="co">## 3 0.1158969 0.3639477</span>
+<span class="co">## 4 0.1672930 0.5004998</span>
 <span class="co">## </span>
 <span class="co">## $errors.model</span>
 <span class="co">## [1] NA NA NA NA</span>

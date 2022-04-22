@@ -179,10 +179,10 @@
 <p>To warm start the Bayesian optimization we simply call <code><a href="../../reference/mbo.html">mbo()</a></code> and pass the pre-evaluated design.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">res</span> <span class="op">=</span> <span class="fu"><a href="../../reference/mbo.html">mbo</a></span><span class="op">(</span><span class="va">obj.fun</span>, design <span class="op">=</span> <span class="va">design</span>, control <span class="op">=</span> <span class="va">ctrl</span><span class="op">)</span>
-<span class="co">## [mbo] 1: x=-0.545,0.0432 : y = 0.98 : 0.0 secs : infill_ei</span>
-<span class="co">## [mbo] 2: x=-0.258,-0.288 : y = 0.0265 : 0.0 secs : infill_ei</span>
-<span class="co">## [mbo] 3: x=-0.245,0.0395 : y = 0.217 : 0.0 secs : infill_ei</span>
-<span class="co">## [mbo] 4: x=-0.0719,0.56 : y = -0.88 : 0.0 secs : infill_ei</span>
+<span class="co">## [mbo] 1: x=-0.537,0.0482 : y = 0.95 : 0.0 secs : infill_ei</span>
+<span class="co">## [mbo] 2: x=-0.255,-0.286 : y = 0.0242 : 0.0 secs : infill_ei</span>
+<span class="co">## [mbo] 3: x=-0.243,0.0262 : y = 0.22 : 0.0 secs : infill_ei</span>
+<span class="co">## [mbo] 4: x=-0.0968,-0.151 : y = -0.0371 : 0.0 secs : infill_ei</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">final.opt.state</span>, scale.panels <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p><img src="warmstart_files/figure-html/design_start-1.png" width="700"></p>
 </div>
@@ -194,10 +194,10 @@
 <code class="sourceCode R"><span class="va">op</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">opt.path</span><span class="op">)</span>
 <span class="va">design</span> <span class="op">=</span> <span class="va">op</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"x1"</span>, <span class="st">"x2"</span>, <span class="st">"y"</span><span class="op">)</span><span class="op">]</span>
 <span class="va">res2</span> <span class="op">=</span> <span class="fu"><a href="../../reference/mbo.html">mbo</a></span><span class="op">(</span><span class="va">obj.fun</span>, design <span class="op">=</span> <span class="va">design</span>, control <span class="op">=</span> <span class="va">ctrl</span><span class="op">)</span>
-<span class="co">## [mbo] 1: x=0.413,0.419 : y = 0.217 : 0.0 secs : infill_ei</span>
-<span class="co">## [mbo] 2: x=0.0628,0.387 : y = -0.47 : 0.0 secs : infill_ei</span>
-<span class="co">## [mbo] 3: x=-0.397,0.534 : y = -0.447 : 0.0 secs : infill_ei</span>
-<span class="co">## [mbo] 4: x=0.204,0.597 : y = -0.632 : 0.0 secs : infill_ei</span>
+<span class="co">## [mbo] 1: x=0.42,-0.209 : y = 0.388 : 0.0 secs : infill_ei</span>
+<span class="co">## [mbo] 2: x=0.196,-0.21 : y = -0.0605 : 0.0 secs : infill_ei</span>
+<span class="co">## [mbo] 3: x=0.287,-0.499 : y = -0.577 : 0.0 secs : infill_ei</span>
+<span class="co">## [mbo] 4: x=-0.0853,0.439 : y = -0.631 : 0.0 secs : infill_ei</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res2</span><span class="op">$</span><span class="va">final.opt.state</span>, scale.panels <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p><img src="warmstart_files/figure-html/res_to_design-1.png" width="700"></p>
 <p>Second, we can use <code><a href="../../reference/mboContinue.html">mboContinue()</a></code> on the <code>final.opt.state</code>. In this case we have to change the state of the <code>opt.state</code> object from <code>"term.iter"</code> to <code>"iter"</code> so MBO does not assume the optimization is already terminated. Furthermore we have to redefine the termination criterion to 8 because we want run 4 further iterations from the 4 we already did in the beginning.</p>
@@ -206,10 +206,10 @@
 <span class="va">opt.state</span><span class="op">$</span><span class="va">opt.problem</span><span class="op">$</span><span class="va">control</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span><span class="op">(</span><span class="va">opt.state</span><span class="op">$</span><span class="va">opt.problem</span><span class="op">$</span><span class="va">control</span>, iters <span class="op">=</span> <span class="fl">8</span><span class="op">)</span>
 <span class="va">opt.state</span><span class="op">$</span><span class="va">state</span> <span class="op">=</span> <span class="st">"iter"</span>
 <span class="va">res3</span> <span class="op">=</span> <span class="fu"><a href="../../reference/mboContinue.html">mboContinue</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">final.opt.state</span><span class="op">)</span>
-<span class="co">## [mbo] 5: x=-0.0742,0.38 : y = -0.501 : 0.0 secs : infill_ei</span>
-<span class="co">## [mbo] 6: x=0.453,0.525 : y = 0.176 : 0.0 secs : infill_ei</span>
-<span class="co">## [mbo] 7: x=0.197,0.523 : y = -0.541 : 0.0 secs : infill_ei</span>
-<span class="co">## [mbo] 8: x=-0.392,0.537 : y = -0.464 : 0.0 secs : infill_ei</span>
+<span class="co">## [mbo] 5: x=0.423,-0.213 : y = 0.386 : 0.0 secs : infill_ei</span>
+<span class="co">## [mbo] 6: x=0.192,-0.204 : y = -0.0549 : 0.0 secs : infill_ei</span>
+<span class="co">## [mbo] 7: x=0.287,-0.498 : y = -0.573 : 0.0 secs : infill_ei</span>
+<span class="co">## [mbo] 8: x=-0.0867,0.437 : y = -0.627 : 0.0 secs : infill_ei</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res3</span><span class="op">$</span><span class="va">final.opt.state</span>, scale.panels <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p><img src="warmstart_files/figure-html/mbocontinue_optstate-1.png" width="700"></p>
 <p>The first approach has the advantage that it is more transparent. Also you have to pass an <code>MBOControl</code> object which gives you an easy ability to refine your MBO settings for the further iterations. The second approach is a bit more <em>hacky</em> but has the advantage that you do not have to construct the design from the <code>opt.path</code>.</p>
