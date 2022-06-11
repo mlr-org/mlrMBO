@@ -162,6 +162,8 @@ It is possible to return even more information which will be stored
 in the optimization path. To achieve this, simply append the attribute “extras”
 to the return value of the target function. This has to be a named list of scalar values.
 Each of these values will be stored additionally in the optimization path.</p></dd>
+
+
 <dt>design</dt>
 <dd><p>[<code>data.frame</code>]<br>
 Initial design as data frame.
@@ -170,30 +172,43 @@ If the parameters have corresponding trafo functions, the design must not be tra
 Functions to generate designs are available in <code>ParamHelpers</code>: <code><a href="https://paramhelpers.mlr-org.com/reference/generateDesign.html" class="external-link">generateDesign</a></code>, <code><a href="https://paramhelpers.mlr-org.com/reference/generateGridDesign.html" class="external-link">generateGridDesign</a></code>, <code><a href="https://paramhelpers.mlr-org.com/reference/generateRandomDesign.html" class="external-link">generateRandomDesign</a></code>.
 Default is <code>NULL</code>, which means <code><a href="https://paramhelpers.mlr-org.com/reference/generateDesign.html" class="external-link">generateDesign</a></code> is called and a design of size 4 times number of all parameters is created
 The points are drawn via <code><a href="https://rdrr.io/pkg/lhs/man/maximinLHS.html" class="external-link">maximinLHS</a></code> to maximize the minimal distance between design points.</p></dd>
+
+
 <dt>learner</dt>
 <dd><p>[<code><a href="https://mlr.mlr-org.com/reference/makeLearner.html" class="external-link">Learner</a></code>]<br>
 Regression learner from mlr, which is used as a surrogate to model our fitness function.
 If <code>NULL</code> (default), the default learner is determined as described here: <a href="makeMBOLearner.html">mbo_default_learner</a>.</p></dd>
+
+
 <dt>control</dt>
 <dd><p>[<code><a href="makeMBOControl.html">MBOControl</a></code>]<br>
 Control object for mbo.</p></dd>
+
+
 <dt>points.per.dim</dt>
 <dd><p>[<code>integer</code>]<br>
 Number of (regular spaced) locations at which to
 sample the <code>fun</code> function per dimension.
 Default is 50.</p></dd>
+
+
 <dt>noisy.evals</dt>
 <dd><p>[<code>integer(1)</code>]<br>
 Number of function evaluations per point if <code>fun</code> is noisy.
 Default is 10.</p></dd>
+
+
 <dt>show.info</dt>
 <dd><p>[<code>logical(1)</code>]<br>
 Verbose output on console?
 Default is <code>TRUE</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>[<code>MBOExampleRun</code>]</p>
+    
+
+<p>[<code>MBOExampleRun</code>]</p>
     </div>
 
   </div>
@@ -208,7 +223,7 @@ Default is <code>TRUE</code>.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

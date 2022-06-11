@@ -146,17 +146,23 @@ minimizes that.</p>
     <dl><dt>control</dt>
 <dd><p>[<code><a href="makeMBOControl.html">MBOControl</a></code>]<br>
 Control object for mbo.</p></dd>
+
+
 <dt>crit</dt>
 <dd><p>[<code><a href="MBOInfillCrit.html">MBOInfillCrit</a></code>]<br>
 How should infill points be rated. See <code><a href="infillcrits.html">infillcrits</a></code> for an overview
 of available infill criteria or implement a custom one via <code><a href="MBOInfillCrit.html">makeMBOInfillCrit</a></code>.#
 Default is “(lower) confidence bound” (see <code><a href="infillcrits.html">makeMBOInfillCritCB</a></code>).</p></dd>
+
+
 <dt>interleave.random.points</dt>
 <dd><p>[<code>integer(1)</code>]<br>
 Add <code>interleave.random.points</code> uniformly sampled points additionally to the
 regular proposed points in each step.
 If <code>crit="random"</code> this value will be neglected.
 Default is 0.</p></dd>
+
+
 <dt>filter.proposed.points</dt>
 <dd><p>[<code>logical(1)</code>]<br>
 Design points located too close to each other can lead to
@@ -169,11 +175,15 @@ If enabled, the column entry for <code>prop.type</code> is set to “random_filt
 so you can see whether such a replacement happened.
 This does only work for numeric parameter sets without any discrete parameters.
 Default is <code>FALSE</code>.</p></dd>
+
+
 <dt>filter.proposed.points.tol</dt>
 <dd><p>[<code>numeric(1)</code>]<br>
 Tolerance value filtering of proposed points. We currently use a maximum metric
 to calculate the distance between points.
 Default is 0.0001.</p></dd>
+
+
 <dt>opt</dt>
 <dd><p>[<code>character(1)</code>]<br>
 How should SINGLE points be proposed by using the surrogate model. Possible values are:
@@ -186,6 +196,8 @@ instead and a warning informs about it.
 “nsga2”: NSGA2 for multi obj. optimizations. Needed for mspot.
 Default is “focussearch”.
 Alternatively, you may pass a function name as string.</p></dd>
+
+
 <dt>opt.restarts</dt>
 <dd><p>[<code>integer(1)</code>]<br>
 Number of independent restarts for optimizer of infill criterion.
@@ -195,86 +207,121 @@ points are chosen according to the CMA-ES restart strategy introduced by Auger
 and Hansen. For details see the corresponding paper in the references and the help
 page of the underlying optimizer <code><a href="https://rdrr.io/pkg/cmaesr/man/cmaes.html" class="external-link">cmaes</a></code>.
 Default is 3.</p></dd>
+
+
 <dt>opt.focussearch.maxit</dt>
 <dd><p>[<code>integer(1)</code>]<br>
 For <code>opt = "focussearch"</code>:
 Number of iteration to shrink local focus.
 Default is 5.</p></dd>
+
+
 <dt>opt.focussearch.points</dt>
 <dd><p>[<code>integer(1)</code>]<br>
 For <code>opt = "focussearch"</code>:
 Number of points in each iteration of the focus search optimizer.
 Default is 1000.</p></dd>
+
+
 <dt>opt.cmaes.control</dt>
 <dd><p>[<code>list</code>]<br>
 For <code>opt = "cmaes"</code>:
 Control argument for cmaes optimizer.
 For the default see the help page of the underlying optimizer <code><a href="https://rdrr.io/pkg/cmaesr/man/cmaes.html" class="external-link">cmaes</a></code>.</p></dd>
+
+
 <dt>opt.ea.maxit</dt>
 <dd><p>[<code>integer(1)</code>]<br>
 For <code>opt = "ea"</code>:
 Number of iterations / generations of EA.
 Default is 500.</p></dd>
+
+
 <dt>opt.ea.mu</dt>
 <dd><p>[<code>integer(1)</code>]<br>
 For <code>opt = "ea"</code>:
 Population size of EA.
 The default is 10 times the number of parameters of the function to optimize.</p></dd>
+
+
 <dt>opt.ea.sbx.eta</dt>
 <dd><p>[<code>numeric(1)</code>]<br>
 For <code>opt = "ea"</code>:
 Distance parameter of crossover distribution , see <code><a href="https://rdrr.io/pkg/emoa/man/sbx_operator.html" class="external-link">sbx_operator</a></code>.
 Default is 15.</p></dd>
+
+
 <dt>opt.ea.sbx.p</dt>
 <dd><p>[<code>numeric(1)</code>]<br>
 For <code>opt = "ea"</code>:
 Probability of 1-point crossover, see <code><a href="https://rdrr.io/pkg/emoa/man/sbx_operator.html" class="external-link">sbx_operator</a></code>.
 Default is 0.5.</p></dd>
+
+
 <dt>opt.ea.pm.eta</dt>
 <dd><p>[<code>numeric(1)</code>]<br>
 For <code>opt = "ea"</code>:
 Distance parameter of mutation distribution, see <code><a href="https://rdrr.io/pkg/emoa/man/pm_operator.html" class="external-link">pm_operator</a></code>.
 Default is 15.</p></dd>
+
+
 <dt>opt.ea.pm.p</dt>
 <dd><p>[<code>numeric(1)</code>]<br>
 For <code>opt = "ea"</code>:
 Probability of 1-point mutation, see <code><a href="https://rdrr.io/pkg/emoa/man/pm_operator.html" class="external-link">pm_operator</a></code>.
 Default is 0.5.</p></dd>
+
+
 <dt>opt.ea.lambda</dt>
 <dd><p>[<code>integer{1}</code>]<br>
 For <code>opt.ea = "ea"</code>.
 Number of children generated in each generation.
 Default is 1.</p></dd>
+
+
 <dt>opt.nsga2.popsize</dt>
 <dd><p>[<code>integer{1}</code>]<br>
 For <code>opt.multiobj.method = "nsga2"</code>.
 Population size of nsga2.
 Default is 100.</p></dd>
+
+
 <dt>opt.nsga2.generations</dt>
 <dd><p>[<code>integer{1}</code>]<br>
 For <code>opt.multiobj.method = "nsga2"</code>.
 Number of populations for of nsga2.
 Default is 50.</p></dd>
+
+
 <dt>opt.nsga2.cprob</dt>
 <dd><p>[<code>numeric{1}</code>]<br>
 For <code>opt.multiobj.method = "nsga2"</code>.
 nsga2 param. Default is 0.7.</p></dd>
+
+
 <dt>opt.nsga2.cdist</dt>
 <dd><p>[<code>numeric{1}</code>]<br>
 For <code>opt.multiobj.method = "nsga2"</code>.
 nsga2 param. Default is 5.</p></dd>
+
+
 <dt>opt.nsga2.mprob</dt>
 <dd><p>[<code>numeric{1}</code>]<br>
 For <code>opt.multiobj.method = "nsga2"</code>.
 nsga2 param. Default is 0.2.</p></dd>
+
+
 <dt>opt.nsga2.mdist</dt>
 <dd><p>[<code>numeric{1}</code>]<br>
 For <code>opt.multiobj.method = "nsga2"</code>.
 nsga2 param. Default is 10.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>[<code><a href="makeMBOControl.html">MBOControl</a></code>].</p>
+    
+
+<p>[<code><a href="makeMBOControl.html">MBOControl</a></code>].</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -297,7 +344,7 @@ nsga2 param. Default is 10.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

@@ -157,17 +157,25 @@ the package allows for the creation of custom infill criteria.</p>
 
  
 </dl><p>Important: Internally, this function will be minimized. So the proposals will be where this function is low.</p></dd>
+
+
 <dt>name</dt>
 <dd><p>[<code>character(1)</code>]<br>
 Full name of the criterion.</p></dd>
+
+
 <dt>id</dt>
 <dd><p>[<code>character(1)</code>]<br>
 Short name of the criterion.
 Used internally and in plots.</p></dd>
+
+
 <dt>opt.direction</dt>
 <dd><p>[<code>character(1)</code>]<br>
 Only for visualization: Shall this criterion be plotted as if it were to be minimized (<code>minimize</code>), maximized (<code>maximize</code>) or is the direction the same as for the objective function (<code>objective</code>)?
 Default is <code>minimize</code>.</p></dd>
+
+
 <dt>components</dt>
 <dd><p>[<code>character</code>]<br>
 Infill criteria may not return proposed point(s) only. Additional
@@ -176,20 +184,27 @@ to the returned value as an attribute.
 The <code>components</code> argument takes a character vector of the names of the
 meta information, i.e., the names of the named “crit.components” list.
 Default is the empty character vector.</p></dd>
+
+
 <dt>params</dt>
 <dd><p>[<code>list</code>]<br>
 Named list of parameters for the infill criterion. There values may be used
 by <span class="pkg">mlrMBO</span> internally.
 Default is the empty list.</p></dd>
+
+
 <dt>requires.se</dt>
 <dd><p>[<code>logical(1)</code>]<br>
 Does the infill criterion require the regression learner to provide a standard
 error estimation?
 Default is <code>FALSE</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>[<code>MBOInfillCrit</code>]</p>
+    
+
+<p>[<code>MBOInfillCrit</code>]</p>
     </div>
     <div id="predefined-standard-infill-criteria">
     <h2>Predefined standard infill criteria</h2>
@@ -237,7 +252,7 @@ Default is <code>FALSE</code>.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

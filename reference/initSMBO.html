@@ -124,6 +124,8 @@
     <dl><dt>par.set</dt>
 <dd><p>[<code><a href="https://paramhelpers.mlr-org.com/reference/makeParamSet.html" class="external-link">ParamSet</a></code>]<br>
 See <code><a href="mbo.html">mbo</a></code>.</p></dd>
+
+
 <dt>design</dt>
 <dd><p>[<code>data.frame</code>]<br>
 Initial design as data frame.
@@ -132,29 +134,42 @@ If the parameters have corresponding trafo functions, the design must not be tra
 Functions to generate designs are available in <code>ParamHelpers</code>: <code><a href="https://paramhelpers.mlr-org.com/reference/generateDesign.html" class="external-link">generateDesign</a></code>, <code><a href="https://paramhelpers.mlr-org.com/reference/generateGridDesign.html" class="external-link">generateGridDesign</a></code>, <code><a href="https://paramhelpers.mlr-org.com/reference/generateRandomDesign.html" class="external-link">generateRandomDesign</a></code>.
 Default is <code>NULL</code>, which means <code><a href="https://paramhelpers.mlr-org.com/reference/generateDesign.html" class="external-link">generateDesign</a></code> is called and a design of size 4 times number of all parameters is created
 The points are drawn via <code><a href="https://rdrr.io/pkg/lhs/man/maximinLHS.html" class="external-link">maximinLHS</a></code> to maximize the minimal distance between design points.</p></dd>
+
+
 <dt>learner</dt>
 <dd><p>[<code><a href="https://mlr.mlr-org.com/reference/makeLearner.html" class="external-link">Learner</a></code>]<br>
 Regression learner from mlr, which is used as a surrogate to model our fitness function.
 If <code>NULL</code> (default), the default learner is determined as described here: <a href="makeMBOLearner.html">mbo_default_learner</a>.</p></dd>
+
+
 <dt>control</dt>
 <dd><p>[<code><a href="makeMBOControl.html">MBOControl</a></code>]<br>
 Control object for mbo.</p></dd>
+
+
 <dt>minimize</dt>
 <dd><p>[<code>logical</code>]<br>
 Should objective values of the target functions be minimized? One value par objective.
 Default is <code>TRUE</code> for every objective.</p></dd>
+
+
 <dt>noisy</dt>
 <dd><p>[<code>logical(1)</code>]<br>
 Is the target function noisy?
 Default is <code>FALSE</code>.</p></dd>
+
+
 <dt>show.info</dt>
 <dd><p>[<code>logical(1)</code>]<br>
 Verbose output on console?
 Default is <code>TRUE</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>[<code><a href="OptState.html">OptState</a></code>]</p>
+    
+
+<p>[<code><a href="OptState.html">OptState</a></code>]</p>
     </div>
 
   </div>
@@ -169,7 +184,7 @@ Default is <code>TRUE</code>.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

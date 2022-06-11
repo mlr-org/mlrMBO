@@ -136,10 +136,14 @@
 How many objectives are to be optimized? <code>n.objectives = 1</code> implies normal single
 criteria optimization, <code>n.objectives &gt; 1</code> implies multi-objective optimization.
 Default is 1.</p></dd>
+
+
 <dt>propose.points</dt>
 <dd><p>[<code>integer(1)</code>]<br>
 Number of proposed / really evaluated points each iteration.
 Default is 1.</p></dd>
+
+
 <dt>final.method</dt>
 <dd><p>[<code>character(1)</code>]<br>
 How should the final point be proposed. Possible values are:
@@ -149,14 +153,20 @@ Can be bad if target function is noisy.
 “best.predicted”: Use the final model to predict all points ever visited and use the best one.
 This might average-out noisy function values.
 Default is: “best.true.y”.</p></dd>
+
+
 <dt>final.evals</dt>
 <dd><p>[<code>integer(1)</code>]<br>
 How many target function evals should be done at final point to reduce noise?
 Default is 0.</p></dd>
+
+
 <dt>y.name</dt>
 <dd><p>[<code>character</code>]<br>
 Vector for names of y-columns for target values in optimization path.
 Default is “y_i”, i = 1, ..., n.objectives.</p></dd>
+
+
 <dt>impute.y.fun</dt>
 <dd><p>[<code>function(x, y, opt.path, ...)</code>*]<br>
 Functions that gets triggered if your objective evaluation produced
@@ -170,15 +180,21 @@ and what the original, faulty object was.
 and <code>opt.path</code> the current optimization path.
 Default is <code>NULL</code> which means to stop if the objective function did not produce the desired
 result.</p></dd>
+
+
 <dt>trafo.y.fun</dt>
 <dd><p>[<code>MBOTrafoFunction</code>]<br>
 Sometimes it is favorable to transform the target function values before modeling. Provide a
 MBO transformation function to do so.</p></dd>
+
+
 <dt>suppress.eval.errors</dt>
 <dd><p>[<code>logical(1)</code>]<br>
 Should reporting of error messages during target function evaluations be suppressed?
 Only used if <code>impute.errors</code> is <code>TRUE</code>.
 Default is <code>TRUE</code>.</p></dd>
+
+
 <dt>save.on.disk.at</dt>
 <dd><p>[<code>integer</code>] <br>
 Sequential optimization iteration when the actual state should be saved
@@ -186,37 +202,53 @@ on disk. Iteration 0 denotes the initial design. If the optimization
 stops with an crucial error, it can be restarted with this file via the
 function <code><a href="mboContinue.html">mboContinue</a></code>.
 Default is <code>integer(0L)</code>, i. e., not to save.</p></dd>
+
+
 <dt>save.on.disk.at.time</dt>
 <dd><p>[<code>integer</code>] <br>
 Same as above. But here you define the time which have to be passed until the last save in seconds. Any finite value will lead to save at end.
 Default is <code>Inf</code>, i. e., not to save ever.</p></dd>
+
+
 <dt>save.file.path</dt>
 <dd><p>[<code>character(1)</code>] <br>
 If <code>save.on.disk.at</code> is used, this is the name of the file where the data
 will be saved.
 Default “mbo_run.RData” in your current working directory.</p></dd>
+
+
 <dt>store.model.at</dt>
 <dd><p>[<code>integer</code>]<br>
 Sequential optimization iterations when the model should be saved.
 Iteration 1 is the model fit for the initial design, iters + 1 is a final
 save containing the final results of the optimization. .
 Default is <code>iters + 1</code>.</p></dd>
+
+
 <dt>resample.at</dt>
 <dd><p>[<code>integer</code>]<br>
 At which iterations should the model be resampled and assessed?
 Iteration 0 does some resampling on the initial design.
 Default is none.</p></dd>
+
+
 <dt>resample.desc</dt>
 <dd><p>[<code><a href="https://mlr.mlr-org.com/reference/makeResampleDesc.html" class="external-link">ResampleDesc</a></code>]<br>
 How should the model be resampled?
 Default is 10-fold CV.</p></dd>
+
+
 <dt>resample.measures</dt>
 <dd><p>[list of <code><a href="https://mlr.mlr-org.com/reference/makeMeasure.html" class="external-link">Measure</a></code>]<br>
 Performance measures to assess model with during resampling.
 Default is <code><a href="https://mlr.mlr-org.com/reference/measures.html" class="external-link">mse</a></code>.</p></dd>
+
+
 <dt>output.num.format</dt>
 <dd><p>[<code>logical(1)</code>]<br>
 Format string for the precision of the numeric output of mbo.</p></dd>
+
+
 <dt>on.surrogate.error</dt>
 <dd><p>[<code>character(1)</code>]<br>
 What should happen when the surrogate learner can not train the model.
@@ -226,10 +258,13 @@ Possible values are:
 “quiet”: Same as “warn” but without the warning.
 This will overwrite the mlr setting <code>on.learner.error</code> for the surrogate learner.
 Default is: “stop”.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>[<code>MBOControl</code>].</p>
+    
+
+<p>[<code>MBOControl</code>].</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -252,7 +287,7 @@ Default is: “stop”.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

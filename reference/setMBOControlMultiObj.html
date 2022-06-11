@@ -129,6 +129,8 @@
     <dl><dt>control</dt>
 <dd><p>[<code><a href="makeMBOControl.html">MBOControl</a></code>]<br>
 Control object for mbo.</p></dd>
+
+
 <dt>method</dt>
 <dd><p>[<code>character(1)</code>]<br>
 Which multi-objective method should be used?
@@ -138,6 +140,8 @@ Which multi-objective method should be used?
 objectives with model-based infill crits via an EMOA.
 All methods can also propose multiple points in parallel.
 Default is “dib”.</p></dd>
+
+
 <dt>ref.point.method</dt>
 <dd><p>[<code>character(1)</code>] <br>
 Method for the determination of the reference point used for S-metric.
@@ -147,23 +151,33 @@ Possible Values are:
 “front”: In each dimension: maximum of all non-dominated points + <code>ref.point.offset</code>
 “const”: Constant value, see <code>ref.point.val</code>.
 Default is “all”.</p></dd>
+
+
 <dt>ref.point.offset</dt>
 <dd><p>[<code>numeric(1)</code>]<br>
 See <code>ref.point.method</code>, default is 1.</p></dd>
+
+
 <dt>ref.point.val</dt>
 <dd><p>[<code>numeric</code>]<br>
 Constant value of reference point for hypervolume calculation.
 Used if <code>ref.point.method = "const"</code>. Has to be specified in this case.</p></dd>
+
+
 <dt>parego.s</dt>
 <dd><p>[<code>integer(1)</code>]<br>
 Parameter of parego - controls the number of weighting vectors. The default
 depends on <code>n.objectives</code> and leads to ca. 100000 different possible
 weight vectors. The defaults for (2, 3, 4, 5, 6) dimensions are (100000,
 450, 75, 37, 23) and 10 for higher dimensions.</p></dd>
+
+
 <dt>parego.rho</dt>
 <dd><p>[<code>numeric(1)</code>]<br>
 Parameter of parego - factor for Tchebycheff function. Default 0.05 as
 suggested in parego paper.</p></dd>
+
+
 <dt>parego.use.margin.points</dt>
 <dd><p>[<code>logical</code>]<br>
 For each target function: Should the weight vector (0, ..., 0, 1, 0, ..., 0),
@@ -171,29 +185,40 @@ i.e. the weight vector with only 0 and a single 1 at the i-th position for
 the i-th target function, be drawn with probability 1? Number of TRUE entries
 must be less or equal to <code>propose.points</code>
 Default is not to do this.</p></dd>
+
+
 <dt>parego.sample.more.weights</dt>
 <dd><p>[<code>integer(1)</code>]<br>
 In each iteration <code>parego.sample.more.weights</code> * <code>propose.points</code>
 are sampled and the weights with maximum distance to each other are chosen.
 Default is 1, if only 1 point is proposed each iteration, otherwise 5.</p></dd>
+
+
 <dt>parego.normalize</dt>
 <dd><p>[<code>character</code>] <br>
 Normalization to use. Either map the whole image space to [0, 1] (<code>standard</code>, the default)
 or just the paretofront (<code>front</code>).</p></dd>
+
+
 <dt>dib.indicator</dt>
 <dd><p>[<code>character(1)</code>]<br>
 Either “sms” (SMS-EGO like algorithm) or “eps” (epsilon-EGO like algorithm).
 Default is “sms”.</p></dd>
+
+
 <dt>mspot.select.crit</dt>
 <dd><p>[<code><a href="MBOInfillCrit.html">MBOInfillCrit</a></code>]<br>
 Which infill.crit to use in the candidate selection. After the NSGA2
 proposed a set of candidates, “propose.points” are selected via
 the hypervolume contribution of this infill.crit.
 Possible values are “crit.mr” and “crit.cb” (or any other InfillCrit generated with <code><a href="infillcrits.html">makeMBOInfillCritCB</a></code>), default is “crit.mr”.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>[<code><a href="makeMBOControl.html">MBOControl</a></code>].</p>
+    
+
+<p>[<code><a href="makeMBOControl.html">MBOControl</a></code>].</p>
     </div>
     <div id="references">
     <h2>References</h2>
@@ -247,7 +272,7 @@ et.al. (eds.), IEEE, 2005, ISBN 0-7803-9363-5, pp. 2138-2145</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>

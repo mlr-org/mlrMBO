@@ -153,28 +153,40 @@ the model and the (infill) points. The lower plot shows the infill criterion.
     <h2>Arguments</h2>
     <dl><dt>object</dt>
 <dd><p>[<code>function</code>]<br><code>MBOExampleRun</code> or <code>MBOExampleRunMultiObj</code> object.</p></dd>
+
+
 <dt>iter</dt>
 <dd><p>[<code>integer</code>]<br>
 Selected iteration of <code>object</code> to render plots for.</p></dd>
+
+
 <dt>densregion</dt>
 <dd><p>[<code>logical(1)</code>]<br>
 Should the background be shaded? Default is <code>TRUE</code>.
 Only used if learner supports computation of standard error.</p></dd>
+
+
 <dt>se.factor</dt>
 <dd><p>[<code>numeric(1)</code>]<br>
 If the model provides local standard error estimation,
 in addition to the mean response <code>yhat(x) +- se.factor * se(x)</code>
 is plotted above and below.
 Default is 1.</p></dd>
+
+
 <dt>single.prop.point.plots</dt>
 <dd><p>[<code>logical(1)</code>]<br>
 Parameter for MOI-MBO Multi-point proposal: Should every proposed point
 be displayed in a single plot - or one plot per Iteration? Default is FALSE
 indicating single plots per proposed points.</p></dd>
+
+
 <dt>xlim</dt>
 <dd><p>[<code>numeric(2)</code>]<br>
 For 1D: <code>xlim</code> parameter for first and second plot.
 Default is range of x-values evaluated in run object <code>object</code>.</p></dd>
+
+
 <dt>ylim</dt>
 <dd><p>[<code>numeric(2)</code>]<br>
 For 1D: <code>ylim</code> parameter for first plot, for the second plot <code>ylim</code> is always set
@@ -182,12 +194,18 @@ automatically, depending on the range of the evaluated infill criterion.
 Default for the first plot is a heuristic to have the true function
 and <code>yhat(x) +- se.factor2 * se(x)</code> both in the plot. Note that this heuristic might
 change the <code>ylim</code> setting between plot iterations.</p></dd>
+
+
 <dt>point.size</dt>
 <dd><p>[<code>numeric(1)</code>]<br>
 Point size for plotted points. Default is 3.</p></dd>
+
+
 <dt>line.size</dt>
 <dd><p>[<code>numeric(1)</code>]<br>
 Line width of the graphs of plotted functions.</p></dd>
+
+
 <dt>trafo</dt>
 <dd><p>[<code>list</code>]<br>
 List of transformation functions of type <code>MBOTrafoFunction</code> for
@@ -198,19 +216,26 @@ For 2D: The list should contain at least one element “y”, “yhat”, “cri
 or “se”.
 This way one can specify different transformations for different plots.
 If a single function is provided, this function is used for all plots.</p></dd>
+
+
 <dt>colors</dt>
 <dd><p>[<code>character(3)</code>]
 Specify colors for point in the plots. Must be a vector of length 3,
 each element a color for the type design, prop and seq respectively.
 Default is red for the initial design, blue for already proposed points
 and green for the actual iteration.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>[any]<br>
 Currently not used.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>[<code>list</code>]. List containing separate ggplot object. The number of plots depends on
+    
+
+<p>[<code>list</code>]. List containing separate ggplot object. The number of plots depends on
   the type of MBO problem. See the description for details.</p>
     </div>
 
@@ -226,7 +251,7 @@ Currently not used.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
       </footer></div>
