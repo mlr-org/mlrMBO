@@ -155,79 +155,79 @@
 </h2>
 <p>First, we load the required packages. Next, we configure <code>mlr</code> to suppress the learner output to improve output readability. Additionally, we define a global variable giving the number of tuning iterations. Note that this number is set (very) low to reduce runtime.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/mlr-org/mlrMBO" class="external-link">mlrMBO</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://mlr.mlr-org.com" class="external-link">mlr</a></span><span class="op">)</span>
-
-<span class="fu"><a href="https://mlr.mlr-org.com/reference/configureMlr.html" class="external-link">configureMlr</a></span><span class="op">(</span>on.learner.warning <span class="op">=</span> <span class="st">"quiet"</span>, show.learner.output <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-
-<span class="va">iters</span> <span class="op">=</span> <span class="fl">5</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/mlr-org/mlrMBO" class="external-link">mlrMBO</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://mlr.mlr-org.com" class="external-link">mlr</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://mlr.mlr-org.com/reference/configureMlr.html" class="external-link">configureMlr</a></span><span class="op">(</span>on.learner.warning <span class="op">=</span> <span class="st">"quiet"</span>, show.learner.output <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">iters</span> <span class="op">=</span> <span class="fl">5</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="custom-objective-function-to-evaluate-performance">1 Custom objective function to evaluate performance<a class="anchor" aria-label="anchor" href="#custom-objective-function-to-evaluate-performance"></a>
 </h2>
 <p>As an example, we tune the <code>cost</code> and the <code>gamma</code> parameter of a rbf-SVM on the <a href="https://en.wikipedia.org/wiki/Iris_flower_data_set" class="external-link">Iris data</a>. First, we define the parameter set. Note that the transformations added in the <code>trafo</code> argument mean, that we tune the parameters on a logarithmic scale.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">par.set</span> <span class="op">=</span> <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/makeParamSet.html" class="external-link">makeParamSet</a></span><span class="op">(</span>
-  <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/Param.html" class="external-link">makeNumericParam</a></span><span class="op">(</span><span class="st">"cost"</span>, <span class="op">-</span><span class="fl">15</span>, <span class="fl">15</span>, trafo <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fl">2</span><span class="op">^</span><span class="va">x</span><span class="op">)</span>,
-  <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/Param.html" class="external-link">makeNumericParam</a></span><span class="op">(</span><span class="st">"gamma"</span>, <span class="op">-</span><span class="fl">15</span>, <span class="fl">15</span>, trafo <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fl">2</span><span class="op">^</span><span class="va">x</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">par.set</span> <span class="op">=</span> <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/makeParamSet.html" class="external-link">makeParamSet</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/Param.html" class="external-link">makeNumericParam</a></span><span class="op">(</span><span class="st">"cost"</span>, <span class="op">-</span><span class="fl">15</span>, <span class="fl">15</span>, trafo <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fl">2</span><span class="op">^</span><span class="va">x</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/Param.html" class="external-link">makeNumericParam</a></span><span class="op">(</span><span class="st">"gamma"</span>, <span class="op">-</span><span class="fl">15</span>, <span class="fl">15</span>, trafo <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fl">2</span><span class="op">^</span><span class="va">x</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>Next, we define the objective function. First, we define a learner and set its hyperparameters by using <code>makeLearner</code>. To evaluate its performance we use the <code>resample</code> function which automatically takes care of fitting the model and evaluating it on a test set. In this example, resampling is done using 3-fold cross-validation, by passing the <code>ResampleDesc</code> object <code>cv3</code>, that comes predefined with <code>mlr</code>, as an argument to <code>resample</code>. The measure to be optimized can be specified (e.g by passing <code>measures = ber</code>, for the <em>balanced error rate</em>), however <code>mlr</code> has a default for each task type. For classification the <code>mmce</code>(Mean misclassification rate) is the default. Like <a href="mixed_space_optimization.html" title="Mixed Space Optimization">in this example</a>, we set <code>minimize = TRUE</code> and <code>has.simple.signature = FALSE</code>. Note that the <code>iris.task</code> is provided automatically when loading <code>mlr</code>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">svm</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/smoof/man/makeSingleObjectiveFunction.html" class="external-link">makeSingleObjectiveFunction</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"svm.tuning"</span>,
-  fn <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span>
-    <span class="va">lrn</span> <span class="op">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/makeLearner.html" class="external-link">makeLearner</a></span><span class="op">(</span><span class="st">"classif.svm"</span>, par.vals <span class="op">=</span> <span class="va">x</span><span class="op">)</span>
-    <span class="fu"><a href="https://mlr.mlr-org.com/reference/resample.html" class="external-link">resample</a></span><span class="op">(</span><span class="va">lrn</span>, <span class="va">iris.task</span>, <span class="va">cv3</span>, show.info <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">$</span><span class="va">aggr</span>
-  <span class="op">}</span>,
-  par.set <span class="op">=</span> <span class="va">par.set</span>,
-  noisy <span class="op">=</span> <span class="cn">TRUE</span>,
-  has.simple.signature <span class="op">=</span> <span class="cn">FALSE</span>,
-  minimize <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">svm</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/smoof/man/makeSingleObjectiveFunction.html" class="external-link">makeSingleObjectiveFunction</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"svm.tuning"</span>,</span>
+<span>  fn <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">lrn</span> <span class="op">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/makeLearner.html" class="external-link">makeLearner</a></span><span class="op">(</span><span class="st">"classif.svm"</span>, par.vals <span class="op">=</span> <span class="va">x</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://mlr.mlr-org.com/reference/resample.html" class="external-link">resample</a></span><span class="op">(</span><span class="va">lrn</span>, <span class="va">iris.task</span>, <span class="va">cv3</span>, show.info <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">$</span><span class="va">aggr</span></span>
+<span>  <span class="op">}</span>,</span>
+<span>  par.set <span class="op">=</span> <span class="va">par.set</span>,</span>
+<span>  noisy <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  has.simple.signature <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  minimize <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>Now we create a default <code>MBOControl</code> object and tune the rbf-SVM.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span><span class="op">(</span><span class="op">)</span>
-<span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span><span class="op">(</span><span class="va">ctrl</span>, iters <span class="op">=</span> <span class="va">iters</span><span class="op">)</span>
-
-<span class="va">res</span> <span class="op">=</span> <span class="fu"><a href="../../reference/mbo.html">mbo</a></span><span class="op">(</span><span class="va">svm</span>, control <span class="op">=</span> <span class="va">ctrl</span>, show.info <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span>
-<span class="co">## Recommended parameters:</span>
-<span class="co">## cost=4.12; gamma=-5.61</span>
-<span class="co">## Objective: y = 0.020</span>
-<span class="co">## </span>
-<span class="co">## Optimization path</span>
-<span class="co">## 8 + 5 entries in total, displaying last 10 (or less):</span>
-<span class="co">##          cost      gamma          y dob eol error.message exec.time          cb</span>
-<span class="co">## 4  -14.644348  -2.100631 0.73333333   0  NA          &lt;NA&gt;     0.159          NA</span>
-<span class="co">## 5    1.439886  -4.670718 0.04666667   0  NA          &lt;NA&gt;     0.154          NA</span>
-<span class="co">## 6   12.278939   6.109579 0.53333333   0  NA          &lt;NA&gt;     0.154          NA</span>
-<span class="co">## 7   10.554900 -12.336816 0.03333333   0  NA          &lt;NA&gt;     0.137          NA</span>
-<span class="co">## 8   -5.818064   7.502343 0.70666667   0  NA          &lt;NA&gt;     0.132          NA</span>
-<span class="co">## 9    5.353410  -8.993446 0.04000000   1  NA          &lt;NA&gt;     0.132 -0.16597731</span>
-<span class="co">## 10   8.932533  -5.928171 0.04000000   2  NA          &lt;NA&gt;     0.136 -0.08953666</span>
-<span class="co">## 11   4.119898  -5.611920 0.02000000   3  NA          &lt;NA&gt;     0.125 -0.03791246</span>
-<span class="co">## 12  14.170226  -9.637068 0.04000000   4  NA          &lt;NA&gt;     0.131 -0.03270538</span>
-<span class="co">## 13  14.998126 -14.998476 0.04666667   5  NA          &lt;NA&gt;     0.128 -0.01578177</span>
-<span class="co">##    error.model train.time  prop.type propose.time         se        mean lambda</span>
-<span class="co">## 4         &lt;NA&gt;         NA initdesign           NA         NA          NA     NA</span>
-<span class="co">## 5         &lt;NA&gt;         NA initdesign           NA         NA          NA     NA</span>
-<span class="co">## 6         &lt;NA&gt;         NA initdesign           NA         NA          NA     NA</span>
-<span class="co">## 7         &lt;NA&gt;         NA initdesign           NA         NA          NA     NA</span>
-<span class="co">## 8         &lt;NA&gt;         NA initdesign           NA         NA          NA     NA</span>
-<span class="co">## 9         &lt;NA&gt;      0.076  infill_cb        0.366 0.13267421 -0.03330310      1</span>
-<span class="co">## 10        &lt;NA&gt;      0.077  infill_cb        0.361 0.13180624  0.04226957      1</span>
-<span class="co">## 11        &lt;NA&gt;      0.089  infill_cb        0.345 0.05445531  0.01654285      1</span>
-<span class="co">## 12        &lt;NA&gt;      0.114  infill_cb        0.378 0.12407738  0.09137200      1</span>
-<span class="co">## 13        &lt;NA&gt;      0.079  infill_cb        0.342 0.10284637  0.08706461      1</span>
-<span class="va">res</span><span class="op">$</span><span class="va">x</span>
-<span class="co">## $cost</span>
-<span class="co">## [1] 4.119898</span>
-<span class="co">## </span>
-<span class="co">## $gamma</span>
-<span class="co">## [1] -5.61192</span>
-<span class="va">res</span><span class="op">$</span><span class="va">y</span>
-<span class="co">## [1] 0.02</span>
-<span class="va">op</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">opt.path</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cumsum.html" class="external-link">cummin</a></span><span class="op">(</span><span class="va">op</span><span class="op">$</span><span class="va">y</span><span class="op">)</span>, type <span class="op">=</span> <span class="st">"l"</span>, ylab <span class="op">=</span> <span class="st">"mmce"</span>, xlab <span class="op">=</span> <span class="st">"iteration"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span><span class="op">(</span><span class="va">ctrl</span>, iters <span class="op">=</span> <span class="va">iters</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">res</span> <span class="op">=</span> <span class="fu"><a href="../../reference/mbo.html">mbo</a></span><span class="op">(</span><span class="va">svm</span>, control <span class="op">=</span> <span class="va">ctrl</span>, show.info <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
+<span><span class="co">## Recommended parameters:</span></span>
+<span><span class="co">## cost=4.12; gamma=-5.61</span></span>
+<span><span class="co">## Objective: y = 0.020</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Optimization path</span></span>
+<span><span class="co">## 8 + 5 entries in total, displaying last 10 (or less):</span></span>
+<span><span class="co">##          cost      gamma          y dob eol error.message exec.time          cb</span></span>
+<span><span class="co">## 4  -14.644348  -2.100631 0.73333333   0  NA          &lt;NA&gt;     0.152          NA</span></span>
+<span><span class="co">## 5    1.439886  -4.670718 0.04666667   0  NA          &lt;NA&gt;     0.160          NA</span></span>
+<span><span class="co">## 6   12.278939   6.109579 0.53333333   0  NA          &lt;NA&gt;     0.158          NA</span></span>
+<span><span class="co">## 7   10.554900 -12.336816 0.03333333   0  NA          &lt;NA&gt;     0.136          NA</span></span>
+<span><span class="co">## 8   -5.818064   7.502343 0.70666667   0  NA          &lt;NA&gt;     0.148          NA</span></span>
+<span><span class="co">## 9    5.353410  -8.993446 0.04000000   1  NA          &lt;NA&gt;     0.149 -0.16597731</span></span>
+<span><span class="co">## 10   8.932533  -5.928171 0.04000000   2  NA          &lt;NA&gt;     0.127 -0.08953666</span></span>
+<span><span class="co">## 11   4.119898  -5.611920 0.02000000   3  NA          &lt;NA&gt;     0.133 -0.03791246</span></span>
+<span><span class="co">## 12  14.170226  -9.637068 0.04000000   4  NA          &lt;NA&gt;     0.126 -0.03270538</span></span>
+<span><span class="co">## 13  14.998126 -14.998476 0.04666667   5  NA          &lt;NA&gt;     0.133 -0.01578177</span></span>
+<span><span class="co">##    error.model train.time  prop.type propose.time         se        mean lambda</span></span>
+<span><span class="co">## 4         &lt;NA&gt;         NA initdesign           NA         NA          NA     NA</span></span>
+<span><span class="co">## 5         &lt;NA&gt;         NA initdesign           NA         NA          NA     NA</span></span>
+<span><span class="co">## 6         &lt;NA&gt;         NA initdesign           NA         NA          NA     NA</span></span>
+<span><span class="co">## 7         &lt;NA&gt;         NA initdesign           NA         NA          NA     NA</span></span>
+<span><span class="co">## 8         &lt;NA&gt;         NA initdesign           NA         NA          NA     NA</span></span>
+<span><span class="co">## 9         &lt;NA&gt;      0.082  infill_cb        0.389 0.13267421 -0.03330310      1</span></span>
+<span><span class="co">## 10        &lt;NA&gt;      0.113  infill_cb        0.359 0.13180624  0.04226957      1</span></span>
+<span><span class="co">## 11        &lt;NA&gt;      0.078  infill_cb        0.330 0.05445531  0.01654285      1</span></span>
+<span><span class="co">## 12        &lt;NA&gt;      0.104  infill_cb        0.333 0.12407738  0.09137200      1</span></span>
+<span><span class="co">## 13        &lt;NA&gt;      0.071  infill_cb        0.329 0.10284637  0.08706461      1</span></span>
+<span><span class="va">res</span><span class="op">$</span><span class="va">x</span></span>
+<span><span class="co">## $cost</span></span>
+<span><span class="co">## [1] 4.119898</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $gamma</span></span>
+<span><span class="co">## [1] -5.61192</span></span>
+<span><span class="va">res</span><span class="op">$</span><span class="va">y</span></span>
+<span><span class="co">## [1] 0.02</span></span>
+<span><span class="va">op</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">opt.path</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cumsum.html" class="external-link">cummin</a></span><span class="op">(</span><span class="va">op</span><span class="op">$</span><span class="va">y</span><span class="op">)</span>, type <span class="op">=</span> <span class="st">"l"</span>, ylab <span class="op">=</span> <span class="st">"mmce"</span>, xlab <span class="op">=</span> <span class="st">"iteration"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="machine_learning_with_mlrmbo_files/figure-html/unnamed-chunk-1-1.png" width="700"></p>
 </div>
 <div class="section level2">
@@ -235,26 +235,26 @@
 </h2>
 <p>Instead of defining an objective function where the learner’s performance is evaluated, we can make use of model-based optimization directly from <code>mlr</code>. We just create a <code>TuneControl</code> object, passing the <code>MBOControl</code> object to it. Then we call <a href="/mlr-tutorial/devel/html/tune/index.html"><code>tuneParams</code></a> to tune the hyperparameters.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span><span class="op">(</span><span class="op">)</span>
-<span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span><span class="op">(</span><span class="va">ctrl</span>, iters <span class="op">=</span> <span class="va">iters</span><span class="op">)</span>
-<span class="va">tune.ctrl</span> <span class="op">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/makeTuneControlMBO.html" class="external-link">makeTuneControlMBO</a></span><span class="op">(</span>mbo.control <span class="op">=</span> <span class="va">ctrl</span><span class="op">)</span>
-<span class="va">res</span> <span class="op">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/tuneParams.html" class="external-link">tuneParams</a></span><span class="op">(</span><span class="fu"><a href="https://mlr.mlr-org.com/reference/makeLearner.html" class="external-link">makeLearner</a></span><span class="op">(</span><span class="st">"classif.svm"</span><span class="op">)</span>, <span class="va">iris.task</span>, <span class="va">cv3</span>, par.set <span class="op">=</span> <span class="va">par.set</span>, control <span class="op">=</span> <span class="va">tune.ctrl</span>,
-  show.info <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span>
-<span class="co">## Tune result:</span>
-<span class="co">## Op. pars: cost=13.4; gamma=0.0829</span>
-<span class="co">## mmce.test.mean=0.0200000</span>
-<span class="va">res</span><span class="op">$</span><span class="va">x</span>
-<span class="co">## $cost</span>
-<span class="co">## [1] 13.40125</span>
-<span class="co">## </span>
-<span class="co">## $gamma</span>
-<span class="co">## [1] 0.08289002</span>
-<span class="va">res</span><span class="op">$</span><span class="va">y</span>
-<span class="co">## mmce.test.mean </span>
-<span class="co">##           0.02</span>
-<span class="va">op.y</span> <span class="op">=</span> <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/getOptPathY.html" class="external-link">getOptPathY</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">opt.path</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cumsum.html" class="external-link">cummin</a></span><span class="op">(</span><span class="va">op.y</span><span class="op">)</span>, type <span class="op">=</span> <span class="st">"l"</span>, ylab <span class="op">=</span> <span class="st">"mmce"</span>, xlab <span class="op">=</span> <span class="st">"iteration"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span><span class="op">(</span><span class="va">ctrl</span>, iters <span class="op">=</span> <span class="va">iters</span><span class="op">)</span></span>
+<span><span class="va">tune.ctrl</span> <span class="op">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/makeTuneControlMBO.html" class="external-link">makeTuneControlMBO</a></span><span class="op">(</span>mbo.control <span class="op">=</span> <span class="va">ctrl</span><span class="op">)</span></span>
+<span><span class="va">res</span> <span class="op">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/tuneParams.html" class="external-link">tuneParams</a></span><span class="op">(</span><span class="fu"><a href="https://mlr.mlr-org.com/reference/makeLearner.html" class="external-link">makeLearner</a></span><span class="op">(</span><span class="st">"classif.svm"</span><span class="op">)</span>, <span class="va">iris.task</span>, <span class="va">cv3</span>, par.set <span class="op">=</span> <span class="va">par.set</span>, control <span class="op">=</span> <span class="va">tune.ctrl</span>,</span>
+<span>  show.info <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
+<span><span class="co">## Tune result:</span></span>
+<span><span class="co">## Op. pars: cost=13.4; gamma=0.0829</span></span>
+<span><span class="co">## mmce.test.mean=0.0200000</span></span>
+<span><span class="va">res</span><span class="op">$</span><span class="va">x</span></span>
+<span><span class="co">## $cost</span></span>
+<span><span class="co">## [1] 13.40125</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $gamma</span></span>
+<span><span class="co">## [1] 0.08289002</span></span>
+<span><span class="va">res</span><span class="op">$</span><span class="va">y</span></span>
+<span><span class="co">## mmce.test.mean </span></span>
+<span><span class="co">##           0.02</span></span>
+<span><span class="va">op.y</span> <span class="op">=</span> <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/getOptPathY.html" class="external-link">getOptPathY</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">opt.path</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cumsum.html" class="external-link">cummin</a></span><span class="op">(</span><span class="va">op.y</span><span class="op">)</span>, type <span class="op">=</span> <span class="st">"l"</span>, ylab <span class="op">=</span> <span class="st">"mmce"</span>, xlab <span class="op">=</span> <span class="st">"iteration"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="machine_learning_with_mlrmbo_files/figure-html/mlr_tuning-1.png" width="700"></p>
 </div>
 <div class="section level2">
@@ -262,44 +262,44 @@
 </h2>
 <p>In many cases, the hyperparameter space is not just numerical but mixed and often even hierarchical. This can easily be done out-of-the-box and needs no adaption to our previous example. (Recall that a suitable surrogate model is chosen automatically, as explained <a href="../mlrMBO.html#surrogate-model">here</a>.) To demonstrate this, we tune the <code>cost</code> and the <code>kernel</code> parameter of a SVM. When <code>kernel</code> takes the <code>radial</code> value, <code>gamma</code> needs to be specified. For a <code>polynomial</code> kernel, the <code>degree</code> needs to be specified.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">par.set</span> <span class="op">=</span> <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/makeParamSet.html" class="external-link">makeParamSet</a></span><span class="op">(</span>
-  <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/Param.html" class="external-link">makeDiscreteParam</a></span><span class="op">(</span><span class="st">"kernel"</span>, values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"radial"</span>, <span class="st">"polynomial"</span>, <span class="st">"linear"</span><span class="op">)</span><span class="op">)</span>,
-  <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/Param.html" class="external-link">makeNumericParam</a></span><span class="op">(</span><span class="st">"cost"</span>, <span class="op">-</span><span class="fl">15</span>, <span class="fl">15</span>, trafo <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fl">2</span><span class="op">^</span><span class="va">x</span><span class="op">)</span>,
-  <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/Param.html" class="external-link">makeNumericParam</a></span><span class="op">(</span><span class="st">"gamma"</span>, <span class="op">-</span><span class="fl">15</span>, <span class="fl">15</span>, trafo <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fl">2</span><span class="op">^</span><span class="va">x</span>, requires <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">quote</a></span><span class="op">(</span><span class="va">kernel</span> <span class="op">==</span> <span class="st">"radial"</span><span class="op">)</span><span class="op">)</span>,
-  <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/Param.html" class="external-link">makeIntegerParam</a></span><span class="op">(</span><span class="st">"degree"</span>, lower <span class="op">=</span> <span class="fl">1</span>, upper <span class="op">=</span> <span class="fl">4</span>, requires <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">quote</a></span><span class="op">(</span><span class="va">kernel</span> <span class="op">==</span> <span class="st">"polynomial"</span><span class="op">)</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">par.set</span> <span class="op">=</span> <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/makeParamSet.html" class="external-link">makeParamSet</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/Param.html" class="external-link">makeDiscreteParam</a></span><span class="op">(</span><span class="st">"kernel"</span>, values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"radial"</span>, <span class="st">"polynomial"</span>, <span class="st">"linear"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/Param.html" class="external-link">makeNumericParam</a></span><span class="op">(</span><span class="st">"cost"</span>, <span class="op">-</span><span class="fl">15</span>, <span class="fl">15</span>, trafo <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fl">2</span><span class="op">^</span><span class="va">x</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/Param.html" class="external-link">makeNumericParam</a></span><span class="op">(</span><span class="st">"gamma"</span>, <span class="op">-</span><span class="fl">15</span>, <span class="fl">15</span>, trafo <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fl">2</span><span class="op">^</span><span class="va">x</span>, requires <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">quote</a></span><span class="op">(</span><span class="va">kernel</span> <span class="op">==</span> <span class="st">"radial"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/Param.html" class="external-link">makeIntegerParam</a></span><span class="op">(</span><span class="st">"degree"</span>, lower <span class="op">=</span> <span class="fl">1</span>, upper <span class="op">=</span> <span class="fl">4</span>, requires <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">quote</a></span><span class="op">(</span><span class="va">kernel</span> <span class="op">==</span> <span class="st">"polynomial"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>Now we can just repeat the setup from the previous example and tune the hyperparameters.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span><span class="op">(</span><span class="op">)</span>
-<span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span><span class="op">(</span><span class="va">ctrl</span>, iters <span class="op">=</span> <span class="va">iters</span><span class="op">)</span>
-<span class="va">tune.ctrl</span> <span class="op">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/makeTuneControlMBO.html" class="external-link">makeTuneControlMBO</a></span><span class="op">(</span>mbo.control <span class="op">=</span> <span class="va">ctrl</span><span class="op">)</span>
-<span class="va">res</span> <span class="op">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/tuneParams.html" class="external-link">tuneParams</a></span><span class="op">(</span><span class="fu"><a href="https://mlr.mlr-org.com/reference/makeLearner.html" class="external-link">makeLearner</a></span><span class="op">(</span><span class="st">"classif.svm"</span><span class="op">)</span>, <span class="va">iris.task</span>, <span class="va">cv3</span>, par.set <span class="op">=</span> <span class="va">par.set</span>, control <span class="op">=</span> <span class="va">tune.ctrl</span>,
-  show.info <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span><span class="op">(</span><span class="va">ctrl</span>, iters <span class="op">=</span> <span class="va">iters</span><span class="op">)</span></span>
+<span><span class="va">tune.ctrl</span> <span class="op">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/makeTuneControlMBO.html" class="external-link">makeTuneControlMBO</a></span><span class="op">(</span>mbo.control <span class="op">=</span> <span class="va">ctrl</span><span class="op">)</span></span>
+<span><span class="va">res</span> <span class="op">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/tuneParams.html" class="external-link">tuneParams</a></span><span class="op">(</span><span class="fu"><a href="https://mlr.mlr-org.com/reference/makeLearner.html" class="external-link">makeLearner</a></span><span class="op">(</span><span class="st">"classif.svm"</span><span class="op">)</span>, <span class="va">iris.task</span>, <span class="va">cv3</span>, par.set <span class="op">=</span> <span class="va">par.set</span>, control <span class="op">=</span> <span class="va">tune.ctrl</span>,</span>
+<span>  show.info <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="parallelization-and-multi-point-proposals">Parallelization and multi-point proposals<a class="anchor" aria-label="anchor" href="#parallelization-and-multi-point-proposals"></a>
 </h2>
 <p>We can easily add multi-point proposals and parallelize it using the <code>parallelMap</code> package. (Note that the chosen <em>multicore</em> back-end for parallelization does not work on windows machines. Please refer to the <a href="parallelization.html">parallelization section</a> for details on parallelization and multi point proposals.) In each iteration, we propose as many points as CPUs used for parallelization. As infill criterion we use Expected Improvement.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://parallelmap.mlr-org.com" class="external-link">parallelMap</a></span><span class="op">)</span>
-<span class="va">ncpus</span> <span class="op">=</span> <span class="fl">2L</span>
-
-<span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span><span class="op">(</span>propose.points <span class="op">=</span> <span class="va">ncpus</span><span class="op">)</span>
-<span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span><span class="op">(</span><span class="va">ctrl</span>, iters <span class="op">=</span> <span class="va">iters</span><span class="op">)</span>
-<span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlInfill.html">setMBOControlInfill</a></span><span class="op">(</span><span class="va">ctrl</span>, crit <span class="op">=</span> <span class="va">crit.ei</span><span class="op">)</span>
-<span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlMultiPoint.html">setMBOControlMultiPoint</a></span><span class="op">(</span><span class="va">ctrl</span>, method <span class="op">=</span> <span class="st">"cl"</span>, cl.lie <span class="op">=</span> <span class="va">min</span><span class="op">)</span>
-<span class="va">tune.ctrl</span> <span class="op">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/makeTuneControlMBO.html" class="external-link">makeTuneControlMBO</a></span><span class="op">(</span>mbo.control <span class="op">=</span> <span class="va">ctrl</span><span class="op">)</span>
-<span class="fu"><a href="https://parallelmap.mlr-org.com/reference/parallelStart.html" class="external-link">parallelStartMulticore</a></span><span class="op">(</span>cpus <span class="op">=</span> <span class="va">ncpus</span><span class="op">)</span>
-<span class="co">## Starting parallelization in mode=multicore with cpus=2.</span>
-<span class="va">res</span> <span class="op">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/tuneParams.html" class="external-link">tuneParams</a></span><span class="op">(</span><span class="fu"><a href="https://mlr.mlr-org.com/reference/makeLearner.html" class="external-link">makeLearner</a></span><span class="op">(</span><span class="st">"classif.svm"</span><span class="op">)</span>, <span class="va">iris.task</span>, <span class="va">cv3</span>, par.set <span class="op">=</span> <span class="va">par.set</span>, control <span class="op">=</span> <span class="va">tune.ctrl</span>, show.info <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="co">## Mapping in parallel: mode = multicore; level = mlrMBO.feval; cpus = 2; elements = 16.</span>
-<span class="co">## Mapping in parallel: mode = multicore; level = mlrMBO.feval; cpus = 2; elements = 2.</span>
-<span class="co">## Mapping in parallel: mode = multicore; level = mlrMBO.feval; cpus = 2; elements = 2.</span>
-<span class="co">## Mapping in parallel: mode = multicore; level = mlrMBO.feval; cpus = 2; elements = 2.</span>
-<span class="co">## Mapping in parallel: mode = multicore; level = mlrMBO.feval; cpus = 2; elements = 2.</span>
-<span class="co">## Mapping in parallel: mode = multicore; level = mlrMBO.feval; cpus = 2; elements = 2.</span>
-<span class="fu"><a href="https://parallelmap.mlr-org.com/reference/parallelStop.html" class="external-link">parallelStop</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">## Stopped parallelization. All cleaned up.</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://parallelmap.mlr-org.com" class="external-link">parallelMap</a></span><span class="op">)</span></span>
+<span><span class="va">ncpus</span> <span class="op">=</span> <span class="fl">2L</span></span>
+<span></span>
+<span><span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span><span class="op">(</span>propose.points <span class="op">=</span> <span class="va">ncpus</span><span class="op">)</span></span>
+<span><span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span><span class="op">(</span><span class="va">ctrl</span>, iters <span class="op">=</span> <span class="va">iters</span><span class="op">)</span></span>
+<span><span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlInfill.html">setMBOControlInfill</a></span><span class="op">(</span><span class="va">ctrl</span>, crit <span class="op">=</span> <span class="va">crit.ei</span><span class="op">)</span></span>
+<span><span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlMultiPoint.html">setMBOControlMultiPoint</a></span><span class="op">(</span><span class="va">ctrl</span>, method <span class="op">=</span> <span class="st">"cl"</span>, cl.lie <span class="op">=</span> <span class="va">min</span><span class="op">)</span></span>
+<span><span class="va">tune.ctrl</span> <span class="op">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/makeTuneControlMBO.html" class="external-link">makeTuneControlMBO</a></span><span class="op">(</span>mbo.control <span class="op">=</span> <span class="va">ctrl</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://parallelmap.mlr-org.com/reference/parallelStart.html" class="external-link">parallelStartMulticore</a></span><span class="op">(</span>cpus <span class="op">=</span> <span class="va">ncpus</span><span class="op">)</span></span>
+<span><span class="co">## Starting parallelization in mode=multicore with cpus=2.</span></span>
+<span><span class="va">res</span> <span class="op">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/tuneParams.html" class="external-link">tuneParams</a></span><span class="op">(</span><span class="fu"><a href="https://mlr.mlr-org.com/reference/makeLearner.html" class="external-link">makeLearner</a></span><span class="op">(</span><span class="st">"classif.svm"</span><span class="op">)</span>, <span class="va">iris.task</span>, <span class="va">cv3</span>, par.set <span class="op">=</span> <span class="va">par.set</span>, control <span class="op">=</span> <span class="va">tune.ctrl</span>, show.info <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="co">## Mapping in parallel: mode = multicore; level = mlrMBO.feval; cpus = 2; elements = 16.</span></span>
+<span><span class="co">## Mapping in parallel: mode = multicore; level = mlrMBO.feval; cpus = 2; elements = 2.</span></span>
+<span><span class="co">## Mapping in parallel: mode = multicore; level = mlrMBO.feval; cpus = 2; elements = 2.</span></span>
+<span><span class="co">## Mapping in parallel: mode = multicore; level = mlrMBO.feval; cpus = 2; elements = 2.</span></span>
+<span><span class="co">## Mapping in parallel: mode = multicore; level = mlrMBO.feval; cpus = 2; elements = 2.</span></span>
+<span><span class="co">## Mapping in parallel: mode = multicore; level = mlrMBO.feval; cpus = 2; elements = 2.</span></span>
+<span><span class="fu"><a href="https://parallelmap.mlr-org.com/reference/parallelStop.html" class="external-link">parallelStop</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">## Stopped parallelization. All cleaned up.</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="usecase-pipeline-configuration">Usecase: Pipeline configuration<a class="anchor" aria-label="anchor" href="#usecase-pipeline-configuration"></a>
@@ -307,51 +307,51 @@
 <p>It is also possible to tune a whole machine learning pipeline, i.e. preprocessing and model configuration. The example pipeline is: * Feature filtering based on an ANOVA test or covariance, such that between 50% and 100% of the features remain. * Select either a SVM or a naive Bayes classifier. * Tune parameters of the selected classifier.</p>
 <p>First, we define the parameter space:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">par.set</span> <span class="op">=</span> <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/makeParamSet.html" class="external-link">makeParamSet</a></span><span class="op">(</span>
-  <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/Param.html" class="external-link">makeDiscreteParam</a></span><span class="op">(</span><span class="st">"fw.method"</span>, values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"anova.test"</span>, <span class="st">"variance"</span><span class="op">)</span><span class="op">)</span>,
-  <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/Param.html" class="external-link">makeNumericParam</a></span><span class="op">(</span><span class="st">"fw.perc"</span>, lower <span class="op">=</span> <span class="fl">0.1</span>, upper <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,
-  <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/Param.html" class="external-link">makeDiscreteParam</a></span><span class="op">(</span><span class="st">"selected.learner"</span>, values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"classif.svm"</span>, <span class="st">"classif.naiveBayes"</span><span class="op">)</span><span class="op">)</span>,
-  <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/Param.html" class="external-link">makeNumericParam</a></span><span class="op">(</span><span class="st">"classif.svm.cost"</span>, <span class="op">-</span><span class="fl">15</span>, <span class="fl">15</span>, trafo <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fl">2</span><span class="op">^</span><span class="va">x</span>,
-    require <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">quote</a></span><span class="op">(</span><span class="va">selected.learner</span> <span class="op">==</span> <span class="st">"classif.svm"</span><span class="op">)</span><span class="op">)</span>,
-  <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/Param.html" class="external-link">makeNumericParam</a></span><span class="op">(</span><span class="st">"classif.svm.gamma"</span>, <span class="op">-</span><span class="fl">15</span>, <span class="fl">15</span>, trafo <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fl">2</span><span class="op">^</span><span class="va">x</span>,
-    requires <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">quote</a></span><span class="op">(</span><span class="va">classif.svm.kernel</span> <span class="op">==</span> <span class="st">"radial"</span> <span class="op">&amp;</span> <span class="va">selected.learner</span> <span class="op">==</span> <span class="st">"classif.svm"</span><span class="op">)</span><span class="op">)</span>,
-  <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/Param.html" class="external-link">makeIntegerParam</a></span><span class="op">(</span><span class="st">"classif.svm.degree"</span>, lower <span class="op">=</span> <span class="fl">1</span>, upper <span class="op">=</span> <span class="fl">4</span>,
-    requires <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">quote</a></span><span class="op">(</span><span class="va">classif.svm.kernel</span> <span class="op">==</span> <span class="st">"polynomial"</span> <span class="op">&amp;</span> <span class="va">selected.learner</span> <span class="op">==</span> <span class="st">"classif.svm"</span><span class="op">)</span><span class="op">)</span>,
-  <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/Param.html" class="external-link">makeDiscreteParam</a></span><span class="op">(</span><span class="st">"classif.svm.kernel"</span>, values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"radial"</span>, <span class="st">"polynomial"</span>, <span class="st">"linear"</span><span class="op">)</span>,
-    require <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">quote</a></span><span class="op">(</span><span class="va">selected.learner</span> <span class="op">==</span> <span class="st">"classif.svm"</span><span class="op">)</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">par.set</span> <span class="op">=</span> <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/makeParamSet.html" class="external-link">makeParamSet</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/Param.html" class="external-link">makeDiscreteParam</a></span><span class="op">(</span><span class="st">"fw.method"</span>, values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"anova.test"</span>, <span class="st">"variance"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/Param.html" class="external-link">makeNumericParam</a></span><span class="op">(</span><span class="st">"fw.perc"</span>, lower <span class="op">=</span> <span class="fl">0.1</span>, upper <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/Param.html" class="external-link">makeDiscreteParam</a></span><span class="op">(</span><span class="st">"selected.learner"</span>, values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"classif.svm"</span>, <span class="st">"classif.naiveBayes"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/Param.html" class="external-link">makeNumericParam</a></span><span class="op">(</span><span class="st">"classif.svm.cost"</span>, <span class="op">-</span><span class="fl">15</span>, <span class="fl">15</span>, trafo <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fl">2</span><span class="op">^</span><span class="va">x</span>,</span>
+<span>    require <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">quote</a></span><span class="op">(</span><span class="va">selected.learner</span> <span class="op">==</span> <span class="st">"classif.svm"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/Param.html" class="external-link">makeNumericParam</a></span><span class="op">(</span><span class="st">"classif.svm.gamma"</span>, <span class="op">-</span><span class="fl">15</span>, <span class="fl">15</span>, trafo <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fl">2</span><span class="op">^</span><span class="va">x</span>,</span>
+<span>    requires <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">quote</a></span><span class="op">(</span><span class="va">classif.svm.kernel</span> <span class="op">==</span> <span class="st">"radial"</span> <span class="op">&amp;</span> <span class="va">selected.learner</span> <span class="op">==</span> <span class="st">"classif.svm"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/Param.html" class="external-link">makeIntegerParam</a></span><span class="op">(</span><span class="st">"classif.svm.degree"</span>, lower <span class="op">=</span> <span class="fl">1</span>, upper <span class="op">=</span> <span class="fl">4</span>,</span>
+<span>    requires <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">quote</a></span><span class="op">(</span><span class="va">classif.svm.kernel</span> <span class="op">==</span> <span class="st">"polynomial"</span> <span class="op">&amp;</span> <span class="va">selected.learner</span> <span class="op">==</span> <span class="st">"classif.svm"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/Param.html" class="external-link">makeDiscreteParam</a></span><span class="op">(</span><span class="st">"classif.svm.kernel"</span>, values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"radial"</span>, <span class="st">"polynomial"</span>, <span class="st">"linear"</span><span class="op">)</span>,</span>
+<span>    require <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">quote</a></span><span class="op">(</span><span class="va">selected.learner</span> <span class="op">==</span> <span class="st">"classif.svm"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>Next, we create the control objects and a suitable learner, combining <code><a href="https://mlr.mlr-org.com/reference/makeFilterWrapper.html" class="external-link">makeFilterWrapper()</a></code> with <code><a href="https://mlr.mlr-org.com/reference/makeModelMultiplexer.html" class="external-link">makeModelMultiplexer()</a></code>. (Please refer to the <a href="/mlr-tutorial/devel/html/advanced_tune/index.html#tuning-across-whole-model-spaces-with-modelmultiplexer">advanced tuning chapter of the mlr tutorial</a> for details.) Afterwards, we can run <code><a href="https://mlr.mlr-org.com/reference/tuneParams.html" class="external-link">tuneParams()</a></code> and check the results.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span><span class="op">(</span><span class="op">)</span>
-<span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span><span class="op">(</span><span class="va">ctrl</span>, iters <span class="op">=</span> <span class="va">iters</span><span class="op">)</span>
-<span class="va">lrn</span> <span class="op">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/makeFilterWrapper.html" class="external-link">makeFilterWrapper</a></span><span class="op">(</span><span class="fu"><a href="https://mlr.mlr-org.com/reference/makeModelMultiplexer.html" class="external-link">makeModelMultiplexer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"classif.svm"</span>, <span class="st">"classif.naiveBayes"</span><span class="op">)</span><span class="op">)</span>, fw.method <span class="op">=</span> <span class="st">"variance"</span><span class="op">)</span>
-<span class="va">tune.ctrl</span> <span class="op">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/makeTuneControlMBO.html" class="external-link">makeTuneControlMBO</a></span><span class="op">(</span>mbo.control <span class="op">=</span> <span class="va">ctrl</span><span class="op">)</span>
-
-<span class="va">res</span> <span class="op">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/tuneParams.html" class="external-link">tuneParams</a></span><span class="op">(</span><span class="va">lrn</span>, <span class="va">iris.task</span>, <span class="va">cv3</span>, par.set <span class="op">=</span> <span class="va">par.set</span>, control <span class="op">=</span> <span class="va">tune.ctrl</span>, show.info <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span>
-<span class="co">## Tune result:</span>
-<span class="co">## Op. pars: fw.method=anova.test; fw.perc=0.905; selected.learner=classif.svm; classif.svm.cost=0.501; classif.svm.kernel=linear</span>
-<span class="co">## mmce.test.mean=0.0266667</span>
-<span class="va">res</span><span class="op">$</span><span class="va">x</span>
-<span class="co">## $fw.method</span>
-<span class="co">## [1] "anova.test"</span>
-<span class="co">## </span>
-<span class="co">## $fw.perc</span>
-<span class="co">## [1] 0.9050354</span>
-<span class="co">## </span>
-<span class="co">## $selected.learner</span>
-<span class="co">## [1] "classif.svm"</span>
-<span class="co">## </span>
-<span class="co">## $classif.svm.cost</span>
-<span class="co">## [1] 0.5007066</span>
-<span class="co">## </span>
-<span class="co">## $classif.svm.kernel</span>
-<span class="co">## [1] "linear"</span>
-<span class="va">res</span><span class="op">$</span><span class="va">y</span>
-<span class="co">## mmce.test.mean </span>
-<span class="co">##     0.02666667</span>
-<span class="va">op</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">opt.path</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cumsum.html" class="external-link">cummin</a></span><span class="op">(</span><span class="va">op</span><span class="op">$</span><span class="va">mmce.test.mean</span><span class="op">)</span>, type <span class="op">=</span> <span class="st">"l"</span>, ylab <span class="op">=</span> <span class="st">"mmce"</span>, xlab <span class="op">=</span> <span class="st">"iteration"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span><span class="op">(</span><span class="va">ctrl</span>, iters <span class="op">=</span> <span class="va">iters</span><span class="op">)</span></span>
+<span><span class="va">lrn</span> <span class="op">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/makeFilterWrapper.html" class="external-link">makeFilterWrapper</a></span><span class="op">(</span><span class="fu"><a href="https://mlr.mlr-org.com/reference/makeModelMultiplexer.html" class="external-link">makeModelMultiplexer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"classif.svm"</span>, <span class="st">"classif.naiveBayes"</span><span class="op">)</span><span class="op">)</span>, fw.method <span class="op">=</span> <span class="st">"variance"</span><span class="op">)</span></span>
+<span><span class="va">tune.ctrl</span> <span class="op">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/makeTuneControlMBO.html" class="external-link">makeTuneControlMBO</a></span><span class="op">(</span>mbo.control <span class="op">=</span> <span class="va">ctrl</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">res</span> <span class="op">=</span> <span class="fu"><a href="https://mlr.mlr-org.com/reference/tuneParams.html" class="external-link">tuneParams</a></span><span class="op">(</span><span class="va">lrn</span>, <span class="va">iris.task</span>, <span class="va">cv3</span>, par.set <span class="op">=</span> <span class="va">par.set</span>, control <span class="op">=</span> <span class="va">tune.ctrl</span>, show.info <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
+<span><span class="co">## Tune result:</span></span>
+<span><span class="co">## Op. pars: fw.method=anova.test; fw.perc=0.905; selected.learner=classif.svm; classif.svm.cost=0.501; classif.svm.kernel=linear</span></span>
+<span><span class="co">## mmce.test.mean=0.0266667</span></span>
+<span><span class="va">res</span><span class="op">$</span><span class="va">x</span></span>
+<span><span class="co">## $fw.method</span></span>
+<span><span class="co">## [1] "anova.test"</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $fw.perc</span></span>
+<span><span class="co">## [1] 0.9050354</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $selected.learner</span></span>
+<span><span class="co">## [1] "classif.svm"</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $classif.svm.cost</span></span>
+<span><span class="co">## [1] 0.5007066</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $classif.svm.kernel</span></span>
+<span><span class="co">## [1] "linear"</span></span>
+<span><span class="va">res</span><span class="op">$</span><span class="va">y</span></span>
+<span><span class="co">## mmce.test.mean </span></span>
+<span><span class="co">##     0.02666667</span></span>
+<span><span class="va">op</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">opt.path</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cumsum.html" class="external-link">cummin</a></span><span class="op">(</span><span class="va">op</span><span class="op">$</span><span class="va">mmce.test.mean</span><span class="op">)</span>, type <span class="op">=</span> <span class="st">"l"</span>, ylab <span class="op">=</span> <span class="st">"mmce"</span>, xlab <span class="op">=</span> <span class="st">"iteration"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="machine_learning_with_mlrmbo_files/figure-html/pipeline_tuning-1.png" width="700"></p>
 </div>
   </div>

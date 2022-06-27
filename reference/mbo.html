@@ -108,14 +108,14 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">mbo</span><span class="op">(</span>
-  <span class="va">fun</span>,
-  design <span class="op">=</span> <span class="cn">NULL</span>,
-  learner <span class="op">=</span> <span class="cn">NULL</span>,
-  control <span class="op">=</span> <span class="cn">NULL</span>,
-  show.info <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"mlrMBO.show.info"</span>, <span class="cn">TRUE</span><span class="op">)</span>,
-  more.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mbo</span><span class="op">(</span></span>
+<span>  <span class="va">fun</span>,</span>
+<span>  design <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  learner <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  control <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  show.info <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"mlrMBO.show.info"</span>, <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>  more.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -172,72 +172,72 @@ Further arguments passed to fitness function.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># simple 2d objective function</span></span>
-<span class="r-in"><span class="va">obj.fun</span> <span class="op">=</span> <span class="fu">makeSingleObjectiveFunction</span><span class="op">(</span></span>
-<span class="r-in"> fn <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">^</span><span class="fl">2</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html" class="external-link">sin</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span>,</span>
-<span class="r-in"> par.set <span class="op">=</span> <span class="fu">makeNumericParamSet</span><span class="op">(</span>id <span class="op">=</span> <span class="st">"x"</span>, lower <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>, upper <span class="op">=</span> <span class="fl">1</span>, len <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># create base control object</span></span>
-<span class="r-in"><span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="makeMBOControl.html">makeMBOControl</a></span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># do three MBO iterations</span></span>
-<span class="r-in"><span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="setMBOControlTermination.html">setMBOControlTermination</a></span><span class="op">(</span><span class="va">ctrl</span>, iters <span class="op">=</span> <span class="fl">3L</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># use 500 points in the focussearch (should be sufficient for 2d)</span></span>
-<span class="r-in"><span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="setMBOControlInfill.html">setMBOControlInfill</a></span><span class="op">(</span><span class="va">ctrl</span>, opt.focussearch.points <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># create initial design</span></span>
-<span class="r-in"><span class="va">des</span> <span class="op">=</span> <span class="fu">generateDesign</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">5L</span>, <span class="fu">getParamSet</span><span class="op">(</span><span class="va">obj.fun</span><span class="op">)</span>, fun <span class="op">=</span> <span class="fu">lhs</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/lhs/man/maximinLHS.html" class="external-link">maximinLHS</a></span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># start mbo</span></span>
-<span class="r-in"><span class="va">res</span> <span class="op">=</span> <span class="fu">mbo</span><span class="op">(</span><span class="va">obj.fun</span>, design <span class="op">=</span> <span class="va">des</span>, control <span class="op">=</span> <span class="va">ctrl</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># simple 2d objective function</span></span></span>
+<span class="r-in"><span><span class="va">obj.fun</span> <span class="op">=</span> <span class="fu">makeSingleObjectiveFunction</span><span class="op">(</span></span></span>
+<span class="r-in"><span> fn <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">^</span><span class="fl">2</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html" class="external-link">sin</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span> par.set <span class="op">=</span> <span class="fu">makeNumericParamSet</span><span class="op">(</span>id <span class="op">=</span> <span class="st">"x"</span>, lower <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>, upper <span class="op">=</span> <span class="fl">1</span>, len <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># create base control object</span></span></span>
+<span class="r-in"><span><span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="makeMBOControl.html">makeMBOControl</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># do three MBO iterations</span></span></span>
+<span class="r-in"><span><span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="setMBOControlTermination.html">setMBOControlTermination</a></span><span class="op">(</span><span class="va">ctrl</span>, iters <span class="op">=</span> <span class="fl">3L</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># use 500 points in the focussearch (should be sufficient for 2d)</span></span></span>
+<span class="r-in"><span><span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="setMBOControlInfill.html">setMBOControlInfill</a></span><span class="op">(</span><span class="va">ctrl</span>, opt.focussearch.points <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># create initial design</span></span></span>
+<span class="r-in"><span><span class="va">des</span> <span class="op">=</span> <span class="fu">generateDesign</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">5L</span>, <span class="fu">getParamSet</span><span class="op">(</span><span class="va">obj.fun</span><span class="op">)</span>, fun <span class="op">=</span> <span class="fu">lhs</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/lhs/man/maximinLHS.html" class="external-link">maximinLHS</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># start mbo</span></span></span>
+<span class="r-in"><span><span class="va">res</span> <span class="op">=</span> <span class="fu">mbo</span><span class="op">(</span><span class="va">obj.fun</span>, design <span class="op">=</span> <span class="va">des</span>, control <span class="op">=</span> <span class="va">ctrl</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Computing y column(s) for design. Not provided.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [mbo] 0: x=-0.378,-0.801 : y = -0.576 : 0.0 secs : initdesign</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [mbo] 0: x=0.397,0.0957 : y = 0.253 : 0.0 secs : initdesign</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [mbo] 0: x=0.113,0.374 : y = 0.378 : 0.0 secs : initdesign</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [mbo] 0: x=0.804,0.836 : y = 1.39 : 0.0 secs : initdesign</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [mbo] 0: x=-0.627,-0.417 : y = -0.0121 : 0.0 secs : initdesign</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [mbo] 1: x=0.129,-1 : y = -0.825 : 0.0 secs : infill_cb</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [mbo] 2: x=-0.072,-1 : y = -0.836 : 0.0 secs : infill_cb</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [mbo] 3: x=0.016,-1 : y = -0.841 : 0.0 secs : infill_cb</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [mbo] 0: x=0.242,-0.093 : y = -0.0344 : 0.0 secs : initdesign</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [mbo] 0: x=-0.923,-0.848 : y = 0.103 : 0.0 secs : initdesign</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [mbo] 0: x=0.929,0.301 : y = 1.16 : 0.0 secs : initdesign</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [mbo] 0: x=-0.379,0.819 : y = 0.874 : 0.0 secs : initdesign</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [mbo] 0: x=-0.0139,-0.395 : y = -0.385 : 0.0 secs : initdesign</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [mbo] 1: x=-0.809,-0.311 : y = 0.348 : 0.0 secs : infill_cb</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [mbo] 2: x=0.0591,-0.773 : y = -0.694 : 0.0 secs : infill_cb</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [mbo] 3: x=0.0178,-1 : y = -0.841 : 0.0 secs : infill_cb</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Recommended parameters:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> x=0.016,-1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> x=0.0178,-1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Objective: y = -0.841</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Optimization path</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 5 + 3 entries in total, displaying last 10 (or less):</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            x1          x2           y dob eol error.message exec.time</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 -0.37776302 -0.80134851 -0.57559006   0  NA          &lt;NA&gt;     0.001</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  0.39727710  0.09570265  0.25338572   0  NA          &lt;NA&gt;     0.000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  0.11317563  0.37414980  0.37829000   0  NA          &lt;NA&gt;     0.000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  0.80390335  0.83578152  1.38808142   0  NA          &lt;NA&gt;     0.000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5 -0.62660778 -0.41673406 -0.01213887   0  NA          &lt;NA&gt;     0.000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  0.12947576 -0.99997662 -0.82469438   1  NA          &lt;NA&gt;     0.000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7 -0.07195953 -0.99995480 -0.83626839   2  NA          &lt;NA&gt;     0.000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8  0.01602017 -0.99992307 -0.84117277   3  NA          &lt;NA&gt;     0.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  0.24181844 -0.09302142 -0.03441117   0  NA          &lt;NA&gt;         0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 -0.92325295 -0.84759641  0.10270410   0  NA          &lt;NA&gt;         0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  0.92905296  0.30073932  1.15936583   0  NA          &lt;NA&gt;         0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 -0.37893119  0.81878784  0.87390718   0  NA          &lt;NA&gt;         0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5 -0.01389531 -0.39530122 -0.38489311   0  NA          &lt;NA&gt;         0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6 -0.80862237 -0.31085688  0.34799558   1  NA          &lt;NA&gt;         0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  0.05914843 -0.77259131 -0.69449469   2  NA          &lt;NA&gt;         0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  0.01780958 -0.99995058 -0.84112710   3  NA          &lt;NA&gt;         0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           cb error.model train.time  prop.type propose.time         se</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1         NA        &lt;NA&gt;         NA initdesign           NA         NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2         NA        &lt;NA&gt;         NA initdesign           NA         NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3         NA        &lt;NA&gt;         NA initdesign           NA         NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4         NA        &lt;NA&gt;         NA initdesign           NA         NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 5         NA        &lt;NA&gt;         NA initdesign           NA         NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6 -0.9657803        &lt;NA&gt;      0.109  infill_cb        0.448 0.39082783</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7 -0.9016240        &lt;NA&gt;      0.124  infill_cb        0.318 0.06672616</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8 -0.8553810        &lt;NA&gt;      0.110  infill_cb        0.255 0.01445440</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6 -0.5860045        &lt;NA&gt;      0.102  infill_cb        0.415 0.33068556</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7 -0.6172724        &lt;NA&gt;      0.076  infill_cb        0.272 0.31862694</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8 -0.8915557        &lt;NA&gt;      0.104  infill_cb        0.227 0.08485029</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         mean lambda</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1         NA     NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2         NA     NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3         NA     NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4         NA     NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 5         NA     NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6 -0.5749525      1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7 -0.8348978      1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8 -0.8409266      1</span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6 -0.2553189      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7 -0.2986455      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8 -0.8067054      1</span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>

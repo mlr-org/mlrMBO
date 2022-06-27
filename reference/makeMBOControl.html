@@ -108,25 +108,25 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">makeMBOControl</span><span class="op">(</span>
-  n.objectives <span class="op">=</span> <span class="fl">1L</span>,
-  propose.points <span class="op">=</span> <span class="fl">1L</span>,
-  final.method <span class="op">=</span> <span class="st">"best.true.y"</span>,
-  final.evals <span class="op">=</span> <span class="fl">0L</span>,
-  y.name <span class="op">=</span> <span class="st">"y"</span>,
-  impute.y.fun <span class="op">=</span> <span class="cn">NULL</span>,
-  trafo.y.fun <span class="op">=</span> <span class="cn">NULL</span>,
-  suppress.eval.errors <span class="op">=</span> <span class="cn">TRUE</span>,
-  save.on.disk.at <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a></span><span class="op">(</span><span class="fl">0L</span><span class="op">)</span>,
-  save.on.disk.at.time <span class="op">=</span> <span class="cn">Inf</span>,
-  save.file.path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"mlrMBO_run.RData"</span><span class="op">)</span>,
-  store.model.at <span class="op">=</span> <span class="cn">NULL</span>,
-  resample.at <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>,
-  resample.desc <span class="op">=</span> <span class="fu">makeResampleDesc</span><span class="op">(</span><span class="st">"CV"</span>, iter <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>,
-  resample.measures <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">mse</span><span class="op">)</span>,
-  output.num.format <span class="op">=</span> <span class="st">"%.3g"</span>,
-  on.surrogate.error <span class="op">=</span> <span class="st">"stop"</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">makeMBOControl</span><span class="op">(</span></span>
+<span>  n.objectives <span class="op">=</span> <span class="fl">1L</span>,</span>
+<span>  propose.points <span class="op">=</span> <span class="fl">1L</span>,</span>
+<span>  final.method <span class="op">=</span> <span class="st">"best.true.y"</span>,</span>
+<span>  final.evals <span class="op">=</span> <span class="fl">0L</span>,</span>
+<span>  y.name <span class="op">=</span> <span class="st">"y"</span>,</span>
+<span>  impute.y.fun <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  trafo.y.fun <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  suppress.eval.errors <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  save.on.disk.at <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a></span><span class="op">(</span><span class="fl">0L</span><span class="op">)</span>,</span>
+<span>  save.on.disk.at.time <span class="op">=</span> <span class="cn">Inf</span>,</span>
+<span>  save.file.path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"mlrMBO_run.RData"</span><span class="op">)</span>,</span>
+<span>  store.model.at <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  resample.at <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>,</span>
+<span>  resample.desc <span class="op">=</span> <span class="fu">makeResampleDesc</span><span class="op">(</span><span class="st">"CV"</span>, iter <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>,</span>
+<span>  resample.measures <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">mse</span><span class="op">)</span>,</span>
+<span>  output.num.format <span class="op">=</span> <span class="st">"%.3g"</span>,</span>
+<span>  on.surrogate.error <span class="op">=</span> <span class="st">"stop"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">

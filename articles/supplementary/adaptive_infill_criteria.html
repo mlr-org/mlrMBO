@@ -154,42 +154,42 @@
 </h2>
 <p>To specify which infill criterion should be used, the <code>MBOControl</code> object has to be extended by calling <code><a href="../../reference/setMBOControlInfill.html">setMBOControlInfill()</a></code>. In addition to the criterion you can also set the parameters of the infill criterion optimization. The criterion itself is created with <code>makeMBOInfillCrit*()</code>. The most common infill criteria are predefined like <code>crit.ei</code> and <code>crit.cb2</code>. See <code><a href="../../reference/MBOInfillCrit.html">?MBOInfillCrit</a></code> for details.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span><span class="op">(</span><span class="op">)</span>
-<span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span><span class="op">(</span><span class="va">ctrl</span>, iters <span class="op">=</span> <span class="fl">10L</span><span class="op">)</span>
-<span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlInfill.html">setMBOControlInfill</a></span><span class="op">(</span><span class="va">ctrl</span>, crit <span class="op">=</span> <span class="fu"><a href="../../reference/infillcrits.html">makeMBOInfillCritAdaCB</a></span><span class="op">(</span>cb.lambda.start <span class="op">=</span> <span class="fl">4</span>, cb.lambda.end <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/makeMBOControl.html">makeMBOControl</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlTermination.html">setMBOControlTermination</a></span><span class="op">(</span><span class="va">ctrl</span>, iters <span class="op">=</span> <span class="fl">10L</span><span class="op">)</span></span>
+<span><span class="va">ctrl</span> <span class="op">=</span> <span class="fu"><a href="../../reference/setMBOControlInfill.html">setMBOControlInfill</a></span><span class="op">(</span><span class="va">ctrl</span>, crit <span class="op">=</span> <span class="fu"><a href="../../reference/infillcrits.html">makeMBOInfillCritAdaCB</a></span><span class="op">(</span>cb.lambda.start <span class="op">=</span> <span class="fl">4</span>, cb.lambda.end <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>This will lead to an CB infill criterion (<span class="math inline">\(CB(x) = \hat{\mu}(x) \pm \lambda * \hat{s}(x)\)</span>) that will focus on uncertain regions in the beginning (<code>cb.lambda.start = 4</code>) and towards the end will have a stronger focus on areas close to the global minimum of the surrogate (<code>cb.lambda.end = 0.1</code>).</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">test.fun</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/smoof/man/makeSingleObjectiveFunction.html" class="external-link">makeSingleObjectiveFunction</a></span><span class="op">(</span>
- fn <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">^</span><span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html" class="external-link">sin</a></span><span class="op">(</span><span class="fl">3</span> <span class="op">*</span> <span class="va">x</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span>,
- par.set <span class="op">=</span> <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/makeParamSet.html" class="external-link">makeNumericParamSet</a></span><span class="op">(</span>lower <span class="op">=</span> <span class="fl">0</span>, upper <span class="op">=</span> <span class="fl">1</span>, len <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">test.fun</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/smoof/man/makeSingleObjectiveFunction.html" class="external-link">makeSingleObjectiveFunction</a></span><span class="op">(</span></span>
+<span> fn <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">^</span><span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html" class="external-link">sin</a></span><span class="op">(</span><span class="fl">3</span> <span class="op">*</span> <span class="va">x</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span>,</span>
+<span> par.set <span class="op">=</span> <span class="fu"><a href="https://paramhelpers.mlr-org.com/reference/makeParamSet.html" class="external-link">makeNumericParamSet</a></span><span class="op">(</span>lower <span class="op">=</span> <span class="fl">0</span>, upper <span class="op">=</span> <span class="fl">1</span>, len <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>You can now start the optimization like usual:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">res</span> <span class="op">=</span> <span class="fu"><a href="../../reference/mbo.html">mbo</a></span><span class="op">(</span><span class="va">test.fun</span>, control <span class="op">=</span> <span class="va">ctrl</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">res</span> <span class="op">=</span> <span class="fu"><a href="../../reference/mbo.html">mbo</a></span><span class="op">(</span><span class="va">test.fun</span>, control <span class="op">=</span> <span class="va">ctrl</span><span class="op">)</span></span></code></pre></div>
 <p>If we look at the OptPath we can see the different progress values and the resulting different values of lambda.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">opt.path</span><span class="op">)</span><span class="op">)</span>
-<span class="co">##              x1           x2            y dob eol error.message exec.time</span>
-<span class="co">## 13 1.709222e-01 3.315767e-05 2.906045e-06   5  NA          &lt;NA&gt;         0</span>
-<span class="co">## 14 1.295025e-01 8.443279e-01 9.588378e-03   6  NA          &lt;NA&gt;         0</span>
-<span class="co">## 15 9.034855e-07 3.963116e-01 7.574909e-13   7  NA          &lt;NA&gt;         0</span>
-<span class="co">## 16 1.780031e-05 1.426885e-01 1.315285e-10   8  NA          &lt;NA&gt;         0</span>
-<span class="co">## 17 1.456652e-05 8.941830e-01 9.401662e-11   9  NA          &lt;NA&gt;         0</span>
-<span class="co">## 18 7.865404e-02 5.394556e-06 1.001196e-07  10  NA          &lt;NA&gt;         0</span>
-<span class="co">##          adacb error.model train.time    prop.type propose.time         se</span>
-<span class="co">## 13 -0.07941555        &lt;NA&gt;      0.073 infill_adacb        0.342 0.05191568</span>
-<span class="co">## 14 -0.05742526        &lt;NA&gt;      0.105 infill_adacb        0.353 0.03896670</span>
-<span class="co">## 15 -0.03561018        &lt;NA&gt;      0.073 infill_adacb        0.370 0.05122843</span>
-<span class="co">## 16 -0.02551347        &lt;NA&gt;      0.077 infill_adacb        0.369 0.02848987</span>
-<span class="co">## 17 -0.01516411        &lt;NA&gt;      0.098 infill_adacb        0.378 0.01835809</span>
-<span class="co">## 18 -0.01357802        &lt;NA&gt;      0.079 infill_adacb        0.379 0.02391981</span>
-<span class="co">##            mean lambda</span>
-<span class="co">## 13 -0.014520950   1.25</span>
-<span class="co">## 14 -0.014561893   1.10</span>
-<span class="co">## 15  0.013056827   0.95</span>
-<span class="co">## 16 -0.002721574   0.80</span>
-<span class="co">## 17 -0.003231352   0.65</span>
-<span class="co">## 18 -0.001618116   0.50</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">opt.path</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">##              x1           x2            y dob eol error.message exec.time</span></span>
+<span><span class="co">## 13 1.709222e-01 3.315767e-05 2.906045e-06   5  NA          &lt;NA&gt;     0.000</span></span>
+<span><span class="co">## 14 1.295025e-01 8.443279e-01 9.588378e-03   6  NA          &lt;NA&gt;     0.000</span></span>
+<span><span class="co">## 15 9.034855e-07 3.963116e-01 7.574909e-13   7  NA          &lt;NA&gt;     0.000</span></span>
+<span><span class="co">## 16 1.780031e-05 1.426885e-01 1.315285e-10   8  NA          &lt;NA&gt;     0.000</span></span>
+<span><span class="co">## 17 1.456652e-05 8.941830e-01 9.401662e-11   9  NA          &lt;NA&gt;     0.000</span></span>
+<span><span class="co">## 18 7.865404e-02 5.394556e-06 1.001196e-07  10  NA          &lt;NA&gt;     0.001</span></span>
+<span><span class="co">##          adacb error.model train.time    prop.type propose.time         se</span></span>
+<span><span class="co">## 13 -0.07941555        &lt;NA&gt;      0.072 infill_adacb        0.351 0.05191568</span></span>
+<span><span class="co">## 14 -0.05742526        &lt;NA&gt;      0.096 infill_adacb        0.342 0.03896670</span></span>
+<span><span class="co">## 15 -0.03561018        &lt;NA&gt;      0.075 infill_adacb        0.395 0.05122843</span></span>
+<span><span class="co">## 16 -0.02551347        &lt;NA&gt;      0.062 infill_adacb        0.308 0.02848987</span></span>
+<span><span class="co">## 17 -0.01516411        &lt;NA&gt;      0.084 infill_adacb        0.335 0.01835809</span></span>
+<span><span class="co">## 18 -0.01357802        &lt;NA&gt;      0.075 infill_adacb        0.342 0.02391981</span></span>
+<span><span class="co">##            mean lambda</span></span>
+<span><span class="co">## 13 -0.014520950   1.25</span></span>
+<span><span class="co">## 14 -0.014561893   1.10</span></span>
+<span><span class="co">## 15  0.013056827   0.95</span></span>
+<span><span class="co">## 16 -0.002721574   0.80</span></span>
+<span><span class="co">## 17 -0.003231352   0.65</span></span>
+<span><span class="co">## 18 -0.001618116   0.50</span></span></code></pre></div>
 </div>
   </div>
 
