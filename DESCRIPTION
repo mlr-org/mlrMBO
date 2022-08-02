@@ -2,36 +2,19 @@ Package: mlrMBO
 Title: Bayesian Optimization and Model-Based Optimization of Expensive
     Black-Box Functions
 Version: 1.1.5-9000
-Authors@R: 
-    c(person(given = "Bernd",
-             family = "Bischl",
-             role = "aut",
-             email = "bernd_bischl@gmx.net",
-             comment = c(ORCID = "0000-0001-6002-6980")),
-      person(given = "Jakob",
-             family = "Richter",
-             role = c("aut", "cre"),
-             email = "code@jakob-r.de",
-             comment = c(ORCID = "0000-0003-4481-5554")),
-      person(given = "Jakob",
-             family = "Bossek",
-             role = "aut",
-             email = "j.bossek@gmail.com",
-             comment = c(ORCID = "0000-0002-4121-4668")),
-      person(given = "Daniel",
-             family = "Horn",
-             role = "aut",
-             email = "daniel.horn@tu-dortmund.de"),
-      person(given = "Michel",
-             family = "Lang",
-             role = "aut",
-             email = "michellang@gmail.com",
-             comment = c(ORCID = "0000-0001-9754-0393")),
-      person(given = "Janek",
-             family = "Thomas",
-             role = "aut",
-             email = "janek.thomas@stat.uni-muenchen.de",
-             comment = c(ORCID = "0000-0003-4511-6245")))
+Authors@R: c(
+    person("Bernd", "Bischl", , "bernd_bischl@gmx.net", role = "aut",
+           comment = c(ORCID = "0000-0001-6002-6980")),
+    person("Jakob", "Richter", , "code@jakob-r.de", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0003-4481-5554")),
+    person("Jakob", "Bossek", , "j.bossek@gmail.com", role = "aut",
+           comment = c(ORCID = "0000-0002-4121-4668")),
+    person("Daniel", "Horn", , "daniel.horn@tu-dortmund.de", role = "aut"),
+    person("Michel", "Lang", , "michellang@gmail.com", role = "aut",
+           comment = c(ORCID = "0000-0001-9754-0393")),
+    person("Janek", "Thomas", , "janek.thomas@stat.uni-muenchen.de", role = "aut",
+           comment = c(ORCID = "0000-0003-4511-6245"))
+  )
 Description: Flexible and comprehensive R toolbox for model-based
     optimization ('MBO'), also known as Bayesian optimization. It
     implements the Efficient Global Optimization Algorithm and is designed
