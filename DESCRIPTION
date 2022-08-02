@@ -70,6 +70,7 @@ Suggests:
     GGally,
     ggplot2,
     gridExtra,
+    interp,
     kernlab,
     kknn,
     knitr,
