@@ -1,5 +1,5 @@
 pandoc: 2.14.2
-pkgdown: 2.0.5
+pkgdown: 2.0.6
 pkgdown_sha: ~
 articles:
   mlrMBO: mlrMBO.html
@@ -12,7 +12,7 @@ articles:
   noisy_optimization: supplementary/noisy_optimization.html
   parallelization: supplementary/parallelization.html
   warmstart: supplementary/warmstart.html
-last_built: 2022-07-03T04:29Z
+last_built: 2022-08-02T03:18Z
 urls:
   reference: https://mlrMBO.mlr-org.com/reference
   article: https://mlrMBO.mlr-org.com/articles
