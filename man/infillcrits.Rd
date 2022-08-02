@@ -16,13 +16,13 @@ makeMBOInfillCritMeanResponse()
 
 makeMBOInfillCritStandardError()
 
-makeMBOInfillCritEI(se.threshold = 1e-06)
+makeMBOInfillCritEI(se.threshold = 0.000001)
 
 makeMBOInfillCritCB(cb.lambda = NULL)
 
-makeMBOInfillCritAEI(aei.use.nugget = FALSE, se.threshold = 1e-06)
+makeMBOInfillCritAEI(aei.use.nugget = FALSE, se.threshold = 0.000001)
 
-makeMBOInfillCritEQI(eqi.beta = 0.75, se.threshold = 1e-06)
+makeMBOInfillCritEQI(eqi.beta = 0.75, se.threshold = 0.000001)
 
 makeMBOInfillCritDIB(cb.lambda = 1, sms.eps = NULL)
 

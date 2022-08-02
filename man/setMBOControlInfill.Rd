@@ -105,7 +105,7 @@ Default is 500.}
 
 \item{opt.ea.mu}{[\code{integer(1)}]\cr
 For \code{opt = "ea"}:
-Population size of EA.
+Population size of EA. Must be at least 2.
 The default is 10 times the number of parameters of the function to optimize.}
 
 \item{opt.ea.sbx.eta}{[\code{numeric(1)}]\cr
