@@ -43,7 +43,7 @@ test_that("makeMBOLearner", {
   lrn = makeMBOLearner(ctrl, f)
   expect_equal(lrn, makeLearner("regr.km", predict.type = "se",
     par.vals = list(covtype = "matern3_2", optim.method = "gen", nugget.estim = TRUE, jitter = TRUE )))
-  expect_output(print(mbo(f, control = ctrl, learner = lrn)), "Recommended parameters")
+  expect_output(suppressWarnings(print(mbo(f, control = ctrl, learner = lrn)), "Recommended parameters"))
 
 
   # discrete case

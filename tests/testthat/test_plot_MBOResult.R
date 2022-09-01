@@ -13,7 +13,7 @@ test_that("plot single-objective", {
     opt.focussearch.maxit = 3L)
   or = mbo(f, des, learner = learner, control = ctrl)
 
-  plot(or, iters = 0:2, pause = FALSE)
+  suppressWarnings(plot(or, iters = 0:2, pause = FALSE))
 })
 
 test_that("plot multi-objective", {
@@ -30,5 +30,5 @@ test_that("plot multi-objective", {
   ctrl = setMBOControlMultiObj(ctrl, method = "mspot")
   or = mbo(f, des, learner = learner, control = ctrl)
 
-  plot(or, iters = 0:2, pause = FALSE)
+  suppressWarnings(plot(or, iters = 0:2, pause = FALSE))
 })
