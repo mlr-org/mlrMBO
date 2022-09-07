@@ -12,7 +12,7 @@ articles:
   noisy_optimization: supplementary/noisy_optimization.html
   parallelization: supplementary/parallelization.html
   warmstart: supplementary/warmstart.html
-last_built: 2022-09-06T04:53Z
+last_built: 2022-09-07T04:53Z
 urls:
   reference: https://mlrMBO.mlr-org.com/reference
   article: https://mlrMBO.mlr-org.com/articles
