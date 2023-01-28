@@ -15,29 +15,39 @@ filterProposedPoints = function(prop, opt.state) {
   # prepare stuff
   n = nrow(prop$prop.points)
   design = getOptPathX(opt.path)
-  calcMaxMetric = function(x, y) max(abs(x - y))
-  to.delete = rep(FALSE, n)
+  disc.params = getParamIds(filterParamsDiscrete(par.set), repeated = TRUE, with.nr = TRUE)
 
-  # look at min distance from i-point to current set (design + accepted)
-  for (i in seq_len(n)) {
-    pp = prop$prop.points[i, ]
-    min.dist = min(apply(design, 1L, calcMaxMetric, y = pp))
-    # if too close, mark i-point, otherwise add it to set
-    if (min.dist < control$filter.proposed.points.tol)
-      to.delete[i] = TRUE
-    else
-      design = rbind(design, pp)
+  calcDistance = function(pp, design) {
+    calcMaxMetric = function(x, y) max(abs(x - y))
+    if (length(disc.params) > 0) {
+      # if we have discrete params subset the design to match the values of the discrete values in pp then calculate the distance on the numberic subset
+      disc.pp = pp[, disc.params, drop = FALSE]
+      this.design = merge(design, disc.pp)
+      this.design = this.design[, names(this.design) %nin% disc.params, drop = FALSE]
+      this.pp = pp[, names(pp) %nin% disc.params, drop = FALSE]
+      min.dist = min(apply(this.design, 1L, calcMaxMetric, y = this.pp))
+    } else {
+      min.dist = min(apply(design, 1L, calcMaxMetric, y = pp))
+    }
   }
 
-  # for now replace removed design points with random points,
-  #  we leave all other data in prop like it is, we have prop.tye "random_filter"
-  n.replace = sum(to.delete)
-
-  if (n.replace > 0) {
-    # FIXME: we might want to do something smarter here. how about augmenting the current design?
-    prop$prop.points[to.delete, ] = generateRandomDesign(n.replace, par.set)
-    prop$prop.type[to.delete] = "random_filter"
+  for (i in seq_len(n)) {
+    pp = prop$prop.points[i, ]
+    min.dist = calcDistance(pp, design)
+    trial = 0
+    # min.dist can be NA for discrete only subspaces
+    while (is.na(min.dist) || min.dist < control$filter.proposed.points.tol && trial < 100) {
+      pp = generateRandomDesign(1, par.set)[1, ]
+      min.dist = calcDistance(pp, design)
+      trial = trial + 1
+    }
+    design = rbind(design, pp)
+    if (trial > 0) {
+      prop$prop.points[i, ] = pp
+      prop$prop.type[i] = "random_filter"
+    }
   }
 
   return(prop)
+
 }
