@@ -3,8 +3,8 @@
 #
 # 1-point proposal: we take the user-defined cb-lambda from the control, then simply optimize
 #
-# n-point proposal: we sample n random cb-lambdas, then propose a point normally,
-#   then add it to the design (fake add) with the its cb-vector as fake output. then iterate.
+# n-point proposal: Each point is proposed using the user-defined cb-lambda. 
+# Proposals are feed back to the surrogate following the surrogate "believer" approach.
 
 proposePointsDIB = function(opt.state) {
 
