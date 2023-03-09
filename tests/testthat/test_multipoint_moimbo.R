@@ -3,7 +3,7 @@ context("multipoint multi-objective")
 test_that("multipoint multi-objective", {
   f = makeBraninFunction()
   f = setAttribute(f, "par.set", makeNumericParamSet(len = 2L, lower = 0, upper = 1))
-  
+
   #FIXME: how can we test this better?
   for (obj in c("ei.dist", "mean.se", "mean.se.dist")) {
     for (dist in c("nearest.better", "nearest.neighbor")) {
@@ -11,7 +11,7 @@ test_that("multipoint multi-objective", {
 
         des = generateTestDesign(10L, getParamSet(f))
         ctrl = makeMBOControl(propose.points = 4L)
-        ctrl = setMBOControlTermination(ctrl, iters = 1L)
+        ctrl = setMBOControlTermination(ctrl, iters = 2L)
         ctrl = setMBOControlMultiPoint(ctrl,
           method = "moimbo",
           moimbo.objective = obj,
@@ -28,13 +28,14 @@ test_that("multipoint multi-objective", {
       }
     }
   }
-  
+
   #test that infill crit is ignored
   crits = list(makeMBOInfillCritCB(), makeMBOInfillCritEI(), makeMBOInfillCritMeanResponse())
   for (i in seq_along(crits)) {
-    ctrl = setMBOControlInfill(ctrl, crit = crits[[i]])
+    for (interleave.points in 0:2) { #test thath random interleave works (Issue #508)
+      ctrl = setMBOControlInfill(ctrl, crit = crits[[i]], interleave.random.points=interleave.points)
+    }
     res = mbo(f, control = ctrl)
     expect_output(print(res), "Recommended parameters")
   }
-
 })
