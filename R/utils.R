@@ -11,6 +11,8 @@ loadPackages = function(control) {
     requirePackages("cmaesr", why = "proposePoints")
   if (control$n.objectives == 1L && control$propose.points > 1L && control$multipoint.method == "moimbo")
     requirePackages("emoa", why = "proposePoints")
+  if (control$identification.time.budget > 0)
+    requirePackages("mvtnorm", why = "intensification")
 }
 
 

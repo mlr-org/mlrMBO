@@ -144,3 +144,38 @@ getOptStateValidTerminationStates = function() {
   c("term.iter", "term.time", "term.exectime", "term.yval", "term.feval", "term.custom")
 }
 
+getOptStateIntensification = function(opt.state) {
+  opt.problem = getOptStateOptProblem(opt.state)
+  control = getOptProblemControl(opt.problem)
+  return(!is.null(control$noisy.method) && control$noisy.method %in% c("incumbent", "ocba"))
+}
+
+getOptStateIdentification = function(opt.state) {
+  opt.problem = getOptStateOptProblem(opt.state)
+  control = getOptProblemControl(opt.problem)
+  return(control$identification.time.budget > 0 | control$identification.max.evals > 0)
+}
+
+getOptStatePCS = function(opt.state) {
+  opt.problem = getOptStateOptProblem(opt.state)
+  control = getOptProblemControl(opt.problem)
+  return(control$noisy.identification.pcs)
+}
+
+getOptStateTerminationIdentification = function(opt.state) {
+  terminate = shouldTerminateIdentification.OptState(opt.state)
+  setOptStateProgress(opt.state, terminate$progress)
+  # update only if termination condition is met
+  if (terminate$term) {
+    setOptStateState(opt.state, terminate$code)
+  }
+  terminate
+}
+
+getOptStateStartTimeIdentification = function(opt.state) {
+  opt.state$identification.starttime
+}
+
+getOptStateTimeUsedIdentification = function(opt.state) {
+  opt.state$identification.time.used
+}

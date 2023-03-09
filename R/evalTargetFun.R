@@ -25,13 +25,30 @@ evalTargetFun.OptState = function(opt.state, xs, extras) {
   # short names and so on
   nevals = length(xs)
   ny = control$n.objectives
+
+  # trafo X points
+  xs.trafo = lapply(xs, trafoValue, par = par.set)
+
+  # handle noisy instances
+  if (isTRUE(control$noisy.instances > 1L)) {
+    nevals = nevals * control$noisy.instances
+    xs = rep(xs, each = control$noisy.instances)
+    extras = rep(extras, each = control$noisy.instances)
+    if (!control$noisy.self.replicating) {
+      xs.trafo = rep(xs.trafo, each = control$noisy.instances)
+      if (!is.na(control$noisy.instance.param)) {
+        inst.param = lapply(seq_len(control$noisy.instances), function(x) setNames(list(x), control$noisy.instance.param))
+        xs.trafo = Map(c, xs.trafo, inst.param)
+      }
+    }
+  }
+
+
   num.format = control$output.num.format
   num.format.string = paste("%s = ", num.format, sep = "")
   dobs = ensureVector(asInteger(getOptStateLoop(opt.state)), n = nevals, cl = "integer")
   imputeY = control$impute.y.fun
 
-  # trafo X points
-  xs.trafo = lapply(xs, trafoValue, par = par.set)
 
   # function to measure of fun call
     wrapFun = function(x) {
@@ -42,6 +59,9 @@ evalTargetFun.OptState = function(opt.state, xs, extras) {
       if (hasAttributes(y, "extras")) {
         user.extras = attr(y, "extras")
         y = setAttribute(y, "extras", NULL)
+      }
+      if (!is.null(control$noisy.instance.param) && !is.na(control$noisy.instance.param) && !control$noisy.self.replicating) {
+        user.extras = c(user.extras, x[control$noisy.instance.param])
       }
       st = proc.time() - st
       list(y = y, time = st[3], user.extras = user.extras)
@@ -55,6 +75,21 @@ evalTargetFun.OptState = function(opt.state, xs, extras) {
   # return error objects if we impute
   res = parallelMap(wrapFun, xs.trafo, level = "mlrMBO.feval",
     impute.error = if (is.null(imputeY)) NULL else identity)
+
+  # handle noisy instances of self.replicating functions
+  if (isTRUE(control$noisy.instances > 1L) && control$noisy.self.replicating) {
+    xs.trafo = rep(xs.trafo, each = control$noisy.instances)
+    res = lapply(res, function(r) {
+      if (is.error(r)) {
+        rep(list(r), control$noisy.instances)
+      } else {
+        lapply(seq_along(r$y), function(i) {
+          list(y = r$y[i], time = r$time / length(r$y), user.extras = c(r$user.extras, setNames(list(i), control$noisy.instance.param)))
+        })
+      }
+    })
+    res = unlist(res, recursive = FALSE)
+  }
 
   # loop evals and to some post-processing
   for (i in seq_len(nevals)) {
