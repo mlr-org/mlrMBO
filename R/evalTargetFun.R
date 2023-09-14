@@ -84,6 +84,10 @@ evalTargetFun.OptState = function(opt.state, xs, extras) {
         if (!isYValid(y2))
           stopf("Y-Imputation failed. Must return a numeric of length: %i, but we got: %s",
             ny, convertToShortString(y2))
+        if (hasAttributes(y2, "extras")) {
+          user.extras = attr(y2, "extras")
+          y2 = setAttribute(y2, "extras", NULL)
+        }
       }
     }
 
