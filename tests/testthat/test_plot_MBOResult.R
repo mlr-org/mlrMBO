@@ -13,10 +13,13 @@ test_that("plot single-objective", {
     opt.focussearch.maxit = 3L)
   or = mbo(f, des, learner = learner, control = ctrl)
 
-  plot(or, iters = 0:2, pause = FALSE)
+  suppressWarnings(plot(or, iters = 0:2, pause = FALSE))
 })
 
 test_that("plot multi-objective", {
+  # occassionally errors on windows
+  skip_on_os("windows")
+
   f = smoof::makeZDT1Function(2L)
   learner = makeLearner("regr.km", predict.type = "se")
   des = generateTestDesign(8L, getParamSet(f))
@@ -27,5 +30,5 @@ test_that("plot multi-objective", {
   ctrl = setMBOControlMultiObj(ctrl, method = "mspot")
   or = mbo(f, des, learner = learner, control = ctrl)
 
-  plot(or, iters = 0:2, pause = FALSE)
+  suppressWarnings(plot(or, iters = 0:2, pause = FALSE))
 })

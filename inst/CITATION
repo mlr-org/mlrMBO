@@ -11,5 +11,5 @@ bibentry(
     person("Michel", "Lang")
   ),
   year = "2017",
-  url = "http://arxiv.org/abs/1703.03373"
+  url = "https://arxiv.org/abs/1703.03373"
 )

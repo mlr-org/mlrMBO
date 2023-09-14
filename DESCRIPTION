@@ -1,26 +1,34 @@
 Package: mlrMBO
-Title: Bayesian Optimization and Model-Based Optimization of Expensive Black-Box Functions
-Version: 1.1.4-9000
-Description: Flexible and comprehensive R toolbox for model-based optimization
-    ('MBO'), also known as Bayesian optimization. It implements the Efficient
-    Global Optimization Algorithm and is designed for both single- and multi-
-    objective optimization with mixed continuous, categorical and conditional
-    parameters. The machine learning toolbox 'mlr' provide dozens of regression
-    learners to model the performance of the target algorithm with respect to
-    the parameter settings. It provides many different infill criteria to guide
-    the search process. Additional features include multi-point batch proposal,
-    parallel execution as well as visualization and sophisticated logging
-    mechanisms, which is especially useful for teaching and understanding of
-    algorithm behavior. 'mlrMBO' is implemented in a modular fashion, such that
-    single components can be easily replaced or adapted by the user for specific
-    use cases.
+Title: Bayesian Optimization and Model-Based Optimization of Expensive
+    Black-Box Functions
+Version: 1.1.5-9000
 Authors@R: c(
-    person("Bernd", "Bischl", email = "bernd_bischl@gmx.net", role = c("aut"), comment = c(ORCID = "0000-0001-6002-6980")),
-    person("Jakob", "Richter", email = "code@jakob-r.de", role = c("aut", "cre"), comment = c(ORCID = "0000-0003-4481-5554")),
-    person("Jakob", "Bossek", email = "j.bossek@gmail.com", role = "aut", comment = c(ORCID = "0000-0002-4121-4668")),
-    person("Daniel", "Horn", email = "daniel.horn@tu-dortmund.de", role = "aut"),
-    person("Michel", "Lang", email = "michellang@gmail.com", role = "aut", comment = c(ORCID = "0000-0001-9754-0393")),
-    person("Janek", "Thomas", email = "janek.thomas@stat.uni-muenchen.de", role = "aut", comment = c(ORCID = "0000-0003-4511-6245")))
+    person("Bernd", "Bischl", , "bernd_bischl@gmx.net", role = "aut",
+           comment = c(ORCID = "0000-0001-6002-6980")),
+    person("Jakob", "Richter", , "code@jakob-r.de", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0003-4481-5554")),
+    person("Jakob", "Bossek", , "j.bossek@gmail.com", role = "aut",
+           comment = c(ORCID = "0000-0002-4121-4668")),
+    person("Daniel", "Horn", , "daniel.horn@tu-dortmund.de", role = "aut"),
+    person("Michel", "Lang", , "michellang@gmail.com", role = "aut",
+           comment = c(ORCID = "0000-0001-9754-0393")),
+    person("Janek", "Thomas", , "janek.thomas@stat.uni-muenchen.de", role = "aut",
+           comment = c(ORCID = "0000-0003-4511-6245"))
+  )
+Description: Flexible and comprehensive R toolbox for model-based
+    optimization ('MBO'), also known as Bayesian optimization. It
+    implements the Efficient Global Optimization Algorithm and is designed
+    for both single- and multi- objective optimization with mixed
+    continuous, categorical and conditional parameters. The machine
+    learning toolbox 'mlr' provide dozens of regression learners to model
+    the performance of the target algorithm with respect to the parameter
+    settings. It provides many different infill criteria to guide the
+    search process. Additional features include multi-point batch
+    proposal, parallel execution as well as visualization and
+    sophisticated logging mechanisms, which is especially useful for
+    teaching and understanding of algorithm behavior. 'mlrMBO' is
+    implemented in a modular fashion, such that single components can be
+    easily replaced or adapted by the user for specific use cases.
 License: BSD_2_clause + file LICENSE
 URL: https://github.com/mlr-org/mlrMBO
 BugReports: https://github.com/mlr-org/mlrMBO/issues
@@ -38,12 +46,14 @@ Imports:
 Suggests:
     akima,
     cmaesr (>= 1.0.3),
-    ggplot2,
+    covr,
     DiceKriging,
     earth,
     emoa,
     GGally,
+    ggplot2,
     gridExtra,
+    interp,
     kernlab,
     kknn,
     knitr,
@@ -52,13 +62,12 @@ Suggests:
     party,
     randomForest,
     reshape2,
-    rmarkdown,
     rgenoud,
+    rmarkdown,
     rpart,
-    testthat,
-    covr
-LazyData: yes
-Encoding: UTF-8
+    testthat
+VignetteBuilder: 
+    knitr
 ByteCompile: yes
-RoxygenNote: 7.1.1
-VignetteBuilder: knitr
+Encoding: UTF-8
+RoxygenNote: 7.2.1

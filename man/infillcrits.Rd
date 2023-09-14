@@ -16,13 +16,13 @@ makeMBOInfillCritMeanResponse()
 
 makeMBOInfillCritStandardError()
 
-makeMBOInfillCritEI(se.threshold = 1e-06)
+makeMBOInfillCritEI(se.threshold = 0.000001)
 
 makeMBOInfillCritCB(cb.lambda = NULL)
 
-makeMBOInfillCritAEI(aei.use.nugget = FALSE, se.threshold = 1e-06)
+makeMBOInfillCritAEI(aei.use.nugget = FALSE, se.threshold = 0.000001)
 
-makeMBOInfillCritEQI(eqi.beta = 0.75, se.threshold = 1e-06)
+makeMBOInfillCritEQI(eqi.beta = 0.75, se.threshold = 0.000001)
 
 makeMBOInfillCritDIB(cb.lambda = 1, sms.eps = NULL)
 
@@ -36,7 +36,8 @@ Default is 1e-6.}
 
 \item{cb.lambda}{[\code{numeric(1)} | \code{NULL}]\cr
 Lambda parameter for confidence bound infill criterion.
-Default is \code{NULL}, which means 1 in case of a fully numeric parameter set and 2 otherwise.}
+Default is \code{NULL}, which means 1 in case of a fully numeric parameter set and 2 otherwise.
+Any non-negative real valued numbers are valid.}
 
 \item{aei.use.nugget}{[\code{logical(1)}]\cr
 Should the nugget effect be used for the pure variance estimation for augmented
@@ -45,7 +46,8 @@ Default is \code{FALSE}.}
 
 \item{eqi.beta}{[\code{numeric(1)}]\cr
 Beta parameter for expected quantile improvement criterion.
-Default is 0.75.}
+Default is 0.75.
+Valid values are between 0.5 and 1.}
 
 \item{sms.eps}{[\code{numeric(1)} | \code{NULL}]\cr
 Epsilon for epsilon-dominance for \code{dib.indicator = "sms"}.

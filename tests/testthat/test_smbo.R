@@ -94,5 +94,16 @@ test_that("human in the loop smbo works for mixed spaces", {
   expect_numeric(df$numA)
   expect_factor(df$disc1)
   expect_set_equal(names(or$x), names(par.set$pars))
-
 })
+
+test_that("human in the loop does not start", {
+  par.set = testp.mixed
+  fun = testf.mixed
+  design = testd.mixed
+  design$y = sapply(convertRowsToList(design, name.list = TRUE, name.vector = TRUE), fun)
+  control = makeMBOControl(final.evals = 2)
+  expect_error(initSMBO(par.set = par.set, design = design, control = control, minimize = shouldBeMinimized(fun), noisy = isNoisy(fun)), "final\\.evals")
+})
+
+
+

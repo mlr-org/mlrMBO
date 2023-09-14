@@ -20,7 +20,7 @@ makeMBOTerminationMaxIter = function(max.iter) {
   function(opt.state) {
     iter = getOptStateLoop(opt.state)
     term = iter > max.iter
-    message = if (!term) NA_character_ else sprintf("Maximum number of iterations %i reached with.", max.iter, iter)
+    message = if (!term) NA_character_ else sprintf("Maximum number of iterations %i reached.", max.iter)
     return(list(term = term, message = message, code = "term.iter", progress = iter / max.iter))
   }
 }

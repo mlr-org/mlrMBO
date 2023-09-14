@@ -73,7 +73,7 @@ renderExampleRunPlot.MBOExampleRunMultiObj = function(object, iter, densregion =
 makeXPlot = function(data.x, idx, idx.nsga2.paretofront, method, x.name, crit.name,
   models, control, par.set, opt.path, points.per.dim, iter, propose.points, object, colors) {
   pl.xspace = ggplot2::ggplot()
-  pl.xspace = pl.xspace + ggplot2::guides(colour = FALSE, shape = FALSE)
+  pl.xspace = pl.xspace + ggplot2::guides(colour = "none", shape = "none")
 
   gg.points.xspace = getPlotData(data.x, idx, idx.nsga2.paretofront, x.name)
   # first, fill background if possible. note: 2 different plots for mspot since

@@ -1,10 +1,15 @@
+# mlrMBO 1.1.5
+
+* Documentation fixes
+* Bugfix: Fix CRAN warnings.
+
 # mlrMBO 1.1.4
 
 * `plot.OptState()` now supports multiple categorical variables.
 * `crit.aei` works with wrapped learners.
 * Documentation fixes
 * `mbo()` can be called without control object.
-* Bugix: MOIMBO works with integers
+* Bugfix: MOIMBO works with integers
 
 # mlrMBO 1.1.3
 

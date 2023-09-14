@@ -3,7 +3,7 @@
 # Parallelization
 
 It is possible to parallelize the evaluation of the target function to speed up the computation. Internally the
-evaluation of the target function is realized with the R package `parallelMap`. This package offers simple parallelization with various different backends. For details on the usage see the [parallelMap github page](https://github.com/berndbischl/parallelMap#parallelmap), which offers a nice tutorial and describes all possible backends thorougly.  For our usage we use a *multicore* backend. Note, that the multicore parallelization does _not_ work on windows machines.
+evaluation of the target function is realized with the R package `parallelMap`. This package offers simple parallelization with various different backends. For details on the usage see the [parallelMap github page](https://github.com/mlr-org/parallelMap#parallelmap), which offers a nice tutorial and describes all possible backends thorougly.  For our usage we use a *multicore* backend. Note, that the multicore parallelization does _not_ work on windows machines.
 
 ```{r eval=FALSE}
 library(mlrMBO)
@@ -34,11 +34,11 @@ library(mlr)
 
 fn = function(x) {
   lrn = makeLearner("classif.ksvm", par.vals = x)
-  
+
   rdesc = makeResampleDesc("CV", iters = 10L)
-  
+
   res = resample(learner = lrn, iris.task, rdesc, show.info = FALSE)
-  
+
   res$aggr
 }
 
