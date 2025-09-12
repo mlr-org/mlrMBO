@@ -2,7 +2,7 @@
 % Please edit documentation in R/SMBO.R
 \name{initSMBO}
 \alias{initSMBO}
-\title{Initialize a manual sequential MBO run.}
+\title{Initialize a manual sequential MBO run}
 \usage{
 initSMBO(
   par.set,

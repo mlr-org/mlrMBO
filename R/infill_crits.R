@@ -1,4 +1,4 @@
-#' @title Infill criteria.
+#' @title Infill criteria
 #'
 #' @description
 #' \pkg{mlrMBO} contains most of the most popular infill criteria, e.g., expected

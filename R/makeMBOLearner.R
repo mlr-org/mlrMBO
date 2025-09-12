@@ -1,4 +1,4 @@
-#' @title Generate default learner.
+#' @title Generate default learner
 #'
 #' @description
 #' This is a helper function that generates a default surrogate, based on properties of the objective
@@ -6,39 +6,38 @@
 #'
 #' For numeric-only (including integers) parameter spaces without any dependencies:
 #' \itemize{
-#' \item{A Kriging model \dQuote{regr.km} with kernel \dQuote{matern3_2} is created.}
-#' \item{If the objective function is deterministic we add a small nugget effect (10^-8*Var(y),
+#' \item A Kriging model \dQuote{regr.km} with kernel \dQuote{matern3_2} is created.
+#' \item If the objective function is deterministic we add a small nugget effect (10^-8*Var(y),
 #'   y is vector of observed outcomes in current design) to increase numerical stability to
-#'   hopefully prevent crashes of DiceKriging.}
-#' \item{If the objective function is noisy the nugget effect will be estimated with
-#'   \code{nugget.estim = TRUE} (but you can override this in \code{...}.}
+#'   hopefully prevent crashes of DiceKriging.
+#' \item If the objective function is noisy the nugget effect will be estimated with
+#'   \code{nugget.estim = TRUE} (but you can override this in \code{...}.
 #'   Also \code{jitter} is set to \code{TRUE} to circumvent a problem with DiceKriging where already
 #'   trained input values produce the exact trained output.
 #'   For further information check the \code{$note} slot of the created learner.
-#' \item{Instead of the default \code{"BFGS"} optimization method we use rgenoud (\code{"gen"}),
+#' \item Instead of the default \code{"BFGS"} optimization method we use rgenoud (\code{"gen"}),
 #'   which is a hybrid algorithm, to combine global search based on genetic algorithms and local search
 #'   based on gradients.
 #'   This may improve the model fit and will less frequently produce a constant surrogate model.
-#'   You can also override this setting in \code{...}.}
+#'   You can also override this setting in \code{...}.
 #' }
 #'
 #' For mixed numeric-categorical parameter spaces, or spaces with conditional parameters:
 #' \itemize{
-#' \item{A random regression forest \dQuote{regr.randomForest} with 500 trees is created.}
-#' \item{The standard error of a prediction (if required by the infill criterion) is estimated
+#' \item A random regression forest \dQuote{regr.randomForest} with 500 trees is created.
+#' \item The standard error of a prediction (if required by the infill criterion) is estimated
 #'   by computing the jackknife-after-bootstrap.
 #'   This is the \code{se.method = "jackknife"} option of the \dQuote{regr.randomForest} Learner.
-#'   }
 #' }
 #'
 #' If additionally dependencies are in present in the parameter space, inactive conditional parameters
 #' are represented by missing \code{NA} values in the training design data.frame.
 #' We simply handle those with an imputation method, added to the random forest:
 #' \itemize{
-#' \item{If a numeric value is inactive, i.e., missing, it will be imputed by 2 times the
-#'   maximum of observed values}
-#' \item{If a categorical value is inactive, i.e., missing, it will be imputed by the
-#'   special class label \code{"__miss__"}}
+#' \item If a numeric value is inactive, i.e., missing, it will be imputed by 2 times the
+#'   maximum of observed values
+#' \item If a categorical value is inactive, i.e., missing, it will be imputed by the
+#'   special class label \code{"__miss__"}
 #' }
 #' Both of these techniques make sense for tree-based methods and are usually hard to beat, see
 #' Ding et.al. (2010).

@@ -2,7 +2,7 @@
 % Please edit documentation in R/setMBOControlTermination.R
 \name{setMBOControlTermination}
 \alias{setMBOControlTermination}
-\title{Set termination options.}
+\title{Set termination options}
 \usage{
 setMBOControlTermination(
   control,

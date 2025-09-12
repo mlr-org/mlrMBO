@@ -12,7 +12,7 @@
 \alias{crit.aei}
 \alias{crit.eqi}
 \alias{crit.dib1}
-\title{Create an infill criterion.}
+\title{Create an infill criterion}
 \usage{
 makeMBOInfillCrit(
   fun,

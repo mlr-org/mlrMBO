@@ -1,4 +1,4 @@
-#' @title Optimizes a function with sequential model based optimization.
+#' @title Optimizes a function with sequential model based optimization
 #'
 #' @description
 #' See \link{mbo_parallel} for all parallelization options.

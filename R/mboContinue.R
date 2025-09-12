@@ -1,4 +1,4 @@
-#' @title Continues an mbo run from a save-file.
+#' @title Continues an mbo run from a save-file
 #'
 #' @description
 #' Useful if your optimization is likely to crash,

@@ -8,7 +8,7 @@
 \alias{getMBOInfillCritId}
 \alias{hasRequiresInfillCritStandardError}
 \alias{getMBOInfillCritComponents}
-\title{Get properties of MBO infill criterion.}
+\title{Get properties of MBO infill criterion}
 \usage{
 getMBOInfillCritParams(x)
 

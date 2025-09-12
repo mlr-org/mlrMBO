@@ -2,7 +2,7 @@
 % Please edit documentation in R/mboFinalize.R
 \name{mboFinalize}
 \alias{mboFinalize}
-\title{Finalizes an mbo run from a save-file.}
+\title{Finalizes an mbo run from a save-file}
 \usage{
 mboFinalize(file)
 }

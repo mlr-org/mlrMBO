@@ -2,7 +2,7 @@
 % Please edit documentation in R/OptResult.R
 \name{OptResult}
 \alias{OptResult}
-\title{OptResult object.}
+\title{OptResult object}
 \description{
 The OptResult stores all entities which are not needed while optimizing but are needed to build the final result.
 It can contains fitted surrogate models at certain times as well as resample objects.

@@ -1,4 +1,4 @@
-#' @title Extends mbo control object with infill criteria and infill optimizer options.
+#' @title Extends mbo control object with infill criteria and infill optimizer options
 #'
 #' @description
 #' Please note that internally all infill criteria are minimized. So for some of them,

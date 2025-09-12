@@ -1,4 +1,4 @@
-#' @title Create an infill criterion.
+#' @title Create an infill criterion
 #'
 #' @description The infill criterion guides the model based search process.
 #' The most prominent infill criteria, e.g., expected improvement, lower

@@ -1,4 +1,4 @@
-#' @title Initialize a manual sequential MBO run.
+#' @title Initialize a manual sequential MBO run
 #' @description When you want to run a human-in-the-loop MBO run you need to initialize it first.
 #'
 #' @inheritParams mbo

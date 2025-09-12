@@ -2,7 +2,7 @@
 % Please edit documentation in R/getSupportedMultipointInfillOptFunctions.R
 \name{getSupportedMultipointInfillOptFunctions}
 \alias{getSupportedMultipointInfillOptFunctions}
-\title{Get names of supported multi-point infill-criteria optimizers.}
+\title{Get names of supported multi-point infill-criteria optimizers}
 \usage{
 getSupportedMultipointInfillOptFunctions()
 }

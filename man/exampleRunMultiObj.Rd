@@ -2,7 +2,7 @@
 % Please edit documentation in R/exampleRunMultiObj.R
 \name{exampleRunMultiObj}
 \alias{exampleRunMultiObj}
-\title{Perform an MBO run on a multi-objective test function and and visualize what happens.}
+\title{Perform an MBO run on a multi-objective test function and and visualize what happens}
 \usage{
 exampleRunMultiObj(
   fun,

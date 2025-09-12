@@ -2,7 +2,7 @@
 % Please edit documentation in R/setMBOControlMultiPoint.R
 \name{setMBOControlMultiPoint}
 \alias{setMBOControlMultiPoint}
-\title{Set multipoint proposal options.}
+\title{Set multipoint proposal options}
 \usage{
 setMBOControlMultiPoint(
   control,

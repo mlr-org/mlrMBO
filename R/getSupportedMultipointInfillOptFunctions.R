@@ -1,4 +1,4 @@
-#' @title Get names of supported multi-point infill-criteria optimizers.
+#' @title Get names of supported multi-point infill-criteria optimizers
 #'
 #' @description
 #' Returns all names of supported multi-point infill-criteria optimizers.
