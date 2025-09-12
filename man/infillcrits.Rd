@@ -10,19 +10,19 @@
 \alias{makeMBOInfillCritEQI}
 \alias{makeMBOInfillCritDIB}
 \alias{makeMBOInfillCritAdaCB}
-\title{Infill criteria.}
+\title{Infill criteria}
 \usage{
 makeMBOInfillCritMeanResponse()
 
 makeMBOInfillCritStandardError()
 
-makeMBOInfillCritEI(se.threshold = 0.000001)
+makeMBOInfillCritEI(se.threshold = 1e-06)
 
 makeMBOInfillCritCB(cb.lambda = NULL)
 
-makeMBOInfillCritAEI(aei.use.nugget = FALSE, se.threshold = 0.000001)
+makeMBOInfillCritAEI(aei.use.nugget = FALSE, se.threshold = 1e-06)
 
-makeMBOInfillCritEQI(eqi.beta = 0.75, se.threshold = 0.000001)
+makeMBOInfillCritEQI(eqi.beta = 0.75, se.threshold = 1e-06)
 
 makeMBOInfillCritDIB(cb.lambda = 1, sms.eps = NULL)
 

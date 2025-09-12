@@ -1,8 +1,8 @@
-#' @title Single-Objective result object.
+#' @title Single-Objective result object
 #'
 #' @description
 #'
-#' \itemize{
+#' \describe{
 #'   \item{x [\code{list}]}{Named list of proposed optimal parameters.}
 #'   \item{y [\code{numeric(1)}]}{Value of objective function at \code{x},
 #'     either from evals during optimization or from requested final evaluations,
@@ -12,7 +12,7 @@
 #'     Includes all evaluated points and additional information as documented in \link{mbo_OptPath}.
 #'     You can convert it via \code{as.data.frame}.}
 #'   \item{resample.results [List of \code{\link[mlr]{ResampleResult}}]}{List of the desired \code{resample.results} if \code{resample.at} is set in \code{makeMBOControl}.}
-#'   \item{final.state [\code{character}] The final termination state. Gives information why the optimization ended. Possible values are
+#'   \item{final.state [\code{character}]}{The final termination state. Gives information why the optimization ended. Possible values are
 #'      \describe{
 #'        \item{term.iter}{Maximal number of iterations reached.}
 #'        \item{term.time}{Maximal running time exceeded.}
@@ -23,7 +23,7 @@
 #'     }
 #'   }
 #'   \item{models [List of \code{\link[mlr]{WrappedModel}}]}{List of saved regression models if \code{store.model.at} is set in \code{makeMBOControl}. The default is that it contains the model generated after the last iteration.}
-#'   \item{control [\code{MBOControl}] Control object used in optimization}
+#'   \item{control [\code{MBOControl}]}{Control object used in optimization}
 #' }
 #' @name MBOSingleObjResult
 #' @rdname MBOSingleObjResult
@@ -83,20 +83,20 @@ print.MBOResult = function(x, ...) {
   print(tail(as.data.frame(op), 10))
 }
 
-#' @title Multi-Objective result object.
+#' @title Multi-Objective result object
 #'
 #' @description
 #'
-#' \itemize{
+#' \describe{
 #'   \item{pareto.front [\code{matrix}]}{Pareto front of all evaluated points.}
 #'   \item{pareto.set [\code{list} of \code{list}s]}{Pareto set of all evaluated points.}
 #'   \item{pareto.inds [\code{numeric}]}{Indices of the Pareto-optimal points in the opt.path}
 #'   \item{opt.path [\code{\link[ParamHelpers]{OptPath}}]}{Optimization path.
 #'     Includes all evaluated points and additional information as documented in \link{mbo_OptPath}.
 #'     You can convert it via \code{as.data.frame}.}
-#'   \item{final.state [\code{character}] The final termination state. Gives information why the optimization ended}
+#'   \item{final.state [\code{character}]}{The final termination state. Gives information why the optimization ended}
 #'   \item{models [List of \code{\link[mlr]{WrappedModel}}]}{List of saved regression models.}
-#'   \item{control[\code{MBOControl}] Control object used in optimization}
+#'   \item{control[\code{MBOControl}]}{Control object used in optimization}
 #' }
 #' @name MBOMultiObjResult
 #' @rdname MBOMultiObjResult

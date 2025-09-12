@@ -1,4 +1,4 @@
-#' @title Set termination options.
+#' @title Set termination options
 #'
 #' @description
 #' Extends an MBO control object with infill criteria and infill optimizer options.

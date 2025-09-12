@@ -1,4 +1,4 @@
-#' @title Renders plots for exampleRun objects and displays them.
+#' @title Renders plots for exampleRun objects and displays them
 #'
 #' @description
 #' The graphical output depends on the target function at hand.

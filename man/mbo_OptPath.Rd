@@ -14,10 +14,10 @@ The extras are:
 \item{prop.type}{Type of point proposal. Possible values are
   \describe{
   \item{initdesign}{Points actually not proposed, but in the initial design.}
-  \item{infill\_x}{Here x is a placeholder for the selected infill criterion, e.g., infill\_ei for expected improvement.}
-  \item{random\_interleave}{Uniformly sampled points added additionally to the proposed points.}
-  \item{random\_filtered}{If filtering of proposed points located too close to each other is active, these are replaced by random points.}
-  \item{final\_eval}{If \code{final.evals} is set in \code{\link{makeMBOControl}}: Final evaluations of the proposed solution to reduce noise in y.}
+  \item{infill_x}{Here x is a placeholder for the selected infill criterion, e.g., infill_ei for expected improvement.}
+  \item{random_interleave}{Uniformly sampled points added additionally to the proposed points.}
+  \item{random_filtered}{If filtering of proposed points located too close to each other is active, these are replaced by random points.}
+  \item{final_eval}{If \code{final.evals} is set in \code{\link{makeMBOControl}}: Final evaluations of the proposed solution to reduce noise in y.}
   }
 }
 \item{parego.weight}{Weight vector sampled for multi-point ParEGO}

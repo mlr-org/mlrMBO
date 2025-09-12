@@ -1,4 +1,4 @@
-#' @title Create a transformation function for MBOExampleRun.
+#' @title Create a transformation function for MBOExampleRun
 #'
 #' @description
 #' Creates a transformation function for MBOExampleRun.
@@ -17,11 +17,11 @@ makeMBOTrafoFunction = function(name, fun) {
   return(fun)
 }
 
-#' Transformation methods.
+#' Transformation methods
 #'
-#' \itemize{
-#'   \item{\bold{logTrafo}}{\cr Natural logarithm.}
-#'   \item{\bold{sqrtTrafo}}{\cr Square root.}
+#' \describe{
+#'   \item{\bold{logTrafo}}{Natural logarithm.}
+#'   \item{\bold{sqrtTrafo}}{Square root.}
 #' }
 #' If negative values occur and the trafo function can handle only positive values,
 #' a shift of the form x - min(x) + 1 is performed prior to the transformation if the

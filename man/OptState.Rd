@@ -2,7 +2,7 @@
 % Please edit documentation in R/OptState.R
 \name{OptState}
 \alias{OptState}
-\title{OptState object.}
+\title{OptState object}
 \description{
 The OptState is the central component of the mbo iterations.
 This environment contains every necessary information needed during optimization in MBO.

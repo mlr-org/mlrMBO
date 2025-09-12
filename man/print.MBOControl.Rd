@@ -2,7 +2,7 @@
 % Please edit documentation in R/makeMBOControl.R
 \name{print.MBOControl}
 \alias{print.MBOControl}
-\title{Print mbo control object.}
+\title{Print mbo control object}
 \usage{
 \method{print}{MBOControl}(x, ...)
 }
@@ -14,5 +14,5 @@ Control object.}
 Not used.}
 }
 \description{
-Print mbo control object.
+Print mbo control object
 }

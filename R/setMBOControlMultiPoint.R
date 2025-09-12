@@ -1,4 +1,4 @@
-#' @title Set multipoint proposal options.
+#' @title Set multipoint proposal options
 #' @description
 #' Extends an MBO control object with options for multipoint proposal.
 #' @template arg_control

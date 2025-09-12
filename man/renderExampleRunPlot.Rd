@@ -3,7 +3,7 @@
 \name{renderExampleRunPlot}
 \alias{renderExampleRunPlot}
 \title{Renders plots for exampleRun objects, either in 1D or 2D, or
-exampleRunMultiObj objects.}
+exampleRunMultiObj objects}
 \usage{
 renderExampleRunPlot(
   object,

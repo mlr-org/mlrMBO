@@ -2,7 +2,7 @@
 % Please edit documentation in R/mboContinue.R
 \name{mboContinue}
 \alias{mboContinue}
-\title{Continues an mbo run from a save-file.}
+\title{Continues an mbo run from a save-file}
 \usage{
 mboContinue(opt.state)
 }

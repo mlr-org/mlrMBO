@@ -5,7 +5,7 @@
 \title{Parallelization in mlrMBO}
 \description{
 In mlrMBO you can parallelize the tuning on two different levels to speed up computation:
-\itemize{
+\describe{
   \item{\code{mlrMBO.feval}}{Multiple evaluations of the target function.}
   \item{\code{mlrMBO.propose.points}}{Optimization of the infill criteria if multiple are used (e.g. ParEGO and ParallelLCB)}
 }
@@ -14,8 +14,8 @@ See the mlrMBO tutorial and the Github project pages of parallelMap for instruct
 The different levels of parallelization can be specified in \code{parallelStart*}.
 Details for the levels mentioned above are given below:
 \itemize{
-\item{Evaluation of the objective function can be parallelized in cases multiple points are to be evaluated at once. These are: evaluation of the initial design, multiple proposed points per iteration and evaluation of the target function in \code{\link{exampleRun}}. (Level: \code{mlrMBO.feval})}
-\item{Model fitting / point proposal - in some cases where independent, expensive operations are performed. (Level: \code{mlrMBO.propose.points})}
+\item Evaluation of the objective function can be parallelized in cases multiple points are to be evaluated at once. These are: evaluation of the initial design, multiple proposed points per iteration and evaluation of the target function in \code{\link{exampleRun}}. (Level: \code{mlrMBO.feval})
+\item Model fitting / point proposal - in some cases where independent, expensive operations are performed. (Level: \code{mlrMBO.propose.points})
 }
 Details regarding the latter:
 \describe{

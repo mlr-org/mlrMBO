@@ -2,7 +2,7 @@
 % Please edit documentation in R/setMBOControlInfill.R
 \name{setMBOControlInfill}
 \alias{setMBOControlInfill}
-\title{Extends mbo control object with infill criteria and infill optimizer options.}
+\title{Extends mbo control object with infill criteria and infill optimizer options}
 \usage{
 setMBOControlInfill(
   control,

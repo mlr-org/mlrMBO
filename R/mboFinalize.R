@@ -1,4 +1,4 @@
-#' @title Finalizes an mbo run from a save-file.
+#' @title Finalizes an mbo run from a save-file
 #'
 #' @description
 #' Useful if your optimization didn't terminate but you want a results nonetheless.

@@ -2,7 +2,7 @@
 % Please edit documentation in R/makeMBOTrafoFunction.R
 \name{makeMBOTrafoFunction}
 \alias{makeMBOTrafoFunction}
-\title{Create a transformation function for MBOExampleRun.}
+\title{Create a transformation function for MBOExampleRun}
 \usage{
 makeMBOTrafoFunction(name, fun)
 }

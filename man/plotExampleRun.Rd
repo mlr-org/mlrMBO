@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotExampleRun.R
 \name{plotExampleRun}
 \alias{plotExampleRun}
-\title{Renders plots for exampleRun objects and displays them.}
+\title{Renders plots for exampleRun objects and displays them}
 \usage{
 plotExampleRun(
   object,

@@ -1,4 +1,4 @@
-#' @title Get properties of MBO infill criterion.
+#' @title Get properties of MBO infill criterion
 #'
 #' @description
 #' Returns properties of an infill criterion, e.g., name or id.

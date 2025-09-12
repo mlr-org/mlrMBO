@@ -5,17 +5,17 @@
 #' process. mlrMBO tries to handle most of them as smart as possible.
 #'
 #' The target function could
-#' \itemize{
-#'   \item{1}{The target function returns NA(s) or NaN(s) (plural for the multi-objective case).}
-#'   \item{2}{The target function stops with an error.}
-#'   \item{3}{The target function does not return at all (infinite or very long execution time).}
-#'   \item{4}{The target function crashes the whole R process.}
-#'   \item{5}{The surrogate machine learning model might crash.
-#'     Kriging quite often can run into numerical problems.}
-#'   \item{6}{The proposal mechanism - in multi-point or single point mode - produces
+#' \enumerate{
+#'   \item The target function returns NA(s) or NaN(s) (plural for the multi-objective case).
+#'   \item The target function stops with an error.
+#'   \item The target function does not return at all (infinite or very long execution time).
+#'   \item The target function crashes the whole R process.
+#'   \item The surrogate machine learning model might crash.
+#'     Kriging quite often can run into numerical problems.
+#'   \item The proposal mechanism - in multi-point or single point mode - produces
 #'     a point which is either close to another candidate point in the same iteration or
-#'     an already visited point in a previous iteration.}
-#'   \item{7}{The mbo process exits / stops / crashes itself. Maybe because it hit a walltime.}
+#'     an already visited point in a previous iteration.
+#'   \item The mbo process exits / stops / crashes itself. Maybe because it hit a walltime.
 #' }
 #'
 #'

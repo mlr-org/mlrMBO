@@ -2,7 +2,7 @@
 % Please edit documentation in R/exampleRun.R
 \name{exampleRun}
 \alias{exampleRun}
-\title{Perform an mbo run on a test function and and visualize what happens.}
+\title{Perform an mbo run on a test function and and visualize what happens}
 \usage{
 exampleRun(
   fun,

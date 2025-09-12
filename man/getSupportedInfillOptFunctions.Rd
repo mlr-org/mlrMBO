@@ -2,7 +2,7 @@
 % Please edit documentation in R/getSupportedInfillOptFunctions.R
 \name{getSupportedInfillOptFunctions}
 \alias{getSupportedInfillOptFunctions}
-\title{Get names of supported infill-criteria optimizers.}
+\title{Get names of supported infill-criteria optimizers}
 \usage{
 getSupportedInfillOptFunctions()
 }

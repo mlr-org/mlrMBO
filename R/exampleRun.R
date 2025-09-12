@@ -1,4 +1,4 @@
-#' @title Perform an mbo run on a test function and and visualize what happens.
+#' @title Perform an mbo run on a test function and and visualize what happens
 #'
 #' @description
 #' Usually used for 1D or 2D examples,
@@ -164,7 +164,7 @@ evaluate = function(fun, par.set, n.params, par.types, noisy, noisy.evals, point
   }
 }
 
-#' Helper function which returns the (estimated) global optimum.
+#' Helper function which returns the (estimated) global optimum
 #'
 #' @param run [\code{MBOExampleRun}]\cr
 #'   Object of type \code{MBOExampleRun}.

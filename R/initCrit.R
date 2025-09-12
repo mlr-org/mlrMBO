@@ -1,4 +1,4 @@
-#' @title Initialize an MBO infill criterion.
+#' @title Initialize an MBO infill criterion
 #'
 #' @description
 #'   Some infill criteria have parameters that are dependent on values in the parameter set, design,

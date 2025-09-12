@@ -2,7 +2,7 @@
 % Please edit documentation in R/exampleRun.R
 \name{getGlobalOpt}
 \alias{getGlobalOpt}
-\title{Helper function which returns the (estimated) global optimum.}
+\title{Helper function which returns the (estimated) global optimum}
 \usage{
 getGlobalOpt(run)
 }
@@ -14,5 +14,5 @@ Object of type \code{MBOExampleRun}.}
 [\code{numeric(1)}]. (Estimated) global optimum.
 }
 \description{
-Helper function which returns the (estimated) global optimum.
+Helper function which returns the (estimated) global optimum
 }

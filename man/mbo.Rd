@@ -2,7 +2,7 @@
 % Please edit documentation in R/mbo.R
 \name{mbo}
 \alias{mbo}
-\title{Optimizes a function with sequential model based optimization.}
+\title{Optimizes a function with sequential model based optimization}
 \usage{
 mbo(
   fun,

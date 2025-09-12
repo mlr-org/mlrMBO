@@ -2,7 +2,7 @@
 % Please edit documentation in R/initCrit.R
 \name{initCrit}
 \alias{initCrit}
-\title{Initialize an MBO infill criterion.}
+\title{Initialize an MBO infill criterion}
 \usage{
 initCrit(crit, fun, design, learner, control)
 }
