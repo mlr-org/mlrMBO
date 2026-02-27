@@ -116,8 +116,8 @@ an Event Detection Software under Limited Budgets. In: Proc.
 7th International. Conf. Evolutionary Multi-Criterion Optimization (EMO
 2013), March 19-22, Sheffield, UK, R. Purshouse; P. J. Fleming;
 C. M. Fonseca; S. Greco; J. Shaw, eds., 2013, vol. 7811 of Lecture
-Notes in Computer Science, ISBN 978-3-642-37139-4, pp. 756{770,
-doi:10.1007/978-3-642-37140-0 56}
+Notes in Computer Science, ISBN 978-3-642-37139-4, pp. 756--770,
+doi:10.1007/978-3-642-37140-0_56
 
 Jeong, S.; Obayashi, S.: Efficient global optimization (EGO) for Multi-Objective Problem and Data Mining.
 In: Proc. IEEE Congress on

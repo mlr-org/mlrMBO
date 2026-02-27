@@ -24,7 +24,7 @@ What should be done, if negative values occur? Setting this option to
 stops the process immediately.}
 }
 \description{
-\itemize{
+\describe{
   \item{\bold{logTrafo}}{\cr Natural logarithm.}
   \item{\bold{sqrtTrafo}}{\cr Square root.}
 }

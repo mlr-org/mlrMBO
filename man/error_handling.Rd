@@ -8,7 +8,7 @@ There are multiple types of errors that can occur during one optimization
 process. mlrMBO tries to handle most of them as smart as possible.
 
 The target function could
-\itemize{
+\describe{
   \item{1}{The target function returns NA(s) or NaN(s) (plural for the multi-objective case).}
   \item{2}{The target function stops with an error.}
   \item{3}{The target function does not return at all (infinite or very long execution time).}

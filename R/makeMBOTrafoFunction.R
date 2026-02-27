@@ -19,7 +19,7 @@ makeMBOTrafoFunction = function(name, fun) {
 
 #' Transformation methods.
 #'
-#' \itemize{
+#' \describe{
 #'   \item{\bold{logTrafo}}{\cr Natural logarithm.}
 #'   \item{\bold{sqrtTrafo}}{\cr Square root.}
 #' }
