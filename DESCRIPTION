@@ -1,11 +1,11 @@
 Package: mlrMBO
 Title: Bayesian Optimization and Model-Based Optimization of Expensive
     Black-Box Functions
-Version: 1.1.5-9000
+Version: 1.1.6
 Authors@R: c(
     person("Bernd", "Bischl", , "bernd_bischl@gmx.net", role = "aut",
            comment = c(ORCID = "0000-0001-6002-6980")),
-    person("Jakob", "Richter", , "code@jakob-r.de", role = c("aut", "cre"),
+    person("Jakob", "Richter", , "code@jakob-r.de", role = "aut",
            comment = c(ORCID = "0000-0003-4481-5554")),
     person("Jakob", "Bossek", , "j.bossek@gmail.com", role = "aut",
            comment = c(ORCID = "0000-0002-4121-4668")),
@@ -13,7 +13,8 @@ Authors@R: c(
     person("Michel", "Lang", , "michellang@gmail.com", role = "aut",
            comment = c(ORCID = "0000-0001-9754-0393")),
     person("Janek", "Thomas", , "janek.thomas@stat.uni-muenchen.de", role = "aut",
-           comment = c(ORCID = "0000-0003-4511-6245"))
+           comment = c(ORCID = "0000-0003-4511-6245")),
+    person("Martin", "Binder", , "mlr.developer@mb706.com", role = "cre")
   )
 Description: Flexible and comprehensive R toolbox for model-based
     optimization ('MBO'), also known as Bayesian optimization. It

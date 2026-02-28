@@ -1,3 +1,11 @@
+# mlrMBO 1.1.6
+
+* Documentation fixes
+
+# mlrMBO 1.1.5.1
+
+* Documentation fixes
+
 # mlrMBO 1.1.5
 
 * Documentation fixes
