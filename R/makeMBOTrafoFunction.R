@@ -19,9 +19,9 @@ makeMBOTrafoFunction = function(name, fun) {
 
 #' Transformation methods.
 #'
-#' \itemize{
-#'   \item{\bold{logTrafo}}{\cr Natural logarithm.}
-#'   \item{\bold{sqrtTrafo}}{\cr Square root.}
+#' \describe{
+#'   \item{\bold{logTrafo}}{Natural logarithm.}
+#'   \item{\bold{sqrtTrafo}}{Square root.}
 #' }
 #' If negative values occur and the trafo function can handle only positive values,
 #' a shift of the form x - min(x) + 1 is performed prior to the transformation if the

@@ -10,7 +10,7 @@ Model-based optimization with [mlr](https://github.com/mlr-org/mlr/).
 [![tic](https://github.com/mlr-org/mlrMBO/workflows/tic/badge.svg?branch=master)](https://github.com/mlr-org/mlrMBO/actions)
 [![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/mlrMBO)](https://cran.r-project.org/package=mlrMBO)
 [![Coverage
-Status](https://img.shields.io/codecov/c/github/mlr-org/mlrMBO/master.svg)](https://codecov.io/github/mlr-org/mlrMBO?branch=master)
+Status](https://img.shields.io/codecov/c/github/mlr-org/mlrMBO/master.svg)](https://app.codecov.io/github/mlr-org/mlrMBO?branch=master)
 [![Monthly RStudio CRAN
 Downloads](https://cranlogs.r-pkg.org/badges/mlrMBO)](https://CRAN.R-project.org/package=mlrMBO)
 <!-- badges: end -->
@@ -53,7 +53,7 @@ Features:
   - Multi-Criteria optimization with approximated Pareto fronts
   - Parallelization through multi-point batch proposals
   - Parallelization on many parallel back-ends and clusters through
-    [batchtools](https://github.com/mllg/batchtools) and
+    [batchtools](https://github.com/mlr-org/batchtools) and
     [parallelMap](https://github.com/mlr-org/parallelMap)
 
 For the *surrogate*, `mlrMBO` allows any regression learner from

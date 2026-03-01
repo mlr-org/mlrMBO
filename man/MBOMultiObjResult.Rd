@@ -4,15 +4,15 @@
 \alias{MBOMultiObjResult}
 \title{Multi-Objective result object.}
 \description{
-\itemize{
+\describe{
   \item{pareto.front [\code{matrix}]}{Pareto front of all evaluated points.}
   \item{pareto.set [\code{list} of \code{list}s]}{Pareto set of all evaluated points.}
-  \item{pareto.inds [\code{numeric}]}{Indices of the Pareto-optimal points in the opt.path}
+  \item{pareto.inds [\code{numeric}]}{Indices of the Pareto-optimal points in the opt.path.}
   \item{opt.path [\code{\link[ParamHelpers]{OptPath}}]}{Optimization path.
     Includes all evaluated points and additional information as documented in \link{mbo_OptPath}.
     You can convert it via \code{as.data.frame}.}
-  \item{final.state [\code{character}] The final termination state. Gives information why the optimization ended}
+  \item{final.state [\code{character}]}{The final termination state. Gives information why the optimization ended.}
   \item{models [List of \code{\link[mlr]{WrappedModel}}]}{List of saved regression models.}
-  \item{control[\code{MBOControl}] Control object used in optimization}
+  \item{control [\code{MBOControl}]}{Control object used in optimization.}
 }
 }
