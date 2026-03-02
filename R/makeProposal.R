@@ -21,13 +21,15 @@ makeProposal = function(control, prop.points, propose.time = NULL, prop.type, cr
     propose.time = rep(NA_real_, n.points)
   }
 
-
   if (is.null(crit.vals)) {
-    if (control$n.objectives > 1L && control$multiobj.method == "mspot")
+    if (control$n.objectives > 1L && control$multiobj.method == "mspot") {
       # mspot is the special kid, that needs multiple crit vals
       ncol = control$n.objectives + 1
-    else
+    } else if (control$multipoint.method == "moimbo") {
+      ncol = control$propose.points - 1
+    } else {
       ncol = 1
+    }
     crit.vals = matrix(NA_real_, nrow = n.points, ncol = ncol)
   }
 
