@@ -3,8 +3,11 @@ context("smoof wrappers")
 test_that("wrapped smoof function work", {
   f = makeSphereFunction(2L)
   fc = addCountingWrapper(f)
-  fl = addLoggingWrapper(f)
-  fcl = addCountingWrapper(addLoggingWrapper(f))
+  fl = addLoggingWrapper(f, logg.x = TRUE)
+  environment(fl)$logg.x = FALSE  # fix for https://github.com/jakobbossek/smoof/issues/143
+  fcl = addLoggingWrapper(f, logg.x = TRUE)
+  environment(fcl)$logg.x = FALSE  # ditto
+  fcl = addCountingWrapper(fcl)
 
   learner = makeLearner("regr.rpart")
 
