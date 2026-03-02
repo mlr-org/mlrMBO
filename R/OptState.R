@@ -50,7 +50,8 @@ NULL
 
 makeOptState = function(opt.problem, loop = 0L, tasks = NULL, models = NULL,
   time.model = NULL, opt.result = NULL, state = "init", opt.path = NULL,
-  time.last.saved = Sys.time(), loop.starttime = Sys.time(), time.used = 0L, progress = 0, time.created = Sys.time()) {
+  time.last.saved = Sys.time(), loop.starttime = Sys.time(), time.used = 0L, progress = 0, time.created = Sys.time(),
+  identification.time.used = 0L) {
 
   opt.state = new.env()
 
@@ -68,6 +69,7 @@ makeOptState = function(opt.problem, loop = 0L, tasks = NULL, models = NULL,
   opt.state$loop.starttime = loop.starttime
   opt.state$time.used = time.used
   opt.state$progress = progress
+  opt.state$identification.time.used = identification.time.used
 
   opt.state$random.seed = getRandomSeed()
   opt.state$time.created = time.created

@@ -25,3 +25,25 @@ shouldTerminate.OptState = function(opt.state) {
   # "fallback"
   return(list(term = FALSE, message = NA_character_, code = NA_character_, progress = progress))
 }
+
+
+# Helper which checks identification termination criterion. 
+#
+# @param opt.state [\code{OptState}]\cr
+shouldTerminateIdentification.OptState = function(opt.state) {
+  opt.problem = getOptStateOptProblem(opt.state)
+  control = getOptProblemControl(opt.problem)
+  stop.conds = control$stop.conds.identification
+  progress = NULL
+
+  for (i in seq_along(stop.conds)) {
+    stop.cond = stop.conds[[i]]
+    stop.obj = stop.cond(opt.state)
+    if (stop.obj$term) {
+      return(stop.obj)
+    }
+  }
+
+  # "fallback"
+  return(list(term = FALSE, message = NA_character_, code = NA_character_, progress = progress))
+}

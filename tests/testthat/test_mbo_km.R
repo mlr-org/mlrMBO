@@ -1,6 +1,6 @@
-context("mbo km")
+context("mbo noisy")
 
-test_that("mbo works with km", {
+test_that("mbo works with multiple instances of noisy problems", {
   des = testd.fsphere.2d
   des$y = apply(des, 1, testf.fsphere.2d)
   learner = makeLearner("regr.km", nugget.estim = TRUE)

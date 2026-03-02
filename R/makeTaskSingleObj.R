@@ -21,5 +21,13 @@ makeTaskSingleObj = function(opt.path, control) {
     data[[y.name]] = trafo.y.fun(data[[y.name]])
   }
 
+  agg = control$noisy.instance.aggregation
+
+  if (!is.null(agg)) {
+    par.names = colnames(data)[1:(which(colnames(data) == "y") - 1)] #FIXME: This sucks
+    data = setDT(data)[, .(y = agg(y)), by = par.names]
+    data = data.frame(data)
+  }
+
   makeRegrTask(target = control$y.name, data = data)
 }
